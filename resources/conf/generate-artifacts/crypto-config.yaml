@@ -10,6 +10,10 @@ OrdererOrgs:
       Locality: Paris
     Specs:
       - Hostname: orderer
+      - Hostname: orderer1
+      - Hostname: orderer2
+      - Hostname: orderer3
+      - Hostname: orderer4
 
 PeerOrgs:
   - Name: TSO

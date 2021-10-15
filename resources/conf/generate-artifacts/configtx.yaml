@@ -5,7 +5,7 @@ Organizations:
     - &Consortium
         Name: Consortium
         ID: Consortium
-        MSPDir: crypto-config/ordererOrganizations/star.com/msp
+        MSPDir: ../infra/crypto-config/ordererOrganizations/star.com/msp
         Policies:
             Readers:
                 Type: Signature
@@ -16,11 +16,17 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('Consortium.admin')"
+        OrdererEndpoints:
+            - orderer.star.com:7050
+            - orderer1.star.com:7050
+            - orderer2.star.com:7050
+            - orderer3.star.com:7050
+            - orderer4.star.com:7050
 
     - &TSO
         Name: TSOMSP
         ID: TSOMSP
-        MSPDir: crypto-config/peerOrganizations/tso.star.com/msp
+        MSPDir: ../infra/crypto-config/peerOrganizations/tso.star.com/msp
         Policies:
             Readers:
                 Type: Signature
@@ -31,6 +37,9 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('TSOMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('TSOMSP.peer')"
 
         AnchorPeers:
         - Host: peer0.tso.star.com
@@ -39,7 +48,7 @@ Organizations:
     - &DSO
         Name: DSOMSP
         ID: DSOMSP
-        MSPDir: crypto-config/peerOrganizations/dso.star.com/msp
+        MSPDir: ../infra/crypto-config/peerOrganizations/dso.star.com/msp
         Policies:
             Readers:
                 Type: Signature
@@ -50,6 +59,9 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('DSOMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('DSOMSP.peer')"
 
         AnchorPeers:
         - Host: peer0.dso.star.com
@@ -58,7 +70,7 @@ Organizations:
     - &THIRD
         Name: THIRDMSP
         ID: THIRDMSP
-        MSPDir: crypto-config/peerOrganizations/third.star.com/msp
+        MSPDir: ../infra/crypto-config/peerOrganizations/third.star.com/msp
         Policies:
             Readers:
                 Type: Signature
@@ -69,6 +81,9 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('THIRDMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('THIRDMSP.peer')"
 
         AnchorPeers:
             - Host: peer0.third.star.com
@@ -77,7 +92,7 @@ Organizations:
     - &BSP
         Name: BSPMSP
         ID: BSPMSP
-        MSPDir: crypto-config/peerOrganizations/bsp.star.com/msp
+        MSPDir: ../infra/crypto-config/peerOrganizations/bsp.star.com/msp
         Policies:
             Readers:
                 Type: Signature
@@ -88,6 +103,10 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('BSPMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('BSPMSP.peer')"
+
         AnchorPeers:
         - Host: peer0.third.star.com
           Port: 7051
@@ -95,7 +114,7 @@ Organizations:
     - &PRODUCER
         Name: PRODUCERMSP
         ID: PRODUCERMSP
-        MSPDir: crypto-config/peerOrganizations/producer.star.com/msp
+        MSPDir: ../infra/crypto-config/peerOrganizations/producer.star.com/msp
         Policies:
             Readers:
                 Type: Signature
@@ -106,24 +125,38 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('PRODUCERMSP.admin')"
+            Endorsement:
+                Type: Signature
+                Rule: "OR('PRODUCERMSP.peer')"
+
         AnchorPeers:
             - Host: peer0.third.star.com
               Port: 7051
 
 Capabilities:
-    Global: &ChannelCapabilities
-        V1_1: true
+    Channel: &ChannelCapabilities
+        V2_0: true
     Orderer: &OrdererCapabilities
-        V1_1: true
+        V2_0: true
     Application: &ApplicationCapabilities
-        V1_3: false
-        V1_2: true
-        V1_1: false
+        V2_0: true
 
 
 Application: &ApplicationDefaults
     Organizations:
     Policies:
+        # LifecycleEndorsement:
+        #     Type: ImplicitMeta
+        #     Rule: "MAJORITY Endorsement"
+        # Endorsement:
+        #     Type: ImplicitMeta
+        #     Rule: "MAJORITY Endorsement"
+        LifecycleEndorsement:
+            Type: Signature
+            Rule: "AND('TSOMSP.peer','DSOMSP.peer')"
+        Endorsement:
+            Type: Signature
+            Rule: "AND('TSOMSP.peer','DSOMSP.peer')"
         Readers:
             Type: ImplicitMeta
             Rule: "ANY Readers"
@@ -137,10 +170,37 @@ Application: &ApplicationDefaults
         <<: *ApplicationCapabilities
 
 Orderer: &OrdererDefaults
-    OrdererType: solo
+    OrdererType: etcdraft
 
     Addresses:
     - orderer.star.com:7050
+    - orderer1.star.com:7050
+    - orderer2.star.com:7050
+    - orderer3.star.com:7050
+    - orderer4.star.com:7050
+
+    EtcdRaft:
+        Consenters:
+        - Host: orderer0.star.com
+          Port: 7050
+          ClientTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer.star.com/tls/server.crt
+          ServerTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer.star.com/tls/server.crt
+        - Host: orderer1.star.com
+          Port: 7050
+          ClientTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer1.star.com/tls/server.crt
+          ServerTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer1.star.com/tls/server.crt
+        - Host: orderer2.star.com
+          Port: 7050
+          ClientTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer2.star.com/tls/server.crt
+          ServerTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer2.star.com/tls/server.crt
+        - Host: orderer3.star.com
+          Port: 7050
+          ClientTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer3.star.com/tls/server.crt
+          ServerTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer3.star.com/tls/server.crt
+        - Host: orderer4.star.com
+          Port: 7050
+          ClientTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer4.star.com/tls/server.crt
+          ServerTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer4.star.com/tls/server.crt
 
     BatchTimeout: 2s
 
@@ -192,6 +252,9 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:
                 - *Consortium
+            Capabilities: *OrdererCapabilities
+        Application:
+            <<: *ApplicationDefaults
         Consortiums:
             StarNetworkConsortium:
                 Organizations:
@@ -203,6 +266,7 @@ Profiles:
 
     starnetwork:
         Consortium: StarNetworkConsortium
+        <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
@@ -214,6 +278,7 @@ Profiles:
 
     starnetworkorder:
         Consortium: StarNetworkConsortium
+        <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:

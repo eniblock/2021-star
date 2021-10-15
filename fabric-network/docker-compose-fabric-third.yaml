@@ -5,8 +5,7 @@ version: "3.7"
 services:
   ca.third.star.com:
     image: hyperledger/fabric-ca:1.5.2
-    ports:
-      - "10054:7054"
+    container_name: ca.third.star.com
     environment:
       - FABRIC_CA_DB_FILE=/var/hyperledger/fabric-ca-server/db/fabric-ca-server.db
     command: sh -c 'rm $$FABRIC_CA_DB_FILE; mkdir -p /var/hyperledger/fabric-ca-server/db;
@@ -14,14 +13,53 @@ services:
       --cafiles /etc/hyperledger/ca-config/third.star.com.yaml
       --cafiles /etc/hyperledger/ca-config/producer.star.com.yaml
       --cafiles /etc/hyperledger/ca-config/bsp.star.com.yaml'
+    ports:
+      - "10054:7054"
     volumes:
       - ./../resources/conf/infra/crypto-config/peerOrganizations/third.star.com/ca/:/etc/hyperledger/fabric-ca-third-server-config
       - ./../resources/conf/infra/crypto-config/peerOrganizations/bsp.star.com/ca/:/etc/hyperledger/fabric-ca-bsp-server-config
       - ./../resources/conf/infra/crypto-config/peerOrganizations/producer.star.com/ca/:/etc/hyperledger/fabric-ca-producer-server-config
       - ./../resources/conf/infra/ca-config/:/etc/hyperledger/ca-config
-    container_name: ca.third.star.com
     networks:
       - star
+
+  # ca.bsp.star.com:
+  #   image: hyperledger/fabric-ca:1.5.2
+  #   container_name: ca.bsp.star.com
+  #   environment:
+  #     - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+  #     - FABRIC_CA_SERVER_CA_NAME=ca.bsp.star.com
+  #     - FABRIC_CA_SERVER_TLS_ENABLED=false
+  #     - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.bsp.star.com-cert.pem
+  #     - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/ca.bsp.star.com_sk
+  #     - FABRIC_CA_DB_FILE=/var/hyperledger/fabric-ca-server/db/fabric-ca-server.db
+  #     - FABRIC_CA_CONF_FILE=/etc/hyperledger/fabric-ca-server-config/fabric-ca-server-config.yaml
+  #   ports:
+  #     - "9054:7054"
+  #   volumes:
+  #     - ../resources/conf/infra/crypto-config/peerOrganizations/bsp.star.com/ca/:/etc/hyperledger/fabric-ca-server-config
+  #   command: sh -c 'rm $$FABRIC_CA_DB_FILE ; mkdir -p /var/hyperledger/fabric-ca-server/db ; fabric-ca-server start --ca.certfile $$FABRIC_CA_SERVER_TLS_CERTFILE --ca.keyfile $$FABRIC_CA_SERVER_TLS_KEYFILE -c $$FABRIC_CA_CONF_FILE -b admin:adminpw --db.datasource $$FABRIC_CA_DB_FILE -d'
+  #   networks:
+  #     - star
+
+  # ca.producer.star.com:
+  #   image: hyperledger/fabric-ca:1.5.2
+  #   container_name: ca.producer.star.com
+  #   environment:
+  #     - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+  #     - FABRIC_CA_SERVER_CA_NAME=ca.producer.star.com
+  #     - FABRIC_CA_SERVER_TLS_ENABLED=false
+  #     - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.producer.star.com-cert.pem
+  #     - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/ca.producer.star.com_sk
+  #     - FABRIC_CA_DB_FILE=/var/hyperledger/fabric-ca-server/db/fabric-ca-server.db
+  #     - FABRIC_CA_CONF_FILE=/etc/hyperledger/fabric-ca-server-config/fabric-ca-server-config.yaml
+  #   ports:
+  #     - "10054:7054"
+  #   volumes:
+  #     - ../resources/conf/infra/crypto-config/peerOrganizations/producer.star.com/ca/:/etc/hyperledger/fabric-ca-server-config
+  #   command: sh -c 'rm $$FABRIC_CA_DB_FILE ; mkdir -p /var/hyperledger/fabric-ca-server/db ; fabric-ca-server start --ca.certfile $$FABRIC_CA_SERVER_TLS_CERTFILE --ca.keyfile $$FABRIC_CA_SERVER_TLS_KEYFILE -c $$FABRIC_CA_CONF_FILE -b admin:adminpw --db.datasource $$FABRIC_CA_DB_FILE -d'
+  #   networks:
+  #     - star
 
   peer0.third.star.com:
     image: hyperledger/fabric-peer:2.3.3
@@ -59,11 +97,13 @@ services:
       - CORE_PEER_LOCALMSPID=THIRDMSP
       - CORE_PEER_TLS_SERVERHOSTOVERRIDE=peer0.third.star.com
     volumes:
-      - /var/run/:/host/var/run/
+      # - /var/run/:/host/var/run/
       - ../resources/conf/infra/crypto-config/peerOrganizations/third.star.com/peers/peer0.third.star.com/msp:/etc/hyperledger/fabric/msp
       - ../resources/conf/infra/crypto-config/peerOrganizations/third.star.com/peers/peer0.third.star.com/tls:/etc/hyperledger/fabric/tls
-      - ./../chaincode/global:/usr/src/app/chaincode/global
+      - ../chaincode/global:/usr/src/app/chaincode/global
       - ../resources/conf/infra/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config
+      - ../resources/conf/generate-artifacts/core.yaml:/etc/hyperledger/fabric/core.yaml
+      - ../sampleBuilder:/sampleBuilder
     command: peer node start
     ports:
       - "10051:7051"
@@ -115,10 +155,10 @@ services:
     #     /bin/bash
     #     "
     volumes:
-      - /var/run/:/host/var/run/
-      - ./../resources/conf/infra/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
-      - ./../chaincode:/usr/src/app/chaincode
-      - ./../resources/conf/infra/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+      # - /var/run/:/host/var/run/
+      - ../resources/conf/infra/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ../chaincode:/usr/src/app/chaincode
+      - ../resources/conf/infra/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     networks:
       - star
 

@@ -2,13 +2,15 @@
   "name": "star_order_chaincode",
   "version": "2.0.0",
   "description": "order chaincode for RTE and GRD",
+  "main": "dist/src/index.js",
+  "typings": "dist/index.d.ts",
   "engines": {
     "node": ">12.16.1",
     "npm": ">6.13.4"
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/index.js",
+    "start": "fabric-chaincode-node server --chaincode-id-name order_V2 --peer.address peer0.tso.star.com:7052 --chaincode-address order.star.com:9999 --chaincode-id order_2.0:c78586f16f8056e51af8e23fce958968b75026705062cee749700554147edd51",
     "lint": "tslint --fix -c tslint.json './src/**/*.ts'",
     "test": "npm run lint && mocha -r ts-node/register tests/**/*.spec.ts --reporter spec",
     "test:watch": "npm run lint && mocha -r ts-node/register tests/**/*.spec.ts --reporter spec --watch app/**/*.spec.ts --watch-extensions ts",
@@ -19,7 +21,9 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@types/long": "^4.0.0",
-    "fabric-shim": "^2.0.0",
+    "fabric-contract-api": "^2.0.0",
+    "fabric-shim-api": "^2.0.0",
+    "fabric-shim": "^2.2.2",
     "fast-safe-stringify": "^2.1.1",
     "modules": "^0.4.0",
     "winston": "3.2.1"

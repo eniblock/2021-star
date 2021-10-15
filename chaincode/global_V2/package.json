@@ -1,14 +1,16 @@
 {
   "name": "star_global_chaincode",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "global chaincode for RTE star",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
   "engines": {
     "node": ">=8.4.0",
     "npm": ">=5.3.0"
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/index.js",
+    "start": "fabric-chaincode-node server --chaincode-id-name global --peer.address peer0.tso.star.com:7052 --chaincode-address global.tso.star.com:9999 --chaincode-id global_2.0:661cfefa9a08c1d63931079d77d7f7a17a40dbbed8b085c7fbd872a4b0db7244",
     "lint": "tslint --fix -c tslint.json './src/**/*.ts'",
     "test": "npm run lint && mocha -r ts-node/register tests/**/*.spec.ts --reporter spec",
     "test:watch": "npm run lint && mocha -r ts-node/register tests/**/*.spec.ts --reporter spec --watch app/**/*.spec.ts --watch-extensions ts",
@@ -19,6 +21,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@types/long": "^4.0.0",
+    "fabric-contract-api": "^2.0.0",
     "fabric-shim": "^2.0.0",
     "fast-safe-stringify": "^2.1.1",
     "long": "^4.0.0",

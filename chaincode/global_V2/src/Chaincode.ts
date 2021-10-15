@@ -20,6 +20,7 @@ import {IController} from '../interfaces/IController';
 import {Controller} from '../enums/Controller';
 import {IOrganization} from '../interfaces/IOrganization';
 import {ActivationController} from './activation/ActivationController';
+import { TlsOptions } from 'tls';
 
 export class Chaincode {
   public async Init(stub: ChaincodeStub): Promise<ChaincodeResponse> {
@@ -103,3 +104,11 @@ export class Chaincode {
     }
   }
 }
+
+// const server = Shim.server(new Chaincode(), {
+//   ccid: "mycc:fcbf8724572d42e859a7dd9a7cd8e2efb84058292017df6e3d89178b64e6c831",
+//   address: "0.0.0.0:9999",
+//   // tlsProps: getTLSProperties()
+// });
+
+// server.start();

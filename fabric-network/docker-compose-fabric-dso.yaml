@@ -58,9 +58,13 @@ services:
       - CORE_PEER_LOCALMSPID=DSOMSP
       - CORE_PEER_TLS_SERVERHOSTOVERRIDE=peer0.dso.star.com
     volumes:
-      - /var/run/:/host/var/run/
+      # - /var/run/:/host/var/run/
       - ../resources/conf/infra/crypto-config/peerOrganizations/dso.star.com/peers/peer0.dso.star.com/msp:/etc/hyperledger/fabric/msp
       - ../resources/conf/infra/crypto-config/peerOrganizations/dso.star.com/peers/peer0.dso.star.com/tls:/etc/hyperledger/fabric/tls
+      - ../chaincode/global:/usr/src/app/chaincode/global
+      - ../resources/conf/infra/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto-config
+      - ../resources/conf/generate-artifacts/core.yaml:/etc/hyperledger/fabric/core.yaml
+      - ../sampleBuilder:/sampleBuilder
     command: peer node start
     ports:
       - "8051:7051"
@@ -115,10 +119,10 @@ services:
     #     /bin/bash
     #     "
     volumes:
-      - /var/run/:/host/var/run/
-      - ./../resources/conf/infra/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
-      - ./../chaincode:/usr/src/app/chaincode
-      - ./../resources/conf/infra/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+     # - /var/run/:/host/var/run/
+      - ../resources/conf/infra/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ../chaincode:/usr/src/app/chaincode
+      - ../resources/conf/infra/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     networks:
       - star
 

@@ -40,17 +40,17 @@ PeerOrgs:
     Users:
       Count: 1
 
-  - Name: THIRD
-    Domain: third.star.com
-    EnableNodeOUs: true
-    CA:
-      Country: FR
-      Province: IDF
-      Locality: Paris
-    Template:
-      Count: 1
-    Users:
-      Count: 0
+  # - Name: THIRD
+  #   Domain: third.star.com
+  #   EnableNodeOUs: true
+  #   CA:
+  #     Country: FR
+  #     Province: IDF
+  #     Locality: Paris
+  #   Template:
+  #     Count: 1
+  #   Users:
+  #     Count: 0
 
   - Name: BSP
     Domain: bsp.star.com
@@ -60,9 +60,9 @@ PeerOrgs:
       Province: IDF
       Locality: Paris
     Template:
-      Count: 0
+      Count: 1
     Users:
-      Count: 0
+      Count: 1
 
   - Name: PRODUCER
     Domain: producer.star.com
@@ -72,7 +72,7 @@ PeerOrgs:
       Province: IDF
       Locality: Paris
     Template:
-      Count: 0
+      Count: 1
     Users:
-      Count: 0
+      Count: 1
 

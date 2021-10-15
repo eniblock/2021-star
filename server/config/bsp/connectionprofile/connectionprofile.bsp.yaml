@@ -32,7 +32,7 @@ client:
       instantiator: false
 
   tls:
-    enabled: false
+    enabled: true
     clientKey: '/etc/star/crypto-config/peerOrganizations/bsp.star.com/users/Admin@bsp.star.com/tls/client.key'
     clientCert: '/etc/star/crypto-config/peerOrganizations/bsp.star.com/users/Admin@bsp.star.com/tls/client.crt'
 
@@ -69,7 +69,7 @@ peers:
     grpcOptions:
       ssl-target-name-override: peer0.third.star.com
     tlsCACerts:
-      path: /etc/star/crypto-config/peerOrganizations/bsp.star.com/tlsca/tlsca.bsp.star.com-cert.pem
+      path: /etc/star/crypto-config/peerOrganizations/third.star.com/tlsca/tlsca.third.star.com-cert.pem
 
 certificateAuthorities:
   ca.bsp.star.com:

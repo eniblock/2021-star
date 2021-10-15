@@ -21,18 +21,18 @@ client:
 
   channels:
     - id: 'starnetwork'
-      channelTx: 'channel.tx'
+      channelTx: 'starnetwork.tx'
 
   chaincodes:
     - name: 'global'
       chaincodeId: 'global_chaincode'
-      path: '/chaincode/global'
-      version: '1.0'
+      path: '/chaincode/global_V2'
+      version: '2.0'
       channelName: 'starnetwork'
       instantiator: false
 
   tls:
-    enabled: false
+    enabled: true
     clientKey: '/etc/star/crypto-config/peerOrganizations/producer.star.com/users/Admin@producer.star.com/tls/client.key'
     clientCert: '/etc/star/crypto-config/peerOrganizations/producer.star.com/users/Admin@producer.star.com/tls/client.crt'
 
@@ -69,7 +69,7 @@ peers:
     grpcOptions:
       ssl-target-name-override: peer0.third.star.com
     tlsCACerts:
-      path: /etc/star/crypto-config/peerOrganizations/producer.star.com/tlsca/tlsca.producer.star.com-cert.pem
+      path: /etc/star/crypto-config/peerOrganizations/third.star.com/tlsca/tlsca.third.star.com-cert.pem
 
 certificateAuthorities:
   ca.producer.star.com:

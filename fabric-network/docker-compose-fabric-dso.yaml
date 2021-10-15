@@ -4,7 +4,7 @@
 version: "3.7"
 services:
   ca.dso.star.com:
-    image: hyperledger/fabric-ca:amd64-1.4.8
+    image: hyperledger/fabric-ca:1.5.2
     container_name: ca.dso.star.com
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
@@ -23,7 +23,7 @@ services:
       - star
 
   peer0.dso.star.com:
-    image: hyperledger/fabric-peer:amd64-1.4.8
+    image: hyperledger/fabric-peer:2.3.3
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     container_name: peer0.dso.star.com
     depends_on:
@@ -44,13 +44,15 @@ services:
       - BASE_DOCKER_NS=hyperledger
       - DOCKER_NS=hyperledger
       - ARCH=amd64
-      - PROJECT_VERSION=1.4.8
-      - BASE_VERSION=0.4.14
+      - PROJECT_VERSION=2.3.3
+      - BASE_VERSION=2.3
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=star
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_PEER_ID=peer0.dso.star.com
       - CORE_PEER_ADDRESS=peer0.dso.star.com:7051
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=cdbp0.dso.star.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.dso.star.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.dso.star.com:7051
       - CORE_PEER_LOCALMSPID=DSOMSP
@@ -67,8 +69,11 @@ services:
       - star
 
   cdbp0.dso.star.com:
-    image: hyperledger/fabric-couchdb:amd64-0.4.14
+    image: couchdb:3.1.1
     container_name: cdbp0.dso.star.com
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
     ports:
       - "6984:5984"
     networks:
@@ -76,7 +81,7 @@ services:
 
   cli-peer0.dso.star.com:
     container_name: cli-peer0.dso.star.com
-    image: hyperledger/fabric-tools:1.4.8
+    image: hyperledger/fabric-tools:2.3.3
     tty: true
     stdin_open: true
     environment:
@@ -94,19 +99,21 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dso.star.com/peers/peer0.dso.star.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dso.star.com/users/Admin@dso.star.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    command: >
-      bash -c " \
-        set -e; \
-        sleep 10; \
-        peer chaincode install -n global_chaincode -l node -v 1.0 -p /usr/src/app/chaincode/global; \
-        peer chaincode install -n order_chaincode -l node -v 1.0 -p /usr/src/app/chaincode/order; \
-        peer channel fetch 0 -o orderer.star.com:7050 -c starnetwork --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/star.com/orderers/orderer.star.com/msp/tlscacerts/tlsca.star.com-cert.pem; \
-        peer channel fetch 0 -o orderer.star.com:7050 -c starnetworkorder --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/star.com/orderers/orderer.star.com/msp/tlscacerts/tlsca.star.com-cert.pem; \
-        peer channel join -b starnetwork_0.block; \
-        peer channel join -b starnetworkorder_0.block; \
-        echo 'Joined Channels.'; \
-        echo 'Done!'; \
-        "
+    command: /bin/bash
+    # command: >
+    #   bash -c " \
+    #     set -e; \
+    #     sleep 10; \
+    #     # peer chaincode install -n global_chaincode -l node -v 1.0 -p /usr/src/app/chaincode/global; \
+    #     # peer chaincode install -n order_chaincode -l node -v 1.0 -p /usr/src/app/chaincode/order; \
+    #     peer channel fetch 0 -o orderer.star.com:7050 -c starnetwork --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/star.com/orderers/orderer.star.com/msp/tlscacerts/tlsca.star.com-cert.pem; \
+    #     peer channel fetch 0 -o orderer.star.com:7050 -c starnetworkorder --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/star.com/orderers/orderer.star.com/msp/tlscacerts/tlsca.star.com-cert.pem; \
+    #     peer channel join -b starnetwork_0.block; \
+    #     peer channel join -b starnetworkorder_0.block; \
+    #     echo 'Joined Channels.'; \
+    #     echo 'Done!'; \
+    #     /bin/bash
+    #     "
     volumes:
       - /var/run/:/host/var/run/
       - ./../resources/conf/infra/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/

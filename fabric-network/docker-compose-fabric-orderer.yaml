@@ -2,9 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 version: "3.7"
+
+networks:
+  star:
+    name: star
+
 services:
   orderer.star.com:
-    image: hyperledger/fabric-orderer:amd64-1.4.8
+    image: hyperledger/fabric-orderer:2.3.3
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     container_name: orderer.star.com
     environment:
@@ -15,15 +20,15 @@ services:
       - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       - ORDERER_GENERAL_LOCALMSPID=Consortium
-      - ORDERER_GENERAL_TLS_ENABLED=false
+      - ORDERER_GENERAL_TLS_ENABLED=true
       - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - BASE_DOCKER_NS=hyperledger
       - DOCKER_NS=hyperledger
       - ARCH=amd64
-      - PROJECT_VERSION=1.4.8
-      - BASE_VERSION=0.4.14
+      - PROJECT_VERSION=2.3.3
+      - BASE_VERSION=2.3
     volumes:
       - ../resources/conf/infra/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
       - ../resources/conf/infra/crypto-config/ordererOrganizations/star.com/orderers/orderer.star.com/msp:/var/hyperledger/orderer/msp
@@ -34,6 +39,127 @@ services:
     networks:
       - star
 
-networks:
-  star:
-    name: star
+  orderer1.star.com:
+    image: hyperledger/fabric-orderer:2.3.3
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    container_name: orderer1.star.com
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=DEBUG
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=8050
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_LOCALMSPID=Consortium
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - BASE_DOCKER_NS=hyperledger
+      - DOCKER_NS=hyperledger
+      - ARCH=amd64
+      - PROJECT_VERSION=2.3.3
+      - BASE_VERSION=2.3
+    volumes:
+      - ../resources/conf/infra/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ../resources/conf/infra/crypto-config/ordererOrganizations/star.com/orderers/orderer1.star.com/msp:/var/hyperledger/orderer/msp
+      - ../resources/conf/infra/crypto-config/ordererOrganizations/star.com/orderers/orderer1.star.com/tls/:/var/hyperledger/orderer/tls
+    command: orderer
+    ports:
+      - "8050:8050"
+    networks:
+      - star
+
+  orderer2.star.com:
+    image: hyperledger/fabric-orderer:2.3.3
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    container_name: orderer2.star.com
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=DEBUG
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=9050
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_LOCALMSPID=Consortium
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - BASE_DOCKER_NS=hyperledger
+      - DOCKER_NS=hyperledger
+      - ARCH=amd64
+      - PROJECT_VERSION=2.3.3
+      - BASE_VERSION=2.3
+    volumes:
+      - ../resources/conf/infra/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ../resources/conf/infra/crypto-config/ordererOrganizations/star.com/orderers/orderer2.star.com/msp:/var/hyperledger/orderer/msp
+      - ../resources/conf/infra/crypto-config/ordererOrganizations/star.com/orderers/orderer2.star.com/tls/:/var/hyperledger/orderer/tls
+    command: orderer
+    ports:
+      - "9050:9050"
+    networks:
+      - star
+
+  orderer3.star.com:
+    image: hyperledger/fabric-orderer:2.3.3
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    container_name: orderer3.star.com
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=DEBUG
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=10050
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_LOCALMSPID=Consortium
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - BASE_DOCKER_NS=hyperledger
+      - DOCKER_NS=hyperledger
+      - ARCH=amd64
+      - PROJECT_VERSION=2.3.3
+      - BASE_VERSION=2.3
+    volumes:
+      - ../resources/conf/infra/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ../resources/conf/infra/crypto-config/ordererOrganizations/star.com/orderers/orderer3.star.com/msp:/var/hyperledger/orderer/msp
+      - ../resources/conf/infra/crypto-config/ordererOrganizations/star.com/orderers/orderer3.star.com/tls/:/var/hyperledger/orderer/tls
+    command: orderer
+    ports:
+      - "10050:10050"
+    networks:
+      - star
+
+  orderer4.star.com:
+    image: hyperledger/fabric-orderer:2.3.3
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    container_name: orderer4.star.com
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=DEBUG
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=11050
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_GENERAL_LOCALMSPID=Consortium
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - BASE_DOCKER_NS=hyperledger
+      - DOCKER_NS=hyperledger
+      - ARCH=amd64
+      - PROJECT_VERSION=2.3.3
+      - BASE_VERSION=2.3
+    volumes:
+      - ../resources/conf/infra/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ../resources/conf/infra/crypto-config/ordererOrganizations/star.com/orderers/orderer4.star.com/msp:/var/hyperledger/orderer/msp
+      - ../resources/conf/infra/crypto-config/ordererOrganizations/star.com/orderers/orderer4.star.com/tls/:/var/hyperledger/orderer/tls
+    command: orderer
+    ports:
+      - "11050:11050"
+    networks:
+      - star
+

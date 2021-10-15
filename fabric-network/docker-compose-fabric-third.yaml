@@ -4,7 +4,7 @@
 version: "3.7"
 services:
   ca.third.star.com:
-    image: hyperledger/fabric-ca:amd64-1.4.8
+    image: hyperledger/fabric-ca:1.5.2
     ports:
       - "10054:7054"
     environment:
@@ -24,7 +24,7 @@ services:
       - star
 
   peer0.third.star.com:
-    image: hyperledger/fabric-peer:amd64-1.4.8
+    image: hyperledger/fabric-peer:2.3.3
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     container_name: peer0.third.star.com
     depends_on:
@@ -45,13 +45,15 @@ services:
       - BASE_DOCKER_NS=hyperledger
       - DOCKER_NS=hyperledger
       - ARCH=amd64
-      - PROJECT_VERSION=1.4.8
-      - BASE_VERSION=0.4.14
+      - PROJECT_VERSION=2.3.3
+      - BASE_VERSION=2.3
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=star
       - CORE_VM_DOCKER_ATTACHSTDOUT=true
       - CORE_PEER_ID=peer0.third.star.com
       - CORE_PEER_ADDRESS=peer0.third.star.com:7051
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=cdbp0.third.star.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.third.star.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.third.star.com:7051
       - CORE_PEER_LOCALMSPID=THIRDMSP
@@ -70,8 +72,11 @@ services:
       - star
 
   cdbp0.third.star.com:
-    image: hyperledger/fabric-couchdb:amd64-0.4.14
+    image: couchdb:3.1.1
     container_name: cdbp0.third.star.com
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
     ports:
       - "8984:5984"
     networks:
@@ -79,7 +84,7 @@ services:
 
   cli-peer0.third.star.com:
     container_name: cli-peer0.third.star.com
-    image: hyperledger/fabric-tools:1.4.8
+    image: hyperledger/fabric-tools:2.3.3
     tty: true
     stdin_open: true
     environment:
@@ -97,20 +102,22 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/third.star.com/peers/peer0.third.star.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/third.star.com/users/Admin@third.star.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    command: >
-      bash -c " \
-        set -e; \
-        sleep 10; \
-        peer chaincode install -n global_chaincode -l node -v 1.0 -p /usr/src/app/chaincode/global; \
-        peer channel fetch 0 -o orderer.star.com:7050 -c starnetwork --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/star.com/orderers/orderer.star.com/msp/tlscacerts/tlsca.star.com-cert.pem; \
-        peer channel join -b starnetwork_0.block; \
-        echo 'Joined Channel.'; \
-        echo 'Done!'; \
-        "
+    command: /bin/bash
+    # command: >
+    #   bash -c " \
+    #     set -e; \
+    #     sleep 10; \
+    #     # peer chaincode install -n global_chaincode -l node -v 1.0 -p /usr/src/app/chaincode/global; \
+    #     peer channel fetch 0 -o orderer.star.com:7050 -c starnetwork --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/star.com/orderers/orderer.star.com/msp/tlscacerts/tlsca.star.com-cert.pem; \
+    #     peer channel join -b starnetwork_0.block; \
+    #     echo 'Joined Channel.'; \
+    #     echo 'Done!'; \
+    #     /bin/bash
+    #     "
     volumes:
       - /var/run/:/host/var/run/
       - ./../resources/conf/infra/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
-      - ./../chaincode/global:/usr/src/app/chaincode/global
+      - ./../chaincode:/usr/src/app/chaincode
       - ./../resources/conf/infra/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     networks:
       - star

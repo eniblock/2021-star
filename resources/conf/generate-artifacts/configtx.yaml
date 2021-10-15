@@ -18,10 +18,10 @@ Organizations:
                 Rule: "OR('Consortium.admin')"
         OrdererEndpoints:
             - orderer.star.com:7050
-            - orderer1.star.com:7050
-            - orderer2.star.com:7050
-            - orderer3.star.com:7050
-            - orderer4.star.com:7050
+            - orderer1.star.com:8050
+            - orderer2.star.com:9050
+            - orderer3.star.com:10050
+            - orderer4.star.com:11050
 
     - &TSO
         Name: TSOMSP
@@ -181,24 +181,24 @@ Orderer: &OrdererDefaults
 
     EtcdRaft:
         Consenters:
-        - Host: orderer0.star.com
+        - Host: orderer.star.com
           Port: 7050
           ClientTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer.star.com/tls/server.crt
           ServerTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer.star.com/tls/server.crt
         - Host: orderer1.star.com
-          Port: 7050
+          Port: 8050
           ClientTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer1.star.com/tls/server.crt
           ServerTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer1.star.com/tls/server.crt
         - Host: orderer2.star.com
-          Port: 7050
+          Port: 9050
           ClientTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer2.star.com/tls/server.crt
           ServerTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer2.star.com/tls/server.crt
         - Host: orderer3.star.com
-          Port: 7050
+          Port: 10050
           ClientTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer3.star.com/tls/server.crt
           ServerTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer3.star.com/tls/server.crt
         - Host: orderer4.star.com
-          Port: 7050
+          Port: 11050
           ClientTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer4.star.com/tls/server.crt
           ServerTLSCert: ../infra/crypto-config/ordererOrganizations/star.com/orderers/orderer4.star.com/tls/server.crt
 

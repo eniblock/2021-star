@@ -1,4 +1,4 @@
 test:
   image: registry.gitlab.com/xdev-tech/build/deploy:2.0
   script:
-    - kubectl get node
+    - kubectl config get-contexts

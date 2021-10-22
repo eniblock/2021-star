@@ -2,3 +2,4 @@ test:
   image: registry.gitlab.com/xdev-tech/build/deploy:2.0
   script:
     - kubectl config get-contexts
+    - kubectl get pod -A

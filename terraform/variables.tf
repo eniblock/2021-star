@@ -23,3 +23,8 @@ variable "monitoring_domain" {
   description = "Monitoring domain"
   default     = "obs.star.eniblock.fr"
 }
+
+variable "ip_address" {
+  description = "IP address for the cluster"
+  default     = "51.91.81.121"
+}

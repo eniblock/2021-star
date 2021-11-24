@@ -37,8 +37,11 @@ export class Star extends Contract {
         );
 
         const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Identity is not a TSO organisition, ${identity} does not have write access`);
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisition, ${identity} does not have write access`);
+        }
+        if (!identity.includes(marketParticipantName)) {
+            throw new Error(`Organisition, ${identity} does not have write access for ${marketParticipantName}`);
         }
 
         const somp: SystemOperator = {
@@ -67,8 +70,11 @@ export class Star extends Contract {
         );
 
         const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Identity is not a TSO organisition, ${identity} does not have write access`);
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisition, ${identity} does not have write access`);
+        }
+        if (!identity.includes(marketParticipantName)) {
+            throw new Error(`Organisition, ${identity} does not have write access for ${marketParticipantName}`);
         }
 
         const sompAsBytes = await ctx.stub.getState(systemOperaterMarketParticipantMrId);

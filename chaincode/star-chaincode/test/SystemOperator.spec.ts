@@ -72,7 +72,7 @@ describe('Star Tests', () => {
             try {
                 await star.createSystemOperatorMarketParticipant(transactionContext, 'RTE01EIC', 'RTE', 'A49');
             } catch(err) {
-                // console.info(err.message)
+                console.info(err.message)
                 expect(err.name).to.equal('failed inserting key');
             }
         });
@@ -83,7 +83,29 @@ describe('Star Tests', () => {
                 await star.createSystemOperatorMarketParticipant(transactionContext, 'RTE01EIC', 'RTE', 'A49');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Identity is not a TSO organisition, FakeMspID does not have write access');
+                expect(err.message).to.equal('Organisition, FakeMspID does not have write access');
+            }
+        });
+
+        it('should return ERROR right MSPID TSO -> DSO', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'RTEMSP';
+            try {
+                await star.createSystemOperatorMarketParticipant(transactionContext, 'ENEDIS02EIC', 'ENEDIS', 'A50');
+            } catch(err) {
+                console.info(err.message)
+                expect(err.message).to.equal('Organisition, RTEMSP does not have write access for ENEDIS');
+            }
+        });
+
+        it('should return ERROR right MSPID DSO -> TSO', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            try {
+                await star.createSystemOperatorMarketParticipant(transactionContext, 'RTE01EIC', 'RTE', 'A49');
+            } catch(err) {
+                console.info(err.message)
+                expect(err.message).to.equal('Organisition, ENEDISMSP does not have write access for RTE');
             }
         });
 
@@ -100,6 +122,22 @@ describe('Star Tests', () => {
             await star.createSystemOperatorMarketParticipant(transactionContext, systemOperator.systemOperaterMarketParticipantMrId, systemOperator.marketParticipantName, systemOperator.marketParticipantRoleType);
 
             let ret = JSON.parse((await chaincodeStub.getState("RTE01EIC")).toString());
+            expect(ret).to.eql( systemOperator );
+        });
+
+        it('should return SUCCESS with Enedis on createSystemOperator', async () => {
+            let star = new Star();
+            const systemOperator: SystemOperator = {
+                docType: 'systemOperatorMarketParticipant',
+                systemOperaterMarketParticipantMrId: 'ENEDIS02EIC',
+                marketParticipantName: 'ENEDIS',
+                marketParticipantRoleType: 'A50'
+            };
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperatorMarketParticipant(transactionContext, systemOperator.systemOperaterMarketParticipantMrId, systemOperator.marketParticipantName, systemOperator.marketParticipantRoleType);
+
+            let ret = JSON.parse((await chaincodeStub.getState("ENEDIS02EIC")).toString());
             expect(ret).to.eql( systemOperator );
         });
     });
@@ -156,10 +194,36 @@ describe('Star Tests', () => {
 
             try {
                 chaincodeStub.MspiID = 'FakeMSP';
-                await star.createSystemOperatorMarketParticipant(transactionContext, 'RTE01EIC', 'RTE', 'A49');
+                await star.updateSystemOperatorMarketParticipant(transactionContext, 'RTE01EIC', 'RTE', 'A49');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Identity is not a TSO organisition, FakeMSP does not have write access');
+                expect(err.message).to.equal('Organisition, FakeMSP does not have write access');
+            }
+        });
+
+        it('should return ERROR right MSPID TSO -> DSO', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.createSystemOperatorMarketParticipant(transactionContext, 'RTE01EIC', 'RTE', 'A49');
+
+            try {
+                await star.updateSystemOperatorMarketParticipant(transactionContext, 'RTE01EIC', 'ENEDIS', 'A49');
+            } catch(err) {
+                console.info(err.message)
+                expect(err.message).to.equal('Organisition, RTEMSP does not have write access for ENEDIS');
+            }
+        });
+
+        it('should return ERROR right MSPID DSO -> TSO', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperatorMarketParticipant(transactionContext, 'ENEDIS02EIC', 'ENEDIS', 'A50');
+
+            try {
+                await star.updateSystemOperatorMarketParticipant(transactionContext, 'ENEDIS02EIC', 'RTE', 'A49');
+            } catch(err) {
+                console.info(err.message)
+                expect(err.message).to.equal('Organisition, ENEDISMSP does not have write access for RTE');
             }
         });
 
@@ -167,53 +231,16 @@ describe('Star Tests', () => {
             let star = new Star();
             chaincodeStub.MspiID = 'RTEMSP';
             await star.createSystemOperatorMarketParticipant(transactionContext, 'RTE01EIC', 'RTE', 'A49');
-            await star.updateSystemOperatorMarketParticipant(transactionContext, 'RTE01EIC', 'titi', 'toto');
+            await star.updateSystemOperatorMarketParticipant(transactionContext, 'RTE01EIC', 'RTE', 'toto');
 
             let ret = JSON.parse(await chaincodeStub.getState('RTE01EIC'));
             let expected = {
                 docType: 'systemOperatorMarketParticipant',
                 systemOperaterMarketParticipantMrId: 'RTE01EIC',
-                marketParticipantName: 'titi',
+                marketParticipantName: 'RTE',
                 marketParticipantRoleType: 'toto'
             };
             expect(ret).to.eql(expected);
         });
     });
 });
-
-        // chaincodeStub.setCreator.callsFake(async (key) => {
-        //     // if (!chaincodeStub.mspid) {
-        //     //     chaincodeStub.mspid = {};
-        //     // }
-        //     chaincodeStub.mspid = key;
-        // });
-
-        // chaincodeStub.getCreator.callsFake(async () => {
-        //     return Promise.resolve(chaincodeStub.mspid);
-        
-        // });
-/*
-        chaincodeStub.getStateByRange.callsFake(async () => {
-            function* internalGetStateByRange() {
-                if (chaincodeStub.states) {
-                    // Shallow copy
-                    const copied = Object.assign({}, chaincodeStub.states);
-
-                    for (let key in copied) {
-                        yield {value: copied[key]};
-                    }
-                }
-            }
-
-            return Promise.resolve(internalGetStateByRange());
-        });
-
-        chaincodeStub.deleteState.callsFake(async (key) => {
-            if (chaincodeStub.states) {
-                delete chaincodeStub.states[key];
-            }
-            return Promise.resolve(key);
-        });
-
-ENEDIS02EIC;ENEDIS;A50
-*/

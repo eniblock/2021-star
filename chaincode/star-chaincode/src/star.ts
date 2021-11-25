@@ -15,7 +15,7 @@ export class Star extends Contract {
         console.info('============= END   : Initialize Ledger ===========');
     }
 
-    public async querySystemOperatorMarketParticipant(ctx: Context, sompId: string): Promise<string> {
+    public async querySystemOperator(ctx: Context, sompId: string): Promise<string> {
         console.info('============= START : Query %s System Operator Market Participant ===========', sompId);
         const sompAsBytes = await ctx.stub.getState(sompId);
         if (!sompAsBytes || sompAsBytes.length === 0) {
@@ -26,7 +26,7 @@ export class Star extends Contract {
         return sompAsBytes.toString();
     }
 
-    public async createSystemOperatorMarketParticipant(
+    public async createSystemOperator(
         ctx: Context,
         systemOperaterMarketParticipantMrId: string,
         marketParticipantName: string,
@@ -45,7 +45,7 @@ export class Star extends Contract {
         }
 
         const somp: SystemOperator = {
-            docType: 'systemOperatorMarketParticipant',
+            docType: 'systemOperator',
             marketParticipantName,
             marketParticipantRoleType,
             systemOperaterMarketParticipantMrId, // PK
@@ -58,7 +58,7 @@ export class Star extends Contract {
         );
     }
 
-    public async updateSystemOperatorMarketParticipant(
+    public async updateSystemOperator(
         ctx: Context,
         systemOperaterMarketParticipantMrId: string,
         marketParticipantName: string,
@@ -82,7 +82,7 @@ export class Star extends Contract {
             throw new Error(`${systemOperaterMarketParticipantMrId} does not exist`);
         }
         const somp: SystemOperator = {
-            docType: 'systemOperatorMarketParticipant',
+            docType: 'systemOperator',
             marketParticipantName,
             marketParticipantRoleType,
             systemOperaterMarketParticipantMrId,
@@ -94,4 +94,25 @@ export class Star extends Contract {
             systemOperaterMarketParticipantMrId,
         );
     }
+
+    public async getAllSystemOperator(ctx: Context): Promise<string> {
+        const allResults = [];
+        // const iterator = await ctx.stub.getStateByRange('', '');
+        const query = `{"selector": {"docType": "systemOperator"}}`;
+        const iterator = await ctx.stub.getQueryResult(query);
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } catch (err) {
+                record = strValue;
+            }
+            allResults.push(record);
+            result = await iterator.next();
+        }
+        return JSON.stringify(allResults);
+    }
+
 }

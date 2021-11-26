@@ -6,6 +6,7 @@ import { Context, Contract } from 'fabric-contract-api';
 
 import { OrganizationTypeMsp } from './enums/OrganizationTypeMsp';
 import { Producer } from './producer';
+import { ViewMarketParticipant } from './restitutionMarketParticipant';
 import { SystemOperator } from './systemOperator';
 
 export class Star extends Contract {
@@ -211,5 +212,31 @@ export class Star extends Contract {
             result = await iterator.next();
         }
         return JSON.stringify(allResults);
+    }
+
+    /*      Restitution View System Operator Market Participant      */
+
+    public async restitutionSystemOperaterMarketParticipant(ctx: Context): Promise<string> {
+        const systemOperators = await this.getAllSystemOperator(ctx);
+        const producers = await this.getAllProducer(ctx);
+
+        const restitutionView: ViewMarketParticipant = {
+            producers : JSON.parse(producers),
+            systemOperators : JSON.parse(systemOperators),
+        };
+        return JSON.stringify(restitutionView);
+    }
+
+    /*      Restitution View Producer Market Participant       */
+
+    public async restitutionProducerMarketParticipant(ctx: Context, prodId: string): Promise<string> {
+        const systemOperators = await this.getAllSystemOperator(ctx);
+        const producers = await this.queryProducer(ctx, prodId);
+
+        const restitutionView: ViewMarketParticipant = {
+            producers : JSON.parse(producers),
+            systemOperators : JSON.parse(systemOperators),
+        };
+        return JSON.stringify(restitutionView);
     }
 }

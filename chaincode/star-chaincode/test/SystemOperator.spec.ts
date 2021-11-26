@@ -310,9 +310,7 @@ describe('Star Tests', () => {
         it('should return success on GetAllAssets for non JSON value', async () => {
             let star = new Star();
             chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
-                if (!chaincodeStub.states) {
-                    chaincodeStub.states = {};
-                }
+                chaincodeStub.states = {};
                 chaincodeStub.states[key] = 'non-json-value';
             });
 

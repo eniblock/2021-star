@@ -5,26 +5,18 @@
 import { Context, Contract } from 'fabric-contract-api';
 
 import { OrganizationTypeMsp } from './enums/OrganizationTypeMsp';
+import { Producer } from './producer';
 import { SystemOperator } from './systemOperator';
 
 export class Star extends Contract {
 
-    public async initLedger(ctx: Context) {
-        console.info('============= START : Initialize Ledger ===========');
-        // console.debug('Nothing to do');
-        console.info('============= END   : Initialize Ledger ===========');
-    }
+    // public async initLedger(ctx: Context) {
+    //     console.info('============= START : Initialize Ledger ===========');
+    //     // console.debug('Nothing to do');
+    //     console.info('============= END   : Initialize Ledger ===========');
+    // }
 
-    public async querySystemOperator(ctx: Context, sompId: string): Promise<string> {
-        console.info('============= START : Query %s System Operator Market Participant ===========', sompId);
-        const sompAsBytes = await ctx.stub.getState(sompId);
-        if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`${sompId} does not exist`);
-        }
-        console.info('============= END   : Query %s System Operator Market Participant ===========');
-        console.info(sompId, sompAsBytes.toString());
-        return sompAsBytes.toString();
-    }
+    /*      SystemOperator      */
 
     public async createSystemOperator(
         ctx: Context,
@@ -56,6 +48,17 @@ export class Star extends Contract {
             '============= END   : Create %s System Operator Market Participant ===========',
             systemOperaterMarketParticipantMrId,
         );
+    }
+
+    public async querySystemOperator(ctx: Context, sompId: string): Promise<string> {
+        console.info('============= START : Query %s System Operator Market Participant ===========', sompId);
+        const sompAsBytes = await ctx.stub.getState(sompId);
+        if (!sompAsBytes || sompAsBytes.length === 0) {
+            throw new Error(`${sompId} does not exist`);
+        }
+        console.info('============= END   : Query %s System Operator Market Participant ===========');
+        console.info(sompId, sompAsBytes.toString());
+        return sompAsBytes.toString();
     }
 
     public async updateSystemOperator(
@@ -115,4 +118,98 @@ export class Star extends Contract {
         return JSON.stringify(allResults);
     }
 
+    /*      SystemOperator      */
+
+    public async createProducer(
+        ctx: Context,
+        producerMarketParticipantMrId: string,
+        producerMarketParticipantName: string,
+        producerMarketParticipantRoleType: string) {
+        console.info(
+            '============= START : Create %s Producer Market Participant ===========',
+            producerMarketParticipantMrId,
+        );
+
+        const identity = await ctx.stub.getMspID();
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisition, ${identity} does not have write access`);
+        }
+
+        const producer: Producer = {
+            docType: 'producer',
+            producerMarketParticipantMrId, // PK
+            producerMarketParticipantName,
+            producerMarketParticipantRoleType,
+        };
+
+        await ctx.stub.putState(producerMarketParticipantMrId, Buffer.from(JSON.stringify(producer)));
+        console.info(
+            '============= END   : Create %s Producer Market Participant ===========',
+            producerMarketParticipantMrId,
+        );
+    }
+
+    public async queryProducer(ctx: Context, prodId: string): Promise<string> {
+        console.info('============= START : Query %s Producer Market Participant ===========', prodId);
+        const prodAsBytes = await ctx.stub.getState(prodId);
+        if (!prodAsBytes || prodAsBytes.length === 0) {
+            throw new Error(`${prodId} does not exist`);
+        }
+        console.info('============= END   : Query %s Producer Market Participant ===========');
+        console.info(prodId, prodAsBytes.toString());
+        return prodAsBytes.toString();
+    }
+
+    public async updateProducer(
+        ctx: Context,
+        producerMarketParticipantMrId: string,
+        producerMarketParticipantName: string,
+        producerMarketParticipantRoleType: string) {
+
+        console.info(
+            '============= START : Update %s Producer Market Participant ===========',
+            producerMarketParticipantMrId,
+        );
+
+        const identity = await ctx.stub.getMspID();
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisition, ${identity} does not have write access`);
+        }
+
+        const prodAsBytes = await ctx.stub.getState(producerMarketParticipantMrId);
+        if (!prodAsBytes || prodAsBytes.length === 0) {
+            throw new Error(`${producerMarketParticipantMrId} does not exist`);
+        }
+        const prod: Producer = {
+            docType: 'producer',
+            producerMarketParticipantMrId, // PK
+            producerMarketParticipantName,
+            producerMarketParticipantRoleType,
+        };
+
+        await ctx.stub.putState(producerMarketParticipantMrId, Buffer.from(JSON.stringify(prod)));
+        console.info(
+            '============= END : Update %s Producer Market Participant ===========',
+            producerMarketParticipantMrId,
+        );
+    }
+
+    public async getAllProducer(ctx: Context): Promise<string> {
+        const allResults = [];
+        const query = `{"selector": {"docType": "producer"}}`;
+        const iterator = await ctx.stub.getQueryResult(query);
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } catch (err) {
+                record = strValue;
+            }
+            allResults.push(record);
+            result = await iterator.next();
+        }
+        return JSON.stringify(allResults);
+    }
 }

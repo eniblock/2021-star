@@ -66,25 +66,31 @@ describe('Star Tests', () => {
         });
     });
 
-    
-    describe('Test InitLedger', () => {
-        it('should return ERROR on InitLedger', async () => {
-            chaincodeStub.putState.rejects('failed inserting key');
-            let star = new Star();
-            try {
-                await star.initLedger(transactionContext);
-            } catch (err) {
-                // console.info(err.message)
-                expect(err.name).to.equal('failed inserting key');
-            }
-        });
-
-        it('should return SUCCESS on InitLedger', async () => {    
-
-            let star = new Star();
-            await star.initLedger(transactionContext);
+    describe('Test false statement', () => {
+        it('should avoid else flag missing', async () => {
+            await chaincodeStub.getState("EolienFRvert28EIC");
+            await chaincodeStub.getQueryResult("EolienFRvert28EIC");
         });
     });
+
+    // describe('Test InitLedger', () => {
+    //     it('should return ERROR on InitLedger', async () => {
+    //         chaincodeStub.putState.rejects('failed inserting key');
+    //         let star = new Star();
+    //         try {
+    //             await star.initLedger(transactionContext);
+    //         } catch (err) {
+    //             // console.info(err.message)
+    //             expect(err.name).to.equal('failed inserting key');
+    //         }
+    //     });
+
+    //     it('should return SUCCESS on InitLedger', async () => {    
+
+    //         let star = new Star();
+    //         await star.initLedger(transactionContext);
+    //     });
+    // });
 
     describe('Test createSystemOperator', () => {
         it('should return ERROR on createSystemOperator', async () => {
@@ -268,19 +274,21 @@ describe('Star Tests', () => {
     });
 
     describe('Test getAllSystemOperator', () => {
-        // it('should return error on getAllSystemOperator', async () => {
-        //     let star = new Star();
+        it('should return error on getAllSystemOperator', async () => {
+            let star = new Star();
 
-        //     let ret = await star.getAllSystemOperator(transactionContext);
-        //     ret = JSON.parse(ret);
-        //     console.log('ret=', ret)
-        //     expect(ret.length).to.equal(0);
-        //     expect(ret).to.eql([]);
-        // });
+            let ret = await star.getAllSystemOperator(transactionContext);
+            ret = JSON.parse(ret);
+            // console.log('ret=', ret)
+            expect(ret.length).to.equal(0);
+            expect(ret).to.eql([]);
+        });
 
         it('should return success on getAllSystemOperator', async () => {
             let star = new Star();
 
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.createProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
             chaincodeStub.MspiID = 'RTEMSP';
             await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
             chaincodeStub.MspiID = 'ENEDISMSP';

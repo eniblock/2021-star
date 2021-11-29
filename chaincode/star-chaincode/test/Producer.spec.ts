@@ -14,7 +14,7 @@ import { Producer } from '../src/producer';
 let assert = sinon.assert;
 chai.use(sinonChai);
 
-describe('Star Tests', () => {
+describe('Star Tests PRODUCERS', () => {
     let transactionContext, chaincodeStub;
     beforeEach(() => {
         transactionContext = new Context();

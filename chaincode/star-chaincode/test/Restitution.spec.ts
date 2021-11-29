@@ -13,7 +13,7 @@ import { Star } from '../src/star'
 let assert = sinon.assert;
 chai.use(sinonChai);
 
-describe('Star Tests', () => {
+describe('Star Tests RESTITUTIONS', () => {
     let transactionContext, chaincodeStub;
     beforeEach(() => {
         transactionContext = new Context();
@@ -74,7 +74,7 @@ describe('Star Tests', () => {
 
             let ret = await star.restitutionSystemOperaterMarketParticipant(transactionContext);
             ret = JSON.parse(ret);
-            console.log('ret=', ret)
+            // console.log('ret=', ret)
 
             const expected = { producers: [], systemOperators: [] };
 
@@ -146,7 +146,7 @@ describe('Star Tests', () => {
 
             let ret = await star.restitutionProducerMarketParticipant(transactionContext, 'EolienFRvert28EIC');
             ret = JSON.parse(ret);
-            console.log('ret=', ret)
+            // console.log('ret=', ret)
             // expect(ret.length).to.equal(3);
 
             const expected = {

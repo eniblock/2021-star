@@ -7,6 +7,7 @@ import { Context, Contract } from 'fabric-contract-api';
 import { OrganizationTypeMsp } from './enums/OrganizationTypeMsp';
 import { Producer } from './producer';
 import { ViewMarketParticipant } from './restitutionMarketParticipant';
+import { Site } from './site';
 import { SystemOperator } from './systemOperator';
 
 export class Star extends Contract {
@@ -198,6 +199,76 @@ export class Star extends Contract {
     public async getAllProducer(ctx: Context): Promise<string> {
         const allResults = [];
         const query = `{"selector": {"docType": "producer"}}`;
+        const iterator = await ctx.stub.getQueryResult(query);
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } catch (err) {
+                record = strValue;
+            }
+            allResults.push(record);
+            result = await iterator.next();
+        }
+        return JSON.stringify(allResults);
+    }
+
+    /*      Sites HTA/HTB       */
+
+    public async createSite(
+        ctx: Context,
+        inputStr: string) {
+        console.info(
+            '============= START : Create %s Site ===========',
+            inputStr,
+        );
+        let site: Site;
+        try {
+            site = JSON.parse(inputStr);
+          } catch (error) {
+            // console.error('error=', error);
+            throw new Error(`ERROR createSite-> Input string NON-JSON value`);
+          }
+        console.info(
+            '============= START : Create %s Site ===========',
+            site.meteringPointMrid,
+        );
+
+        const identity = await ctx.stub.getMspID();
+        if (site.marketEvaluationPointMrid && site.schedulingEntityRegisteredResourceMrid) {
+            if (identity !== OrganizationTypeMsp.RTE) {
+                throw new Error(`Organisition, ${identity} does not have write access for HTB(HV) sites`);
+            }
+        } else {
+            if (identity !== OrganizationTypeMsp.ENEDIS) {
+                throw new Error(`Organisition, ${identity} does not have write access for HTA(MV) sites`);
+            }
+        }
+        site.docType = 'site';
+        await ctx.stub.putState(site.meteringPointMrid, Buffer.from(JSON.stringify(site)));
+        console.info(
+            '============= END   : Create %s Site ===========',
+            site.meteringPointMrid,
+        );
+    }
+
+    public async querySite(ctx: Context, site: string): Promise<string> {
+        console.info('============= START : Query %s Site ===========', site);
+        const siteAsBytes = await ctx.stub.getState(site);
+        if (!siteAsBytes || siteAsBytes.length === 0) {
+            throw new Error(`${site} does not exist`);
+        }
+        console.info('============= END   : Query %s Site ===========');
+        console.info(site, siteAsBytes.toString());
+        return siteAsBytes.toString();
+    }
+
+    public async getSites(ctx: Context, systemOperatorMarketParticipantMrid: string): Promise<string> {
+        const allResults = [];
+        const query = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": ${systemOperatorMarketParticipantMrid}}}`;
+        console.log('query', query);
         const iterator = await ctx.stub.getQueryResult(query);
         let result = await iterator.next();
         while (!result.done) {

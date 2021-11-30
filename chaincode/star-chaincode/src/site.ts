@@ -18,7 +18,7 @@ export class EDA {
 }
 */
 export class Site {
-    public docType: string;
+    public docType?: string;
     public constructor(
         public meteringPointMrid: string,
         public systemOperatorMarketParticipantMrid: string,

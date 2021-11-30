@@ -34,7 +34,7 @@ export class Star extends Contract {
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisition, ${identity} does not have write access`);
         }
-        if (!identity.includes(marketParticipantName)) {
+        if (!identity.toLowerCase().includes(marketParticipantName.toLowerCase())) {
             throw new Error(`Organisition, ${identity} does not have write access for ${marketParticipantName}`);
         }
 
@@ -120,7 +120,7 @@ export class Star extends Contract {
         return JSON.stringify(allResults);
     }
 
-    /*      SystemOperator      */
+    /*      Producer      */
 
     public async createProducer(
         ctx: Context,
@@ -220,10 +220,6 @@ export class Star extends Contract {
     public async createSite(
         ctx: Context,
         inputStr: string) {
-        console.info(
-            '============= START : Create %s Site ===========',
-            inputStr,
-        );
         let site: Site;
         try {
             site = JSON.parse(inputStr);
@@ -235,16 +231,37 @@ export class Star extends Contract {
             '============= START : Create %s Site ===========',
             site.meteringPointMrid,
         );
+        if (!site.meteringPointMrid ||
+            !site.systemOperatorMarketParticipantMrid ||
+            !site.producerMarketParticipantMrid ||
+            !site.technologyType ||
+            !site.siteType ||
+            !site.siteName ||
+            !site.substationMrid ||
+            !site.substationName ) {
+                throw new Error(`Missing compulsory field`);
+            }
 
         const identity = await ctx.stub.getMspID();
         if (site.marketEvaluationPointMrid && site.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.RTE) {
                 throw new Error(`Organisition, ${identity} does not have write access for HTB(HV) sites`);
             }
-        } else {
+        } else if (!site.marketEvaluationPointMrid && !site.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.ENEDIS) {
                 throw new Error(`Organisition, ${identity} does not have write access for HTA(MV) sites`);
             }
+        } else {
+            throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
+        }
+        const systemOperatorAsBytes = await ctx.stub.getState(site.systemOperatorMarketParticipantMrid);
+        if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
+            throw new Error(`System Operator : ${site.systemOperatorMarketParticipantMrid} does not exist`);
+        }
+
+        const producerAsBytes = await ctx.stub.getState(site.producerMarketParticipantMrid);
+        if (!producerAsBytes || producerAsBytes.length === 0) {
+            throw new Error(`Producer : ${site.producerMarketParticipantMrid} does not exist`);
         }
         site.docType = 'site';
         await ctx.stub.putState(site.meteringPointMrid, Buffer.from(JSON.stringify(site)));
@@ -267,7 +284,7 @@ export class Star extends Contract {
 
     public async getSites(ctx: Context, systemOperatorMarketParticipantMrid: string): Promise<string> {
         const allResults = [];
-        const query = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": ${systemOperatorMarketParticipantMrid}}}`;
+        const query = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${systemOperatorMarketParticipantMrid}"}}`;
         console.log('query', query);
         const iterator = await ctx.stub.getQueryResult(query);
         let result = await iterator.next();

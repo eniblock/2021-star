@@ -142,13 +142,13 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             let star = new Star();
             const systemOperator: SystemOperator = {
                 docType: 'systemOperator',
-                systemOperaterMarketParticipantMrId: 'RTE01EIC',
+                systemOperatorMarketParticipantMrId: 'RTE01EIC',
                 marketParticipantName: 'RTE',
                 marketParticipantRoleType: 'A49'
             };
 
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.createSystemOperator(transactionContext, systemOperator.systemOperaterMarketParticipantMrId, systemOperator.marketParticipantName, systemOperator.marketParticipantRoleType);
+            await star.createSystemOperator(transactionContext, systemOperator.systemOperatorMarketParticipantMrId, systemOperator.marketParticipantName, systemOperator.marketParticipantRoleType);
 
             let ret = JSON.parse((await chaincodeStub.getState("RTE01EIC")).toString());
             expect(ret).to.eql( systemOperator );
@@ -158,13 +158,13 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             let star = new Star();
             const systemOperator: SystemOperator = {
                 docType: 'systemOperator',
-                systemOperaterMarketParticipantMrId: 'ENEDIS02EIC',
+                systemOperatorMarketParticipantMrId: 'ENEDIS02EIC',
                 marketParticipantName: 'ENEDIS',
                 marketParticipantRoleType: 'A50'
             };
 
             chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.createSystemOperator(transactionContext, systemOperator.systemOperaterMarketParticipantMrId, systemOperator.marketParticipantName, systemOperator.marketParticipantRoleType);
+            await star.createSystemOperator(transactionContext, systemOperator.systemOperatorMarketParticipantMrId, systemOperator.marketParticipantName, systemOperator.marketParticipantRoleType);
 
             let ret = JSON.parse((await chaincodeStub.getState("ENEDIS02EIC")).toString());
             expect(ret).to.eql( systemOperator );
@@ -191,7 +191,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
             const systemOperator: SystemOperator = {
                 docType: 'systemOperator',
-                systemOperaterMarketParticipantMrId: 'RTE01EIC',
+                systemOperatorMarketParticipantMrId: 'RTE01EIC',
                 marketParticipantName: 'RTE',
                 marketParticipantRoleType: 'A49'
             };
@@ -265,7 +265,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             let ret = JSON.parse(await chaincodeStub.getState('RTE01EIC'));
             let expected = {
                 docType: 'systemOperator',
-                systemOperaterMarketParticipantMrId: 'RTE01EIC',
+                systemOperatorMarketParticipantMrId: 'RTE01EIC',
                 marketParticipantName: 'RTE',
                 marketParticipantRoleType: 'toto'
             };
@@ -300,8 +300,8 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             expect(ret.length).to.equal(2);
 
             const expected: SystemOperator[] = [
-                { docType: 'systemOperator', marketParticipantName: 'RTE', marketParticipantRoleType: 'A49', systemOperaterMarketParticipantMrId: 'RTE01EIC'},
-                { docType: 'systemOperator', marketParticipantName: 'ENEDIS', marketParticipantRoleType: 'A50', systemOperaterMarketParticipantMrId: 'ENEDIS02EIC'}
+                { docType: 'systemOperator', marketParticipantName: 'RTE', marketParticipantRoleType: 'A49', systemOperatorMarketParticipantMrId: 'RTE01EIC'},
+                { docType: 'systemOperator', marketParticipantName: 'ENEDIS', marketParticipantRoleType: 'A50', systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'}
             ];
 
             expect(ret).to.eql(expected);
@@ -328,8 +328,8 @@ describe('Star Tests SYSTEM OPERATORS', () => {
 
             const expected = [
                 'non-json-value',
-                { docType: 'systemOperator', marketParticipantName: 'RTE', marketParticipantRoleType: 'A49', systemOperaterMarketParticipantMrId: 'RTE01EIC'},
-                { docType: 'systemOperator', marketParticipantName: 'ENEDIS', marketParticipantRoleType: 'A50', systemOperaterMarketParticipantMrId: 'ENEDIS02EIC'}
+                { docType: 'systemOperator', marketParticipantName: 'RTE', marketParticipantRoleType: 'A49', systemOperatorMarketParticipantMrId: 'RTE01EIC'},
+                { docType: 'systemOperator', marketParticipantName: 'ENEDIS', marketParticipantRoleType: 'A50', systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'}
             ];
 
             expect(ret).to.eql(expected);

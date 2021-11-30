@@ -22,12 +22,12 @@ export class Star extends Contract {
 
     public async createSystemOperator(
         ctx: Context,
-        systemOperaterMarketParticipantMrId: string,
+        systemOperatorMarketParticipantMrId: string,
         marketParticipantName: string,
         marketParticipantRoleType: string) {
         console.info(
             '============= START : Create %s System Operator Market Participant ===========',
-            systemOperaterMarketParticipantMrId,
+            systemOperatorMarketParticipantMrId,
         );
 
         const identity = await ctx.stub.getMspID();
@@ -42,13 +42,13 @@ export class Star extends Contract {
             docType: 'systemOperator',
             marketParticipantName,
             marketParticipantRoleType,
-            systemOperaterMarketParticipantMrId, // PK
+            systemOperatorMarketParticipantMrId, // PK
         };
 
-        await ctx.stub.putState(systemOperaterMarketParticipantMrId, Buffer.from(JSON.stringify(somp)));
+        await ctx.stub.putState(systemOperatorMarketParticipantMrId, Buffer.from(JSON.stringify(somp)));
         console.info(
             '============= END   : Create %s System Operator Market Participant ===========',
-            systemOperaterMarketParticipantMrId,
+            systemOperatorMarketParticipantMrId,
         );
     }
 
@@ -65,13 +65,13 @@ export class Star extends Contract {
 
     public async updateSystemOperator(
         ctx: Context,
-        systemOperaterMarketParticipantMrId: string,
+        systemOperatorMarketParticipantMrId: string,
         marketParticipantName: string,
         marketParticipantRoleType: string) {
 
         console.info(
             '============= START : Update %s System Operator Market Participant ===========',
-            systemOperaterMarketParticipantMrId,
+            systemOperatorMarketParticipantMrId,
         );
 
         const identity = await ctx.stub.getMspID();
@@ -82,21 +82,21 @@ export class Star extends Contract {
             throw new Error(`Organisition, ${identity} does not have write access for ${marketParticipantName}`);
         }
 
-        const sompAsBytes = await ctx.stub.getState(systemOperaterMarketParticipantMrId);
+        const sompAsBytes = await ctx.stub.getState(systemOperatorMarketParticipantMrId);
         if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`${systemOperaterMarketParticipantMrId} does not exist`);
+            throw new Error(`${systemOperatorMarketParticipantMrId} does not exist`);
         }
         const somp: SystemOperator = {
             docType: 'systemOperator',
             marketParticipantName,
             marketParticipantRoleType,
-            systemOperaterMarketParticipantMrId,
+            systemOperatorMarketParticipantMrId,
         };
 
-        await ctx.stub.putState(systemOperaterMarketParticipantMrId, Buffer.from(JSON.stringify(somp)));
+        await ctx.stub.putState(systemOperatorMarketParticipantMrId, Buffer.from(JSON.stringify(somp)));
         console.info(
             '============= END : Update %s System Operator Market Participant ===========',
-            systemOperaterMarketParticipantMrId,
+            systemOperatorMarketParticipantMrId,
         );
     }
 

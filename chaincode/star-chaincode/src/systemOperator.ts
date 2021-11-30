@@ -6,5 +6,5 @@ export class SystemOperator {
     public docType: string;
     public marketParticipantName: string;
     public marketParticipantRoleType: string;
-    public systemOperaterMarketParticipantMrId: string;
+    public systemOperatorMarketParticipantMrId: string;
 }

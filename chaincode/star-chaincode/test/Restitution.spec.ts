@@ -117,13 +117,13 @@ describe('Star Tests RESTITUTIONS', () => {
                     docType: 'systemOperator',
                     marketParticipantName: 'RTE',
                     marketParticipantRoleType: 'A49',
-                    systemOperaterMarketParticipantMrId: 'RTE01EIC'
+                    systemOperatorMarketParticipantMrId: 'RTE01EIC'
                   },
                   {
                     docType: 'systemOperator',
                     marketParticipantName: 'ENEDIS',
                     marketParticipantRoleType: 'A50',
-                    systemOperaterMarketParticipantMrId: 'ENEDIS02EIC'
+                    systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'
                   }
                 ]
               };
@@ -161,13 +161,13 @@ describe('Star Tests RESTITUTIONS', () => {
                     docType: 'systemOperator',
                     marketParticipantName: 'RTE',
                     marketParticipantRoleType: 'A49',
-                    systemOperaterMarketParticipantMrId: 'RTE01EIC'
+                    systemOperatorMarketParticipantMrId: 'RTE01EIC'
                 },
                 {
                     docType: 'systemOperator',
                     marketParticipantName: 'ENEDIS',
                     marketParticipantRoleType: 'A50',
-                    systemOperaterMarketParticipantMrId: 'ENEDIS02EIC'
+                    systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'
                 }
                 ]
             };

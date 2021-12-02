@@ -285,6 +285,20 @@ export class Star extends Contract {
     public async getSitesBySystemOperator(ctx: Context, systemOperatorMarketParticipantMrid: string): Promise<string> {
     const allResults = [];
     const query = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${systemOperatorMarketParticipantMrid}"}}`;
+
+    const systemOperatorAsBytes = await ctx.stub.getState(systemOperatorMarketParticipantMrid);
+    if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
+        throw new Error(`System Operator : ${systemOperatorMarketParticipantMrid} does not exist`);
+    }
+
+    const systemOperator = JSON.parse(systemOperatorAsBytes.toString());
+    const identity = await ctx.stub.getMspID();
+    if (!identity.toLowerCase().includes(systemOperator.marketParticipantName.toLowerCase())) {
+        throw new Error(
+            `Organisition, ${identity} does not have read access for sites : ${systemOperatorMarketParticipantMrid}`,
+            );
+    }
+
     const iterator = await ctx.stub.getQueryResult(query);
     let result = await iterator.next();
     while (!result.done) {

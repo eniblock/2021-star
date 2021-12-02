@@ -49,7 +49,7 @@ describe('Star Tests SITES', () => {
                             continue
                         }
                         const obJson = JSON.parse(copied[key].toString('utf8'));
-                        console.log('obJson=', obJson);
+                        // console.log('obJson=', obJson);
                         const objStr: string = obJson.docType;
                         const queryJson = JSON.parse(query);
                         // console.log('queryJson=', queryJson);
@@ -58,20 +58,20 @@ describe('Star Tests SITES', () => {
                         if (queryStr == objStr) {
                             // if (queryJson.selector.systemOperatorMarketParticipantMrId) {
                                 const querySO = queryJson.selector.systemOperatorMarketParticipantMrid;
-                                console.log('querySO=', querySO);
+                                // console.log('querySO=', querySO);
                                 const objSO = obJson.systemOperatorMarketParticipantMrid;
-                                console.log('objSO=', objSO);
+                                // console.log('objSO=', objSO);
                                 if (querySO == objSO) {
-                                    console.log('yield=', querySO, objSO);
+                                    // console.log('yield=', querySO, objSO);
                                     yield {value: copied[key]};
                                 }
                             // } else if (queryJson.selector.producerMarketParticipantMrid) {
                                 const queryProd = queryJson.selector.producerMarketParticipantMrid;
-                                console.log('queryProd=', queryProd);
+                                // console.log('queryProd=', queryProd);
                                 const objProd = obJson.producerMarketParticipantMrid;
-                                console.log('objProd=', objProd);
+                                // console.log('objProd=', objProd);
                                 if (queryProd == objProd) {
-                                    console.log('yield=', queryProd, objProd);
+                                    // console.log('yield=', queryProd, objProd);
                                     yield {value: copied[key]};
                                 }
                             // } 
@@ -337,17 +337,18 @@ describe('Star Tests SITES', () => {
     });
 
     describe('Test getSiteBySystemOperator', () => {
-        it('should return OK on getSiteBySystemOperator empty', async () => {
+        it('should return ERROR on getSiteBySystemOperator empty', async () => {
             let star = new Star();
             const systemOperator = 'toto';
-            let ret = await star.getSitesBySystemOperator(transactionContext, systemOperator);
-            ret = JSON.parse(ret);
-            // console.log('ret=', ret)
-            expect(ret.length).to.equal(0);
-            expect(ret).to.eql([]);
+            try {
+                await star.getSitesBySystemOperator(transactionContext, systemOperator);
+            } catch (err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('System Operator : toto does not exist');
+            }
         });
 
-        it('should return success on getSiteBySystemOperator', async () => {
+        it('should return ERROR on getSiteBySystemOperator for HTA/ENEDIS wrong MSPID', async () => {
             let star = new Star();
 
             const siteHTA: Site = {meteringPointMrid: 'PDL00000000289766', systemOperatorMarketParticipantMrid: '17V0000009927464', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
@@ -364,12 +365,39 @@ describe('Star Tests SITES', () => {
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             await star.createSite(transactionContext, JSON.stringify(siteHTB));
 
+            chaincodeStub.MspiID = 'FakeMSP';
+            try {
+                await star.getSitesBySystemOperator(transactionContext, siteHTA.systemOperatorMarketParticipantMrid);
+            } catch (err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Organisition, FakeMSP does not have read access for sites : 17V0000009927464');
+            }
+        });
+
+        it('should return success on getSiteBySystemOperator for HTA/ENEDIS', async () => {
+            let star = new Star();
+
+            const siteHTA: Site = {meteringPointMrid: 'PDL00000000289766', systemOperatorMarketParticipantMrid: '17V0000009927464', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(siteHTA));
+    
+            const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.createSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(siteHTB));
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
             let retA = await star.getSitesBySystemOperator(transactionContext, siteHTA.systemOperatorMarketParticipantMrid);
             retA = JSON.parse(retA);
             // console.log('retA=', retA)
             expect(retA.length).to.equal(1);
 
-            const expected: Site[] = [
+            const expectedA: Site[] = [
                 {
                     docType: "site",
                     meteringPointMrid: "PDL00000000289766",
@@ -389,7 +417,80 @@ describe('Star Tests SITES', () => {
                 }
            ];
 
-            expect(retA).to.eql(expected);
+            expect(retA).to.eql(expectedA);
+        });
+
+        it('should return ERROR on getSiteBySystemOperator for HTB/RTE wrong MSPID', async () => {
+            let star = new Star();
+
+            const siteHTA: Site = {meteringPointMrid: 'PDL00000000289766', systemOperatorMarketParticipantMrid: '17V0000009927464', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(siteHTA));
+    
+            const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.createSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(siteHTB));
+
+            chaincodeStub.MspiID = 'FakeMSP';
+            try {
+                await star.getSitesBySystemOperator(transactionContext, siteHTB.systemOperatorMarketParticipantMrid);
+            } catch (err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Organisition, FakeMSP does not have read access for sites : 17V000000992746D');
+            }
+        });
+
+        it('should return success on getSiteBySystemOperator for HTB/RTE', async () => {
+            let star = new Star();
+
+            const siteHTA: Site = {meteringPointMrid: 'PDL00000000289766', systemOperatorMarketParticipantMrid: '17V0000009927464', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(siteHTA));
+    
+            const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.createSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(siteHTB));
+
+            let retB = await star.getSitesBySystemOperator(transactionContext, siteHTB.systemOperatorMarketParticipantMrid);
+            retB = JSON.parse(retB);
+            // console.log('retB=', retB)
+            expect(retB.length).to.equal(1);
+
+            const expectedB: Site[] = [
+                {
+                    docType: "site",
+                    marketEvaluationPointMrid: "CodePPE",
+                    meteringPointMrid: "PDL00000000289767",
+                    producerMarketParticipantMrid: "17X000001309745X",
+                    schedulingEntityRegisteredResourceMrid: "CodeEDP",
+                    siteAdminMrid: "489 981 029",
+                    siteIecCode: "S7X0000013077478",
+                    siteLocation: "Biscarosse",
+                    siteName: "Ferme éolienne de Genonville",
+                    siteType: "Injection",
+                    substationMrid: "GDO A4RTD",
+                    substationName: "CIVRAY",
+                    systemOperatorCustomerServiceName: "DR Nantes Deux-Sèvres",
+                    systemOperatorEntityFlexibilityDomainMrid: "PSC4511",
+                    systemOperatorEntityFlexibilityDomainName: "Départ 1",
+                    systemOperatorMarketParticipantMrid: "17V000000992746D",
+                    technologyType: "Eolien",
+                }
+           ];
+
+            expect(retB).to.eql(expectedB);
         });
 
         it('should return success on getSiteBySystemOperator for non JSON value', async () => {
@@ -449,7 +550,7 @@ describe('Star Tests SITES', () => {
         it('should return OK on getSiteByProducer empty', async () => {
             let star = new Star();
             const producer = 'toto';
-            let ret = await star.getSitesBySystemOperator(transactionContext, producer);
+            let ret = await star.getSitesByProducer(transactionContext, producer);
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
             expect(ret.length).to.equal(0);
@@ -643,7 +744,7 @@ describe('Star Tests SITES', () => {
 
             let retProd = await star.getSitesByProducer(transactionContext, siteHTAprodA.producerMarketParticipantMrid);
             retProd = JSON.parse(retProd);
-            console.log('retProd=', retProd)
+            // console.log('retProd=', retProd)
             expect(retProd.length).to.equal(2);
 
             const expected: Site[] = [

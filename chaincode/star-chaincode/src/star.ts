@@ -239,7 +239,7 @@ export class Star extends Contract {
             !site.siteName ||
             !site.substationMrid ||
             !site.substationName ) {
-                throw new Error(`Missing compulsory field`);
+                throw new Error(`Missing compulsory field / Manque des données obligatoires`);
             }
 
         const identity = await ctx.stub.getMspID();
@@ -282,10 +282,28 @@ export class Star extends Contract {
         return siteAsBytes.toString();
     }
 
-    public async getSites(ctx: Context, systemOperatorMarketParticipantMrid: string): Promise<string> {
+    public async getSitesBySystemOperator(ctx: Context, systemOperatorMarketParticipantMrid: string): Promise<string> {
+    const allResults = [];
+    const query = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${systemOperatorMarketParticipantMrid}"}}`;
+    const iterator = await ctx.stub.getQueryResult(query);
+    let result = await iterator.next();
+    while (!result.done) {
+        const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+        let record;
+        try {
+            record = JSON.parse(strValue);
+        } catch (err) {
+            record = strValue;
+        }
+        allResults.push(record);
+        result = await iterator.next();
+    }
+    return JSON.stringify(allResults);
+}
+
+    public async getSitesByProducer(ctx: Context, producerMarketParticipantMrid: string): Promise<string> {
         const allResults = [];
-        const query = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${systemOperatorMarketParticipantMrid}"}}`;
-        console.log('query', query);
+        const query = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${producerMarketParticipantMrid}"}}`;
         const iterator = await ctx.stub.getQueryResult(query);
         let result = await iterator.next();
         while (!result.done) {
@@ -302,7 +320,7 @@ export class Star extends Contract {
         return JSON.stringify(allResults);
     }
 
-    /*      Restitution View System Operator Market Participant      */
+/*      Restitution View System Operator Market Participant      */
 
     public async restitutionSystemOperaterMarketParticipant(ctx: Context): Promise<string> {
         const systemOperators = await this.getAllSystemOperator(ctx);

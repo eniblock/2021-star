@@ -5,9 +5,9 @@
 export class Site {
     public docType?: string;
     public constructor(
-        public meteringPointMrid: string,
-        public systemOperatorMarketParticipantMrid: string,
-        public producerMarketParticipantMrid: string,
+        public meteringPointMrid: string, // PK
+        public systemOperatorMarketParticipantMrid: string, // FK1
+        public producerMarketParticipantMrid: string, // FK2
         public technologyType: string,
         public siteType: string,
         public siteName: string,

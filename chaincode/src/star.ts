@@ -4,6 +4,7 @@
 
 import { Context, Contract } from 'fabric-contract-api';
 import { ActivationDocument } from './activationDocument';
+import { ActivationDocumentController } from './controller/ActivationDocumentController';
 import { OrganizationTypeMsp } from './enums/OrganizationTypeMsp';
 import { Producer } from './producer';
 import { ViewMarketParticipant } from './restitutionMarketParticipant';
@@ -348,48 +349,57 @@ export class Star extends Contract {
 
     /*      Activation Document       */
 
-    public async createActivationDocument(
+    public async CreateActivationDocument(
         ctx: Context,
         inputStr: string) {
-        let activationDocument: ActivationDocument;
-        try {
-            activationDocument = JSON.parse(inputStr);
-          } catch (error) {
-            // console.error('error=', error);
-            throw new Error(`ERROR createActivationDocument-> Input string NON-JSON value`);
-          }
-        console.info(
-            '============= START : Create %s ActivationDocument ===========',
-            activationDocument.activationDocumentMrid,
-        );
-
-        if (!activationDocument.activationDocumentMrid ||
-            !activationDocument.originAutomataRegisteredResourceMrid ||
-            !activationDocument.registeredResourceMrid ||
-            !activationDocument.measurementUnitName ||
-            !activationDocument.messageType ||
-            !activationDocument.businessType ||
-            !activationDocument.orderType ||
-            !activationDocument.orderEnd ) {
-                throw new Error(`Missing compulsory field / Manque des données obligatoires`);
+            try {
+                return (await ActivationDocumentController.createActivationDocument(ctx, inputStr));
+            } catch (error) {
+                throw error;
             }
-
-        const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisition, ${identity} does not have write access for Activation Document`);
         }
-        activationDocument.docType = 'activationDocument';
-        activationDocument.reconciliation = false;
+    // public async createActivationDocument(
+    //     ctx: Context,
+    //     inputStr: string) {
+    //     let activationDocument: ActivationDocument;
+    //     try {
+    //         activationDocument = JSON.parse(inputStr);
+    //       } catch (error) {
+    //         // console.error('error=', error);
+    //         throw new Error(`ERROR createActivationDocument-> Input string NON-JSON value`);
+    //       }
+    //     console.info(
+    //         '============= START : Create %s ActivationDocument ===========',
+    //         activationDocument.activationDocumentMrid,
+    //     );
 
-        if (activationDocument.startCreatedDateTime && activationDocument.endCreatedDateTime) {
-            activationDocument.reconciliation = true;
-        }
-        await ctx.stub.putState(
-            activationDocument.activationDocumentMrid,
-            Buffer.from(JSON.stringify(activationDocument)));
-        console.info(
-            '============= END   : Create %s ActivationDocument ===========',
-            activationDocument.activationDocumentMrid,
-        );
-    }
+    //     if (!activationDocument.activationDocumentMrid ||
+    //         !activationDocument.originAutomataRegisteredResourceMrid ||
+    //         !activationDocument.registeredResourceMrid ||
+    //         !activationDocument.measurementUnitName ||
+    //         !activationDocument.messageType ||
+    //         !activationDocument.businessType ||
+    //         !activationDocument.orderType ||
+    //         !activationDocument.orderEnd ) {
+    //             throw new Error(`Missing compulsory field / Manque des données obligatoires`);
+    //         }
+
+    //     const identity = await ctx.stub.getMspID();
+    //     if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+    //         throw new Error(`Organisition, ${identity} does not have write access for Activation Document`);
+    //     }
+    //     activationDocument.docType = 'activationDocument';
+    //     activationDocument.reconciliation = false;
+
+    //     if (activationDocument.startCreatedDateTime && activationDocument.endCreatedDateTime) {
+    //         activationDocument.reconciliation = true;
+    //     }
+    //     await ctx.stub.putState(
+    //         activationDocument.activationDocumentMrid,
+    //         Buffer.from(JSON.stringify(activationDocument)));
+    //     console.info(
+    //         '============= END   : Create %s ActivationDocument ===========',
+    //         activationDocument.activationDocumentMrid,
+    //     );
+    // }
 }

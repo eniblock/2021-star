@@ -5,7 +5,7 @@
 import { Context, Contract } from 'fabric-contract-api';
 import { ActivationDocument } from './activationDocument';
 import { ActivationDocumentController } from './controller/ActivationDocumentController';
-import { OrganizationTypeMsp } from './enums/OrganizationTypeMsp';
+import { OrganizationTypeMsp } from './enums/OrganizationMspType';
 import { Producer } from './producer';
 import { ViewMarketParticipant } from './restitutionMarketParticipant';
 import { Site } from './site';

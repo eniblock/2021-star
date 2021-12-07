@@ -13,21 +13,29 @@ export class ActivationDocumentController {
 
         const identity = await ctx.stub.getMspID();
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisition, ${identity} does not have write access for Activation Document`);
+            throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
         }
 
+        let order: ActivationDocument;
+        try {
+            order = JSON.parse(inputStr);
+          } catch (error) {
+            // console.error('error=', error);
+            throw new Error(`ERROR createActivationDocument-> Input string NON-JSON value`);
+          }
+
         const activationDocumentInput = ActivationDocument.schema.validateSync(
-            JSON.parse(inputStr),
+            order,
             {strict: true, abortEarly: false},
         );
 
         if (identity === OrganizationTypeMsp.RTE &&
             activationDocumentInput.measurementUnitName !== MeasurementUnitType.MW) {
-            throw new Error(`Organisition, ${identity} does not have write access for MW orders`);
+            throw new Error(`Organisation, ${identity} does not have write access for KW orders`);
         }
         if (identity === OrganizationTypeMsp.ENEDIS &&
             activationDocumentInput.measurementUnitName !== MeasurementUnitType.KW) {
-            throw new Error(`Organisition, ${identity} does not have write access for KW orders`);
+            throw new Error(`Organisation, ${identity} does not have write access for MW orders`);
         }
         if (activationDocumentInput.senderMarketParticipantMrid) {
             const systemOperatorAsBytes = await ctx.stub.getState(activationDocumentInput.senderMarketParticipantMrid);

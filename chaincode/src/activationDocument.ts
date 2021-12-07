@@ -34,7 +34,7 @@ export class ActivationDocument {
         public activationDocumentMrid: string, // PK
         public originAutomataRegisteredResourceMrid: string, // FK1
         public registeredResourceMrid: string, // FK2
-        public measurementUnitName: Enumerator,
+        public measurementUnitName: string,
         public messageType: string,
         public businessType: string,
         public orderType: string,

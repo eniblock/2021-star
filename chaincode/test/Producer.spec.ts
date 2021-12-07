@@ -93,7 +93,7 @@ describe('Star Tests PRODUCERS', () => {
                 await star.createProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisition, FakeMspID does not have write access');
+                expect(err.message).to.equal('Organisation, FakeMspID does not have write access to create a producer');
             }
         });
 
@@ -185,7 +185,7 @@ describe('Star Tests PRODUCERS', () => {
                 await star.updateProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisition, FakeMSP does not have write access');
+                expect(err.message).to.equal('Organisation, FakeMSP does not have write access to update a producer');
             }
         });
 

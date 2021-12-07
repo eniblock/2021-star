@@ -33,10 +33,10 @@ export class Star extends Contract {
 
         const identity = await ctx.stub.getMspID();
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisition, ${identity} does not have write access`);
+            throw new Error(`Organisation, ${identity} does not have write access to create a system operator`);
         }
         if (!identity.toLowerCase().includes(marketParticipantName.toLowerCase())) {
-            throw new Error(`Organisition, ${identity} does not have write access for ${marketParticipantName}`);
+            throw new Error(`Organisation, ${identity} does not have write access for ${marketParticipantName}`);
         }
 
         const somp: SystemOperator = {
@@ -77,10 +77,10 @@ export class Star extends Contract {
 
         const identity = await ctx.stub.getMspID();
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisition, ${identity} does not have write access`);
+            throw new Error(`Organisation, ${identity} does not have write access to update a system operator`);
         }
         if (!identity.includes(marketParticipantName)) {
-            throw new Error(`Organisition, ${identity} does not have write access for ${marketParticipantName}`);
+            throw new Error(`Organisation, ${identity} does not have write access for ${marketParticipantName}`);
         }
 
         const sompAsBytes = await ctx.stub.getState(systemOperatorMarketParticipantMrId);
@@ -135,7 +135,7 @@ export class Star extends Contract {
 
         const identity = await ctx.stub.getMspID();
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisition, ${identity} does not have write access`);
+            throw new Error(`Organisation, ${identity} does not have write access to create a producer`);
         }
 
         const producer: Producer = {
@@ -176,7 +176,7 @@ export class Star extends Contract {
 
         const identity = await ctx.stub.getMspID();
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisition, ${identity} does not have write access`);
+            throw new Error(`Organisation, ${identity} does not have write access to update a producer`);
         }
 
         const prodAsBytes = await ctx.stub.getState(producerMarketParticipantMrId);
@@ -246,11 +246,11 @@ export class Star extends Contract {
         const identity = await ctx.stub.getMspID();
         if (site.marketEvaluationPointMrid && site.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.RTE) {
-                throw new Error(`Organisition, ${identity} does not have write access for HTB(HV) sites`);
+                throw new Error(`Organisation, ${identity} does not have write access for HTB(HV) sites`);
             }
         } else if (!site.marketEvaluationPointMrid && !site.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.ENEDIS) {
-                throw new Error(`Organisition, ${identity} does not have write access for HTA(MV) sites`);
+                throw new Error(`Organisation, ${identity} does not have write access for HTA(MV) sites`);
             }
         } else {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
@@ -386,7 +386,7 @@ export class Star extends Contract {
 
     //     const identity = await ctx.stub.getMspID();
     //     if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-    //         throw new Error(`Organisition, ${identity} does not have write access for Activation Document`);
+    //         throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
     //     }
     //     activationDocument.docType = 'activationDocument';
     //     activationDocument.reconciliation = false;

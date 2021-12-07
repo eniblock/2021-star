@@ -49,7 +49,7 @@ describe('Star Tests SITES', () => {
                             continue
                         }
                         const obJson = JSON.parse(copied[key].toString('utf8'));
-                        console.log('obJson=', obJson);
+                        // console.log('obJson=', obJson);
                         const objStr: string = obJson.docType;
                         const queryJson = JSON.parse(query);
                         // console.log('queryJson=', queryJson);
@@ -58,20 +58,20 @@ describe('Star Tests SITES', () => {
                         if (queryStr == objStr) {
                             // if (queryJson.selector.systemOperatorMarketParticipantMrId) {
                                 const querySO = queryJson.selector.systemOperatorMarketParticipantMrid;
-                                console.log('querySO=', querySO);
+                                // console.log('querySO=', querySO);
                                 const objSO = obJson.systemOperatorMarketParticipantMrid;
-                                console.log('objSO=', objSO);
+                                // console.log('objSO=', objSO);
                                 if (querySO == objSO) {
-                                    console.log('yield=', querySO, objSO);
+                                    // console.log('yield=', querySO, objSO);
                                     yield {value: copied[key]};
                                 }
                             // } else if (queryJson.selector.producerMarketParticipantMrid) {
                                 const queryProd = queryJson.selector.producerMarketParticipantMrid;
-                                console.log('queryProd=', queryProd);
+                                // console.log('queryProd=', queryProd);
                                 const objProd = obJson.producerMarketParticipantMrid;
-                                console.log('objProd=', objProd);
+                                // console.log('objProd=', objProd);
                                 if (queryProd == objProd) {
-                                    console.log('yield=', queryProd, objProd);
+                                    // console.log('yield=', queryProd, objProd);
                                     yield {value: copied[key]};
                                 }
                             // } 
@@ -162,7 +162,7 @@ describe('Star Tests SITES', () => {
                 await star.createSite(transactionContext, '{\"meteringPointMrid\":\"PDL00000000289766\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisition, FakeMSP does not have write access for HTB(HV) sites');
+                expect(err.message).to.equal('Organisation, FakeMSP does not have write access for HTB(HV) sites');
             }
         });
 
@@ -285,7 +285,7 @@ describe('Star Tests SITES', () => {
                 await star.createSite(transactionContext, JSON.stringify(site));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisition, FakeMSP does not have write access for HTA(MV) sites');
+                expect(err.message).to.equal('Organisation, FakeMSP does not have write access for HTA(MV) sites');
             }
         });
 
@@ -643,7 +643,7 @@ describe('Star Tests SITES', () => {
 
             let retProd = await star.getSitesByProducer(transactionContext, siteHTAprodA.producerMarketParticipantMrid);
             retProd = JSON.parse(retProd);
-            console.log('retProd=', retProd)
+            // console.log('retProd=', retProd)
             expect(retProd.length).to.equal(2);
 
             const expected: Site[] = [

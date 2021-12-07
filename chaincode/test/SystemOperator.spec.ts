@@ -112,7 +112,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisition, FakeMspID does not have write access');
+                expect(err.message).to.equal('Organisation, FakeMspID does not have write access to create a system operator');
             }
         });
 
@@ -123,7 +123,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.createSystemOperator(transactionContext, 'ENEDIS02EIC', 'ENEDIS', 'A50');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisition, RTEMSP does not have write access for ENEDIS');
+                expect(err.message).to.equal('Organisation, RTEMSP does not have write access for ENEDIS');
             }
         });
 
@@ -134,7 +134,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisition, ENEDISMSP does not have write access for RTE');
+                expect(err.message).to.equal('Organisation, ENEDISMSP does not have write access for RTE');
             }
         });
 
@@ -226,7 +226,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.updateSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisition, FakeMSP does not have write access');
+                expect(err.message).to.equal('Organisation, FakeMSP does not have write access to update a system operator');
             }
         });
 
@@ -239,7 +239,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.updateSystemOperator(transactionContext, 'RTE01EIC', 'ENEDIS', 'A49');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisition, RTEMSP does not have write access for ENEDIS');
+                expect(err.message).to.equal('Organisation, RTEMSP does not have write access for ENEDIS');
             }
         });
 
@@ -252,7 +252,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.updateSystemOperator(transactionContext, 'ENEDIS02EIC', 'RTE', 'A49');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisition, ENEDISMSP does not have write access for RTE');
+                expect(err.message).to.equal('Organisation, ENEDISMSP does not have write access for RTE');
             }
         });
 

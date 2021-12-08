@@ -21,7 +21,7 @@ export class ActivationDocument {
         receiverMarketParticipantMrid: Yup.string().notRequired(),
         reconciliation: Yup.bool().notRequired(),
         registeredResourceMrid: Yup.string().required(
-            'registeredResourceMrid is required').matches(/^[0-9]{14}$/).typeError('registeredResourceMrid must be a string'),
+            'registeredResourceMrid is required')/*.matches(/^[0-9]{14}$/)*/.typeError('registeredResourceMrid must be a string'),
         revisionNumber: Yup.string().notRequired().matches(/^[0-9]*$/),
         senderMarketParticipantMrid: Yup.string().notRequired(),
         startCreatedDateTime: Yup.string().notRequired(),

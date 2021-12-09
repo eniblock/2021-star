@@ -73,7 +73,26 @@ export class ActivationDocumentController {
         const query = `{"selector": {"docType": "activationDocument", "receiverMarketParticipantMrid": "${producerMrid}"}}`;
         const iterator = await ctx.stub.getQueryResult(query);
         let result = await iterator.next();
-        console.log('result=', result);
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } catch (err) {
+                record = strValue;
+            }
+            allResults.push(record);
+            result = await iterator.next();
+        }
+        return JSON.stringify(allResults);
+    }
+
+    public static async getActivationDocumentBySystemOperator(
+            ctx: Context, systemOperatorMrid: string): Promise<string> {
+        const allResults = [];
+        const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${systemOperatorMrid}"}}`;
+        const iterator = await ctx.stub.getQueryResult(query);
+        let result = await iterator.next();
         while (!result.done) {
             const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
             let record;

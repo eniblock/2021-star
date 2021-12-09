@@ -368,4 +368,14 @@ export class Star extends Contract {
                     throw error;
                 }
             }
+
+        public async GetActivationDocumentBySystemOperator(
+            ctx: Context,
+            inputStr: string) {
+                try {
+                    return (await ActivationDocumentController.getActivationDocumentBySystemOperator(ctx, inputStr));
+                } catch (error) {
+                    throw error;
+                }
+            }
 }

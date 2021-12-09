@@ -6,7 +6,8 @@ import * as Yup from 'yup';
 export class ActivationDocument {
 
     public static readonly schema = Yup.object().shape({
-        activationDocumentMrid: Yup.string().required('activationDocumentMrid is required').typeError('activationDocumentMrid must be a string'),
+        activationDocumentMrid: Yup.string().required(
+            'activationDocumentMrid is a compulsory string')/*.typeError('activationDocumentMrid must be a string')*/,
         businessType: Yup.string().required('businessType is required').typeError('businessType must be a string'),
         docType: Yup.string().notRequired(),
         endCreatedDateTime: Yup.string().notRequired(),

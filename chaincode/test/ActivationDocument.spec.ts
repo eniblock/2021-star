@@ -156,17 +156,6 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
 
-            // `{
-            //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", 
-            //     \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", 
-            //     \"registeredResourceMrid\": \"12345678901234\", 
-            //     \"measurementUnitName\": \"KW\",
-            //     \"messageType\": \"string\",
-            //     \"businessType\": \"string\",
-            //     \"orderType\": \"string\",
-            //     \"orderEnd\": false,
-            // }`
-
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
             } catch(err) {
@@ -179,17 +168,6 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
-
-            // `{
-            //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", 
-            //     \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", 
-            //     \"registeredResourceMrid\": \"12345678901234\", 
-            //     \"measurementUnitName\": \"KW\",
-            //     \"messageType\": \"string\",
-            //     \"businessType\": \"string\",
-            //     \"orderType\": \"string\",
-            //     \"orderEnd\": false,
-            // }`
 
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
@@ -204,17 +182,6 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
 
-            // `{
-            //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", 
-            //     \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", 
-            //     \"registeredResourceMrid\": \"12345678901234\", 
-            //     \"measurementUnitName\": \"KW\",
-            //     \"messageType\": \"string\",
-            //     \"businessType\": \"string\",
-            //     \"orderType\": \"string\",
-            //     \"orderEnd\": false,
-            // }`
-
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
             } catch(err) {
@@ -227,17 +194,6 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
-
-            // `{
-            //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", 
-            //     \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", 
-            //     \"registeredResourceMrid\": \"12345678901234\", 
-            //     \"measurementUnitName\": \"KW\",
-            //     \"messageType\": \"string\",
-            //     \"businessType\": \"string\",
-            //     \"orderType\": \"string\",
-            //     \"orderEnd\": false,
-            // }`
 
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"orderType\": \"string\",\"orderEnd\": false}`);
@@ -252,17 +208,6 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
 
-            // `{
-            //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", 
-            //     \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", 
-            //     \"registeredResourceMrid\": \"12345678901234\", 
-            //     \"measurementUnitName\": \"KW\",
-            //     \"messageType\": \"string\",
-            //     \"businessType\": \"string\",
-            //     \"orderType\": \"string\",
-            //     \"orderEnd\": false,
-            // }`
-
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"businessType\": \"string\", \"orderEnd\": false}`);
             } catch(err) {
@@ -275,17 +220,6 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
-
-            // `{
-            //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", 
-            //     \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", 
-            //     \"registeredResourceMrid\": \"12345678901234\", 
-            //     \"measurementUnitName\": \"KW\",
-            //     \"messageType\": \"string\",
-            //     \"businessType\": \"string\",
-            //     \"orderType\": \"string\",
-            //     \"orderEnd\": false,
-            // }`
 
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"businessType\": \"string\", \"orderType\": \"string\"}`);

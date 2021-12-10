@@ -1,0 +1,9 @@
+{
+  "Extensions": [
+    {
+      "Name": "kubectl_build",
+      "ExtensionRegistry": "https://github.com/tilt-dev/tilt-extensions",
+      "TimeFetched": "2021-12-10T13:50:54.0461809+01:00"
+    }
+  ]
+}

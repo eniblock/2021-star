@@ -9,7 +9,14 @@ spring:
   application:
     name: star-backend
 management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+    metrics:
+      enabled: false
   endpoints:
     web:
       exposure:
         include: "*"
+      base-path: /

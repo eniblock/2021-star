@@ -17,6 +17,8 @@ test:
   script:
     - kubectl config get-contexts
     - kubectl get pod -A
+  only:
+    - develop
 
 docker-backend:
   stage: docker

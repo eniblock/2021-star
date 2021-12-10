@@ -112,7 +112,7 @@ spec:
               value: "https://{{ .Values.ingress.host }}/auth/realms/star/protocol/openid-connect/token"
           ports:
             - name: http
-              containerPort: 7772
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:

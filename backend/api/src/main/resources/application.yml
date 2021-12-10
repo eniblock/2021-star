@@ -1,0 +1,15 @@
+server:
+  port: 8080
+spring:
+  profiles:
+    active: dev
+    # cette ligne permet d'exclure la configuration de sécurité par défaut de Springboot. Ainsi, on redéfinira la configuration selon notre convenance.
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+  application:
+    name: star-backend
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

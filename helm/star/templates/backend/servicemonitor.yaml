@@ -1,0 +1,26 @@
+{{- if and .Values.backend.enabled .Values.backend.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "star.fullname" . }}-backend
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "star.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  selector:
+    matchLabels:
+      {{- include "star.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: backend
+  endpoints:
+    - port: prometheus
+      {{- if .Values.backend.metrics.interval }}
+      interval: {{ .Values.backend.metrics.interval }}
+      {{- end }}
+      {{- if .Values.backend.metrics.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.backend.metrics.scrapeTimeout }}
+      {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}

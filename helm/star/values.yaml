@@ -1,0 +1,241 @@
+# Default values for star.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+nameOverride: ""
+fullnameOverride: ""
+image:
+  tag: null
+
+backend:
+  enabled: true
+
+  image:
+    repository: "registry.gitlab.com/xdev-tech/star/backend"
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    # tag:
+
+  imagePullSecrets: []
+
+  replicaCount: 1
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+
+  podAnnotations: {}
+
+  networkPolicy:
+    enabled: true
+
+  podSecurityContext: {}
+  # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+  # runAsUser: 1000
+
+  service:
+    type: ClusterIP
+    port: 8080
+
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 300Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  metrics:
+    enabled: false # Add metrics server first
+    interval:
+    scrapeTimeout:
+
+
+frontend:
+  enabled: true
+  image:
+    repository: "registry.gitlab.com/xdev-tech/star/frontend"
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    # tag: ""
+
+  imagePullSecrets:
+    - name: gitlab-registry
+  nameOverride: ""
+  fullnameOverride: ""
+
+  podAnnotations: { }
+
+  networkPolicy:
+    enabled: true
+
+  podSecurityContext: { }
+  # fsGroup: 2000
+
+  securityContext: { }
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+  service:
+    type: ClusterIP
+    port: 80
+    # Monitoring: Adjust Prometheus configuration
+    annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port: '80'
+
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 100Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  nodeSelector: { }
+
+  tolerations: [ ]
+
+  affinity: { }
+
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/tls-acme: "true"
+  host: ""
+  from:
+    - podSelector: {}
+      namespaceSelector:
+        matchLabels:
+          name: ingress
+
+keycloak:
+  nameOverride: keycloak
+  service:
+    type: ClusterIP
+  commonAnnotations:
+    reloader.stakater.com/auto: "true"
+  image:
+    registry: registry.gitlab.com
+    repository: xdev-tech/xdev-enterprise-business-network/keycloak
+    tag: develop
+    pullSecrets: []
+  auth:
+    adminUser: kcadmin
+    existingSecretPerPassword:
+      keyMapping:
+        adminPassword: admin-password
+        managementPassword: management-password
+        databasePassword: postgresql-password
+      adminPassword:
+        name: "{{ .Release.Name }}-{{ .Values.nameOverride }}"
+      managementPassword:
+        name: "{{ .Release.Name }}-{{ .Values.nameOverride }}"
+      databasePassword:
+        name: "{{ .Release.Name }}-{{ .Values.postgresql.nameOverride }}"
+  extraEnvVarsSecret: '{{ .Release.Name }}-star-keycloak-extra-secrets'
+  podLabels:
+    "{{ .Release.Name }}-{{ .Values.postgresql.nameOverride }}-client": "true"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 750Mi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  postgresql:
+    nameOverride: keycloak-db
+    existingSecret: "{{ .Release.Name }}-{{ .Values.nameOverride }}"
+    persistence:
+      enabled: true
+      size: 1Gi
+    resources:
+      requests:
+        memory: 50Mi
+        cpu: 50m
+    primary:
+      annotations:
+        reloader.stakater.com/auto: "true"
+    rbac:
+      create: true
+    serviceAccount:
+      enabled: true
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+      resources:
+        requests:
+          memory: 32Mi
+          cpu: 10m
+    networkPolicy:
+      enabled: true
+      allowExternal: false
+  extraEnvVars:
+    - name: REALM
+      value: "star"
+    - name: ROLE_ATTRIBUTE_KEY
+      value: "type"
+    - name: ROLE_ATTRIBUTE_VALUE
+      value: "star"
+
+mail:
+  dev: false
+  host: ""
+  port: ""
+  username: ""
+  password: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: { }
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""

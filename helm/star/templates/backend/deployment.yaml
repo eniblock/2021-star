@@ -1,0 +1,144 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "star.fullname" . }}-backend
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "star.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  {{- if not .Values.backend.autoscaling.enabled }}
+  replicas: {{ .Values.backend.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "star.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: backend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      {{- with .Values.backend.podAnnotations }}
+      annotations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "star.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: backend
+        {{ include "star.fullname" . }}-ipfs-client: "true"
+    spec:
+      {{- with .Values.backend.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "star.serviceAccountName" . }}
+      securityContext:
+      {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+          {{- toYaml .Values.backend.securityContext | nindent 12 }}
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          env:
+            # mail config
+            - name: spring.mail.host
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-star-keycloak-extra-secrets"
+                  key: SMTP_HOST
+            - name: spring.mail.port
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-star-keycloak-extra-secrets"
+                  key: SMTP_PORT
+            - name: spring.mail.username
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-star-keycloak-extra-secrets"
+                  key: SMTP_USER
+            - name: spring.mail.password
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-star-keycloak-extra-secrets"
+                  key: SMTP_PASSWORD
+            - name: spring.mail.properties.mail.smtp.auth
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-star-keycloak-extra-secrets"
+                  key: SMTP_AUTH
+            - name: spring.mail.properties.mail.smtp.starttls.enable
+              # FIXME: use SMTP_SSL secret?
+              value: "false"
+
+            # keycloak configuration
+            - name: KEYCLOAK_AUTH_SERVER_URL
+              value: "https://{{ .Values.ingress.host }}/auth"
+            - name: KEYCLOAK_REALM
+              value: "star"
+            - name: KEYCLOAK_RESOURCE
+              value: backend
+            - name: KEYCLOAK_ADMIN_CLIENT_PROPERTIES_BASE_URL
+              value: "https://{{ .Values.ingress.host }}/auth"
+            - name: KEYCLOAK_ADMIN_CLIENT_PROPERTIES_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "star.fullname" . }}-keycloak-extra-secrets
+                  key: BACKEND_SECRET
+            - name: KEYCLOAK_ADMIN_CLIENT_PROPERTIES_CLIENT_ID
+              value: backend
+
+            # keycloak spring security
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_COLLABORATE_CLIENT_ID
+              value: backend
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_COLLABORATE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "star.fullname" . }}-keycloak-extra-secrets
+                  key: BACKEND_SECRET
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_COLLABORATE_AUTHORIZATION_URI
+              value: "https://{{ .Values.ingress.host }}/auth/realms/star/protocol/openid-connect/auth"
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_COLLABORATE_TOKEN_URI
+              value: "https://{{ .Values.ingress.host }}/auth/realms/star/protocol/openid-connect/token"
+
+            # keycloak swagger
+            - name: SPRINGDOC_SWAGGER_UI_OAUTH_CLIENT_ID
+              value: backend
+            - name: SPRINGDOC_OAUTHFLOW_AUTHORIZATIONURL
+              value: "https://{{ .Values.ingress.host }}/auth/realms/star/protocol/openid-connect/auth"
+            - name: SPRINGDOC_OAUTHFLOW_TOKENURL
+              value: "https://{{ .Values.ingress.host }}/auth/realms/star/protocol/openid-connect/token"
+          ports:
+            - name: http
+              containerPort: 7772
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: http
+          startupProbe:
+            httpGet:
+              path: /health/liveness
+              port: http
+            periodSeconds: 5
+            failureThreshold: 12
+          resources:
+          {{- toYaml .Values.backend.resources | nindent 12 }}
+      {{- with .Values.backend.nodeSelector }}
+      nodeSelector:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backend.affinity }}
+      affinity:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.backend.tolerations }}
+      tolerations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -289,11 +289,35 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return Error CreateActivationDocument couple HTA missing systemoperator', async () => {
             let star = new Star();
+            const site: Site = {
+                meteringPointMrid: 'PDL00000000289766',
+                systemOperatorMarketParticipantMrid: '17V0000009927464',
+                producerMarketParticipantMrid: '17X000001309745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                // marketEvaluationPointMrid: 'CodePPE', // optional 
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
+                siteAdminMrid: '489 981 029', // optional 
+                siteLocation: 'Biscarosse', // optional 
+                siteIecCode: 'S7X0000013077478', // optional 
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
@@ -325,11 +349,35 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return Error CreateActivationDocument couple HTA missing producer', async () => {
             let star = new Star();
+            const site: Site = {
+                meteringPointMrid: 'PDL00000000289766',
+                systemOperatorMarketParticipantMrid: '17V0000009927464',
+                producerMarketParticipantMrid: '17X000001309745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                // marketEvaluationPointMrid: 'CodePPE', // optional 
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
+                siteAdminMrid: '489 981 029', // optional 
+                siteLocation: 'Biscarosse', // optional 
+                siteIecCode: 'S7X0000013077478', // optional 
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
@@ -361,11 +409,35 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return SUCCESS CreateActivationDocument couple HTA', async () => {
             let star = new Star();
+            const site: Site = {
+                meteringPointMrid: 'PDL00000000289766',
+                systemOperatorMarketParticipantMrid: '17V0000009927464',
+                producerMarketParticipantMrid: '17X000001309745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                // marketEvaluationPointMrid: 'CodePPE', // optional 
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
+                siteAdminMrid: '489 981 029', // optional 
+                siteLocation: 'Biscarosse', // optional 
+                siteIecCode: 'S7X0000013077478', // optional 
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
@@ -395,11 +467,35 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return Error CreateActivationDocument couple HTA missing to much optional fields', async () => {
             let star = new Star();
+            const site: Site = {
+                meteringPointMrid: 'PDL00000000289766',
+                systemOperatorMarketParticipantMrid: '17V0000009927464',
+                producerMarketParticipantMrid: '17X000001309745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                // marketEvaluationPointMrid: 'CodePPE', // optional 
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
+                siteAdminMrid: '489 981 029', // optional 
+                siteLocation: 'Biscarosse', // optional 
+                siteIecCode: 'S7X0000013077478', // optional 
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
@@ -500,7 +596,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2 
+                registeredResourceMrid: 'PDL00000000289766', // FK2 
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
@@ -530,13 +626,132 @@ describe('Star Tests ActivationDocument', () => {
             }
         });
 
+        it('should return Error CreateActivationDocument begin HTB site doesn\'t exist', async () => {
+            let star = new Star();
+            const order: ActivationDocument = {
+                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
+                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                registeredResourceMrid: 'PDL00000000289766', // FK2 
+                measurementUnitName: 'MW',
+                messageType: 'string',
+                businessType: 'string',
+                orderType: 'string',
+                orderEnd: false,
+
+                orderValue: '1',
+                startCreatedDateTime: 'string',
+                // testDateTime: 'Date', // Test DELETE ME //////////////////////
+                // endCreatedDateTime: 'string',
+                revisionNumber: '1',
+                reasonCode: 'string', // optionnal in case of TVC modulation
+                senderMarketParticipantMrid: '17V000000992746D', // FK?
+                receiverMarketParticipantMrid: '17X000001309745X', // FK?
+                // reconciliation: false,
+                // subOrderList: [],
+            }
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            // await star.createSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A50');
+            // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            try {
+                await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
+            } catch(err) {
+                console.info(err.message)
+                expect(err.message).to.equal('Site : PDL00000000289766 does not exist in Activation Document 8c56459a-794a-4ed1-a7f6-33b0064508f1');
+            }
+        });
+
+        it('should return Error CreateActivationDocument begin HTB producer doesn\'t exist', async () => {
+            let star = new Star();
+
+            const site: Site = {
+                meteringPointMrid: 'PDL00000000289766',
+                systemOperatorMarketParticipantMrid: '17V0000009927464',
+                producerMarketParticipantMrid: '17X0000013097455',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                // marketEvaluationPointMrid: 'CodePPE', // optional 
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
+                siteAdminMrid: '489 981 029', // optional 
+                siteLocation: 'Biscarosse', // optional 
+                siteIecCode: 'S7X0000013077478', // optional 
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X0000013097455', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
+            const order: ActivationDocument = {
+                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
+                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                registeredResourceMrid: 'PDL00000000289766', // FK2 
+                measurementUnitName: 'MW',
+                messageType: 'string',
+                businessType: 'string',
+                orderType: 'string',
+                orderEnd: false,
+
+                orderValue: '1',
+                startCreatedDateTime: 'string',
+                // testDateTime: 'Date', // Test DELETE ME //////////////////////
+                // endCreatedDateTime: 'string',
+                revisionNumber: '1',
+                reasonCode: 'string', // optionnal in case of TVC modulation
+                senderMarketParticipantMrid: '17V000000992746D', // FK?
+                receiverMarketParticipantMrid: '17X000001309745X', // FK?
+                // reconciliation: false,
+                // subOrderList: [],
+            }
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.createSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A50');
+            // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            try {
+                await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
+            } catch(err) {
+                console.info(err.message)
+                expect(err.message).to.equal('Producer : 17X000001309745X does not exist');
+            }
+        });
+
         it('should return SUCCESS CreateActivationDocument Begining order HTB RTE', async () => {
             let star = new Star();
+            const site: Site = {
+                meteringPointMrid: 'PDL00000000289766',
+                systemOperatorMarketParticipantMrid: '17V0000009927464',
+                producerMarketParticipantMrid: '17X000001309745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                // marketEvaluationPointMrid: 'CodePPE', // optional 
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
+                siteAdminMrid: '489 981 029', // optional 
+                siteLocation: 'Biscarosse', // optional 
+                siteIecCode: 'S7X0000013077478', // optional 
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -580,10 +795,34 @@ describe('Star Tests ActivationDocument', () => {
         it('should return success on GetActivationDocumentByProducer', async () => {
             let star = new Star();
 
+            const site: Site = {
+                meteringPointMrid: 'PDL00000000289766',
+                systemOperatorMarketParticipantMrid: '17V0000009927464',
+                producerMarketParticipantMrid: '17X000001309745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                // marketEvaluationPointMrid: 'CodePPE', // optional 
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
+                siteAdminMrid: '489 981 029', // optional 
+                siteLocation: 'Biscarosse', // optional 
+                siteIecCode: 'S7X0000013077478', // optional 
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
@@ -610,7 +849,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -654,7 +893,7 @@ describe('Star Tests ActivationDocument', () => {
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: true,
-                    registeredResourceMrid: "12345678901234",
+                    registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927464",
                     startCreatedDateTime: "string",
@@ -673,7 +912,7 @@ describe('Star Tests ActivationDocument', () => {
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: true,
-                    registeredResourceMrid: "12345678901234",
+                    registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V000000992746D",
                     startCreatedDateTime: "string",
@@ -690,10 +929,37 @@ describe('Star Tests ActivationDocument', () => {
                 chaincodeStub.states[key] = 'non-json-value';
             });
 
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V000000992746F', 'Enedis', 'A50');
+
+            const site: Site = {
+                meteringPointMrid: 'PDL00000000289766',
+                systemOperatorMarketParticipantMrid: '17V0000009927464',
+                producerMarketParticipantMrid: '17X000001309745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                // marketEvaluationPointMrid: 'CodePPE', // optional 
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
+                siteAdminMrid: '489 981 029', // optional 
+                siteLocation: 'Biscarosse', // optional 
+                siteIecCode: 'S7X0000013077478', // optional 
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
@@ -720,7 +986,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -765,7 +1031,7 @@ describe('Star Tests ActivationDocument', () => {
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745Y",
                     reconciliation: true,
-                    registeredResourceMrid: "12345678901234",
+                    registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V000000992746D",
                     startCreatedDateTime: "string",
@@ -790,10 +1056,34 @@ describe('Star Tests ActivationDocument', () => {
         it('should return SUCCESS on GetActivationDocumentBySystemOperator', async () => {
             let star = new Star();
 
+            const site: Site = {
+                meteringPointMrid: 'PDL00000000289766',
+                systemOperatorMarketParticipantMrid: '17V0000009927464',
+                producerMarketParticipantMrid: '17X000001309745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                // marketEvaluationPointMrid: 'CodePPE', // optional 
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
+                siteAdminMrid: '489 981 029', // optional 
+                siteLocation: 'Biscarosse', // optional 
+                siteIecCode: 'S7X0000013077478', // optional 
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
@@ -820,7 +1110,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -864,7 +1154,7 @@ describe('Star Tests ActivationDocument', () => {
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: true,
-                    registeredResourceMrid: "12345678901234",
+                    registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927464",
                     startCreatedDateTime: "string",
@@ -881,10 +1171,37 @@ describe('Star Tests ActivationDocument', () => {
                 chaincodeStub.states[key] = 'non-json-value';
             });
 
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V000000992746L', 'Enedis', 'A50');
+
+            const site: Site = {
+                meteringPointMrid: 'PDL00000000289766',
+                systemOperatorMarketParticipantMrid: '17V0000009927464',
+                producerMarketParticipantMrid: '17X000001309745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                // marketEvaluationPointMrid: 'CodePPE', // optional 
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
+                siteAdminMrid: '489 981 029', // optional 
+                siteLocation: 'Biscarosse', // optional 
+                siteIecCode: 'S7X0000013077478', // optional 
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -911,7 +1228,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
                 originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
-                registeredResourceMrid: '12345678901234', // FK2
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -956,7 +1273,7 @@ describe('Star Tests ActivationDocument', () => {
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: true,
-                    registeredResourceMrid: "12345678901234",
+                    registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927464",
                     startCreatedDateTime: "string",
@@ -976,7 +1293,7 @@ describe('Star Tests ActivationDocument', () => {
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745Y",
                     reconciliation: true,
-                    registeredResourceMrid: "12345678901234",
+                    registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927464",
                     startCreatedDateTime: "string",

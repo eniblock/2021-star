@@ -37,6 +37,12 @@ export class ActivationDocumentController {
             activationDocumentInput.measurementUnitName !== MeasurementUnitType.KW) {
             throw new Error(`Organisation, ${identity} does not have write access for MW orders`);
         }
+
+        const siteAsBytes = await ctx.stub.getState(activationDocumentInput.registeredResourceMrid);
+        if (!siteAsBytes || siteAsBytes.length === 0) {
+            throw new Error(`Site : ${activationDocumentInput.registeredResourceMrid} does not exist in Activation Document ${activationDocumentInput.activationDocumentMrid}`);
+        }
+
         if (activationDocumentInput.senderMarketParticipantMrid) {
             const systemOperatorAsBytes = await ctx.stub.getState(activationDocumentInput.senderMarketParticipantMrid);
             if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
@@ -49,6 +55,7 @@ export class ActivationDocumentController {
                 throw new Error(`Producer : ${activationDocumentInput.receiverMarketParticipantMrid} does not exist`);
             }
         }
+
         activationDocumentInput.docType = 'activationDocument';
         activationDocumentInput.reconciliation = false;
 

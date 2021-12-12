@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk-slim as build
+FROM eclipse-temurin:11-alpine as build
 WORKDIR /workspace/app
 
 COPY mvnw .
@@ -13,7 +13,7 @@ RUN ./mvnw package -DskipTests -B || true
 COPY api/src api/src/
 
 RUN ./mvnw package -DskipTests -B
-FROM openjdk:11-jdk as dev
+FROM eclipse-temurin:11-jre-alpine as dev
 VOLUME /tmp
 
 COPY --from=build  /workspace/app/api/target/api*.jar /app/api.jar

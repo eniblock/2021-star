@@ -42,7 +42,7 @@ export class ActivationDocument {
         public orderEnd: boolean,
         public orderValue?: string,
         public startCreatedDateTime?: string,
-        public testDateTime?: Date, // Test DELETE ME //////////////////////
+        // public testDateTime?: Date, // Test DELETE ME //////////////////////
         public endCreatedDateTime?: string,
         public revisionNumber?: string,
         public reasonCode?: string, // optionnal in case of TVC modulation

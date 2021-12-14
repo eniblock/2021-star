@@ -61,14 +61,36 @@ export class ActivationDocumentController {
 
         if (activationDocumentInput.startCreatedDateTime && activationDocumentInput.endCreatedDateTime) {
             activationDocumentInput.reconciliation = true;
+            // await ActivationDocumentController.checkForOrderReconciliation(
+            //     ctx,
+            //     activationDocumentInput.senderMarketParticipantMrid,
+            //     activationDocumentInput.startCreatedDateTime,
+            // );
         }
         if (!activationDocumentInput.endCreatedDatetime && !activationDocumentInput.orderValue) {
             throw new Error(`Order must have a limitation value`);
         }
-
+        if (activationDocumentInput.orderEnd) {
+            const ret = await ActivationDocumentController.checkForReconciliationBE(
+                ctx,
+                activationDocumentInput.activationDocumentMrid,
+                activationDocumentInput.registeredResourceMrid,
+                activationDocumentInput.startCreatedDateTime,
+            );
+            if (ret) {
+                activationDocumentInput.reconciliation = true;
+                if (!activationDocumentInput.subOrderList) {
+                    activationDocumentInput.subOrderList = [];
+                    activationDocumentInput.subOrderList.push(ret);
+                } else {
+                    activationDocumentInput.subOrderList.push(ret);
+                }
+            }
+        }
         await ctx.stub.putState(
             activationDocumentInput.activationDocumentMrid,
-            Buffer.from(JSON.stringify(activationDocumentInput)));
+            Buffer.from(JSON.stringify(activationDocumentInput)),
+        );
         console.info(
             '============= END   : Create %s ActivationDocument ===========',
             activationDocumentInput.activationDocumentMrid,
@@ -114,4 +136,150 @@ export class ActivationDocumentController {
         return JSON.stringify(allResults);
     }
 
+    // private static async checkForOrderReconciliation(
+    //     ctx: Context,
+    //     senderMarketParticipantMrid: string,
+    //     registeredResourceMrid: string,
+    //     queryDate: string) {
+    //     console.info('============= START : checkForOrderReconciliation ActivationDocument ===========');
+    //     const datetmp = new Date(queryDate);
+    //     console.log(new Date());
+    //     console.log ('queryDate=', queryDate);
+    //     console.log ('datetmp=', datetmp);
+    //     console.log ('dateday=', datetmp.getDate());
+    //     console.log ('datemonth=', datetmp.getMonth());
+    //     console.log ('dateyear=', datetmp.getFullYear());
+    //     console.log ('datetime=', datetmp.getTime());
+
+    //     console.log ('datesetmili=', datetmp.setUTCMilliseconds(0));
+    //     console.log ('datesetsec=', datetmp.setUTCSeconds(0));
+    //     console.log ('datesetmin=', datetmp.setUTCMinutes(0));
+    //     console.log ('datesethour=', datetmp.setUTCHours(0));
+    //     console.log ('datetmptime=', datetmp.getTime());
+    //     console.log ('datetmp=', datetmp);
+    //     const dateYesterday = new Date(datetmp.getTime() - 86400000);
+    //     console.log ('dateYesterday=', dateYesterday);
+
+    //     const allResults = [];
+    //     const query = `{
+    //         "selector": {
+    //             "docType": "activationDocument",
+    //             "senderMarketParticipantMrid": "${senderMarketParticipantMrid}",
+    //             "registeredResourceMrid": "${registeredResourceMrid}",
+    //             "reconciliation": false
+    //             "startCreatedDateTime": {
+    //                 "$gte": "${dateYesterday}",
+    //                 "$lte": "${queryDate}"
+    //             },
+    //             "sort": [{
+    //                 "startCreatedDateTime" : "desc"
+    //             }],
+    //         }
+    //     }`;
+    //     const iterator = await ctx.stub.getQueryResult(query);
+    //     // let result = await iterator.next();
+    //     // console.log('result=', result);
+    //     // while (!result.done) {
+    //     //     const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+    //     //     console.log('strValue=', strValue);
+    //         // let record;
+    //         // try {
+    //         //     record = JSON.parse(strValue);
+    //         // } catch (err) {
+    //         //     record = strValue;
+    //     //     }
+    //     //     allResults.push(record);
+    //     //     result = await iterator.next();
+    //     // }
+    //     // console.log(JSON.stringify(allResults));
+
+    // }
+
+    private static async checkForReconciliationBE(
+        ctx: Context,
+        activationDocumentMrid: string,
+        registeredResourceMrid: string,
+        queryDate: string): Promise<string> {
+        console.info('============= START : checkForOrderReconciliation ActivationDocument ===========');
+        const datetmp = new Date(queryDate);
+        console.log(new Date());
+        console.log ('queryDate=', queryDate);
+        console.log ('datetmp=', datetmp);
+        console.log ('dateday=', datetmp.getDate());
+        console.log ('datemonth=', datetmp.getMonth());
+        console.log ('dateyear=', datetmp.getFullYear());
+        console.log ('datetime=', datetmp.getTime());
+
+        console.log ('datesetmili=', datetmp.setUTCMilliseconds(0));
+        console.log ('datesetsec=', datetmp.setUTCSeconds(0));
+        console.log ('datesetmin=', datetmp.setUTCMinutes(0));
+        console.log ('datesethour=', datetmp.setUTCHours(0));
+        console.log ('datetmptime=', datetmp.getTime());
+        console.log ('datetmp=', datetmp);
+        console.log ('datetmp=', datetmp.toUTCString());
+        const dateYesterday = new Date(datetmp.getTime() - 86400000);
+        console.log ('dateYesterday=', dateYesterday);
+        console.log ('dateYesterday=', dateYesterday.toUTCString());
+
+        const allResults = [];
+        // const query = `{
+        //     "selector": {
+        //         "docType": "activationDocument",
+        //         "registeredResourceMrid": "${registeredResourceMrid}",
+        //         "reconciliation": false
+        //         "startCreatedDateTime": {
+        //             "$gte": "${dateYesterday}",
+        //             "$lte": "${queryDate}"
+        //         },
+        //         "sort": [{
+        //             "startCreatedDateTime" : "desc"
+        //         }],
+        //     }
+        // }`;
+        const query = `{
+            "selector": {
+                "docType": "activationDocument",
+                "registeredResourceMrid": "${registeredResourceMrid}",
+                "reconciliation": false
+            }
+        }`;
+        const iterator = await ctx.stub.getQueryResult(query);
+        let result = await iterator.next();
+        console.log('result=', result);
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            console.log('strValue=', strValue);
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } catch (err) {
+                record = strValue;
+            }
+            console.log(typeof(record));
+            allResults.push(record);
+            result = await iterator.next();
+        }
+
+        const order: ActivationDocument = allResults[0];
+        order.reconciliation = true;
+        if (!order.subOrderList) {
+            order.subOrderList = [];
+            order.subOrderList.push(activationDocumentMrid);
+        } else {
+            order.subOrderList.push(activationDocumentMrid);
+        }
+        await ctx.stub.putState(
+            order.activationDocumentMrid,
+            Buffer.from(JSON.stringify(order)),
+        );
+
+        console.log('order=', order);
+        console.log('allResults=', allResults);
+        console.log(typeof(allResults));
+        if (order.activationDocumentMrid) {
+            return order.activationDocumentMrid;
+        } else {
+            return;
+        }
+    }
 }

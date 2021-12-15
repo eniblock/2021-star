@@ -1355,6 +1355,5 @@ describe('Star Tests ActivationDocument', () => {
         //     ];
 
         //     expect(ret).to.eql(expected);
-        });
-
+    });
 });

@@ -4,6 +4,7 @@
 
 import { Context, Contract } from 'fabric-contract-api';
 import { ActivationDocumentController } from './controller/ActivationDocumentController';
+import { YellowPagesController } from './controller/YellowPagesController';
 import { OrganizationTypeMsp } from './enums/OrganizationMspType';
 import { ActivationDocument } from './model/activationDocument';
 import { Producer } from './producer';
@@ -349,33 +350,50 @@ export class Star extends Contract {
 
     /*      Activation Document       */
 
-    public async CreateActivationDocument(
+    public async CreateActivationDocument(ctx: Context, inputStr: string) {
+        try {
+            return (await ActivationDocumentController.createActivationDocument(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async GetActivationDocumentByProducer(
         ctx: Context,
         inputStr: string) {
-            try {
-                return (await ActivationDocumentController.createActivationDocument(ctx, inputStr));
-            } catch (error) {
-                throw error;
-            }
+        try {
+            return (await ActivationDocumentController.getActivationDocumentByProducer(ctx, inputStr));
+        } catch (error) {
+            throw error;
         }
+    }
 
-        public async GetActivationDocumentByProducer(
-            ctx: Context,
-            inputStr: string) {
-                try {
-                    return (await ActivationDocumentController.getActivationDocumentByProducer(ctx, inputStr));
-                } catch (error) {
-                    throw error;
-                }
-            }
+    public async GetActivationDocumentBySystemOperator(
+        ctx: Context,
+        inputStr: string) {
+        try {
+            return (await ActivationDocumentController.getActivationDocumentBySystemOperator(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
 
-        public async GetActivationDocumentBySystemOperator(
-            ctx: Context,
-            inputStr: string) {
-                try {
-                    return (await ActivationDocumentController.getActivationDocumentBySystemOperator(ctx, inputStr));
-                } catch (error) {
-                    throw error;
-                }
-            }
+    /*      Yellow Pages       */
+
+    public async CreateYellowPages(ctx: Context, inputStr: string) {
+        try {
+            return (await YellowPagesController.createYellowPages(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async GetAllYellowPages(
+        ctx: Context) {
+        try {
+            return (await YellowPagesController.getAllYellowPages(ctx));
+        } catch (error) {
+            throw error;
+        }
+    }
 }

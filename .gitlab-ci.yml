@@ -3,6 +3,24 @@ stages:
   - docker
   - helm
 
+variables:
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+sonarcloud-check:
+  stage: test
+  image: maven:3.6.3-jdk-11
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - cd backend
+    - mvn verify sonar:sonar -Dsonar.projectKey=xdev-tech_star
+  only:
+    - merge_requests
+    - master
+    - develop
+
 helm-lint:
   stage: test
   image: registry.gitlab.com/xdev-tech/build/helm:2.0

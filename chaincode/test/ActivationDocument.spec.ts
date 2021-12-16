@@ -13,6 +13,7 @@ import { Site } from '../src/site';
 import { ActivationDocument } from '../src/model/activationDocument';
 import { SystemOperator } from '../src/systemOperator';
 import { ActivationDocumentController } from '../src/controller/ActivationDocumentController';
+import { YellowPages } from '../src/model/yellowPages';
 
 let assert = sinon.assert;
 chai.use(sinonChai);
@@ -155,7 +156,7 @@ describe('Star Tests ActivationDocument', () => {
 
             // `{
             //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", 
-            //     \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", 
+            //     \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", 
             //     \"registeredResourceMrid\": \"12345678901234\", 
             //     \"measurementUnitName\": \"KW\",
             //     \"messageType\": \"string\",
@@ -178,7 +179,7 @@ describe('Star Tests ActivationDocument', () => {
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
 
             try {
-                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
+                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('registeredResourceMrid is required');
@@ -191,7 +192,7 @@ describe('Star Tests ActivationDocument', () => {
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
 
             try {
-                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
+                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('measurementUnitName is required');
@@ -204,7 +205,7 @@ describe('Star Tests ActivationDocument', () => {
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
 
             try {
-                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
+                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('messageType is required');
@@ -217,7 +218,7 @@ describe('Star Tests ActivationDocument', () => {
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
 
             try {
-                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"orderType\": \"string\",\"orderEnd\": false}`);
+                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"orderType\": \"string\",\"orderEnd\": false}`);
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('businessType is required');
@@ -230,7 +231,7 @@ describe('Star Tests ActivationDocument', () => {
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
 
             try {
-                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"businessType\": \"string\", \"orderEnd\": false}`);
+                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"businessType\": \"string\", \"orderEnd\": false}`);
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('orderType is required');
@@ -243,7 +244,7 @@ describe('Star Tests ActivationDocument', () => {
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
 
             try {
-                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"businessType\": \"string\", \"orderType\": \"string\"}`);
+                await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"businessType\": \"string\", \"orderType\": \"string\"}`);
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('orderEnd is required');
@@ -269,7 +270,7 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: '12345678901234', // FK2 
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -312,7 +313,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -339,7 +340,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('System Operator : 17V000000992746D does not exist');
+                expect(err.message).to.equal('System Operator : 17V000000992746D does not exist for Activation Document 8c56459a-794a-4ed1-a7f6-33b0064508f1 creation.');
             }
         });
 
@@ -355,7 +356,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -382,7 +383,50 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('Producer : 17X000001309745Y does not exist');
+                expect(err.message).to.equal('Producer : 17X000001309745Y does not exist for Activation Document 8c56459a-794a-4ed1-a7f6-33b0064508f1 creation.');
+            }
+        });
+
+        it('should return ERROR CreateActivationDocument couple HTA missing yellow Page', async () => {
+            let star = new Star();
+            const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927464',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
+
+            const order: ActivationDocument = {
+
+                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                registeredResourceMrid: 'PDL00000000289766', // FK2
+                measurementUnitName: 'KW',
+                messageType: 'string',
+                businessType: 'string',
+                orderType: 'string',
+                orderEnd: false,
+
+                orderValue: '1',
+                startCreatedDateTime: new Date().toString(),
+                // testDateTime: 'Date', // Test DELETE ME //////////////////////
+                endCreatedDateTime: new Date().toString(),
+                revisionNumber: '1',
+                reasonCode: 'string', // optionnal in case of TVC modulation
+                senderMarketParticipantMrid: '17V000000992746D', // FK?
+                receiverMarketParticipantMrid: '17X000001309745Y', // FK?
+                // reconciliation: false,
+                // subOrderList: [],
+            }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V000000992746D', 'ENEDIS', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745Y', 'EolienFR vert Cie', 'A21');
+            try {
+                await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Yellow Page : CRIVA1_ENEDIS_Y411 does not exist for Activation Document 8c56459a-794a-4ed1-a7f6-33b0064508f1 creation.');
             }
         });
 
@@ -398,7 +442,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -422,6 +466,9 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.createSystemOperator(transactionContext, '17V000000992746D', 'ENEDIS', 'A50');
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+
+            const yellowPage = new YellowPages('CRIVA1_ENEDIS_Y411','PDL00000000289766','17V000000992746D');
+            await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
             let ret = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
@@ -440,7 +487,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -499,7 +546,7 @@ describe('Star Tests ActivationDocument', () => {
               ];
               
             try {
-                await star.CreateActivationDocument(transactionContext, `{\"riginAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"egisteredResourceMrid\": \"12345678901234\", \"easurementUnitName\": \"KW\",\"essageType\": \"string\",\"usinessType\": \"string\",\"rderType\": \"string\",\"rderEnd\": false}`);
+                await star.CreateActivationDocument(transactionContext, `{\"riginAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"egisteredResourceMrid\": \"12345678901234\", \"easurementUnitName\": \"KW\",\"essageType\": \"string\",\"usinessType\": \"string\",\"rderType\": \"string\",\"rderEnd\": false}`);
             } catch(err) {
                 console.info(err)
                 expect(err.errors[0]).to.equal(errors[0]);
@@ -520,7 +567,7 @@ describe('Star Tests ActivationDocument', () => {
 
             // `{
             //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", 
-            //     \"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", 
+            //     \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", 
             //     \"registeredResourceMrid\": \"12345678901234\", 
             //     \"measurementUnitName\": \"KW\",
             //     \"messageType\": \"string\",
@@ -530,7 +577,7 @@ describe('Star Tests ActivationDocument', () => {
             // }`
 
             try {
-                await star.CreateActivationDocument(transactionContext, `{\"originAutomataRegisteredResourceMrid\": \"CIVRAY AUT03\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
+                await star.CreateActivationDocument(transactionContext, `{\"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('activationDocumentMrid is a compulsory string');
@@ -541,7 +588,7 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2 
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -576,7 +623,7 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2 
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -603,7 +650,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Site : PDL00000000289766 does not exist in Activation Document 8c56459a-794a-4ed1-a7f6-33b0064508f1');
+                expect(err.message).to.equal('Site : PDL00000000289766 does not exist for Activation Document 8c56459a-794a-4ed1-a7f6-33b0064508f1 creation.');
             }
         });
 
@@ -636,7 +683,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2 
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -663,7 +710,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Producer : 17X000001309745X does not exist');
+                expect(err.message).to.equal('Producer : 17X000001309745X does not exist for Activation Document 8c56459a-794a-4ed1-a7f6-33b0064508f1 creation.');
             }
         });
 
@@ -679,7 +726,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -709,7 +756,9 @@ describe('Star Tests ActivationDocument', () => {
         });
 
     });
-
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////    GET     ////////////////////////////
+////////////////////////////////////////////////////////////////////////////
     describe('Test GetActivationDocumentByProducer', () => {
         it('should return OK on GetActivationDocumentByProducer empty', async () => {
             let star = new Star();
@@ -733,7 +782,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -754,13 +803,16 @@ describe('Star Tests ActivationDocument', () => {
             }
 
             chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createSystemOperator(transactionContext, '17V0000009927466', 'Enedis', 'A50');
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+
+            const yellowPage = new YellowPages('CRIVA1_ENEDIS_Y411','PDL00000000289766','17V0000009927464');
+            await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
     
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -801,7 +853,7 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CIVRAY AUT03",
+                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: true,
@@ -820,10 +872,10 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CIVRAY AUT03",
+                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
-                    reconciliation: true,
+                    reconciliation: false,
                     registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V000000992746D",
@@ -853,7 +905,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -876,11 +928,14 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+
+            const yellowPage = new YellowPages('CRIVA1_ENEDIS_Y411','PDL00000000289766','17V0000009927464');
+            await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
     
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -922,10 +977,10 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CIVRAY AUT03",
+                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745Y",
-                    reconciliation: true,
+                    reconciliation: false,
                     registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V000000992746D",
@@ -935,7 +990,7 @@ describe('Star Tests ActivationDocument', () => {
 
             expect(retB).to.eql(expected);
         });
-    });
+   });
 
     describe('Test GetActivationDocumentBySystemOperator', () => {
         it('should return OK on GetActivationDocumentBySystemOperator empty', async () => {
@@ -960,7 +1015,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -983,11 +1038,14 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+
+            const yellowPage = new YellowPages('CRIVA1_ENEDIS_Y411','PDL00000000289766','17V0000009927464');
+            await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
     
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1028,7 +1086,7 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CIVRAY AUT03",
+                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: true,
@@ -1061,7 +1119,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1084,11 +1142,14 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'RTEMSP';
             await star.createSystemOperator(transactionContext, '17V0000009927464', 'RTE', 'A49');
             await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+
+            const yellowPage = new YellowPages('CRIVA1_ENEDIS_Y411','PDL00000000289766','17V0000009927464');
+            await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
     
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1130,10 +1191,10 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CIVRAY AUT03",
+                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
-                    reconciliation: true,
+                    reconciliation: false,
                     registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927464",
@@ -1150,10 +1211,10 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CIVRAY AUT03",
+                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745Y",
-                    reconciliation: true,
+                    reconciliation: false,
                     registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927464",
@@ -1250,7 +1311,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1278,7 +1339,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderEnd: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CIVRAY AUT03', // FK1
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',

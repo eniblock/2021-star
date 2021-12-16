@@ -3,6 +3,7 @@ import { Context, Contract } from 'fabric-contract-api';
 import { MeasurementUnitType } from '../enums/MesurementUnitType';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { ActivationDocument } from '../model/activationDocument';
+import { SystemOperator } from '../systemOperator';
 
 export class ActivationDocumentController {
 
@@ -40,26 +41,34 @@ export class ActivationDocumentController {
 
         const siteAsBytes = await ctx.stub.getState(activationDocumentInput.registeredResourceMrid);
         if (!siteAsBytes || siteAsBytes.length === 0) {
-            throw new Error(`Site : ${activationDocumentInput.registeredResourceMrid} does not exist in Activation Document ${activationDocumentInput.activationDocumentMrid}`);
+            throw new Error(`Site : ${activationDocumentInput.registeredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
         }
 
         if (activationDocumentInput.senderMarketParticipantMrid) {
             const systemOperatorAsBytes = await ctx.stub.getState(activationDocumentInput.senderMarketParticipantMrid);
             if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
-                throw new Error(`System Operator : ${activationDocumentInput.senderMarketParticipantMrid} does not exist`);
+                throw new Error(`System Operator : ${activationDocumentInput.senderMarketParticipantMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
             }
         }
         if (activationDocumentInput.receiverMarketParticipantMrid) {
             const producerAsBytes = await ctx.stub.getState(activationDocumentInput.receiverMarketParticipantMrid);
             if (!producerAsBytes || producerAsBytes.length === 0) {
-                throw new Error(`Producer : ${activationDocumentInput.receiverMarketParticipantMrid} does not exist`);
+                throw new Error(`Producer : ${activationDocumentInput.receiverMarketParticipantMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
             }
         }
 
         activationDocumentInput.docType = 'activationDocument';
         activationDocumentInput.reconciliation = false;
 
-        if (activationDocumentInput.startCreatedDateTime && activationDocumentInput.endCreatedDateTime) {
+        if (identity === OrganizationTypeMsp.ENEDIS &&
+            activationDocumentInput.startCreatedDateTime &&
+            activationDocumentInput.endCreatedDateTime
+        ) {
+            const yellowAsBytes = await ctx.stub.getState(activationDocumentInput.originAutomataRegisteredResourceMrid);
+            if (!yellowAsBytes || yellowAsBytes.length === 0) {
+                throw new Error(`Yellow Page : ${activationDocumentInput.originAutomataRegisteredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
+            }
+
             activationDocumentInput.reconciliation = true;
             // await ActivationDocumentController.checkForOrderReconciliation(
             //     ctx,

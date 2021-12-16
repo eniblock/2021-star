@@ -26,6 +26,7 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <collections4.version>4.4</collections4.version>
         <commons-io.version>2.6</commons-io.version>
+        <sonar.organization>xdev-tech</sonar.organization>
     </properties>
     <dependencies>
         <dependency>

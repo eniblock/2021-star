@@ -24,23 +24,16 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ $fullName }}-api
+                name: {{ $fullName }}-backend
                 port:
                   name: http
-          - path: /api-gateway
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: {{ $fullName }}-api
+                name: {{ $fullName }}-frontend
                 port:
-                  name: tra-web
-          - path: /secured-api-gateway
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ $fullName }}-api
-                port:
-                  name: tra-websecure
+                  name: http
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

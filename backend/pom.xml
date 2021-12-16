@@ -18,7 +18,7 @@
     <description>STAR Project Backend</description>
     <modules>
         <module>api</module>
-<!--        <module>service</module>-->
+        <module>service</module>
     </modules>
 
     <properties>
@@ -41,10 +41,6 @@
     </dependencies>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 

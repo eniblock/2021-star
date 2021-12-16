@@ -5,7 +5,7 @@ spring:
     active: dev
     # cette ligne permet d'exclure la configuration de sécurité par défaut de Springboot. Ainsi, on redéfinira la configuration selon notre convenance.
   autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration,org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
   application:
     name: star-backend
 management:

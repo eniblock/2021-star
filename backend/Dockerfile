@@ -5,12 +5,14 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 COPY api/pom.xml api/
+COPY service/pom.xml service/
 
 RUN ./mvnw dependency:go-offline -B
 # cache build dependencies, without the sources
 RUN ./mvnw package -DskipTests -B || true
 
 COPY api/src api/src/
+COPY service/src service/src/
 
 RUN ./mvnw package -DskipTests -B
 FROM eclipse-temurin:11-jre-alpine as dev

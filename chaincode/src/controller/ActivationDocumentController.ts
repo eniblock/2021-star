@@ -302,28 +302,33 @@ export class ActivationDocumentController {
             } catch (err) {
                 record = strValue;
             }
-            console.log(typeof(record));
             allResults.push(record);
             result = await iterator.next();
         }
+        console.log('allResults=', JSON.stringify(allResults));
 
-        if (allResults[0]) {
-            const order: ActivationDocument = allResults[0];
-            order.reconciliation = true;
-            if (!order.subOrderList) {
-                order.subOrderList = [];
-                order.subOrderList.push(activationDocumentMrid);
-            } else {
-                order.subOrderList.push(activationDocumentMrid);
-            }
-            await ctx.stub.putState(
-                order.activationDocumentMrid,
-                Buffer.from(JSON.stringify(order)),
+        try {
+            const test = ActivationDocument.schema.validateSync(
+                allResults[0],
+                {strict: true, abortEarly: false},
             );
-            if (order.activationDocumentMrid) {
-                return order.activationDocumentMrid;
-            }
+            } catch (err) {
+            return ;
         }
-        return;
+
+        const order: ActivationDocument = allResults[0];
+        console.log('orderBE=', order);
+        order.reconciliation = true;
+        if (!order.subOrderList) {
+            order.subOrderList = [];
+            order.subOrderList.push(activationDocumentMrid);
+        } else {
+            order.subOrderList.push(activationDocumentMrid);
+        }
+        await ctx.stub.putState(
+            order.activationDocumentMrid,
+            Buffer.from(JSON.stringify(order)),
+        );
+        return order.activationDocumentMrid;
     }
 }

@@ -1230,68 +1230,6 @@ describe('Star Tests ActivationDocument', () => {
         });
     });
 
-    // describe('Test checkForOrderReconciliation', () => {
-        // it('should return error on checkForOrderReconciliation', async () => {
-        //     let star = new Star();
-
-        //     let ret = await star.checkForOrderReconciliation(transactionContext);
-        //     ret = JSON.parse(ret);
-        //     // console.log('ret=', ret)
-        //     expect(ret.length).to.equal(0);
-        //     expect(ret).to.eql([]);
-        // });
-
-        // it('should return success on checkForOrderReconciliation', async () => {
-        //     let star = new Star();
-
-        //     chaincodeStub.MspiID = 'RTEMSP';
-        //     await star.createProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
-        //     chaincodeStub.MspiID = 'RTEMSP';
-        //     await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
-        //     chaincodeStub.MspiID = 'ENEDISMSP';
-        //     await star.createSystemOperator(transactionContext, 'ENEDIS02EIC', 'ENEDIS', 'A50');
-
-        //     let ret = await star.checkForOrderReconciliation(transactionContext);
-        //     ret = JSON.parse(ret);
-        //     // console.log('ret=', ret)
-        //     expect(ret.length).to.equal(2);
-
-        //     const expected: SystemOperator[] = [
-        //         { docType: 'systemOperator', marketParticipantName: 'RTE', marketParticipantRoleType: 'A49', systemOperatorMarketParticipantMrId: 'RTE01EIC'},
-        //         { docType: 'systemOperator', marketParticipantName: 'ENEDIS', marketParticipantRoleType: 'A50', systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'}
-        //     ];
-
-        //     expect(ret).to.eql(expected);
-        // });
-
-        // it('should return success on GetAllAssets for non JSON value', async () => {
-        //     let star = new Star();
-        //     chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
-        //         chaincodeStub.states = {};
-        //         chaincodeStub.states[key] = 'non-json-value';
-        //     });
-
-        //     chaincodeStub.MspiID = 'RTEMSP';
-        //     await star.createSystemOperator(transactionContext, 'RTE00EIC', 'RTE', 'A49');
-        //     chaincodeStub.MspiID = 'RTEMSP';
-        //     await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
-        //     chaincodeStub.MspiID = 'ENEDISMSP';
-        //     await star.createSystemOperator(transactionContext, 'ENEDIS02EIC', 'ENEDIS', 'A50');
-
-        //     let ret = await star.checkForOrderReconciliation(transactionContext);
-        //     ret = JSON.parse(ret);
-        //     // console.log('ret=', ret)
-        //     expect(ret.length).to.equal(3);
-
-        //     const expected = [
-        //         'non-json-value',
-        //         { docType: 'systemOperator', marketParticipantName: 'RTE', marketParticipantRoleType: 'A49', systemOperatorMarketParticipantMrId: 'RTE01EIC'},
-        //         { docType: 'systemOperator', marketParticipantName: 'ENEDIS', marketParticipantRoleType: 'A50', systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'}
-        //     ];
-
-        //     expect(ret).to.eql(expected);
-        // });
-
     describe('Test OrderEnd RTE', () => {
         // it('should return error on checkForReconciliationBE', async () => {
         //     let star = new Star();
@@ -1302,6 +1240,85 @@ describe('Star Tests ActivationDocument', () => {
         //     expect(ret.length).to.equal(0);
         //     expect(ret).to.eql([]);
         // });
+
+        it('should return SUCCESS CreateActivationDocument end order HTB RTE for NON-JSON value', async () => {
+            let star = new Star();
+
+            chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
+                chaincodeStub.states = {};
+                chaincodeStub.states[key] = 'non-json-value';
+            });
+
+
+            // chaincodeStub.MspiID = 'ENEDISMSP';
+            // await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+
+            // const order: ActivationDocument = {
+
+            //     activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
+            //     originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+            //     registeredResourceMrid: 'PDL00000000289766', // FK2
+            //     measurementUnitName: 'MW',
+            //     messageType: 'string',
+            //     businessType: 'string',
+            //     orderType: 'string',
+            //     orderEnd: false,
+    
+            //     orderValue: '1',
+            //     startCreatedDateTime: new Date().toString(),
+            //     // testDateTime: 'Date', // Test DELETE ME //////////////////////
+            //     // endCreatedDateTime: new Date().toString(),
+            //     revisionNumber: '1',
+            //     reasonCode: 'string', // optionnal in case of TVC modulation
+            //     senderMarketParticipantMrid: '17V000000992746D', // FK?
+            //     receiverMarketParticipantMrid: '17X000001309745X', // FK?
+            //     // reconciliation: false,
+            //     // subOrderList: [],
+            // }
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '1', 'Enedis', 'A50');
+            await star.createSystemOperator(transactionContext, '17V000000992746D', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            // await star.createSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
+            // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
+            await star.createSite(transactionContext, JSON.stringify(site));
+            chaincodeStub.MspiID = 'RTEMSP';
+
+            // await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
+
+            const orderEnd: ActivationDocument = {
+
+                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                registeredResourceMrid: 'PDL00000000289766', // FK2
+                measurementUnitName: 'MW',
+                messageType: 'string',
+                businessType: 'string',
+                orderType: 'string',
+                orderEnd: true,
+    
+                orderValue: '1',
+                startCreatedDateTime: new Date().toString(),
+                // testDateTime: 'Date', // Test DELETE ME //////////////////////
+                // endCreatedDateTime: new Date().toString(),
+                revisionNumber: '1',
+                reasonCode: 'string', // optionnal in case of TVC modulation
+                senderMarketParticipantMrid: '17V000000992746D', // FK?
+                receiverMarketParticipantMrid: '17X000001309745X', // FK?
+                // reconciliation: false,
+                subOrderList: [''],
+            }
+            await star.CreateActivationDocument(transactionContext, JSON.stringify(orderEnd));
+
+
+            // let ret = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
+            // expect(ret).to.eql( Object.assign({docType: 'activationDocument', reconciliation: true, subOrderList: ['8c56459a-794a-4ed1-a7f6-33b0064508f2']}, order ));
+            let retEnd = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f2")).toString());
+            expect(retEnd).to.eql( Object.assign({docType: 'activationDocument', reconciliation: false}, orderEnd ));
+        });
 
         it('should return SUCCESS CreateActivationDocument end order HTB RTE', async () => {
             let star = new Star();
@@ -1371,54 +1388,74 @@ describe('Star Tests ActivationDocument', () => {
             expect(retEnd).to.eql( Object.assign({docType: 'activationDocument', reconciliation: true, subOrderList: ['8c56459a-794a-4ed1-a7f6-33b0064508f1']}, orderEnd ));
         });
 
-        // it('should return success on orderEnd RTE', async () => {
-        //     let star = new Star();
+        it('should return SUCCESS CreateActivationDocument end order HTB RTE for coverage', async () => {
+            let star = new Star();
 
-        //     chaincodeStub.MspiID = 'RTEMSP';
-        //     await star.createProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
-        //     chaincodeStub.MspiID = 'RTEMSP';
-        //     await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
-        //     chaincodeStub.MspiID = 'ENEDISMSP';
-        //     await star.createSystemOperator(transactionContext, 'ENEDIS02EIC', 'ENEDIS', 'A50');
+            const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927464',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-        //     let ret = await star.checkForReconciliationBE(transactionContext);
-        //     ret = JSON.parse(ret);
-        //     // console.log('ret=', ret)
-        //     expect(ret.length).to.equal(2);
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.createSystemOperator(transactionContext, '17V0000009927464', 'Enedis', 'A50');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.createSite(transactionContext, JSON.stringify(site));
 
-        //     const expected: SystemOperator[] = [
-        //         { docType: 'systemOperator', marketParticipantName: 'RTE', marketParticipantRoleType: 'A49', systemOperatorMarketParticipantMrId: 'RTE01EIC'},
-        //         { docType: 'systemOperator', marketParticipantName: 'ENEDIS', marketParticipantRoleType: 'A50', systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'}
-        //     ];
+            const order: ActivationDocument = {
 
-        //     expect(ret).to.eql(expected);
-        // });
+                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                registeredResourceMrid: 'PDL00000000289766', // FK2
+                measurementUnitName: 'MW',
+                messageType: 'string',
+                businessType: 'string',
+                orderType: 'string',
+                orderEnd: false,
+    
+                orderValue: '1',
+                startCreatedDateTime: new Date().toString(),
+                // testDateTime: 'Date', // Test DELETE ME //////////////////////
+                // endCreatedDateTime: new Date().toString(),
+                revisionNumber: '1',
+                reasonCode: 'string', // optionnal in case of TVC modulation
+                senderMarketParticipantMrid: '17V000000992746D', // FK?
+                receiverMarketParticipantMrid: '17X000001309745X', // FK?
+                // reconciliation: false,
+                subOrderList: [],
+            }
 
-        // it('should return success on GetAllAssets for non JSON value', async () => {
-        //     let star = new Star();
-        //     chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
-        //         chaincodeStub.states = {};
-        //         chaincodeStub.states[key] = 'non-json-value';
-        //     });
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.createSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
+            await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
-        //     chaincodeStub.MspiID = 'RTEMSP';
-        //     await star.createSystemOperator(transactionContext, 'RTE00EIC', 'RTE', 'A49');
-        //     chaincodeStub.MspiID = 'RTEMSP';
-        //     await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
-        //     chaincodeStub.MspiID = 'ENEDISMSP';
-        //     await star.createSystemOperator(transactionContext, 'ENEDIS02EIC', 'ENEDIS', 'A50');
+            const orderEnd: ActivationDocument = {
 
-        //     let ret = await star.checkForReconciliationBE(transactionContext);
-        //     ret = JSON.parse(ret);
-        //     // console.log('ret=', ret)
-        //     expect(ret.length).to.equal(3);
+                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
+                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                registeredResourceMrid: 'PDL00000000289766', // FK2
+                measurementUnitName: 'MW',
+                messageType: 'string',
+                businessType: 'string',
+                orderType: 'string',
+                orderEnd: true,
+    
+                orderValue: '1',
+                startCreatedDateTime: new Date().toString(),
+                // testDateTime: 'Date', // Test DELETE ME //////////////////////
+                // endCreatedDateTime: new Date().toString(),
+                revisionNumber: '1',
+                reasonCode: 'string', // optionnal in case of TVC modulation
+                senderMarketParticipantMrid: '17V000000992746D', // FK?
+                receiverMarketParticipantMrid: '17X000001309745X', // FK?
+                // reconciliation: false,
+                subOrderList: [],
+            }
+            await star.CreateActivationDocument(transactionContext, JSON.stringify(orderEnd));
 
-        //     const expected = [
-        //         'non-json-value',
-        //         { docType: 'systemOperator', marketParticipantName: 'RTE', marketParticipantRoleType: 'A49', systemOperatorMarketParticipantMrId: 'RTE01EIC'},
-        //         { docType: 'systemOperator', marketParticipantName: 'ENEDIS', marketParticipantRoleType: 'A50', systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'}
-        //     ];
-
-        //     expect(ret).to.eql(expected);
+            order.subOrderList = ['8c56459a-794a-4ed1-a7f6-33b0064508f2'];
+            orderEnd.subOrderList = ['8c56459a-794a-4ed1-a7f6-33b0064508f1'];
+            let ret = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
+            expect(ret).to.eql( Object.assign({docType: 'activationDocument', reconciliation: true}, order ));
+            let retEnd = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f2")).toString());
+            expect(retEnd).to.eql( Object.assign({docType: 'activationDocument', reconciliation: true, subOrderList: ['8c56459a-794a-4ed1-a7f6-33b0064508f1']}, orderEnd ));
+        });
     });
 });

@@ -14,11 +14,14 @@
     <description>Module APIs contient les APIs REST et la configuration de l'application springboot</description>
     <properties>
         <image_path/>
-        <jib.version>3.0.0</jib.version>
-        <docker-image-url>registry.gitlab.com/xdev-tech/star</docker-image-url>
-        <docker-image-name>star-api</docker-image-name>
+        <keycloak.version>15.0.0</keycloak.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>com.theblockchainxdev.star</groupId>
+            <artifactId>service</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -26,6 +29,20 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-boot-starter</artifactId>
+            <version>${keycloak.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-spring-boot-adapter</artifactId>
+            <version>${keycloak.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -38,30 +55,24 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
-
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>build-info</id>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
             </plugin>
-
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-                <version>${jib.version}</version>
-                <configuration>
-                    <to>
-                        <image>${docker-image-url}/${docker-image-name}:${project.version}</image>
-                        <auth>
-                            <username>legeric</username>
-                            <password>glpat-GTs3ydQm9XkVvUA9ky4Z</password>
-                        </auth>
-                    </to>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
-
 </project>

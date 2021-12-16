@@ -47,12 +47,15 @@ describe('Star Tests ActivationDocument', () => {
                 if (chaincodeStub.states) {
                     const copied = Object.assign({}, chaincodeStub.states);
                     for (let key in copied) {
+                        console.log('copied[key]=', copied[key].toString());
                         if (copied[key] == 'non-json-value') { 
+                            console.log('IN IF copied[key]=', copied[key]);
+
                             yield {value: copied[key]};
                             continue
                         }
                         const obJson = JSON.parse(copied[key].toString('utf8'));
-                        // console.log('obJson=', obJson);
+                        console.log('obJson=', obJson);
                         const objStr: string = obJson.docType;
                         const queryJson = JSON.parse(query);
                         console.log('queryJson=', queryJson);
@@ -99,6 +102,7 @@ describe('Star Tests ActivationDocument', () => {
                             //     yield {value: copied[key]};
                             // }                           
                         }
+                        console.log('end of loop')
                     }
                 }
             }
@@ -886,7 +890,7 @@ describe('Star Tests ActivationDocument', () => {
             expect(ret).to.eql(expected);
         });
 
-        it('should return success on getActivationDocumentBySystemOperator for non JSON value', async () => {
+        it('should return success on getActivationDocumentByproducer for non JSON value', async () => {
             let star = new Star();
             chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
                 chaincodeStub.states = {};

@@ -75,6 +75,12 @@ if config.tilt_subcommand == 'down' and not cfg.get("no-volumes"):
 
 ############################# hlf #############################
 
+# image build
+image_build(
+    'registry.gitlab.com/xdev-tech/star/chaincode',
+    'chaincode',
+)
+
 load('ext://namespace', 'namespace_create')
 load('ext://helm_remote', 'helm_remote')
 
@@ -149,16 +155,22 @@ for org in ['enedis', 'rte', 'producteurs']:
         )
 
         k8s_resource(peer + '-hlf-peer:deployment:' + org, labels=[org])
+
+        helm_remote('hlf-chaincode',
+            repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
+            version="0.1.0-develop.12",
+            namespace=org,
+            release_name=peer + '-chaincode',
+            set=[
+                "ccid=fabcar:2e4d0a92317fe0c2d5f8de3ea74f01e7e990bec11336335e3bd29d0cde06035d",
+                "image.repository=registry.gitlab.com/xdev-tech/star/chaincode",
+            ]
+            # values=['helm/hlf-peer/values-' + org + '-' + peer + '.yaml'],
+        )
+        k8s_resource(peer + '-chaincode-hlf-chaincode:deployment:' + org, labels=[org])
+
         if config.tilt_subcommand == 'up':
             local(clk_k8s + 'add-domain ' + peer + '.' + org + '.localhost')
         if config.tilt_subcommand == 'down' and not cfg.get("no-volumes"):
             local('kubectl --context ' + k8s_context() + ' -n ' + org + ' delete pvc --selector=app.kubernetes.io/instance=' + peer + ' --wait=false')
-    # k8s_yaml(
-    #     helm(
-    #         'hlf-chaincode',
-    #         namespace=org,
-    #         values=['hlf-chaincode/values-dev.yaml'],
-    #         name='chaincode1',
-    #     )
-    # )
-    # k8s_resource('chaincode1-hlf-chaincode:deployment:' + org, labels=[org])
+            local('kubectl --context ' + k8s_context() + ' -n ' + org + ' delete pvc --selector=app.kubernetes.io/instance=' + peer + '-chaincode --wait=false')

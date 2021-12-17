@@ -82,6 +82,14 @@ export class ActivationDocumentController {
                 activationDocumentInput.registeredResourceMrid,
                 activationDocumentInput.startCreatedDateTime,
             );
+            if (ret) {
+                if (!activationDocumentInput.subOrderList) {
+                    activationDocumentInput.subOrderList = [];
+                    activationDocumentInput.subOrderList.push(ret);
+                } else {
+                    activationDocumentInput.subOrderList.push(ret);
+                }
+            }
         } else if (activationDocumentInput.orderEnd) {
             const ret = await ActivationDocumentController.checkForReconciliationBE(
                 ctx,
@@ -222,8 +230,9 @@ export class ActivationDocumentController {
         }
 
         const order: ActivationDocument = allResults[0];
+        console.log('orderBB=', order);
         if (order) {
-            order.reconciliation = true;
+            // order.reconciliation = true;
             if (!order.subOrderList) {
                 order.subOrderList = [];
                 order.subOrderList.push(activationDocumentMrid);
@@ -234,9 +243,7 @@ export class ActivationDocumentController {
                 order.activationDocumentMrid,
                 Buffer.from(JSON.stringify(order)),
             );
-            if (order.activationDocumentMrid) {
-                return order.activationDocumentMrid;
-            }
+            return order.activationDocumentMrid;
         }
         return;
     }
@@ -318,17 +325,20 @@ export class ActivationDocumentController {
 
         const order: ActivationDocument = allResults[0];
         console.log('orderBE=', order);
-        order.reconciliation = true;
-        if (!order.subOrderList) {
-            order.subOrderList = [];
-            order.subOrderList.push(activationDocumentMrid);
-        } else {
-            order.subOrderList.push(activationDocumentMrid);
+        if (order) {
+            order.reconciliation = true;
+            if (!order.subOrderList) {
+                order.subOrderList = [];
+                order.subOrderList.push(activationDocumentMrid);
+            } else {
+                order.subOrderList.push(activationDocumentMrid);
+            }
+            await ctx.stub.putState(
+                order.activationDocumentMrid,
+                Buffer.from(JSON.stringify(order)),
+            );
+            return order.activationDocumentMrid;
         }
-        await ctx.stub.putState(
-            order.activationDocumentMrid,
-            Buffer.from(JSON.stringify(order)),
-        );
-        return order.activationDocumentMrid;
+        return;
     }
 }

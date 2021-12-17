@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+config.define_bool("dev-frontend")
 config.define_bool("no-volumes")
 cfg = config.parse()
 

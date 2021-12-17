@@ -47,27 +47,27 @@ spec:
             - name: spring.mail.host
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-star-keycloak-extra-secrets"
+                  name: "{{ .Release.Name }}-keycloak-extra-secrets"
                   key: SMTP_HOST
             - name: spring.mail.port
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-star-keycloak-extra-secrets"
+                  name: "{{ .Release.Name }}-keycloak-extra-secrets"
                   key: SMTP_PORT
             - name: spring.mail.username
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-star-keycloak-extra-secrets"
+                  name: "{{ .Release.Name }}-keycloak-extra-secrets"
                   key: SMTP_USER
             - name: spring.mail.password
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-star-keycloak-extra-secrets"
+                  name: "{{ .Release.Name }}-keycloak-extra-secrets"
                   key: SMTP_PASSWORD
             - name: spring.mail.properties.mail.smtp.auth
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}-star-keycloak-extra-secrets"
+                  name: "{{ .Release.Name }}-keycloak-extra-secrets"
                   key: SMTP_AUTH
             - name: spring.mail.properties.mail.smtp.starttls.enable
               # FIXME: use SMTP_SSL secret?
@@ -112,7 +112,7 @@ spec:
               value: "https://{{ .Values.ingress.host }}/auth/realms/star/protocol/openid-connect/token"
           ports:
             - name: http
-              containerPort: 7772
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:

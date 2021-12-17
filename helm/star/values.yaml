@@ -177,7 +177,7 @@ keycloak:
         name: "{{ .Release.Name }}-{{ .Values.nameOverride }}"
       databasePassword:
         name: "{{ .Release.Name }}-{{ .Values.postgresql.nameOverride }}"
-  extraEnvVarsSecret: '{{ .Release.Name }}-star-keycloak-extra-secrets'
+  extraEnvVarsSecret: '{{ .Release.Name }}-keycloak-extra-secrets'
   podLabels:
     "{{ .Release.Name }}-{{ .Values.postgresql.nameOverride }}-client": "true"
   resources:

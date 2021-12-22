@@ -85,10 +85,10 @@ describe('Star Tests RESTITUTIONS', () => {
             let star = new Star();
 
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.createProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
             chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.createSystemOperator(transactionContext, 'ENEDIS02EIC', 'ENEDIS', 'A50');
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"ENEDIS02EIC\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A50\"}');
             await star.createProducer(transactionContext, 'EolienFRvert29EIC', 'EolienFR vert Cie', 'A50');
 
 
@@ -137,10 +137,10 @@ describe('Star Tests RESTITUTIONS', () => {
             let star = new Star();
 
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.createProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
             chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.createSystemOperator(transactionContext, 'ENEDIS02EIC', 'ENEDIS', 'A50');
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"ENEDIS02EIC\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A50\"}');
             await star.createProducer(transactionContext, 'EolienFRvert29EIC', 'EolienFR vert Cie', 'A50');
 
 

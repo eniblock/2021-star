@@ -6,7 +6,7 @@ const sinonChai = require('sinon-chai');
 const expect = chai.expect;
 
 import { Context } from 'fabric-contract-api'
-import { ChaincodeServer, ChaincodeStub } from 'fabric-shim'
+import { ChaincodeStub } from 'fabric-shim'
 
 import { Star } from '../src/star'
 import { Producer } from '../src/producer';
@@ -221,7 +221,7 @@ describe('Star Tests PRODUCERS', () => {
             let star = new Star();
 
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.createSystemOperator(transactionContext, 'RTE01EIC', 'RTE', 'A49');
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             chaincodeStub.MspiID = 'RTEMSP';
             await star.createProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
             chaincodeStub.MspiID = 'ENEDISMSP';

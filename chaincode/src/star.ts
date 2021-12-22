@@ -4,13 +4,12 @@
 
 import { Context, Contract } from 'fabric-contract-api';
 import { ActivationDocumentController } from './controller/ActivationDocumentController';
+import { SystemOperatorController } from './controller/SystemOperatorController';
 import { YellowPagesController } from './controller/YellowPagesController';
 import { OrganizationTypeMsp } from './enums/OrganizationMspType';
-import { ActivationDocument } from './model/activationDocument';
 import { Producer } from './producer';
 import { ViewMarketParticipant } from './restitutionMarketParticipant';
 import { Site } from './site';
-import { SystemOperator } from './systemOperator';
 
 export class Star extends Contract {
 
@@ -22,104 +21,39 @@ export class Star extends Contract {
 
     /*      SystemOperator      */
 
-    public async createSystemOperator(
+    public async CreateSystemOperator(ctx: Context, inputStr: string) {
+        try {
+            return (await SystemOperatorController.createSystemOperator(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async UpdateSystemOperator(ctx: Context, inputStr: string) {
+        try {
+            return (await SystemOperatorController.updateSystemOperator(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async QuerySystemOperator(
         ctx: Context,
-        systemOperatorMarketParticipantMrId: string,
-        marketParticipantName: string,
-        marketParticipantRoleType: string) {
-        console.info(
-            '============= START : Create %s System Operator Market Participant ===========',
-            systemOperatorMarketParticipantMrId,
-        );
-
-        const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access to create a system operator`);
+        id: string) {
+        try {
+            return (await SystemOperatorController.querySystemOperator(ctx, id));
+        } catch (error) {
+            throw error;
         }
-        if (!identity.toLowerCase().includes(marketParticipantName.toLowerCase())) {
-            throw new Error(`Organisation, ${identity} does not have write access for ${marketParticipantName}`);
-        }
-
-        const somp: SystemOperator = {
-            docType: 'systemOperator',
-            marketParticipantName,
-            marketParticipantRoleType,
-            systemOperatorMarketParticipantMrId, // PK
-        };
-
-        await ctx.stub.putState(systemOperatorMarketParticipantMrId, Buffer.from(JSON.stringify(somp)));
-        console.info(
-            '============= END   : Create %s System Operator Market Participant ===========',
-            systemOperatorMarketParticipantMrId,
-        );
     }
 
-    public async querySystemOperator(ctx: Context, sompId: string): Promise<string> {
-        console.info('============= START : Query %s System Operator Market Participant ===========', sompId);
-        const sompAsBytes = await ctx.stub.getState(sompId);
-        if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`${sompId} does not exist`);
+    public async GetAllSystemOperator(
+        ctx: Context) {
+        try {
+            return (await SystemOperatorController.getAllSystemOperator(ctx));
+        } catch (error) {
+            throw error;
         }
-        console.info('============= END   : Query %s System Operator Market Participant ===========');
-        console.info(sompId, sompAsBytes.toString());
-        return sompAsBytes.toString();
-    }
-
-    public async updateSystemOperator(
-        ctx: Context,
-        systemOperatorMarketParticipantMrId: string,
-        marketParticipantName: string,
-        marketParticipantRoleType: string) {
-
-        console.info(
-            '============= START : Update %s System Operator Market Participant ===========',
-            systemOperatorMarketParticipantMrId,
-        );
-
-        const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access to update a system operator`);
-        }
-        if (!identity.includes(marketParticipantName)) {
-            throw new Error(`Organisation, ${identity} does not have write access for ${marketParticipantName}`);
-        }
-
-        const sompAsBytes = await ctx.stub.getState(systemOperatorMarketParticipantMrId);
-        if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`${systemOperatorMarketParticipantMrId} does not exist`);
-        }
-        const somp: SystemOperator = {
-            docType: 'systemOperator',
-            marketParticipantName,
-            marketParticipantRoleType,
-            systemOperatorMarketParticipantMrId,
-        };
-
-        await ctx.stub.putState(systemOperatorMarketParticipantMrId, Buffer.from(JSON.stringify(somp)));
-        console.info(
-            '============= END : Update %s System Operator Market Participant ===========',
-            systemOperatorMarketParticipantMrId,
-        );
-    }
-
-    public async getAllSystemOperator(ctx: Context): Promise<string> {
-        const allResults = [];
-        // const iterator = await ctx.stub.getStateByRange('', '');
-        const query = `{"selector": {"docType": "systemOperator"}}`;
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
     }
 
     /*      Producer      */
@@ -325,7 +259,7 @@ export class Star extends Contract {
 /*      Restitution View System Operator Market Participant      */
 
     public async restitutionSystemOperaterMarketParticipant(ctx: Context): Promise<string> {
-        const systemOperators = await this.getAllSystemOperator(ctx);
+        const systemOperators = await SystemOperatorController.getAllSystemOperator(ctx);
         const producers = await this.getAllProducer(ctx);
 
         const restitutionView: ViewMarketParticipant = {
@@ -338,7 +272,7 @@ export class Star extends Contract {
     /*      Restitution View Producer Market Participant       */
 
     public async restitutionProducerMarketParticipant(ctx: Context, prodId: string): Promise<string> {
-        const systemOperators = await this.getAllSystemOperator(ctx);
+        const systemOperators = await SystemOperatorController.getAllSystemOperator(ctx);
         const producers = await this.queryProducer(ctx, prodId);
 
         const restitutionView: ViewMarketParticipant = {

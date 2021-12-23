@@ -64,7 +64,7 @@ export class ProducerController {
         try {
             producerObj = JSON.parse(inputStr);
         } catch (error) {
-            throw new Error(`ERROR createProducer-> Input string NON-JSON value`);
+            throw new Error(`ERROR updateProducer-> Input string NON-JSON value`);
         }
 
         const producerInput = Producer.schema.validateSync(

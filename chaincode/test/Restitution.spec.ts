@@ -68,11 +68,11 @@ describe('Star Tests RESTITUTIONS', () => {
         });
     });
 
-    describe('Test restitutionSystemOperaterMarketParticipant', () => {    
+    describe('Test ViewSystemOperaterMarketParticipant', () => {    
         it('should return SUCCESS empty Participants', async () => {
             let star = new Star();
 
-            let ret = await star.restitutionSystemOperaterMarketParticipant(transactionContext);
+            let ret = await star.ViewSystemOperaterMarketParticipant(transactionContext);
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
 
@@ -91,7 +91,7 @@ describe('Star Tests RESTITUTIONS', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"ENEDIS02EIC\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A22\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
 
-            let ret = await star.restitutionSystemOperaterMarketParticipant(transactionContext);
+            let ret = await star.ViewSystemOperaterMarketParticipant(transactionContext);
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
             // expect(ret.length).to.equal(3);
@@ -131,7 +131,7 @@ describe('Star Tests RESTITUTIONS', () => {
         });
     });
 
-    describe('Test restitutionProducerMarketParticipant', () => {    
+    describe('Test ViewProducerMarketParticipant', () => {    
         it('should return SUCCESS on Producer view', async () => {
             let star = new Star();
 
@@ -142,7 +142,7 @@ describe('Star Tests RESTITUTIONS', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"ENEDIS02EIC\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A22\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
 
-            let ret = await star.restitutionProducerMarketParticipant(transactionContext, 'EolienFRvert28EIC');
+            let ret = await star.ViewProducerMarketParticipant(transactionContext, 'EolienFRvert28EIC');
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
             // expect(ret.length).to.equal(3);

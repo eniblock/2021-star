@@ -1,10 +1,8 @@
-import { strict } from 'assert';
-import { Context, Contract } from 'fabric-contract-api';
+import { Context } from 'fabric-contract-api';
 import { MeasurementUnitType } from '../enums/MesurementUnitType';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { ActivationDocument } from '../model/activationDocument';
 import { YellowPages } from '../model/yellowPages';
-// import { SystemOperator } from '../model/systemOperator';
 
 export class ActivationDocumentController {
 

@@ -310,7 +310,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             let star = new Star();
 
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.createProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             chaincodeStub.MspiID = 'ENEDISMSP';

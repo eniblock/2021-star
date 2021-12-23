@@ -4,7 +4,7 @@ import { MeasurementUnitType } from '../enums/MesurementUnitType';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { ActivationDocument } from '../model/activationDocument';
 import { YellowPages } from '../model/yellowPages';
-import { SystemOperator } from '../systemOperator';
+// import { SystemOperator } from '../model/systemOperator';
 
 export class ActivationDocumentController {
 

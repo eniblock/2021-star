@@ -6,7 +6,7 @@ const sinonChai = require('sinon-chai');
 const expect = chai.expect;
 
 import { Context } from 'fabric-contract-api'
-import { ChaincodeServer, ChaincodeStub } from 'fabric-shim'
+import { ChaincodeStub } from 'fabric-shim'
 
 import { Star } from '../src/star'
 
@@ -86,11 +86,10 @@ describe('Star Tests RESTITUTIONS', () => {
 
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
-            await star.createProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"ENEDIS02EIC\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A50\"}');
-            await star.createProducer(transactionContext, 'EolienFRvert29EIC', 'EolienFR vert Cie', 'A50');
-
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"ENEDIS02EIC\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A22\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
 
             let ret = await star.restitutionSystemOperaterMarketParticipant(transactionContext);
             ret = JSON.parse(ret);
@@ -109,7 +108,7 @@ describe('Star Tests RESTITUTIONS', () => {
                     docType: 'producer',
                     producerMarketParticipantMrId: 'EolienFRvert29EIC',
                     producerMarketParticipantName: 'EolienFR vert Cie',
-                    producerMarketParticipantRoleType: 'A50'
+                    producerMarketParticipantRoleType: 'A22'
                   }
                 ],
                 systemOperators: [
@@ -122,7 +121,7 @@ describe('Star Tests RESTITUTIONS', () => {
                   {
                     docType: 'systemOperator',
                     marketParticipantName: 'ENEDIS',
-                    marketParticipantRoleType: 'A50',
+                    marketParticipantRoleType: 'A22',
                     systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'
                   }
                 ]
@@ -138,11 +137,10 @@ describe('Star Tests RESTITUTIONS', () => {
 
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
-            await star.createProducer(transactionContext, 'EolienFRvert28EIC', 'EolienFR vert Cie', 'A21');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"ENEDIS02EIC\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A50\"}');
-            await star.createProducer(transactionContext, 'EolienFRvert29EIC', 'EolienFR vert Cie', 'A50');
-
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"ENEDIS02EIC\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A22\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
 
             let ret = await star.restitutionProducerMarketParticipant(transactionContext, 'EolienFRvert28EIC');
             ret = JSON.parse(ret);
@@ -166,7 +164,7 @@ describe('Star Tests RESTITUTIONS', () => {
                 {
                     docType: 'systemOperator',
                     marketParticipantName: 'ENEDIS',
-                    marketParticipantRoleType: 'A50',
+                    marketParticipantRoleType: 'A22',
                     systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'
                 }
                 ]

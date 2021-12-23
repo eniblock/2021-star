@@ -4,10 +4,11 @@
 
 import { Context, Contract } from 'fabric-contract-api';
 import { ActivationDocumentController } from './controller/ActivationDocumentController';
+import { ProducerController } from './controller/ProducerController';
 import { SystemOperatorController } from './controller/SystemOperatorController';
 import { YellowPagesController } from './controller/YellowPagesController';
 import { OrganizationTypeMsp } from './enums/OrganizationMspType';
-import { Producer } from './producer';
+// import { Producer } from './producer';
 import { ViewMarketParticipant } from './restitutionMarketParticipant';
 import { Site } from './site';
 
@@ -58,97 +59,132 @@ export class Star extends Contract {
 
     /*      Producer      */
 
-    public async createProducer(
+    // public async createProducer(
+    //     ctx: Context,
+    //     producerMarketParticipantMrId: string,
+    //     producerMarketParticipantName: string,
+    //     producerMarketParticipantRoleType: string) {
+    //     console.info(
+    //         '============= START : Create %s Producer Market Participant ===========',
+    //         producerMarketParticipantMrId,
+    //     );
+
+    //     const identity = await ctx.stub.getMspID();
+    //     if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+    //         throw new Error(`Organisation, ${identity} does not have write access to create a producer`);
+    //     }
+
+    //     const producer: Producer = {
+    //         docType: 'producer',
+    //         producerMarketParticipantMrId, // PK
+    //         producerMarketParticipantName,
+    //         producerMarketParticipantRoleType,
+    //     };
+
+    //     await ctx.stub.putState(producerMarketParticipantMrId, Buffer.from(JSON.stringify(producer)));
+    //     console.info(
+    //         '============= END   : Create %s Producer Market Participant ===========',
+    //         producerMarketParticipantMrId,
+    //     );
+    // }
+
+    // public async queryProducer(ctx: Context, prodId: string): Promise<string> {
+    //     console.info('============= START : Query %s Producer Market Participant ===========', prodId);
+    //     const prodAsBytes = await ctx.stub.getState(prodId);
+    //     if (!prodAsBytes || prodAsBytes.length === 0) {
+    //         throw new Error(`${prodId} does not exist`);
+    //     }
+    //     console.info('============= END   : Query %s Producer Market Participant ===========');
+    //     console.info(prodId, prodAsBytes.toString());
+    //     return prodAsBytes.toString();
+    // }
+
+    // public async updateProducer(
+    //     ctx: Context,
+    //     producerMarketParticipantMrId: string,
+    //     producerMarketParticipantName: string,
+    //     producerMarketParticipantRoleType: string) {
+
+    //     console.info(
+    //         '============= START : Update %s Producer Market Participant ===========',
+    //         producerMarketParticipantMrId,
+    //     );
+
+    //     const identity = await ctx.stub.getMspID();
+    //     if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+    //         throw new Error(`Organisation, ${identity} does not have write access to update a producer`);
+    //     }
+
+    //     const prodAsBytes = await ctx.stub.getState(producerMarketParticipantMrId);
+    //     if (!prodAsBytes || prodAsBytes.length === 0) {
+    //         throw new Error(`${producerMarketParticipantMrId} does not exist`);
+    //     }
+    //     const prod: Producer = {
+    //         docType: 'producer',
+    //         producerMarketParticipantMrId, // PK
+    //         producerMarketParticipantName,
+    //         producerMarketParticipantRoleType,
+    //     };
+
+    //     await ctx.stub.putState(producerMarketParticipantMrId, Buffer.from(JSON.stringify(prod)));
+    //     console.info(
+    //         '============= END : Update %s Producer Market Participant ===========',
+    //         producerMarketParticipantMrId,
+    //     );
+    // }
+
+    // public async getAllProducer(ctx: Context): Promise<string> {
+    //     const allResults = [];
+    //     const query = `{"selector": {"docType": "producer"}}`;
+    //     const iterator = await ctx.stub.getQueryResult(query);
+    //     let result = await iterator.next();
+    //     while (!result.done) {
+    //         const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+    //         let record;
+    //         try {
+    //             record = JSON.parse(strValue);
+    //         } catch (err) {
+    //             record = strValue;
+    //         }
+    //         allResults.push(record);
+    //         result = await iterator.next();
+    //     }
+    //     return JSON.stringify(allResults);
+    // }
+
+    public async CreateProducer(ctx: Context, inputStr: string) {
+        try {
+            return (await ProducerController.createProducer(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async UpdateProducer(ctx: Context, inputStr: string) {
+        try {
+            return (await ProducerController.updateProducer(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async QueryProducer(
         ctx: Context,
-        producerMarketParticipantMrId: string,
-        producerMarketParticipantName: string,
-        producerMarketParticipantRoleType: string) {
-        console.info(
-            '============= START : Create %s Producer Market Participant ===========',
-            producerMarketParticipantMrId,
-        );
-
-        const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access to create a producer`);
+        id: string) {
+        try {
+            return (await ProducerController.queryProducer(ctx, id));
+        } catch (error) {
+            throw error;
         }
-
-        const producer: Producer = {
-            docType: 'producer',
-            producerMarketParticipantMrId, // PK
-            producerMarketParticipantName,
-            producerMarketParticipantRoleType,
-        };
-
-        await ctx.stub.putState(producerMarketParticipantMrId, Buffer.from(JSON.stringify(producer)));
-        console.info(
-            '============= END   : Create %s Producer Market Participant ===========',
-            producerMarketParticipantMrId,
-        );
     }
 
-    public async queryProducer(ctx: Context, prodId: string): Promise<string> {
-        console.info('============= START : Query %s Producer Market Participant ===========', prodId);
-        const prodAsBytes = await ctx.stub.getState(prodId);
-        if (!prodAsBytes || prodAsBytes.length === 0) {
-            throw new Error(`${prodId} does not exist`);
+    public async GetAllProducer(
+        ctx: Context) {
+        try {
+            return (await ProducerController.getAllProducer(ctx));
+        } catch (error) {
+            throw error;
         }
-        console.info('============= END   : Query %s Producer Market Participant ===========');
-        console.info(prodId, prodAsBytes.toString());
-        return prodAsBytes.toString();
-    }
-
-    public async updateProducer(
-        ctx: Context,
-        producerMarketParticipantMrId: string,
-        producerMarketParticipantName: string,
-        producerMarketParticipantRoleType: string) {
-
-        console.info(
-            '============= START : Update %s Producer Market Participant ===========',
-            producerMarketParticipantMrId,
-        );
-
-        const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access to update a producer`);
-        }
-
-        const prodAsBytes = await ctx.stub.getState(producerMarketParticipantMrId);
-        if (!prodAsBytes || prodAsBytes.length === 0) {
-            throw new Error(`${producerMarketParticipantMrId} does not exist`);
-        }
-        const prod: Producer = {
-            docType: 'producer',
-            producerMarketParticipantMrId, // PK
-            producerMarketParticipantName,
-            producerMarketParticipantRoleType,
-        };
-
-        await ctx.stub.putState(producerMarketParticipantMrId, Buffer.from(JSON.stringify(prod)));
-        console.info(
-            '============= END : Update %s Producer Market Participant ===========',
-            producerMarketParticipantMrId,
-        );
-    }
-
-    public async getAllProducer(ctx: Context): Promise<string> {
-        const allResults = [];
-        const query = `{"selector": {"docType": "producer"}}`;
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
     }
 
     /*      Sites HTA/HTB       */
@@ -192,12 +228,12 @@ export class Star extends Contract {
         }
         const systemOperatorAsBytes = await ctx.stub.getState(site.systemOperatorMarketParticipantMrid);
         if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
-            throw new Error(`System Operator : ${site.systemOperatorMarketParticipantMrid} does not exist`);
+            throw new Error(`System Operator : ${site.systemOperatorMarketParticipantMrid} does not exist for site creation`);
         }
 
         const producerAsBytes = await ctx.stub.getState(site.producerMarketParticipantMrid);
         if (!producerAsBytes || producerAsBytes.length === 0) {
-            throw new Error(`Producer : ${site.producerMarketParticipantMrid} does not exist`);
+            throw new Error(`Producer : ${site.producerMarketParticipantMrid} does not exist for site creation`);
         }
         site.docType = 'site';
         await ctx.stub.putState(site.meteringPointMrid, Buffer.from(JSON.stringify(site)));
@@ -260,7 +296,7 @@ export class Star extends Contract {
 
     public async restitutionSystemOperaterMarketParticipant(ctx: Context): Promise<string> {
         const systemOperators = await SystemOperatorController.getAllSystemOperator(ctx);
-        const producers = await this.getAllProducer(ctx);
+        const producers = await ProducerController.getAllProducer(ctx);
 
         const restitutionView: ViewMarketParticipant = {
             producers : JSON.parse(producers),
@@ -273,7 +309,7 @@ export class Star extends Contract {
 
     public async restitutionProducerMarketParticipant(ctx: Context, prodId: string): Promise<string> {
         const systemOperators = await SystemOperatorController.getAllSystemOperator(ctx);
-        const producers = await this.queryProducer(ctx, prodId);
+        const producers = await ProducerController.queryProducer(ctx, prodId);
 
         const restitutionView: ViewMarketParticipant = {
             producers : JSON.parse(producers),

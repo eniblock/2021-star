@@ -1,6 +1,4 @@
-import { strict } from 'assert';
-import { Context, Contract } from 'fabric-contract-api';
-import { MeasurementUnitType } from '../enums/MesurementUnitType';
+import { Context } from 'fabric-contract-api';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { YellowPages } from '../model/yellowPages';
 

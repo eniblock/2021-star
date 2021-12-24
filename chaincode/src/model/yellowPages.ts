@@ -16,11 +16,7 @@ export class YellowPages {
     });
 
     public docType?: string;
-    public constructor(
-        public originAutomataRegisteredResourceMrid: string, // PK
-        public registeredResourceMrid: string, // FK1
-        public systemOperatorMarketParticipantMrid: string, // FK2
-    ) {
-        this.docType = 'yellowPages';
-    }
+    public originAutomataRegisteredResourceMrid: string; // PK
+    public registeredResourceMrid: string; // FK1
+    public systemOperatorMarketParticipantMrid: string; // FK2
 }

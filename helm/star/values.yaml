@@ -161,7 +161,7 @@ keycloak:
     reloader.stakater.com/auto: "true"
   image:
     registry: registry.gitlab.com
-    repository: xdev-tech/xdev-enterprise-business-network/keycloak
+    repository: xdev-tech/star/keycloak
     tag: develop
     pullSecrets: []
   auth:

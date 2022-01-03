@@ -9,6 +9,7 @@ import { SiteController } from './controller/SiteController';
 import { SystemOperatorController } from './controller/SystemOperatorController';
 import { ViewMarketParticipantController } from './controller/ViewMarketParticipantController';
 import { YellowPagesController } from './controller/YellowPagesController';
+import { EnergyAccountController } from './controller/EnergyAccountController';
 
 export class Star extends Contract {
 
@@ -199,6 +200,25 @@ export class Star extends Contract {
         ctx: Context) {
         try {
             return (await YellowPagesController.getAllYellowPages(ctx));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*      Energy Account       */
+
+    public async CreateEnergyAccount(ctx: Context, inputStr: string) {
+        try {
+            return (await EnergyAccountController.createEnergyAccount(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async GetAllEnergyAccount(
+        ctx: Context) {
+        try {
+            return (await EnergyAccountController.getAllEnergyAccount(ctx));
         } catch (error) {
             throw error;
         }

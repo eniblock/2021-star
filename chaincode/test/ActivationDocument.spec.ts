@@ -11,8 +11,6 @@ import { ChaincodeStub } from 'fabric-shim'
 import { Star } from '../src/star'
 import { Site } from '../src/model/site';
 import { ActivationDocument } from '../src/model/activationDocument';
-// import { SystemOperator } from '../src/model/systemOperator';
-// import { ActivationDocumentController } from '../src/controller/ActivationDocumentController';
 import { YellowPages } from '../src/model/yellowPages';
 
 let assert = sinon.assert;
@@ -47,9 +45,9 @@ describe('Star Tests ActivationDocument', () => {
                 if (chaincodeStub.states) {
                     const copied = Object.assign({}, chaincodeStub.states);
                     for (let key in copied) {
-                        console.log('copied[key]=', copied[key].toString());
+                        // console.log('copied[key]=', copied[key].toString());
                         if (copied[key] == 'non-json-value') { 
-                            console.log('IN IF copied[key]=', copied[key]);
+                            // console.log('IN IF copied[key]=', copied[key]);
 
                             yield {value: copied[key]};
                             continue
@@ -102,7 +100,7 @@ describe('Star Tests ActivationDocument', () => {
                             //     yield {value: copied[key]};
                             // }                           
                         }
-                        console.log('end of loop')
+                        // console.log('end of loop')
                     }
                 }
             }
@@ -175,7 +173,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('originAutomataRegisteredResourceMrid is required');
             }
         });
@@ -564,7 +562,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"riginAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"egisteredResourceMrid\": \"12345678901234\", \"easurementUnitName\": \"KW\",\"essageType\": \"string\",\"usinessType\": \"string\",\"rderType\": \"string\",\"rderEnd\": false}`);
             } catch(err) {
-                console.info(err)
+                // console.info(err)
                 expect(err.errors[0]).to.equal(errors[0]);
                 expect(err.errors[1]).to.equal(errors[1]);
                 expect(err.errors[2]).to.equal(errors[2]);
@@ -855,7 +853,7 @@ describe('Star Tests ActivationDocument', () => {
 
             let ret = await star.GetActivationDocumentByProducer(transactionContext, orderA.receiverMarketParticipantMrid);
             ret = JSON.parse(ret);
-            console.log('ret=', ret)
+            // console.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
             const expected: ActivationDocument[] = [

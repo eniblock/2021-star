@@ -70,7 +70,7 @@ export class ActivationDocumentController {
             if (!yellowAsBytes || yellowAsBytes.length === 0) {
                 throw new Error(`Yellow Page : ${activationDocumentInput.originAutomataRegisteredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
             }
-            console.log('yellowAsBytes for BB reconciliation=', yellowAsBytes.toString());
+            // console.log('yellowAsBytes for BB reconciliation=', yellowAsBytes.toString());
             const yellowObj: YellowPages = JSON.parse(yellowAsBytes.toString());
             activationDocumentInput.reconciliation = true;
             const ret = await ActivationDocumentController.checkForReconciliationBB(
@@ -162,19 +162,19 @@ export class ActivationDocumentController {
         queryDate: string) {
         console.info('============= START : checkForReconciliationBB ActivationDocument ===========');
         const datetmp = new Date(queryDate);
-        console.log(new Date());
-        console.log ('queryDate=', queryDate);
-        console.log ('datetmp=', datetmp);
-        console.log ('dateday=', datetmp.getDate());
-        console.log ('datemonth=', datetmp.getMonth());
-        console.log ('dateyear=', datetmp.getFullYear());
-        console.log ('datetime=', datetmp.getTime());
+        // console.log(new Date());
+        // console.log ('queryDate=', queryDate);
+        // console.log ('datetmp=', datetmp);
+        // console.log ('dateday=', datetmp.getDate());
+        // console.log ('datemonth=', datetmp.getMonth());
+        // console.log ('dateyear=', datetmp.getFullYear());
+        // console.log ('datetime=', datetmp.getTime());
 
-        console.log ('datesetmili=', datetmp.setUTCMilliseconds(0));
-        console.log ('datesetsec=', datetmp.setUTCSeconds(0));
-        console.log ('datetmp=', datetmp);
+        // console.log ('datesetmili=', datetmp.setUTCMilliseconds(0));
+        // console.log ('datesetsec=', datetmp.setUTCSeconds(0));
+        // console.log ('datetmp=', datetmp);
         const dateMinus5min = new Date(datetmp.getTime() - 300000);
-        console.log ('dateMinus5min=', dateMinus5min);
+        // console.log ('dateMinus5min=', dateMinus5min);
 
         const allResults = [];
         const query = `{
@@ -203,10 +203,10 @@ export class ActivationDocumentController {
 
         const iterator = await ctx.stub.getQueryResult(query);
         let result = await iterator.next();
-        console.log('result=', result);
+        // console.log('result=', result);
         while (!result.done) {
             const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            console.log('strValue=', strValue);
+            // console.log('strValue=', strValue);
             let record;
             try {
                 record = JSON.parse(strValue);
@@ -216,7 +216,7 @@ export class ActivationDocumentController {
             allResults.push(record);
             result = await iterator.next();
         }
-        console.log('allResults=', JSON.stringify(allResults));
+        // console.log('allResults=', JSON.stringify(allResults));
 
         try {
             const test = ActivationDocument.schema.validateSync(
@@ -228,7 +228,7 @@ export class ActivationDocumentController {
         }
 
         const order: ActivationDocument = allResults[0];
-        console.log('orderBB=', order);
+        // console.log('orderBB=', order);
         if (order) {
             // order.reconciliation = true;
             if (!order.subOrderList) {
@@ -253,24 +253,24 @@ export class ActivationDocumentController {
         queryDate: string): Promise<string> {
         console.info('============= START : checkForReconciliationBE ActivationDocument ===========');
         const datetmp = new Date(queryDate);
-        console.log(new Date());
-        console.log ('queryDate=', queryDate);
-        console.log ('datetmp=', datetmp);
-        console.log ('dateday=', datetmp.getDate());
-        console.log ('datemonth=', datetmp.getMonth());
-        console.log ('dateyear=', datetmp.getFullYear());
-        console.log ('datetime=', datetmp.getTime());
+        // console.log(new Date());
+        // console.log ('queryDate=', queryDate);
+        // console.log ('datetmp=', datetmp);
+        // console.log ('dateday=', datetmp.getDate());
+        // console.log ('datemonth=', datetmp.getMonth());
+        // console.log ('dateyear=', datetmp.getFullYear());
+        // console.log ('datetime=', datetmp.getTime());
 
-        console.log ('datesetmili=', datetmp.setUTCMilliseconds(0));
-        console.log ('datesetsec=', datetmp.setUTCSeconds(0));
-        console.log ('datesetmin=', datetmp.setUTCMinutes(0));
-        console.log ('datesethour=', datetmp.setUTCHours(0));
-        console.log ('datetmptime=', datetmp.getTime());
-        console.log ('datetmp=', datetmp);
-        console.log ('datetmp=', datetmp.toUTCString());
+        // console.log ('datesetmili=', datetmp.setUTCMilliseconds(0));
+        // console.log ('datesetsec=', datetmp.setUTCSeconds(0));
+        // console.log ('datesetmin=', datetmp.setUTCMinutes(0));
+        // console.log ('datesethour=', datetmp.setUTCHours(0));
+        // console.log ('datetmptime=', datetmp.getTime());
+        // console.log ('datetmp=', datetmp);
+        // console.log ('datetmp=', datetmp.toUTCString());
         const dateYesterday = new Date(datetmp.getTime() - 86400000);
-        console.log ('dateYesterday=', dateYesterday);
-        console.log ('dateYesterday=', dateYesterday.toUTCString());
+        // console.log ('dateYesterday=', dateYesterday);
+        // console.log ('dateYesterday=', dateYesterday.toUTCString());
 
         const allResults = [];
         const query = `{
@@ -297,10 +297,10 @@ export class ActivationDocumentController {
         // }`;
         const iterator = await ctx.stub.getQueryResult(query);
         let result = await iterator.next();
-        console.log('result=', result);
+        // console.log('result=', result);
         while (!result.done) {
             const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            console.log('strValue=', strValue);
+            // console.log('strValue=', strValue);
             let record;
             try {
                 record = JSON.parse(strValue);
@@ -310,7 +310,7 @@ export class ActivationDocumentController {
             allResults.push(record);
             result = await iterator.next();
         }
-        console.log('allResults=', JSON.stringify(allResults));
+        // console.log('allResults=', JSON.stringify(allResults));
 
         try {
             const test = ActivationDocument.schema.validateSync(
@@ -322,7 +322,7 @@ export class ActivationDocumentController {
         }
 
         const order: ActivationDocument = allResults[0];
-        console.log('orderBE=', order);
+        // console.log('orderBE=', order);
         if (order) {
             order.reconciliation = true;
             if (!order.subOrderList) {

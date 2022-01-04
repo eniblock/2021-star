@@ -132,8 +132,8 @@ describe('Star Tests SITES', () => {
             try {
                 await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PDL00000000289766\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
             } catch(err) {
-                console.info(err);
-                console.info(err.message);
+                // console.info(err);
+                // console.info(err.message);
                 expect(err.message).to.equal('System Operator : 17V000000992746D does not exist for site creation');
             }
         });
@@ -524,7 +524,7 @@ describe('Star Tests SITES', () => {
 
             let retB = await star.GetSitesByProducer(transactionContext, siteHTB.producerMarketParticipantMrid);
             retB = JSON.parse(retB);
-            console.log('retB=', retB) //
+            // console.log('retB=', retB) //
             expect(retB.length).to.equal(2);
 
             const expected = [

@@ -301,7 +301,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
 
             let ret = await star.GetAllSystemOperator(transactionContext);
             ret = JSON.parse(ret);
-            console.log('ret=', ret)
+            // console.log('ret=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });

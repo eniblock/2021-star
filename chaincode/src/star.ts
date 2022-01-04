@@ -4,12 +4,12 @@
 
 import { Context, Contract } from 'fabric-contract-api';
 import { ActivationDocumentController } from './controller/ActivationDocumentController';
+import { EnergyAccountController } from './controller/EnergyAccountController';
 import { ProducerController } from './controller/ProducerController';
 import { SiteController } from './controller/SiteController';
 import { SystemOperatorController } from './controller/SystemOperatorController';
 import { ViewMarketParticipantController } from './controller/ViewMarketParticipantController';
 import { YellowPagesController } from './controller/YellowPagesController';
-import { EnergyAccountController } from './controller/EnergyAccountController';
 
 export class Star extends Contract {
 

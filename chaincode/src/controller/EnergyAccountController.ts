@@ -11,7 +11,7 @@ export class EnergyAccountController {
 
         const identity = await ctx.stub.getMspID();
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Yellow Pages.`);
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Account.`);
         }
 
         let energyObj: EnergyAccount;
@@ -26,34 +26,29 @@ export class EnergyAccountController {
             {strict: true, abortEarly: false},
         );
 
-        // const systemOperatorAsBytes = await ctx.stub.getState(energyAccountInput.systemOperatorMarketParticipantMrid);
-        // if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
-        //     throw new Error(`System Operator : ${energyAccountInput.systemOperatorMarketParticipantMrid} does not exist in Yellow Pages ${energyAccountInput.originAutomataRegisteredResourceMrid}.`);
-        // }
-
         const siteAsBytes = await ctx.stub.getState(energyAccountInput.meteringPointMrid);
         if (!siteAsBytes || siteAsBytes.length === 0) {
-            throw new Error(`Site : ${energyAccountInput.meteringPointMrid} does not exist in Yellow Pages ${energyAccountInput.originAutomataRegisteredResourceMrid}.`);
+            throw new Error(`Site : ${energyAccountInput.meteringPointMrid} does not exist for Energy Account ${energyAccountInput.energyAccountMarketDocumentMrid} creation.`);
         }
 
-        energyAccountInput.docType = 'enrgyAccount';
+        energyAccountInput.docType = 'energyAccount';
 
         await ctx.stub.putState(
-            energyAccountInput.originAutomataRegisteredResourceMrid,
+            energyAccountInput.energyAccountMarketDocumentMrid,
             Buffer.from(JSON.stringify(energyAccountInput)),
         );
         console.info(
             '============= END   : Create %s EnergyAccount ===========',
-            energyAccountInput.originAutomataRegisteredResourceMrid,
+            energyAccountInput.energyAccountMarketDocumentMrid,
         );
     }
 
     public static async getAllEnergyAccount(ctx: Context): Promise<string> {
         const allResults = [];
-        const query = `{"selector": {"docType": "enrgyAccount"}}`;
+        const query = `{"selector": {"docType": "energyAccount"}}`;
         const identity = await ctx.stub.getMspID();
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have read access for Yellow Pages.`);
+            throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
         }
 
         const iterator = await ctx.stub.getQueryResult(query);

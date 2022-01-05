@@ -215,12 +215,23 @@ export class Star extends Contract {
         }
     }
 
-    public async GetAllEnergyAccount(
-        ctx: Context) {
-        try {
-            return (await EnergyAccountController.getAllEnergyAccount(ctx));
+    public async GetEnergyAccount(
+        ctx: Context,
+        inputStr: string,
+        dateStr: string) {
+                try {
+            return (await EnergyAccountController.getEnergyAccount(ctx, inputStr, dateStr));
         } catch (error) {
             throw error;
         }
     }
+
+    // public async GetAllEnergyAccount(
+    //     ctx: Context) {
+    //     try {
+    //         return (await EnergyAccountController.getAllEnergyAccount(ctx));
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
 }

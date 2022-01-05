@@ -173,6 +173,8 @@ export class ActivationDocumentController {
         // console.log ('datesetmili=', datetmp.setUTCMilliseconds(0));
         // console.log ('datesetsec=', datetmp.setUTCSeconds(0));
         // console.log ('datetmp=', datetmp);
+        datetmp.setUTCMilliseconds(0);
+        datetmp.setUTCSeconds(0);
         const dateMinus5min = new Date(datetmp.getTime() - 300000);
         // console.log ('dateMinus5min=', dateMinus5min);
 
@@ -268,6 +270,10 @@ export class ActivationDocumentController {
         // console.log ('datetmptime=', datetmp.getTime());
         // console.log ('datetmp=', datetmp);
         // console.log ('datetmp=', datetmp.toUTCString());
+        datetmp.setUTCMilliseconds(0);
+        datetmp.setUTCSeconds(0);
+        datetmp.setUTCMinutes(0);
+        datetmp.setUTCHours(0);
         const dateYesterday = new Date(datetmp.getTime() - 86400000);
         // console.log ('dateYesterday=', dateYesterday);
         // console.log ('dateYesterday=', dateYesterday.toUTCString());

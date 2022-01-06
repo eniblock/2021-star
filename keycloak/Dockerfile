@@ -1,3 +1,3 @@
-FROM registry.gitlab.com/xdev-tech/xdev-enterprise-business-network/keycloak:0.1.0
+FROM registry.gitlab.com/xdev-tech/xdev-enterprise-business-network/keycloak
 COPY themes/base/login/login.ftl /opt/bitnami/keycloak/themes/base/login/login.ftl
 COPY themes/custom-theme /opt/bitnami/keycloak/themes/custom-theme/

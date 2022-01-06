@@ -4,6 +4,9 @@ import { NgModule } from '@angular/core';
 
 export enum PATH_ROUTE {
   ACCUEIL = 'accueil',
+  RESEAU = 'reseau',
+  ACTIVATIONS = 'activations',
+  CHARGER = 'charger',
 
   ERROR = 'error',
 }
@@ -19,6 +22,32 @@ const routes: Routes = [
     path: PATH_ROUTE.ACCUEIL,
     loadChildren: () =>
       import('./pages/accueil/accueil.module').then((m) => m.HomeModule),
+    canActivate: [AuthGuard],
+    data: { roles: [] },
+  },
+
+  {
+    path: PATH_ROUTE.RESEAU,
+    loadChildren: () =>
+      import('./pages/reseau/reseau.module').then((m) => m.ReseauModule),
+    canActivate: [AuthGuard],
+    data: { roles: [] },
+  },
+
+  {
+    path: PATH_ROUTE.ACTIVATIONS,
+    loadChildren: () =>
+      import('./pages/activations/activations.module').then(
+        (m) => m.ActivationsModule
+      ),
+    canActivate: [AuthGuard],
+    data: { roles: [] },
+  },
+
+  {
+    path: PATH_ROUTE.CHARGER,
+    loadChildren: () =>
+      import('./pages/charger/charger.module').then((m) => m.ChargerModule),
     canActivate: [AuthGuard],
     data: { roles: [] },
   },

@@ -15,6 +15,7 @@
     <properties>
         <image_path/>
         <keycloak.version>15.0.0</keycloak.version>
+        <swagger.version>1.5.2</swagger.version>
     </properties>
     <dependencies>
         <dependency>
@@ -48,6 +49,16 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>

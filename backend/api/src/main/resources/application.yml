@@ -34,14 +34,9 @@ keycloak:
     secret: 34f485e9ac95696a0d9f
   use-resource-role-mappings: true
   principal-attribute: preferred_username
-  # Secured and only for role admin
-  securityConstraints[0]:
-    authRoles[0]: ROLE_ADMIN
-    securityCollections[0]:
-      patterns[0]: /api/admin
-  # Secured and only for role manager
-  security-constraints[1]:
-    authRoles[0]: ROLE_MANAGER
-    securityCollections[0]:
-      patterns[0]: /api/manager
+notification:
+  dso: false
+#  Valeur possible : tso/dso/producer
+instance: tso
+
 

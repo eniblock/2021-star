@@ -7,15 +7,15 @@ import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.springframework.http.MediaType;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
- * Copyright (c) 2021, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
+ * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
 public class TestUtil {

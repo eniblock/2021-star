@@ -38,11 +38,8 @@ public class HyperLedgerFabricConfiguration {
     @Value("${hyperledger-fabric.gateway.networkConfig}")
     private String networkConfig;
 
-    @Value("${blockchain.api.contractdso}")
-    private String contractdso;
-
-    @Value("${blockchain.api.contracttso}")
-    private String contracttso;
+    @Value("${blockchain.api.contract}")
+    private String contract;
 
     @Value("${hyperledger-fabric.gateway.identityId}")
     private String identityId;
@@ -74,15 +71,9 @@ public class HyperLedgerFabricConfiguration {
         return builder.connect();
     }
 
-    @Bean(name = "dsoContract")
-    public Contract dsoContract() throws IOException, CertificateException, EnrollmentException, InvalidArgumentException, NoSuchMethodException, InvocationTargetException, org.hyperledger.fabric.sdk.exception.InvalidArgumentException, InstantiationException, IllegalAccessException, CryptoException, ClassNotFoundException {
-        return this.network().getContract(contractdso);
-    }
-
-
-    @Bean(name = "tsoContract")
-    public Contract tsoContract() throws IOException, CertificateException, EnrollmentException, InvalidArgumentException, NoSuchMethodException, InvocationTargetException, org.hyperledger.fabric.sdk.exception.InvalidArgumentException, InstantiationException, IllegalAccessException, CryptoException, ClassNotFoundException {
-        return this.network().getContract(contracttso);
+    @Bean
+    public Contract contract() throws IOException, CertificateException, EnrollmentException, InvalidArgumentException, NoSuchMethodException, InvocationTargetException, org.hyperledger.fabric.sdk.exception.InvalidArgumentException, InstantiationException, IllegalAccessException, CryptoException, ClassNotFoundException {
+        return this.network().getContract(contract);
     }
 
     @Bean

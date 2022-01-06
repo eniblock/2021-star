@@ -1,7 +1,7 @@
 package com.star.models.participant.dso;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.star.models.participant.ImportCSV;
+import com.star.models.imports.ImportCSV;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

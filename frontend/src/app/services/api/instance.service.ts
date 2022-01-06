@@ -18,9 +18,6 @@ export class InstanceService {
   ) {}
 
   getTypeInstance(): Observable<Instance> {
-    // TODO : MOCK
-    return of(Instance.TSO);
-
     // On utilise un cache en Production
     if (environment.production) {
       return this.cacheService.getValueInCacheOrLoadIt<Instance>(

@@ -1,8 +1,10 @@
 package com.star.rest;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.exception.TechnicalException;
 import com.star.models.participant.MarketParticipant;
+import com.star.models.participant.SystemOperator;
 import com.star.models.participant.dso.ImportMarketParticipantDsoResult;
 import com.star.models.participant.tso.ImportMarketParticipantTsoResult;
 import com.star.rest.enums.InstanceEnum;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static com.star.rest.enums.InstanceEnum.DSO;
 import static com.star.rest.enums.InstanceEnum.PRODUCER;
@@ -100,8 +104,8 @@ public class MarketParticipantController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get list of market participant",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping
-    public ResponseEntity<MarketParticipant> getMarketParticipantDsos() throws TechnicalException {
-        return ResponseEntity.ok(marketParticipantService.getMarketParticipant());
+    public ResponseEntity<List<SystemOperator>> getMarketParticipants() throws JsonProcessingException, ContractException {
+        return ResponseEntity.ok(marketParticipantService.getSystemOperators());
     }
 
 }

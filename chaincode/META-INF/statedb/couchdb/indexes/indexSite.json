@@ -1,0 +1,13 @@
+{
+   "index":{
+      "fields":[
+         "docType", "instance","siteId", "systemOperatorMarketParticipantMrid","technologyType", "siteType",
+         "meteringPointMrid","siteName","siteLocation","siteIecCode","producerMarketParticipantMrid","substationMrid",
+         "substationName","systemOperatorEntityFlexibilityDomainMrid", "systemOperatorEntityFlexibilityDomainName","systemOperatorCustomerServiceName",
+         "ppeSiteCode","edpRegisteredResourceMrid", "schedulingEntityRegisteredResourceMrid","producerMarketParticipantName"
+      ]
+   },
+   "ddoc":"indexSiteDoc",
+   "name":"indexSite",
+   "type":"json"
+}

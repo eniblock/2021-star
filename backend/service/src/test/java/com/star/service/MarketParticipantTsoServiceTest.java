@@ -4,16 +4,19 @@ import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
 import com.star.models.participant.tso.ImportMarketParticipantTsoResult;
 import com.star.models.participant.tso.MarketParticipantTso;
-import org.hyperledger.fabric.gateway.ContractException;
+import com.star.repository.MarketParticipantRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.concurrent.TimeoutException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -38,6 +41,12 @@ public class MarketParticipantTsoServiceTest extends AbstractTest {
 
     @Value("classpath:/marketParticipantTso/market-participant-tso-donnees-ko.csv")
     private Reader csvMarketParticipantTsoDataKo;
+
+    @Captor
+    private ArgumentCaptor<List<MarketParticipantTso>> marketParticipantTsoArgumentCaptor;
+
+    @MockBean
+    private MarketParticipantRepository marketParticipantRepository;
 
     @Autowired
     private MarketParticipantService marketParticipantService;
@@ -85,6 +94,7 @@ public class MarketParticipantTsoServiceTest extends AbstractTest {
         String error = importMarketParticipantTsoResult .getErrors().get(0);
         assertThat(error).contains("Fichier "+fileName);
         assertThat(error).contains("Structure attendue : "+ new MarketParticipantTso().getHeaders());
+        assertThat(importMarketParticipantTsoResult.getDatas()).isEmpty();
     }
 
     @Test
@@ -100,7 +110,8 @@ public class MarketParticipantTsoServiceTest extends AbstractTest {
         String error = importMarketParticipantTsoResult .getErrors().get(0);
         assertThat(error).contains("Fichier "+fileName);
         assertThat(error).contains("Structure attendue : "+ new MarketParticipantTso().getHeaders());
-        verifyNoInteractions(tsoContract);
+        assertThat(importMarketParticipantTsoResult.getDatas()).isEmpty();
+        verifyNoInteractions(marketParticipantRepository);
     }
 
     @Test
@@ -123,11 +134,11 @@ public class MarketParticipantTsoServiceTest extends AbstractTest {
         marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoDataKo);
 
         // THEN
-        verifyNoInteractions(tsoContract);
+        verifyNoInteractions(marketParticipantRepository);
     }
 
     @Test
-    public void testImportMarketParticipantTsoOk() throws IOException, TechnicalException, InterruptedException, TimeoutException, ContractException {
+    public void testImportMarketParticipantTsoOk() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "market-participant-tso-ok.csv";
 
@@ -135,7 +146,9 @@ public class MarketParticipantTsoServiceTest extends AbstractTest {
         marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoOk);
 
         // THEN
-        Mockito.verify(tsoContract, Mockito.times(1)).submitTransaction("CreateMarketParticipantTSO","RTE01EIC", "RTE", "A49");
+        Mockito.verify(marketParticipantRepository, Mockito.times(1)).saveMarketParticipantTso(marketParticipantTsoArgumentCaptor.capture());
+        MarketParticipantTso marketParticipantTso = marketParticipantTsoArgumentCaptor.getValue().get(0);
+        assertThat(marketParticipantTso).extracting("tsoMarketParticipantMrid", "tsoMarketParticipantName", "tsoMarketParticipantRoleType").containsExactly("RTE01EIC", "RTE", "A49");
     }
 
 }

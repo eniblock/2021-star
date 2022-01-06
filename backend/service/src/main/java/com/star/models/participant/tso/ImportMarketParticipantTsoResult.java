@@ -1,6 +1,6 @@
 package com.star.models.participant.tso;
 
-import com.star.models.participant.ImportResult;
+import com.star.models.imports.ImportResult;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

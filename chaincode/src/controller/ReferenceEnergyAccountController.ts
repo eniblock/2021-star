@@ -60,7 +60,7 @@ export class ReferenceEnergyAccountController {
         } catch (error) {
             throw new Error(`ERROR createReferenceEnergyAccount getSystemOperator-> Input string NON-JSON value`);
         }
-        if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
+        if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
             throw new Error(
                 `Reference Energy Account, mismatch sender: ${identity} does not have write access for ${energyAccountInput.energyAccountMarketDocumentMrid} creation.`,
             );

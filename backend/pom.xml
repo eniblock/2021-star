@@ -113,8 +113,6 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>${sonarqube.version}</version>
             </plugin>
-
-
         </plugins>
     </build>
 </project>

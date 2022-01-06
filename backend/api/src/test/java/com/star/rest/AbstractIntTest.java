@@ -1,6 +1,5 @@
 package com.star.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.StarApplication;
 import com.star.configuration.TestApiConfiguration;
 import org.hyperledger.fabric.gateway.Contract;
@@ -33,16 +32,9 @@ public abstract class AbstractIntTest {
     @MockBean
     protected Gateway gateway;
 
-    @MockBean(name = "dsoContract")
-    protected Contract dsoContract;
-
-
-    @MockBean(name = "tsoContract")
-    protected Contract tsoContract;
+    @MockBean
+    protected Contract contract;
 
     @MockBean
     protected Wallet wallet;
-
-    @MockBean
-    protected ObjectMapper objectMapper;
 }

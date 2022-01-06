@@ -44,7 +44,7 @@ docker-keycloak:
     name: registry.gitlab.com/xdev-tech/build/docker:2.0
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - build_with_helm_tag $CI_REGISTRY_IMAGE/keycloak helm/star keycloak
+    - build_with_helm_tag $CI_REGISTRY_IMAGE/keycloak:lastet helm/star keycloak
 
 docker-backend:
   stage: docker

@@ -44,6 +44,12 @@ image_build(
     target='dev'
 )
 
+# keycloak build
+image_build(
+    'registry.gitlab.com/xdev-tech/star/keycloak',
+    'keycloak',
+)
+
 k8s_yaml(
     helm(
         'helm/star',

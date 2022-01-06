@@ -3,12 +3,18 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 
 export enum PATH_ROUTE {
-  HOME = '',
+  HOME = 'home',
 
   ERROR = 'error',
 }
 
 const routes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: PATH_ROUTE.HOME,
+  },
+
   {
     path: PATH_ROUTE.HOME,
     loadChildren: () =>
@@ -17,7 +23,16 @@ const routes: Routes = [
     data: { roles: [] },
   },
 
-  // TODO : errors !!!
+  /* ******* ERROR ******* */
+  {
+    path: PATH_ROUTE.ERROR,
+    loadChildren: () =>
+      import('./pages/error/error.module').then((m) => m.ErrorModule),
+  },
+  {
+    path: '**',
+    redirectTo: PATH_ROUTE.ERROR,
+  },
 ];
 
 @NgModule({

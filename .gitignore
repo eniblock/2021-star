@@ -6,7 +6,7 @@
 *~
 *.orig
 *.bak
-
+old-poc/chaincode/star
 
 HELP.md
 target/

@@ -1,29 +1,21 @@
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import {keycloakInitializer} from "./shared/keycloak-initializer";
-import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
-import { AccessDeniedComponent } from './access-denied/access-denied.component';
-import { AdminComponent } from './admin/admin.component';
-import { ManagerComponent } from './manager/manager.component';
-import {AppRoutingModule} from "./app-routing.module";
-import {HttpClientModule} from "@angular/common/http";
+import { keycloakInitializer } from './shared/keycloak-initializer';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    AccessDeniedComponent,
-    AdminComponent,
-    ManagerComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     AppRoutingModule,
     BrowserModule,
     HttpClientModule,
     KeycloakAngularModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
   ],
   providers: [
     // add this provider
@@ -34,6 +26,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       multi: true,
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

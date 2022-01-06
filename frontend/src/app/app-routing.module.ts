@@ -1,33 +1,27 @@
-import {AccessDeniedComponent} from "./access-denied/access-denied.component";
-import {AuthGuard} from "./services/auth.guard";
-import {AdminComponent} from "./admin/admin.component";
-import {ManagerComponent} from "./manager/manager.component";
-import {RouterModule, Routes} from "@angular/router";
-import {NgModule} from "@angular/core";
+import { AuthGuard } from './services/auth.guard';
+import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+
+export enum PATH_ROUTE {
+  HOME = '',
+
+  ERROR = 'error',
+}
 
 const routes: Routes = [
   {
-    path: 'access-denied',
-    component: AccessDeniedComponent,
+    path: PATH_ROUTE.HOME,
+    loadChildren: () =>
+      import('./pages/home/home.module').then((m) => m.HomeModule),
     canActivate: [AuthGuard],
+    data: { roles: [] },
   },
-  {
-    path: 'admin',
-    component: AdminComponent,
-    canActivate: [AuthGuard],
-    data: {roles: ['ROLE_ADMIN']},
-  },
-  {
-    path: 'manager',
-    component: ManagerComponent,
-    canActivate: [AuthGuard],
-    data: {roles: ['ROLE_MANAGER']},
-  },
+
+  // TODO : errors !!!
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

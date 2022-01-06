@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 
 export enum PATH_ROUTE {
-  HOME = 'home',
+  ACCUEIL = 'accueil',
 
   ERROR = 'error',
 }
@@ -12,13 +12,13 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: PATH_ROUTE.HOME,
+    redirectTo: PATH_ROUTE.ACCUEIL,
   },
 
   {
-    path: PATH_ROUTE.HOME,
+    path: PATH_ROUTE.ACCUEIL,
     loadChildren: () =>
-      import('./pages/home/home.module').then((m) => m.HomeModule),
+      import('./pages/accueil/accueil.module').then((m) => m.HomeModule),
     canActivate: [AuthGuard],
     data: { roles: [] },
   },

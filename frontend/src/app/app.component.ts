@@ -18,7 +18,7 @@ export class AppComponent {
 
   logout() {
     this.router
-      .navigate([PATH_ROUTE.HOME]) // On veut que l'utilisateur qui se reconnectera tombe sur la page d'accueil
+      .navigate([PATH_ROUTE.ACCUEIL]) // On veut que l'utilisateur qui se reconnectera tombe sur la page d'accueil
       .finally(() => this.keycloakService.logout()); // Puis on se déconnecte
   }
 }

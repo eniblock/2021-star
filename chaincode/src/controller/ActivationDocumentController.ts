@@ -186,8 +186,8 @@ export class ActivationDocumentController {
                 "registeredResourceMrid": "${registeredResourceMrid}",
                 "reconciliation": false,
                 "startCreatedDateTime": {
-                    "$gte": "${dateMinus5min}",
-                    "$lte": "${queryDate}"
+                    "$gte": ${JSON.stringify(dateMinus5min)},
+                    "$lte": ${JSON.stringify(queryDate)}
                 },
                 "sort": [{
                     "startCreatedDateTime" : "desc"
@@ -285,8 +285,8 @@ export class ActivationDocumentController {
                 "registeredResourceMrid": "${registeredResourceMrid}",
                 "reconciliation": false,
                 "startCreatedDateTime": {
-                    "$gte": "${dateYesterday}",
-                    "$lte": "${queryDate}"
+                    "$gte": ${JSON.stringify(dateYesterday)},
+                    "$lte": ${JSON.stringify(queryDate)}
                 },
                 "sort": [{
                     "startCreatedDateTime": "desc"

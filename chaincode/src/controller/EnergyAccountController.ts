@@ -63,11 +63,11 @@ export class EnergyAccountController {
         dateUp.setUTCSeconds(0);
         dateUp.setUTCMinutes(0);
         dateUp.setUTCHours(0);
-        console.log('dateUp=', dateUp);
-        console.log('dateUp=', JSON.stringify(dateUp));
+        // console.log('dateUp=', dateUp);
+        // console.log('dateUp=', JSON.stringify(dateUp));
         const dateDown = new Date(dateUp.getTime() + 86399999);
-        console.log('dateDown=', dateDown);
-        console.log('dateDown=', JSON.stringify(dateDown));
+        // console.log('dateDown=', dateDown);
+        // console.log('dateDown=', JSON.stringify(dateDown));
 
         const query = `{
             "selector":

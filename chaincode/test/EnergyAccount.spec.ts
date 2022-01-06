@@ -54,11 +54,11 @@ describe('Star Tests EnergyAccount', () => {
                             continue
                         }
                         const obJson = JSON.parse(copied[key].toString('utf8'));
-                        console.log('obJson=', obJson);
+                        // console.log('obJson=', obJson);
                         const objStr: string = obJson.docType;
                         // console.log('querystring=', query);
                         const queryJson = JSON.parse(query);
-                        console.log('queryJson=', queryJson);
+                        // console.log('queryJson=', queryJson);
                         const queryStr = queryJson.selector.docType
                         // console.log('queryStr=', queryStr , 'objStr=', objStr);
                         if (queryStr == objStr) {
@@ -70,19 +70,19 @@ describe('Star Tests EnergyAccount', () => {
                                 if (queryM == objM) {
                                     // console.log('obJson.createdDateTime=', obJson.createdDateTime);
                                     const objDate = new Date(obJson.createdDateTime)
-                                    console.log ('objDate=', objDate);
+                                    // console.log ('objDate=', objDate);
 
                                     // console.log('queryJson.createdDateTime=', queryJson.selector.createdDateTime);
                                     const queryDate = new Date(queryJson.selector.createdDateTime['$gte'])
-                                    console.log ('queryDate=', queryDate);
+                                    // console.log ('queryDate=', queryDate);
 
                                     // console.log('queryJson.deleteMeTime=', queryJson.selector.deleteMeTime);
                                     // console.log(queryJson.selector.deleteMeTime,'=',obJson.createdDateTime)
                                     // if (obJson.createdDateTime == queryJson.selector.deleteMeTime) {
                                     //     yield {value: copied[key]};
                                     // }
-                                    console.log(objDate.getUTCFullYear(), objDate.getUTCMonth(), objDate.getUTCDate());
-                                    console.log(queryDate.getUTCFullYear(), queryDate.getUTCMonth(), queryDate.getUTCDate());
+                                    // console.log(objDate.getUTCFullYear(), objDate.getUTCMonth(), objDate.getUTCDate());
+                                    // console.log(queryDate.getUTCFullYear(), queryDate.getUTCMonth(), queryDate.getUTCDate());
                                     if (objDate.getUTCFullYear() == queryDate.getUTCFullYear() &&
                                         objDate.getUTCMonth() == queryDate.getUTCMonth() &&
                                         objDate.getUTCDate() == queryDate.getUTCDate()) 
@@ -122,7 +122,7 @@ describe('Star Tests EnergyAccount', () => {
                             //     yield {value: copied[key]};
                             // }                           
                         }
-                        console.log('end of loop')
+                        // console.log('end of loop')
                     }
                 }
             }
@@ -793,7 +793,7 @@ describe('Star Tests EnergyAccount', () => {
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj1));
             let ret1 = JSON.parse((await chaincodeStub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
-            console.log("ret1=", ret1);
+            // console.log("ret1=", ret1);
             expect(ret1).to.eql( Object.assign({docType: 'energyAccount'}, nrj1 ));
 
             const nrj2 : EnergyAccount = {
@@ -820,12 +820,12 @@ describe('Star Tests EnergyAccount', () => {
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj2));
             let ret2 = JSON.parse((await chaincodeStub.getState(nrj2.energyAccountMarketDocumentMrid)).toString());
-            console.log("ret2=", ret2);
+            // console.log("ret2=", ret2);
             expect(ret2).to.eql( Object.assign({docType: 'energyAccount'}, nrj2 ));
 
             let ret = await star.GetEnergyAccount(transactionContext, nrj1.meteringPointMrid, nrj1.createdDateTime);
             ret = JSON.parse(ret);
-            console.log('ret=', ret)
+            // console.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
             const expected: EnergyAccount[] = [
@@ -896,7 +896,7 @@ describe('Star Tests EnergyAccount', () => {
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj1));
             let ret1 = JSON.parse((await chaincodeStub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
-            console.log("ret1=", ret1);
+            // console.log("ret1=", ret1);
             expect(ret1).to.eql( Object.assign({docType: 'energyAccount'}, nrj1 ));
 
             const nrj2 : EnergyAccount = {
@@ -923,13 +923,13 @@ describe('Star Tests EnergyAccount', () => {
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj2));
             let ret2 = JSON.parse((await chaincodeStub.getState(nrj2.energyAccountMarketDocumentMrid)).toString());
-            console.log("ret2=", ret2);
+            // console.log("ret2=", ret2);
             expect(ret2).to.eql( Object.assign({docType: 'energyAccount'}, nrj2 ));
 
             await star.GetEnergyAccount(transactionContext, 'toto', nrj1.createdDateTime);
             let ret = await star.GetEnergyAccount(transactionContext, nrj1.meteringPointMrid, nrj1.createdDateTime);
             ret = JSON.parse(ret);
-            console.log('ret=', ret)
+            // console.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
             const expected = [

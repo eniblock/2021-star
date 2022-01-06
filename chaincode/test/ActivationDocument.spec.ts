@@ -293,9 +293,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -336,9 +336,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -379,9 +379,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -422,9 +422,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -465,9 +465,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -510,7 +510,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 // orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -611,9 +611,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -646,7 +646,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -706,7 +706,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -749,7 +749,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -805,9 +805,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V0000009927454', // FK?
@@ -835,9 +835,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -861,7 +861,7 @@ describe('Star Tests ActivationDocument', () => {
                     activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1",
                     businessType: "string",
                     docType: "activationDocument",
-                    endCreatedDateTime: new Date().toString(),
+                    endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                     measurementUnitName: "KW",
                     messageType: "string",
                     orderEnd: false,
@@ -874,13 +874,13 @@ describe('Star Tests ActivationDocument', () => {
                     registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927454",
-                    startCreatedDateTime: new Date().toString(),
+                    startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 }, 
                 {
                     activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
                     businessType: "string",
                     docType: "activationDocument",
-                    endCreatedDateTime: new Date().toString(),
+                    endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                     measurementUnitName: "MW",
                     messageType: "string",
                     orderEnd: false,
@@ -893,7 +893,7 @@ describe('Star Tests ActivationDocument', () => {
                     registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V000000992746D",
-                    startCreatedDateTime: new Date().toString(),
+                    startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 }
            ];
 
@@ -928,9 +928,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -958,9 +958,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -984,7 +984,7 @@ describe('Star Tests ActivationDocument', () => {
                     activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
                     businessType: "string",
                     docType: "activationDocument",
-                    endCreatedDateTime: new Date().toString(),
+                    endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                     measurementUnitName: "MW",
                     messageType: "string",
                     orderEnd: false,
@@ -997,7 +997,7 @@ describe('Star Tests ActivationDocument', () => {
                     registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V000000992746D",
-                    startCreatedDateTime: new Date().toString(),
+                    startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 }
            ];
 
@@ -1037,9 +1037,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V0000009927454', // FK?
@@ -1067,9 +1067,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -1093,7 +1093,7 @@ describe('Star Tests ActivationDocument', () => {
                     activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1",
                     businessType: "string",
                     docType: "activationDocument",
-                    endCreatedDateTime: new Date().toString(),
+                    endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                     measurementUnitName: "KW",
                     messageType: "string",
                     orderEnd: false,
@@ -1106,7 +1106,7 @@ describe('Star Tests ActivationDocument', () => {
                     registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927454",
-                    startCreatedDateTime: new Date().toString(),
+                    startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 }
             ];
 
@@ -1141,9 +1141,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V0000009927454', // FK?
@@ -1171,9 +1171,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V0000009927454', // FK?
@@ -1197,7 +1197,7 @@ describe('Star Tests ActivationDocument', () => {
                     activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1",
                     businessType: "string",
                     docType: "activationDocument",
-                    endCreatedDateTime: new Date().toString(),
+                    endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                     measurementUnitName: "MW",
                     messageType: "string",
                     orderEnd: false,
@@ -1210,14 +1210,14 @@ describe('Star Tests ActivationDocument', () => {
                     registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927454",
-                    startCreatedDateTime: new Date().toString(),
+                    startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 },
                 {
               
                     activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
                     businessType: "string",
                     docType: "activationDocument",
-                    endCreatedDateTime: new Date().toString(),
+                    endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                     measurementUnitName: "MW",
                     messageType: "string",
                     orderEnd: false,
@@ -1230,7 +1230,7 @@ describe('Star Tests ActivationDocument', () => {
                     registeredResourceMrid: "PDL00000000289766",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927454",
-                    startCreatedDateTime: new Date().toString(),
+                    startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 }
            ];
 
@@ -1273,7 +1273,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: true,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -1313,7 +1313,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -1341,7 +1341,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: true,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -1382,7 +1382,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -1410,7 +1410,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: true,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -1458,7 +1458,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -1487,9 +1487,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -1533,7 +1533,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -1562,9 +1562,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -1611,7 +1611,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -1640,9 +1640,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -1665,7 +1665,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: true,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -1712,7 +1712,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',
@@ -1741,9 +1741,9 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: false,
 
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
-                endCreatedDateTime: new Date().toString(),
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
                 revisionNumber: '1',
                 reasonCode: 'string', // optionnal in case of TVC modulation
                 senderMarketParticipantMrid: '17V000000992746D', // FK?
@@ -1768,7 +1768,7 @@ describe('Star Tests ActivationDocument', () => {
                 orderEnd: true,
     
                 orderValue: '1',
-                startCreatedDateTime: new Date().toString(),
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
                 // endCreatedDateTime: new Date().toString(),
                 revisionNumber: '1',

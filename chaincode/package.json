@@ -12,7 +12,7 @@
         "lint": "tslint -c tslint.json 'src/**/*.ts'",
         "pretest": "npm run lint",
         "test": "nyc --reporter=text --reporter=html mocha -r ts-node/register test/**/*.spec.ts",
-        "start": "fabric-chaincode-node server --chaincode-address fabcar.third.star.com:9999 --chaincode-id fabcar_1.0:844eaa57ccf9e964021ade75be19a4da6e69f49edb737b159588bd836ff324eb",
+        "start": "set -x && fabric-chaincode-node start",
         "build": "tsc",
         "build:watch": "tsc -w",
         "prepublishOnly": "npm run build"

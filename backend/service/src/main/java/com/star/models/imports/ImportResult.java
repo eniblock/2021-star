@@ -1,4 +1,4 @@
-package com.star.models.participant;
+package com.star.models.imports;
 
 import java.util.List;
 

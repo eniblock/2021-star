@@ -18,7 +18,7 @@ import { environment } from 'src/environments/environment';
 export class ReseauComponent implements OnInit {
   formRecherche?: FormulaireRechercheReseau;
 
-  pagesize = environment.pageSizes[0];
+  pageSize = environment.pageSizes[0];
   lastBookmark: string | null = null;
   order = OrdreRechercheReseau.producerMarketParticipantName;
 
@@ -49,7 +49,7 @@ export class ReseauComponent implements OnInit {
 
   paginationModifiee(form: FormulairePagination<OrdreRechercheReseau>) {
     this.resetResultats();
-    this.pagesize = form.pagesize;
+    this.pageSize = form.pageSize;
     this.order = form.order;
     this.lastBookmark = null; // Retour à la premiere page
     this.lancerRecherche();
@@ -63,7 +63,7 @@ export class ReseauComponent implements OnInit {
     if (this.formRecherche != undefined) {
       const paginationAvecBookmark: FormulairePagination<OrdreRechercheReseau> =
         {
-          pagesize: this.pagesize,
+          pageSize: this.pageSize,
           bookmark: this.lastBookmark,
           order: this.order,
         };
@@ -75,7 +75,7 @@ export class ReseauComponent implements OnInit {
           this.resultatsRecherche = this.resultatsRecherche.concat(
             resultat.content
           );
-          this.afficherBoutonSuite = resultat.content.length >= this.pagesize;
+          this.afficherBoutonSuite = resultat.content.length >= this.pageSize;
         });
     }
   }

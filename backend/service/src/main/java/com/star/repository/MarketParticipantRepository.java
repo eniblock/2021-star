@@ -1,9 +1,5 @@
 package com.star.repository;
 
-import com.cloudant.client.api.query.Expression;
-import com.cloudant.client.api.query.Operation;
-import com.cloudant.client.api.query.QueryBuilder;
-import com.cloudant.client.api.query.Selector;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
@@ -18,15 +14,10 @@ import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -51,7 +42,7 @@ public class MarketParticipantRepository {
      * @return
      * @throws TechnicalException
      */
-    public List<MarketParticipantDso> saveMarketParticipantDso(List<MarketParticipantDso> marketParticipantDsos) throws TechnicalException {
+    public List<MarketParticipantDso> saveMarketParticipantDso(List<MarketParticipantDso> marketParticipantDsos) throws TechnicalException, BusinessException {
         if (CollectionUtils.isEmpty(marketParticipantDsos)) {
             return Collections.emptyList();
         }
@@ -75,48 +66,13 @@ public class MarketParticipantRepository {
     }
 
     /**
-     * Permet de consulter la liste des markets participants DSO
-     *
-     * @return la liste des markets participants DSO
-     * @throws TechnicalException
-     */
-    public List<MarketParticipantDso> getMarketParticipantDsos() throws TechnicalException {
-        List<Selector> selectors = new ArrayList<>();
-        selectors.add(Expression.eq("docType", "systemOperator"));
-        QueryBuilder queryBuilder = new QueryBuilder(Operation.and(selectors.toArray(new Selector[]{})));
-        return findByQuery(queryBuilder.build());
-    }
-
-    public List<MarketParticipantDso> findByQuery(String query) throws TechnicalException {
-        try {
-            byte[] response = contract.evaluateTransaction(GET_ALL_SYSTEM_OPERATOR, query);
-            List<SystemOperator> systemOperators = Collections.emptyList();
-            if (response != null) {
-                systemOperators = Arrays.asList(objectMapper.readValue(new String(response), SystemOperator[].class));
-            }
-            return systemOperators.stream().map(systemOperator -> {
-                MarketParticipantDso marketParticipantDso = new MarketParticipantDso();
-                marketParticipantDso.setDsoMarketParticipantMrid(systemOperator.getSystemOperatorMarketParticipantMrid());
-                marketParticipantDso.setDsoMarketParticipantName(systemOperator.getSystemOperatorMarketParticipantName());
-                marketParticipantDso.setDsoMarketParticipantRoleType(systemOperator.getSystemOperatorMarketParticipantRoleType());
-                return marketParticipantDso;
-            }).collect(Collectors.toList());
-        } catch (IOException exception) {
-            throw new TechnicalException("Erreur technique lors de la récupération des market participant DSO", exception);
-        } catch (ContractException contractException) {
-            throw new BusinessException(contractException.getMessage());
-        }
-    }
-
-
-    /**
      * Permet de stocker les markets participants TSO dans la blockchain
      *
      * @param marketParticipantTsos liste des markets participants TSO à enregistrer dans la blockchain
      * @return
      * @throws TechnicalException
      */
-    public List<MarketParticipantTso> saveMarketParticipantTso(List<MarketParticipantTso> marketParticipantTsos) throws TechnicalException {
+    public List<MarketParticipantTso> saveMarketParticipantTso(List<MarketParticipantTso> marketParticipantTsos) throws TechnicalException, BusinessException {
         if (CollectionUtils.isEmpty(marketParticipantTsos)) {
             return Collections.emptyList();
         }
@@ -139,37 +95,8 @@ public class MarketParticipantRepository {
         return marketParticipantTsos;
     }
 
-    /**
-     * Permet de consulter la liste des markets participants TSO
-     *
-     * @return la liste des markets participants TSO
-     * @throws TechnicalException
-     */
-    public List<MarketParticipantTso> getMarketParticipantTsos() throws TechnicalException {
-        List<Selector> selectors = new ArrayList<>();
-        selectors.add(Expression.eq("docType", "systemOperator"));
-        QueryBuilder queryBuilder = new QueryBuilder(Operation.and(selectors.toArray(new Selector[]{})));
-        return findMarketParticipantTsoByQuery(queryBuilder.build());
-    }
-
-    public List<MarketParticipantTso> findMarketParticipantTsoByQuery(String query) throws TechnicalException {
-        try {
-            byte[] response = contract.evaluateTransaction(GET_ALL_SYSTEM_OPERATOR);
-            List<SystemOperator> systemOperators = Collections.emptyList();
-            if (response != null) {
-                systemOperators = Arrays.asList(objectMapper.readValue(new String(response), SystemOperator[].class));
-            }
-            return systemOperators.stream().map(systemOperator -> {
-                MarketParticipantTso marketParticipantTso = new MarketParticipantTso();
-                marketParticipantTso.setTsoMarketParticipantMrid(systemOperator.getSystemOperatorMarketParticipantMrid());
-                marketParticipantTso.setTsoMarketParticipantName(systemOperator.getSystemOperatorMarketParticipantName());
-                marketParticipantTso.setTsoMarketParticipantRoleType(systemOperator.getSystemOperatorMarketParticipantRoleType());
-                return marketParticipantTso;
-            }).collect(toList());
-        } catch (IOException exception) {
-            throw new TechnicalException("Erreur technique lors de la récupération des market participant TSO", exception);
-        } catch (ContractException contractException) {
-            throw new BusinessException(contractException.getMessage());
-        }
+    public List<SystemOperator> getSystemOperators() throws JsonProcessingException, ContractException {
+        byte[] response = contract.evaluateTransaction(GET_ALL_SYSTEM_OPERATOR);
+        return Arrays.asList(objectMapper.readValue(new String(response), SystemOperator[].class));
     }
 }

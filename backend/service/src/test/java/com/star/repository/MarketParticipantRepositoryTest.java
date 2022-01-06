@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
@@ -71,18 +70,20 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(MarketParticipantRepository.CREATE_SYSTEM_OPERATOR);
     }
 
-    @Test
-    public void testGetMarketParticipantDsos() throws ContractException, TechnicalException {
-        // GIVEN
-        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
-
-        // WHEN
-        marketParticipantRepository.getMarketParticipantDsos();
-
-        // THEN
-        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(),
-                objectArgumentCaptor.capture());
-    }
+//    TODO
+//    @Test
+//    public void testGetSystemOperators() throws ContractException, JsonProcessingException {
+//        // GIVEN
+//        SystemOperator systemOperator = new SystemOperator();
+//        Mockito.when(contract.evaluateTransaction(any())).thenReturn(systemOperator.toString().getBytes());
+//
+//        // WHEN
+//        marketParticipantRepository.getSystemOperators();
+//
+//        // THEN
+//        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture());
+//        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(MarketParticipantRepository.GET_ALL_SYSTEM_OPERATOR);
+//    }
 
 
     @Test
@@ -111,18 +112,5 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
                 objectArgumentCaptor.capture());
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(MarketParticipantRepository.CREATE_SYSTEM_OPERATOR);
-    }
-
-    @Test
-    public void testGetMarketParticipantTsos() throws ContractException, TechnicalException {
-        // GIVEN
-        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
-
-        // WHEN
-        marketParticipantRepository.getMarketParticipantTsos();
-
-        // THEN
-        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(),
-                objectArgumentCaptor.capture());
     }
 }

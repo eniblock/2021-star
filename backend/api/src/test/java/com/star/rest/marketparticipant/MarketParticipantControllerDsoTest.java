@@ -1,15 +1,14 @@
-package com.star.rest;
+package com.star.rest.marketparticipant;
 
+import com.star.rest.AbstractIntTest;
+import com.star.rest.MarketParticipantController;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.Properties;
 
 import static com.star.rest.enums.InstanceEnum.DSO;
 import static org.apache.commons.io.IOUtils.toByteArray;
@@ -67,9 +66,8 @@ public class MarketParticipantControllerDsoTest extends AbstractIntTest {
     }
 
     @Test
-    public void importMarketParticipantDsoTest(@Autowired Properties properties) throws Exception {
+    public void importMarketParticipantDsoTest() throws Exception {
         // GIVEN
-        properties.setProperty("instance", "dso");
         MockMultipartFile file = new MockMultipartFile("file", "market-participant-dso-ok.csv",
                 "text/plain", toByteArray(marketParticipantDsoOk.getURL()));
 

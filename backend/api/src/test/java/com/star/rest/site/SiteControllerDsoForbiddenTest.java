@@ -1,5 +1,7 @@
-package com.star.rest;
+package com.star.rest.site;
 
+import com.star.rest.AbstractIntTest;
+import com.star.rest.SiteController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -15,12 +17,12 @@ import static org.apache.commons.io.IOUtils.toByteArray;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class MarketParticipantControllerDsoForbiddenTest extends AbstractIntTest {
+public class SiteControllerDsoForbiddenTest extends AbstractIntTest {
 
-    private static final String URL_DSO = MarketParticipantController.PATH + "/dso";
+    private static final String URL_DSO = SiteController.PATH + "/dso";
 
-    @Value("classpath:/marketParticipantDso/market-participant-dso-ok.csv")
-    private Resource marketParticipantDsoOk;
+    @Value("classpath:/siteDso/site-dso-ok.csv")
+    private Resource siteDsoOk;
 
     @DynamicPropertySource
     private static void registerProperties(DynamicPropertyRegistry registry) {
@@ -28,10 +30,10 @@ public class MarketParticipantControllerDsoForbiddenTest extends AbstractIntTest
     }
 
     @Test
-    public void importMarketParticipantDsoTest() throws Exception {
+    public void importSiteDsoTest() throws Exception {
         // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "market-participant-dso-ok.csv",
-                "text/plain", toByteArray(marketParticipantDsoOk.getURL()));
+        MockMultipartFile file = new MockMultipartFile("file", "ite-dso-ok.csv",
+                "text/plain", toByteArray(siteDsoOk.getURL()));
 
         // WHEN
 

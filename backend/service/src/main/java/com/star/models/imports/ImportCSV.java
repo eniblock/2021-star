@@ -1,4 +1,4 @@
-package com.star.models.participant;
+package com.star.models.imports;
 
 import org.apache.commons.csv.CSVRecord;
 

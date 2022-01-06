@@ -6,7 +6,7 @@ export class SiteController {
 
     public static async createSite(
         ctx: Context,
-        inputStr: string) {
+        inputStr: string): Promise<void> {
         // let site: Site;
         // try {
         //     site = JSON.parse(inputStr);
@@ -48,6 +48,7 @@ export class SiteController {
         }
 
         const producerAsBytes = await ctx.stub.getState(siteInput.producerMarketParticipantMrid);
+
         if (!producerAsBytes || producerAsBytes.length === 0) {
             throw new Error(`Producer : ${siteInput.producerMarketParticipantMrid} does not exist for site creation`);
         }
@@ -68,6 +69,12 @@ export class SiteController {
         console.info('============= END   : Query %s Site ===========');
         console.info(site, siteAsBytes.toString());
         return siteAsBytes.toString();
+    }
+
+    public static async siteExists(ctx: Context, site: string): Promise<boolean> {
+        console.info('============= START : Query %s Site ===========', site);
+        const siteAsBytes = await ctx.stub.getState(site);
+        return siteAsBytes && siteAsBytes.length !== 0;
     }
 
     public static async getSitesBySystemOperator(
@@ -111,4 +118,34 @@ export class SiteController {
         return JSON.stringify(allResults);
     }
 
+    public static async getSitesByQuery(
+        ctx: Context,
+        query: string, pageSize: number, bookmark: string): Promise<any> {
+        let response = await ctx.stub.getQueryResultWithPagination(query, pageSize, bookmark);
+        const {iterator, metadata} = response;
+        let results = await this.getAllResults(iterator);
+        const res = {
+            records:             results,
+            fetchedRecordsCount: metadata.fetchedRecordsCount,
+            bookmark:            metadata.bookmark
+        }
+        return res;
+    }
+
+    static async getAllResults(iterator) {
+        const allResults = [];
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } catch (err) {
+                record = strValue;
+            }
+            allResults.push(record);
+            result = await iterator.next();
+        }
+        return allResults;
+    }
 }

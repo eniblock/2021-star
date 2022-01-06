@@ -1,5 +1,8 @@
-package com.star.rest;
+package com.star.rest.site;
 
+import com.star.repository.SiteRepository;
+import com.star.rest.AbstractIntTest;
+import com.star.rest.SiteController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -10,24 +13,25 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.star.rest.enums.InstanceEnum.TSO;
 import static org.apache.commons.io.IOUtils.toByteArray;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class MarketParticipantControllerTsoTest extends AbstractIntTest {
+public class SiteControllerTsoTest extends AbstractIntTest {
 
-    private static final String URL_TSO = MarketParticipantController.PATH + "/"+TSO.getValue();
+    private static final String URL_TSO = SiteController.PATH + "/"+TSO.getValue();
 
-    @Value("classpath:/marketParticipantTso/market-participant-tso-without-extension")
-    private Resource marketParticipantTsoWithoutExtension;
+    @Value("classpath:/siteTso/site-tso-without-extension")
+    private Resource siteTsoWithoutExtension;
 
-    @Value("classpath:/marketParticipantTso/market-participant-tso-ko.csv")
-    private Resource marketParticipantTsoKo;
+    @Value("classpath:/siteTso/site-tso-ko.csv")
+    private Resource siteTsoKo;
 
-    @Value("classpath:/marketParticipantTso/market-participant-tso-ok.csv")
-    private Resource marketParticipantTsoOk;
+    @Value("classpath:/siteTso/site-tso-ok.csv")
+    private Resource siteTsoOk;
 
     @DynamicPropertySource
     private static void registerProperties(DynamicPropertyRegistry registry) {
@@ -36,10 +40,10 @@ public class MarketParticipantControllerTsoTest extends AbstractIntTest {
 
 
     @Test
-    public void importMarketParticipantTsoFileExtensionKo() throws Exception {
+    public void importSiteTsoFileExtensionKo() throws Exception {
         // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "market-participant-tso-without-extension",
-                "text/plain", toByteArray(marketParticipantTsoWithoutExtension.getURL()));
+        MockMultipartFile file = new MockMultipartFile("file", "site-tso-without-extension",
+                "text/plain", toByteArray(siteTsoWithoutExtension.getURL()));
 
         // WHEN
 
@@ -50,10 +54,10 @@ public class MarketParticipantControllerTsoTest extends AbstractIntTest {
     }
 
     @Test
-    public void importMarketParticipantTsoFileKoTest() throws Exception {
+    public void importSiteTsoFileKoTest() throws Exception {
         // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "market-participant-tso-ko.csv",
-                "text/plain", toByteArray(marketParticipantTsoKo.getURL()));
+        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ko.csv",
+                "text/plain", toByteArray(siteTsoKo.getURL()));
 
         // WHEN
 
@@ -64,10 +68,13 @@ public class MarketParticipantControllerTsoTest extends AbstractIntTest {
     }
 
     @Test
-    public void importMarketParticipantTsoTest() throws Exception {
+    public void importSiteTsoTest() throws Exception {
         // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "market-participant-tso-ok.csv",
-                "text/plain", toByteArray(marketParticipantTsoOk.getURL()));
+        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
+                "text/plain", toByteArray(siteTsoOk.getURL()));
+        byte[] response = "false".getBytes();
+        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PDL00000000278966")).thenReturn(response);
+        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PDL0000000028869")).thenReturn(response);
 
         // WHEN
 

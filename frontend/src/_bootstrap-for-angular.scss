@@ -1,0 +1,51 @@
+@import "./_variables.scss";
+
+// Bootstrap import
+@import "./_bootstrap-conflicts-pre";
+@import "~bootstrap/scss/bootstrap";
+// @import '~bootstrap/scss/bootstrap-grid';
+// @import '~bootstrap/scss/bootstrap-reboot';
+// ////@import '~bootstrap/scss/bootstrap-utilities';
+@import "./_bootstrap-conflicts-post";
+
+// Text-color
+.text-primary {
+  color: $mat-primary !important;
+}
+.text-secondary {
+  color: $mat-accent !important;
+}
+.text-danger {
+  color: $mat-warn !important;
+}
+.text-info {
+  color: $mat-info !important;
+}
+
+// Bg-color
+.bg-primary {
+  background-color: $mat-primary !important;
+}
+.bg-secondary {
+  background-color: $mat-accent !important;
+}
+.bg-danger {
+  background-color: $mat-warn !important;
+}
+.bg-dark {
+  background-color: $mat-dark !important;
+}
+.bg-warning {
+  background-color: $mat-warning !important;
+}
+
+// Border-color
+.border-primary {
+  border-color: $mat-primary !important;
+}
+.border-secondary {
+  border-color: $mat-accent !important;
+}
+.border-danger {
+  border-color: $mat-warn !important;
+}

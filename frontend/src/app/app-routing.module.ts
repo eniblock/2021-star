@@ -28,6 +28,8 @@ const routes: Routes = [
     path: PATH_ROUTE.ERROR,
     loadChildren: () =>
       import('./pages/error/error.module').then((m) => m.ErrorModule),
+    canActivate: [AuthGuard],
+    data: { roles: [] },
   },
   {
     path: '**',

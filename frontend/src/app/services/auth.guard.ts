@@ -5,6 +5,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
+import { PATH_ROUTE } from '../app-routing.module';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +41,7 @@ export class AuthGuard extends KeycloakAuthGuard {
       return this.authenticated;
     } else {
       // redirect to error page if the user doesn't have the role to access
-      this.router.navigate(['access-denied']);
+      this.router.navigate([PATH_ROUTE.ERROR]);
       return false;
     }
   }

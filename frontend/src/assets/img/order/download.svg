@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icons/download</title>
+    <g id="⚡️-PRODUCTEURS" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="PROD---Limitations-détails-ORDRE-0.4" transform="translate(-1313.000000, -1015.000000)" stroke="#484848">
+            <g id="Group-24" transform="translate(150.000000, 201.000000)">
+                <g id="Group-19" transform="translate(0.000000, 400.000000)">
+                    <g id="Télécharger" transform="translate(998.000000, 399.086245)">
+                        <g id="Group-5" transform="translate(21.710377, 11.837092)">
+                            <g id="Icons/download" transform="translate(143.922486, 3.571941)">
+                                <line x1="7.125" y1="0" x2="7.125" y2="10.9082667" id="Path-4"></line>
+                                <line x1="7.125" y1="10.9082667" x2="3.95833333" y2="7.34753714" id="Path-5"></line>
+                                <line x1="10.2916667" y1="10.9082667" x2="7.125" y2="7.34753714" id="Path-5" transform="translate(8.708333, 9.127902) scale(-1, 1) translate(-8.708333, -9.127902) "></line>
+                                <path d="M0,9.49527876 L0,13.1211523 C-5.41775586e-16,14.1152649 0.80588745,14.9211523 1.8,14.9211523 L12.45,14.9211523 C13.4441125,14.9211523 14.25,14.1152649 14.25,13.1211523 L14.25,9.49527876 L14.25,9.49527876" id="Path-6"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

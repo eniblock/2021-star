@@ -1,0 +1,12 @@
+<div class="vh-100 d-flex flex-column container">
+
+    <div class="flex-grow-1 row">
+        <div id="menu" class="col-2" *ngIf="showMenu">
+            <app-menu></app-menu>
+        </div>
+        <div id="mainContent" class="col-10">
+            <ng-content></ng-content>
+        </div>
+    </div>
+
+</div>

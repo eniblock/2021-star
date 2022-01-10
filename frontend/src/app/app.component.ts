@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 export class AppComponent implements OnInit {
   PATH_ROUTE = PATH_ROUTE;
 
+  isConnected = false;
+
   constructor(
     private keycloakService: KeycloakService,
     private router: Router
@@ -18,7 +20,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  logout() {
+  deconnexion() {
     this.router
       .navigate([PATH_ROUTE.ACCUEIL]) // On veut que l'utilisateur qui se reconnectera tombe sur la page d'accueil
       .finally(() => this.keycloakService.logout()); // Puis on se déconnecte

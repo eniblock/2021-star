@@ -1,6 +1,3 @@
-<button [routerLink]="PATH_ROUTE.ACCUEIL">Accueil</button>
-<button [routerLink]="PATH_ROUTE.RESEAU">Réseau</button>
-<button [routerLink]="PATH_ROUTE.ACTIVATIONS">Activations</button>
-<button [routerLink]="PATH_ROUTE.CHARGER">Charger</button>
-<router-outlet></router-outlet>
-<button (click)="logout()">logout</button>
+<app-page-template>
+    <router-outlet></router-outlet>
+</app-page-template>

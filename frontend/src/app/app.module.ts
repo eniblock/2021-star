@@ -1,3 +1,4 @@
+import { PageTemplateModule } from './components/page-template/page-template.module';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -9,14 +10,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
-  declarations: [AppComponent],
   imports: [
     AppRoutingModule,
     BrowserModule,
     HttpClientModule,
     KeycloakAngularModule,
     BrowserAnimationsModule,
+    PageTemplateModule,
   ],
+  declarations: [AppComponent],
   providers: [
     {
       provide: APP_INITIALIZER,

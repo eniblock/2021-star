@@ -76,9 +76,10 @@ export class EnergyAccountController {
         );
     }
 
-    public static async getEnergyAccount(
+    public static async getEnergyAccountForSystemOperator(
             ctx: Context,
             meteringPointMrid: string,
+            systemOperatorEicCode: string,
             startCreatedDateTime: string): Promise<string> {
         const allResults = [];
         const identity = await ctx.stub.getMspID();
@@ -106,20 +107,58 @@ export class EnergyAccountController {
         // console.log('dateDown=', dateDown);
         // console.log('dateDown=', JSON.stringify(dateDown));
 
-        const query = `{
-            "selector":
-            {
-                "docType": "energyAccount",
-                "meteringPointMrid": "${meteringPointMrid}",
-                "createdDateTime": {
-                    "$gte": ${JSON.stringify(dateUp)},
-                    "$lte": ${JSON.stringify(dateDown)}
-                },
-                "sort": [{
-                    "createdDateTime" : "desc"
-                }]
-            }
-        }`;
+        const systemOperatorAsBytes = await ctx.stub.getState(systemOperatorEicCode);
+        if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
+            throw new Error(
+                `System Operator : ${systemOperatorEicCode} does not exist for Energy Account read.`,
+            );
+        }
+
+        let systemOperatorObj: SystemOperator;
+        try {
+            systemOperatorObj = JSON.parse(systemOperatorAsBytes.toString());
+        } catch (error) {
+            throw new Error(`ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value`);
+        }
+        if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
+            throw new Error(
+                `Energy Account, sender: ${identity} does not provide his own systemOperatorEicCode therefore he does not have read access.`,
+            );
+        }
+        let query;
+        if (identity === OrganizationTypeMsp.RTE) {
+            query = `{
+                "selector":
+                {
+                    "docType": "energyAccount",
+                    "meteringPointMrid": "${meteringPointMrid}",
+                    "createdDateTime": {
+                        "$gte": ${JSON.stringify(dateUp)},
+                        "$lte": ${JSON.stringify(dateDown)}
+                    },
+                    "sort": [{
+                        "createdDateTime" : "desc"
+                    }]
+                }
+            }`;
+        } else {
+            query = `{
+                "selector":
+                {
+                    "docType": "energyAccount",
+                    "meteringPointMrid": "${meteringPointMrid}",
+                    "senderMarketParticipantMrid": "${systemOperatorEicCode}",
+                    "createdDateTime": {
+                        "$gte": ${JSON.stringify(dateUp)},
+                        "$lte": ${JSON.stringify(dateDown)}
+                    },
+                    "sort": [{
+                        "createdDateTime" : "desc"
+                    }]
+                }
+            }`;
+        }
+
         const iterator = await ctx.stub.getQueryResult(query);
         let result = await iterator.next();
         while (!result.done) {
@@ -129,47 +168,100 @@ export class EnergyAccountController {
                 record = JSON.parse(strValue);
             } catch (err) {
                 record = strValue;
-                allResults.push(record);
-                result = await iterator.next();
-                continue;
             }
-
-            console.log('record=', record); //
-            const systemOperatorAsBytes = await ctx.stub.getState(record.senderMarketParticipantMrid);
-            if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
-                throw new Error(
-                    `System Operator : ${record.senderMarketParticipantMrid} does not exist for Energy Account ${record.energyAccountMarketDocumentMrid} read.`,
-                );
-            }
-
-            let systemOperatorObj: SystemOperator;
-            try {
-                systemOperatorObj = JSON.parse(systemOperatorAsBytes.toString());
-            } catch (error) {
-                throw new Error(`ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value`);
-            }
-            if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
-                throw new Error(
-                    `Energy Account, sender: ${identity} does not have write access for ${record.energyAccountMarketDocumentMrid} creation. (Wrong SystemOperator)`,
-                );
-            }
-
-            const siteAsBytes = await ctx.stub.getState(record.meteringPointMrid);
-            if (!siteAsBytes || siteAsBytes.length === 0) {
-                throw new Error(`Site : ${record.meteringPointMrid} does not exist for Energy Account ${record.energyAccountMarketDocumentMrid} read.`);
-            }
-            const siteObj = JSON.parse(siteAsBytes.toString());
-            console.log('siteObj=', siteObj); //
-            if (siteObj.systemOperatorMarketParticipantMrid !== record.senderMarketParticipantMrid) {
-                throw new Error(`Organisation, ${identity} does not have read access for Energy Account: ${record.energyAccountMarketDocumentMrid}.`);
-            } else {
-                allResults.push(record);
-            }
+            allResults.push(record);
             result = await iterator.next();
         }
         return JSON.stringify(allResults);
     }
 
+/*
+    public static async getEnergyAccountForProducer(
+        ctx: Context,
+        meteringPointMrid: string,
+        producerEicCode: string,
+        startCreatedDateTime: string): Promise<string> {
+        const allResults = [];
+        const identity = await ctx.stub.getMspID();
+        // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+        //     throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
+        // }
+
+        const dateUp = new Date(startCreatedDateTime);
+        // console.log(meteringPointMrid);
+        // console.log(startCreatedDateTime);
+        // console.log('new date=', new Date('2021-10-21T23:59:50.999Z'));
+        // console.log ('datesetmili=', dateUp.setUTCMilliseconds(0));
+        // console.log ('datesetsec=', dateUp.setUTCSeconds(0));
+        // console.log ('datesetmin=', dateUp.setUTCMinutes(0));
+        // console.log ('datesethour=', dateUp.setUTCHours(0));
+        // console.log ('datetmptime=', dateUp.getTime());
+
+        dateUp.setUTCMilliseconds(0);
+        dateUp.setUTCSeconds(0);
+        dateUp.setUTCMinutes(0);
+        dateUp.setUTCHours(0);
+        // console.log('dateUp=', dateUp);
+        // console.log('dateUp=', JSON.stringify(dateUp));
+        const dateDown = new Date(dateUp.getTime() + 86399999);
+        // console.log('dateDown=', dateDown);
+        // console.log('dateDown=', JSON.stringify(dateDown));
+
+        const systemOperatorAsBytes = await ctx.stub.getState(producerEicCode);
+        if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
+            throw new Error(
+                `System Operator : ${producerEicCode} does not exist for Energy Account read.`,
+            );
+        }
+
+        let systemOperatorObj: SystemOperator;
+        try {
+            systemOperatorObj = JSON.parse(systemOperatorAsBytes.toString());
+        } catch (error) {
+            throw new Error(`ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value`);
+        }
+        if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
+            throw new Error(
+                `Energy Account, sender:
+                //  ${identity} does not provide his own producerEicCode therefore he does not have read access.`,
+            );
+        }
+        let query;
+        if (identity === OrganizationTypeMsp.PRODUCER) {
+            query = `{
+                "selector":
+                {
+                    "docType": "energyAccount",
+                    "meteringPointMrid": "${meteringPointMrid}",
+                    "createdDateTime": {
+                        "$gte": ${JSON.stringify(dateUp)},
+                        "$lte": ${JSON.stringify(dateDown)}
+                    },
+                    "sort": [{
+                        "createdDateTime" : "desc"
+                    }]
+                }
+            }`;
+        } else {
+            throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
+        }
+
+        const iterator = await ctx.stub.getQueryResult(query);
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } catch (err) {
+                record = strValue;
+            }
+            allResults.push(record);
+            result = await iterator.next();
+        }
+        return JSON.stringify(allResults);
+    }
+*/
     // public static async getAllEnergyAccount(ctx: Context): Promise<string> {
     //     const allResults = [];
     //     const query = `{"selector": {"docType": "energyAccount"}}`;

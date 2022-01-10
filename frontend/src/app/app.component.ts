@@ -1,5 +1,5 @@
 import { PATH_ROUTE } from './app-routing.module';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { Router } from '@angular/router';
 
@@ -8,13 +8,15 @@ import { Router } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   PATH_ROUTE = PATH_ROUTE;
 
   constructor(
     private keycloakService: KeycloakService,
     private router: Router
   ) {}
+
+  ngOnInit(): void {}
 
   logout() {
     this.router

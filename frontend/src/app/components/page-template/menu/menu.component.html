@@ -1,66 +1,33 @@
-<div>
+<!-- Logo -->
+<div id="logo" class="mx-auto w-75 mt-3">
+  <img src="assets/img/menu-bar/logo-S.png">
+  <mat-divider class="d-none d-xl-block mt-3 mb-2"></mat-divider>
+  <p class="d-none d-xl-block">
+    Système de Traçabilité<br/>
+    des Activations de<br/>
+    Renouvelables
+  </p>
+</div>
 
-  <!-- Accueil -->
-  <div>
-    <div mat-subheader>
-      Accueil
-    </div>
-    <a [routerLink]="[PATH_ROUTE.ACCUEIL]" routerLinkActive="menu-active">
-      <i class="fas fa-folder me-3"></i>
-      Accueil
-    </a>
-    <mat-divider class="mt-3 mb-2"></mat-divider>
-  </div>
+<!-- Menu -->
+<a [routerLink]="[PATH_ROUTE.ACCUEIL]" routerLinkActive="menu-active">
+  Accueil
+</a>
 
-  <!-- Réseau -->
-  <div>
-    <div mat-subheader>
-      Réseau
-    </div>
-    <a [routerLink]="[PATH_ROUTE.RESEAU]" routerLinkActive="menu-active">
-      <i class="fas fa-folder me-3"></i>
-      Réseau
-    </a>
-    <mat-divider class="mt-3 mb-2"></mat-divider>
-  </div>
+<a [routerLink]="[PATH_ROUTE.RESEAU]" routerLinkActive="menu-active">
+  Réseau
+</a>
 
-  <!-- Activations -->
-  <div>
-    <div mat-subheader>
-      Activations
-    </div>
-    <a [routerLink]="[PATH_ROUTE.ACTIVATIONS]" routerLinkActive="menu-active">
-      <i class="fas fa-folder me-3"></i>
-      Activations
-    </a>
-    <mat-divider class="mt-3 mb-2"></mat-divider>
-  </div>
+<a [routerLink]="[PATH_ROUTE.ACTIVATIONS]" routerLinkActive="menu-active">
+  Activations
+</a>
 
-  <!-- Charger -->
-  <div>
-    <div mat-subheader>
-      Charger
-    </div>
-    <a [routerLink]="[PATH_ROUTE.CHARGER]" routerLinkActive="menu-active">
-      <i class="fas fa-folder me-3"></i>
-      Charger
-    </a>
-    <mat-divider class="mt-3 mb-2"></mat-divider>
-  </div>
+<a [routerLink]="[PATH_ROUTE.CHARGER]" routerLinkActive="menu-active">
+  Charger
+</a>
 
-  <!-- Déconnexion -->
-  <div>
-    <div mat-subheader>
-      Déconnexion
-    </div>
-    <a>
-      <i class="fas fa-folder me-3"></i>
-      Déconnexion
-    </a>
-    <mat-divider class="mt-3 mb-2"></mat-divider>
-  </div>
-
-  
-
-
+<div class="mt-auto">
+  <a>
+  Déconnexion
+  </a>
 </div>

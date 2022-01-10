@@ -6,11 +6,21 @@
 }
 
 body {
-  font-size: 1em;
+  font-size: 1.1rem;
+  color: #666666;
   font-family: Avenir, Roboto, "Helvetica Neue", sans-serif;
   background-color: #f2f2f2;
 }
 
 #menu {
   background-color: #ffffff;
+
+  #logo img {
+    max-width: 100%;
+  }
+
+  #logo p {
+    color: #01a7dd;
+    font-size: 0.8rem;
+  }
 }

@@ -7,7 +7,7 @@
 
 body {
   font-size: 1.1rem;
-  color: #666666;
+  color: $mat-grey;
   font-family: Avenir, Roboto, "Helvetica Neue", sans-serif;
   background-color: #f2f2f2;
 }
@@ -20,7 +20,32 @@ body {
   }
 
   #logo p {
-    color: #01a7dd;
+    color: $mat-primary;
     font-size: 0.8rem;
+  }
+
+  a {
+    text-decoration: none;
+    color: $mat-grey;
+    font-weight: bold;
+    border-radius: 10px;
+  }
+
+  a.menu-active {
+    color: $mat-primary;
+    background-color: #e6f7fc;
+  }
+
+  a.deconnexion {
+    font-size: 0.8em;
+    cursor: pointer;
+  }
+
+  .menu-active .iconeLienMenu {
+    display: none;
+  }
+
+  .menu-active .iconeLienMenuActive {
+    display: inline !important;
   }
 }

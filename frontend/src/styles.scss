@@ -16,6 +16,20 @@ a {
   text-decoration: none;
 }
 
+// Titres
+h1 {
+  font-weight: lighter !important;
+  font-size: 2em;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+h2 {
+  font-weight: bold !important;
+  font-size: 1.3em;
+  color: $mat-primary;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// Menu
 #menu {
   background-color: #ffffff;
 

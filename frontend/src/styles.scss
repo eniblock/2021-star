@@ -12,6 +12,10 @@ body {
   background-color: #f2f2f2;
 }
 
+a {
+  text-decoration: none;
+}
+
 #menu {
   background-color: #ffffff;
 
@@ -25,7 +29,6 @@ body {
   }
 
   a {
-    text-decoration: none;
     color: $mat-text;
     font-weight: bold;
     border-radius: 10px;

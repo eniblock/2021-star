@@ -234,24 +234,24 @@ export class Star extends Contract {
         }
     }
 
-    // public async GetEnergyAccountForProducer(
-    //     ctx: Context,
-    //     meteringPointMrid: string,
-    //     producerEicCode: string,
-    //     startCreatedDateTime: string) {
-    //             try {
-    //         return (await EnergyAccountController.getEnergyAccountForProducer
-    //             (
-    //                 ctx,
-    //                 meteringPointMrid,
-    //                 producerEicCode,
-    //                 startCreatedDateTime,
-    //             )
-    //         );
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
+    public async GetEnergyAccountByProducer(
+        ctx: Context,
+        meteringPointMrid: string,
+        producerEicCode: string,
+        startCreatedDateTime: string) {
+                try {
+            return (await EnergyAccountController.getEnergyAccountByProducer
+                (
+                    ctx,
+                    meteringPointMrid,
+                    producerEicCode,
+                    startCreatedDateTime,
+                )
+            );
+        } catch (error) {
+            throw error;
+        }
+    }
 
     // public async GetAllEnergyAccount(
     //     ctx: Context) {

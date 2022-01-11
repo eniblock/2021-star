@@ -1,7 +1,8 @@
 @use "@angular/material" as mat;
+@include mat.core();
 
 // Copy the palettes from your selected theme
-//$app-primary: mat.define-palette(mat.$indigo-palette);
+$app-primary: mat.define-palette(mat.$light-blue-palette, 500);
 $app-accent: mat.define-palette(mat.$pink-palette, A200);
 $app-warn: mat.define-palette(mat.$red-palette);
 $app-disabled: mat.define-palette(mat.$grey-palette);
@@ -11,7 +12,7 @@ $app-success: mat.define-palette(mat.$green-palette, 700);
 $app-info: mat.define-palette(mat.$blue-palette, 400);
 
 // Create your color vars => can be used everywhere
-$mat-primary: #01a7dd;
+$mat-primary: mat.get-color-from-palette($app-primary);
 $mat-accent: mat.get-color-from-palette($app-accent);
 $mat-warn: mat.get-color-from-palette($app-warn);
 $mat-disabled: mat.get-color-from-palette($app-disabled);
@@ -20,4 +21,15 @@ $mat-warning: mat.get-color-from-palette($app-warning);
 $mat-success: mat.get-color-from-palette($app-success);
 $mat-info: mat.get-color-from-palette($app-info);
 
-$mat-grey: #666666;
+$mat-text: #666666;
+
+// Theme
+$my-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $app-primary,
+      accent: $app-accent,
+    ),
+  )
+);
+@include mat.all-component-themes($my-theme);

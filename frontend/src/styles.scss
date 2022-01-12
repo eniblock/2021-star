@@ -66,3 +66,16 @@ h2 {
     display: inline !important;
   }
 }
+
+// Snackbar
+.success-snackbar {
+  color: #fff !important;
+  background-color: $mat-success !important;
+}
+.error-snackbar {
+  color: #fff !important;
+  background-color: $mat-warn !important;
+}
+.mat-simple-snackbar-action {
+  color: #fff !important;
+}

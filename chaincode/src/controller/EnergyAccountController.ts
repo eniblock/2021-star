@@ -64,6 +64,11 @@ export class EnergyAccountController {
             throw new Error(`Energy Account, sender: ${energyAccountInput.senderMarketParticipantMrid} does is not the same as site.systemOperator: ${siteObj.systemOperatorMarketParticipantMrid} in EnergyAccount creation.`);
         }
 
+        if (identity === OrganizationTypeMsp.RTE && !energyAccountInput.marketEvaluationPointMrid) {
+            throw new Error(`Energy Account, missing marketEvaluationPointMrid optionnal for HTA but required for HTB in EnergyAccount creation.`);
+        } else if (identity === OrganizationTypeMsp.ENEDIS && energyAccountInput.marketEvaluationPointMrid) {
+            throw new Error(`Energy Account, presence of marketEvaluationPointMrid optionnal for HTA but required for HTB in EnergyAccount creation.`);
+        }
         energyAccountInput.docType = 'energyAccount';
 
         await ctx.stub.putState(

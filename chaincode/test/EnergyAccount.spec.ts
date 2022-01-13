@@ -650,6 +650,53 @@ describe('Star Tests EnergyAccount', () => {
                 expect(err.message).to.equal('Energy Account, sender: 17V000000992746D does is not the same as site.systemOperator: 17V0000009927454 in EnergyAccount creation.');
             }
         });
+
+        it('should return ERROR CreateEnergyAccount HTA presence of marketEvaluationPointMrid', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            const site: Site = {meteringPointMrid: 'PRM50012536123456',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, JSON.stringify(site));
+        
+            // const date = new Date(1634898550000);
+            // console.log("date=", date);
+            const nrj : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123456",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            // `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, 
+                 `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"marketEvaluationPointMrid\": \"CodePPE\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
+                 );
+                // await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Energy Account, presence of marketEvaluationPointMrid optionnal for HTA but required for HTB in EnergyAccount creation.');
+            }
+        });
     });
 
 
@@ -658,6 +705,372 @@ describe('Star Tests EnergyAccount', () => {
 ////////////////////////////////////    HTB     ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 */
+
+    describe('Test CreateEnergyAccount HTB', () => {
+        it('should return ERROR on CreateEnergyAccount NON-JSON Value', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'RTEMSP';
+            try {
+                await star.CreateEnergyAccount(transactionContext, 'RTE01EIC');
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR createEnergyAccount-> Input string NON-JSON value');
+            }
+        });
+
+        it('should return ERROR CreateEnergyAccount HTB Site non-JSON value', async () => {
+            let star = new Star();
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+
+            // const date = new Date(1634898550000);
+            const nrj : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur2",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            chaincodeStub.states['PRM50012536123457'] = 'non-json-value';
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR createEnergyAccount getSite-> Input string NON-JSON value');
+            }
+        });
+
+        it('should return ERROR CreateEnergyAccount HTB Producer non-JSON value', async () => {
+            let star = new Star();
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+
+            // const date = new Date(1634898550000);
+            const nrj : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur2",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            chaincodeStub.states['17V000000992746D'] = 'non-json-value';
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value');
+            }
+        });
+
+        it('should return ERROR CreateEnergyAccount Wrong MSPID', async () => {
+            let star = new Star();
+
+            // const date = new Date(1634898550000);
+            const nrj : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur2",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Organisation, FakeMspID does not have write access for Energy Account.');
+            }
+        });
+
+        it('should return ERROR CreateEnergyAccount missing Site', async () => {
+            let star = new Star();
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            // await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+
+            // const date = new Date(1634898550000);
+            const nrj : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur2",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Site : PRM50012536123457 does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
+            }
+        });
+
+        it('should return ERROR CreateEnergyAccount HTB missing System Operator', async () => {
+            let star = new Star();
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+
+            // const date = new Date(1634898550000);
+            const nrj : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746666",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur2",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('System Operator : 17V000000992746666 does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
+            }
+        });
+
+        it('should return ERROR CreateEnergyAccount HTB wrong sender', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+
+            // const date = new Date(1634898550000);
+            const nrj : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur2",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Energy Account, sender: RTEMSP does not have write access for ea4cef73-ff6b-400b-8957-d34000eb30a3 creation. (Wrong SystemOperator)');
+            }
+        });
+
+        it('should return ERROR CreateEnergyAccount HTB missing marketEvaluationPointMrid', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+
+            // const date = new Date(1634898550000);
+            const nrj : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                // marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur2",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Energy Account, missing marketEvaluationPointMrid optionnal for HTA but required for HTB in EnergyAccount creation.');
+            }
+        });
+
+        it('should return ERROR CreateEnergyAccount HTB mismatch ', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            const site2: Site = {meteringPointMrid: 'PRM50012536123456',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
+            await star.CreateSite(transactionContext, JSON.stringify(site2));
+
+            // const date = new Date(1634898550000);
+            const nrj : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123456",
+                // marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur2",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Energy Account, sender: 17V000000992746D does is not the same as site.systemOperator: 17V0000009927454 in EnergyAccount creation.');
+            }
+        });
+
+        it('should return SUCCESS CreateEnergyAccount HTB', async () => {
+            let star = new Star();
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+
+            // const date = new Date(1634898550000);
+            const nrj : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur2",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+            await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
+
+            let ret = JSON.parse((await chaincodeStub.getState(nrj.energyAccountMarketDocumentMrid)).toString());
+            expect(ret).to.eql( Object.assign({docType: 'energyAccount'}, nrj ));
+        });
+    });
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -806,7 +1219,7 @@ describe('Star Tests EnergyAccount', () => {
             const nrj2 : EnergyAccount = {
                 energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a2",
                 meteringPointMrid: "PDL00000000289766",
-                // marketEvaluationPointMrid: "CodePPE",
+                marketEvaluationPointMrid: "CodePPE",
                 areaDomain: "17X100A100A0001A",
                 senderMarketParticipantMrid: "17V000000992746D",
                 senderMarketParticipantRole: "A50",
@@ -1027,6 +1440,172 @@ describe('Star Tests EnergyAccount', () => {
                     createdDateTime: "2021-10-21T10:29:10.000Z",
                     measurementUnitName: "KW",
                     timeInterval: "2021-10-21T10:29:10.000Z",
+                    resolution: "PT10M",
+                    timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                    revisionNumber: "1",
+                    businessType: "A14 / Z14",
+                    docStatus: "A02",
+                    processType: "A05",
+                    classificationType: "A02",
+                    product: "Energie active/Réactive",
+                }
+           ];
+
+            expect(ret).to.eql(expected);
+        });
+    });
+
+    describe('Test GetEnergyAccountForSystemOperator HTB', () => {
+        it('should return ERROR on GetEnergyAccountForSystemOperator HTB', async () => {
+            let star = new Star();
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+        
+            // const date = new Date(1634898550000);
+            const nrj1 : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+            await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj1));
+            let ret1 = JSON.parse((await chaincodeStub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
+            // console.log("ret1=", ret1);
+            expect(ret1).to.eql( Object.assign({docType: 'energyAccount'}, nrj1 ));
+        
+            chaincodeStub.states['17V000000992746D'] = 'non-json-value';
+            try {
+                await star.GetEnergyAccountForSystemOperator(transactionContext, nrj1.meteringPointMrid, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value');
+            }
+        });
+
+        it('should return SUCCESS on GetEnergyAccountForSystemOperator', async () => {
+            let star = new Star();
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+        
+            // const date = new Date(1634898550000);
+            const nrj1 : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+            await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj1));
+        
+        
+            await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj1));
+            let ret1 = JSON.parse((await chaincodeStub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
+            // console.log("ret1=", ret1);
+            expect(ret1).to.eql( Object.assign({docType: 'energyAccount'}, nrj1 ));
+
+            const nrj2 : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a4",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur2",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj2));
+            let ret2 = JSON.parse((await chaincodeStub.getState(nrj2.energyAccountMarketDocumentMrid)).toString());
+            // console.log("ret2=", ret2);
+            expect(ret2).to.eql( Object.assign({docType: 'energyAccount'}, nrj2 ));
+
+            let ret = await star.GetEnergyAccountForSystemOperator(transactionContext, nrj1.meteringPointMrid, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
+            ret = JSON.parse(ret);
+            // console.log('ret=', ret)
+            expect(ret.length).to.equal(2);
+
+            const expected: EnergyAccount[] = [
+                {
+                    docType: "energyAccount",
+                    energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                    meteringPointMrid: "PRM50012536123457",
+                    marketEvaluationPointMrid: "CodePPE",
+                    areaDomain: "17X100A100A0001A",
+                    senderMarketParticipantMrid: "17V000000992746D",
+                    senderMarketParticipantRole: "A50",
+                    receiverMarketParticipantMrid: "Producteur1",
+                    receiverMarketParticipantRole: "A32",
+                    createdDateTime: "2021-10-22T10:29:10.000Z",
+                    measurementUnitName: "KW",
+                    timeInterval: "2021-10-22T10:29:10.000Z",
+                    resolution: "PT10M",
+                    timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                    revisionNumber: "1",
+                    businessType: "A14 / Z14",
+                    docStatus: "A02",
+                    processType: "A05",
+                    classificationType: "A02",
+                    product: "Energie active/Réactive",
+                },
+                {
+                    docType: "energyAccount",
+                    energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a4",
+                    meteringPointMrid: "PRM50012536123457",
+                    marketEvaluationPointMrid: "CodePPE",
+                    areaDomain: "17X100A100A0001A",
+                    senderMarketParticipantMrid: "17V000000992746D",
+                    senderMarketParticipantRole: "A50",
+                    receiverMarketParticipantMrid: "Producteur2",
+                    receiverMarketParticipantRole: "A32",
+                    createdDateTime: "2021-10-22T10:29:10.000Z",
+                    measurementUnitName: "KW",
+                    timeInterval: "2021-10-22T10:29:10.000Z",
                     resolution: "PT10M",
                     timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
                     revisionNumber: "1",

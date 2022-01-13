@@ -257,28 +257,27 @@ div.kc-logo-text span {
     padding-top: 0px;
 }
 
-#rte-logo {
-    width: 1400px;
-    height: 120px;
+#rte-logo-bar {
+    width: 100%;
 }
 
-#rte-logo-bar {
-    margin: auto;
+#rte-logo-bar img {
+    width: 80%;
+    height: auto;
+}
+
+#title-background {
+    width: 100%;
+}
+
+#title-background img {
+    width: 80%;
+    height: auto;
 }
 
 #kc-login {
     background: none;
     background-color: #7f7f7f !important;
-}
-
-#title-background {
-    width: 1400px;
-    height: 305px;
-    margin: auto;
-    background-image: url('../img/welcome-star.png');
-    background-repeat: no-repeat;
-    background-size: 100% 305px;
-    background-position: center;
 }
 
 #title {
@@ -542,6 +541,21 @@ ul#kc-totp-supported-apps {
         padding: 20px 60px 0 0;
         color: #72767b;
         letter-spacing: 0;
+    }
+    
+    #rte-logo-bar {
+        width: 100%;
+    }
+    #rte-logo-bar img {
+        width: 100%;
+        height: auto;
+    }
+    #title-background {
+        width: 100%;
+    }
+    #title-background img {
+        width: 100%;
+        height: auto;
     }
 
     div.kc-logo-text {

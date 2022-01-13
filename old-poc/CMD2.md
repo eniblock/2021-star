@@ -59,7 +59,7 @@ sed "s/CC_PACKAGE_ID/$CC_PACKAGE_ID/" package.json > ../../package.json
 cat ../../chaincode.env | grep star
 cat ../../package.json | grep star  
 
-sed "s/CHAINCODE_ID/$CC_PACKAGE_ID/" ../../Dockerfile.bkp > ../../Dockerfile
+sed "s/CHAINCODE_ID/$CC_PACKAGE_ID/" ./Dockerfile.bkp > ../../Dockerfile
 ```
 
 ### open a new terminal
@@ -68,11 +68,12 @@ sed "s/CHAINCODE_ID/$CC_PACKAGE_ID/" ../../Dockerfile.bkp > ../../Dockerfile
 
 cd ~/XDEV/star/old-poc/chaincode/star
 
-cat Dockerfile 
+cat Dockerfile | grep star
+cat chaincode.env | grep star
 
 docker build -t star/tso.star .
 
-docker run -d --hostname star.tso.star.com --env-file chaincode.env --network=star star/tso.star
+docker run -d --name star.tso.star.com --env-file chaincode.env --network=star star/tso.star
 ```
 
 ### Back in TSO CLI
@@ -127,7 +128,7 @@ sed "s/CC_PACKAGE_ID/$CC_PACKAGE_ID/" package.json > ../../package.json
 cat ../../chaincode.env | grep star
 cat ../../package.json | grep star  
 
-sed "s/CHAINCODE_ID/$CC_PACKAGE_ID/" ../../Dockerfile.bkp > ../../Dockerfile
+sed "s/CHAINCODE_ID/$CC_PACKAGE_ID/" ./Dockerfile.bkp > ../../Dockerfile
 ```
 
 
@@ -137,11 +138,12 @@ sed "s/CHAINCODE_ID/$CC_PACKAGE_ID/" ../../Dockerfile.bkp > ../../Dockerfile
 
 cd ~/XDEV/star/old-poc/chaincode/star
 
-cat Dockerfile
+cat Dockerfile | grep star
+cat chaincode.env | grep star
 
 docker build -t star/dso.star .
 
-docker run -d --hostname star.dso.star.com --env-file chaincode.env --network=star star/dso.star
+docker run -d --name star.dso.star.com --env-file chaincode.env --network=star star/dso.star
 ```
 
 ### Back in DSO CLI
@@ -195,8 +197,7 @@ sed "s/CC_PACKAGE_ID/$CC_PACKAGE_ID/" package.json > ../../package.json
 cat ../../chaincode.env | grep star
 cat ../../package.json | grep star  
 
-sed "s/CHAINCODE_ID/$CC_PACKAGE_ID/" ../../Dockerfile.bkp > ../../Dockerfile
-
+sed "s/CHAINCODE_ID/$CC_PACKAGE_ID/" ./Dockerfile.bkp > ../../Dockerfile
 ```
 
 ### open a new terminal
@@ -205,11 +206,12 @@ sed "s/CHAINCODE_ID/$CC_PACKAGE_ID/" ../../Dockerfile.bkp > ../../Dockerfile
 
 cd ~/XDEV/star/old-poc/chaincode/star
 
-cat Dockerfile
+cat Dockerfile | grep star
+cat chaincode.env | grep star
 
 docker build -t star/bno.star .
 
-docker run -d --hostname star.bno.star.com --env-file chaincode.env --network=star star/bno.star
+docker run -d --name star.bno.star.com --env-file chaincode.env --network=star star/bno.star
 ```
 
 ### Back in TSO CLI

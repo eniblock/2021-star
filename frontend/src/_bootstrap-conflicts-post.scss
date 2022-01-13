@@ -1,0 +1,18 @@
+* {
+  &:active,
+  :focus {
+    outline: none !important;
+  }
+}
+a:not(.mat-button):not(.mat-raised-button):not(.mat-fab):not(.mat-mini-fab):not([mat-list-item]) {
+  color: #3f51b5;
+}
+
+mat-tab-body div.row {
+  margin: 0;
+}
+
+.mat-form-field-suffix {
+  // quand on utilise mat-icon avec fontawesome => décallage quand on met une icone en suffix d'un input
+  top: 0 !important;
+}

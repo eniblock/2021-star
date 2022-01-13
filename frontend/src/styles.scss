@@ -1,0 +1,81 @@
+@import "./_bootstrap-for-angular.scss";
+
+@font-face {
+  font-family: "Avenir";
+  src: url(./assets/font/HindSiliguri-Regular.ttf) format("truetype");
+}
+
+body {
+  font-size: 1.1rem;
+  color: $mat-text;
+  font-family: Avenir, Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f2f2f2;
+}
+
+a {
+  text-decoration: none;
+}
+
+// Titres
+h1 {
+  font-weight: lighter !important;
+  font-size: 2em;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+h2 {
+  font-weight: bold !important;
+  font-size: 1.3em;
+  color: $mat-primary;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// Menu
+#menu {
+  background-color: #ffffff;
+
+  #logo img {
+    max-width: 100%;
+  }
+
+  #logo p {
+    color: $mat-primary;
+    font-size: 0.8rem;
+  }
+
+  a {
+    color: $mat-text;
+    font-weight: bold;
+    border-radius: 10px;
+  }
+
+  a.menu-active {
+    color: $mat-primary;
+    background-color: #e6f7fc;
+  }
+
+  a.deconnexion {
+    font-size: 0.8em;
+    cursor: pointer;
+  }
+
+  .menu-active .iconeLienMenu {
+    display: none;
+  }
+
+  .menu-active .iconeLienMenuActive {
+    display: inline !important;
+  }
+}
+
+// Snackbar
+.success-snackbar {
+  color: #fff !important;
+  background-color: $mat-success !important;
+}
+.error-snackbar {
+  color: #fff !important;
+  background-color: $mat-warn !important;
+}
+.mat-simple-snackbar-action {
+  color: #fff !important;
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="32px" viewBox="0 0 14 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <defs>
+        <polygon id="path-1" points="0 5 5 0 5.707 0.707 1.414 5 5.707 9.293 5 10"></polygon>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Menu/home-reduced-GRT" transform="translate(-100.000000, -33.000000)">
+            <g id="Group" transform="translate(107.000000, 49.000000) scale(-1, 1) translate(-107.000000, -49.000000) translate(100.000000, 33.000000)">
+                <path d="M10,0 L14,0 L14,0 L14,32 L10,32 C4.4771525,32 6.76353751e-16,27.5228475 0,22 L0,10 C-6.76353751e-16,4.4771525 4.4771525,1.01453063e-15 10,0 Z" id="Rectangle" fill="#FFFFFF"></path>
+                <g id="A---Icon-Header-Copy" transform="translate(5.000000, 11.483607)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="icon-color" fill="#9F9F9F" xlink:href="#path-1"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

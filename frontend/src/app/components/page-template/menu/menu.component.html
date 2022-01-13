@@ -1,0 +1,45 @@
+<!-- Logo -->
+<div id="logo" class="mx-auto w-75 mt-3">
+  <img src="assets/img/menu-bar/logo-S.png"/>
+  <mat-divider class="d-none d-xl-block mt-3 mb-2"></mat-divider>
+  <p class="d-none d-xl-block">
+    Système de Traçabilité<br/>
+    des Activations de<br/>
+    Renouvelables
+  </p>
+</div>
+
+<!-- Menu -->
+<a [routerLink]="[PATH_ROUTE.ACCUEIL]" routerLinkActive="menu-active" class="text-center text-xl-start mt-4 mb-1 py-3">
+  <img src="assets/img/menu-bar/home.svg" class="iconeLienMenu pb-1 mx-3"/>
+  <img src="assets/img/menu-bar/home-active.svg" class="iconeLienMenuActive d-none pb-1 mx-3"/>
+  <span class="d-none d-xl-inline">Accueil</span>
+</a>
+
+<a [routerLink]="[PATH_ROUTE.RESEAU]" routerLinkActive="menu-active" class="text-center text-xl-start my-1 py-3">
+  <img src="assets/img/menu-bar/reseau.svg" class="iconeLienMenu pb-1 mx-3"/>
+  <img src="assets/img/menu-bar/reseau-active.svg" class="iconeLienMenuActive d-none pb-1 mx-3"/>
+  <span class="d-none d-xl-inline">Réseau</span>
+</a>
+
+<a [routerLink]="[PATH_ROUTE.ACTIVATIONS]" routerLinkActive="menu-active" class="text-center text-xl-start my-1 py-3">
+  <img src="assets/img/menu-bar/histo.svg" class="iconeLienMenu pb-1 mx-3"/>
+  <img src="assets/img/menu-bar/histo-active.svg" class="iconeLienMenuActive d-none pb-1 mx-3"/>
+  <span class="d-none d-xl-inline">Activations</span>
+</a>
+
+<a [routerLink]="[PATH_ROUTE.CHARGER]" routerLinkActive="menu-active" class="text-center text-xl-start my-1 py-3">
+  <img src="assets/img/menu-bar/charger.svg" class="iconeLienMenu pb-1 mx-3"/>
+  <img src="assets/img/menu-bar/charger-active.svg" class="iconeLienMenuActive d-none pb-1 mx-3"/>
+  <span class="d-none d-xl-inline">Charger</span>
+</a>
+
+<div class="mt-auto mb-3 mx-3">
+  <mat-divider class="mb-4"></mat-divider>
+  <a class="deconnexion" (click)="deconnexion()">
+    <div class="text-center">
+      <img src="assets/img/menu-bar/log-off.svg" class="mb-2"/><br/>
+      <span class="d-none d-lg-inline">Déconnexion</span>
+    </div>
+  </a>
+</div>

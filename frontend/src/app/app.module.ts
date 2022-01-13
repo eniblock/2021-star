@@ -1,37 +1,39 @@
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import { PageTemplateModule } from './components/page-template/page-template.module';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
-import {keycloakInitializer} from "./shared/keycloak-initializer";
-import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
-import { AccessDeniedComponent } from './access-denied/access-denied.component';
-import { AdminComponent } from './admin/admin.component';
-import { ManagerComponent } from './manager/manager.component';
-import {AppRoutingModule} from "./app-routing.module";
-import {HttpClientModule} from "@angular/common/http";
+import { keycloakInitializer } from './factories/keycloak-initializer';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ServerErrorInterceptor } from './interceptors/serveur-error-interceptor';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    AccessDeniedComponent,
-    AdminComponent,
-    ManagerComponent
-  ],
   imports: [
     AppRoutingModule,
     BrowserModule,
     HttpClientModule,
-    KeycloakAngularModule
+    KeycloakAngularModule,
+    BrowserAnimationsModule,
+    MatSnackBarModule,
+    PageTemplateModule,
   ],
+  declarations: [AppComponent],
   providers: [
-    // add this provider
     {
       provide: APP_INITIALIZER,
       useFactory: keycloakInitializer,
       deps: [KeycloakService],
       multi: true,
     },
+    {
+      provide: HTTP_INTERCEPTORS,
+      multi: true,
+      useClass: ServerErrorInterceptor,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

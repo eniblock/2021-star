@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Combined Shape</title>
+    <defs>
+        <filter x="-16.7%" y="-10.0%" width="133.3%" height="120.0%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="10" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.345762057   0 0 0 0 0.500943737   0 0 0 0 0.671817945  0 0 0 0.25 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+    </defs>
+    <g id="🗺-USER-JOURNEY-⎇" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="GRT---Limitations-fields" transform="translate(-1149.000000, -322.000000)" fill="#01A7DD">
+            <g id="Group-18-Copy-2" filter="url(#filter-1)" transform="translate(1156.000000, 329.000000)">
+                <g id="Group-19" transform="translate(12.000000, 12.000000)">
+                    <path d="M8,0 C12.418278,0 16,3.581722 16,8 C16,12.418278 12.418278,16 8,16 C3.581722,16 0,12.418278 0,8 C0,3.581722 3.581722,0 8,0 Z M8,11.6363636 C7.59833836,11.6363636 7.27272727,11.9619747 7.27272727,12.3636364 C7.27272727,12.765298 7.59833836,13.0909091 8,13.0909091 C8.40166164,13.0909091 8.72727273,12.765298 8.72727273,12.3636364 C8.72727273,11.9619747 8.40166164,11.6363636 8,11.6363636 Z M8.22727273,2.90909091 L7.77272727,2.90909091 C7.4965849,2.90909091 7.27272727,3.13294853 7.27272727,3.40909091 L7.27272727,3.40909091 L7.27272727,9.68181818 C7.27272727,9.95796056 7.4965849,10.1818182 7.77272727,10.1818182 L7.77272727,10.1818182 L8.22727273,10.1818182 C8.5034151,10.1818182 8.72727273,9.95796056 8.72727273,9.68181818 L8.72727273,9.68181818 L8.72727273,3.40909091 C8.72727273,3.13294853 8.5034151,2.90909091 8.22727273,2.90909091 L8.22727273,2.90909091 Z" id="Combined-Shape" transform="translate(8.000000, 8.000000) scale(1, -1) translate(-8.000000, -8.000000) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

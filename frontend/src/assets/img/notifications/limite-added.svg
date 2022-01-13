@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="41px" height="39px" viewBox="0 0 41 39" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>wind icon copy 2 2</title>
+    <g id="🗺-USER-JOURNEY-⎇" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="GRT---Notif-center-select" transform="translate(-828.000000, -126.000000)">
+            <g id="Group-5-Copy" transform="translate(650.000000, 99.000000)">
+                <g id="wind-icon-copy-2" transform="translate(178.000000, 34.000000)">
+                    <path d="M23.0434857,13.1894528 C22.896848,12.9626283 22.6450136,12.8278026 22.3756465,12.8278026 L16.7970379,12.8278026 L16.7970379,4.10378365 C16.7970379,3.72944393 16.5340464,3.40586214 16.1658582,3.32813906 C15.7912945,3.2488298 15.4247002,3.44075821 15.2716869,3.78178804 L8.89613423,18.0574554 C8.78615594,18.3017279 8.81006427,18.5872413 8.95670198,18.8108934 C9.10333969,19.0361317 9.35517402,19.1725436 9.62454112,19.1725436 L15.2031497,19.1725436 L15.2031497,27.8965625 C15.2031497,28.2709023 15.4661413,28.5944841 15.8343295,28.6722071 C15.8901155,28.6833104 15.9459016,28.6896552 16.0000938,28.6896552 C16.3093081,28.6896552 16.5978019,28.5104162 16.7285007,28.2185582 L23.1040534,13.9428908 C23.2124378,13.6970321 23.1917173,13.4146911 23.0434857,13.1894528 Z" id="Path" stroke="#01A7DD" stroke-width="1.90272727" fill-rule="nonzero"></path>
+                    <circle id="Oval" stroke="#01A7DD" stroke-width="2.19545455" cx="16" cy="16" r="14.9022727"></circle>
+                    <line x1="5.5" y1="26.5" x2="26.5" y2="5.5" id="Path-8" stroke="#01A7DD" stroke-width="1.90272727" stroke-linecap="round"></line>
+                    <text id="+" transform="translate(34.000000, -0.068323) rotate(-360.000000) translate(-34.000000, 0.068323) " font-family="Avenir-Heavy, Avenir" font-size="23.4181818" font-weight="600" fill="#01A7DD">
+                        <tspan x="26" y="6.93167702">+</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

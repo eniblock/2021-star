@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <defs>
+        <polygon id="path-1" points="21.25 20.4092396 20.36625 21.2929896 15 15.9267396 9.63375 21.2929896 8.75 20.4092396 15 14.1592396"></polygon>
+        <polygon id="path-3" points="21.25 15.0429896 20.36625 15.9267396 15 10.5604896 9.63375 15.9267396 8.75 15.0429896 15 8.7929896"></polygon>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group">
+            <circle id="Oval" fill-opacity="0.130726207" fill="#6F7072" opacity="0.539124988" cx="15" cy="15" r="15"></circle>
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="icon-color" fill="#6F7072" xlink:href="#path-1"></use>
+            <mask id="mask-4" fill="white">
+                <use xlink:href="#path-3"></use>
+            </mask>
+            <use id="icon-color-copy" fill="#6F7072" transform="translate(15.000000, 12.359865) scale(1, -1) translate(-15.000000, -12.359865) " xlink:href="#path-3"></use>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="35px" height="35px" viewBox="0 0 35 35" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icons/valid</title>
+    <defs>
+        <circle id="path-1" cx="17.5" cy="17.5" r="17.5"></circle>
+        <polygon id="path-3" points="15 24.375 8.75 18.125 10.7375 16.25 15 20.4375 24.2625 11.25 26.25 13.225"></polygon>
+    </defs>
+    <g id="🗺-USER-JOURNEY-⎇" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Upload-manual-5" transform="translate(-752.000000, -280.000000)">
+            <g id="Group" transform="translate(320.000000, 220.000000)">
+                <g transform="translate(432.000000, 60.000000)" id="Icons/valid">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="icon-color" fill="#28D17F" xlink:href="#path-1"></use>
+                    <mask id="mask-4" fill="white">
+                        <use xlink:href="#path-3"></use>
+                    </mask>
+                    <use id="icon-color" fill="#FFFFFF" xlink:href="#path-3"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="19px" viewBox="0 0 20 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>A - Icon Header 2 Copy</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="Menu/activations-reduced-GRT" transform="translate(-39.000000, -446.000000)" stroke="#616161" stroke-width="1.66153846">
+            <g id="Group" transform="translate(40.000000, 447.000000)">
+                <g id="Icons/download-Copy" transform="translate(9.000000, 8.307692) rotate(-180.000000) translate(-9.000000, -8.307692) translate(-0.000000, 0.000000)">
+                    <g id="Group" transform="translate(6.110063, 0.000000)">
+                        <line x1="3.07692308" y1="0" x2="3.07692308" y2="11.1346154" id="Path-4"></line>
+                        <line x1="3.07692308" y1="11.1346154" x2="0" y2="7.5" id="Path-5"></line>
+                        <line x1="6.15384615" y1="11.1346154" x2="3.07692308" y2="7.5" id="Path-5" transform="translate(4.615385, 9.317308) scale(-1, 1) translate(-4.615385, -9.317308) "></line>
+                    </g>
+                    <path d="M0,11.0769231 L0,15.12 C-1.20903706e-16,15.9458781 0.669506497,16.6153846 1.49538462,16.6153846 L16.5046154,16.6153846 C17.3304935,16.6153846 18,15.9458781 18,15.12 L18,11.0769231 L18,11.0769231" id="Path-6"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

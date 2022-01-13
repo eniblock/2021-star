@@ -1,0 +1,13 @@
+<div class="text-end">
+
+  <button mat-icon-button class="me-4">
+    <img src="assets/img/general/notif-OFF.svg" *ngIf="!hasNotifs"/>
+    <img src="assets/img/general/notif-OFF-digit.svg" *ngIf="hasNotifs"/>
+  </button>
+
+  <a class="text-primary" [routerLink]="['/']">
+    <img src="assets/img/general/help.svg" class="me-2"/>
+    <strong>Aide</strong>
+  </a>
+
+</div>

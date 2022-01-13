@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="31px" viewBox="0 0 32 31" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icons/chart-missing</title>
+    <g id="🗺-USER-JOURNEY-⎇" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="GRT---Notif-center-select" transform="translate(-578.000000, -134.000000)" stroke-width="2.88">
+            <g id="Group-5-Copy-2" transform="translate(400.000000, 99.000000)">
+                <g id="Group" transform="translate(178.000000, 35.000000)">
+                    <line x1="1.5" y1="1.5" x2="1.5" y2="29.5" id="Line" stroke="#616161"></line>
+                    <polyline id="Line-Copy" stroke="#01A7DD" transform="translate(12.454539, 11.226800) rotate(-270.000000) translate(-12.454539, -11.226800) " points="8.33286736 20.7722609 8.33286736 16.0782876 11.4672464 13.4400931 5.41429008 6.86315709 11.4672464 1.68133891 16.4854966 6.86315709 19.4947879 6.86315709"></polyline>
+                    <line x1="16.6584599" y1="23.3922663" x2="17.6584599" y2="23.3922663" id="Line-Copy-3" stroke="#01A7DD" transform="translate(17.158460, 23.392266) rotate(-270.000000) translate(-17.158460, -23.392266) "></line>
+                    <line x1="1.5" y1="29.5" x2="30.5" y2="29.5" id="Line-Copy-2" stroke="#616161"></line>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

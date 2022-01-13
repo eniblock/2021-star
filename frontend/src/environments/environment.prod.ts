@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  serverUrl: '/api',
+  serverUrl: '/api/v0',
   hmr: false,
   keycloak: {
     // Url of the Identity Provider

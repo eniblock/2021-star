@@ -1,16 +1,12 @@
-import { Component } from '@angular/core';
-import {KeycloakService} from "keycloak-angular";
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  title = 'Star - frontend';
+export class AppComponent implements OnInit {
+  constructor() {}
 
-  constructor(private keycloakService: KeycloakService) {}
-  logout() {
-    this.keycloakService.logout();
-  }
+  ngOnInit(): void {}
 }

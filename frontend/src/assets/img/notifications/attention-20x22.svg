@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27px" height="27px" viewBox="0 0 27 27" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>wind icon copy 2</title>
+    <g id="🗺-USER-JOURNEY-⎇" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="GRT---Notif-center-select" transform="translate(-332.000000, -136.000000)">
+            <g id="Group-5" transform="translate(150.000000, 99.000000)">
+                <g id="wind-icon-copy-2" transform="translate(181.000000, 34.000000)">
+                    <path d="M26.8900577,24.8577961 L17.1198677,5.25616089 C16.398672,3.80924791 14.6410727,3.22093781 13.1941597,3.9421335 C12.625056,4.22579611 12.1637949,4.68705721 11.8801323,5.25616089 L2.10994228,24.8577961 C1.38874659,26.304709 1.97705669,28.0623084 3.42396967,28.7835041 C3.82958421,28.9856776 4.27660219,29.0909091 4.72980997,29.0909091 L24.27019,29.0909091 C25.8868781,29.0909091 27.1974628,27.7803244 27.1974628,26.1636364 C27.1974628,25.7104286 27.0922312,25.2634106 26.8900577,24.8577961 Z" id="Oval" fill="#FB973E"></path>
+                    <text id="!" transform="translate(15.100000, 17.779785) scale(-1, -1) rotate(-180.000000) translate(-15.100000, -17.779785) " font-family="Avenir-Heavy, Avenir" font-size="20.4909091" font-weight="600" fill="#FFFFFF">
+                        <tspan x="11.6" y="24.2797854">!</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

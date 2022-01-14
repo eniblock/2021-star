@@ -39,9 +39,11 @@
     <div class="${properties.kcLoginClass!}">
         <div id="kc-header" class="${properties.kcHeaderClass!}">
             <div id="rte-logo-bar">
-                <img id="rte-logo" src="${url.resourcesPath}/img/enedis-star-rte.png"/>
+                <img src="${url.resourcesPath}/img/enedis-star-rte.png"/>
             </div>
-            <div id="title-background"/>
+            <div id="title-background">
+                <img src="${url.resourcesPath}/img/welcome-star.png"/>
+            </div>
         </div>
         <div class="${properties.kcFormCardClass!}">
             <header class="${properties.kcFormHeaderClass!}">

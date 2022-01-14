@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiRestVersion {
-    public static final String VERSION = "/v0";
+    public static final String VERSION = "/api/v0";
 }

@@ -1,21 +1,19 @@
 package com.star.service;
 
 import com.star.AbstractTest;
+import com.star.exception.TechnicalException;
 import com.star.models.participant.dso.ImportMarketParticipantDsoResult;
 import com.star.models.participant.dso.MarketParticipantDso;
-import com.star.repository.MarketParticipantDsoRepository;
+import org.hyperledger.fabric.gateway.ContractException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -40,15 +38,6 @@ public class MarketParticipantDsoServiceTest extends AbstractTest {
 
     @Value("classpath:/marketParticipantDso/market-participant-dso-donnees-ko.csv")
     private Reader csvMarketParticipantDataKo;
-
-    @MockBean
-    private MarketParticipantDsoRepository marketParticipantDsoRepository;
-
-    @Captor
-    private ArgumentCaptor<List<MarketParticipantDso>> marketParticipantDsoArgumentCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> userDsoArgumentCaptor;
 
     @Autowired
     private MarketParticipantService marketParticipantService;
@@ -84,7 +73,7 @@ public class MarketParticipantDsoServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportMarketParticipantSansHeader() throws IOException {
+    public void testImportMarketParticipantSansHeader() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "market-participant-dso-sans-header.csv";
 
@@ -99,7 +88,7 @@ public class MarketParticipantDsoServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportMarketParticipantHeaderInvalide() throws IOException {
+    public void testImportMarketParticipantHeaderInvalide() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "market-participant-dso-header-invalide.csv";
 
@@ -111,7 +100,7 @@ public class MarketParticipantDsoServiceTest extends AbstractTest {
         String error = importMarketParticipantDsoResult.getErrors().get(0);
         assertThat(error).contains("Fichier "+fileName);
         assertThat(error).contains("Structure attendue : "+ new MarketParticipantDso().getHeaders());
-        verifyNoInteractions(marketParticipantDsoRepository);
+        verifyNoInteractions(dsoContract);
     }
 
     @Test
@@ -126,7 +115,7 @@ public class MarketParticipantDsoServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportMarketParticipantAvecDonneesKO() throws IOException {
+    public void testImportMarketParticipantAvecDonneesKO() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "market-participant-dso-donnees-ko.csv";
 
@@ -134,11 +123,11 @@ public class MarketParticipantDsoServiceTest extends AbstractTest {
         marketParticipantService.importMarketParticipantDso(fileName, csvMarketParticipantDataKo);
 
         // THEN
-        verifyNoInteractions(marketParticipantDsoRepository);
+        verifyNoInteractions(dsoContract);
     }
 
     @Test
-    public void testImportMarketParticipantOk() throws IOException {
+    public void testImportMarketParticipantOk() throws IOException, TechnicalException, InterruptedException, TimeoutException, ContractException {
         // GIVEN
         String fileName = "market-participant-dso-donnees-ok.csv";
 
@@ -146,11 +135,7 @@ public class MarketParticipantDsoServiceTest extends AbstractTest {
         marketParticipantService.importMarketParticipantDso(fileName, csvMarketParticipantOk);
 
         // THEN
-        Mockito.verify(marketParticipantDsoRepository, Mockito.times(1)).save(marketParticipantDsoArgumentCaptor.capture(), userDsoArgumentCaptor.capture());
-        List<MarketParticipantDso> marketParticipantDsos = marketParticipantDsoArgumentCaptor.getValue();
-        assertThat(marketParticipantDsos).hasSize(1);
-        MarketParticipantDso marketParticipantDso = marketParticipantDsos.get(0);
-        assertThat(marketParticipantDso).extracting("dsoMarketParticipantMrid", "dsoMarketParticipantName", "dsoMarketParticipantRoleType").containsExactly("ENEDIS02EIC", "ENEDIS", "A50");
+        Mockito.verify(dsoContract, Mockito.times(1)).submitTransaction("CreateMarketParticipantDSO", "ENEDIS02EIC", "ENEDIS", "A50");
     }
 
 }

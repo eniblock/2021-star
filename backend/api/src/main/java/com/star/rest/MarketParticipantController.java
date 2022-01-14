@@ -1,6 +1,7 @@
 package com.star.rest;
 
 
+import com.star.exception.TechnicalException;
 import com.star.models.participant.MarketParticipant;
 import com.star.models.participant.dso.ImportMarketParticipantDsoResult;
 import com.star.models.participant.tso.ImportMarketParticipantTsoResult;
@@ -41,7 +42,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @RestController
 @RequestMapping(MarketParticipantController.PATH)
 public class MarketParticipantController {
-    public static final String PATH = ApiRestVersion.VERSION + "/api/participant";
+    public static final String PATH = ApiRestVersion.VERSION + "/participant";
 
     @Value("${instance}")
     private InstanceEnum instance;
@@ -65,8 +66,8 @@ public class MarketParticipantController {
         ImportMarketParticipantDsoResult importMarketParticipantDsoResult;
         try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
             importMarketParticipantDsoResult = marketParticipantService.importMarketParticipantDso(file.getOriginalFilename(), streamReader);
-        } catch (IOException ioException) {
-            log.error("Echec de l'import  du fichier {}. Erreur : ", file.getOriginalFilename(), ioException);
+        } catch (IOException | TechnicalException exception) {
+            log.error("Echec de l'import  du fichier {}. Erreur : ", file.getOriginalFilename(), exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.status(isEmpty(importMarketParticipantDsoResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantDsoResult);
@@ -87,8 +88,8 @@ public class MarketParticipantController {
         ImportMarketParticipantTsoResult importMarketParticipantTsoResult;
         try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
             importMarketParticipantTsoResult = marketParticipantService.importMarketParticipantTso(file.getOriginalFilename(), streamReader);
-        } catch (IOException ioException) {
-            log.error("Echec de l'import  du fichier {}. Erreur : ", file.getOriginalFilename(), ioException);
+        } catch (IOException | TechnicalException exception) {
+            log.error("Echec de l'import  du fichier {}. Erreur : ", file.getOriginalFilename(), exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.status(isEmpty(importMarketParticipantTsoResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantTsoResult);
@@ -99,7 +100,7 @@ public class MarketParticipantController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get list of market participant",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping
-    public ResponseEntity<MarketParticipant> getMarketParticipantDsos() {
+    public ResponseEntity<MarketParticipant> getMarketParticipantDsos() throws TechnicalException {
         return ResponseEntity.ok(marketParticipantService.getMarketParticipant());
     }
 

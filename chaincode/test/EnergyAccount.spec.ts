@@ -1089,7 +1089,7 @@ describe('Star Tests EnergyAccount', () => {
             }
         });
 
-        it('should return OK on GetEnergyAccountForSystemOperator empty', async () => {
+        it('should return OK on GetEnergyAccountForSystemOperator HTA empty', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
@@ -1101,7 +1101,7 @@ describe('Star Tests EnergyAccount', () => {
             expect(ret).to.eql([]);
         });
 
-        it('should return Error on GetEnergyAccountForSystemOperator Wrong MSPID', async () => {
+        it('should return Error on GetEnergyAccountForSystemOperator HTA Wrong MSPID', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'FakeMspID';
             try {
@@ -1112,7 +1112,7 @@ describe('Star Tests EnergyAccount', () => {
             }
         });
 
-        it('should return OK on GetEnergyAccountForSystemOperator 47,71 error coverage', async () => {
+        it('should return OK on GetEnergyAccountForSystemOperator HTA 47,71 error coverage', async () => {
             let star = new Star();
 
             chaincodeStub.MspiID = 'ENEDISMSP';
@@ -1157,7 +1157,7 @@ describe('Star Tests EnergyAccount', () => {
             expect(ret).to.eql([]);
         });
 
-        it('should return Error on GetEnergyAccountForSystemOperator wrong read rights', async () => {
+        it('should return Error on GetEnergyAccountForSystemOperator HTA wrong read rights', async () => {
             let star = new Star();
 
             chaincodeStub.MspiID = 'ENEDISMSP';
@@ -1252,7 +1252,7 @@ describe('Star Tests EnergyAccount', () => {
             }
         });
 
-        it('should return SUCCESS on GetEnergyAccountForSystemOperator', async () => {
+        it('should return SUCCESS on GetEnergyAccountForSystemOperator HTA', async () => {
             let star = new Star();
 
             const site: Site = {meteringPointMrid: 'PRM50012536123456',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
@@ -1350,7 +1350,7 @@ describe('Star Tests EnergyAccount', () => {
             expect(ret).to.eql(expected);
         });
 
-        it('should return SUCCESS on GetEnergyAccountForSystemOperator for non JSON value', async () => {
+        it('should return SUCCESS on GetEnergyAccountForSystemOperator HTA for non JSON value', async () => {
             let star = new Star();
             chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
                 chaincodeStub.states = {};
@@ -1500,7 +1500,7 @@ describe('Star Tests EnergyAccount', () => {
             }
         });
 
-        it('should return SUCCESS on GetEnergyAccountForSystemOperator', async () => {
+        it('should return SUCCESS on GetEnergyAccountForSystemOperator HTB', async () => {
             let star = new Star();
 
             chaincodeStub.MspiID = 'RTEMSP';

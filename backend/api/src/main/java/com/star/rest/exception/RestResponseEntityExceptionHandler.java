@@ -1,5 +1,6 @@
 package com.star.rest.exception;
 
+import com.star.exception.TechnicalException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         logError(runtimeException);
         return handleExceptionInternal(runtimeException, getErrorDetails(runtimeException, request), new HttpHeaders(),
                 HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(value = {TechnicalException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ResponseEntity<Object> handleTechnicalException(RuntimeException runtimeException, WebRequest request) {
+        logError(runtimeException);
+        return handleExceptionInternal(runtimeException, getErrorDetails(runtimeException, request), new HttpHeaders(),
+                HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
     private void logError(Exception exception) {

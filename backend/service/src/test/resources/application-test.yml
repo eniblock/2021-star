@@ -1,0 +1,3 @@
+hyperledger-fabric:
+  ca-client:
+    allowAllHostNames: true

@@ -18,7 +18,7 @@ import java.util.List;
 public class ImportMarketParticipantTsoResult implements ImportResult<MarketParticipantTso> {
 
     List<MarketParticipantTso> datas = new ArrayList<>();
-    List<String> errors =  new ArrayList<>();
+    List<String> errors = new ArrayList<>();
 
     @Override
     public List<MarketParticipantTso> getDatas() {

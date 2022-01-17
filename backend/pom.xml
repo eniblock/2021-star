@@ -26,6 +26,7 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <collections4.version>4.4</collections4.version>
         <commons-io.version>2.6</commons-io.version>
+        <hyperledger-fabric.version>2.1.0</hyperledger-fabric.version>
         <sonar.organization>xdev-tech</sonar.organization>
         <jacoco.version>0.8.7</jacoco.version>
         <sonarqube.version>3.8.0.2131</sonarqube.version>
@@ -36,6 +37,11 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hyperledger.fabric</groupId>
+            <artifactId>fabric-gateway-java</artifactId>
+            <version>${hyperledger-fabric.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

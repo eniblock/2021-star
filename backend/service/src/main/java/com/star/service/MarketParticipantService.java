@@ -1,6 +1,7 @@
 package com.star.service;
 
 import com.star.enums.FileExtensionEnum;
+import com.star.exception.TechnicalException;
 import com.star.models.participant.ImportCSV;
 import com.star.models.participant.ImportResult;
 import com.star.models.participant.MarketParticipant;
@@ -60,12 +61,14 @@ public class MarketParticipantService {
 
     /**
      * Permet d'importer les market participants DSO selon les informations contenues dans le fichier CSV passé en paramètre.
-     * @param fileName nom du fichier CSV à traiter.
+     *
+     * @param fileName     nom du fichier CSV à traiter.
      * @param streamReader le contenu du fichier CSV à traiter, en tant qu'objet {@link Reader}
      * @return {@link ImportMarketParticipantDsoResult} contenant les participants importés et les éventuelles erreurs des lignes ne respectant pas le format.
      * @throws IOException
+     * @throws TechnicalException
      */
-    public ImportMarketParticipantDsoResult importMarketParticipantDso(String fileName, Reader streamReader) throws IOException {
+    public ImportMarketParticipantDsoResult importMarketParticipantDso(String fileName, Reader streamReader) throws IOException, TechnicalException {
         checkFile(fileName, streamReader);
         ImportMarketParticipantDsoResult importMarketParticipantDsoResult = new ImportMarketParticipantDsoResult();
         CSVParser csvParser = getCsvParser(streamReader);
@@ -89,12 +92,13 @@ public class MarketParticipantService {
 
     /**
      * Permet d'importer les market participants TSO selon les informations contenues dans le fichier CSV passé en paramètre.
-     * @param fileName nom du fichier CSV à traiter.
+     *
+     * @param fileName     nom du fichier CSV à traiter.
      * @param streamReader le contenu du fichier CSV à traiter, en tant qu'objet {@link Reader}
      * @return {@link ImportMarketParticipantTsoResult} contenant les participants importés et les éventuelles erreurs des lignes ne respectant pas le format.
      * @throws IOException
      */
-    public ImportMarketParticipantTsoResult importMarketParticipantTso(String fileName, Reader streamReader) throws IOException {
+    public ImportMarketParticipantTsoResult importMarketParticipantTso(String fileName, Reader streamReader) throws IOException, TechnicalException {
         checkFile(fileName, streamReader);
         ImportMarketParticipantTsoResult importMarketParticipantTsoResult = new ImportMarketParticipantTsoResult();
         CSVParser csvParser = getCsvParser(streamReader);
@@ -117,9 +121,10 @@ public class MarketParticipantService {
 
     /**
      * Retourne un objet contenant la liste des market participant DSO et des market participant TSO
+     *
      * @return
      */
-    public MarketParticipant getMarketParticipant() {
+    public MarketParticipant getMarketParticipant() throws TechnicalException {
         return new MarketParticipant(marketParticipantDsoRepository.getMarketParticipantDsos(),
                 marketParticipantTsoRepository.getMarketParticipantTsos());
     }

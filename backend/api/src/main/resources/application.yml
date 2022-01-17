@@ -37,6 +37,22 @@ keycloak:
 notification:
   dso: false
 #  Valeur possible : tso/dso/producer
-instance: tso
+instance: dso
 
+blockchain:
+  api:
+    networkName: mychannel
+    contractdso: marketparticipantdso
+    contracttso: marketparticipanttso
+hyperledger-fabric:
+  ca-client:
+    url: https://localhost:7054
+    pemFile: backend/api/src/main/resources/ca.org1.example.com-cert.pem
+    allowAllHostNames: true
+  gateway:
+    discovery: true
+    networkConfig: backend/api/src/main/resources/connection-org1.yaml
+    walletPath: wallets
+    identityId: admin
+    password: adminpw
 

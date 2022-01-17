@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Instance } from '../../models/enum/instance.enum';
+import { Instance } from '../../models/enum/Instance.enum';
 import { CacheService } from '../common/cache.service';
 
 @Injectable({

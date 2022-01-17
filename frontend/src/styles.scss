@@ -27,6 +27,13 @@ h2 {
   font-size: 1.3em;
   color: $mat-primary;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin-bottom: 1.5em;
+}
+
+// Formulaires
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  background-color: #ffffff;
+  border-radius: 5px;
 }
 
 // Menu

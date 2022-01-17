@@ -1,0 +1,39 @@
+<form [formGroup]="form" (submit)="onSubmit()">
+
+  <!-- Recherche simple -->
+
+  <div class="row">
+
+    <mat-form-field class="col-6 col-lg-2 pe-0" appearance="outline">
+      <mat-label>Type de recherche</mat-label>
+      <mat-select formControlName="champPourRechercheSimple">
+        <mat-option *ngFor="let t of ChampDeRechercheReseauSimpleEnum | keyvalue" [value]="t.key">{{ t.value | ChampDeRechercheReseauSimplePipe }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="col-6 col-lg-2 ps-0" appearance="outline">
+      <mat-label>Filière</mat-label>
+      <mat-select formControlName="technologyType" multiple>
+        <mat-select-trigger>
+          {{ form.get('technologyType')?.value | TechnologyType }}
+        </mat-select-trigger>
+        <mat-option *ngFor="let t of TechnologyTypeEnum | keyvalue" [value]="t.key">{{ t.value | TechnologyType }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+    <mat-form-field class="col-11 col-lg-6" appearance="outline">
+      <mat-label>{{ form.get('champPourRechercheSimple')?.value | ChampDeRechercheReseauSimplePipe }}</mat-label>
+      <input matInput [placeholder]="form.get('champPourRechercheSimple')?.value | ChampDeRechercheReseauSimplePipe" type="text" [formControlName]="form.get('champPourRechercheSimple')?.value">
+    </mat-form-field>
+    
+  </div>
+
+  <!-- Recherche avancée -->
+
+  <div class="row">
+    <div class="col text-center">
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Rechercher</button>
+    </div>
+  </div>
+
+</form>

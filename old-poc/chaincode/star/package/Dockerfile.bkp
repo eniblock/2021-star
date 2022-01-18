@@ -12,6 +12,6 @@ RUN npm run build
 
 EXPOSE 9999
 
-ENV star_1.0:30373b8f0e566a1d08925fe5e30880cf386e77b634b85b42d5fd85cba59480b8=changeme
+ENV CHAINCODE_ID=changeme
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
-CMD sh -c "/app/node_modules/.bin/fabric-chaincode-node server --chaincode-address 0.0.0.0:9999 --chaincode-id star_1.0:30373b8f0e566a1d08925fe5e30880cf386e77b634b85b42d5fd85cba59480b8"
+CMD sh -c "/app/node_modules/.bin/fabric-chaincode-node server --chaincode-address 0.0.0.0:9999 --chaincode-id CHAINCODE_ID"

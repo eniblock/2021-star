@@ -4,36 +4,69 @@
 
   <div class="row">
 
-    <mat-form-field class="col-6 col-lg-2 pe-0" appearance="outline">
+    <mat-form-field class="col-6 col-lg-2 pe-lg-0" appearance="outline">
       <mat-label>Type de recherche</mat-label>
-      <mat-select formControlName="champPourRechercheSimple">
-        <mat-option *ngFor="let t of ChampDeRechercheReseauSimpleEnum | keyvalue" [value]="t.key">{{ t.value | ChampDeRechercheReseauSimplePipe }}</mat-option>
+      <mat-select formControlName="typeDeRechercheSimple">
+        <mat-option *ngFor="let t of TypeDeRechercheSimpleEnum | keyvalue" [value]="t.key">{{ t.value | TypeDeRechercheSimple }}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="col-6 col-lg-2 ps-0" appearance="outline">
+    <mat-form-field class="col-6 col-lg-2 px-lg-0" appearance="outline">
       <mat-label>Filière</mat-label>
       <mat-select formControlName="technologyType" multiple>
         <mat-select-trigger>
-          {{ form.get('technologyType')?.value | TechnologyType }}
+          {{ form.value.technologyType | TechnologyType }}
         </mat-select-trigger>
         <mat-option *ngFor="let t of TechnologyTypeEnum | keyvalue" [value]="t.key">{{ t.value | TechnologyType }}</mat-option>
       </mat-select>
     </mat-form-field>
     
-    <mat-form-field class="col-11 col-lg-6" appearance="outline">
-      <mat-label>{{ form.get('champPourRechercheSimple')?.value | ChampDeRechercheReseauSimplePipe }}</mat-label>
-      <input matInput [placeholder]="form.get('champPourRechercheSimple')?.value | ChampDeRechercheReseauSimplePipe" type="text" [formControlName]="form.get('champPourRechercheSimple')?.value">
+    <mat-form-field class="col-12 col-lg-8 ps-lg-2" appearance="outline">
+      <mat-label>{{ form.value.typeDeRechercheSimple | TypeDeRechercheSimple }}</mat-label>
+      <input matInput [placeholder]="form.value.typeDeRechercheSimple | TypeDeRechercheSimple" type="text" formControlName="rechercheSimple">
+      <button matSuffix mat-icon-button class="calageMatSuffixButtonIcon" (click)="switchRechercheAvancee()" type="button">
+        <i class="fas fa-sliders-h" [ngClass]="{'text-primary':rechercheAvancee}"></i>
+      </button>
+      <button class="ms-3 calageMatSuffixButton" mat-raised-button matSuffix color="primary" [disabled]="form.invalid" type="submit" [disabled]="rechercheAvancee">Rechercher</button>
     </mat-form-field>
     
   </div>
 
   <!-- Recherche avancée -->
 
-  <div class="row">
-    <div class="col text-center">
+  <div class="row mt-3" *ngIf="rechercheAvancee">
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Code Poste Source</mat-label>
+      <input matInput placeholder="Poste Source" type="text" formControlName="substationMrid">
+    </mat-form-field>
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Nom Poste Source</mat-label>
+      <input matInput placeholder="Poste Source" type="text" formControlName="substationName">
+    </mat-form-field>
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Code EIC</mat-label>
+      <input matInput placeholder="Poste Source" type="text" formControlName="producerMarketParticipantMrid">
+    </mat-form-field>
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Nom Producteur</mat-label>
+      <input matInput placeholder="Poste Source" type="text" formControlName="producerMarketParticipantName">
+    </mat-form-field>
+
+    <div class="col text-center mt-3">
       <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Rechercher</button>
     </div>
   </div>
 
 </form>
+
+<p style="margin-top:200px">
+  Pas les memes champs suivant le type d'utilisateur !!!
+</p>
+
+<p>
+  Validators !!!
+</p>

@@ -11,7 +11,7 @@ import { ReseauPaginationComponent } from './reseau-pagination/reseau-pagination
 import { ReseauRechercheComponent } from './reseau-recherche/reseau-recherche.component';
 import { ReseauResultatsComponent } from './reseau-resultats/reseau-resultats.component';
 import { TechnologyTypePipe } from 'src/app/pipes/TechnologyType.pipe';
-import { ChampDeRechercheReseauSimplePipe } from 'src/app/pipes/ChampDeRechercheReseauSimple.pipe';
+import { TypeDeRechercheSimplePipe } from 'src/app/pipes/TypeDeRechercheSimple.pipe';
 
 @NgModule({
   imports: [
@@ -29,7 +29,7 @@ import { ChampDeRechercheReseauSimplePipe } from 'src/app/pipes/ChampDeRecherche
     ReseauRechercheComponent,
     ReseauResultatsComponent,
     TechnologyTypePipe,
-    ChampDeRechercheReseauSimplePipe,
+    TypeDeRechercheSimplePipe,
   ],
 })
 export class ReseauModule {}

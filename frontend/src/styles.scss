@@ -1,14 +1,11 @@
 @import "./_bootstrap-for-angular.scss";
 
-@font-face {
-  font-family: "Avenir";
-  src: url(./assets/font/HindSiliguri-Regular.ttf) format("truetype");
-}
+@import url("https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap");
 
 body {
   font-size: 1.1rem;
   color: $mat-text;
-  font-family: Avenir, Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Hind Siliguri", sans-serif;
   background-color: #f2f2f2;
 }
 
@@ -32,8 +29,17 @@ h2 {
 
 // Formulaires
 .mat-form-field-appearance-outline .mat-form-field-outline {
-  background-color: #ffffff;
+  background-color: #ffffff; // couleur de fond des inputs
   border-radius: 5px;
+}
+.mat-form-field-wrapper {
+  padding-bottom: 0 !important; // espacement vertical entre les inputs
+}
+.calageMatSuffixButtonIcon {
+  top: -0.5em !important;
+}
+.calageMatSuffixButton {
+  top: -0.75em !important;
 }
 
 // Menu
@@ -51,12 +57,13 @@ h2 {
 
   a {
     color: $mat-text;
-    font-weight: bold;
+    font-weight: 500;
     border-radius: 10px;
   }
 
   a.menu-active {
     color: $mat-primary;
+    font-weight: bold;
     background-color: #e6f7fc;
   }
 

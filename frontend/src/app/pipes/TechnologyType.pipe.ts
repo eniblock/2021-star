@@ -5,7 +5,10 @@ import { TechnologyType } from '../models/enum/TechnologyType.enum';
   name: 'TechnologyType',
 })
 export class TechnologyTypePipe implements PipeTransform {
-  transform(value: TechnologyType | TechnologyType[], args?: any): any {
+  transform(value?: TechnologyType | TechnologyType[], args?: any): any {
+    if (value == undefined) {
+      return '';
+    }
     if (value instanceof Array) {
       return value.map((t) => this.toString(t)).join(', ');
     }

@@ -2,7 +2,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
 import { TypeDeRechercheSimple } from 'src/app/models/enum/TypeDeRechercheSimple.enum';
-import { RechercheReseauForm } from 'src/app/models/RechercheReseau';
+import { FormulaireRechercheReseau } from 'src/app/models/RechercheReseau';
+import { ReseauService } from 'src/app/services/api/reseau.service';
 
 @Component({
   selector: 'app-reseau-recherche',
@@ -10,7 +11,7 @@ import { RechercheReseauForm } from 'src/app/models/RechercheReseau';
   styleUrls: ['./reseau-recherche.component.css'],
 })
 export class ReseauRechercheComponent implements OnInit {
-  @Output() rechercher = new EventEmitter<RechercheReseauForm>();
+  @Output() rechercher = new EventEmitter<FormulaireRechercheReseau>();
 
   TypeDeRechercheSimpleEnum = TypeDeRechercheSimple;
   TechnologyTypeEnum = TechnologyType;
@@ -32,20 +33,24 @@ export class ReseauRechercheComponent implements OnInit {
     }),
   });
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private reseauService: ReseauService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    const formSauvegardeDansStorage: FormulaireRechercheReseau =
+      this.reseauService.popFormulaireRecherche();
+    if (formSauvegardeDansStorage != null) {
+      this.rechercheAvancee =
+        formSauvegardeDansStorage.typeDeRechercheSimple == undefined;
+      this.form.patchValue(formSauvegardeDansStorage);
+      this.onSubmit();
+    }
+  }
 
   onSubmit() {
-    let formRecherche: RechercheReseauForm = {
-      ...this.form.value.valeursRecherchees,
-    };
-    if (!this.rechercheAvancee) {
-      // Recherche simple => on place la valeur recherchée dans le bon champ du formulaire
-      (formRecherche as any)[this.form.value.typeDeRechercheSimple] =
-        this.form.value.champDeRechercheSimple;
-    }
-    this.rechercher.emit(formRecherche);
+    this.rechercher.emit(this.form.value);
   }
 
   switchRechercheAvancee() {

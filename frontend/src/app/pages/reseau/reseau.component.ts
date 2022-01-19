@@ -1,7 +1,7 @@
-import { ReseauService } from './../../services/api/reseau.service';
 import { Component, OnInit } from '@angular/core';
 import { Instance } from 'src/app/models/enum/Instance.enum';
-import { RechercheReseauForm } from 'src/app/models/RechercheReseau';
+import { FormulaireRechercheReseau } from 'src/app/models/RechercheReseau';
+import { ReseauService } from 'src/app/services/api/reseau.service';
 import { InstanceService } from './../../services/api/instance.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class ReseauComponent implements OnInit {
       .subscribe((instance) => (this.instance = instance));
   }
 
-  rechercher(form: RechercheReseauForm) {
+  rechercher(form: FormulaireRechercheReseau) {
     this.reseauService
       .find(form)
       .subscribe((rechercheReseauResponse) =>

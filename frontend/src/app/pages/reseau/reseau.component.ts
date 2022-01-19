@@ -1,5 +1,8 @@
+import { ReseauService } from './../../services/api/reseau.service';
 import { Component, OnInit } from '@angular/core';
+import { Instance } from 'src/app/models/enum/Instance.enum';
 import { RechercheReseauForm } from 'src/app/models/RechercheReseau';
+import { InstanceService } from './../../services/api/instance.service';
 
 @Component({
   selector: 'app-reseau',
@@ -7,11 +10,24 @@ import { RechercheReseauForm } from 'src/app/models/RechercheReseau';
   styleUrls: ['./reseau.component.css'],
 })
 export class ReseauComponent implements OnInit {
-  constructor() {}
+  instance: Instance = Instance.PRODUCER;
 
-  ngOnInit() {}
+  constructor(
+    private instanceService: InstanceService,
+    private reseauService: ReseauService
+  ) {}
+
+  ngOnInit() {
+    this.instanceService
+      .getTypeInstance()
+      .subscribe((instance) => (this.instance = instance));
+  }
 
   rechercher(form: RechercheReseauForm) {
-    console.log(form);
+    this.reseauService
+      .find(form)
+      .subscribe((rechercheReseauResponse) =>
+        console.log(rechercheReseauResponse)
+      );
   }
 }

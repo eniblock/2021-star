@@ -17,11 +17,16 @@ export class InstanceService {
     private cacheService: CacheService
   ) {}
 
-  get(): Observable<Instance> {
-    return this.cacheService.getValueInCacheOrLoadIt<Instance>(
-      this.CACHE_KEY,
-      this.CACHE_LIFETIME,
-      this.httpClient.get<Instance>(`${environment.serverUrl}/instance`)
-    );
+  getTypeInstance(): Observable<Instance> {
+    // On utilise un cache en Production
+    if (environment.production) {
+      return this.cacheService.getValueInCacheOrLoadIt<Instance>(
+        this.CACHE_KEY,
+        this.CACHE_LIFETIME,
+        this.httpClient.get<Instance>(`${environment.serverUrl}/instance`)
+      );
+    } else {
+      return this.httpClient.get<Instance>(`${environment.serverUrl}/instance`);
+    }
   }
 }

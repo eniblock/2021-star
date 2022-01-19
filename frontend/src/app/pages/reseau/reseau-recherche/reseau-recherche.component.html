@@ -11,11 +11,11 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="col-6 col-lg-2 px-lg-0" appearance="outline">
+    <mat-form-field class="col-6 col-lg-2 px-lg-0" appearance="outline" [formGroup]="form.get('valeursRecherchees')">
       <mat-label>Filière</mat-label>
       <mat-select formControlName="technologyType" multiple>
         <mat-select-trigger>
-          {{ form.value.technologyType | TechnologyType }}
+          {{ form.value.valeursRecherchees.technologyType | TechnologyType }}
         </mat-select-trigger>
         <mat-option *ngFor="let t of TechnologyTypeEnum | keyvalue" [value]="t.key">{{ t.value | TechnologyType }}</mat-option>
       </mat-select>
@@ -34,7 +34,7 @@
 
   <!-- Recherche avancée -->
 
-  <div class="row mt-3" *ngIf="rechercheAvancee">
+  <div class="row mt-3" *ngIf="rechercheAvancee" [formGroup]="form.get('valeursRecherchees')">
     
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Code Poste Source</mat-label>
@@ -62,11 +62,3 @@
   </div>
 
 </form>
-
-<p style="margin-top:200px">
-  Pas les memes champs suivant le type d'utilisateur !!!
-</p>
-
-<p>
-  Validators !!!
-</p>

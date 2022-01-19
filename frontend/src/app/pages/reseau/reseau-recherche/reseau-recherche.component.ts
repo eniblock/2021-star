@@ -26,14 +26,15 @@ export class ReseauRechercheComponent implements OnInit {
     typeDeRechercheSimple: [
       TypeDeRechercheSimple.producerMarketParticipantName,
     ],
-    technologyType: [Object.keys(TechnologyType)],
     rechercheSimple: [''],
-
-    producerMarketParticipantName: [{ value: '', disabled: true }],
-    siteName: [{ value: '', disabled: true }],
-    substationName: [{ value: '', disabled: true }],
-    substationMrid: [{ value: '', disabled: true }],
-    producerMarketParticipantMrid: [{ value: '', disabled: true }],
+    valeursRecherchees: this.formBuilder.group({
+      technologyType: [Object.keys(TechnologyType)],
+      producerMarketParticipantName: [{ value: '', disabled: true }],
+      siteName: [{ value: '', disabled: true }],
+      substationName: [{ value: '', disabled: true }],
+      substationMrid: [{ value: '', disabled: true }],
+      producerMarketParticipantMrid: [{ value: '', disabled: true }],
+    }),
   });
 
   constructor(private formBuilder: FormBuilder) {}
@@ -41,9 +42,11 @@ export class ReseauRechercheComponent implements OnInit {
   ngOnInit() {}
 
   onSubmit() {
-    let formRecherche: RechercheReseauForm = { ...this.form.value };
+    let formRecherche: RechercheReseauForm = {
+      ...this.form.value.valeursRecherchees,
+    };
     if (!this.rechercheAvancee) {
-      // Recherche simple
+      // Recherche simple => on place la valeur recherchée dans le bon champ du formulaire
       (formRecherche as any)[this.form.value.typeDeRechercheSimple] =
         this.form.value.rechercheSimple;
     }
@@ -54,22 +57,49 @@ export class ReseauRechercheComponent implements OnInit {
     this.rechercheAvancee = !this.rechercheAvancee;
 
     // Recherche simple
-    this.enableControl('typeDeRechercheSimple', !this.rechercheAvancee);
-    this.enableControl('rechercheSimple', !this.rechercheAvancee);
+    this.enableControl(
+      this.form,
+      'typeDeRechercheSimple',
+      !this.rechercheAvancee
+    );
+    this.enableControl(this.form, 'rechercheSimple', !this.rechercheAvancee);
 
     // Recherche avancee
-    this.enableControl('producerMarketParticipantName', this.rechercheAvancee);
-    this.enableControl('siteName', this.rechercheAvancee);
-    this.enableControl('substationName', this.rechercheAvancee);
-    this.enableControl('substationMrid', this.rechercheAvancee);
-    this.enableControl('producerMarketParticipantMrid', this.rechercheAvancee);
+    const formGroupRecherche = this.form.get('valeursRecherchees');
+    this.enableControl(
+      formGroupRecherche,
+      'producerMarketParticipantName',
+      this.rechercheAvancee
+    );
+    this.enableControl(formGroupRecherche, 'siteName', this.rechercheAvancee);
+    this.enableControl(
+      formGroupRecherche,
+      'substationName',
+      this.rechercheAvancee
+    );
+    this.enableControl(
+      formGroupRecherche,
+      'substationMrid',
+      this.rechercheAvancee
+    );
+    this.enableControl(
+      formGroupRecherche,
+      'producerMarketParticipantMrid',
+      this.rechercheAvancee
+    );
   }
 
-  private enableControl(formControlName: string, enable: Boolean) {
-    if (enable) {
-      this.form.get(formControlName)?.enable();
-    } else {
-      this.form.get(formControlName)?.disable();
+  private enableControl(
+    formGroup: AbstractControl | null,
+    formControlName: string,
+    enable: Boolean
+  ) {
+    if (formGroup != null) {
+      if (enable) {
+        formGroup.get(formControlName)?.enable();
+      } else {
+        formGroup.get(formControlName)?.disable();
+      }
     }
   }
 }

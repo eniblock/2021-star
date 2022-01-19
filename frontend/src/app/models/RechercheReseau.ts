@@ -6,7 +6,6 @@ export interface RechercheReseauForm
   extends PaginationForm<OrdreRechercheReseau> {
   producerMarketParticipantName: string;
   siteName: string;
-  technologyType: TechnologyType[];
   substationName: string;
   substationMrid: string;
   producerMarketParticipantMrid: string;

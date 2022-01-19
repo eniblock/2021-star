@@ -151,7 +151,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
 
 /*
 ////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////    HTB     ////////////////////////////
+////////////////////////////////////    WRITE     ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 */
 
@@ -167,7 +167,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             }
         });
 
-        it('should return ERROR CreateReferenceEnergyAccount HTB Site non-JSON value', async () => {
+        it('should return ERROR CreateReferenceEnergyAccount Site non-JSON value', async () => {
             let star = new Star();
 
             chaincodeStub.MspiID = 'RTEMSP';
@@ -208,7 +208,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
         });
 
 
-        it('should return ERROR CreateReferenceEnergyAccount HTB Producer non-JSON value', async () => {
+        it('should return ERROR CreateReferenceEnergyAccount Producer non-JSON value', async () => {
             let star = new Star();
 
             chaincodeStub.MspiID = 'RTEMSP';
@@ -360,7 +360,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             }
         });
 
-        it('should return ERROR CreateReferenceEnergyAccount HTB wrong sender', async () => {
+        it('should return ERROR CreateReferenceEnergyAccount wrong sender', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
@@ -401,7 +401,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             }
         });
 
-        it('should return ERROR CreateReferenceEnergyAccount HTB missing marketEvaluationPointMrid', async () => {
+        it('should return ERROR CreateReferenceEnergyAccount missing marketEvaluationPointMrid', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
@@ -439,7 +439,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             }
         });
 
-        it('should return ERROR CreateReferenceEnergyAccount HTB missing marketEvaluationPointMrid', async () => {
+        it('should return ERROR CreateReferenceEnergyAccount missing marketEvaluationPointMrid', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
@@ -477,7 +477,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             }
         });
 
-        it('should return ERROR CreateReferenceEnergyAccount HTB missing processType', async () => {
+        it('should return ERROR CreateReferenceEnergyAccount missing processType', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
@@ -515,7 +515,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             }
         });
 
-        it('should return ERROR CreateReferenceEnergyAccount HTB mismatch ', async () => {
+        it('should return ERROR CreateReferenceEnergyAccount mismatch ', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
@@ -600,10 +600,67 @@ describe('Star Tests ReferenceEnergyAccount', () => {
 
 
 ////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////    GET     ////////////////////////////
+////////////////////////////////////    READ     ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
     describe('Test GetReferenceEnergyAccountForSystemOperator', () => {
-        it('should return ERROR on GetReferenceEnergyAccountForSystemOperator', async () => {
+        it('should return ERROR on GetReferenceEnergyAccount no systemOperator', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'RTEMSP';
+            const producer = 'toto';
+            try {
+                await star.GetReferenceEnergyAccountForSystemOperator(transactionContext, producer, producer, producer);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('System Operator : toto does not exist for Reference Energy Account read.');
+            }
+        });
+
+        it('should return ERROR on GetReferenceEnergyAccountForSystemOperator wrong MSPID', async () => {
+            let star = new Star();
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+        
+            // const date = new Date(1634898550000);
+            const nrj1 : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                meteringPointMrid: "PRM50012536123457",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(nrj1));
+            let ret1 = JSON.parse((await chaincodeStub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
+            // console.log("ret1=", ret1);
+            expect(ret1).to.eql( Object.assign({docType: 'referenceEnergyAccount'}, nrj1 ));
+        
+            chaincodeStub.MspiID = 'TOTOMSP';
+            try {
+                await star.GetReferenceEnergyAccountForSystemOperator(transactionContext, nrj1.meteringPointMrid, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Organisation, TOTOMSP does not have read access for Reference Energy Account.');
+            }
+        });
+
+        it('should return ERROR on GetReferenceEnergyAccountForSystemOperator Broken SystemOperator', async () => {
             let star = new Star();
 
             chaincodeStub.MspiID = 'RTEMSP';
@@ -646,7 +703,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                 expect(err.message).to.equal('ERROR createReferenceEnergyAccount getSystemOperator-> Input string NON-JSON value');
             }
         });
-/*
+
         it('should return SUCCESS on GetReferenceEnergyAccountForSystemOperator', async () => {
             let star = new Star();
 
@@ -683,7 +740,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(nrj1));
             let ret1 = JSON.parse((await chaincodeStub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
             // console.log("ret1=", ret1);
-            expect(ret1).to.eql( Object.assign({docType: 'energyAccount'}, nrj1 ));
+            expect(ret1).to.eql( Object.assign({docType: 'referenceEnergyAccount'}, nrj1 ));
 
             const nrj2 : EnergyAccount = {
                 energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a4",
@@ -710,7 +767,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(nrj2));
             let ret2 = JSON.parse((await chaincodeStub.getState(nrj2.energyAccountMarketDocumentMrid)).toString());
             // console.log("ret2=", ret2);
-            expect(ret2).to.eql( Object.assign({docType: 'energyAccount'}, nrj2 ));
+            expect(ret2).to.eql( Object.assign({docType: 'referenceEnergyAccount'}, nrj2 ));
 
             let ret = await star.GetReferenceEnergyAccountForSystemOperator(transactionContext, nrj1.meteringPointMrid, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
             ret = JSON.parse(ret);
@@ -719,7 +776,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
 
             const expected: EnergyAccount[] = [
                 {
-                    docType: "energyAccount",
+                    docType: "referenceEnergyAccount",
                     energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
                     meteringPointMrid: "PRM50012536123457",
                     marketEvaluationPointMrid: "CodePPE",
@@ -741,7 +798,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                     product: "Energie active/Réactive",
                 },
                 {
-                    docType: "energyAccount",
+                    docType: "referenceEnergyAccount",
                     energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a4",
                     meteringPointMrid: "PRM50012536123457",
                     marketEvaluationPointMrid: "CodePPE",
@@ -766,6 +823,108 @@ describe('Star Tests ReferenceEnergyAccount', () => {
 
             expect(ret).to.eql(expected);
         });
+
+        it('should return SUCCESS on GetReferenceEnergyAccountForSystemOperator for non JSON value', async () => {
+            let star = new Star();
+            chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
+                chaincodeStub.states = {};
+                chaincodeStub.states[key] = 'non-json-value';
+            });
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"toto\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+
+            // const date = new Date(1634898550000);
+            const nrj1 : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
+                meteringPointMrid: "PRM50012536123456",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-21T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-21T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(nrj1));
+            let ret1 = JSON.parse((await chaincodeStub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
+            // console.log("ret1=", ret1);
+            expect(ret1).to.eql( Object.assign({docType: 'referenceEnergyAccount'}, nrj1 ));
+
+            const nrj2 : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a2",
+                meteringPointMrid: "PRM50012536123456",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-22T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(nrj2));
+            let ret2 = JSON.parse((await chaincodeStub.getState(nrj2.energyAccountMarketDocumentMrid)).toString());
+            // console.log("ret2=", ret2);
+            expect(ret2).to.eql( Object.assign({docType: 'referenceEnergyAccount'}, nrj2 ));
+
+            let ret = await star.GetReferenceEnergyAccountForSystemOperator(transactionContext, nrj1.meteringPointMrid, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
+            ret = JSON.parse(ret);
+        //     // console.log('ret=', ret)
+            expect(ret.length).to.equal(2);
+
+            const expected = [
+                "non-json-value",
+                {
+                    docType: "referenceEnergyAccount",
+                    energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
+                    meteringPointMrid: "PRM50012536123456",
+                    marketEvaluationPointMrid: "CodePPE",
+                    areaDomain: "17X100A100A0001A",
+                    senderMarketParticipantMrid: "17V000000992746D",
+                    senderMarketParticipantRole: "A50",
+                    receiverMarketParticipantMrid: "Producteur1",
+                    receiverMarketParticipantRole: "A32",
+                    createdDateTime: "2021-10-21T10:29:10.000Z",
+                    measurementUnitName: "KW",
+                    timeInterval: "2021-10-21T10:29:10.000Z",
+                    resolution: "PT10M",
+                    timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                    revisionNumber: "1",
+                    businessType: "A14 / Z14",
+                    docStatus: "A02",
+                    processType: "A05",
+                    classificationType: "A02",
+                    product: "Energie active/Réactive",
+                }
+           ];
+
+            expect(ret).to.eql(expected);
+        });
     });
 
     describe('Test GetReferenceEnergyAccountByProducer', () => {
@@ -775,7 +934,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                 await star.GetReferenceEnergyAccountByProducer(transactionContext, 'titi', 'toto', 'tata');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMspID does not have read access for producer\'s Energy Account.');
+                expect(err.message).to.equal('Organisation, FakeMspID does not have read access for producer\'s Reference Energy Account.');
             }
         });
 
@@ -793,19 +952,18 @@ describe('Star Tests ReferenceEnergyAccount', () => {
         it('should return SUCCESS on GetReferenceEnergyAccountByProducer', async () => {
             let star = new Star();
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            const site: Site = {meteringPointMrid: 'PRM50012536123456',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
-            await star.CreateSite(transactionContext, JSON.stringify(site));
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
 
             // const date = new Date(1634898550000);
             const nrj1 : EnergyAccount = {
                 energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
                 meteringPointMrid: "PRM50012536123456",
-                // marketEvaluationPointMrid: "CodePPE",
+                marketEvaluationPointMrid: "CodePPE",
                 areaDomain: "17X100A100A0001A",
-                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantMrid: "17V000000992746D",
                 senderMarketParticipantRole: "A50",
                 receiverMarketParticipantMrid: "Producteur1",
                 receiverMarketParticipantRole: "A32",
@@ -825,14 +983,14 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(nrj1));
             let ret1 = JSON.parse((await chaincodeStub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
             // console.log("ret1=", ret1);
-            expect(ret1).to.eql( Object.assign({docType: 'energyAccount'}, nrj1 ));
+            expect(ret1).to.eql( Object.assign({docType: 'referenceEnergyAccount'}, nrj1 ));
 
             const nrj2 : EnergyAccount = {
                 energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a2",
                 meteringPointMrid: "PRM50012536123456",
-                // marketEvaluationPointMrid: "CodePPE",
+                marketEvaluationPointMrid: "CodePPE",
                 areaDomain: "17X100A100A0001A",
-                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantMrid: "17V000000992746D",
                 senderMarketParticipantRole: "A50",
                 receiverMarketParticipantMrid: "Producteur2",
                 receiverMarketParticipantRole: "A32",
@@ -852,7 +1010,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(nrj2));
             let ret2 = JSON.parse((await chaincodeStub.getState(nrj2.energyAccountMarketDocumentMrid)).toString());
             // console.log("ret2=", ret2);
-            expect(ret2).to.eql( Object.assign({docType: 'energyAccount'}, nrj2 ));
+            expect(ret2).to.eql( Object.assign({docType: 'referenceEnergyAccount'}, nrj2 ));
 
             chaincodeStub.MspiID = 'PRODUCERMSP';
             let ret = await star.GetReferenceEnergyAccountByProducer(transactionContext, nrj1.meteringPointMrid, nrj1.receiverMarketParticipantMrid, nrj1.createdDateTime);
@@ -862,12 +1020,12 @@ describe('Star Tests ReferenceEnergyAccount', () => {
 
             const expected: EnergyAccount[] = [
                 {
-                    docType: "energyAccount",
+                    docType: "referenceEnergyAccount",
                     energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
                     meteringPointMrid: "PRM50012536123456",
-                    // marketEvaluationPointMrid: "CodePPE",
+                    marketEvaluationPointMrid: "CodePPE",
                     areaDomain: "17X100A100A0001A",
-                    senderMarketParticipantMrid: "17V0000009927454",
+                    senderMarketParticipantMrid: "17V000000992746D",
                     senderMarketParticipantRole: "A50",
                     receiverMarketParticipantMrid: "Producteur1",
                     receiverMarketParticipantRole: "A32",
@@ -888,27 +1046,21 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             expect(ret).to.eql(expected);
         });
 
-        it('should return SUCCESS on getEnergyAccountByProducer for non JSON value', async () => {
+        it('should return SUCCESS on GetReferenceEnergyAccountByProducer for coverage purpose', async () => {
             let star = new Star();
-            chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
-                chaincodeStub.states = {};
-                chaincodeStub.states[key] = 'non-json-value';
-            });
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"4\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            const site: Site = {meteringPointMrid: 'PRM50012536123456',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
-            await star.CreateSite(transactionContext, JSON.stringify(site));
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
 
             // const date = new Date(1634898550000);
             const nrj1 : EnergyAccount = {
                 energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
                 meteringPointMrid: "PRM50012536123456",
-                // marketEvaluationPointMrid: "CodePPE",
+                marketEvaluationPointMrid: "CodePPE",
                 areaDomain: "17X100A100A0001A",
-                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantMrid: "17V000000992746D",
                 senderMarketParticipantRole: "A50",
                 receiverMarketParticipantMrid: "Producteur1",
                 receiverMarketParticipantRole: "A32",
@@ -928,14 +1080,63 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(nrj1));
             let ret1 = JSON.parse((await chaincodeStub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
             // console.log("ret1=", ret1);
-            expect(ret1).to.eql( Object.assign({docType: 'energyAccount'}, nrj1 ));
+            expect(ret1).to.eql( Object.assign({docType: 'referenceEnergyAccount'}, nrj1 ));
+
+            chaincodeStub.MspiID = 'PRODUCERMSP';
+            let get = await star.GetReferenceEnergyAccountByProducer(transactionContext, 'toto', nrj1.receiverMarketParticipantMrid, nrj1.createdDateTime);
+            let ret = JSON.parse(get);
+            // console.log('ret=', ret)
+            expect(ret.length).to.equal(0);
+
+        });
+
+        it('should return SUCCESS on getEnergyAccountByProducer for non JSON value', async () => {
+            let star = new Star();
+            chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
+                chaincodeStub.states = {};
+                chaincodeStub.states[key] = 'non-json-value';
+            });
+
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"toto\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
+
+            // const date = new Date(1634898550000);
+            const nrj1 : EnergyAccount = {
+                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
+                meteringPointMrid: "PRM50012536123456",
+                marketEvaluationPointMrid: "CodePPE",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V000000992746D",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-21T10:29:10.000Z",
+                measurementUnitName: "KW",
+                timeInterval: "2021-10-21T10:29:10.000Z",
+                resolution: "PT10M",
+                timeSeries: [{inQuantity: 7500, position: 3},{inQuantity: 7500, position: 3}],
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                product: "Energie active/Réactive",
+            };
+
+            await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(nrj1));
+            let ret1 = JSON.parse((await chaincodeStub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
+            // console.log("ret1=", ret1);
+            expect(ret1).to.eql( Object.assign({docType: 'referenceEnergyAccount'}, nrj1 ));
 
             const nrj2 : EnergyAccount = {
                 energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a2",
                 meteringPointMrid: "PRM50012536123456",
-                // marketEvaluationPointMrid: "CodePPE",
+                marketEvaluationPointMrid: "CodePPE",
                 areaDomain: "17X100A100A0001A",
-                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantMrid: "17V000000992746D",
                 senderMarketParticipantRole: "A50",
                 receiverMarketParticipantMrid: "Producteur2",
                 receiverMarketParticipantRole: "A32",
@@ -955,7 +1156,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(nrj2));
             let ret2 = JSON.parse((await chaincodeStub.getState(nrj2.energyAccountMarketDocumentMrid)).toString());
             // console.log("ret2=", ret2);
-            expect(ret2).to.eql( Object.assign({docType: 'energyAccount'}, nrj2 ));
+            expect(ret2).to.eql( Object.assign({docType: 'referenceEnergyAccount'}, nrj2 ));
 
             chaincodeStub.MspiID = 'PRODUCERMSP';
             let ret = await star.GetReferenceEnergyAccountByProducer(transactionContext, nrj1.meteringPointMrid, nrj1.receiverMarketParticipantMrid, nrj1.createdDateTime);
@@ -966,12 +1167,12 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             const expected = [
                 'non-json-value',
                 {
-                    docType: "energyAccount",
+                    docType: "referenceEnergyAccount",
                     energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
                     meteringPointMrid: "PRM50012536123456",
-                    // marketEvaluationPointMrid: "CodePPE",
+                    marketEvaluationPointMrid: "CodePPE",
                     areaDomain: "17X100A100A0001A",
-                    senderMarketParticipantMrid: "17V0000009927454",
+                    senderMarketParticipantMrid: "17V000000992746D",
                     senderMarketParticipantRole: "A50",
                     receiverMarketParticipantMrid: "Producteur1",
                     receiverMarketParticipantRole: "A32",
@@ -990,6 +1191,5 @@ describe('Star Tests ReferenceEnergyAccount', () => {
            ];
             expect(ret).to.eql(expected);
         });
-*/
     });
 });

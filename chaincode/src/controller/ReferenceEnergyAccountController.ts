@@ -89,7 +89,7 @@ export class ReferenceEnergyAccountController {
             startCreatedDateTime: string): Promise<string> {
         const allResults = [];
         const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE && identity) {
+        if (identity !== OrganizationTypeMsp.RTE) {
             throw new Error(`Organisation, ${identity} does not have read access for Reference Energy Account.`);
         }
 
@@ -125,11 +125,6 @@ export class ReferenceEnergyAccountController {
             systemOperatorObj = JSON.parse(systemOperatorAsBytes.toString());
         } catch (error) {
             throw new Error(`ERROR createReferenceEnergyAccount getSystemOperator-> Input string NON-JSON value`);
-        }
-        if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
-            throw new Error(
-                `Reference Energy Account, sender: ${identity} does not provide his own systemOperatorEicCode therefore he does not have read access.`,
-            );
         }
         const query = `{
             "selector":

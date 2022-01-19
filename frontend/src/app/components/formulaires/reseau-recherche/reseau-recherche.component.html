@@ -23,7 +23,7 @@
     
     <mat-form-field class="col-12 col-lg-8 ps-lg-2" appearance="outline">
       <mat-label>{{ form.value.typeDeRechercheSimple | TypeDeRechercheSimple }}</mat-label>
-      <input matInput [placeholder]="form.value.typeDeRechercheSimple | TypeDeRechercheSimple" type="text" formControlName="rechercheSimple">
+      <input matInput [placeholder]="form.value.typeDeRechercheSimple | TypeDeRechercheSimple" type="text" formControlName="champDeRechercheSimple">
       <button matSuffix mat-icon-button class="calageMatSuffixButtonIcon" (click)="switchRechercheAvancee()" type="button">
         <i class="fas fa-sliders-h" [ngClass]="{'text-primary':rechercheAvancee}"></i>
       </button>

@@ -1,10 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
 import { TypeDeRechercheSimple } from 'src/app/models/enum/TypeDeRechercheSimple.enum';
 import { RechercheReseauForm } from 'src/app/models/RechercheReseau';
@@ -26,7 +21,7 @@ export class ReseauRechercheComponent implements OnInit {
     typeDeRechercheSimple: [
       TypeDeRechercheSimple.producerMarketParticipantName,
     ],
-    rechercheSimple: [''],
+    champDeRechercheSimple: [''],
     valeursRecherchees: this.formBuilder.group({
       technologyType: [Object.keys(TechnologyType)],
       producerMarketParticipantName: [{ value: '', disabled: true }],
@@ -48,58 +43,50 @@ export class ReseauRechercheComponent implements OnInit {
     if (!this.rechercheAvancee) {
       // Recherche simple => on place la valeur recherchée dans le bon champ du formulaire
       (formRecherche as any)[this.form.value.typeDeRechercheSimple] =
-        this.form.value.rechercheSimple;
+        this.form.value.champDeRechercheSimple;
     }
     this.rechercher.emit(formRecherche);
   }
 
   switchRechercheAvancee() {
     this.rechercheAvancee = !this.rechercheAvancee;
+    this.form.get('champDeRechercheSimple')?.setValue('');
 
     // Recherche simple
     this.enableControl(
       this.form,
-      'typeDeRechercheSimple',
+      ['typeDeRechercheSimple', 'champDeRechercheSimple'],
       !this.rechercheAvancee
     );
-    this.enableControl(this.form, 'rechercheSimple', !this.rechercheAvancee);
 
     // Recherche avancee
     const formGroupRecherche = this.form.get('valeursRecherchees');
     this.enableControl(
       formGroupRecherche,
-      'producerMarketParticipantName',
-      this.rechercheAvancee
-    );
-    this.enableControl(formGroupRecherche, 'siteName', this.rechercheAvancee);
-    this.enableControl(
-      formGroupRecherche,
-      'substationName',
-      this.rechercheAvancee
-    );
-    this.enableControl(
-      formGroupRecherche,
-      'substationMrid',
-      this.rechercheAvancee
-    );
-    this.enableControl(
-      formGroupRecherche,
-      'producerMarketParticipantMrid',
+      [
+        'producerMarketParticipantName',
+        'siteName',
+        'substationName',
+        'substationMrid',
+        'producerMarketParticipantMrid',
+      ],
       this.rechercheAvancee
     );
   }
 
   private enableControl(
     formGroup: AbstractControl | null,
-    formControlName: string,
+    formControlNames: string[],
     enable: Boolean
   ) {
     if (formGroup != null) {
-      if (enable) {
-        formGroup.get(formControlName)?.enable();
-      } else {
-        formGroup.get(formControlName)?.disable();
-      }
+      formControlNames.forEach((fcn) => {
+        if (enable) {
+          formGroup.get(fcn)?.enable();
+        } else {
+          formGroup.get(fcn)?.disable();
+        }
+      });
     }
   }
 }

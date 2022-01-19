@@ -1,17 +1,25 @@
 <h1 class="display-5 text-primary mb-5">Bienvenue</h1>
 
-<h2>
-  <img src="assets/img/menu-bar/reseau.svg" class="pb-2 me-2">
-  Rechercher dans le réseau
-</h2>
+<div class="row">
+  <div class="col">
+    <h2>
+      <img src="assets/img/menu-bar/reseau.svg" class="pb-2 me-2">
+      Rechercher dans le réseau
+    </h2>
+    <app-reseau-recherche (rechercher)="rechercher($event)"></app-reseau-recherche>
+  </div>
+</div>
 
-<p>
-...
-</p>
+<mat-divider class="my-5"></mat-divider>
 
-<h2>
-  <img src="assets/img/menu-bar/histo.svg" class="pb-2 me-2">
-  Consulter l'historique des limitations
-</h2>
+<div class="row">
+  <div class="col">
+    <h2>
+      <img src="assets/img/menu-bar/histo.svg" class="pb-2 me-2">
+      Consulter l'historique des limitations
+    </h2>
+    ...
+  </div>
+</div>
 
-...
+<mat-divider class="my-5"></mat-divider>

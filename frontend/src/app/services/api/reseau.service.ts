@@ -16,7 +16,6 @@ export class ReseauService {
 
   find(form: RechercheReseauForm): Observable<RechercheReseauResponse> {
     let urlParams = this.urlService.toUrlParams(form);
-    console.log(urlParams);
     return this.httpClient.get<RechercheReseauResponse>(
       `${environment.serverUrl}/reseau?${urlParams}`
     );

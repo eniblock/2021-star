@@ -6,6 +6,7 @@ import { Context, Contract } from 'fabric-contract-api';
 import { ActivationDocumentController } from './controller/ActivationDocumentController';
 import { EnergyAccountController } from './controller/EnergyAccountController';
 import { ProducerController } from './controller/ProducerController';
+import { ReferenceEnergyAccountController } from './controller/ReferenceEnergyAccountController';
 import { SiteController } from './controller/SiteController';
 import { SystemOperatorController } from './controller/SystemOperatorController';
 import { ViewMarketParticipantController } from './controller/ViewMarketParticipantController';
@@ -253,12 +254,51 @@ export class Star extends Contract {
         }
     }
 
-    // public async GetAllEnergyAccount(
-    //     ctx: Context) {
-    //     try {
-    //         return (await EnergyAccountController.getAllEnergyAccount(ctx));
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
+    /*      Reference Energy Account       */
+
+    public async CreateReferenceEnergyAccount(ctx: Context, inputStr: string) {
+        try {
+            return (await ReferenceEnergyAccountController.createReferenceEnergyAccount(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async GetReferenceEnergyAccountForSystemOperator(
+        ctx: Context,
+        meteringPointMrid: string,
+        systemOperatorEicCode: string,
+        startCreatedDateTime: string) {
+                try {
+            return (await ReferenceEnergyAccountController.getReferenceEnergyAccountForSystemOperator
+                (
+                    ctx,
+                    meteringPointMrid,
+                    systemOperatorEicCode,
+                    startCreatedDateTime,
+                )
+            );
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async GetReferenceEnergyAccountByProducer(
+        ctx: Context,
+        meteringPointMrid: string,
+        producerEicCode: string,
+        startCreatedDateTime: string) {
+                try {
+            return (await ReferenceEnergyAccountController.getReferenceEnergyAccountByProducer
+                (
+                    ctx,
+                    meteringPointMrid,
+                    producerEicCode,
+                    startCreatedDateTime,
+                )
+            );
+        } catch (error) {
+            throw error;
+        }
+    }
 }

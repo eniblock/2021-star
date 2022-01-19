@@ -45,6 +45,7 @@ export class ReseauRechercheComponent implements OnInit {
       this.rechercheAvancee =
         formSauvegardeDansStorage.typeDeRechercheSimple == undefined;
       this.form.patchValue(formSauvegardeDansStorage);
+      this.enableDisableFields();
       this.onSubmit();
     }
   }
@@ -56,7 +57,11 @@ export class ReseauRechercheComponent implements OnInit {
   switchRechercheAvancee() {
     this.rechercheAvancee = !this.rechercheAvancee;
     this.form.get('champDeRechercheSimple')?.setValue('');
+    this.enableDisableFields();
+  }
 
+  private enableDisableFields() {
+    // On active/désactive les champs en fonction du type de recherche
     // Recherche simple
     this.enableControl(
       this.form,

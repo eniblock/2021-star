@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(InstanceController.PATH)
 public class InstanceController {
-    public static final String PATH = "/api" +ApiRestVersion.VERSION + "/instance";
+    public static final String PATH = ApiRestVersion.VERSION + "/api/instance";
 
     @Value("${instance}")
     private InstanceEnum instance;

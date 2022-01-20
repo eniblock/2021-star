@@ -1,7 +1,7 @@
 import { OrdreRechercheReseau } from './enum/OrdreRechercheReseau.enum';
 import { TechnologyType } from './enum/TechnologyType.enum';
 import { TypeDeRechercheSimple } from './enum/TypeDeRechercheSimple.enum';
-import { PaginationForm, PaginationResponse } from './Pagination';
+import { FormulairePagination, PaginationReponse } from './Pagination';
 
 export interface FormulaireRechercheReseau {
   typeDeRechercheSimple: TypeDeRechercheSimple;
@@ -10,7 +10,7 @@ export interface FormulaireRechercheReseau {
 }
 
 export interface RechercheReseauRequete
-  extends PaginationForm<OrdreRechercheReseau> {
+  extends FormulairePagination<OrdreRechercheReseau> {
   producerMarketParticipantName: string;
   siteName: string;
   substationName: string;
@@ -18,7 +18,7 @@ export interface RechercheReseauRequete
   producerMarketParticipantMrid: string;
 }
 
-export interface RechercheReseauResponse extends PaginationResponse {
+export interface RechercheReseauEntite {
   producerMarketParticipantName: string;
   technologyType: TechnologyType;
   meteringPointMrid: string;

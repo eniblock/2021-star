@@ -15,7 +15,7 @@ import { ReseauService } from 'src/app/services/api/reseau.service';
   styleUrls: ['./reseau-recherche.component.css'],
 })
 export class ReseauRechercheComponent implements OnInit {
-  @Output() rechercher = new EventEmitter<FormulaireRechercheReseau>();
+  @Output() formSubmit = new EventEmitter<FormulaireRechercheReseau>();
 
   typesDeRechercheSimple: TypeDeRechercheSimple[] = [];
   TechnologyTypeEnum = TechnologyType;
@@ -63,7 +63,7 @@ export class ReseauRechercheComponent implements OnInit {
   }
 
   onSubmit() {
-    this.rechercher.emit(this.form.value);
+    this.formSubmit.emit(this.form.value);
   }
 
   switchRechercheAvancee() {

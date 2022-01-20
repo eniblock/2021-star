@@ -14,8 +14,8 @@ export class AccueilComponent implements OnInit {
 
   ngOnInit() {}
 
-  rechercher(form: FormulaireRechercheReseau) {
-    this.reseauService.enregistrerFormulaireRecherche(form);
+  formSubmit(form: FormulaireRechercheReseau) {
+    this.reseauService.pushFormulaireRecherche(form);
     this.router.navigate([PATH_ROUTE.RESEAU]);
   }
 }

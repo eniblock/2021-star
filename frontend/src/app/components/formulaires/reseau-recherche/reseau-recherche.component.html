@@ -7,7 +7,7 @@
     <mat-form-field class="col-6 col-lg-2 pe-lg-0" appearance="outline">
       <mat-label>Type de recherche</mat-label>
       <mat-select formControlName="typeDeRechercheSimple">
-        <mat-option *ngFor="let t of TypeDeRechercheSimpleEnum | keyvalue" [value]="t.key">{{ t.value | TypeDeRechercheSimple }}</mat-option>
+        <mat-option *ngFor="let t of typesDeRechercheSimple" [value]="t">{{ t | TypeDeRechercheSimple }}</mat-option>
       </mat-select>
     </mat-form-field>
 

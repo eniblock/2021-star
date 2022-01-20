@@ -18,7 +18,7 @@ export class InstanceService {
   ) {}
 
   getTypeInstance(): Observable<Instance> {
-    return of(Instance.PRODUCER);
+    return of(Instance.TSO);
 
     // On utilise un cache en Production
     if (environment.production) {

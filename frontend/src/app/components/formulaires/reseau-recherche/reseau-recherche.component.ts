@@ -1,8 +1,12 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
-import { TypeDeRechercheSimple } from 'src/app/models/enum/TypeDeRechercheSimple.enum';
+import {
+  getTypesDeRechercheSimple,
+  TypeDeRechercheSimple,
+} from 'src/app/models/enum/TypeDeRechercheSimple.enum';
 import { FormulaireRechercheReseau } from 'src/app/models/RechercheReseau';
+import { InstanceService } from 'src/app/services/api/instance.service';
 import { ReseauService } from 'src/app/services/api/reseau.service';
 
 @Component({
@@ -13,15 +17,13 @@ import { ReseauService } from 'src/app/services/api/reseau.service';
 export class ReseauRechercheComponent implements OnInit {
   @Output() rechercher = new EventEmitter<FormulaireRechercheReseau>();
 
-  TypeDeRechercheSimpleEnum = TypeDeRechercheSimple;
+  typesDeRechercheSimple: TypeDeRechercheSimple[] = [];
   TechnologyTypeEnum = TechnologyType;
 
   rechercheAvancee = false;
 
   form: FormGroup = this.formBuilder.group({
-    typeDeRechercheSimple: [
-      TypeDeRechercheSimple.producerMarketParticipantName,
-    ],
+    typeDeRechercheSimple: [],
     champDeRechercheSimple: [''],
     valeursRecherchees: this.formBuilder.group({
       technologyType: [Object.keys(TechnologyType)],
@@ -35,10 +37,20 @@ export class ReseauRechercheComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private reseauService: ReseauService
+    private reseauService: ReseauService,
+    private instanceService: InstanceService
   ) {}
 
   ngOnInit() {
+    // En fonction du type d'instance, on affiche/masque des parties du formulaire
+    this.instanceService.getTypeInstance().subscribe((typeInstance) => {
+      this.typesDeRechercheSimple = getTypesDeRechercheSimple(typeInstance);
+      this.form.patchValue({
+        typeDeRechercheSimple: this.typesDeRechercheSimple[0],
+      });
+    });
+
+    // On charge le formulaire en cache si y'en a un
     const formSauvegardeDansStorage: FormulaireRechercheReseau =
       this.reseauService.popFormulaireRecherche();
     if (formSauvegardeDansStorage != null) {

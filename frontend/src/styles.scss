@@ -79,6 +79,12 @@ h2 {
   .menu-active .iconeLienMenuActive {
     display: inline !important;
   }
+
+  .typeOrganisation {
+    text-align: center;
+    font-weight: bold;
+    color: $mat-primary;
+  }
 }
 
 // Snackbar

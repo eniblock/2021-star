@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Instance } from '../../models/enum/Instance.enum';
 import { CacheService } from '../common/cache.service';
@@ -18,6 +18,8 @@ export class InstanceService {
   ) {}
 
   getTypeInstance(): Observable<Instance> {
+    return of(Instance.PRODUCER);
+
     // On utilise un cache en Production
     if (environment.production) {
       return this.cacheService.getValueInCacheOrLoadIt<Instance>(

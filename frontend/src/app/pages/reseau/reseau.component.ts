@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Instance } from 'src/app/models/enum/Instance.enum';
 import { OrdreRechercheReseau } from 'src/app/models/enum/OrdreRechercheReseau.enum';
 import {
   FormulairePagination,
@@ -11,7 +10,6 @@ import {
 } from 'src/app/models/RechercheReseau';
 import { ReseauService } from 'src/app/services/api/reseau.service';
 import { environment } from 'src/environments/environment';
-import { InstanceService } from 'src/app/services/api/instance.service';
 
 @Component({
   selector: 'app-reseau',
@@ -19,8 +17,6 @@ import { InstanceService } from 'src/app/services/api/instance.service';
   styleUrls: ['./reseau.component.css'],
 })
 export class ReseauComponent implements OnInit {
-  instance: Instance = Instance.PRODUCER;
-
   formRecherche?: FormulaireRechercheReseau;
   pagination: FormulairePagination<OrdreRechercheReseau> = {
     pagesize: environment.pageSizes[0],
@@ -30,16 +26,9 @@ export class ReseauComponent implements OnInit {
 
   resultatRecherche?: PaginationReponse<RechercheReseauEntite>;
 
-  constructor(
-    private instanceService: InstanceService,
-    private reseauService: ReseauService
-  ) {}
+  constructor(private reseauService: ReseauService) {}
 
-  ngOnInit() {
-    this.instanceService
-      .getTypeInstance()
-      .subscribe((instance) => (this.instance = instance));
-  }
+  ngOnInit() {}
 
   formSubmit(form: FormulaireRechercheReseau) {
     this.formRecherche = form;
@@ -53,8 +42,15 @@ export class ReseauComponent implements OnInit {
 
   private lancerRecherche() {
     if (this.formRecherche != undefined && this.pagination != undefined) {
+      const lastBookmark = this.resultatRecherche
+        ? this.resultatRecherche.bookmark
+        : null;
+      const paginationAvecBookmark = {
+        ...this.pagination,
+        bookmark: lastBookmark,
+      };
       this.reseauService
-        .rechercher(this.formRecherche, this.pagination)
+        .rechercher(this.formRecherche, paginationAvecBookmark)
         .subscribe((resultat) => (this.resultatRecherche = resultat));
     }
   }

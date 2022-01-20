@@ -11,6 +11,7 @@ import { InstanceService } from 'src/app/services/api/instance.service';
 })
 export class MenuComponent implements OnInit {
   PATH_ROUTE = PATH_ROUTE;
+
   typeOrganisation?: string;
 
   constructor(

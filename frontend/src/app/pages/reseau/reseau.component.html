@@ -9,8 +9,9 @@
   </div>
 </div>
 
-<div class="row my-3">
+<div class="row mt-4">
   <div class="col">
+    <div class="mb-1" *ngIf="resultatRecherche">{{ resultatRecherche.totalElements }} {{ resultatRecherche.totalElements>1?'résultats':'résultat' }}</div>
     <app-reseau-pagination (paginationModifiee)="paginationModifiee($event)" *ngIf="resultatRecherche"></app-reseau-pagination>
   </div>
 </div>

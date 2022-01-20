@@ -67,7 +67,7 @@ export class ReferenceEnergyAccountController {
         }
 
         if (siteObj.systemOperatorMarketParticipantMrid !== energyAccountInput.senderMarketParticipantMrid) {
-            throw new Error(`Reference Energy Account, sender: ${energyAccountInput.senderMarketParticipantMrid} does is not the same as site.systemOperator: ${siteObj.systemOperatorMarketParticipantMrid} in EnergyAccount creation.`);
+            throw new Error(`Reference Energy Account, sender: ${energyAccountInput.senderMarketParticipantMrid} is not the same as site.systemOperator: ${siteObj.systemOperatorMarketParticipantMrid} in EnergyAccount creation.`);
         }
 
         energyAccountInput.docType = 'referenceEnergyAccount';

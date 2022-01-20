@@ -5,6 +5,7 @@
 import { Context, Contract } from 'fabric-contract-api';
 import { ActivationDocumentController } from './controller/ActivationDocumentController';
 import { EnergyAccountController } from './controller/EnergyAccountController';
+import { EnergyAmountController } from './controller/EnergyAmountController';
 import { ProducerController } from './controller/ProducerController';
 import { ReferenceEnergyAccountController } from './controller/ReferenceEnergyAccountController';
 import { SiteController } from './controller/SiteController';
@@ -301,4 +302,52 @@ export class Star extends Contract {
             throw error;
         }
     }
+
+    /*      Energy Amount       */
+
+    public async CreateTSOEnergyAmount(ctx: Context, inputStr: string) {
+        try {
+            return (await EnergyAmountController.createTSOEnergyAmount(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async GetEnergyAmountForSystemOperator(
+        ctx: Context,
+        meteringPointMrid: string,
+        systemOperatorEicCode: string,
+        startCreatedDateTime: string) {
+                try {
+            return (await EnergyAmountController.getEnergyAmountForSystemOperator
+                (
+                    ctx,
+                    meteringPointMrid,
+                    systemOperatorEicCode,
+                    startCreatedDateTime,
+                )
+            );
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // public async GetEnergyAmountByProducer(
+    //     ctx: Context,
+    //     meteringPointMrid: string,
+    //     producerEicCode: string,
+    //     startCreatedDateTime: string) {
+    //             try {
+    //         return (await EnergyAmountController.getEnergyAmountByProducer
+    //             (
+    //                 ctx,
+    //                 meteringPointMrid,
+    //                 producerEicCode,
+    //                 startCreatedDateTime,
+    //             )
+    //         );
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
 }

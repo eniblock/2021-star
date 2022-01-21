@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { OrdreRechercheReseauPipe } from 'src/app/pipes/OrdreRechercheReseau.pipe';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { OrdreRechercheReseauPipe } from 'src/app/pipes/OrdreRechercheReseau.pip
     MatFormFieldModule,
     MatSelectModule,
     FormulairesModule,
+    MatButtonModule,
   ],
   declarations: [
     OrdreRechercheReseauPipe,

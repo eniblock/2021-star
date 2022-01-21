@@ -24,20 +24,27 @@ export class ReseauComponent implements OnInit {
 
   resultatsRecherche: RechercheReseauEntite[] = [];
 
+  afficherBoutonSuite = false;
+
   constructor(private reseauService: ReseauService) {}
 
   ngOnInit() {}
 
-  formSubmit(form: FormulaireRechercheReseau) {
+  rechercher(form: FormulaireRechercheReseau) {
+    this.resetResultats();
     this.formRecherche = form;
     this.lancerRecherche();
   }
 
   paginationModifiee(form: FormulairePagination<OrdreRechercheReseau>) {
+    this.resetResultats();
     this.pagesize = form.pagesize;
     this.order = form.order;
     this.lastBookmark = null; // Retour à la premiere page
-    this.resetResultats();
+    this.lancerRecherche();
+  }
+
+  afficherLaSuite() {
     this.lancerRecherche();
   }
 
@@ -54,7 +61,10 @@ export class ReseauComponent implements OnInit {
         .subscribe((resultat) => {
           this.lastBookmark = resultat.bookmark;
           this.totalElements = resultat.totalElements;
-          this.resultatsRecherche = resultat.content;
+          this.resultatsRecherche = this.resultatsRecherche.concat(
+            resultat.content
+          );
+          this.afficherBoutonSuite = resultat.content.length >= this.pagesize;
           console.log(resultat);
         });
     }
@@ -64,5 +74,6 @@ export class ReseauComponent implements OnInit {
     this.lastBookmark = null;
     this.totalElements = null;
     this.resultatsRecherche = [];
+    this.afficherBoutonSuite = false;
   }
 }

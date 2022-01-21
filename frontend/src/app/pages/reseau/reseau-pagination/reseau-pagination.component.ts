@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { OrdreRechercheReseau } from 'src/app/models/enum/OrdreRechercheReseau.enum';
 import { FormulairePagination } from 'src/app/models/Pagination';
@@ -14,20 +14,28 @@ export class ReseauPaginationComponent implements OnInit {
     FormulairePagination<OrdreRechercheReseau>
   >();
 
+  @Input() pagesize = environment.pageSizes[0];
+  @Input() order = OrdreRechercheReseau.producerMarketParticipantName;
+
   ordreRechercheReseauEnum = OrdreRechercheReseau;
 
   pageSizes = environment.pageSizes;
 
   form: FormGroup = this.formBuilder.group({
-    pagesize: [''],
-    order: [null],
+    pagesize: [],
+    order: [],
   });
 
   constructor(private formBuilder: FormBuilder) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.form.patchValue({
+      pagesize: this.pagesize,
+      order: this.order,
+    });
+  }
 
-  onSubmit() {
+  formChange() {
     this.paginationModifiee.emit(this.form.value);
   }
 }

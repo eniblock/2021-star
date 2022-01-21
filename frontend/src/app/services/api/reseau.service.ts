@@ -12,6 +12,7 @@ import { environment } from 'src/environments/environment';
 import { FormulairePagination } from 'src/app/models/Pagination';
 import { OrdreRechercheReseau } from 'src/app/models/enum/OrdreRechercheReseau.enum';
 import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
+import { getNumberOfCurrencyDigits } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +36,26 @@ export class ReseauService {
     }
     let urlParams = this.urlService.toUrlParams(formToSend);
 
+    // TODO : Supprimer le mock + les 2 methodes : makeOne() et makeFive()
+    console.log(urlParams);
+    return pagination.bookmark == null ? this.makeFive() : this.makeOne();
+
+    return this.httpClient.get<PaginationReponse<RechercheReseauEntite>>(
+      `${environment.serverUrl}/reseau?${urlParams}`
+    );
+  }
+
+  pushFormulaireRecherche(form: FormulaireRechercheReseau) {
+    sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(form));
+  }
+
+  popFormulaireRecherche(): FormulaireRechercheReseau {
+    let form = sessionStorage.getItem(this.CACHE_KEY);
+    sessionStorage.removeItem(this.CACHE_KEY);
+    return form == null ? null : JSON.parse(form);
+  }
+
+  private makeFive() {
     return of({
       totalElements: 123,
       bookmark: 'Le Bookmark',
@@ -111,20 +132,28 @@ export class ReseauService {
         },
       ],
     });
-
-    // TODO : Supprimer le mock
-    return this.httpClient.get<PaginationReponse<RechercheReseauEntite>>(
-      `${environment.serverUrl}/reseau?${urlParams}`
-    );
   }
 
-  pushFormulaireRecherche(form: FormulaireRechercheReseau) {
-    sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(form));
-  }
-
-  popFormulaireRecherche(): FormulaireRechercheReseau {
-    let form = sessionStorage.getItem(this.CACHE_KEY);
-    sessionStorage.removeItem(this.CACHE_KEY);
-    return form == null ? null : JSON.parse(form);
+  private makeOne() {
+    return of({
+      totalElements: 123,
+      bookmark: 'Le Bookmark',
+      content: [
+        {
+          producerMarketParticipantName: 'pro6',
+          technologyType: TechnologyType.EOLIEN,
+          meteringPointMrid: 'met6',
+          siteAdminMRID: 'MRID6',
+          siteLocation: 'loc6',
+          siteType: 'type6',
+          substationName: 'name6',
+          substationMrid: 'subMrid6',
+          systemOperatorEntityFlexibilityDomainMrid: 'soDomMrid6',
+          systemOperatorEntityFlexibilityDomainName: 'soDomName6',
+          systemOperatorCustomerServiceName: 'soCustName6',
+          systemOperatorMarketParticipantName: 'soPartNam6',
+        },
+      ],
+    });
   }
 }

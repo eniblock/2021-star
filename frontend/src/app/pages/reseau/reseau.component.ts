@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OrdreRechercheReseau } from 'src/app/models/enum/OrdreRechercheReseau.enum';
-import {
-  FormulairePagination,
-  PaginationReponse,
-} from 'src/app/models/Pagination';
+import { FormulairePagination } from 'src/app/models/Pagination';
 import {
   FormulaireRechercheReseau,
   RechercheReseauEntite,
@@ -18,13 +15,14 @@ import { environment } from 'src/environments/environment';
 })
 export class ReseauComponent implements OnInit {
   formRecherche?: FormulaireRechercheReseau;
-  pagination: FormulairePagination<OrdreRechercheReseau> = {
-    pagesize: environment.pageSizes[0],
-    bookmark: null,
-    order: null,
-  };
 
-  resultatRecherche?: PaginationReponse<RechercheReseauEntite>;
+  pagesize = environment.pageSizes[0];
+  lastBookmark: string = null;
+  order = OrdreRechercheReseau.producerMarketParticipantName;
+
+  totalElements?: number;
+
+  resultatsRecherche: RechercheReseauEntite[] = [];
 
   constructor(private reseauService: ReseauService) {}
 
@@ -35,23 +33,36 @@ export class ReseauComponent implements OnInit {
     this.lancerRecherche();
   }
 
-  paginationModifiee(pagination: FormulairePagination<OrdreRechercheReseau>) {
-    this.pagination = pagination;
+  paginationModifiee(form: FormulairePagination<OrdreRechercheReseau>) {
+    this.pagesize = form.pagesize;
+    this.order = form.order;
+    this.lastBookmark = null; // Retour à la premiere page
+    this.resetResultats();
     this.lancerRecherche();
   }
 
   private lancerRecherche() {
-    if (this.formRecherche != undefined && this.pagination != undefined) {
-      const lastBookmark = this.resultatRecherche
-        ? this.resultatRecherche.bookmark
-        : null;
-      const paginationAvecBookmark = {
-        ...this.pagination,
-        bookmark: lastBookmark,
-      };
+    if (this.formRecherche != undefined) {
+      const paginationAvecBookmark: FormulairePagination<OrdreRechercheReseau> =
+        {
+          pagesize: this.pagesize,
+          bookmark: this.lastBookmark,
+          order: this.order,
+        };
       this.reseauService
         .rechercher(this.formRecherche, paginationAvecBookmark)
-        .subscribe((resultat) => (this.resultatRecherche = resultat));
+        .subscribe((resultat) => {
+          this.lastBookmark = resultat.bookmark;
+          this.totalElements = resultat.totalElements;
+          this.resultatsRecherche = resultat.content;
+          console.log(resultat);
+        });
     }
+  }
+
+  private resetResultats() {
+    this.lastBookmark = null;
+    this.totalElements = null;
+    this.resultatsRecherche = [];
   }
 }

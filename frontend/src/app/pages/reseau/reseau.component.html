@@ -11,13 +11,13 @@
 
 <div class="row mt-4">
   <div class="col">
-    <div class="mb-1" *ngIf="resultatRecherche">{{ resultatRecherche.totalElements }} {{ resultatRecherche.totalElements>1?'résultats':'résultat' }}</div>
-    <app-reseau-pagination (paginationModifiee)="paginationModifiee($event)" *ngIf="resultatRecherche"></app-reseau-pagination>
+    <div class="mb-1" *ngIf="totalElements">{{ totalElements }} {{ totalElements>1?'résultats':'résultat' }}</div>
+    <app-reseau-pagination (paginationModifiee)="paginationModifiee($event)" [pagesize]="pagesize" [order]="order" *ngIf="resultatsRecherche.length > 0"></app-reseau-pagination>
   </div>
 </div>
 
 <div class="row my-3">
   <div class="col">
-    <app-reseau-resultats *ngIf="resultatRecherche"></app-reseau-resultats>
+    <app-reseau-resultats *ngIf="resultatsRecherche.length > 0"></app-reseau-resultats>
   </div>
 </div>

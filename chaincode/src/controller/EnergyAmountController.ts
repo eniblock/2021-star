@@ -109,7 +109,7 @@ export class EnergyAmountController {
 
     public static async getEnergyAmountForSystemOperator(
             ctx: Context,
-            meteringPointMrid: string,
+            registeredResourceMrid: string,
             systemOperatorEicCode: string,
             startCreatedDateTime: string): Promise<string> {
         const allResults = [];
@@ -119,24 +119,12 @@ export class EnergyAmountController {
         }
 
         const dateUp = new Date(startCreatedDateTime);
-        // console.log(meteringPointMrid);
-        // console.log(startCreatedDateTime);
-        // console.log('new date=', new Date('2021-10-21T23:59:50.999Z'));
-        // console.log ('datesetmili=', dateUp.setUTCMilliseconds(0));
-        // console.log ('datesetsec=', dateUp.setUTCSeconds(0));
-        // console.log ('datesetmin=', dateUp.setUTCMinutes(0));
-        // console.log ('datesethour=', dateUp.setUTCHours(0));
-        // console.log ('datetmptime=', dateUp.getTime());
 
         dateUp.setUTCMilliseconds(0);
         dateUp.setUTCSeconds(0);
         dateUp.setUTCMinutes(0);
         dateUp.setUTCHours(0);
-        // console.log('dateUp=', dateUp);
-        // console.log('dateUp=', JSON.stringify(dateUp));
         const dateDown = new Date(dateUp.getTime() + 86399999);
-        // console.log('dateDown=', dateDown);
-        // console.log('dateDown=', JSON.stringify(dateDown));
 
         const systemOperatorAsBytes = await ctx.stub.getState(systemOperatorEicCode);
         if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
@@ -153,43 +141,24 @@ export class EnergyAmountController {
         }
         if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
             throw new Error(
-                `Energy Amount, sender: ${identity} does not
-                // provide his own systemOperatorEicCode therefore he does not have read access.`,
+                `Energy Amount, sender: ${identity} does not provide his own systemOperatorEicCode therefore he does not have read access.`,
             );
         }
-        let query;
-        if (identity === OrganizationTypeMsp.RTE) {
-            query = `{
-                "selector":
-                {
-                    "docType": "energyAmount",
-                    "meteringPointMrid": "${meteringPointMrid}",
-                    "createdDateTime": {
-                        "$gte": ${JSON.stringify(dateUp)},
-                        "$lte": ${JSON.stringify(dateDown)}
-                    },
-                    "sort": [{
-                        "createdDateTime" : "desc"
-                    }]
-                }
-            }`;
-        } else {
-            query = `{
-                "selector":
-                {
-                    "docType": "energyAmount",
-                    "meteringPointMrid": "${meteringPointMrid}",
-                    "senderMarketParticipantMrid": "${systemOperatorEicCode}",
-                    "createdDateTime": {
-                        "$gte": ${JSON.stringify(dateUp)},
-                        "$lte": ${JSON.stringify(dateDown)}
-                    },
-                    "sort": [{
-                        "createdDateTime" : "desc"
-                    }]
-                }
-            }`;
-        }
+        const query = `{
+            "selector":
+            {
+                "docType": "energyAmount",
+                "registeredResourceMrid": "${registeredResourceMrid}",
+                "senderMarketParticipantMrid": "${systemOperatorEicCode}",
+                "createdDateTime": {
+                    "$gte": ${JSON.stringify(dateUp)},
+                    "$lte": ${JSON.stringify(dateDown)}
+                },
+                "sort": [{
+                    "createdDateTime" : "desc"
+                }]
+            }
+        }`;
 
         const iterator = await ctx.stub.getQueryResult(query);
         let result = await iterator.next();
@@ -206,10 +175,10 @@ export class EnergyAmountController {
         }
         return JSON.stringify(allResults);
     }
-/*
+
     public static async getEnergyAmountByProducer(
         ctx: Context,
-        meteringPointMrid: string,
+        registeredResourceMrid: string,
         producerEicCode: string,
         startCreatedDateTime: string): Promise<string> {
         const allResults = [];
@@ -218,30 +187,18 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have read access for producer's Energy Amount.`);
         }
         const dateUp = new Date(startCreatedDateTime);
-        // console.log(meteringPointMrid);
-        // console.log(startCreatedDateTime);
-        // console.log('new date=', new Date('2021-10-21T23:59:50.999Z'));
-        // console.log ('datesetmili=', dateUp.setUTCMilliseconds(0));
-        // console.log ('datesetsec=', dateUp.setUTCSeconds(0));
-        // console.log ('datesetmin=', dateUp.setUTCMinutes(0));
-        // console.log ('datesethour=', dateUp.setUTCHours(0));
-        // console.log ('datetmptime=', dateUp.getTime());
-
         dateUp.setUTCMilliseconds(0);
         dateUp.setUTCSeconds(0);
         dateUp.setUTCMinutes(0);
         dateUp.setUTCHours(0);
-        // console.log('dateUp=', dateUp);
-        // console.log('dateUp=', JSON.stringify(dateUp));
+
         const dateDown = new Date(dateUp.getTime() + 86399999);
-        // console.log('dateDown=', dateDown);
-        // console.log('dateDown=', JSON.stringify(dateDown));
 
         const query = `{
                 "selector":
                 {
                     "docType": "energyAmount",
-                    "meteringPointMrid": "${meteringPointMrid}",
+                    "registeredResourceMrid": "${registeredResourceMrid}",
                     "receiverMarketParticipantMrid": "${producerEicCode}",
                     "createdDateTime": {
                         "$gte": ${JSON.stringify(dateUp)},
@@ -268,5 +225,4 @@ export class EnergyAmountController {
         }
         return JSON.stringify(allResults);
     }
-*/
 }

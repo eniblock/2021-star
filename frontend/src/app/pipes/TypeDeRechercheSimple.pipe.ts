@@ -5,10 +5,10 @@ import { TypeDeRechercheSimple } from '../models/enum/TypeDeRechercheSimple.enum
   name: 'TypeDeRechercheSimple',
 })
 export class TypeDeRechercheSimplePipe implements PipeTransform {
-  transform(
-    value: TypeDeRechercheSimple | TypeDeRechercheSimple[],
-    args?: any
-  ): any {
+  transform(value?: TypeDeRechercheSimple | TypeDeRechercheSimple[]): any {
+    if (value == undefined) {
+      return '';
+    }
     if (value instanceof Array) {
       return value.map((t) => this.toString(t)).join(', ');
     }

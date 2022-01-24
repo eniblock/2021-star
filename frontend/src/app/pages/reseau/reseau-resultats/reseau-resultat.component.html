@@ -1,9 +1,40 @@
 <div class="reseau-resultat p-4" *ngIf="!showDetails" (click)="switchShowDetails()">
     <app-icon-technology-type class="float-end" style="margin-top: -.25em;" [technologyType]="resultat?.technologyType"></app-icon-technology-type>
-    <app-badge class="float-end me-3" [text]="resultat?.producerMarketParticipantName" [color]="'primary'"></app-badge>
+    <app-badge class="float-end me-5" [text]="resultat?.producerMarketParticipantName" [color]="'primary'"></app-badge>
     {{ resultat?.siteName }}
 </div>
 
 <div class="reseau-resultat-detail" *ngIf="showDetails">
-    Pas les memes champs suivant le type d'utilisateur !!!
+    <div class="row">
+        <div class="header col-12 col-lg-4">
+            <div class="p-4">
+                <app-icon-technology-type class="float-end" style="margin-top: -.25em;" [technologyType]="resultat?.technologyType" [versionBlanc]="true"></app-icon-technology-type>
+                <h3>
+                    {{ resultat?.siteName }}
+                </h3>
+                <div class="text-center mt-4">
+                    <app-badge class="float-none" [text]="resultat?.producerMarketParticipantName" [color]="'blanc'"></app-badge>
+                </div>
+            </div>
+        </div>
+        <div class="body col-12 col-lg-8">
+            <div class="p-4">
+                <div class="row my-2">
+                    <div class="col-12"><h3>Informations</h3></div>
+                </div>
+                <div class="row my-2">
+                    <div class="col-6">Nom de producteur</div>
+                    <div class="col-6">{{ resultat?.producerMarketParticipantName }}</div>
+                </div>
+                <div class="row my-2">
+                    <div class="col-6">Filière du site</div>
+                    <div class="col-6">{{ resultat?.technologyType | TechnologyType}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<p>
+TODO : masqué les données en fonction du type d'instance</p>
+<p>Bouton fermer !!!!</p>

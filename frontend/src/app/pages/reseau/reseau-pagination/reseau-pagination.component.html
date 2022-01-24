@@ -1,21 +1,17 @@
 <form class="row" [formGroup]="form">
-
-  <div class="col">
-    <mat-form-field appearance="outline">
-      <mat-label>Afficher</mat-label>
-      <mat-select formControlName="pagesize" (selectionChange)="formChange()">
-        <mat-option *ngFor="let pageSize of pageSizes" [value]="pageSize">{{ pageSize }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-  <div class="col text-end">
-    <mat-form-field appearance="outline">
-      <mat-label>Trier par</mat-label>
-      <mat-select formControlName="order" (selectionChange)="formChange()">
-        <mat-option *ngFor="let ordre of ordreRechercheReseauEnum | keyvalue" [value]="ordre.key">{{ ordre.value | OrdreRechercheReseau }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+  
+  <mat-form-field class="col-6" appearance="outline">
+    <mat-label>Afficher</mat-label>
+    <mat-select formControlName="pagesize" (selectionChange)="formChange()">
+      <mat-option *ngFor="let pageSize of pageSizes" [value]="pageSize">{{ pageSize }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+  <mat-form-field class="col-6" appearance="outline">
+    <mat-label>Trier par</mat-label>
+    <mat-select formControlName="order" (selectionChange)="formChange()">
+      <mat-option *ngFor="let ordre of ordreRechercheReseauEnum | keyvalue" [value]="ordre.key">{{ ordre.value | OrdreRechercheReseau }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
 </form>

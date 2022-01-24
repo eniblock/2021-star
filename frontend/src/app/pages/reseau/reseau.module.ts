@@ -8,9 +8,9 @@ import { FormulairesModule } from 'src/app/components/formulaires/formulaires.mo
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { OrdreRechercheReseauPipe } from 'src/app/pipes/OrdreRechercheReseau.pipe';
 import { MatButtonModule } from '@angular/material/button';
 import { MicroComponentsModule } from 'src/app/components/micro-components/micro-components.module';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 @NgModule({
   imports: [
@@ -22,9 +22,9 @@ import { MicroComponentsModule } from 'src/app/components/micro-components/micro
     FormulairesModule,
     MatButtonModule,
     MicroComponentsModule,
+    PipesModule,
   ],
   declarations: [
-    OrdreRechercheReseauPipe,
     ReseauComponent,
     ReseauPaginationComponent,
     ReseauResultatComponent,

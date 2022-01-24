@@ -5,9 +5,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { TechnologyTypePipe } from 'src/app/pipes/TechnologyType.pipe';
-import { TypeDeRechercheSimplePipe } from 'src/app/pipes/TypeDeRechercheSimple.pipe';
 import { ReseauRechercheComponent } from './reseau-recherche/reseau-recherche.component';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 @NgModule({
   imports: [
@@ -17,12 +16,9 @@ import { ReseauRechercheComponent } from './reseau-recherche/reseau-recherche.co
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
+    PipesModule,
   ],
-  declarations: [
-    ReseauRechercheComponent,
-    TechnologyTypePipe,
-    TypeDeRechercheSimplePipe,
-  ],
+  declarations: [ReseauRechercheComponent],
   exports: [ReseauRechercheComponent],
 })
 export class FormulairesModule {}

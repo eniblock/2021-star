@@ -8,6 +8,7 @@ import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
 })
 export class IconTechnologyTypeComponent implements OnInit {
   @Input() technologyType?: TechnologyType;
+  @Input() versionBlanc = false;
 
   TechnologyTypeEnum = TechnologyType;
 

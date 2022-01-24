@@ -5,10 +5,10 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'OrdreRechercheReseau',
 })
 export class OrdreRechercheReseauPipe implements PipeTransform {
-  transform(
-    value: OrdreRechercheReseau | OrdreRechercheReseau[],
-    args?: any
-  ): any {
+  transform(value?: OrdreRechercheReseau | OrdreRechercheReseau[]): any {
+    if (value == undefined) {
+      return '';
+    }
     if (value instanceof Array) {
       return value.map((t) => this.toString(t)).join(', ');
     }

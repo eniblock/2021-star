@@ -1,0 +1,9 @@
+<div class="reseau-resultat p-4" *ngIf="!showDetails" (click)="switchShowDetails()">
+    <app-icon-technology-type class="float-end" style="margin-top: -.25em;" [technologyType]="resultat?.technologyType"></app-icon-technology-type>
+    <app-badge class="float-end me-3" [text]="resultat?.producerMarketParticipantName" [color]="'primary'"></app-badge>
+    {{ resultat?.siteName }}
+</div>
+
+<div class="reseau-resultat-detail" *ngIf="showDetails">
+    Pas les memes champs suivant le type d'utilisateur !!!
+</div>

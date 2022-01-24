@@ -19,7 +19,9 @@ export interface RechercheReseauRequete
 }
 
 export interface RechercheReseauEntite {
+  producerMarketParticipantMrid: string;
   producerMarketParticipantName: string;
+  siteName: string;
   technologyType: TechnologyType;
   meteringPointMrid: string;
   siteAdminMRID: string;

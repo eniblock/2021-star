@@ -38,7 +38,11 @@ export class ReseauService {
 
     // TODO : Supprimer le mock + les 2 methodes : makeOne() et makeFive()
     console.log(urlParams);
-    return pagination.bookmark == null ? this.makeFive() : this.makeOne();
+    if (pagination.bookmark == null) {
+      return this.makeFive();
+    } else if ((pagination.bookmark = '12345')) {
+      return this.makeOne();
+    }
 
     return this.httpClient.get<PaginationReponse<RechercheReseauEntite>>(
       `${environment.serverUrl}/reseau?${urlParams}`
@@ -58,10 +62,12 @@ export class ReseauService {
   private makeFive() {
     return of({
       totalElements: 123,
-      bookmark: 'Le Bookmark',
+      bookmark: '12345',
       content: [
         {
+          producerMarketParticipantMrid: 'proId1',
           producerMarketParticipantName: 'pro1',
+          siteName: 'Site1',
           technologyType: TechnologyType.EOLIEN,
           meteringPointMrid: 'met1',
           siteAdminMRID: 'MRID1',
@@ -75,7 +81,9 @@ export class ReseauService {
           systemOperatorMarketParticipantName: 'soPartNam1',
         },
         {
+          producerMarketParticipantMrid: 'proId2',
           producerMarketParticipantName: 'pro2',
+          siteName: 'Site2',
           technologyType: TechnologyType.EOLIEN,
           meteringPointMrid: 'met2',
           siteAdminMRID: 'MRID2',
@@ -89,7 +97,9 @@ export class ReseauService {
           systemOperatorMarketParticipantName: 'soPartNam2',
         },
         {
+          producerMarketParticipantMrid: 'proId3',
           producerMarketParticipantName: 'pro3',
+          siteName: 'Site3',
           technologyType: TechnologyType.EOLIEN,
           meteringPointMrid: 'met3',
           siteAdminMRID: 'MRID3',
@@ -103,7 +113,9 @@ export class ReseauService {
           systemOperatorMarketParticipantName: 'soPartNam3',
         },
         {
+          producerMarketParticipantMrid: 'proId4',
           producerMarketParticipantName: 'pro4',
+          siteName: 'Site4',
           technologyType: TechnologyType.PHOTOVOLTAIQUE,
           meteringPointMrid: 'met4',
           siteAdminMRID: 'MRID4',
@@ -117,7 +129,9 @@ export class ReseauService {
           systemOperatorMarketParticipantName: 'soPartNam4',
         },
         {
+          producerMarketParticipantMrid: 'proId5',
           producerMarketParticipantName: 'pro5',
+          siteName: 'Site5',
           technologyType: TechnologyType.PHOTOVOLTAIQUE,
           meteringPointMrid: 'met5',
           siteAdminMRID: 'MRID5',
@@ -137,10 +151,12 @@ export class ReseauService {
   private makeOne() {
     return of({
       totalElements: 123,
-      bookmark: 'Le Bookmark',
+      bookmark: '66666',
       content: [
         {
+          producerMarketParticipantMrid: 'proId6',
           producerMarketParticipantName: 'pro6',
+          siteName: 'Site6',
           technologyType: TechnologyType.EOLIEN,
           meteringPointMrid: 'met6',
           siteAdminMRID: 'MRID6',

@@ -100,3 +100,23 @@ h2 {
 .mat-simple-snackbar-action {
   color: #fff !important;
 }
+
+// Badge
+.badge-star {
+  border-radius: 20px;
+  padding: 0 20px;
+}
+.badge-star.primary {
+  color: $mat-primary;
+  background-color: #e6f7fc;
+}
+.badge-star.blanc {
+  // todo
+}
+
+// Reseau
+.reseau-resultat {
+  border-radius: 15px;
+  background-color: white;
+  cursor: pointer;
+}

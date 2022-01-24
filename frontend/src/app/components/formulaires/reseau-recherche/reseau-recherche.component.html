@@ -11,7 +11,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="col-6 col-lg-2 px-lg-0" appearance="outline" [formGroup]="form.get('valeursRecherchees')">
+    <mat-form-field class="col-6 col-lg-2 px-lg-0" appearance="outline" [formGroup]="$any(form.get('valeursRecherchees'))">
       <mat-label>Filière</mat-label>
       <mat-select formControlName="technologyType" multiple>
         <mat-select-trigger>
@@ -34,7 +34,7 @@
 
   <!-- Recherche avancée -->
 
-  <div class="row mt-3" *ngIf="rechercheAvancee" [formGroup]="form.get('valeursRecherchees')">
+  <div class="row mt-3" *ngIf="rechercheAvancee" [formGroup]="$any(form.get('valeursRecherchees'))">
     
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Code Poste Source</mat-label>

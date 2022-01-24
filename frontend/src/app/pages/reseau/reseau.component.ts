@@ -17,10 +17,10 @@ export class ReseauComponent implements OnInit {
   formRecherche?: FormulaireRechercheReseau;
 
   pagesize = environment.pageSizes[0];
-  lastBookmark: string = null;
+  lastBookmark: string | null = null;
   order = OrdreRechercheReseau.producerMarketParticipantName;
 
-  totalElements?: number;
+  totalElements: number = -1;
 
   resultatsRecherche: RechercheReseauEntite[] = [];
 
@@ -72,7 +72,7 @@ export class ReseauComponent implements OnInit {
 
   private resetResultats() {
     this.lastBookmark = null;
-    this.totalElements = null;
+    this.totalElements = -1;
     this.resultatsRecherche = [];
     this.afficherBoutonSuite = false;
   }

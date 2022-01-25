@@ -199,7 +199,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, 'RTE01EIC');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAmount-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR createTSOEnergyAmount-> Input string NON-JSON value');
             }
         });
 
@@ -334,7 +334,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAmount getActivationDocument-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR createTSOEnergyAmount getActivationDocument-> Input string NON-JSON value');
             }
         });
 
@@ -416,7 +416,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAmount getSite-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR createTSOEnergyAmount getSite-> Input string NON-JSON value');
             }
         });
 
@@ -453,7 +453,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAmount mismatch beetween registeredResourceMrid in Activation Document : PRM50012536123456 and Energy Amount : toto.');
+                expect(err.message).to.equal('ERROR createTSOEnergyAmount mismatch beetween registeredResourceMrid in Activation Document : PRM50012536123456 and Energy Amount : toto.');
             }
         });
 
@@ -490,7 +490,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAmount mismatch in timeInterval both date must be the same day.("2021-10-22T00:00:00.000Z" vs "2021-10-23T00:00:00.000Z")');
+                expect(err.message).to.equal('ERROR createTSOEnergyAmount mismatch in timeInterval both date must be the same day.("2021-10-22T00:00:00.000Z" vs "2021-10-23T00:00:00.000Z")');
             }
         });
 
@@ -527,7 +527,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAmount mismatch between ENE : "2021-10-22T00:00:00.000Z" and Activation Document : "2021-10-23T00:00:00.000Z" dates.');
+                expect(err.message).to.equal('ERROR createTSOEnergyAmount mismatch between ENE : "2021-10-22T00:00:00.000Z" and Activation Document : "2021-10-23T00:00:00.000Z" dates.');
             }
         });
     });
@@ -652,7 +652,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.GetEnergyAmountForSystemOperator(transactionContext, nrj1.registeredResourceMrid, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAmount getSystemOperator-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR createTSOEnergyAmount getSystemOperator-> Input string NON-JSON value');
             }
         });
 

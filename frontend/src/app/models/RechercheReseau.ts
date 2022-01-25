@@ -1,7 +1,8 @@
 import { OrdreRechercheReseau } from './enum/OrdreRechercheReseau.enum';
 import { TechnologyType } from './enum/TechnologyType.enum';
 import { TypeDeRechercheSimple } from './enum/TypeDeRechercheSimple.enum';
-import { FormulairePagination, PaginationReponse } from './Pagination';
+import { TypeSite } from './enum/TypeSite.enum';
+import { FormulairePagination } from './Pagination';
 
 export interface FormulaireRechercheReseau {
   typeDeRechercheSimple: TypeDeRechercheSimple;
@@ -19,6 +20,7 @@ export interface RechercheReseauRequete
 }
 
 export interface RechercheReseauEntite {
+  typeSite: TypeSite;
   producerMarketParticipantMrid: string;
   producerMarketParticipantName: string;
   siteName: string;

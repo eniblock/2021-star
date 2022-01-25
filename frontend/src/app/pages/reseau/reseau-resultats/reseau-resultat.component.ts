@@ -1,3 +1,4 @@
+import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
 import { Component, Input, OnInit } from '@angular/core';
 import { RechercheReseauEntite } from 'src/app/models/RechercheReseau';
 
@@ -9,13 +10,19 @@ import { RechercheReseauEntite } from 'src/app/models/RechercheReseau';
 export class ReseauResultatComponent implements OnInit {
   @Input() resultat?: RechercheReseauEntite;
 
+  TypeSiteEnum = TypeSite;
+
   showDetails = false;
 
   constructor() {}
 
   ngOnInit() {}
 
-  switchShowDetails() {
-    this.showDetails = !this.showDetails;
+  open() {
+    this.showDetails = true;
+  }
+
+  close() {
+    this.showDetails = false;
   }
 }

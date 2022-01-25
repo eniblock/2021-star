@@ -13,6 +13,7 @@ import { FormulairePagination } from 'src/app/models/Pagination';
 import { OrdreRechercheReseau } from 'src/app/models/enum/OrdreRechercheReseau.enum';
 import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
 import { getNumberOfCurrencyDigits } from '@angular/common';
+import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +37,7 @@ export class ReseauService {
     }
     let urlParams = this.urlService.toUrlParams(formToSend);
 
-    // TODO : Supprimer le mock + les 2 methodes : makeOne() et makeFive()
+    // TODO : MOCK => Supprimer le mock + les 2 methodes : makeOne() et makeFive()
     console.log(urlParams);
     if (pagination.bookmark == null) {
       return this.makeFive();
@@ -65,6 +66,7 @@ export class ReseauService {
       bookmark: '12345',
       content: [
         {
+          typeSite: TypeSite.HTA,
           producerMarketParticipantMrid: 'proId1',
           producerMarketParticipantName: 'pro1',
           siteName: 'Site1',
@@ -81,6 +83,7 @@ export class ReseauService {
           systemOperatorMarketParticipantName: 'soPartNam1',
         },
         {
+          typeSite: TypeSite.HTB,
           producerMarketParticipantMrid: 'proId2',
           producerMarketParticipantName: 'pro2',
           siteName: 'Site2',
@@ -97,6 +100,7 @@ export class ReseauService {
           systemOperatorMarketParticipantName: 'soPartNam2',
         },
         {
+          typeSite: TypeSite.HTA,
           producerMarketParticipantMrid: 'proId3',
           producerMarketParticipantName: 'pro3',
           siteName: 'Site3',
@@ -113,6 +117,7 @@ export class ReseauService {
           systemOperatorMarketParticipantName: 'soPartNam3',
         },
         {
+          typeSite: TypeSite.HTB,
           producerMarketParticipantMrid: 'proId4',
           producerMarketParticipantName: 'pro4',
           siteName: 'Site4',
@@ -129,6 +134,7 @@ export class ReseauService {
           systemOperatorMarketParticipantName: 'soPartNam4',
         },
         {
+          typeSite: TypeSite.HTA,
           producerMarketParticipantMrid: 'proId5',
           producerMarketParticipantName: 'pro5',
           siteName: 'Site5',
@@ -154,6 +160,7 @@ export class ReseauService {
       bookmark: '66666',
       content: [
         {
+          typeSite: TypeSite.HTB,
           producerMarketParticipantMrid: 'proId6',
           producerMarketParticipantName: 'pro6',
           siteName: 'Site6',

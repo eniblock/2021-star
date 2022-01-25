@@ -76,7 +76,6 @@ export class ReseauComponent implements OnInit {
             resultat.content
           );
           this.afficherBoutonSuite = resultat.content.length >= this.pagesize;
-          console.log(resultat);
         });
     }
   }

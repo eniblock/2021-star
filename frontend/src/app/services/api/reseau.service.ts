@@ -38,7 +38,6 @@ export class ReseauService {
     let urlParams = this.urlService.toUrlParams(formToSend);
 
     // TODO : MOCK => Supprimer le mock + les 2 methodes : makeOne() et makeFive()
-    console.log(urlParams);
     if (pagination.bookmark == null) {
       return this.makeFive();
     } else if ((pagination.bookmark = '12345')) {

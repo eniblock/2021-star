@@ -1,6 +1,5 @@
 FROM node:16-alpine
-RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.5/dumb-init_1.2.5_x86_64
-RUN chmod +x /usr/local/bin/dumb-init
+COPY --from=registry.gitlab.com/xdev-tech/xdev-enterprise-business-network/hlf-k8s/ccid:develop /ccid /ccid
 
 WORKDIR /app
 
@@ -12,6 +11,9 @@ RUN npm run build
 
 EXPOSE 9999
 
-ENV CHAINCODE_ID=changeme
-ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
-CMD sh -c "/app/node_modules/.bin/fabric-chaincode-node server --chaincode-address 0.0.0.0:9999 --chaincode-id $CHAINCODE_ID"
+ENV CHAINCODE_CONNECTION_ADDRESS=changeme:9999 \
+    CHAINCODE_ADDRESS=0.0.0.0:9999 \
+    CHAINCODE_NAME=star \
+    CHAINCODE_LABEL=star
+
+CMD /ccid $CHAINCODE_CONNECTION_ADDRESS -l $CHAINCODE_LABEL -n $CHAINCODE_NAME -- sh -c '/app/node_modules/.bin/fabric-chaincode-node server --chaincode-address $CHAINCODE_ADDRESS --chaincode-id $CHAINCODE_ID'

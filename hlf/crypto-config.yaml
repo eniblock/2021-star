@@ -41,11 +41,11 @@ PeerOrgs:
           - 0.0.0.0
           - peer1.enedis.localhost
           - peer1-hlf-peer.enedis
-      - Hostname: peer2
-        SANS:
-          - 0.0.0.0
-          - peer2.enedis.localhost
-          - peer2-hlf-peer.enedis
+      # - Hostname: peer2
+      #   SANS:
+      #     - 0.0.0.0
+      #     - peer2.enedis.localhost
+      #     - peer2-hlf-peer.enedis
     Users:
       Count: 1
 
@@ -58,11 +58,11 @@ PeerOrgs:
           - 0.0.0.0
           - peer1.rte.localhost
           - peer1-hlf-peer.rte
-      - Hostname: peer2
-        SANS:
-          - 0.0.0.0
-          - peer2.rte.localhost
-          - peer2-hlf-peer.rte
+      # - Hostname: peer2
+      #   SANS:
+      #     - 0.0.0.0
+      #     - peer2.rte.localhost
+      #     - peer2-hlf-peer.rte
     Users:
       Count: 1
 
@@ -75,10 +75,10 @@ PeerOrgs:
           - 0.0.0.0
           - peer1.producteurs.localhost
           - peer1-hlf-peer.producteurs
-      - Hostname: peer2
-        SANS:
-          - 0.0.0.0
-          - peer2.producteurs.localhost
-          - peer2-hlf-peer.producteurs
+      # - Hostname: peer2
+      #   SANS:
+      #     - 0.0.0.0
+      #     - peer2.producteurs.localhost
+      #     - peer2-hlf-peer.producteurs
     Users:
       Count: 1

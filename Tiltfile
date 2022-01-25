@@ -114,7 +114,7 @@ for orderer in ['orderer1', 'orderer2', 'orderer3']:
 
     helm_remote('hlf-ord',
         repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-        version="0.1.0-develop.12",
+        version="0.1.0-develop.17",
         namespace='orderer',
         release_name=orderer,
         values=['helm/hlf-ord/values-' + orderer + '.yaml'],
@@ -132,7 +132,7 @@ for orderer in ['orderer1', 'orderer2', 'orderer3']:
 for org in ['enedis', 'rte', 'producteurs']:
     k8s_yaml(local(kc_secret + '-n ' + org + ' generic starchannel --from-file=./hlf/generated/star.tx', quiet=True))
     k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt', quiet=True))
-    for peer in ['peer1', 'peer2']:
+    for peer in ['peer1']:
         k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--' + peer + '-idcert --from-file=./hlf/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/msp/signcerts/' + peer + '.' + org + '-cert.pem', quiet=True))
         k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--' + peer + '-idkey --from-file=./hlf/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/msp/keystore/priv_sk', quiet=True))
         k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--' + peer + '-cacert --from-file=./hlf/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/msp/cacerts/ca.' + org + '-cert.pem', quiet=True))
@@ -148,7 +148,7 @@ for org in ['enedis', 'rte', 'producteurs']:
 
         helm_remote('hlf-peer',
             repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-            version="0.1.0-develop.12",
+            version="0.1.0-develop.17",
             namespace=org,
             release_name=peer,
             values=['helm/hlf-peer/values-' + org + '-' + peer + '.yaml'],
@@ -158,16 +158,14 @@ for org in ['enedis', 'rte', 'producteurs']:
 
         helm_remote('hlf-chaincode',
             repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-            version="0.1.0-develop.12",
+            version="0.1.0-develop.17",
             namespace=org,
             release_name=peer + '-chaincode',
-            set=[
-                "ccid=fabcar:2e4d0a92317fe0c2d5f8de3ea74f01e7e990bec11336335e3bd29d0cde06035d",
-                "image.repository=registry.gitlab.com/xdev-tech/star/chaincode",
-            ]
-            # values=['helm/hlf-peer/values-' + org + '-' + peer + '.yaml'],
+            values=['helm/hlf-chaincode/values-' + org + '-' + peer + '.yaml'],
         )
         k8s_resource(peer + '-chaincode-hlf-chaincode:deployment:' + org, labels=[org])
+        k8s_resource(peer + '-hlf-peer-jc-star:job:' + org, labels=[org])
+        k8s_resource(peer + '-hlf-peer-rc-star:job:' + org, labels=[org])
 
         if config.tilt_subcommand == 'up':
             local(clk_k8s + 'add-domain ' + peer + '.' + org + '.localhost')

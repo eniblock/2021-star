@@ -3,22 +3,22 @@
     {
       "Name": "kubectl_build",
       "ExtensionRegistry": "https://github.com/tilt-dev/tilt-extensions",
-      "TimeFetched": "2021-12-10T13:50:54.0461809+01:00"
+      "TimeFetched": "2022-01-25T14:21:50.195505321+01:00"
     },
     {
       "Name": "namespace",
       "ExtensionRegistry": "https://github.com/tilt-dev/tilt-extensions",
-      "TimeFetched": "2021-12-16T14:59:18.439417958+01:00"
+      "TimeFetched": "2022-01-25T14:31:20.80350313+01:00"
     },
     {
       "Name": "helm_remote",
       "ExtensionRegistry": "https://github.com/tilt-dev/tilt-extensions",
-      "TimeFetched": "2021-12-16T15:21:01.778745023+01:00"
+      "TimeFetched": "2022-01-25T14:31:23.416066947+01:00"
     },
     {
       "Name": "global_vars",
       "ExtensionRegistry": "https://github.com/tilt-dev/tilt-extensions",
-      "TimeFetched": "2021-12-16T15:21:05.379694791+01:00"
+      "TimeFetched": "2022-01-25T14:31:24.840519121+01:00"
     }
   ]
 }

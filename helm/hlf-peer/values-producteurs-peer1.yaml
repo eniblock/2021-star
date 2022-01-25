@@ -10,10 +10,16 @@ peer:
   tls:
     server:
       enabled: true
-  mspID: producteursMSP
+  mspID: producteurs
   gossip:
-    bootstrap: peer2-hlf-peer.producteurs:7051
+    # bootstrap: peer2-hlf-peer.producteurs:7051
     endpoint: peer1-hlf-peer.producteurs:7051
+  chaincodes:
+    - name: star
+      address: peer1-chaincode-hlf-chaincode:7777
+      label: star
+      orderer_address: orderer1.orderer.localhost:443
+      channel: star
 
 # Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
 secrets:
@@ -50,8 +56,9 @@ secrets:
     ## This should contain "channel" transaction derived from a configtx.yaml
     ## configtxgen -profile ComposerChannel -channelID composerchannel -outputCreateChannelTx composerchannel.tx
   channels:
-  - starchannel
-  # - barchannel
+    - name: star
+      secretName: starchannel
+      orderer_address: orderer1.orderer.localhost:443
 
   ## This should contain the Certificate of the Peer Organisation admin
   ## This is necessary to successfully run the peer

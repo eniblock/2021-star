@@ -152,11 +152,12 @@ export class EnergyAmountController {
         while (!result.done) {
             const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
             let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
+            // try {
+            record = JSON.parse(strValue);
+            // } catch (err) {
+            //     // record = strValue;
+            //     continue;
+            // }
             allResults.push(record);
             result = await iterator.next();
         }
@@ -236,14 +237,14 @@ export class EnergyAmountController {
         orderDateStart.setUTCSeconds(0);
         orderDateStart.setUTCMinutes(0);
         orderDateStart.setUTCHours(0);
-        // console.log('orderDateStart=', orderDateStart);
+        console.log('orderDateStart=', orderDateStart);
 
-        // console.log(JSON.stringify(dateBegin));
-        // console.log(JSON.stringify(dateEnd));
+        console.log(JSON.stringify(dateBegin));
+        console.log(JSON.stringify(dateEnd));
         if (JSON.stringify(dateBegin) !== JSON.stringify(dateEnd)) {
             throw new Error(`ERROR createDSOEnergyAmount mismatch in timeInterval both date must be the same day.(${JSON.stringify(dateBegin)} vs ${JSON.stringify(dateEnd)})`);
         } else if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
-            throw new Error(`ERROR createDSOEnergyAmount mismatch between ENE : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
+            throw new Error(`ERROR createDSOEnergyAmount mismatch between ENI : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
         }
 
         energyAmountInput.docType = 'energyAmount';

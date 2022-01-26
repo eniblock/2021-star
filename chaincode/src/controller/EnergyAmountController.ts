@@ -113,7 +113,7 @@ export class EnergyAmountController {
         console.info('============= START : Create EnergyAmount ===========');
 
         const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE) {
+        if (identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
@@ -129,7 +129,7 @@ export class EnergyAmountController {
             {strict: true, abortEarly: false},
         );
 
-        const keySplitted = energyAmountInput.activationDocumentMrid.split('_', 4);
+        const keySplitted = energyAmountInput.activationDocumentMrid.split('/', 4);
         console.log(keySplitted);
 
         const query = `{
@@ -138,12 +138,15 @@ export class EnergyAmountController {
                 "docType": "activationDocument",
                 "originAutomataRegisteredResourceMrid": "${keySplitted[0]}",
                 "registeredResourceMrid": "${keySplitted[1]}",
-                "startCreatedDateTime": "${keySplitted[2]}"
-                "EndCreatedDateTime": "${keySplitted[3]}"
+                "startCreatedDateTime": "${keySplitted[2]}",
+                "endCreatedDateTime": "${keySplitted[3]}"
             }
         }`;
+        console.log(query);
         const iterator = await ctx.stub.getQueryResult(query);
-
+        // if (Object.keys(iterator).length === 0) {
+        //     throw new Error(`ERROR createDSOEnergyAmount : no results for get activationDocument`);
+        // }
         const allResults = [];
         let result = await iterator.next();
         while (!result.done) {
@@ -157,15 +160,13 @@ export class EnergyAmountController {
             allResults.push(record);
             result = await iterator.next();
         }
-
+        if (allResults.length === 0) {
+            throw new Error(`ERROR createDSOEnergyAmount : no results for get activationDocument`);
+        }
         console.log(allResults);
 
         let orderObj: ActivationDocument;
-        try {
-            orderObj = JSON.parse(allResults[0].toString());
-        } catch (error) {
-            throw new Error(`ERROR createDSOEnergyAmount getActivationDocument-> Input string NON-JSON value`);
-        }
+        orderObj = allResults[0];
 /*
         // const orderAsBytes = await ctx.stub.getState(energyAmountInput.activationDocumentMrid);
         // if (!orderAsBytes || orderAsBytes.length === 0) {

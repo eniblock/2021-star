@@ -313,6 +313,14 @@ export class Star extends Contract {
         }
     }
 
+    public async CreateDSOEnergyAmount(ctx: Context, inputStr: string) {
+        try {
+            return (await EnergyAmountController.createDSOEnergyAmount(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async GetEnergyAmountForSystemOperator(
         ctx: Context,
         meteringPointMrid: string,

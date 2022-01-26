@@ -12,7 +12,6 @@ import { environment } from 'src/environments/environment';
 import { FormulairePagination } from 'src/app/models/Pagination';
 import { OrdreRechercheReseau } from 'src/app/models/enum/OrdreRechercheReseau.enum';
 import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
-import { getNumberOfCurrencyDigits } from '@angular/common';
 import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
 
 @Injectable({

@@ -42,7 +42,7 @@ describe('Star Tests EnergyAmount', () => {
 
         chaincodeStub.getQueryResult.callsFake(async (query) => {
             function* internalGetQueryResult() {
-                // console.log('IN QUERY RESULT =', chaincodeStub.states)
+                console.log('IN QUERY RESULT =', chaincodeStub.states)
                 if (chaincodeStub.states) {
                     const copied = Object.assign({}, chaincodeStub.states);
                     for (let key in copied) {
@@ -54,20 +54,36 @@ describe('Star Tests EnergyAmount', () => {
                             continue
                         }
                         const obJson = JSON.parse(copied[key].toString('utf8'));
-                        // console.log('obJson=', obJson);
+                        console.log('obJson=', obJson);
                         const objStr: string = obJson.docType;
-                        // console.log('querystring=', query);
+                        console.log('querystring=', query);
                         const queryJson = JSON.parse(query);
-                        // console.log('queryJson=', queryJson);
+                        console.log('queryJson=', queryJson);
                         const queryStr = queryJson.selector.docType
-                        // console.log('queryStr=', queryStr , 'objStr=', objStr);
+                        console.log('queryStr=', queryStr , 'objStr=', objStr);
                         if (queryStr == objStr) {
                             // if (queryJson.selector.systemOperatorMarketParticipantMrId) {
                                 const queryM = queryJson.selector.registeredResourceMrid;
-                                // console.log('queryM=', queryM);
+                                console.log('queryM=', queryM);
                                 const objM = obJson.registeredResourceMrid;
-                                // console.log('objM=', objM);
-                                if (queryM == objM) {
+                                console.log('objM=', objM);
+                                const queryO = queryJson.selector.originAutomataRegisteredResourceMrid;
+                                console.log('queryO=', queryO);
+                                const objO = obJson.originAutomataRegisteredResourceMrid;
+                                console.log('objO=', objO);
+                                if (queryO == objO && queryM == objM) {
+                                    const queryS = queryJson.selector.startCreatedDateTime;
+                                    console.log('queryS=', queryS);
+                                    const objS = obJson.startCreatedDateTime;
+                                    console.log('objS=', objS);
+                                    const queryE = queryJson.selector.endCreatedDateTime;
+                                    console.log('queryE=', queryE);
+                                    const objE = obJson.endCreatedDateTime;
+                                    console.log('objE=', objE);
+                                        if (queryS == objS && queryE == objE) {
+                                            yield {value: copied[key]};
+                                        }
+                                } else if (queryM == objM) {
                                     // console.log('obJson.createdDateTime=', obJson.createdDateTime);
                                     const objDate = new Date(obJson.createdDateTime)
                                     // console.log ('objDate=', objDate);
@@ -151,6 +167,7 @@ describe('Star Tests EnergyAmount', () => {
 ///////////////////////////////     ENE      ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
+/*
     describe('Test CreateTSOEnergyAmount', () => {
         it('should return ERROR CreateTSOEnergyAmount check mandatory fields', async () => {
             let star = new Star();
@@ -531,15 +548,51 @@ describe('Star Tests EnergyAmount', () => {
             }
         });
     });
-
+*/
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     ENI      ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
+    describe('Test CreateDSOEnergyAmount', () => {
+        it('should return SUCCESS CreateDSOEnergyAmount.', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
+      
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
 
+            const nrj : EnergyAmount = {
+                energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                activationDocumentMrid: "CIVRA/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                registeredResourceMrid: "PRM50012536123456",
+                quantity: "number",
+                measurementUnitName: "KW",
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                timeInterval: "2021-10-22T01:01:01.001Z / 2021-10-22T23:59:59.999Z",
+            };
+            await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(nrj));
+
+            // let ret = JSON.parse((await chaincodeStub.getState(nrj.energyAmountMarketDocumentMrid)).toString());
+            // expect(ret).to.eql( Object.assign({docType: 'energyAmount'}, nrj ));
+        });
+    });
 
 ////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     GET ENE      /////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
+/*
     describe('Test GetEnergyAmountForSystemOperator.', () => {
         it('should return ERROR on GetEnergyAmountForSystemOperator no systemOperator', async () => {
             let star = new Star();
@@ -817,7 +870,7 @@ describe('Star Tests EnergyAmount', () => {
 
             let ret = await star.GetEnergyAmountForSystemOperator(transactionContext, nrj1.registeredResourceMrid, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            console.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
             const expected = [
@@ -1062,4 +1115,9 @@ describe('Star Tests EnergyAmount', () => {
             expect(ret).to.eql(expected);
         });
     });
+*/
+////////////////////////////////////////////////////////////////////////////
+/////////////////////////////     GET ENI      /////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
 });

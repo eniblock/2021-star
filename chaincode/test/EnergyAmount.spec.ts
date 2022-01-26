@@ -551,6 +551,161 @@ describe('Star Tests EnergyAmount', () => {
 ///////////////////////////////     ENI      ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
     describe('Test CreateDSOEnergyAmount', () => {
+        it('should return ERROR CreateDSOEnergyAmount Wrong MSPID', async () => {
+            let star = new Star();
+            const nrj : EnergyAmount = {
+                energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
+                activationDocumentMrid: "string",
+                registeredResourceMrid: "PRM50012536123456",
+                quantity: "number",
+                measurementUnitName: "KW",
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                timeInterval: "2021-10-22T01:01:01.001Z / 2021-10-22T23:59:59.999Z",
+            };
+
+            try {
+                await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Organisation, FakeMspID does not have write access for Energy Amount.');
+            }
+        });
+
+        it('should return ERROR on CreateDSOEnergyAmount NON-JSON Value', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            try {
+                await star.CreateDSOEnergyAmount(transactionContext, 'RTE01EIC');
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR createDSOEnergyAmount-> Input string NON-JSON value');
+            }
+        });
+
+        it('should return ERROR CreateDSOEnergyAmount no result get ActivationDocument.', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
+      
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+
+            const nrj : EnergyAmount = {
+                energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                activationDocumentMrid: "CIVRA/PRM50012536123456/2021-10-23T11:29:10.000Z/2021-10-23T22:29:10.000Z",
+                registeredResourceMrid: "PRM50012536123456",
+                quantity: "number",
+                measurementUnitName: "KW",
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                timeInterval: "2021-10-22T01:01:01.001Z / 2021-10-22T23:59:59.999Z",
+            };
+
+            try {
+                await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR createDSOEnergyAmount : no results for get activationDocument');
+            }
+        });
+
+        it('should return ERROR CreateDSOEnergyAmount error date interval.', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
+      
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+
+            const nrj : EnergyAmount = {
+                energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                activationDocumentMrid: "CIVRA/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                registeredResourceMrid: "PRM50012536123456",
+                quantity: "number",
+                measurementUnitName: "KW",
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                timeInterval: "2021-10-22T01:01:01.001Z / 2021-10-23T23:59:59.999Z",
+            };
+
+            try {
+                await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR createDSOEnergyAmount mismatch in timeInterval both date must be the same day.("2021-10-22T00:00:00.000Z" vs "2021-10-23T00:00:00.000Z")');
+            }
+        });
+
+        it('should return ERROR CreateDSOEnergyAmount error date ENI / ActivationDocument.', async () => {
+            let star = new Star();
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
+      
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+
+            const nrj : EnergyAmount = {
+                energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+                activationDocumentMrid: "CIVRA/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                registeredResourceMrid: "PRM50012536123456",
+                quantity: "number",
+                measurementUnitName: "KW",
+                revisionNumber: "1",
+                businessType: "A14 / Z14",
+                docStatus: "A02",
+                processType: "A05",
+                classificationType: "A02",
+                areaDomain: "17X100A100A0001A",
+                senderMarketParticipantMrid: "17V0000009927454",
+                senderMarketParticipantRole: "A50",
+                receiverMarketParticipantMrid: "Producteur1",
+                receiverMarketParticipantRole: "A32",
+                createdDateTime: "2021-10-22T10:29:10.000Z",
+                timeInterval: "2021-10-23T01:01:01.001Z / 2021-10-23T23:59:59.999Z",
+            };
+
+            try {
+                await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(nrj));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR createDSOEnergyAmount mismatch between ENI : "2021-10-23T00:00:00.000Z" and Activation Document : "2021-10-22T00:00:00.000Z" dates.');
+            }
+        });
+
         it('should return SUCCESS CreateDSOEnergyAmount.', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'ENEDISMSP';
@@ -582,9 +737,56 @@ describe('Star Tests EnergyAmount', () => {
             };
             await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(nrj));
 
-            // let ret = JSON.parse((await chaincodeStub.getState(nrj.energyAmountMarketDocumentMrid)).toString());
-            // expect(ret).to.eql( Object.assign({docType: 'energyAmount'}, nrj ));
+            let ret = JSON.parse((await chaincodeStub.getState(nrj.energyAmountMarketDocumentMrid)).toString());
+            expect(ret).to.eql( Object.assign({docType: 'energyAmount'}, nrj ));
         });
+
+        // it('should return SUCCESS CreateDSOEnergyAmount.', async () => {
+        //     let star = new Star();
+        //     chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
+        //         chaincodeStub.states = {};
+        //         chaincodeStub.states[key] = 'non-json-value';
+        //     });
+
+        //     chaincodeStub.MspiID = 'ENEDISMSP';
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+        //     await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+        //     await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
+        //     await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
+      
+        //     await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
+        //     await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+
+        //     chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
+        //         chaincodeStub.states = {};
+        //         chaincodeStub.states[key] = 'non-json-value';
+        //     });
+        //     await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f4\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123457\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+
+        //     const nrj : EnergyAmount = {
+        //         energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+        //         activationDocumentMrid: "CIVRA/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+        //         registeredResourceMrid: "PRM50012536123456",
+        //         quantity: "number",
+        //         measurementUnitName: "KW",
+        //         revisionNumber: "1",
+        //         businessType: "A14 / Z14",
+        //         docStatus: "A02",
+        //         processType: "A05",
+        //         classificationType: "A02",
+        //         areaDomain: "17X100A100A0001A",
+        //         senderMarketParticipantMrid: "17V0000009927454",
+        //         senderMarketParticipantRole: "A50",
+        //         receiverMarketParticipantMrid: "Producteur1",
+        //         receiverMarketParticipantRole: "A32",
+        //         createdDateTime: "2021-10-22T10:29:10.000Z",
+        //         timeInterval: "2021-10-22T01:01:01.001Z / 2021-10-22T23:59:59.999Z",
+        //     };
+        //     await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(nrj));
+
+        //     let ret = JSON.parse((await chaincodeStub.getState(nrj.energyAmountMarketDocumentMrid)).toString());
+        //     expect(ret).to.eql( Object.assign({docType: 'energyAmount'}, nrj ));
+        // });
     });
 
 ////////////////////////////////////////////////////////////////////////////

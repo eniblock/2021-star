@@ -1,3 +1,4 @@
+mspid: rte
 name: star
 command:
   - sh

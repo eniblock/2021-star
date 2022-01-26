@@ -114,7 +114,7 @@ for orderer in ['orderer1', 'orderer2', 'orderer3']:
 
     helm_remote('hlf-ord',
         repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-        version="0.1.0-develop.17",
+        version="0.1.0-develop.19",
         namespace='orderer',
         release_name=orderer,
         values=['helm/hlf-ord/values-' + orderer + '.yaml'],
@@ -148,7 +148,7 @@ for org in ['enedis', 'rte', 'producteurs']:
 
         helm_remote('hlf-peer',
             repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-            version="0.1.0-develop.17",
+            version="0.1.0-develop.19",
             namespace=org,
             release_name=peer,
             values=['helm/hlf-peer/values-' + org + '-' + peer + '.yaml'],
@@ -158,7 +158,7 @@ for org in ['enedis', 'rte', 'producteurs']:
 
         helm_remote('hlf-chaincode',
             repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-            version="0.1.0-develop.17",
+            version="0.1.0-develop.19",
             namespace=org,
             release_name=peer + '-chaincode',
             values=['helm/hlf-chaincode/values-' + org + '-' + peer + '.yaml'],

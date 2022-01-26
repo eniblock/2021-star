@@ -42,7 +42,7 @@ describe('Star Tests EnergyAmount', () => {
 
         chaincodeStub.getQueryResult.callsFake(async (query) => {
             function* internalGetQueryResult() {
-                console.log('IN QUERY RESULT =', chaincodeStub.states)
+                // console.log('IN QUERY RESULT =', chaincodeStub.states)
                 if (chaincodeStub.states) {
                     const copied = Object.assign({}, chaincodeStub.states);
                     for (let key in copied) {
@@ -54,13 +54,13 @@ describe('Star Tests EnergyAmount', () => {
                             continue
                         }
                         const obJson = JSON.parse(copied[key].toString('utf8'));
-                        console.log('obJson=', obJson);
+                        // console.log('obJson=', obJson);
                         const objStr: string = obJson.docType;
                         console.log('querystring=', query);
                         const queryJson = JSON.parse(query);
                         console.log('queryJson=', queryJson);
                         const queryStr = queryJson.selector.docType
-                        console.log('queryStr=', queryStr , 'objStr=', objStr);
+                        // console.log('queryStr=', queryStr , 'objStr=', objStr);
                         if (queryStr == objStr) {
                             // if (queryJson.selector.systemOperatorMarketParticipantMrId) {
                                 const queryM = queryJson.selector.registeredResourceMrid;
@@ -71,15 +71,15 @@ describe('Star Tests EnergyAmount', () => {
                                 console.log('queryO=', queryO);
                                 const objO = obJson.originAutomataRegisteredResourceMrid;
                                 console.log('objO=', objO);
-                                if (queryO == objO && queryM == objM) {
+                                if (queryO && objO && queryO == objO && queryM == objM) {
                                     const queryS = queryJson.selector.startCreatedDateTime;
-                                    console.log('queryS=', queryS);
+                                    // console.log('queryS=', queryS);
                                     const objS = obJson.startCreatedDateTime;
-                                    console.log('objS=', objS);
+                                    // console.log('objS=', objS);
                                     const queryE = queryJson.selector.endCreatedDateTime;
-                                    console.log('queryE=', queryE);
+                                    // console.log('queryE=', queryE);
                                     const objE = obJson.endCreatedDateTime;
-                                    console.log('objE=', objE);
+                                    // console.log('objE=', objE);
                                         if (queryS == objS && queryE == objE) {
                                             yield {value: copied[key]};
                                         }
@@ -167,7 +167,6 @@ describe('Star Tests EnergyAmount', () => {
 ///////////////////////////////     ENE      ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-/*
     describe('Test CreateTSOEnergyAmount', () => {
         it('should return ERROR CreateTSOEnergyAmount check mandatory fields', async () => {
             let star = new Star();
@@ -548,7 +547,6 @@ describe('Star Tests EnergyAmount', () => {
             }
         });
     });
-*/
 ////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     ENI      ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
@@ -592,7 +590,6 @@ describe('Star Tests EnergyAmount', () => {
 ////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     GET ENE      /////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-/*
     describe('Test GetEnergyAmountForSystemOperator.', () => {
         it('should return ERROR on GetEnergyAmountForSystemOperator no systemOperator', async () => {
             let star = new Star();
@@ -1115,7 +1112,6 @@ describe('Star Tests EnergyAmount', () => {
             expect(ret).to.eql(expected);
         });
     });
-*/
 ////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     GET ENI      /////////////////////////////
 ////////////////////////////////////////////////////////////////////////////

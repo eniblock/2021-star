@@ -5,18 +5,20 @@ import { TypeSite } from './enum/TypeSite.enum';
 import { FormulairePagination } from './Pagination';
 
 export interface FormulaireRechercheReseau {
-  typeDeRechercheSimple: TypeDeRechercheSimple;
-  champDeRechercheSimple: string;
+  typeDeRechercheSimple?: TypeDeRechercheSimple;
+  champDeRechercheSimple?: string;
   valeursRecherchees: RechercheReseauRequete;
 }
 
 export interface RechercheReseauRequete
   extends FormulairePagination<OrdreRechercheReseau> {
-  producerMarketParticipantName: string;
-  siteName: string;
-  substationName: string;
-  substationMrid: string;
-  producerMarketParticipantMrid: string;
+  siteName?: string;
+  substationName?: string;
+  substationMrid?: string;
+  producerMarketParticipantName?: string;
+  producerMarketParticipantMrid?: string;
+  siteIecCode?: string;
+  meteringpointmrId?: string;
 }
 
 export interface RechercheReseauEntite {
@@ -34,6 +36,6 @@ export interface RechercheReseauEntite {
   systemOperatorEntityFlexibilityDomainMrid: string;
   systemOperatorEntityFlexibilityDomainName: string;
   systemOperatorCustomerServiceName: string;
-  systemOperatorMarketParticipantName: string;
-  /////   ?????? : code site / CART =========================> Lina doit confirmer...
+  systemOperatorMarketParticipantName?: string; // Seulement pour les site HTB
+  siteIecCode?: string; // Seulement pour les site HTB
 }

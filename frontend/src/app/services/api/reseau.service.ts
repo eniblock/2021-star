@@ -97,6 +97,7 @@ export class ReseauService {
           systemOperatorEntityFlexibilityDomainName: 'soDomName2',
           systemOperatorCustomerServiceName: 'soCustName2',
           systemOperatorMarketParticipantName: 'soPartNam2',
+          siteIecCode: 'IEC2',
         },
         {
           typeSite: TypeSite.HTA,
@@ -131,6 +132,7 @@ export class ReseauService {
           systemOperatorEntityFlexibilityDomainName: 'soDomName4',
           systemOperatorCustomerServiceName: 'soCustName4',
           systemOperatorMarketParticipantName: 'soPartNam4',
+          siteIecCode: 'IEC4',
         },
         {
           typeSite: TypeSite.HTA,
@@ -174,6 +176,7 @@ export class ReseauService {
           systemOperatorEntityFlexibilityDomainName: 'soDomName6',
           systemOperatorCustomerServiceName: 'soCustName6',
           systemOperatorMarketParticipantName: 'soPartNam6',
+          siteIecCode: 'IEC6',
         },
       ],
     });

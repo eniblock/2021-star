@@ -31,24 +31,26 @@
     </mat-form-field>
     
   </div>
+  
 
-  <!-- Recherche avancée -->
 
-  <div class="row mt-3" *ngIf="rechercheAvancee" [formGroup]="$any(form.get('valeursRecherchees'))">
+  <!-- Recherche avancée : DSO ET TSO -->
+
+  <div class="row mt-3" *ngIf="rechercheAvancee && typeInstance != InstanceEnum.PRODUCER" [formGroup]="$any(form.get('valeursRecherchees'))">
     
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Code Poste Source</mat-label>
-      <input matInput placeholder="Poste Source" type="text" formControlName="substationMrid">
+      <input matInput placeholder="Code Poste Source" type="text" formControlName="substationMrid">
     </mat-form-field>
     
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Nom Poste Source</mat-label>
-      <input matInput placeholder="Poste Source" type="text" formControlName="substationName">
+      <input matInput placeholder="Nom Poste Source" type="text" formControlName="substationName">
     </mat-form-field>
     
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Code EIC</mat-label>
-      <input matInput placeholder="Poste Source" type="text" formControlName="producerMarketParticipantMrid">
+      <input matInput placeholder="Code EIC" type="text" formControlName="producerMarketParticipantMrid">
     </mat-form-field>
     
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
@@ -56,7 +58,38 @@
       <input matInput placeholder="Poste Source" type="text" formControlName="producerMarketParticipantName">
     </mat-form-field>
 
-    <div class="col text-center mt-3">
+    <div class="col-12 text-center mt-3">
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Rechercher</button>
+    </div>
+  </div>
+
+
+
+  <!-- Recherche avancée : Producteur -->
+
+  <div class="row mt-3" *ngIf="rechercheAvancee && typeInstance == InstanceEnum.PRODUCER" [formGroup]="$any(form.get('valeursRecherchees'))">
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Code Poste Source</mat-label>
+      <input matInput placeholder="Code Poste Source" type="text" formControlName="substationMrid">
+    </mat-form-field>
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Nom Poste Source</mat-label>
+      <input matInput placeholder="Nom Poste Source" type="text" formControlName="substationName">
+    </mat-form-field>
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Code EIC</mat-label>
+      <input matInput placeholder="Code EIC" type="text" formControlName="siteIecCode">
+    </mat-form-field>
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Code Site</mat-label>
+      <input matInput placeholder="Code Site" type="text" formControlName="meteringpointmrId">
+    </mat-form-field>
+
+    <div class="col-12 text-center mt-3">
       <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Rechercher</button>
     </div>
   </div>

@@ -1,3 +1,4 @@
+import { Instance } from 'src/app/models/enum/Instance.enum';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
@@ -19,19 +20,22 @@ export class ReseauRechercheComponent implements OnInit {
 
   typesDeRechercheSimple: TypeDeRechercheSimple[] = [];
   TechnologyTypeEnum = TechnologyType;
+  InstanceEnum = Instance;
 
   rechercheAvancee = false;
+  typeInstance?: Instance;
 
   form: FormGroup = this.formBuilder.group({
     typeDeRechercheSimple: [],
     champDeRechercheSimple: [''],
     valeursRecherchees: this.formBuilder.group({
       technologyType: [Object.keys(TechnologyType)],
-      producerMarketParticipantName: [{ value: '', disabled: true }],
-      siteName: [{ value: '', disabled: true }],
-      substationName: [{ value: '', disabled: true }],
-      substationMrid: [{ value: '', disabled: true }],
-      producerMarketParticipantMrid: [{ value: '', disabled: true }],
+      substationName: [''],
+      substationMrid: [''],
+      producerMarketParticipantName: [''],
+      producerMarketParticipantMrid: [''],
+      siteIecCode: [''],
+      meteringpointmrId: [''],
     }),
   });
 
@@ -44,6 +48,7 @@ export class ReseauRechercheComponent implements OnInit {
   ngOnInit() {
     // En fonction du type d'instance, on affiche/masque des parties du formulaire
     this.instanceService.getTypeInstance().subscribe((typeInstance) => {
+      this.typeInstance = typeInstance;
       this.typesDeRechercheSimple = getTypesDeRechercheSimple(typeInstance);
       this.form.patchValue({
         typeDeRechercheSimple: this.typesDeRechercheSimple[0],
@@ -73,26 +78,11 @@ export class ReseauRechercheComponent implements OnInit {
   }
 
   private enableDisableFields() {
-    // On active/désactive les champs en fonction du type de recherche
-    // Recherche simple
+    // On active/désactive les champs de recherche simple en fonction du type de recherche
     this.enableControl(
       this.form,
       ['typeDeRechercheSimple', 'champDeRechercheSimple'],
       !this.rechercheAvancee
-    );
-
-    // Recherche avancee
-    const formGroupRecherche = this.form.get('valeursRecherchees');
-    this.enableControl(
-      formGroupRecherche,
-      [
-        'producerMarketParticipantName',
-        'siteName',
-        'substationName',
-        'substationMrid',
-        'producerMarketParticipantMrid',
-      ],
-      this.rechercheAvancee
     );
   }
 

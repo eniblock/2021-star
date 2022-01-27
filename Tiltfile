@@ -87,7 +87,7 @@ load('ext://helm_remote', 'helm_remote')
 namespace_create('orderer')
 namespace_create('enedis')
 namespace_create('rte')
-namespace_create('producteurs')
+namespace_create('producer')
 
 kc_secret = 'kubectl create secret --dry-run=client -o yaml '
 
@@ -129,7 +129,7 @@ for orderer in ['orderer1', 'orderer2', 'orderer3']:
 
 #### peers ####
 
-for org in ['enedis', 'rte', 'producteurs']:
+for org in ['enedis', 'rte', 'producer']:
     k8s_yaml(local(kc_secret + '-n ' + org + ' generic starchannel --from-file=./hlf/generated/star.tx', quiet=True))
     k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt', quiet=True))
     for peer in ['peer1']:

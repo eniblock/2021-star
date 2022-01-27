@@ -86,15 +86,15 @@ Organizations:
             - Host: peer1.enedis.localhost
               Port: 443
 
-    - &producteurs
+    - &producer
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: producteurs
+        Name: producer
 
         # ID to load the MSP definition as
-        ID: producteurs
+        ID: producer
 
-        MSPDir: ./generated/crypto-config//peerOrganizations/producteurs/msp
+        MSPDir: ./generated/crypto-config//peerOrganizations/producer/msp
 
         # Policies defines the set of policies at this level of the config tree
         # For organization policies, their canonical path is usually
@@ -102,24 +102,24 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('producteurs.admin', 'producteurs.peer', 'producteurs.client')"
+                Rule: "OR('producer.admin', 'producer.peer', 'producer.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('producteurs.admin', 'producteurs.client')"
+                Rule: "OR('producer.admin', 'producer.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('producteurs.admin')"
+                Rule: "OR('producer.admin')"
             Endorsement:
                 Type: Signature
-                Rule: "OR('producteurs.peer')"
+                Rule: "OR('producer.peer')"
 
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
-            # - Host: peer1.producteurs
+            # - Host: peer1.producer
             #   Port: 7051
-            - Host: peer1.producteurs.localhost
+            - Host: peer1.producer.localhost
               Port: 443
 
     - &rte
@@ -243,10 +243,10 @@ Application: &ApplicationDefaults
             Rule: "MAJORITY Admins"
         LifecycleEndorsement:
                 Type: Signature
-                Rule: "OR('enedis.peer','rte.peer','producteurs.peer')"
+                Rule: "OR('enedis.peer','rte.peer','producer.peer')"
         Endorsement:
                 Type: Signature
-                Rule: "OR('enedis.peer','rte.peer','producteurs.peer')"
+                Rule: "OR('enedis.peer','rte.peer','producer.peer')"
 
     Capabilities:
         <<: *ApplicationCapabilities
@@ -408,7 +408,7 @@ Profiles:
                 Organizations:
                     - *enedis
                     - *rte
-                    - *producteurs
+                    - *producer
     TwoOrgsChannel:
         Consortium: SampleConsortium
         <<: *ChannelDefaults
@@ -417,7 +417,7 @@ Profiles:
             Organizations:
                 - *enedis
                 - *rte
-                - *producteurs
+                - *producer
             Capabilities:
                 <<: *ApplicationCapabilities
     enedisChannel:
@@ -438,12 +438,12 @@ Profiles:
                 - *rte
             Capabilities:
                 <<: *ApplicationCapabilities
-    producteursChannel:
+    producerChannel:
         Consortium: SampleConsortium
         <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *producteurs
+                - *producer
             Capabilities:
                 <<: *ApplicationCapabilities

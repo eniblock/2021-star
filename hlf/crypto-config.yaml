@@ -66,19 +66,19 @@ PeerOrgs:
     Users:
       Count: 1
 
-  - Name: producteurs
-    Domain: producteurs
+  - Name: producer
+    Domain: producer
     EnableNodeOUs: true
     Specs:
       - Hostname: peer1
         SANS:
           - 0.0.0.0
-          - peer1.producteurs.localhost
-          - peer1-hlf-peer.producteurs
+          - peer1.producer.localhost
+          - peer1-hlf-peer.producer
       # - Hostname: peer2
       #   SANS:
       #     - 0.0.0.0
-      #     - peer2.producteurs.localhost
-      #     - peer2-hlf-peer.producteurs
+      #     - peer2.producer.localhost
+      #     - peer2-hlf-peer.producer
     Users:
       Count: 1

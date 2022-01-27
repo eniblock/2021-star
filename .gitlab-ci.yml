@@ -90,24 +90,24 @@ helm:
     - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
     - helm repo update
     # peers
-    - helm helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       peer1 hlf-k8s/hlf-peer
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1.yaml
-    - helm helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       peer2 hlf-k8s/hlf-peer
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
     # chaincode
-    - helm helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       peer1-chaincode hlf-k8s/hlf-chaincode
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/hlf-chaincode/values-${CI_ENVIRONMENT_NAME}.yaml
       --set image.tag=$CI_COMMIT_REF_SLUG
-    - helm helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       peer2-chaincode hlf-k8s/hlf-chaincode
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
@@ -132,17 +132,17 @@ helm:
     - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
     - helm repo update
     # peers
-    - helm helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       orderer1 hlf-k8s/hlf-ord
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/hlf-ord/values-${CI_ENVIRONMENT_NAME}-orderer1.yaml
-    - helm helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       orderer2 hlf-k8s/hlf-ord
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/hlf-ord/values-${CI_ENVIRONMENT_NAME}-orderer2.yaml
-    - helm helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       orderer3 hlf-k8s/hlf-ord
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp

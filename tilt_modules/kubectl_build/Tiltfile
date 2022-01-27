@@ -12,9 +12,29 @@ def kubectl_build(ref, context, build_args={}, dockerfile=None,
     # network
     if not kubectl_build_enable():
         # just run the standard docker_build
-        docker_build(ref=ref, context=context, build_args=build_args, dockerfile=dockerfile, live_update=live_update,
-                  match_in_env_vars=match_in_env_vars, ignore=ignore, entrypoint=entrypoint, target=target, ssh=ssh,
-                  secret=secret, extra_tag=extra_tag, cache_from=cache_from, pull=pull)
+        extra_args = {}
+        if dockerfile != None:
+            extra_args['dockerfile'] = dockerfile
+        if dockerfile_contents != None:
+            extra_args['dockerfile_contents'] = dockerfile_contents
+        if extra_tag != '':
+            extra_args['extra_tag'] = extra_tag
+        if secret != '':
+            extra_args['secret'] = secret
+        docker_build(
+            ref=ref,
+            context=context,
+            build_args=build_args,
+            live_update=live_update,
+            match_in_env_vars=match_in_env_vars,
+            ignore=ignore,
+            entrypoint=entrypoint,
+            target=target,
+            ssh=ssh,
+            cache_from=cache_from,
+            pull=pull,
+            **extra_args
+        )
         return
     pre_command = ""
 

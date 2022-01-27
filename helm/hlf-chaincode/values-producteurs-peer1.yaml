@@ -1,0 +1,9 @@
+mspid: producteurs
+name: star
+command:
+  - sh
+  - -c
+  - '/app/node_modules/.bin/fabric-chaincode-node server --chaincode-address $CHAINCODE_ADDRESS --chaincode-id $CHAINCODE_ID'
+image:
+  repository: registry.gitlab.com/xdev-tech/star/chaincode
+label: star

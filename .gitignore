@@ -6,6 +6,7 @@
 *~
 *.orig
 *.bak
+.helm
 
 HELP.md
 target/

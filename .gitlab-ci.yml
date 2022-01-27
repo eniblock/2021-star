@@ -2,10 +2,13 @@ stages:
   - test
   - docker
   - helm
+  - deploy
 
 variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  HLF_K8S_VERSION: 0.1.0-develop.20
+
 sonarcloud-check:
   stage: test
   image: maven:3.6.3-jdk-11
@@ -78,3 +81,104 @@ helm:
     - helm dependency update ./helm/star
     #  .keycloak.image.tag
     - build $CI_REGISTRY_IMAGE/helm/star ./helm/star
+
+.deploy_star:
+  stage: deploy
+  image: registry.gitlab.com/xdev-tech/build/deploy:2.0
+  variables:
+  script:
+    - star_version=`yq eval .version helm/star/Chart.yaml`
+    - if [ -z "$CI_COMMIT_TAG" ]; then star_version=$star_version-$CI_COMMIT_REF_SLUG; fi
+    - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
+    - helm repo update
+    # peers
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      peer1 hlf-k8s/hlf-peer
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1.yaml
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      peer2 hlf-k8s/hlf-peer
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
+    # chaincode
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      peer1-chaincode hlf-k8s/hlf-chaincode
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-chaincode/values-${CI_ENVIRONMENT_NAME}.yaml
+      --set image.tag=$star_version
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      peer2-chaincode hlf-k8s/hlf-chaincode
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-chaincode/values-${CI_ENVIRONMENT_NAME}.yaml
+      --set image.tag=$star_version
+    # star
+    - helm dependency update ./helm/star
+    - helm upgrade --install --wait --timeout 8m
+      star ./helm/star
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/star/values-${CI_ENVIRONMENT_NAME}.yaml
+      --set image.tag=$star_version
+      --set keycloak.image.tag=$star_version
+      # --set mail.username=$SMTP_USER
+      # --set mail.password=$SMTP_PASSWORD
+
+.deploy_orderer:
+  stage: deploy
+  image: registry.gitlab.com/xdev-tech/build/deploy:2.0
+  variables:
+  script:
+    - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
+    - helm repo update
+    # peers
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      orderer1 hlf-k8s/hlf-ord
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-ord/values-${CI_ENVIRONMENT_NAME}-orderer1.yaml
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      orderer2 hlf-k8s/hlf-ord
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-ord/values-${CI_ENVIRONMENT_NAME}-orderer2.yaml
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      orderer3 hlf-k8s/hlf-ord
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-ord/values-${CI_ENVIRONMENT_NAME}-orderer3.yaml
+
+deploy-enedis-testing:
+  extends: .deploy_star
+  environment:
+    name: enedis-testing
+  only:
+    - develop
+    - GLE-STAR-182-testing-env
+
+deploy-rte-testing:
+  extends: .deploy_star
+  environment:
+    name: rte-testing
+  only:
+    - develop
+    - GLE-STAR-182-testing-env
+
+deploy-producer-testing:
+  extends: .deploy_star
+  environment:
+    name: producer-testing
+  only:
+    - develop
+    - GLE-STAR-182-testing-env
+
+deploy-orderer-testing:
+  extends: .deploy_orderer
+  environment:
+    name: orderer-testing
+  only:
+    - develop
+    - GLE-STAR-182-testing-env

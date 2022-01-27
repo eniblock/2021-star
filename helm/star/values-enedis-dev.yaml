@@ -1,0 +1,9 @@
+global:
+  dev: true
+
+ingress:
+  enabled: true
+  host: "enedis.localhost"
+
+mail:
+  dev: true

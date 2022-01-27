@@ -1,0 +1,18 @@
+ingress:
+  enabled: true
+  host: orderer2.orderer.testing.star.eniblock.fr
+  secretName: hlf--orderer2-tls
+
+secrets:
+  ord:
+    cert: hlf--orderer2-idcert
+    key: hlf--orderer2-idkey
+    caCert: hlf--orderer2-cacert
+
+    tls: hlf--orderer2-tls
+    tlsRootCert: hlf--orderer2-tlsrootcert
+
+podLabels:
+  orderer1-hlf-ord-client: "true"
+  orderer2-hlf-ord-client: "true"
+  orderer3-hlf-ord-client: "true"

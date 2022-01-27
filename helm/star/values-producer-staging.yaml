@@ -1,0 +1,3 @@
+ingress:
+  enabled: true
+  host: "producer.staging.star.eniblock.fr"

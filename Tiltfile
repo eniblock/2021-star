@@ -179,7 +179,7 @@ for org in ['enedis', 'rte', 'producer']:
             version="0.1.0-develop.20",
             namespace=org,
             release_name=peer + '-chaincode',
-            values=['helm/hlf-chaincode/values-' + org + '-' + env + '-' + peer + '.yaml'],
+            values=['helm/hlf-chaincode/values-' + org + '-' + env + '.yaml'],
         )
         k8s_resource(peer + '-hlf-peer-couchdb:statefulset:' + org, labels=[org])
         k8s_resource(peer + '-chaincode-hlf-chaincode:deployment:' + org, labels=[org])

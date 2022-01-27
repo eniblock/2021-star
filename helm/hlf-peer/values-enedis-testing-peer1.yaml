@@ -12,7 +12,7 @@ peer:
       enabled: true
   mspID: enedis
   gossip:
-    # bootstrap: peer2-hlf-peer.enedis-testing:7051
+    bootstrap: peer2-hlf-peer.enedis-testing:7051
     endpoint: peer1-hlf-peer.enedis-testing:7051
   chaincodes:
     - name: star

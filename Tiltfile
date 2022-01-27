@@ -88,7 +88,7 @@ for org in orgs:
 local_resource('helm lint',
             'docker run --rm -t -v $PWD:/app registry.gitlab.com/xdev-tech/build/helm:2.0' +
             ' lint helm/star --values helm/star/values-' + env + '-rte.yaml',
-            'helm/star/', allow_parallel=True, labels=[org])
+            'helm/star/', allow_parallel=True)
 
 
 ############################# hlf #############################

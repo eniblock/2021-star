@@ -163,6 +163,7 @@ for org in ['enedis', 'rte', 'producer']:
             release_name=peer + '-chaincode',
             values=['helm/hlf-chaincode/values-' + org + '-' + peer + '.yaml'],
         )
+        k8s_resource(peer + '-hlf-peer-couchdb:statefulset:' + org, labels=[org])
         k8s_resource(peer + '-chaincode-hlf-chaincode:deployment:' + org, labels=[org])
         k8s_resource(peer + '-hlf-peer-jc-star:job:' + org, labels=[org])
         k8s_resource(peer + '-hlf-peer-rc-star:job:' + org, labels=[org])

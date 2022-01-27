@@ -88,6 +88,7 @@ helm:
   variables:
   script:
     - chmod 600 $KUBECONFIG
+    - dockerhublogin
     - star_version=`yq eval .version helm/star/Chart.yaml`
     - if [ -z "$CI_COMMIT_TAG" ]; then star_version=$star_version-$CI_COMMIT_REF_SLUG; fi
     - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
@@ -134,6 +135,7 @@ helm:
   variables:
   script:
     - chmod 600 $KUBECONFIG
+    - dockerhublogin
     - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
     - helm repo update
     # peers

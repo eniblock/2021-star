@@ -61,7 +61,7 @@ for org in orgs:
     k8s_yaml(
         helm(
             'helm/star',
-            values=['./helm/star/values-' + env + '-' + org + '.yaml'],
+            values=['./helm/star/values-' + org + '-' + env + '.yaml'],
             name='star',
             namespace=org
         )
@@ -135,7 +135,7 @@ for orderer in ['orderer1', 'orderer2', 'orderer3']:
         version="0.1.0-develop.20",
         namespace='orderer',
         release_name=orderer,
-        values=['helm/hlf-ord/' + env + '/values-' + orderer + '.yaml'],
+        values=['helm/hlf-ord/values-orderer-' + env + '-' + orderer + '.yaml'],
     )
 
     k8s_resource(orderer + '-hlf-ord', labels=['orderer'])
@@ -169,7 +169,7 @@ for org in ['enedis', 'rte', 'producer']:
             version="0.1.0-develop.20",
             namespace=org,
             release_name=peer,
-            values=['helm/hlf-peer/' + env + '/values-' + org + '-' + peer + '.yaml'],
+            values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],
         )
 
         k8s_resource(peer + '-hlf-peer:deployment:' + org, labels=[org])
@@ -179,7 +179,7 @@ for org in ['enedis', 'rte', 'producer']:
             version="0.1.0-develop.20",
             namespace=org,
             release_name=peer + '-chaincode',
-            values=['helm/hlf-chaincode/' + env + '/values-' + org + '-' + peer + '.yaml'],
+            values=['helm/hlf-chaincode/values-' + org + '-' + env + '-' + peer + '.yaml'],
         )
         k8s_resource(peer + '-hlf-peer-couchdb:statefulset:' + org, labels=[org])
         k8s_resource(peer + '-chaincode-hlf-chaincode:deployment:' + org, labels=[org])

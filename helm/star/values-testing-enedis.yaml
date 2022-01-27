@@ -1,0 +1,3 @@
+ingress:
+  enabled: true
+  host: "enedis.testing.star.eniblock.fr"

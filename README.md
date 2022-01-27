@@ -17,9 +17,9 @@
 tilt up
 ```
 
-The application is available at https://star.localhost
+The application is available at https://rte.localhost
 
-Keycloak is available at https://star.localhost/auth . The keycloak admin is `kcadmin` and the passwor is `99f194b95dbc433d2db8` in the dev environment.
+Keycloak is available at https://rte.localhost/auth . The keycloak admin is `kcadmin` and the password is `99f194b95dbc433d2db8` in the dev environment.
 
 ```bash
 tilt down

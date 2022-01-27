@@ -1,0 +1,84 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# ---------------------------------------------------------------------------
+# "OrdererOrgs" - Definition of organizations managing orderer nodes
+# ---------------------------------------------------------------------------
+OrdererOrgs:
+  - Name: Orderer
+    Domain: orderer
+    EnableNodeOUs: true
+
+    Specs:
+      - Hostname: orderer1
+        SANS:
+          - 0.0.0.0
+          - orderer1.orderer.staging.star.eniblock.fr
+          - orderer1-hlf-ord.orderer-staging
+      - Hostname: orderer2
+        SANS:
+          - 0.0.0.0
+          - orderer2.orderer.staging.star.eniblock.fr
+          - orderer2-hlf-ord.orderer-staging
+      - Hostname: orderer3
+        SANS:
+          - 0.0.0.0
+          - orderer3.orderer.staging.star.eniblock.fr
+          - orderer3-hlf-ord.orderer-staging
+
+# ---------------------------------------------------------------------------
+# "PeerOrgs" - Definition of organizations managing peer nodes
+# ---------------------------------------------------------------------------
+PeerOrgs:
+  - Name: enedis
+    Domain: enedis
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer1
+        SANS:
+          - 0.0.0.0
+          - peer1.enedis.staging.star.eniblock.fr
+          - peer1-hlf-peer.enedis-staging
+      - Hostname: peer2
+        SANS:
+          - 0.0.0.0
+          - peer2.enedis.staging.star.eniblock.fr
+          - peer2-hlf-peer.enedis-staging
+    Users:
+      Count: 1
+
+  - Name: rte
+    Domain: rte
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer1
+        SANS:
+          - 0.0.0.0
+          - peer1.rte.staging.star.eniblock.fr
+          - peer1-hlf-peer.rte-staging
+      - Hostname: peer2
+        SANS:
+          - 0.0.0.0
+          - peer2.rte.staging.star.eniblock.fr
+          - peer2-hlf-peer.rte-staging
+    Users:
+      Count: 1
+
+  - Name: producer
+    Domain: producer
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer1
+        SANS:
+          - 0.0.0.0
+          - peer1.producer.staging.star.eniblock.fr
+          - peer1-hlf-peer.producer-staging
+      - Hostname: peer2
+        SANS:
+          - 0.0.0.0
+          - peer2.producer.staging.star.eniblock.fr
+          - peer2-hlf-peer.producer-staging
+    Users:
+      Count: 1

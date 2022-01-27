@@ -151,6 +151,8 @@ helm:
       --post-renderer kbldpp
       --values helm/hlf-ord/values-${CI_ENVIRONMENT_NAME}-orderer3.yaml
 
+# testing
+
 deploy-enedis-testing:
   extends: .deploy_star
   environment:
@@ -182,3 +184,37 @@ deploy-orderer-testing:
   only:
     - develop
     - GLE-STAR-182-testing-env
+
+# staging
+
+deploy-enedis-staging:
+  extends: .deploy_star
+  environment:
+    name: enedis-staging
+  only:
+    - staging
+    - GLE-STAR-183-staging-env
+
+deploy-rte-staging:
+  extends: .deploy_star
+  environment:
+    name: rte-staging
+  only:
+    - staging
+    - GLE-STAR-183-staging-env
+
+deploy-producer-staging:
+  extends: .deploy_star
+  environment:
+    name: producer-staging
+  only:
+    - staging
+    - GLE-STAR-183-staging-env
+
+deploy-orderer-staging:
+  extends: .deploy_orderer
+  environment:
+    name: orderer-staging
+  only:
+    - staging
+    - GLE-STAR-183-staging-env

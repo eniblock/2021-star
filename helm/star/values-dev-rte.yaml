@@ -3,7 +3,7 @@ global:
 
 ingress:
   enabled: true
-  host: "star.localhost"
+  host: "rte.localhost"
 
 mail:
   dev: true

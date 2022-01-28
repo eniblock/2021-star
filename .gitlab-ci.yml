@@ -87,21 +87,12 @@ helm:
   image: registry.gitlab.com/xdev-tech/build/deploy:2.0
   variables:
   script:
+    - chmod 600 $KUBECONFIG
+    - dockerhublogin
     - star_version=`yq eval .version helm/star/Chart.yaml`
     - if [ -z "$CI_COMMIT_TAG" ]; then star_version=$star_version-$CI_COMMIT_REF_SLUG; fi
     - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
     - helm repo update
-    # peers
-    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
-      peer1 hlf-k8s/hlf-peer
-      -n ${CI_ENVIRONMENT_NAME}
-      --post-renderer kbldpp
-      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1.yaml
-    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
-      peer2 hlf-k8s/hlf-peer
-      -n ${CI_ENVIRONMENT_NAME}
-      --post-renderer kbldpp
-      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
     # chaincode
     - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       peer1-chaincode hlf-k8s/hlf-chaincode
@@ -115,6 +106,17 @@ helm:
       --post-renderer kbldpp
       --values helm/hlf-chaincode/values-${CI_ENVIRONMENT_NAME}.yaml
       --set image.tag=$star_version
+    # peers
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      peer1 hlf-k8s/hlf-peer
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1.yaml
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      peer2 hlf-k8s/hlf-peer
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
     # star
     - helm dependency update ./helm/star
     - helm upgrade --install --wait --timeout 8m
@@ -132,6 +134,8 @@ helm:
   image: registry.gitlab.com/xdev-tech/build/deploy:2.0
   variables:
   script:
+    - chmod 600 $KUBECONFIG
+    - dockerhublogin
     - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
     - helm repo update
     # peers
@@ -150,6 +154,8 @@ helm:
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/hlf-ord/values-${CI_ENVIRONMENT_NAME}-orderer3.yaml
+
+# testing
 
 deploy-enedis-testing:
   extends: .deploy_star
@@ -182,3 +188,37 @@ deploy-orderer-testing:
   only:
     - develop
     - GLE-STAR-182-testing-env
+
+# staging
+
+deploy-enedis-staging:
+  extends: .deploy_star
+  environment:
+    name: enedis-staging
+  only:
+    - staging
+    - GLE-STAR-183-staging-env
+
+deploy-rte-staging:
+  extends: .deploy_star
+  environment:
+    name: rte-staging
+  only:
+    - staging
+    - GLE-STAR-183-staging-env
+
+deploy-producer-staging:
+  extends: .deploy_star
+  environment:
+    name: producer-staging
+  only:
+    - staging
+    - GLE-STAR-183-staging-env
+
+deploy-orderer-staging:
+  extends: .deploy_orderer
+  environment:
+    name: orderer-staging
+  only:
+    - staging
+    - GLE-STAR-183-staging-env

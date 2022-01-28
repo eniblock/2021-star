@@ -9,7 +9,6 @@ import { Context } from 'fabric-contract-api'
 import { ChaincodeStub } from 'fabric-shim'
 
 import { Star } from '../src/star'
-import { Site } from '../src/model/site';
 import { EnergyAmount } from '../src/model/energyAmount';
 import { ActivationDocument } from '../src/model/activationDocument';
 
@@ -668,7 +667,7 @@ describe('Star Tests EnergyAmount', () => {
             }
         });
 
-        it('should return ERROR CreateDSOEnergyAmount error date ENI / ActivationDocument.', async () => {
+        it('should return ERROR CreateDSOEnergyAmount error date ENI / timeinterval.', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'ENEDISMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');

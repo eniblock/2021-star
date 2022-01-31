@@ -1,0 +1,57 @@
+---
+name: enedis
+version: 1.0.0
+client:
+  organization: enedis
+  connection:
+    timeout:
+      peer:
+        endorser: '300'
+organizations:
+  enedis:
+    mspid: enedis
+    peers:
+      - peer1.enedis
+    certificateAuthorities:
+      - ca.enedis
+peers:
+  peer1.enedis:
+    url: grpcs://peer1-hlf-peer:7051
+    tlsCACerts:
+      pem: |
+          -----BEGIN CERTIFICATE-----
+          MIICLzCCAdagAwIBAgIRANAELYEx1n+2/TksIXzwmjAwCgYIKoZIzj0EAwIwYjEL
+          MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG
+          cmFuY2lzY28xDzANBgNVBAoTBmVuZWRpczEVMBMGA1UEAxMMdGxzY2EuZW5lZGlz
+          MB4XDTIyMDEyNzEwMjAwMFoXDTMyMDEyNTEwMjAwMFowYjELMAkGA1UEBhMCVVMx
+          EzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGcmFuY2lzY28xDzAN
+          BgNVBAoTBmVuZWRpczEVMBMGA1UEAxMMdGxzY2EuZW5lZGlzMFkwEwYHKoZIzj0C
+          AQYIKoZIzj0DAQcDQgAE0FqBuVkJgLU1gP2bRmXUnEH+dQNUUsuRzCGpZcdVMrLJ
+          16ze7Ox/Na2jY9lH4Kcf6f6vM7Fnb3KWkitn16D7h6NtMGswDgYDVR0PAQH/BAQD
+          AgGmMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTAD
+          AQH/MCkGA1UdDgQiBCAKwgmG2FsJWSKiVf+Wh/k5/0cXeZ4BbGeNsOuhQ2ST0DAK
+          BggqhkjOPQQDAgNHADBEAiAwie8i79fVEPlRol/uFqA8GcCk+8UkQ0+Nt1Q05dqO
+          YwIgTNiSY1CVtGl+zDDLtyD8/z4w42C72MvQFgT3Y5mLUNA=
+          -----END CERTIFICATE-----
+          
+certificateAuthorities:
+  ca.org:
+    caName: ca.enedis
+    tlsCACerts:
+      pem:
+        - |
+          -----BEGIN CERTIFICATE-----
+          MIICKTCCAc+gAwIBAgIQZtggjSbADDYrukHQYoCRGjAKBggqhkjOPQQDAjBfMQsw
+          CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy
+          YW5jaXNjbzEPMA0GA1UEChMGZW5lZGlzMRIwEAYDVQQDEwljYS5lbmVkaXMwHhcN
+          MjIwMTI3MTAyMDAwWhcNMzIwMTI1MTAyMDAwWjBfMQswCQYDVQQGEwJVUzETMBEG
+          A1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZyYW5jaXNjbzEPMA0GA1UE
+          ChMGZW5lZGlzMRIwEAYDVQQDEwljYS5lbmVkaXMwWTATBgcqhkjOPQIBBggqhkjO
+          PQMBBwNCAATrFs3RHKXOzlF5qDzNF2LFQdYZJhQCfqW67KW9b55lPpQh4j4YTbuK
+          o9jzTnogTJ3s/dTresBSWMTbXP8VVn9qo20wazAOBgNVHQ8BAf8EBAMCAaYwHQYD
+          VR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMA8GA1UdEwEB/wQFMAMBAf8wKQYD
+          VR0OBCIEIKFxKCFb1RFtURtznNwh0gg+4lzLqdab7Or+PDQxzSnKMAoGCCqGSM49
+          BAMCA0gAMEUCIQDoTi3tewvq8msgPQgizK2jOHmrkf1oFjDYTl7Mo966cQIgd//z
+          vz3F4nhe6hn+KJO6NTbvP+m5GV6VFfVvThhNHtI=
+          -----END CERTIFICATE-----
+          

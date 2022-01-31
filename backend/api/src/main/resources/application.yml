@@ -55,4 +55,3 @@ hyperledger-fabric:
     walletPath: wallets
     identityId: admin
     password: adminpw
-

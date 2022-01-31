@@ -1,3 +1,5 @@
 ingress:
   enabled: true
   host: "enedis.testing.star.eniblock.fr"
+backend:
+  peerConnectionUser: User1

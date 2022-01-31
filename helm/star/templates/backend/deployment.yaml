@@ -43,6 +43,13 @@ spec:
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           env:
+            - name: HYPERLEDGER_FABRIC_GATEWAY_NETWORKCONFIG
+              value: /var/hyperledger/peer/connection.yaml
+            - name: HYPERLEDGER_FABRIC_GATEWAY_WALLET
+              value: /var/hyperledger/wallet
+            - name: HYPERLEDGER_FABRIC_GATEWAY_IDENTITYID
+              value: {{ .Values.backend.peerConnectionUser }}@{{ .Values.backend.peerConnectionOrganization }}
+
             # mail config
             - name: spring.mail.host
               valueFrom:
@@ -130,6 +137,18 @@ spec:
             failureThreshold: 12
           resources:
           {{- toYaml .Values.backend.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /var/hyperledger/peer
+              name: peer-connection
+            - mountPath: /var/hyperledger/wallet
+              name: peer-user-id
+      volumes:
+        - name: peer-connection
+          secret:
+            secretName: {{ .Values.backend.peerConnectionSecret }}
+        - name: peer-user-id
+          secret:
+            secretName: {{ .Values.backend.peerUserIdSecret }}
       {{- with .Values.backend.nodeSelector }}
       nodeSelector:
       {{- toYaml . | nindent 8 }}

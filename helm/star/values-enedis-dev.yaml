@@ -5,5 +5,8 @@ ingress:
   enabled: true
   host: "enedis.localhost"
 
+backend:
+  peerConnectionUser: User1
+
 mail:
   dev: true

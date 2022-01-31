@@ -6,7 +6,7 @@ ingress:
   host: "enedis.localhost"
 
 backend:
-  peerConnectionUser: User1
+  peerConnectionOrganization: enedis
 
 mail:
   dev: true

@@ -6,7 +6,7 @@ ingress:
   host: "producer.localhost"
 
 backend:
-  peerConnectionUser: User1
+  peerConnectionOrganization: producer
 
 mail:
   dev: true

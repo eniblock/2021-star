@@ -6,7 +6,7 @@ ingress:
   host: "rte.localhost"
 
 backend:
-  peerConnectionUser: User1
+  peerConnectionOrganization: rte
 
 mail:
   dev: true

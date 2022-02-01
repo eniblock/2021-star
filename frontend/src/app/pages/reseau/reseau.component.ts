@@ -70,7 +70,7 @@ export class ReseauComponent implements OnInit {
       this.reseauService
         .rechercher(this.formRecherche, paginationAvecBookmark)
         .subscribe((resultat) => {
-          this.lastBookmark = resultat.bookmark;
+          this.lastBookmark = resultat.bookmark ? resultat.bookmark : null;
           this.totalElements = resultat.totalElements;
           this.resultatsRecherche = this.resultatsRecherche.concat(
             resultat.content

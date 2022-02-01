@@ -7,6 +7,6 @@ export interface FormulairePagination<E> {
 
 export interface PaginationReponse<E> {
   totalElements: number; // Le nombre total d'éléments
-  bookmark: string; // Bookmark de la requète envoyée à la blockchain (utile pour la pagination)
+  bookmark?: string; // Bookmark de la requète envoyée à la blockchain (utile pour la pagination)
   content: E[]; // Les resultats
 }

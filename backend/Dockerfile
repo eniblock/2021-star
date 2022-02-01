@@ -1,4 +1,3 @@
-#FROM eclipse-temurin:11-alpine as build
 FROM openjdk:11 as build
 WORKDIR /workspace/app
 
@@ -16,7 +15,6 @@ COPY api/src api/src/
 COPY service/src service/src/
 
 RUN ./mvnw  package -DskipTests -B
-#FROM eclipse-temurin:11-jre-alpine as dev
 FROM openjdk:11 as dev
 VOLUME /tmp
 

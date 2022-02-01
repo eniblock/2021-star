@@ -41,7 +41,7 @@ instance: dso
 
 blockchain:
   api:
-    networkName: mychannel
+    networkName: star
     contractdso: marketparticipantdso
     contracttso: marketparticipanttso
 hyperledger-fabric:

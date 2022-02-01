@@ -70,7 +70,7 @@ for org in orgs:
 
     #
     if len(orgs) == 1:
-        k8s_resource('star-backend', labels=[org], port_forwards="5000:5000")
+        k8s_resource('star-backend', labels=[org], port_forwards="5005:5005")
         k8s_resource('star-frontend', labels=[org])
         k8s_resource('star-keycloak', labels=[org])
         k8s_resource('star-keycloak-db', labels=[org])

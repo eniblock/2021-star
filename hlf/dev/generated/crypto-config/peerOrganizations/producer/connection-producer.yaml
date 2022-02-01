@@ -35,7 +35,7 @@ peers:
           -----END CERTIFICATE-----
           
 certificateAuthorities:
-  ca.org:
+  ca.producer:
     caName: ca.producer
     tlsCACerts:
       pem:

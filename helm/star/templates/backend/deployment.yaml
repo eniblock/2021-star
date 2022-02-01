@@ -48,7 +48,7 @@ spec:
             - name: HYPERLEDGER_FABRIC_GATEWAY_WALLET
               value: /var/hyperledger/wallet
             - name: HYPERLEDGER_FABRIC_GATEWAY_IDENTITYID
-              value: {{ .Values.backend.peerConnectionUser }}@{{ .Values.backend.peerConnectionOrganization }}
+              value: {{ .Values.backend.peerConnectionUser }}
 
             # mail config
             - name: spring.mail.host

@@ -21,7 +21,7 @@ peers:
       pem: |
           ${PEERPEM}
 certificateAuthorities:
-  ca.org:
+  ca.${ORG}:
     caName: ca.${ORG}
     tlsCACerts:
       pem:

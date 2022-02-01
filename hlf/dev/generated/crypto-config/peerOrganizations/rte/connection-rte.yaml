@@ -35,7 +35,7 @@ peers:
           -----END CERTIFICATE-----
           
 certificateAuthorities:
-  ca.org:
+  ca.rte:
     caName: ca.rte
     tlsCACerts:
       pem:

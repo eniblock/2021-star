@@ -26,19 +26,19 @@ export class SystemOperatorController {
             {strict: true, abortEarly: false},
         );
 
-        if (!identity.toLowerCase().includes(systemOperatorInput.marketParticipantName.toLowerCase())) {
-            throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.marketParticipantName}`);
+        if (!identity.toLowerCase().includes(systemOperatorInput.systemOperatorMarketParticipantName.toLowerCase())) {
+            throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
         systemOperatorObj.docType = 'systemOperator';
 
         await ctx.stub.putState(
-            systemOperatorObj.systemOperatorMarketParticipantMrId,
+            systemOperatorObj.systemOperatorMarketParticipantMrid,
             Buffer.from(JSON.stringify(systemOperatorObj)),
         );
         console.info(
             '============= END   : Create %s System Operator Market Participant ===========',
-            systemOperatorObj.systemOperatorMarketParticipantMrId,
+            systemOperatorObj.systemOperatorMarketParticipantMrid,
         );
     }
 
@@ -77,23 +77,23 @@ export class SystemOperatorController {
             {strict: true, abortEarly: false},
         );
 
-        if (!identity.includes(systemOperatorInput.marketParticipantName)) {
-            throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorInput.marketParticipantName}`);
+        if (!identity.includes(systemOperatorInput.systemOperatorMarketParticipantName)) {
+            throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorInput.systemOperatorMarketParticipantName}`);
         }
 
-        const sompAsBytes = await ctx.stub.getState(systemOperatorInput.systemOperatorMarketParticipantMrId);
+        const sompAsBytes = await ctx.stub.getState(systemOperatorInput.systemOperatorMarketParticipantMrid);
         if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`${systemOperatorInput.systemOperatorMarketParticipantMrId} does not exist`);
+            throw new Error(`${systemOperatorInput.systemOperatorMarketParticipantMrid} does not exist`);
         }
         systemOperatorInput.docType = 'systemOperator';
 
         await ctx.stub.putState(
-            systemOperatorInput.systemOperatorMarketParticipantMrId,
+            systemOperatorInput.systemOperatorMarketParticipantMrid,
             Buffer.from(JSON.stringify(systemOperatorInput)),
         );
         console.info(
             '============= END : Update %s System Operator Market Participant ===========',
-            systemOperatorInput.systemOperatorMarketParticipantMrId,
+            systemOperatorInput.systemOperatorMarketParticipantMrid,
         );
     }
 

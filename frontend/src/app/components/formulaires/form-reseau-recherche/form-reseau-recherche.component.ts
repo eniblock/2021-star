@@ -11,11 +11,11 @@ import { InstanceService } from 'src/app/services/api/instance.service';
 import { ReseauService } from 'src/app/services/api/reseau.service';
 
 @Component({
-  selector: 'app-reseau-recherche',
-  templateUrl: './reseau-recherche.component.html',
-  styleUrls: ['./reseau-recherche.component.css'],
+  selector: 'app-form-reseau-recherche',
+  templateUrl: './form-reseau-recherche.component.html',
+  styleUrls: ['./form-reseau-recherche.component.css'],
 })
-export class ReseauRechercheComponent implements OnInit {
+export class FormReseauRechercheComponent implements OnInit {
   @Output() formSubmit = new EventEmitter<FormulaireRechercheReseau>();
 
   typesDeRechercheSimple: TypeDeRechercheSimple[] = [];

@@ -1,0 +1,20 @@
+<form [formGroup]="form" (submit)="onSubmit()">
+
+  <div class="row">
+
+    <mat-form-field class="col-12" appearance="outline" (click)="fileInputDocument.click()">
+      <mat-label>Fichier</mat-label>
+      <input matInput placeholder="Fichier" type="text" [readonly]="true" formControlName="documentName">
+      <button mat-icon-button matSuffix style="top: -0.5em;" (click)="fileInputDocument.click()">
+         x
+      </button>
+      <input #fileInputDocument type="file" [hidden]="true" (change)="selectFile($event)">
+    </mat-form-field>
+
+    <div class="col-12 text-center mt-3">
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Importer</button>
+    </div>
+    
+  </div>
+
+</form>

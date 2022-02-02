@@ -151,3 +151,13 @@ h3 {
     background-color: white;
   }
 }
+
+// Bouton de navigation
+.boutonNavigationCharger {
+  padding: 10px 40px;
+  border-radius: 35px;
+  background-color: $mat-primary;
+  span {
+    color: white !important;
+  }
+}

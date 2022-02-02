@@ -90,7 +90,7 @@ describe('Star Tests PRODUCERS', () => {
         it('should return ERROR wrong MSPID', async () => {
             let star = new Star();
             try {
-                await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+                await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMspID does not have write access to create a producer');
@@ -112,7 +112,7 @@ describe('Star Tests PRODUCERS', () => {
             let star = new Star();
             const producer: Producer = {
                 docType: 'producer',
-                producerMarketParticipantMrId: 'EolienFRvert28EIC',
+                producerMarketParticipantMrid: 'EolienFRvert28EIC',
                 producerMarketParticipantName: 'EolienFR vert Cie',
                 producerMarketParticipantRoleType: 'A21'
             };
@@ -128,7 +128,7 @@ describe('Star Tests PRODUCERS', () => {
             let star = new Star();
             const producer: Producer = {
                 docType: 'producer',
-                producerMarketParticipantMrId: 'EolienFRvert28EIC',
+                producerMarketParticipantMrid: 'EolienFRvert28EIC',
                 producerMarketParticipantName: 'EolienFR vert Cie',
                 producerMarketParticipantRoleType: 'A21'
             };
@@ -145,7 +145,7 @@ describe('Star Tests PRODUCERS', () => {
         it('should return ERROR on queryProducer', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             try {
                 await star.QueryProducer(transactionContext, 'toto');
             } catch (err) {
@@ -157,10 +157,10 @@ describe('Star Tests PRODUCERS', () => {
         it('should return SUCCESS on queryProducer', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const producer: Producer = {
                 docType: 'producer',
-                producerMarketParticipantMrId: 'EolienFRvert28EIC',
+                producerMarketParticipantMrid: 'EolienFRvert28EIC',
                 producerMarketParticipantName: 'EolienFR vert Cie',
                 producerMarketParticipantRoleType: 'A21'
             };
@@ -176,11 +176,11 @@ describe('Star Tests PRODUCERS', () => {
         it('should return ERROR wrong MSPID', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
                 chaincodeStub.MspiID = 'FakeMSP';
-                await star.UpdateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+                await star.UpdateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access to update a producer');
@@ -201,10 +201,10 @@ describe('Star Tests PRODUCERS', () => {
         it('should return ERROR on updateProducer producer doesn\'t exist', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
-                await star.UpdateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"XXX\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+                await star.UpdateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"XXX\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             } catch (err) {
                 expect(err.message).to.equal('XXX does not exist');
             }
@@ -213,13 +213,13 @@ describe('Star Tests PRODUCERS', () => {
         it('should return SUCCESS on updateProducer', async () => {
             let star = new Star();
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            await star.UpdateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"toto\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.UpdateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"toto\"}');
 
             let ret = JSON.parse(await chaincodeStub.getState('EolienFRvert28EIC'));
             let expected = {
                 docType: 'producer',
-                producerMarketParticipantMrId: 'EolienFRvert28EIC',
+                producerMarketParticipantMrid: 'EolienFRvert28EIC',
                 producerMarketParticipantName: 'EolienFR vert Cie',
                 producerMarketParticipantRoleType: 'toto'
             };
@@ -244,17 +244,17 @@ describe('Star Tests PRODUCERS', () => {
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
             let ret = await star.GetAllProducer(transactionContext);
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
             const expected: Producer[] = [
-                { docType: 'producer', producerMarketParticipantName: 'EolienFR vert Cie', producerMarketParticipantRoleType: 'A21', producerMarketParticipantMrId: 'EolienFRvert28EIC'},
-                { docType: 'producer', producerMarketParticipantName: 'EolienFR vert Cie', producerMarketParticipantRoleType: 'A22', producerMarketParticipantMrId: 'EolienFRvert29EIC'}
+                { docType: 'producer', producerMarketParticipantName: 'EolienFR vert Cie', producerMarketParticipantRoleType: 'A21', producerMarketParticipantMrid: 'EolienFRvert28EIC'},
+                { docType: 'producer', producerMarketParticipantName: 'EolienFR vert Cie', producerMarketParticipantRoleType: 'A22', producerMarketParticipantMrid: 'EolienFRvert29EIC'}
             ];
 
             expect(ret).to.eql(expected);
@@ -268,11 +268,11 @@ describe('Star Tests PRODUCERS', () => {
             });
 
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert22EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert22EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
 
             let ret = await star.GetAllProducer(transactionContext);
             ret = JSON.parse(ret);
@@ -281,8 +281,8 @@ describe('Star Tests PRODUCERS', () => {
 
             const expected = [
                 'non-json-value',
-                { docType: 'producer', producerMarketParticipantName: 'EolienFR vert Cie', producerMarketParticipantRoleType: 'A21', producerMarketParticipantMrId: 'EolienFRvert28EIC'},
-                { docType: 'producer', producerMarketParticipantName: 'EolienFR vert Cie', producerMarketParticipantRoleType: 'A22', producerMarketParticipantMrId: 'EolienFRvert29EIC'}
+                { docType: 'producer', producerMarketParticipantName: 'EolienFR vert Cie', producerMarketParticipantRoleType: 'A21', producerMarketParticipantMrid: 'EolienFRvert28EIC'},
+                { docType: 'producer', producerMarketParticipantName: 'EolienFR vert Cie', producerMarketParticipantRoleType: 'A22', producerMarketParticipantMrid: 'EolienFRvert29EIC'}
             ];
 
             expect(ret).to.eql(expected);

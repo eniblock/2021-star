@@ -7,8 +7,8 @@ export class Producer {
 
     public static readonly schema = Yup.object().shape({
         docType: Yup.string().notRequired(),
-        producerMarketParticipantMrId: Yup.string().required(
-            'producerMarketParticipantMrId is a compulsory string.'),
+        producerMarketParticipantMrid: Yup.string().required(
+            'producerMarketParticipantMrid is a compulsory string.'),
         producerMarketParticipantName: Yup.string().required(
             'producerMarketParticipantName is a compulsory string.'),
         producerMarketParticipantRoleType: Yup.string().required(
@@ -16,7 +16,7 @@ export class Producer {
     });
 
     public docType?: string;
-    public producerMarketParticipantMrId: string;
+    public producerMarketParticipantMrid: string;
     public producerMarketParticipantName: string;
     public producerMarketParticipantRoleType: string;
 }

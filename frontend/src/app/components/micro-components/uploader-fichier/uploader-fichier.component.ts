@@ -21,8 +21,18 @@ export class UploaderFichierComponent implements OnInit {
   ngOnInit() {}
 
   public dropped(nouveauFichiers: NgxFileDropEntry[]) {
+    if (this.fichiers.length > 0 && !this.multiple) {
+      // Pas d'ajout de fichier si on n'est pas en multiple
+      return;
+    }
+
     // On filtre en fonction de l'extension
-    const fichiersFiltres = this.filtrerParExtension(nouveauFichiers);
+    let fichiersFiltres = this.filtrerParExtension(nouveauFichiers);
+
+    // Si on n'est pas en multiple => on ajoute 1 seul fichier (le premier)
+    if (!this.multiple && fichiersFiltres.length > 1) {
+      fichiersFiltres = [fichiersFiltres[0]];
+    }
 
     for (const droppedFile of fichiersFiltres) {
       if (droppedFile.fileEntry.isFile) {
@@ -51,9 +61,8 @@ export class UploaderFichierComponent implements OnInit {
 
   private addFichier(droppedFile: NgxFileDropEntry) {
     this.fichiers.push(droppedFile);
-    this.fichiers.sort((f1, f2) => {
-      console.log(f1.fileEntry.name, f2.fileEntry.name);
-      return f1.fileEntry.name.localeCompare(f2.fileEntry.name);
-    });
+    this.fichiers.sort((f1, f2) =>
+      f1.fileEntry.name.localeCompare(f2.fileEntry.name)
+    );
   }
 }

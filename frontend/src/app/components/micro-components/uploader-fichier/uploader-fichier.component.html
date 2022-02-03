@@ -5,7 +5,8 @@
     [directory]="directory"
     [multiple]="multiple"
     (onFileDrop)="dropped($event)"
-    (click)="ngxFileDrop?.openFileSelector()">
+    (click)="ngxFileDrop?.openFileSelector()"
+    *ngIf="multiple || fichiers.length == 0">
     
       <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
         <div class="d-flex flex-column">

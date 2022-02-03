@@ -9,11 +9,13 @@ import { FormReseauRechercheComponent } from './form-reseau-recherche/form-resea
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { FormOrdreDebutLimitationComponent } from './form-ordre-debut-limitation/form-ordre-debut-limitation.component';
 import { FormOrdreFinLimitationComponent } from './form-ordre-fin-limitation/form-ordre-fin-limitation.component';
+import { MicroComponentsModule } from '../micro-components/micro-components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    MicroComponentsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,

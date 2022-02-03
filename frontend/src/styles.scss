@@ -161,3 +161,15 @@ h3 {
     color: white !important;
   }
 }
+
+// Uploader fichiers
+.uploaderFichier {
+  .ngx-file-drop__content {
+    color: inherit !important;
+  }
+  .ngx-file-drop__drop-zone {
+    border: 2px dotted $mat-primary;
+    border-radius: 30px;
+    background-color: white;
+  }
+}

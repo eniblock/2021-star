@@ -1,0 +1,32 @@
+<div class="row">
+
+  <ngx-file-drop #ngxFileDrop [class]="'col-12 ' + className"
+    [accept]="accept"
+    [directory]="directory"
+    [multiple]="multiple"
+    (onFileDrop)="dropped($event)"
+    (click)="ngxFileDrop?.openFileSelector()">
+    
+      <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+        <i class="fas fa-paperclip me-2"></i>
+        <strong class="me-2">Sélectionner {{ multiple ? 'des fichiers' : 'un fichier' }}</strong> ou glisser {{ multiple ? 'des fichiers' : 'un fichier' }}.
+      </ng-template>
+
+  </ngx-file-drop>
+
+  <div class="upload-table col-12 mt-3">
+      <table class="table">
+          <thead>
+              <tr>
+                  <th>Name</th>
+              </tr>
+          </thead>
+          <tbody class="upload-name-style">
+              <tr *ngFor="let item of files; let i=index">
+                  <td><strong>{{ item.relativePath }}</strong></td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+
+</div>

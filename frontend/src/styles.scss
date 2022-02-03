@@ -168,8 +168,8 @@ h3 {
     color: inherit !important;
   }
   .ngx-file-drop__drop-zone {
-    border: 2px dotted $mat-primary;
-    border-radius: 30px;
-    background-color: white;
+    border: 2px dashed $mat-text !important;
+    border-radius: 30px !important;
+    background-color: white !important;
   }
 }

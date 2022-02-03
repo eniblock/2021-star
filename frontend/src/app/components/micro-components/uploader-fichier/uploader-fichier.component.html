@@ -8,13 +8,18 @@
     (click)="ngxFileDrop?.openFileSelector()">
     
       <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-        <i class="fas fa-paperclip me-2"></i>
-        <strong class="me-2">Sélectionner {{ multiple ? 'des fichiers' : 'un fichier' }}</strong> ou glisser {{ multiple ? 'des fichiers' : 'un fichier' }}.
+        <div class="d-flex flex-column">
+          <div class="text-center">
+            <i class="fas fa-paperclip me-2"></i>
+            <strong class="me-1">Sélectionner {{ multiple ? 'des fichiers' : 'un fichier' }}</strong> ou glisser {{ multiple ? 'des fichiers' : 'un fichier' }}.
+          </div>
+          <div class="text-center" *ngIf="accept != '*'">(Fichiers acceptés : {{ accept }})</div>
+        </div>
       </ng-template>
 
   </ngx-file-drop>
 
-  <div class="upload-table col-12 mt-4 text-center">
+  <div class="upload-table col-12 mt-4 text-center" *ngIf="fichiers.length > 0">
       <table class="table">
           <thead>
               <tr>
@@ -22,7 +27,7 @@
               </tr>
           </thead>
           <tbody class="upload-name-style">
-              <tr *ngFor="let item of files; let i=index">
+              <tr *ngFor="let item of fichiers; let i=index">
                   <td><strong>{{ item.relativePath }}</strong></td>
               </tr>
           </tbody>

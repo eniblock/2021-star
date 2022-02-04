@@ -1,0 +1,85 @@
+<div class="reseau-resultat p-4" *ngIf="!showDetails" (click)="open()">
+    <app-icon-technology-type class="float-end" style="margin-top: -.25em;" [technologyType]="resultat?.technologyType"></app-icon-technology-type>
+    <app-badge class="float-end me-5" [text]="resultat?.producerMarketParticipantName" [color]="'primary'"></app-badge>
+    {{ resultat?.siteName }}
+</div>
+
+<div class="reseau-resultat-detail" *ngIf="showDetails">
+    <div class="row">
+        <div class="header col-12 col-lg-4">
+            <div class="p-4">
+                <app-icon-technology-type class="float-end" style="margin-top: -.25em;" [technologyType]="resultat?.technologyType" [versionBlanc]="true"></app-icon-technology-type>
+                <h3>
+                    {{ resultat?.siteName }}
+                </h3>
+                <div class="text-center mt-4">
+                    <app-badge class="float-none" [text]="resultat?.producerMarketParticipantName" [color]="'blanc'"></app-badge>
+                </div>
+            </div>
+        </div>
+        <div class="body col-12 col-lg-8">
+            <div class="p-4">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <a class="float-end pointer" (click)="close()">
+                            <img src="assets/img/general/close-light-30x30.svg"/>
+                        </a>
+                        <h3>Informations</h3>
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">Nom de producteur</div>
+                    <div class="col-6">{{ resultat?.producerMarketParticipantName }}</div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">Filière du site</div>
+                    <div class="col-6">{{ resultat?.technologyType | TechnologyType }}</div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">Identifiant du site</div>
+                    <div class="col-6">{{ resultat?.meteringPointMrid }}</div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">SIRET/SIREN</div>
+                    <div class="col-6">{{ resultat?.siteAdminMRID }}</div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">Lieu de production</div>
+                    <div class="col-6">{{ resultat?.siteLocation }}</div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">Type de site</div>
+                    <div class="col-6">{{ resultat?.siteType }}</div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">Nom poste source</div>
+                    <div class="col-6">{{ resultat?.substationName }}</div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">Code poste source</div>
+                    <div class="col-6">{{ resultat?.substationMrid }}</div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">Code départ</div>
+                    <div class="col-6">{{ resultat?.systemOperatorEntityFlexibilityDomainMrid }}</div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">Nom départ</div>
+                    <div class="col-6">{{ resultat?.systemOperatorEntityFlexibilityDomainName }}</div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6 label">Entité de gestion</div>
+                    <div class="col-6">{{ resultat?.systemOperatorCustomerServiceName }}</div>
+                </div>
+                <div class="row my-3" *ngIf="resultat?.typeSite == TypeSiteEnum.HTB">
+                    <div class="col-6 label">GRD associé</div>
+                    <div class="col-6">{{ resultat?.systemOperatorMarketParticipantName }}</div>
+                </div>
+                <div class="row my-3" *ngIf="resultat?.typeSite == TypeSiteEnum.HTB">
+                    <div class="col-6 label">Code site / CART</div>
+                    <div class="col-6">{{ resultat?.siteIecCode }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

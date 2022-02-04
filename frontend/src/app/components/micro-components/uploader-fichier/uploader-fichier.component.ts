@@ -1,9 +1,17 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { NgxFileDropComponent, NgxFileDropEntry } from 'ngx-file-drop';
 
 interface Fichier {
   nom: string;
-  taille: string;
+  taille: number;
+  tailleStr: string;
   ngxFileDropEntry: NgxFileDropEntry; // Infos NgxFileDropEntry
   file: File; // Infos system
 }
@@ -21,7 +29,11 @@ export class UploaderFichierComponent implements OnInit {
   @Input() public multiple: boolean = false;
   @Input() public className: string = '';
 
+  @Output() tailleTotal = new EventEmitter<number>(); // Taille total des fichiers (en octets)
+
   public fichiers: Fichier[] = [];
+  public tailleFichiers = 0;
+  public tailleFichiersStr = '0 octets';
 
   constructor() {}
 
@@ -67,33 +79,42 @@ export class UploaderFichierComponent implements OnInit {
   }
 
   private addFichier(droppedFile: NgxFileDropEntry, file: File) {
-    console.log(droppedFile, file);
-    this.fichiers.push({
+    const fichier: Fichier = {
       nom: droppedFile.fileEntry.name,
-      taille: this.tailleFichier(file.size),
+      taille: file.size,
+      tailleStr: this.tailleFichier(file.size),
       ngxFileDropEntry: droppedFile,
       file: file,
-    });
+    };
+    this.fichiers.push(fichier);
     this.fichiers.sort((f1, f2) =>
       f1.ngxFileDropEntry.fileEntry.name.localeCompare(
         f2.ngxFileDropEntry.fileEntry.name
       )
     );
+    this.tailleFichiers += fichier.taille;
+    this.tailleFichiersStr = this.tailleFichier(this.tailleFichiers);
+
+    this.tailleTotal.emit(this.tailleFichiers);
   }
 
   deleteFichier(fichier: Fichier) {
     this.fichiers = this.fichiers.filter((f) => f != fichier);
+    this.tailleFichiers -= fichier.taille;
+    this.tailleFichiersStr = this.tailleFichier(this.tailleFichiers);
+
+    this.tailleTotal.emit(this.tailleFichiers);
   }
 
   private tailleFichier(tailleByte: number): string {
     if (tailleByte < 1000) {
       return tailleByte + ' octets';
     } else if (tailleByte < 1000000) {
-      return Math.floor(tailleByte / 1000) + ' Ko';
+      return Math.round(tailleByte / 100) / 10 + ' Ko';
     } else if (tailleByte < 1000000000) {
-      return Math.floor(tailleByte / 1000000) + ' Mo';
+      return Math.round(tailleByte / 100000) / 10 + ' Mo';
     } else {
-      return Math.floor(tailleByte / 1000000000) + ' Go';
+      return Math.round(tailleByte / 100000000) / 10 + ' Go';
     }
   }
 }

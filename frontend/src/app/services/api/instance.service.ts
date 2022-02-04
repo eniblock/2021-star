@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Instance } from '../../models/enum/instance.enum';
+import { Instance } from '../../models/enum/Instance.enum';
 import { CacheService } from '../common/cache.service';
 
 @Injectable({
@@ -18,11 +17,19 @@ export class InstanceService {
     private cacheService: CacheService
   ) {}
 
-  get(): Observable<Instance> {
-    return this.cacheService.getValueInCacheOrLoadIt<Instance>(
-      this.CACHE_KEY,
-      this.CACHE_LIFETIME,
-      this.httpClient.get<Instance>(`${environment.serverUrl}/instance`)
-    );
+  getTypeInstance(): Observable<Instance> {
+    // TODO : MOCK
+    return of(Instance.TSO);
+
+    // On utilise un cache en Production
+    if (environment.production) {
+      return this.cacheService.getValueInCacheOrLoadIt<Instance>(
+        this.CACHE_KEY,
+        this.CACHE_LIFETIME,
+        this.httpClient.get<Instance>(`${environment.serverUrl}/instance`)
+      );
+    } else {
+      return this.httpClient.get<Instance>(`${environment.serverUrl}/instance`);
+    }
   }
 }

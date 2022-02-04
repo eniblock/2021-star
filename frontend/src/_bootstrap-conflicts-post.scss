@@ -12,7 +12,8 @@ mat-tab-body div.row {
   margin: 0;
 }
 
-.mat-form-field-suffix {
+.mat-form-field-suffix > i {
   // quand on utilise mat-icon avec fontawesome => décallage quand on met une icone en suffix d'un input
-  top: 0 !important;
+  float: right;
+  margin-top: -20px !important;
 }

@@ -9,4 +9,6 @@ export const environment = {
     realm: 'star',
     clientId: 'frontend',
   },
+  // Tri
+  pageSizes: [5, 10, 20],
 };

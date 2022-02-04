@@ -174,13 +174,20 @@ h3 {
     color: inherit !important;
   }
   .ngx-file-drop__drop-zone {
+    height: 150px !important;
     border: 2px dashed $mat-text !important;
     border-radius: 30px !important;
     background-color: white !important;
+  }
+  .ngx-file-drop__content {
+    height: 150px !important;
   }
 }
 .upload-fichier-table {
   background-color: white;
   border-radius: 30px !important;
   padding: 20px 40px;
+}
+.tailleMaxFichiers {
+  font-size: 0.8em;
 }

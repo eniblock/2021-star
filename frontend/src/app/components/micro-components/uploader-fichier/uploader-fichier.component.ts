@@ -7,13 +7,19 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NgxFileDropComponent, NgxFileDropEntry } from 'ngx-file-drop';
+import { tailleFichierToStr } from './uploader-fichier-tools';
 
-interface Fichier {
+export interface Fichier {
   nom: string;
   taille: number;
   tailleStr: string;
   ngxFileDropEntry: NgxFileDropEntry; // Infos NgxFileDropEntry
   file: File; // Infos system
+}
+
+export interface ListeFichiersEtEtat {
+  fichiers: Fichier[];
+  ok: boolean; // indique si tout est ok (taille des fichiers et présence d'au moins un fichier)
 }
 
 @Component({
@@ -28,8 +34,9 @@ export class UploaderFichierComponent implements OnInit {
   @Input() public directory: boolean = false;
   @Input() public multiple: boolean = false;
   @Input() public className: string = '';
+  @Input() public tailleMaxFichiers: number | null = null; //Taille max autorisée pour l'uploade
 
-  @Output() tailleTotal = new EventEmitter<number>(); // Taille total des fichiers (en octets)
+  @Output() listeFichiersModifiees = new EventEmitter<ListeFichiersEtEtat>();
 
   public fichiers: Fichier[] = [];
   public tailleFichiers = 0;
@@ -82,7 +89,7 @@ export class UploaderFichierComponent implements OnInit {
     const fichier: Fichier = {
       nom: droppedFile.fileEntry.name,
       taille: file.size,
-      tailleStr: this.tailleFichier(file.size),
+      tailleStr: tailleFichierToStr(file.size),
       ngxFileDropEntry: droppedFile,
       file: file,
     };
@@ -92,29 +99,27 @@ export class UploaderFichierComponent implements OnInit {
         f2.ngxFileDropEntry.fileEntry.name
       )
     );
-    this.tailleFichiers += fichier.taille;
-    this.tailleFichiersStr = this.tailleFichier(this.tailleFichiers);
 
-    this.tailleTotal.emit(this.tailleFichiers);
+    this.majTailleTotalFichiers(fichier.taille);
   }
 
   deleteFichier(fichier: Fichier) {
     this.fichiers = this.fichiers.filter((f) => f != fichier);
-    this.tailleFichiers -= fichier.taille;
-    this.tailleFichiersStr = this.tailleFichier(this.tailleFichiers);
-
-    this.tailleTotal.emit(this.tailleFichiers);
+    this.majTailleTotalFichiers(-1 * fichier.taille);
   }
 
-  private tailleFichier(tailleByte: number): string {
-    if (tailleByte < 1000) {
-      return tailleByte + ' octets';
-    } else if (tailleByte < 1000000) {
-      return Math.round(tailleByte / 100) / 10 + ' Ko';
-    } else if (tailleByte < 1000000000) {
-      return Math.round(tailleByte / 100000) / 10 + ' Mo';
-    } else {
-      return Math.round(tailleByte / 100000000) / 10 + ' Go';
-    }
+  private majTailleTotalFichiers(tailleNouveauFichier: number) {
+    this.tailleFichiers += tailleNouveauFichier;
+    this.tailleFichiersStr = tailleFichierToStr(this.tailleFichiers);
+
+    const uploaderFichierOk =
+      this.fichiers.length > 0 &&
+      (this.tailleMaxFichiers == null ||
+        this.tailleFichiers <= this.tailleMaxFichiers);
+
+    this.listeFichiersModifiees.emit({
+      fichiers: this.fichiers,
+      ok: uploaderFichierOk,
+    });
   }
 }

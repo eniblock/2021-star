@@ -15,6 +15,8 @@ export const environment = {
   },
   // Tri
   pageSizes: [5, 10, 20],
+  // Upload des fichiers
+  tailleMaxUploadFichiers: 50000000, // En octets
 };
 
 /*

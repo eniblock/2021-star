@@ -12,7 +12,7 @@
 <div class="row mt-4" *ngIf="resultatsRecherche.length > 0">
   <div class="col">
     <div class="mb-3">{{ totalElements }} {{ totalElements>1?'résultats':'résultat' }}</div>
-    <app-reseau-pagination (paginationModifiee)="paginationModifiee($event)" [pagesize]="pagesize" [order]="order"></app-reseau-pagination>
+    <app-reseau-pagination (paginationModifiee)="paginationModifiee($event)" [pageSize]="pageSize" [order]="order"></app-reseau-pagination>
   </div>
 </div>
 

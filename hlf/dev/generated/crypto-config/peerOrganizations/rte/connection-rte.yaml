@@ -16,7 +16,7 @@ organizations:
       - ca.rte
 peers:
   peer1.rte:
-    url: grpcs://peer1-hlf-peer:7051
+    url: grpcs://peer1-hlf-peer.rte:7051
     tlsCACerts:
       pem: |
           -----BEGIN CERTIFICATE-----

@@ -16,7 +16,7 @@ organizations:
       - ca.enedis
 peers:
   peer1.enedis:
-    url: grpcs://peer1-hlf-peer:7051
+    url: grpcs://peer1-hlf-peer.enedis:7051
     tlsCACerts:
       pem: |
           -----BEGIN CERTIFICATE-----

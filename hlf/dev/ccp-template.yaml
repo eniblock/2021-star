@@ -16,7 +16,7 @@ organizations:
       - ca.${ORG}
 peers:
   peer1.${ORG}:
-    url: grpcs://peer1-hlf-peer:${P0PORT}
+    url: grpcs://peer1-hlf-peer.${ORG}:${P0PORT}
     tlsCACerts:
       pem: |
           ${PEERPEM}

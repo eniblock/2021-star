@@ -16,7 +16,7 @@ organizations:
       - ca.producer
 peers:
   peer1.producer:
-    url: grpcs://peer1-hlf-peer:7051
+    url: grpcs://peer1-hlf-peer.producer:7051
     tlsCACerts:
       pem: |
           -----BEGIN CERTIFICATE-----

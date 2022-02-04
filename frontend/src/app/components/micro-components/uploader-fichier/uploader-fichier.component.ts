@@ -1,6 +1,13 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgxFileDropComponent, NgxFileDropEntry } from 'ngx-file-drop';
 
+interface Fichier {
+  nom: string;
+  taille: string;
+  ngxFileDropEntry: NgxFileDropEntry; // Infos NgxFileDropEntry
+  file: File; // Infos system
+}
+
 @Component({
   selector: 'app-uploader-fichier',
   templateUrl: './uploader-fichier.component.html',
@@ -14,7 +21,7 @@ export class UploaderFichierComponent implements OnInit {
   @Input() public multiple: boolean = false;
   @Input() public className: string = '';
 
-  public fichiers: NgxFileDropEntry[] = [];
+  public fichiers: Fichier[] = [];
 
   constructor() {}
 
@@ -39,7 +46,7 @@ export class UploaderFichierComponent implements OnInit {
         // On ajoute des fichiers
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
-          this.addFichier(droppedFile);
+          this.addFichier(droppedFile, file);
         });
       } else {
         // On ajoute un repertoire vide
@@ -59,10 +66,30 @@ export class UploaderFichierComponent implements OnInit {
     );
   }
 
-  private addFichier(droppedFile: NgxFileDropEntry) {
-    this.fichiers.push(droppedFile);
+  private addFichier(droppedFile: NgxFileDropEntry, file: File) {
+    console.log(droppedFile, file);
+    this.fichiers.push({
+      nom: droppedFile.fileEntry.name,
+      taille: this.tailleFichier(file.size),
+      ngxFileDropEntry: droppedFile,
+      file: file,
+    });
     this.fichiers.sort((f1, f2) =>
-      f1.fileEntry.name.localeCompare(f2.fileEntry.name)
+      f1.ngxFileDropEntry.fileEntry.name.localeCompare(
+        f2.ngxFileDropEntry.fileEntry.name
+      )
     );
+  }
+
+  private tailleFichier(tailleByte: number): string {
+    if (tailleByte < 1000) {
+      return tailleByte + ' octets';
+    } else if (tailleByte < 1000000) {
+      return Math.floor(tailleByte / 1000) + ' Ko';
+    } else if (tailleByte < 1000000000) {
+      return Math.floor(tailleByte / 1000000) + ' Mo';
+    } else {
+      return Math.floor(tailleByte / 1000000000) + ' Go';
+    }
   }
 }

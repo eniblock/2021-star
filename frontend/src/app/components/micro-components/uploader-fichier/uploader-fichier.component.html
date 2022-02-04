@@ -20,19 +20,22 @@
 
   </ngx-file-drop>
 
-  <div class="upload-table col-12 mt-4 text-center" *ngIf="fichiers.length > 0">
-      <table class="table">
-          <thead>
-              <tr>
-                  <th>Name</th>
-              </tr>
-          </thead>
-          <tbody class="upload-name-style">
-              <tr *ngFor="let item of fichiers; let i=index">
-                  <td><strong>{{ item.relativePath }}</strong></td>
-              </tr>
-          </tbody>
-      </table>
+  <div class="upload-fichier-table col-12 mt-4" *ngIf="fichiers.length > 0">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item list-group-big-lines" *ngFor="let item of fichiers">
+        <div class="float-end">
+          <button mat-icon-button>
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="float-end">
+          {{ item.taille }}
+        </div>
+        <div>
+          {{ item.nom }}
+        </div>
+      </li>
+    </ul>
   </div>
 
 </div>

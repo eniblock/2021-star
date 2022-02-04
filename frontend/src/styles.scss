@@ -36,6 +36,11 @@ h3 {
   cursor: pointer;
 }
 
+// Listes
+.list-group-big-lines {
+  line-height: 3em !important;
+}
+
 // Formulaires
 .mat-form-field-appearance-outline .mat-form-field-outline {
   background-color: #ffffff; // couleur de fond des inputs
@@ -164,6 +169,7 @@ h3 {
 
 // Uploader fichiers
 .uploaderFichier {
+  color: inherit !important;
   .ngx-file-drop__content {
     color: inherit !important;
   }
@@ -172,4 +178,9 @@ h3 {
     border-radius: 30px !important;
     background-color: white !important;
   }
+}
+.upload-fichier-table {
+  background-color: white;
+  border-radius: 30px !important;
+  padding: 20px 40px;
 }

@@ -183,6 +183,10 @@ h3 {
     height: 150px !important;
   }
 }
+.uploaderFichier.full .ngx-file-drop__drop-zone {
+  border: 1px solid $mat-text !important;
+  background-color: rgb(197, 197, 197) !important;
+}
 .upload-fichier-table {
   background-color: white;
   border-radius: 30px !important;

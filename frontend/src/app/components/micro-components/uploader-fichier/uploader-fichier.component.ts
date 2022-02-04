@@ -81,6 +81,10 @@ export class UploaderFichierComponent implements OnInit {
     );
   }
 
+  deleteFichier(fichier: Fichier) {
+    this.fichiers = this.fichiers.filter((f) => f != fichier);
+  }
+
   private tailleFichier(tailleByte: number): string {
     if (tailleByte < 1000) {
       return tailleByte + ' octets';

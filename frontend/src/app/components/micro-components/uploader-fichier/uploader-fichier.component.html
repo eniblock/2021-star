@@ -24,7 +24,7 @@
     <ul class="list-group list-group-flush">
       <li class="list-group-item list-group-big-lines" *ngFor="let item of fichiers">
         <div class="float-end">
-          <button mat-icon-button>
+          <button mat-icon-button (click)="deleteFichier(item)">
             <i class="fas fa-times"></i>
           </button>
         </div>

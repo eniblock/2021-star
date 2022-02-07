@@ -34,8 +34,6 @@ keycloak:
     secret: 34f485e9ac95696a0d9f
   use-resource-role-mappings: true
   principal-attribute: preferred_username
-notification:
-  dso: false
 #  Valeur possible : tso/dso/producer
 instance: dso
 

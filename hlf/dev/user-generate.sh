@@ -20,6 +20,11 @@ function json_id {
 
 ORG=$1
 KEY=generated/crypto-config/peerOrganizations/$ORG/users/User1@$ORG/msp/keystore/priv_sk
-CERT=generated/crypto-config/peerOrganizations/$ORG/ca/ca.$ORG-cert.pem
+CERT=generated/crypto-config/peerOrganizations/$ORG/users/User1@$ORG/msp/signcerts/User1@$ORG-cert.pem
 
 echo "$(json_id $ORG $KEY $CERT)" > generated/crypto-config/peerOrganizations/$ORG/User1.id
+
+KEY=generated/crypto-config/peerOrganizations/$ORG/users/Admin@$ORG/msp/keystore/priv_sk
+CERT=generated/crypto-config/peerOrganizations/$ORG/users/Admin@$ORG/msp/signcerts/Admin@$ORG-cert.pem
+
+echo "$(json_id $ORG $KEY $CERT)" > generated/crypto-config/peerOrganizations/$ORG/Admin.id

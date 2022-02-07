@@ -45,6 +45,9 @@ spec:
           image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           env:
+            - name: INSTANCE
+              value: {{ .Values.backend.instance }}
+
             - name: HYPERLEDGER_FABRIC_GATEWAY_NETWORKCONFIG
               value: /var/hyperledger/peer/connection.yaml
             - name: HYPERLEDGER_FABRIC_GATEWAY_WALLET

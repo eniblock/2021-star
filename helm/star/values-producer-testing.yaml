@@ -3,3 +3,4 @@ ingress:
   host: "producer.testing.star.eniblock.fr"
 backend:
   peerConnectionOrganization: producer
+  instance: producer

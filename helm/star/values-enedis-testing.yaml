@@ -3,3 +3,4 @@ ingress:
   host: "enedis.testing.star.eniblock.fr"
 backend:
   peerConnectionOrganization: enedis
+  instance: dso

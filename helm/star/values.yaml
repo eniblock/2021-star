@@ -14,6 +14,8 @@ backend:
   peerConnectionUser: User1
   peerConnectionOrganization: org
 
+  instance: tso
+
   image:
     repository: "registry.gitlab.com/xdev-tech/star/backend"
     pullPolicy: IfNotPresent

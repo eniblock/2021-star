@@ -3,3 +3,4 @@ ingress:
   host: "rte.testing.star.eniblock.fr"
 backend:
   peerConnectionOrganization: rte
+  instance: tso

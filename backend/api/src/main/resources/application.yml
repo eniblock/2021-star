@@ -42,8 +42,7 @@ instance: dso
 blockchain:
   api:
     networkName: star
-    contractdso: marketparticipantdso
-    contracttso: marketparticipanttso
+    contract: star
 hyperledger-fabric:
   ca-client:
     url: https://localhost:7054

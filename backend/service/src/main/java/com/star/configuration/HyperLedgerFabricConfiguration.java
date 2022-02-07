@@ -28,11 +28,9 @@ public class HyperLedgerFabricConfiguration {
     @Value("${hyperledger-fabric.gateway.wallet}")
     private String wallet;
 
-    @Value("${blockchain.api.contractdso}")
-    private String contractdso;
+    @Value("${blockchain.api.contract}")
+    private String contract;
 
-    @Value("${blockchain.api.contracttso}")
-    private String contracttso;
 
     @Value("${hyperledger-fabric.gateway.identityId}")
     private String identityId;
@@ -44,14 +42,9 @@ public class HyperLedgerFabricConfiguration {
         return network;
     }
 
-    @Bean(name = "dsoContract")
-    public Contract dsoContract() throws IOException {
-        return this.network().getContract(contractdso);
-    }
-
-    @Bean(name = "tsoContract")
-    public Contract tsoContract() throws IOException {
-        return this.network().getContract(contracttso);
+    @Bean
+    public Contract contract() throws IOException {
+        return this.network().getContract(contract);
     }
 
     @Bean

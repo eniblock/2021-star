@@ -1,3 +1,6 @@
+global:
+  dev: true
+
 ingress:
   enabled: false
   host: peer1.enedis.localhost

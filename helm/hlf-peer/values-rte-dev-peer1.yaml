@@ -1,3 +1,6 @@
+global:
+  dev: true
+
 ingress:
   enabled: false
   host: peer1.rte.localhost
@@ -6,6 +9,11 @@ ingress:
 ##################################
 ## Peer configuration options    #
 ##################################
+# logging:
+#   level: debug
+#   peer: debug
+#   policies: debug
+#   msp: debug
 peer:
   tls:
     server:

@@ -158,10 +158,12 @@ h3 {
 }
 
 // Bouton de navigation
-.boutonNavigationCharger {
+.boutonNavigation {
   padding: 10px 40px;
   border-radius: 35px;
   background-color: $mat-primary;
+  display: inline-block !important;
+  cursor: pointer;
   span {
     color: white !important;
   }
@@ -194,4 +196,10 @@ h3 {
 }
 .tailleMaxFichiers {
   font-size: 0.8em;
+}
+
+// div panel messages
+.panel-message {
+  background-color: white !important;
+  border-radius: 15px !important;
 }

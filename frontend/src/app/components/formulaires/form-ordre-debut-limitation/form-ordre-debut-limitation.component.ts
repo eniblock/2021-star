@@ -1,11 +1,14 @@
+import { FormulaireOrdreDebutLimitation } from 'src/app/models/OrdreLimitation';
 import { environment } from 'src/environments/environment';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { tailleFichierToStr } from '../../micro-components/uploader-fichier/uploader-fichier-tools';
 import {
   Fichier,
   ListeFichiersEtEtat,
 } from '../../micro-components/uploader-fichier/uploader-fichier.component';
+import { tailleFichierToStr } from '../../micro-components/uploader-fichier/uploader-fichier-tools';
+import { OrdreLimitationService } from './../../../services/api/ordre-limitation.service';
+import { PATH_ROUTE } from 'src/app/app-routing.module';
 
 @Component({
   selector: 'app-form-ordre-debut-limitation',
@@ -15,12 +18,19 @@ import {
 export class FormOrdreDebutLimitationComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({}); // Il n'y a pas besoin de formulaire ici (car seulement un fichier à uploader)
 
+  PATH_ROUTE = PATH_ROUTE;
+
   tailleMaxUploadFichiers = environment.tailleMaxUploadFichiers;
   tailleMaxUploadFichiersStr = '...';
   uploaderFichiersOk = false;
   listeFichiers: Fichier[] = [];
 
-  constructor(private formBuilder: FormBuilder) {}
+  uploadEffectue = false;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private ordreLimitationService: OrdreLimitationService
+  ) {}
 
   ngOnInit() {
     this.tailleMaxUploadFichiersStr = tailleFichierToStr(
@@ -28,10 +38,21 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
     );
   }
 
-  onSubmit() {}
+  onSubmit() {
+    const form: FormulaireOrdreDebutLimitation = {
+      fichier: this.listeFichiers[0].file, // On upload ici un seul fichier
+    };
+    this.ordreLimitationService.creerOrdreDebut(form).subscribe((ok) => {
+      this.uploadEffectue = true;
+    });
+  }
 
   public modificationListeFichiers(listeFichiersEtEtat: ListeFichiersEtEtat) {
     this.uploaderFichiersOk = listeFichiersEtEtat.ok;
     this.listeFichiers = listeFichiersEtEtat.fichiers;
+  }
+
+  public chargerANouveau() {
+    this.uploadEffectue = false;
   }
 }

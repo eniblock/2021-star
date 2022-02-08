@@ -10,6 +10,9 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
 import { FormOrdreDebutLimitationComponent } from './form-ordre-debut-limitation/form-ordre-debut-limitation.component';
 import { FormOrdreFinLimitationComponent } from './form-ordre-fin-limitation/form-ordre-fin-limitation.component';
 import { MicroComponentsModule } from '../micro-components/micro-components.module';
+import { FormOrdreFinLimitationFichierComponent } from './form-ordre-fin-limitation/form-ordre-fin-limitation-fichier/form-ordre-fin-limitation-fichier.component';
+import { FormOrdreFinLimitationSaisieManuelleComponent } from './form-ordre-fin-limitation/form-ordre-fin-limitation-saisie-manuelle/form-ordre-fin-limitation-saisie-manuelle.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   imports: [
@@ -21,11 +24,14 @@ import { MicroComponentsModule } from '../micro-components/micro-components.modu
     MatButtonModule,
     MatSelectModule,
     PipesModule,
+    MatRadioModule,
   ],
   declarations: [
     FormReseauRechercheComponent,
     FormOrdreDebutLimitationComponent,
     FormOrdreFinLimitationComponent,
+    FormOrdreFinLimitationFichierComponent,
+    FormOrdreFinLimitationSaisieManuelleComponent,
   ],
   exports: [
     FormReseauRechercheComponent,

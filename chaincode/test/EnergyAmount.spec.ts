@@ -61,7 +61,7 @@ describe('Star Tests EnergyAmount', () => {
                         const queryStr = queryJson.selector.docType
                         // console.log('queryStr=', queryStr , 'objStr=', objStr);
                         if (queryStr == objStr) {
-                            // if (queryJson.selector.systemOperatorMarketParticipantMrid) {
+                            // if (queryJson.selector.systemOperatorMarketParticipantMrId) {
                                 const queryM = queryJson.selector.registeredResourceMrid;
                                 console.log('queryM=', queryM);
                                 const objM = obJson.registeredResourceMrid;

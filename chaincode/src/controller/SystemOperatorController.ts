@@ -77,7 +77,7 @@ export class SystemOperatorController {
             {strict: true, abortEarly: false},
         );
 
-        if (!identity.includes(systemOperatorInput.marketParticipantName)) {
+        if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
             throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorInput.marketParticipantName}`);
         }
 

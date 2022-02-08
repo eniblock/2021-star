@@ -43,7 +43,7 @@ describe('Star Tests SITES', () => {
                 if (chaincodeStub.states) {
                     const copied = Object.assign({}, chaincodeStub.states);
                     for (let key in copied) {
-                        if (copied[key] == 'non-json-value') { 
+                        if (copied[key] == 'non-json-value') {
                             yield {value: copied[key]};
                             continue
                         }
@@ -73,10 +73,10 @@ describe('Star Tests SITES', () => {
                                     // console.log('yield=', queryProd, objProd);
                                     yield {value: copied[key]};
                                 }
-                            // } 
+                            // }
                             // else {
                             //     yield {value: copied[key]};
-                            // }                           
+                            // }
                         }
                     }
                 }
@@ -207,14 +207,14 @@ describe('Star Tests SITES', () => {
                 siteName: 'Ferme éolienne de Genonville',
                 substationMrid: 'GDO A4RTD',
                 substationName: 'CIVRAY',
-                marketEvaluationPointMrid: 'CodePPE', // optional 
-                schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
-                siteAdminMrid: '489 981 029', // optional 
-                siteLocation: 'Biscarosse', // optional 
-                siteIecCode: 'S7X0000013077478', // optional 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
-                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+                marketEvaluationPointMrid: 'CodePPE', // optional
+                schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional
+                siteAdminMrid: '489 981 029', // optional
+                siteLocation: 'Biscarosse', // optional
+                siteIecCode: 'S7X0000013077478', // optional
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional
             }
 
             chaincodeStub.MspiID = 'RTEMSP';
@@ -237,14 +237,14 @@ describe('Star Tests SITES', () => {
                 siteName: 'Ferme éolienne de Genonville',
                 substationMrid: 'GDO A4RTD',
                 substationName: 'CIVRAY',
-                // marketEvaluationPointMrid: 'CodePPE', // optional 
-                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
-                siteAdminMrid: '489 981 029', // optional 
-                siteLocation: 'Biscarosse', // optional 
-                siteIecCode: 'S7X0000013077478', // optional 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
-                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+                // marketEvaluationPointMrid: 'CodePPE', // optional
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional
+                siteAdminMrid: '489 981 029', // optional
+                siteLocation: 'Biscarosse', // optional
+                siteIecCode: 'S7X0000013077478', // optional
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional
             }
 
             chaincodeStub.MspiID = 'ENEDISMSP';
@@ -267,14 +267,14 @@ describe('Star Tests SITES', () => {
                 siteName: 'Ferme éolienne de Genonville',
                 substationMrid: 'GDO A4RTD',
                 substationName: 'CIVRAY',
-                // marketEvaluationPointMrid: 'CodePPE', // optional 
-                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
-                siteAdminMrid: '489 981 029', // optional 
-                siteLocation: 'Biscarosse', // optional 
-                siteIecCode: 'S7X0000013077478', // optional 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
-                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+                // marketEvaluationPointMrid: 'CodePPE', // optional
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional
+                siteAdminMrid: '489 981 029', // optional
+                siteLocation: 'Biscarosse', // optional
+                siteIecCode: 'S7X0000013077478', // optional
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional
             }
 
             chaincodeStub.MspiID = 'ENEDISMSP';
@@ -314,14 +314,14 @@ describe('Star Tests SITES', () => {
                 siteName: 'Ferme éolienne de Genonville',
                 substationMrid: 'GDO A4RTD',
                 substationName: 'CIVRAY',
-                marketEvaluationPointMrid: 'CodePPE', // optional 
-                schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
-                siteAdminMrid: '489 981 029', // optional 
-                siteLocation: 'Biscarosse', // optional 
-                siteIecCode: 'S7X0000013077478', // optional 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
-                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+                marketEvaluationPointMrid: 'CodePPE', // optional
+                schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional
+                siteAdminMrid: '489 981 029', // optional
+                siteLocation: 'Biscarosse', // optional
+                siteIecCode: 'S7X0000013077478', // optional
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional
             }
 
             chaincodeStub.MspiID = 'RTEMSP';
@@ -356,7 +356,7 @@ describe('Star Tests SITES', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927464\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTA));
-    
+
             const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
             chaincodeStub.MspiID = 'RTEMSP';
@@ -405,7 +405,7 @@ describe('Star Tests SITES', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927464\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTA));
-    
+
             const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
             chaincodeStub.MspiID = 'RTEMSP';
@@ -465,7 +465,7 @@ describe('Star Tests SITES', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927464\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X0000013097450\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTA));
-    
+
             const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
             chaincodeStub.MspiID = 'RTEMSP';
@@ -514,7 +514,7 @@ describe('Star Tests SITES', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927464\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTA));
-    
+
             const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X0000013097450', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
             chaincodeStub.MspiID = 'RTEMSP';
@@ -595,42 +595,42 @@ describe('Star Tests SITES', () => {
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001307745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTAprodA));
             await star.CreateSite(transactionContext, JSON.stringify(siteHTAprodB));
-    
+
             const siteHTBProdA: Site = {
-                meteringPointMrid: 'PDL00000000289767', 
-                systemOperatorMarketParticipantMrid: '17V0000009927469', 
-                producerMarketParticipantMrid: '17X000001307745X', 
-                technologyType: 'Eolien', 
-                siteType: 'Injection', 
-                siteName: 'Ferme éolienne de Genonville', 
-                substationMrid: 'GDO A4RTD', 
-                substationName: 'CIVRAY', 
-                marketEvaluationPointMrid: 'CodePPE', 
-                schedulingEntityRegisteredResourceMrid: 'CodeEDP', 
-                siteAdminMrid: '489 981 029', 
-                siteLocation: 'Biscarosse', 
-                siteIecCode: 'S7X0000013077478', 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', 
+                meteringPointMrid: 'PDL00000000289767',
+                systemOperatorMarketParticipantMrid: '17V0000009927469',
+                producerMarketParticipantMrid: '17X000001307745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                marketEvaluationPointMrid: 'CodePPE',
+                schedulingEntityRegisteredResourceMrid: 'CodeEDP',
+                siteAdminMrid: '489 981 029',
+                siteLocation: 'Biscarosse',
+                siteIecCode: 'S7X0000013077478',
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511',
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1',
                 systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'
             }
 
             const siteHTBProdB: Site = {
-                meteringPointMrid: 'PDL00000000289768', 
-                systemOperatorMarketParticipantMrid: '17V0000009927469', 
-                producerMarketParticipantMrid: '17X0000013077450', 
-                technologyType: 'Eolien', 
-                siteType: 'Injection', 
-                siteName: 'Ferme éolienne de Genonville', 
-                substationMrid: 'GDO A4RTD', 
-                substationName: 'CIVRAY', 
-                marketEvaluationPointMrid: 'CodePPE', 
-                schedulingEntityRegisteredResourceMrid: 'CodeEDP', 
-                siteAdminMrid: '489 981 029', 
-                siteLocation: 'Biscarosse', 
-                siteIecCode: 'S7X0000013077478', 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', 
+                meteringPointMrid: 'PDL00000000289768',
+                systemOperatorMarketParticipantMrid: '17V0000009927469',
+                producerMarketParticipantMrid: '17X0000013077450',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                marketEvaluationPointMrid: 'CodePPE',
+                schedulingEntityRegisteredResourceMrid: 'CodeEDP',
+                siteAdminMrid: '489 981 029',
+                siteLocation: 'Biscarosse',
+                siteIecCode: 'S7X0000013077478',
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511',
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1',
                 systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'
             }
 
@@ -686,6 +686,358 @@ describe('Star Tests SITES', () => {
             ];
 
             expect(retProd).to.eql(expected);
+        });
+    });
+
+    describe('TEST DATA ENEDIS', () => {
+        it('should return success on getSiteBySystemOperator/getSiteByProducer', async () => {
+            let star = new Star();
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927464\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17Y100A101R0629X\",\"producerMarketParticipantName\": \"Prod1\",\"producerMarketParticipantRoleType\": \"A21 - Producer\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17Y100A102R0629X\",\"producerMarketParticipantName\": \"Prod2\",\"producerMarketParticipantRoleType\": \"A21 - Producer\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17Y100A103R0629X\",\"producerMarketParticipantName\": \"Prod3\",\"producerMarketParticipantRoleType\": \"A21 - Producer\"}');
+
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM30001510803649\",\"systemOperatorMarketParticipantMrid\":\"17V0000009927464\",\"producerMarketParticipantMrid\":\"17Y100A101R0629X\",\"technologyType\": \"EOLIEN\",\"siteType\":\"Injection\",\"siteName\":\"sites 1 / DPT\",\"substationMrid\":\"MANSL\",\"substationName\":\"MANSLE\",\"siteAdminMrid\":\"588556606\",\"siteLocation\":\"16423\",\"systemOperatorEntityFlexibilityDomainMrid\":\"DEPARTM 1\",\"systemOperatorEntityFlexibilityDomainName\":\"DEPARTM 1\",\"systemOperatorCustomerServiceName\":\"ARD Ouest\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM30001510803425\",\"systemOperatorMarketParticipantMrid\":\"17V0000009927464\",\"producerMarketParticipantMrid\":\"17Y100A102R0629X\",\"technologyType\": \"EOLIEN\",\"siteType\":\"Injection\",\"siteName\":\"sites 2\",\"substationMrid\":\"MANSL\",\"substationName\":\"MANSLE\",\"siteAdminMrid\":\"593241822\",\"siteLocation\":\"16423\",\"systemOperatorEntityFlexibilityDomainMrid\":\"DEPARTM 1\",\"systemOperatorEntityFlexibilityDomainName\":\"DEPARTM 1\",\"systemOperatorCustomerServiceName\":\"ARD Ouest\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM30001510803313\",\"systemOperatorMarketParticipantMrid\":\"17V0000009927464\",\"producerMarketParticipantMrid\":\"17Y100A103R0629X\",\"technologyType\": \"EOLIEN\",\"siteType\":\"Injection\",\"siteName\":\"sites 3\",\"substationMrid\":\"LONGC\",\"substationName\":\"LONGCHAMPS\",\"siteAdminMrid\":\"585240139\",\"siteLocation\":\"16361\",\"systemOperatorEntityFlexibilityDomainMrid\":\"DEPARTL 1\",\"systemOperatorEntityFlexibilityDomainName\":\"DEPARTL 1\",\"systemOperatorCustomerServiceName\":\"ARD Ouest\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM30001510803537\",\"systemOperatorMarketParticipantMrid\":\"17V0000009927464\",\"producerMarketParticipantMrid\":\"17Y100A101R0629X\",\"technologyType\": \"EOLIEN\",\"siteType\":\"Injection\",\"siteName\":\"sites 4\",\"substationMrid\":\"LONGC\",\"substationName\":\"LONGCHAMPS\",\"siteAdminMrid\":\"588556606\",\"siteLocation\":\"16361\",\"systemOperatorEntityFlexibilityDomainMrid\":\"DEPARTL 2\",\"systemOperatorEntityFlexibilityDomainName\":\"DEPARTL 2\",\"systemOperatorCustomerServiceName\":\"ARD Ouest\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM30001510855938\",\"systemOperatorMarketParticipantMrid\":\"17V0000009927464\",\"producerMarketParticipantMrid\":\"17Y100A102R0629X\",\"technologyType\": \"EOLIEN\",\"siteType\":\"Injection\",\"siteName\":\"sites 5 /dpt\",\"substationMrid\":\"CONF6\",\"substationName\":\"CONFOLENS\",\"siteAdminMrid\":\"593241780\",\"siteLocation\":\"16363\",\"systemOperatorEntityFlexibilityDomainMrid\":\"DEPART C\",\"systemOperatorEntityFlexibilityDomainName\":\"DEPART C\",\"systemOperatorCustomerServiceName\":\"ARD Ouest\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM30001510855387\",\"systemOperatorMarketParticipantMrid\":\"17V0000009927464\",\"producerMarketParticipantMrid\":\"17Y100A103R0629X\",\"technologyType\": \"EOLIEN\",\"siteType\":\"Injection\",\"siteName\":\"SITES 6\",\"substationMrid\":\"CONF6\",\"substationName\":\"CONFOLENS\",\"siteAdminMrid\":\"593241806\",\"siteLocation\":\"16182\",\"systemOperatorEntityFlexibilityDomainMrid\":\"DEPART C\",\"systemOperatorEntityFlexibilityDomainName\":\"DEPART C\",\"systemOperatorCustomerServiceName\":\"ARD Ouest\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM30001510838174\",\"systemOperatorMarketParticipantMrid\":\"17V0000009927464\",\"producerMarketParticipantMrid\":\"17Y100A101R0629X\",\"technologyType\": \"EOLIEN\",\"siteType\":\"Injection\",\"siteName\":\"sites 7\",\"substationMrid\":\"MANSL\",\"substationName\":\"MANSLE\",\"siteAdminMrid\":\"587715211\",\"siteLocation\":\"16024\",\"systemOperatorEntityFlexibilityDomainMrid\":\"DEPART M2\",\"systemOperatorEntityFlexibilityDomainName\":\"DEPART M2\",\"systemOperatorCustomerServiceName\":\"ARD Ouest\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM30001510840980\",\"systemOperatorMarketParticipantMrid\":\"17V0000009927464\",\"producerMarketParticipantMrid\":\"17Y100A102R0629X\",\"technologyType\": \"EOLIEN\",\"siteType\":\"Injection\",\"siteName\":\"sites 8\",\"substationMrid\":\"LONGC\",\"substationName\":\"LONGCHAMPS\",\"siteAdminMrid\":\"594535172\",\"siteLocation\":\"16136\",\"systemOperatorEntityFlexibilityDomainMrid\":\"DEPARTL 3\",\"systemOperatorEntityFlexibilityDomainName\":\"DEPARTL 3\",\"systemOperatorCustomerServiceName\":\"ARD Ouest\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50050651219759\",\"systemOperatorMarketParticipantMrid\":\"17V0000009927464\",\"producerMarketParticipantMrid\":\"17Y100A103R0629X\",\"technologyType\": \"PHOTOVOLTAIQUE\",\"siteType\":\"Injection\",\"siteName\":\"sites 9\",\"substationMrid\":\"AIGRE\",\"substationName\":\"AIGRE\",\"siteAdminMrid\":\"613722157\",\"siteLocation\":\"16414\",\"systemOperatorEntityFlexibilityDomainMrid\":\"DEPARTA 1\",\"systemOperatorEntityFlexibilityDomainName\":\"DEPARTA 1\",\"systemOperatorCustomerServiceName\":\"ARD Ouest\"}');
+
+            let retA = await star.GetSitesBySystemOperator(transactionContext, '17V0000009927464');
+            retA = JSON.parse(retA);
+            console.log('retA=', retA)
+            expect(retA.length).to.equal(9);
+
+            const expectedA: Site[] = [
+                {
+                    meteringPointMrid: 'PRM30001510803649',
+                    systemOperatorMarketParticipantMrid: '17V0000009927464',
+                    producerMarketParticipantMrid: '17Y100A101R0629X',
+                    technologyType: 'EOLIEN',
+                    siteType: 'Injection',
+                    siteName: 'sites 1 / DPT',
+                    substationMrid: 'MANSL',
+                    substationName: 'MANSLE',
+                    siteAdminMrid: '588556606',
+                    siteLocation: '16423',
+                    systemOperatorEntityFlexibilityDomainMrid: 'DEPARTM 1',
+                    systemOperatorEntityFlexibilityDomainName: 'DEPARTM 1',
+                    systemOperatorCustomerServiceName: 'ARD Ouest',
+                    docType: 'site'
+                },
+                {
+                  meteringPointMrid: 'PRM30001510803425',
+                  systemOperatorMarketParticipantMrid: '17V0000009927464',
+                  producerMarketParticipantMrid: '17Y100A102R0629X',
+                  technologyType: 'EOLIEN',
+                  siteType: 'Injection',
+                  siteName: 'sites 2',
+                  substationMrid: 'MANSL',
+                  substationName: 'MANSLE',
+                  siteAdminMrid: '593241822',
+                  siteLocation: '16423',
+                  systemOperatorEntityFlexibilityDomainMrid: 'DEPARTM 1',
+                  systemOperatorEntityFlexibilityDomainName: 'DEPARTM 1',
+                  systemOperatorCustomerServiceName: 'ARD Ouest',
+                  docType: 'site'
+                },
+                {
+                  meteringPointMrid: 'PRM30001510803313',
+                  systemOperatorMarketParticipantMrid: '17V0000009927464',
+                  producerMarketParticipantMrid: '17Y100A103R0629X',
+                  technologyType: 'EOLIEN',
+                  siteType: 'Injection',
+                  siteName: 'sites 3',
+                  substationMrid: 'LONGC',
+                  substationName: 'LONGCHAMPS',
+                  siteAdminMrid: '585240139',
+                  siteLocation: '16361',
+                  systemOperatorEntityFlexibilityDomainMrid: 'DEPARTL 1',
+                  systemOperatorEntityFlexibilityDomainName: 'DEPARTL 1',
+                  systemOperatorCustomerServiceName: 'ARD Ouest',
+                  docType: 'site'
+                },
+                {
+                  meteringPointMrid: 'PRM30001510803537',
+                  systemOperatorMarketParticipantMrid: '17V0000009927464',
+                  producerMarketParticipantMrid: '17Y100A101R0629X',
+                  technologyType: 'EOLIEN',
+                  siteType: 'Injection',
+                  siteName: 'sites 4',
+                  substationMrid: 'LONGC',
+                  substationName: 'LONGCHAMPS',
+                  siteAdminMrid: '588556606',
+                  siteLocation: '16361',
+                  systemOperatorEntityFlexibilityDomainMrid: 'DEPARTL 2',
+                  systemOperatorEntityFlexibilityDomainName: 'DEPARTL 2',
+                  systemOperatorCustomerServiceName: 'ARD Ouest',
+                  docType: 'site'
+                },
+                {
+                  meteringPointMrid: 'PRM30001510855938',
+                  systemOperatorMarketParticipantMrid: '17V0000009927464',
+                  producerMarketParticipantMrid: '17Y100A102R0629X',
+                  technologyType: 'EOLIEN',
+                  siteType: 'Injection',
+                  siteName: 'sites 5 /dpt',
+                  substationMrid: 'CONF6',
+                  substationName: 'CONFOLENS',
+                  siteAdminMrid: '593241780',
+                  siteLocation: '16363',
+                  systemOperatorEntityFlexibilityDomainMrid: 'DEPART C',
+                  systemOperatorEntityFlexibilityDomainName: 'DEPART C',
+                  systemOperatorCustomerServiceName: 'ARD Ouest',
+                  docType: 'site'
+                },
+                {
+                  meteringPointMrid: 'PRM30001510855387',
+                  systemOperatorMarketParticipantMrid: '17V0000009927464',
+                  producerMarketParticipantMrid: '17Y100A103R0629X',
+                  technologyType: 'EOLIEN',
+                  siteType: 'Injection',
+                  siteName: 'SITES 6',
+                  substationMrid: 'CONF6',
+                  substationName: 'CONFOLENS',
+                  siteAdminMrid: '593241806',
+                  siteLocation: '16182',
+                  systemOperatorEntityFlexibilityDomainMrid: 'DEPART C',
+                  systemOperatorEntityFlexibilityDomainName: 'DEPART C',
+                  systemOperatorCustomerServiceName: 'ARD Ouest',
+                  docType: 'site'
+                },
+                {
+                  meteringPointMrid: 'PRM30001510838174',
+                  systemOperatorMarketParticipantMrid: '17V0000009927464',
+                  producerMarketParticipantMrid: '17Y100A101R0629X',
+                  technologyType: 'EOLIEN',
+                  siteType: 'Injection',
+                  siteName: 'sites 7',
+                  substationMrid: 'MANSL',
+                  substationName: 'MANSLE',
+                  siteAdminMrid: '587715211',
+                  siteLocation: '16024',
+                  systemOperatorEntityFlexibilityDomainMrid: 'DEPART M2',
+                  systemOperatorEntityFlexibilityDomainName: 'DEPART M2',
+                  systemOperatorCustomerServiceName: 'ARD Ouest',
+                  docType: 'site'
+                },
+                {
+                  meteringPointMrid: 'PRM30001510840980',
+                  systemOperatorMarketParticipantMrid: '17V0000009927464',
+                  producerMarketParticipantMrid: '17Y100A102R0629X',
+                  technologyType: 'EOLIEN',
+                  siteType: 'Injection',
+                  siteName: 'sites 8',
+                  substationMrid: 'LONGC',
+                  substationName: 'LONGCHAMPS',
+                  siteAdminMrid: '594535172',
+                  siteLocation: '16136',
+                  systemOperatorEntityFlexibilityDomainMrid: 'DEPARTL 3',
+                  systemOperatorEntityFlexibilityDomainName: 'DEPARTL 3',
+                  systemOperatorCustomerServiceName: 'ARD Ouest',
+                  docType: 'site'
+                },
+                {
+                  meteringPointMrid: 'PRM50050651219759',
+                  systemOperatorMarketParticipantMrid: '17V0000009927464',
+                  producerMarketParticipantMrid: '17Y100A103R0629X',
+                  technologyType: 'PHOTOVOLTAIQUE',
+                  siteType: 'Injection',
+                  siteName: 'sites 9',
+                  substationMrid: 'AIGRE',
+                  substationName: 'AIGRE',
+                  siteAdminMrid: '613722157',
+                  siteLocation: '16414',
+                  systemOperatorEntityFlexibilityDomainMrid: 'DEPARTA 1',
+                  systemOperatorEntityFlexibilityDomainName: 'DEPARTA 1',
+                  systemOperatorCustomerServiceName: 'ARD Ouest',
+                  docType: 'site'
+                }
+            ];
+
+            expect(retA).to.eql(expectedA);
+
+            let retB = await star.GetSitesByProducer(transactionContext, '17Y100A101R0629X');
+            retB = JSON.parse(retB);
+            console.log('retB=', retB)
+            expect(retB.length).to.equal(3);
+
+            const expectedB: Site[] = [
+                {
+                    meteringPointMrid: 'PRM30001510803649',
+                    systemOperatorMarketParticipantMrid: '17V0000009927464',
+                    producerMarketParticipantMrid: '17Y100A101R0629X',
+                    technologyType: 'EOLIEN',
+                    siteType: 'Injection',
+                    siteName: 'sites 1 / DPT',
+                    substationMrid: 'MANSL',
+                    substationName: 'MANSLE',
+                    siteAdminMrid: '588556606',
+                    siteLocation: '16423',
+                    systemOperatorEntityFlexibilityDomainMrid: 'DEPARTM 1',
+                    systemOperatorEntityFlexibilityDomainName: 'DEPARTM 1',
+                    systemOperatorCustomerServiceName: 'ARD Ouest',
+                    docType: 'site'
+                },
+                {
+                    meteringPointMrid: 'PRM30001510803537',
+                    systemOperatorMarketParticipantMrid: '17V0000009927464',
+                    producerMarketParticipantMrid: '17Y100A101R0629X',
+                    technologyType: 'EOLIEN',
+                    siteType: 'Injection',
+                    siteName: 'sites 4',
+                    substationMrid: 'LONGC',
+                    substationName: 'LONGCHAMPS',
+                    siteAdminMrid: '588556606',
+                    siteLocation: '16361',
+                    systemOperatorEntityFlexibilityDomainMrid: 'DEPARTL 2',
+                    systemOperatorEntityFlexibilityDomainName: 'DEPARTL 2',
+                    systemOperatorCustomerServiceName: 'ARD Ouest',
+                    docType: 'site'
+                  },
+                  {
+                    meteringPointMrid: 'PRM30001510838174',
+                    systemOperatorMarketParticipantMrid: '17V0000009927464',
+                    producerMarketParticipantMrid: '17Y100A101R0629X',
+                    technologyType: 'EOLIEN',
+                    siteType: 'Injection',
+                    siteName: 'sites 7',
+                    substationMrid: 'MANSL',
+                    substationName: 'MANSLE',
+                    siteAdminMrid: '587715211',
+                    siteLocation: '16024',
+                    systemOperatorEntityFlexibilityDomainMrid: 'DEPART M2',
+                    systemOperatorEntityFlexibilityDomainName: 'DEPART M2',
+                    systemOperatorCustomerServiceName: 'ARD Ouest',
+                    docType: 'site'
+                  }
+                ];
+
+            expect(retB).to.eql(expectedB);
+
+            let retC = await star.GetSitesByProducer(transactionContext, '17Y100A102R0629X');
+            retC = JSON.parse(retC);
+            console.log('retC=', retC)
+            expect(retC.length).to.equal(3);
+
+            const expectedC: Site[] = [
+                {
+                    meteringPointMrid: 'PRM30001510803425',
+                    systemOperatorMarketParticipantMrid: '17V0000009927464',
+                    producerMarketParticipantMrid: '17Y100A102R0629X',
+                    technologyType: 'EOLIEN',
+                    siteType: 'Injection',
+                    siteName: 'sites 2',
+                    substationMrid: 'MANSL',
+                    substationName: 'MANSLE',
+                    siteAdminMrid: '593241822',
+                    siteLocation: '16423',
+                    systemOperatorEntityFlexibilityDomainMrid: 'DEPARTM 1',
+                    systemOperatorEntityFlexibilityDomainName: 'DEPARTM 1',
+                    systemOperatorCustomerServiceName: 'ARD Ouest',
+                    docType: 'site'
+                  },
+                  {
+                    meteringPointMrid: 'PRM30001510855938',
+                    systemOperatorMarketParticipantMrid: '17V0000009927464',
+                    producerMarketParticipantMrid: '17Y100A102R0629X',
+                    technologyType: 'EOLIEN',
+                    siteType: 'Injection',
+                    siteName: 'sites 5 /dpt',
+                    substationMrid: 'CONF6',
+                    substationName: 'CONFOLENS',
+                    siteAdminMrid: '593241780',
+                    siteLocation: '16363',
+                    systemOperatorEntityFlexibilityDomainMrid: 'DEPART C',
+                    systemOperatorEntityFlexibilityDomainName: 'DEPART C',
+                    systemOperatorCustomerServiceName: 'ARD Ouest',
+                    docType: 'site'
+                  },
+                  {
+                    meteringPointMrid: 'PRM30001510840980',
+                    systemOperatorMarketParticipantMrid: '17V0000009927464',
+                    producerMarketParticipantMrid: '17Y100A102R0629X',
+                    technologyType: 'EOLIEN',
+                    siteType: 'Injection',
+                    siteName: 'sites 8',
+                    substationMrid: 'LONGC',
+                    substationName: 'LONGCHAMPS',
+                    siteAdminMrid: '594535172',
+                    siteLocation: '16136',
+                    systemOperatorEntityFlexibilityDomainMrid: 'DEPARTL 3',
+                    systemOperatorEntityFlexibilityDomainName: 'DEPARTL 3',
+                    systemOperatorCustomerServiceName: 'ARD Ouest',
+                    docType: 'site'
+                  }
+            ];
+
+            expect(retC).to.eql(expectedC);
+
+            let retD = await star.GetSitesByProducer(transactionContext, '17Y100A103R0629X');
+            retD = JSON.parse(retD);
+            console.log('retD=', retD)
+            expect(retD.length).to.equal(3);
+
+            const expectedD: Site[] = [
+                {
+                    meteringPointMrid: 'PRM30001510803313',
+                    systemOperatorMarketParticipantMrid: '17V0000009927464',
+                    producerMarketParticipantMrid: '17Y100A103R0629X',
+                    technologyType: 'EOLIEN',
+                    siteType: 'Injection',
+                    siteName: 'sites 3',
+                    substationMrid: 'LONGC',
+                    substationName: 'LONGCHAMPS',
+                    siteAdminMrid: '585240139',
+                    siteLocation: '16361',
+                    systemOperatorEntityFlexibilityDomainMrid: 'DEPARTL 1',
+                    systemOperatorEntityFlexibilityDomainName: 'DEPARTL 1',
+                    systemOperatorCustomerServiceName: 'ARD Ouest',
+                    docType: 'site'
+                  },
+                  {
+                    meteringPointMrid: 'PRM30001510855387',
+                    systemOperatorMarketParticipantMrid: '17V0000009927464',
+                    producerMarketParticipantMrid: '17Y100A103R0629X',
+                    technologyType: 'EOLIEN',
+                    siteType: 'Injection',
+                    siteName: 'SITES 6',
+                    substationMrid: 'CONF6',
+                    substationName: 'CONFOLENS',
+                    siteAdminMrid: '593241806',
+                    siteLocation: '16182',
+                    systemOperatorEntityFlexibilityDomainMrid: 'DEPART C',
+                    systemOperatorEntityFlexibilityDomainName: 'DEPART C',
+                    systemOperatorCustomerServiceName: 'ARD Ouest',
+                    docType: 'site'
+                  },
+                  {
+                    meteringPointMrid: 'PRM50050651219759',
+                    systemOperatorMarketParticipantMrid: '17V0000009927464',
+                    producerMarketParticipantMrid: '17Y100A103R0629X',
+                    technologyType: 'PHOTOVOLTAIQUE',
+                    siteType: 'Injection',
+                    siteName: 'sites 9',
+                    substationMrid: 'AIGRE',
+                    substationName: 'AIGRE',
+                    siteAdminMrid: '613722157',
+                    siteLocation: '16414',
+                    systemOperatorEntityFlexibilityDomainMrid: 'DEPARTA 1',
+                    systemOperatorEntityFlexibilityDomainName: 'DEPARTA 1',
+                    systemOperatorCustomerServiceName: 'ARD Ouest',
+                    docType: 'site'
+                  }
+            ];
+
+            expect(retD).to.eql(expectedD);
+
         });
     });
 });

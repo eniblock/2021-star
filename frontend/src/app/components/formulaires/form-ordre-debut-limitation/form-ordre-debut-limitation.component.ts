@@ -22,7 +22,9 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
 
   tailleMaxUploadFichiers = environment.tailleMaxUploadFichiers;
   tailleMaxUploadFichiersStr = '...';
-  uploaderFichiersOk = false;
+
+  tailleFichierOk = false;
+  extensionFichiersOk = false;
   listeFichiers: Fichier[] = [];
 
   uploadEffectue = false;
@@ -50,7 +52,8 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
   }
 
   public modificationListeFichiers(listeFichiersEtEtat: ListeFichiersEtEtat) {
-    this.uploaderFichiersOk = listeFichiersEtEtat.ok;
+    this.tailleFichierOk = listeFichiersEtEtat.tailleFichierOk;
+    this.extensionFichiersOk = listeFichiersEtEtat.extensionFichiersOk;
     this.listeFichiers = listeFichiersEtEtat.fichiers;
   }
 

@@ -15,11 +15,13 @@ export interface Fichier {
   tailleStr: string;
   ngxFileDropEntry: NgxFileDropEntry; // Infos NgxFileDropEntry
   file: File; // Infos system
+  extensionAccepte: boolean; // Indique si l'extension du fichier est non accepté
 }
 
 export interface ListeFichiersEtEtat {
   fichiers: Fichier[];
-  ok: boolean; // indique si tout est ok (taille des fichiers et présence d'au moins un fichier)
+  tailleFichierOk: boolean; // indique si la taille des fichiers n'est pas trop grande
+  extensionFichiersOk: boolean; // indique si tous fichiers ont la bonne extension
 }
 
 @Component({
@@ -52,15 +54,12 @@ export class UploaderFichierComponent implements OnInit {
       return;
     }
 
-    // On filtre en fonction de l'extension
-    let fichiersFiltres = this.filtrerParExtension(nouveauFichiers);
-
     // Si on n'est pas en multiple => on ajoute 1 seul fichier (le premier)
-    if (!this.multiple && fichiersFiltres.length > 1) {
-      fichiersFiltres = [fichiersFiltres[0]];
+    if (!this.multiple && nouveauFichiers.length > 1) {
+      nouveauFichiers = [nouveauFichiers[0]];
     }
 
-    for (const droppedFile of fichiersFiltres) {
+    for (const droppedFile of nouveauFichiers) {
       if (droppedFile.fileEntry.isFile) {
         // On ajoute des fichiers
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
@@ -73,25 +72,24 @@ export class UploaderFichierComponent implements OnInit {
     }
   }
 
-  private filtrerParExtension(
-    fichiers: NgxFileDropEntry[]
-  ): NgxFileDropEntry[] {
-    if (this.accept == '*') {
-      return fichiers;
-    }
-    let extensions = this.accept.split(',');
-    return fichiers.filter((f) =>
-      extensions.some((extension) => f.fileEntry.name.endsWith(extension))
+  private extensionAcceptee(fichier: NgxFileDropEntry): boolean {
+    return (
+      this.accept == '*' ||
+      this.accept
+        .split(',')
+        .some((extension) => fichier.fileEntry.name.endsWith(extension))
     );
   }
 
   private addFichier(droppedFile: NgxFileDropEntry, file: File) {
+    const extensionAcceptee = this.extensionAcceptee(droppedFile);
     const fichier: Fichier = {
       nom: droppedFile.fileEntry.name,
       taille: file.size,
       tailleStr: tailleFichierToStr(file.size),
       ngxFileDropEntry: droppedFile,
       file: file,
+      extensionAccepte: extensionAcceptee,
     };
     this.fichiers.push(fichier);
     this.fichiers.sort((f1, f2) =>
@@ -99,27 +97,36 @@ export class UploaderFichierComponent implements OnInit {
         f2.ngxFileDropEntry.fileEntry.name
       )
     );
-
-    this.majTailleTotalFichiers(fichier.taille);
+    this.majTailleTotalFichiers();
   }
 
   deleteFichier(fichier: Fichier) {
     this.fichiers = this.fichiers.filter((f) => f != fichier);
-    this.majTailleTotalFichiers(-1 * fichier.taille);
+    this.majTailleTotalFichiers();
   }
 
-  private majTailleTotalFichiers(tailleNouveauFichier: number) {
-    this.tailleFichiers += tailleNouveauFichier;
+  private majTailleTotalFichiers() {
+    this.tailleFichiers =
+      this.fichiers.length == 0
+        ? 0
+        : this.fichiers
+            .map((fichier) => (fichier.extensionAccepte ? fichier.taille : 0))
+            .reduce((t1, t2) => t1 + t2);
     this.tailleFichiersStr = tailleFichierToStr(this.tailleFichiers);
 
-    const uploaderFichierOk =
+    const tailleFichierOk =
       this.fichiers.length > 0 &&
       (this.tailleMaxFichiers == null ||
         this.tailleFichiers <= this.tailleMaxFichiers);
 
+    const extensionFichiersOk = this.fichiers.every(
+      (fichier) => fichier.extensionAccepte
+    );
+
     this.listeFichiersModifiees.emit({
       fichiers: this.fichiers,
-      ok: uploaderFichierOk,
+      tailleFichierOk: tailleFichierOk,
+      extensionFichiersOk: extensionFichiersOk,
     });
   }
 }

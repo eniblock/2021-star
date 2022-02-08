@@ -27,8 +27,11 @@
             <i class="fas fa-times"></i>
           </button>
         </div>
-        <div class="float-end">
+        <div class="float-end" *ngIf="item.extensionAccepte">
           {{ item.tailleStr }}
+        </div>
+        <div class="float-end text-danger" *ngIf="!item.extensionAccepte">
+          Extension non accepté
         </div>
         <div>
           {{ item.nom }}

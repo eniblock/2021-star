@@ -11,8 +11,8 @@
     </app-uploader-fichier>
 
     <div class="col-12 text-center mt-3">
-      <button mat-raised-button color="primary" [disabled]="form.invalid || !uploaderFichiersOk" type="submit">Importer</button>
-      <p [class]="'mt-1 tailleMaxFichiers ' + ((!uploaderFichiersOk && listeFichiers.length > 0) ? 'text-danger' : '')">
+      <button mat-raised-button color="primary" [disabled]="form.invalid || !tailleFichierOk || !extensionFichiersOk" type="submit">Importer</button>
+      <p [class]="'mt-1 tailleMaxFichiers ' + ((!tailleFichierOk && listeFichiers.length > 0) ? 'text-danger' : '')">
         (Taille Maximum : {{ tailleMaxUploadFichiersStr }})
       </p>
     </div>

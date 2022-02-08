@@ -9,11 +9,11 @@ ingress:
 ##################################
 ## Peer configuration options    #
 ##################################
-# logging:
-#   level: debug
-#   peer: debug
-#   policies: debug
-#   msp: debug
+logging:
+  level: debug
+  peer: debug
+  policies: debug
+  msp: debug
 peer:
   tls:
     server:

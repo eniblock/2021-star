@@ -59,12 +59,12 @@ public class MarketParticipantDsoRepository {
      * @return la liste des markets participants DSO
      * @throws TechnicalException
      */
-    public List<MarketParticipantDso> getMarketParticipantDsos() throws TechnicalException {
-        try {
-            byte[] response = dsoContract.evaluateTransaction("GetAllMarketParticipantDSO");
-            return response != null ? Arrays.asList(objectMapper.readValue(response, MarketParticipantDso[].class)) : Collections.emptyList();
-        } catch (ContractException | IOException exception) {
-            throw new TechnicalException("Erreur lors de la récupération des market participant DSO", exception);
-        }
-    }
+//    public List<MarketParticipantDso> getMarketParticipantDsos() throws TechnicalException {
+//        try {
+//            byte[] response = dsoContract.evaluateTransaction("GetAllMarketParticipantDSO");
+//            return response != null ? Arrays.asList(objectMapper.readValue(response, MarketParticipantDso[].class)) : Collections.emptyList();
+//        } catch (ContractException | IOException exception) {
+//            throw new TechnicalException("Erreur lors de la récupération des market participant DSO", exception);
+//        }
+//    }
 }

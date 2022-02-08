@@ -30,10 +30,12 @@ import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -115,7 +117,8 @@ public class MarketParticipantService {
         if (CollectionUtils.isEmpty(importMarketParticipantTsoResult.getErrors()) && CollectionUtils.isEmpty(importMarketParticipantTsoResult.getDatas())) {
             throw new IllegalArgumentException(messageSource.getMessage("import.market.participant.file.data.not.empty", null, null));
         }
-        importMarketParticipantTsoResult.setDatas(marketParticipantTsoRepository.save(importMarketParticipantTsoResult.getDatas(), null));
+        importMarketParticipantTsoResult.setDatas(marketParticipantTsoRepository.saveMarketParticipantTso(importMarketParticipantTsoResult.getDatas(), null));
+//        importMarketParticipantTsoResult.setDatas(marketParticipantTsoRepository.save(importMarketParticipantTsoResult.getDatas(), null));
         return importMarketParticipantTsoResult;
     }
 
@@ -125,8 +128,7 @@ public class MarketParticipantService {
      * @return
      */
     public MarketParticipant getMarketParticipant() throws TechnicalException {
-        return new MarketParticipant(marketParticipantDsoRepository.getMarketParticipantDsos(),
-                marketParticipantTsoRepository.getMarketParticipantTsos());
+        return new MarketParticipant(Collections.emptyList(), marketParticipantTsoRepository.getMarketParticipantTsos());
     }
 
     /**

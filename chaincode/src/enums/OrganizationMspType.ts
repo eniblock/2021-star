@@ -3,7 +3,7 @@
  */
 
 export enum OrganizationTypeMsp {
-  RTE = 'RTEMSP',
-  ENEDIS = 'ENEDISMSP',
-  PRODUCER = 'PRODUCERMSP',
+  RTE = 'rte',
+  ENEDIS = 'enedis',
+  PRODUCER = 'producer',
 }

@@ -49,3 +49,11 @@ hyperledger-fabric:
     networkConfig: /var/hyperledger/peer/connection.yaml
     wallet: wallet
     identityId: User1@org
+logging:
+  level:
+    com:
+      syscom: INFO
+    org:
+      springframework: WARN
+      hyperledger:
+        fabric: WARN

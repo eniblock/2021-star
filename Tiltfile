@@ -152,7 +152,7 @@ for org in ['enedis', 'rte', 'producer']:
     local('./hlf/dev/ccp-generate.sh ' + org)
     local('./hlf/dev/user-generate.sh ' + org)
     k8s_yaml(local(kc_secret + '-n ' + org + ' generic star-peer-connection --from-file=connection.yaml=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/connection-' + org + '.yaml', quiet=True))
-    k8s_yaml(local(kc_secret + '-n ' + org + ' generic star-user-id --from-file=User1.id=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/User1.id', quiet=True))
+    k8s_yaml(local(kc_secret + '-n ' + org + ' generic star-user-id --from-file=Admin.id=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/Admin.id', quiet=True))
     k8s_yaml(local(kc_secret + '-n ' + org + ' generic starchannel --from-file=./hlf/' + env + '/generated/star.tx', quiet=True))
     k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt', quiet=True))
     for peer in ['peer1']:

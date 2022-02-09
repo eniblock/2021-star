@@ -1,11 +1,12 @@
 <div class="row">
 
-  <ngx-file-drop #ngxFileDrop [class]="'col-12 my-3 ' + className + ' ' + (!multiple && fichiers.length>  0 ? 'full' : '' )"
+  <ngx-file-drop #ngxFileDrop [class]="'col-12 my-3 ' + className + ' ' + (!multiple && fichiers.length>0 ? 'full' : '' )"
     [accept]="accept"
     [directory]="directory"
     [multiple]="multiple"
     (onFileDrop)="dropped($event)"
-    (click)="ngxFileDrop?.openFileSelector()">
+    [style]="!multiple && fichiers.length>0 ? '' : 'cursor: pointer;'"
+    (click)="!multiple && fichiers.length>0 ? null : ngxFileDrop?.openFileSelector()">
     
       <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
         <div class="d-flex flex-column">

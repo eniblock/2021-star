@@ -3,7 +3,7 @@
   Charger des données
 </h2>
 
-<div class="row my-3">
+<div class="row mt-3">
   <mat-form-field appearance="outline" class="col-md-6 col-xl-4">
     <mat-label>Type de données</mat-label>
     <mat-select [disabled]="!typesImport || typesImport.length==0" (selectionChange)="onSelectTypeImport($event.value)">
@@ -13,14 +13,9 @@
   </mat-form-field>
 </div>
 
-<div class="row mt-4" *ngIf="typeImportSelected == TypeImportEnum.OrdreDebutLimitation">
+<div class="row mt-4">
   <div class="col">
-    <app-form-ordre-debut-limitation></app-form-ordre-debut-limitation>
-  </div>
-</div>
-
-<div class="row mt-4" *ngIf="typeImportSelected == TypeImportEnum.OrdreFinLimitation">
-  <div class="col">
-    <app-form-ordre-fin-limitation></app-form-ordre-fin-limitation>
+    <app-form-ordre-debut-limitation *ngIf="typeImportSelected == TypeImportEnum.OrdreDebutLimitation"></app-form-ordre-debut-limitation>
+    <app-form-ordre-fin-limitation *ngIf="typeImportSelected == TypeImportEnum.OrdreFinLimitation"></app-form-ordre-fin-limitation>
   </div>
 </div>

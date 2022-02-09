@@ -58,6 +58,9 @@ export class FormOrdreFinLimitationFichierComponent implements OnInit {
   }
 
   public chargerANouveau() {
+    this.tailleFichierOk = false;
+    this.extensionFichiersOk = false;
+    this.listeFichiers = [];
     this.uploadEffectue = false;
   }
 }

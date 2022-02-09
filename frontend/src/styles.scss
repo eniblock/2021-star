@@ -203,3 +203,12 @@ h3 {
   background-color: white !important;
   border-radius: 15px !important;
 }
+
+// Stepper
+.mat-stepper-horizontal,
+.mat-stepper-vertical {
+  background-color: inherit !important;
+}
+.mat-horizontal-content-containe {
+  padding: 0px;
+}

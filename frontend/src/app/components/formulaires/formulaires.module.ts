@@ -13,6 +13,7 @@ import { MicroComponentsModule } from '../micro-components/micro-components.modu
 import { FormOrdreFinLimitationFichierComponent } from './form-ordre-fin-limitation/form-ordre-fin-limitation-fichier/form-ordre-fin-limitation-fichier.component';
 import { FormOrdreFinLimitationSaisieManuelleComponent } from './form-ordre-fin-limitation/form-ordre-fin-limitation-saisie-manuelle/form-ordre-fin-limitation-saisie-manuelle.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { MatRadioModule } from '@angular/material/radio';
     MatSelectModule,
     PipesModule,
     MatRadioModule,
+    MatStepperModule,
   ],
   declarations: [
     FormReseauRechercheComponent,

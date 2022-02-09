@@ -2,7 +2,7 @@ global:
   dev: true
 
 ingress:
-  enabled: false
+  enabled: true
   host: peer1.enedis.localhost
   secretName: hlf--peer1-tls
 

@@ -1,5 +1,5 @@
 ingress:
-  enabled: false
+  enabled: true
   host: peer2.enedis.testing.star.eniblock.fr
   secretName: hlf--peer2-tls
 

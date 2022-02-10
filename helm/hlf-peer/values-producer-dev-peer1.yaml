@@ -5,6 +5,8 @@ ingress:
   enabled: true
   host: peer1.producer.localhost
   secretName: hlf--peer1-tls
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 
 ##################################
 ## Peer configuration options    #
@@ -17,6 +19,7 @@ peer:
   gossip:
     # bootstrap: peer2-hlf-peer.producer:7051
     endpoint: peer1-hlf-peer.producer:7051
+    externalEndpoint: peer1.producer.localhost:443
   chaincodes:
     - name: star
       address: peer1-chaincode-hlf-chaincode:7777

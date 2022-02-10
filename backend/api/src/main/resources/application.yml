@@ -58,9 +58,9 @@ logging:
       hyperledger:
         fabric: WARN
 
-org:
-  hyperledger:
-    fabric:
-      sdk:
-        service_discovery:
-          as_localhost: true
+# org:
+#   hyperledger:
+#     fabric:
+#       sdk:
+#         service_discovery:
+#           as_localhost: true

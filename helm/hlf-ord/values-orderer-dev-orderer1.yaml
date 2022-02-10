@@ -2,6 +2,8 @@ ingress:
   enabled: true
   host: orderer1.orderer.localhost
   secretName: hlf--orderer1-tls
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 
 secrets:
   ord:

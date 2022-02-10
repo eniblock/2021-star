@@ -5,5 +5,10 @@ ingress:
   enabled: true
   host: "rte.localhost"
 
+backend:
+  peerConnectionOrganization: rte
+  instance: tso
+  # peerConnectionUser: Admin
+
 mail:
   dev: true

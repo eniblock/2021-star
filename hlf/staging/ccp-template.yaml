@@ -1,0 +1,35 @@
+---
+name: ${ORG}
+version: 1.0.0
+client:
+  organization: ${ORG}
+  connection:
+    timeout:
+      peer:
+        endorser: '300'
+organizations:
+  ${ORG}:
+    mspid: ${ORG}
+    peers:
+      - peer1.${ORG}
+      - peer2.${ORG}
+    certificateAuthorities:
+      - ca.${ORG}
+peers:
+  peer1.${ORG}:
+    url: grpcs://peer1-hlf-peer.${ORG}-staging:${P0PORT}
+    tlsCACerts:
+      pem: |
+          ${PEERPEM}
+  peer2.${ORG}:
+    url: grpcs://peer2-hlf-peer.${ORG}-staging:${P0PORT}
+    tlsCACerts:
+      pem: |
+          ${PEERPEM}
+certificateAuthorities:
+  ca.${ORG}:
+    caName: ca.${ORG}
+    tlsCACerts:
+      pem:
+        - |
+          ${CAPEM}

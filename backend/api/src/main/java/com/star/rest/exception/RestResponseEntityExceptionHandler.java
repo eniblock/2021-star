@@ -1,5 +1,6 @@
 package com.star.rest.exception;
 
+import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +22,14 @@ import java.time.LocalDateTime;
 @Slf4j
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(value = {BusinessException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<Object> handleBusinessException(BusinessException businessException, WebRequest request) {
+        logError(businessException);
+        return handleExceptionInternal(businessException, getErrorDetails(businessException, request),
+                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
 
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
     @ResponseStatus(HttpStatus.CONFLICT)

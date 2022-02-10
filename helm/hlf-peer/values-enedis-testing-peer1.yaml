@@ -1,5 +1,5 @@
 ingress:
-  enabled: false
+  enabled: true
   host: peer1.enedis.testing.star.eniblock.fr
   secretName: hlf--peer1-tls
 
@@ -14,6 +14,7 @@ peer:
   gossip:
     bootstrap: peer2-hlf-peer.enedis-testing:7051
     endpoint: peer1-hlf-peer.enedis-testing:7051
+    externalEndpoint: peer1.enedis.testing.star.eniblock.fr:443
   chaincodes:
     - name: star
       address: peer1-chaincode-hlf-chaincode:7777

@@ -9,8 +9,7 @@ import com.star.models.participant.dso.ImportMarketParticipantDsoResult;
 import com.star.models.participant.dso.MarketParticipantDso;
 import com.star.models.participant.tso.ImportMarketParticipantTsoResult;
 import com.star.models.participant.tso.MarketParticipantTso;
-import com.star.repository.MarketParticipantDsoRepository;
-import com.star.repository.MarketParticipantTsoRepository;
+import com.star.repository.MarketParticipantRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.csv.CSVFormat;
@@ -52,10 +51,8 @@ public class MarketParticipantService {
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
     @Autowired
-    private MarketParticipantDsoRepository marketParticipantDsoRepository;
+    private MarketParticipantRepository marketParticipantRepository;
 
-    @Autowired
-    private MarketParticipantTsoRepository marketParticipantTsoRepository;
     @Autowired
     private MessageSource messageSource;
 
@@ -85,7 +82,7 @@ public class MarketParticipantService {
         if (CollectionUtils.isEmpty(importMarketParticipantDsoResult.getErrors()) && CollectionUtils.isEmpty(importMarketParticipantDsoResult.getDatas())) {
             throw new IllegalArgumentException(messageSource.getMessage("import.market.participant.file.data.not.empty", null, null));
         }
-        importMarketParticipantDsoResult.setDatas(marketParticipantDsoRepository.save(importMarketParticipantDsoResult.getDatas(), null));
+        importMarketParticipantDsoResult.setDatas(marketParticipantRepository.saveMarketParticipantDso(importMarketParticipantDsoResult.getDatas()));
         return importMarketParticipantDsoResult;
     }
 
@@ -115,7 +112,7 @@ public class MarketParticipantService {
         if (CollectionUtils.isEmpty(importMarketParticipantTsoResult.getErrors()) && CollectionUtils.isEmpty(importMarketParticipantTsoResult.getDatas())) {
             throw new IllegalArgumentException(messageSource.getMessage("import.market.participant.file.data.not.empty", null, null));
         }
-        importMarketParticipantTsoResult.setDatas(marketParticipantTsoRepository.save(importMarketParticipantTsoResult.getDatas(), null));
+        importMarketParticipantTsoResult.setDatas(marketParticipantRepository.saveMarketParticipantTso(importMarketParticipantTsoResult.getDatas()));
         return importMarketParticipantTsoResult;
     }
 
@@ -125,8 +122,7 @@ public class MarketParticipantService {
      * @return
      */
     public MarketParticipant getMarketParticipant() throws TechnicalException {
-        return new MarketParticipant(marketParticipantDsoRepository.getMarketParticipantDsos(),
-                marketParticipantTsoRepository.getMarketParticipantTsos());
+        return new MarketParticipant(marketParticipantRepository.getMarketParticipantDsos(), marketParticipantRepository.getMarketParticipantTsos());
     }
 
     /**

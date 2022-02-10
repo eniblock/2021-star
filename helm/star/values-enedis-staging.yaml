@@ -1,3 +1,6 @@
 ingress:
   enabled: true
   host: "enedis.staging.star.eniblock.fr"
+backend:
+  peerConnectionOrganization: enedis
+  instance: dso

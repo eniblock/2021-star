@@ -1,11 +1,19 @@
+global:
+  dev: true
+
 ingress:
-  enabled: false
+  enabled: true
   host: peer1.rte.localhost
   secretName: hlf--peer1-tls
 
 ##################################
 ## Peer configuration options    #
 ##################################
+logging:
+  level: debug
+  peer: debug
+  policies: debug
+  msp: debug
 peer:
   tls:
     server:
@@ -14,6 +22,7 @@ peer:
   gossip:
     # bootstrap: peer2-hlf-peer.rte:7051
     endpoint: peer1-hlf-peer.rte:7051
+    externalEndpoint: peer1.rte.localhost:443
   chaincodes:
     - name: star
       address: peer1-chaincode-hlf-chaincode:7777

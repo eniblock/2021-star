@@ -1,3 +1,6 @@
 ingress:
   enabled: true
   host: "producer.testing.star.eniblock.fr"
+backend:
+  peerConnectionOrganization: producer
+  instance: producer

@@ -5,5 +5,9 @@ ingress:
   enabled: true
   host: "enedis.localhost"
 
+backend:
+  peerConnectionOrganization: enedis
+  instance: dso
+
 mail:
   dev: true

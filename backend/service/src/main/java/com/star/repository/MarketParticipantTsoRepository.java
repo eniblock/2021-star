@@ -127,19 +127,4 @@ public class MarketParticipantTsoRepository {
         }
     }
 
-
-//    /**
-//     * Permet de consulter la liste des markets participants TSO
-//     *
-//     * @return la liste des markets participants TSO
-//     * @throws TechnicalException
-//     */
-//    public List<MarketParticipantTso> getMarketParticipantTsos() throws TechnicalException {
-//        try {
-//            byte[] response = contract.evaluateTransaction("GetAllSystemOperator");
-//            return response != null ? Arrays.asList(objectMapper.readValue(response, MarketParticipantTso[].class)) : Collections.emptyList();
-//        } catch (ContractException | IOException exception) {
-//            throw new TechnicalException("Erreur lors de la récupération des market participant TSO", exception);
-//        }
-//    }
 }

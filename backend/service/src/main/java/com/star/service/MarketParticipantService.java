@@ -82,7 +82,7 @@ public class MarketParticipantService {
         if (CollectionUtils.isEmpty(importMarketParticipantDsoResult.getErrors()) && CollectionUtils.isEmpty(importMarketParticipantDsoResult.getDatas())) {
             throw new IllegalArgumentException(messageSource.getMessage("import.market.participant.file.data.not.empty", null, null));
         }
-        importMarketParticipantDsoResult.setDatas(marketParticipantRepository.saveMarketParticipantDso(importMarketParticipantDsoResult.getDatas(), null));
+        importMarketParticipantDsoResult.setDatas(marketParticipantRepository.saveMarketParticipantDso(importMarketParticipantDsoResult.getDatas()));
         return importMarketParticipantDsoResult;
     }
 
@@ -112,7 +112,7 @@ public class MarketParticipantService {
         if (CollectionUtils.isEmpty(importMarketParticipantTsoResult.getErrors()) && CollectionUtils.isEmpty(importMarketParticipantTsoResult.getDatas())) {
             throw new IllegalArgumentException(messageSource.getMessage("import.market.participant.file.data.not.empty", null, null));
         }
-        importMarketParticipantTsoResult.setDatas(marketParticipantRepository.saveMarketParticipantTso(importMarketParticipantTsoResult.getDatas(), null));
+        importMarketParticipantTsoResult.setDatas(marketParticipantRepository.saveMarketParticipantTso(importMarketParticipantTsoResult.getDatas()));
         return importMarketParticipantTsoResult;
     }
 

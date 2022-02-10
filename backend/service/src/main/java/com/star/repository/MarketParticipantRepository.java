@@ -48,15 +48,14 @@ public class MarketParticipantRepository {
      * Permet de stocker les markets participants DSO dans la blockchain
      *
      * @param marketParticipantDsos liste des markets participants DSO à enregistrer dans la blockchain
-     * @param userId
      * @return
      * @throws TechnicalException
      */
-    public List<MarketParticipantDso> saveMarketParticipantDso(List<MarketParticipantDso> marketParticipantDsos, String userId) throws TechnicalException {
+    public List<MarketParticipantDso> saveMarketParticipantDso(List<MarketParticipantDso> marketParticipantDsos) throws TechnicalException {
         if (CollectionUtils.isEmpty(marketParticipantDsos)) {
             return Collections.emptyList();
         }
-        log.info("Utilisateur {}. Sauvegarde des markets participants dso : {}", userId, marketParticipantDsos);
+        log.info("Sauvegarde des markets participants dso : {}", marketParticipantDsos);
         for (MarketParticipantDso marketParticipantDso : marketParticipantDsos) {
             if (marketParticipantDso != null) {
                 try {
@@ -114,15 +113,14 @@ public class MarketParticipantRepository {
      * Permet de stocker les markets participants TSO dans la blockchain
      *
      * @param marketParticipantTsos liste des markets participants TSO à enregistrer dans la blockchain
-     * @param userId
      * @return
      * @throws TechnicalException
      */
-    public List<MarketParticipantTso> saveMarketParticipantTso(List<MarketParticipantTso> marketParticipantTsos, String userId) throws TechnicalException {
+    public List<MarketParticipantTso> saveMarketParticipantTso(List<MarketParticipantTso> marketParticipantTsos) throws TechnicalException {
         if (CollectionUtils.isEmpty(marketParticipantTsos)) {
             return Collections.emptyList();
         }
-        log.info("Utilisateur {}. Sauvegarde des markets participants tso : {}", userId, marketParticipantTsos);
+        log.info("Sauvegarde des markets participants tso : {}", marketParticipantTsos);
         for (MarketParticipantTso marketParticipantTso : marketParticipantTsos) {
             if (marketParticipantTso != null) {
                 try {

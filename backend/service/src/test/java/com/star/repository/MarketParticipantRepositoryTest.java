@@ -26,7 +26,6 @@ import static org.mockito.Mockito.verifyNoInteractions;
  */
 public class MarketParticipantRepositoryTest extends AbstractTest {
 
-    private static final String USER_ID = "USER_ID";
     private static final String DSO_MARKET_PARTICIPANT_MRID = "ENEDIS02EIC";
     private static final String DSO_MARKET_PARTICIPANT_NAME = "ENEDIS";
     private static final String DSO_MARKET_PARTICIPANT_ROLE_TYPE = "A50";
@@ -49,7 +48,7 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
         // GIVEN
 
         // WHEN
-        marketParticipantRepository.saveMarketParticipantDso(Collections.emptyList(), USER_ID);
+        marketParticipantRepository.saveMarketParticipantDso(Collections.emptyList());
 
         // THEN
         verifyNoInteractions(contract);
@@ -64,7 +63,7 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
         marketParticipantDso.setDsoMarketParticipantRoleType(DSO_MARKET_PARTICIPANT_ROLE_TYPE);
 
         // WHEN
-        marketParticipantRepository.saveMarketParticipantDso(Arrays.asList(marketParticipantDso), USER_ID);
+        marketParticipantRepository.saveMarketParticipantDso(Arrays.asList(marketParticipantDso));
 
         // THEN
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
@@ -91,7 +90,7 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
         // GIVEN
 
         // WHEN
-        marketParticipantRepository.saveMarketParticipantTso(Collections.emptyList(), USER_ID);
+        marketParticipantRepository.saveMarketParticipantTso(Collections.emptyList());
 
         // THEN
         verifyNoInteractions(contract);
@@ -106,7 +105,7 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
         marketParticipantTso.setTsoMarketParticipantRoleType(TSO_MARKET_PARTICIPANT_ROLE_TYPE);
 
         // WHEN
-        marketParticipantRepository.saveMarketParticipantTso(Arrays.asList(marketParticipantTso), USER_ID);
+        marketParticipantRepository.saveMarketParticipantTso(Arrays.asList(marketParticipantTso));
 
         // THEN
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),

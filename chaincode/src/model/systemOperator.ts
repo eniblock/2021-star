@@ -7,7 +7,7 @@ export class SystemOperator {
 
     public static readonly schema = Yup.object().shape({
         docType: Yup.string().notRequired(),
-        systemOperatorMarketParticipantMrId: Yup.string().required(
+        systemOperatorMarketParticipantMrid: Yup.string().required(
             'systemOperatorMarketParticipantMrid is a compulsory string.'),
         systemOperatorMarketParticipantName: Yup.string().required(
             'marketParticipantName is a compulsory string.'),

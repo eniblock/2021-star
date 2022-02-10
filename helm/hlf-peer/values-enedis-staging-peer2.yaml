@@ -1,5 +1,5 @@
 ingress:
-  enabled: false
+  enabled: true
   host: peer2.enedis.staging.star.eniblock.fr
   secretName: hlf--peer2-tls
 
@@ -14,6 +14,7 @@ peer:
   gossip:
     bootstrap: peer1-hlf-peer.enedis-staging:7051
     endpoint: peer2-hlf-peer.enedis-staging:7051
+    externalEndpoint: peer2.enedis.staging.star.eniblock.fr:443
   chaincodes:
     - name: star
       address: peer2-chaincode-hlf-chaincode:7777

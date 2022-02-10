@@ -77,23 +77,23 @@ export class SystemOperatorController {
             {strict: true, abortEarly: false},
         );
 
-        if (!identity.includes(systemOperatorInput.systemOperatorMarketParticipantName)) {
+        if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorInput.systemOperatorMarketParticipantName}`);
         }
 
-        const sompAsBytes = await ctx.stub.getState(systemOperatorInput.systemOperatorMarketParticipantMrid);
+        const sompAsBytes = await ctx.stub.getState(systemOperatorInput.systemOperatorMarketParticipantMrId);
         if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`${systemOperatorInput.systemOperatorMarketParticipantMrid} does not exist`);
+            throw new Error(`${systemOperatorInput.systemOperatorMarketParticipantMrId} does not exist`);
         }
         systemOperatorInput.docType = 'systemOperator';
 
         await ctx.stub.putState(
-            systemOperatorInput.systemOperatorMarketParticipantMrid,
+            systemOperatorInput.systemOperatorMarketParticipantMrId,
             Buffer.from(JSON.stringify(systemOperatorInput)),
         );
         console.info(
             '============= END : Update %s System Operator Market Participant ===========',
-            systemOperatorInput.systemOperatorMarketParticipantMrid,
+            systemOperatorInput.systemOperatorMarketParticipantMrId,
         );
     }
 

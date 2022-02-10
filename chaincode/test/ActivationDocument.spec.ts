@@ -60,7 +60,7 @@ describe('Star Tests ActivationDocument', () => {
                         const queryStr = queryJson.selector.docType
                         // console.log('queryStr=', queryStr , 'objStr=', objStr);
                         if (queryStr == objStr) {
-                            // if (queryJson.selector.systemOperatorMarketParticipantMrid) {
+                            // if (queryJson.selector.systemOperatorMarketParticipantMrId) {
                                 const queryR = queryJson.selector.receiverMarketParticipantMrid;
                                 // console.log('queryR=', queryR);
                                 const objR = obJson.receiverMarketParticipantMrid;
@@ -132,7 +132,7 @@ describe('Star Tests ActivationDocument', () => {
         //     chaincodeStub.putState.rejects('failed inserting key');
 
         //     let star = new Star();
-        //     chaincodeStub.MspiID = 'RTEMSP';
+        //     chaincodeStub.MspiID = 'rte';
         //     try {
         //         await star.CreateSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
         //         // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
@@ -145,7 +145,7 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR on CreateActivationDocument NON-JSON Value', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             try {
                 await star.CreateActivationDocument(transactionContext, 'RTE01EIC');
             } catch(err) {
@@ -156,13 +156,13 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR CreateActivationDocument missing originAutomataRegisteredResourceMrid', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             // `{
-            //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", 
-            //     \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", 
-            //     \"registeredResourceMrid\": \"12345678901234\", 
+            //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\",
+            //     \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\",
+            //     \"registeredResourceMrid\": \"12345678901234\",
             //     \"measurementUnitName\": \"KW\",
             //     \"messageType\": \"string\",
             //     \"businessType\": \"string\",
@@ -180,8 +180,8 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR CreateActivationDocument missing registeredResourceMrid', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
@@ -193,8 +193,8 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR CreateActivationDocument missing measurementUnitName', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
@@ -206,8 +206,8 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR CreateActivationDocument missing messageType', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false}`);
@@ -219,8 +219,8 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR CreateActivationDocument missing businessType', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"orderType\": \"string\",\"orderEnd\": false}`);
@@ -232,8 +232,8 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR CreateActivationDocument missing orderType', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"businessType\": \"string\", \"orderEnd\": false}`);
@@ -245,8 +245,8 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR CreateActivationDocument missing orderEnd', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"registeredResourceMrid\": \"12345678901234\", \"measurementUnitName\": \"KW\", \"messageType\": \"string\", \"businessType\": \"string\", \"orderType\": \"string\"}`);
@@ -285,7 +285,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
-                registeredResourceMrid: '12345678901234', // FK2 
+                registeredResourceMrid: '12345678901234', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -304,14 +304,14 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             // await star.CreateSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A50');
             // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisation, ENEDISMSP does not have write access for MW orders');
+                expect(err.message).to.equal('Organisation, enedis does not have write access for MW orders');
             }
         });
 
@@ -319,9 +319,9 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const order: ActivationDocument = {
@@ -347,9 +347,9 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             // await star.CreateSystemOperator(transactionContext, '17V000000992746D', 'ENEDIS', 'A50');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
@@ -362,9 +362,9 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const order: ActivationDocument = {
@@ -390,8 +390,8 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A50\"}');
             // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
@@ -405,9 +405,9 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const order: ActivationDocument = {
@@ -433,9 +433,9 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
@@ -448,9 +448,9 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const order: ActivationDocument = {
@@ -463,7 +463,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -477,9 +477,9 @@ describe('Star Tests ActivationDocument', () => {
             }
             console.info('typeof=', new Date().toString());
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
@@ -493,9 +493,9 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const order: ActivationDocument = {
@@ -508,7 +508,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 // orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -521,7 +521,7 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
@@ -536,7 +536,7 @@ describe('Star Tests ActivationDocument', () => {
     describe('Test CreateActivationDocument Début HTB RTE', () => {
         it('should return ERROR on CreateActivationDocument NON-JSON Value', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             try {
                 await star.CreateActivationDocument(transactionContext, 'RTE01EIC');
             } catch(err) {
@@ -547,7 +547,7 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR CreateActivationDocument wrong JSON', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             const errors = [
                 'activationDocumentMrid is a compulsory string',
                 'businessType is required',
@@ -558,7 +558,7 @@ describe('Star Tests ActivationDocument', () => {
                 'originAutomataRegisteredResourceMrid is required',
                 'registeredResourceMrid is required'
               ];
-              
+
             try {
                 await star.CreateActivationDocument(transactionContext, `{\"riginAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", \"egisteredResourceMrid\": \"12345678901234\", \"easurementUnitName\": \"KW\",\"essageType\": \"string\",\"usinessType\": \"string\",\"rderType\": \"string\",\"rderEnd\": false}`);
             } catch(err) {
@@ -577,12 +577,12 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR CreateActivationDocument missing activationDocumentMrid', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
 
             // `{
-            //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\", 
-            //     \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\", 
-            //     \"registeredResourceMrid\": \"12345678901234\", 
+            //     \"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\",
+            //     \"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\",
+            //     \"registeredResourceMrid\": \"12345678901234\",
             //     \"measurementUnitName\": \"KW\",
             //     \"messageType\": \"string\",
             //     \"businessType\": \"string\",
@@ -603,7 +603,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2 
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
@@ -622,14 +622,14 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             // await star.CreateSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A50');
             // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisation, RTEMSP does not have write access for KW orders');
+                expect(err.message).to.equal('Organisation, rte does not have write access for KW orders');
             }
         });
 
@@ -638,7 +638,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2 
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -657,7 +657,7 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             // await star.CreateSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A50');
             // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             try {
@@ -680,25 +680,25 @@ describe('Star Tests ActivationDocument', () => {
                 siteName: 'Ferme éolienne de Genonville',
                 substationMrid: 'GDO A4RTD',
                 substationName: 'CIVRAY',
-                // marketEvaluationPointMrid: 'CodePPE', // optional 
-                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
-                siteAdminMrid: '489 981 029', // optional 
-                siteLocation: 'Biscarosse', // optional 
-                siteIecCode: 'S7X0000013077478', // optional 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
-                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+                // marketEvaluationPointMrid: 'CodePPE', // optional
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional
+                siteAdminMrid: '489 981 029', // optional
+                siteLocation: 'Biscarosse', // optional
+                siteIecCode: 'S7X0000013077478', // optional
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X0000013097455\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097455\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
                 originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2 
+                registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -717,8 +717,8 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
@@ -732,9 +732,9 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const order: ActivationDocument = {
@@ -747,7 +747,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -760,9 +760,9 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
             let ret = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
@@ -789,9 +789,9 @@ describe('Star Tests ActivationDocument', () => {
 
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const orderA: ActivationDocument = {
@@ -803,7 +803,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -816,14 +816,14 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
-    
+
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
                 originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
@@ -833,7 +833,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -846,9 +846,9 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderB));
 
             let ret = await star.GetActivationDocumentByProducer(transactionContext, orderA.receiverMarketParticipantMrid);
@@ -875,7 +875,7 @@ describe('Star Tests ActivationDocument', () => {
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V0000009927454",
                     startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-                }, 
+                },
                 {
                     activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
                     businessType: "string",
@@ -907,14 +907,14 @@ describe('Star Tests ActivationDocument', () => {
                 chaincodeStub.states[key] = 'non-json-value';
             });
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746F\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746F\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
 
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const orderA: ActivationDocument = {
@@ -926,7 +926,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -939,14 +939,14 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
-    
+
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
                 originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
@@ -956,7 +956,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -969,8 +969,8 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderB));
 
             let retB = await star.GetActivationDocumentByProducer(transactionContext, orderB.receiverMarketParticipantMrid);
@@ -1021,9 +1021,9 @@ describe('Star Tests ActivationDocument', () => {
 
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const orderA: ActivationDocument = {
@@ -1035,7 +1035,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1048,14 +1048,14 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
-    
+
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
                 originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
@@ -1065,7 +1065,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1078,9 +1078,9 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderB));
 
             let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, orderA.senderMarketParticipantMrid);
@@ -1120,14 +1120,14 @@ describe('Star Tests ActivationDocument', () => {
                 chaincodeStub.states[key] = 'non-json-value';
             });
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746L\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746L\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
 
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const orderA: ActivationDocument = {
@@ -1139,7 +1139,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1152,14 +1152,14 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
-    
+
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
                 originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
@@ -1169,7 +1169,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1182,7 +1182,7 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             // await star.CreateSystemOperator(transactionContext, '17V0000009927454', 'RTE', 'A49');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderB));
 
@@ -1213,7 +1213,7 @@ describe('Star Tests ActivationDocument', () => {
                     startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 },
                 {
-              
+
                     activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
                     businessType: "string",
                     docType: "activationDocument",
@@ -1249,15 +1249,15 @@ describe('Star Tests ActivationDocument', () => {
                 chaincodeStub.states[key] = 'non-json-value';
             });
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"1\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"1\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             // await star.CreateSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
             // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(site));
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
 
             // await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
@@ -1271,7 +1271,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: true,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1296,9 +1296,9 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const order: ActivationDocument = {
@@ -1311,7 +1311,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1324,9 +1324,9 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
             const orderEnd: ActivationDocument = {
@@ -1339,7 +1339,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: true,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1365,9 +1365,9 @@ describe('Star Tests ActivationDocument', () => {
 
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const order: ActivationDocument = {
@@ -1380,7 +1380,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: false,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1393,9 +1393,9 @@ describe('Star Tests ActivationDocument', () => {
                 subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
             const orderEnd: ActivationDocument = {
@@ -1408,7 +1408,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: true,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1435,12 +1435,12 @@ describe('Star Tests ActivationDocument', () => {
         it('should return SUCCESS CreateActivationDocument couple HTA with BB reconciliation', async () => {
             let star = new Star();
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746Y\",\"systemOperatorMarketParticipantName\": \"ENEDis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746Y\",\"marketParticipantName\": \"ENEDis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',marketEvaluationPointMrid: 'string',schedulingEntityRegisteredResourceMrid:'string',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(site));
             const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
@@ -1470,7 +1470,7 @@ describe('Star Tests ActivationDocument', () => {
             }
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderBegin));
 
-            // chaincodeStub.MspiID = 'ENEDISMSP';
+            // chaincodeStub.MspiID = 'enedis';
             // await star.CreateSystemOperator(transactionContext, '17V0000009927454', 'Enedis', 'A50');
             // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             // await star.CreateSite(transactionContext, JSON.stringify(site));
@@ -1498,7 +1498,7 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderCouple));
 
             let retBegin = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
@@ -1510,12 +1510,12 @@ describe('Star Tests ActivationDocument', () => {
         it('should return SUCCESS CreateActivationDocument couple HTA with BB reconciliation for coverage', async () => {
             let star = new Star();
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746Y\",\"systemOperatorMarketParticipantName\": \"ENEDis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746Y\",\"marketParticipantName\": \"ENEDis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',marketEvaluationPointMrid: 'string',schedulingEntityRegisteredResourceMrid:'string',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(site));
             const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
@@ -1545,7 +1545,7 @@ describe('Star Tests ActivationDocument', () => {
             }
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderBegin));
 
-            // chaincodeStub.MspiID = 'ENEDISMSP';
+            // chaincodeStub.MspiID = 'enedis';
             // await star.CreateSystemOperator(transactionContext, '17V0000009927454', 'Enedis', 'A50');
             // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             // await star.CreateSite(transactionContext, JSON.stringify(site));
@@ -1573,9 +1573,9 @@ describe('Star Tests ActivationDocument', () => {
                 subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderCouple));
-            
+
             orderBegin.subOrderList= ['8c56459a-794a-4ed1-a7f6-33b0064508f2'];
             let retBegin = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
             expect(retBegin).to.eql( Object.assign({docType: 'activationDocument', reconciliation: false}, orderBegin ));
@@ -1588,12 +1588,12 @@ describe('Star Tests ActivationDocument', () => {
         it('should return SUCCESS CreateActivationDocument couple HTA with BB and BE reconciliation', async () => {
             let star = new Star();
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746Y\",\"systemOperatorMarketParticipantName\": \"ENEDis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746Y\",\"marketParticipantName\": \"ENEDis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',marketEvaluationPointMrid: 'string',schedulingEntityRegisteredResourceMrid:'string',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(site));
             const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
@@ -1623,7 +1623,7 @@ describe('Star Tests ActivationDocument', () => {
             }
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderBegin));
 
-            // chaincodeStub.MspiID = 'ENEDISMSP';
+            // chaincodeStub.MspiID = 'enedis';
             // await star.CreateSystemOperator(transactionContext, '17V0000009927454', 'Enedis', 'A50');
             // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             // await star.CreateSite(transactionContext, JSON.stringify(site));
@@ -1651,7 +1651,7 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderCouple));
 
             const orderEnd: ActivationDocument = {
@@ -1663,7 +1663,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: true,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1675,7 +1675,7 @@ describe('Star Tests ActivationDocument', () => {
                 // reconciliation: false,
                 // subOrderList: [],
             }
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderEnd));
 
             let retEnd = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f3")).toString());
@@ -1689,12 +1689,12 @@ describe('Star Tests ActivationDocument', () => {
         it('should return SUCCESS CreateActivationDocument couple HTA with BB and BE reconciliation for coverage', async () => {
             let star = new Star();
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746Y\",\"systemOperatorMarketParticipantName\": \"ENEDis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'enedis';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746Y\",\"marketParticipantName\": \"ENEDis\",\"marketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            chaincodeStub.MspiID = 'rte';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',marketEvaluationPointMrid: 'string',schedulingEntityRegisteredResourceMrid:'string',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(site));
             const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
@@ -1724,7 +1724,7 @@ describe('Star Tests ActivationDocument', () => {
             }
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderBegin));
 
-            // chaincodeStub.MspiID = 'ENEDISMSP';
+            // chaincodeStub.MspiID = 'enedis';
             // await star.CreateSystemOperator(transactionContext, '17V0000009927454', 'Enedis', 'A50');
             // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
             // await star.CreateSite(transactionContext, JSON.stringify(site));
@@ -1752,7 +1752,7 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             const siteB: Site = {meteringPointMrid: 'PDL00000000289769',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(siteB));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderCouple));
@@ -1766,7 +1766,7 @@ describe('Star Tests ActivationDocument', () => {
                 businessType: 'string',
                 orderType: 'string',
                 orderEnd: true,
-    
+
                 orderValue: '1',
                 startCreatedDateTime: "2021-10-22T10:29:10.000Z",
                 // testDateTime: 'Date', // Test DELETE ME //////////////////////
@@ -1778,7 +1778,7 @@ describe('Star Tests ActivationDocument', () => {
                 // reconciliation: false,
                 // subOrderList: [],
             }
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderEnd));
 
             let retEnd = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f3")).toString());

@@ -8,5 +8,5 @@ export enum OrganizationTypeMsp {
   TSO = 'TSOMSP',
   DSO = 'DSOMSP',
   BSP = 'BSPMSP',
-  PRODUCER = 'PRODUCERMSP'
+  PRODUCER = 'producer'
 }

@@ -27,11 +27,8 @@ public class AbstractTest {
     @MockBean
     protected Gateway gateway;
 
-    @MockBean(name = "dsoContract")
-    protected Contract dsoContract;
-
-    @MockBean(name = "tsoContract")
-    protected Contract tsoContract;
+    @MockBean
+    protected Contract contract;
 
     @MockBean
     protected Wallet wallet;

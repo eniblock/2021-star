@@ -90,6 +90,11 @@ function generate_secrets {
     echo ---
     kubectl create secret --dry-run=client -o yaml -n enedis-staging generic hlf--peer2-adminkey --from-file=cert.pem=./hlf/staging/generated/crypto-config/peerOrganizations/enedis/users/Admin@enedis/msp/keystore/priv_sk
 
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n enedis-staging generic star-peer-connection --from-file=connection.yaml=./hlf/staging/generated/crypto-config/peerOrganizations/enedis/connection-enedis.yaml
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n enedis-staging generic star-user-id --from-file=User1.id=./hlf/staging/generated/crypto-config/peerOrganizations/enedis/User1.id
+
     # rte
     echo ---
     kubectl create  --dry-run=client -o yaml namespace rte-staging
@@ -136,6 +141,11 @@ function generate_secrets {
     echo ---
     kubectl create secret --dry-run=client -o yaml -n rte-staging generic hlf--peer2-adminkey --from-file=cert.pem=./hlf/staging/generated/crypto-config/peerOrganizations/rte/users/Admin@rte/msp/keystore/priv_sk
 
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n rte-staging generic star-peer-connection --from-file=connection.yaml=./hlf/staging/generated/crypto-config/peerOrganizations/rte/connection-rte.yaml
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n rte-staging generic star-user-id --from-file=User1.id=./hlf/staging/generated/crypto-config/peerOrganizations/rte/User1.id
+
     # producer
     echo ---
     kubectl create  --dry-run=client -o yaml namespace producer-staging
@@ -179,6 +189,11 @@ function generate_secrets {
     kubectl create secret --dry-run=client -o yaml -n producer-staging generic hlf--peer2-admincert --from-file=cert.pem=./hlf/staging/generated/crypto-config/peerOrganizations/producer/users/Admin@producer/msp/signcerts/Admin@producer-cert.pem
     echo ---
     kubectl create secret --dry-run=client -o yaml -n producer-staging generic hlf--peer2-adminkey --from-file=cert.pem=./hlf/staging/generated/crypto-config/peerOrganizations/producer/users/Admin@producer/msp/keystore/priv_sk
+
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n producer-staging generic star-peer-connection --from-file=connection.yaml=./hlf/staging/generated/crypto-config/peerOrganizations/producer/connection-producer.yaml
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n producer-staging generic star-user-id --from-file=User1.id=./hlf/staging/generated/crypto-config/peerOrganizations/producer/User1.id
 }
 
 generate_secrets > secrets-staging.yaml

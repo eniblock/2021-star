@@ -1,3 +1,6 @@
 ingress:
   enabled: true
   host: "rte.staging.star.eniblock.fr"
+backend:
+  peerConnectionOrganization: rte
+  instance: tso

@@ -1,5 +1,8 @@
+global:
+  dev: true
+
 ingress:
-  enabled: false
+  enabled: true
   host: peer1.producer.localhost
   secretName: hlf--peer1-tls
 
@@ -14,6 +17,7 @@ peer:
   gossip:
     # bootstrap: peer2-hlf-peer.producer:7051
     endpoint: peer1-hlf-peer.producer:7051
+    externalEndpoint: peer1.producer.localhost:443
   chaincodes:
     - name: star
       address: peer1-chaincode-hlf-chaincode:7777

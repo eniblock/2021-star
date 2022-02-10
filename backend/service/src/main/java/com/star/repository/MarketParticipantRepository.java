@@ -65,8 +65,10 @@ public class MarketParticipantRepository {
                     systemOperator.setMarketParticipantName(marketParticipantDso.getDsoMarketParticipantName());
                     systemOperator.setMarketParticipantRoleType(marketParticipantDso.getDsoMarketParticipantRoleType());
                     contract.submitTransaction(CREATE_SYSTEM_OPERATOR, objectMapper.writeValueAsString(systemOperator));
-                } catch (ContractException | TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur lors de création du market participant DSO", exception);
+                } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
+                    throw new TechnicalException("Erreur technique lors de création du market participant dso", exception);
+                } catch (ContractException contractException) {
+                    throw new BusinessException(contractException.getMessage());
                 }
             }
         }
@@ -100,8 +102,10 @@ public class MarketParticipantRepository {
                 marketParticipantDso.setDsoMarketParticipantRoleType(systemOperator.getMarketParticipantRoleType());
                 return marketParticipantDso;
             }).collect(Collectors.toList());
-        } catch (ContractException | IOException exception) {
-            throw new TechnicalException("Erreur lors de la récupération des market participant DSO", exception);
+        } catch (IOException exception) {
+            throw new TechnicalException("Erreur technique lors de la récupération des market participant DSO", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
         }
     }
 

@@ -61,9 +61,9 @@ public class MarketParticipantRepository {
             if (marketParticipantDso != null) {
                 try {
                     SystemOperator systemOperator = new SystemOperator();
-                    systemOperator.setSystemOperatorMarketParticipantMrId(marketParticipantDso.getDsoMarketParticipantMrid());
-                    systemOperator.setMarketParticipantName(marketParticipantDso.getDsoMarketParticipantName());
-                    systemOperator.setMarketParticipantRoleType(marketParticipantDso.getDsoMarketParticipantRoleType());
+                    systemOperator.setSystemOperatorMarketParticipantMrid(marketParticipantDso.getDsoMarketParticipantMrid());
+                    systemOperator.setSystemOperatorMarketParticipantName(marketParticipantDso.getDsoMarketParticipantName());
+                    systemOperator.setSystemOperatorMarketParticipantRoleType(marketParticipantDso.getDsoMarketParticipantRoleType());
                     contract.submitTransaction(CREATE_SYSTEM_OPERATOR, objectMapper.writeValueAsString(systemOperator));
                 } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
                     throw new TechnicalException("Erreur technique lors de création du market participant dso", exception);
@@ -97,9 +97,9 @@ public class MarketParticipantRepository {
             }
             return systemOperators.stream().map(systemOperator -> {
                 MarketParticipantDso marketParticipantDso = new MarketParticipantDso();
-                marketParticipantDso.setDsoMarketParticipantMrid(systemOperator.getSystemOperatorMarketParticipantMrId());
-                marketParticipantDso.setDsoMarketParticipantName(systemOperator.getMarketParticipantName());
-                marketParticipantDso.setDsoMarketParticipantRoleType(systemOperator.getMarketParticipantRoleType());
+                marketParticipantDso.setDsoMarketParticipantMrid(systemOperator.getSystemOperatorMarketParticipantMrid());
+                marketParticipantDso.setDsoMarketParticipantName(systemOperator.getSystemOperatorMarketParticipantName());
+                marketParticipantDso.setDsoMarketParticipantRoleType(systemOperator.getSystemOperatorMarketParticipantRoleType());
                 return marketParticipantDso;
             }).collect(Collectors.toList());
         } catch (IOException exception) {
@@ -127,9 +127,9 @@ public class MarketParticipantRepository {
             if (marketParticipantTso != null) {
                 try {
                     SystemOperator systemOperator = new SystemOperator();
-                    systemOperator.setSystemOperatorMarketParticipantMrId(marketParticipantTso.getTsoMarketParticipantMrid());
-                    systemOperator.setMarketParticipantName(marketParticipantTso.getTsoMarketParticipantName());
-                    systemOperator.setMarketParticipantRoleType(marketParticipantTso.getTsoMarketParticipantRoleType());
+                    systemOperator.setSystemOperatorMarketParticipantMrid(marketParticipantTso.getTsoMarketParticipantMrid());
+                    systemOperator.setSystemOperatorMarketParticipantName(marketParticipantTso.getTsoMarketParticipantName());
+                    systemOperator.setSystemOperatorMarketParticipantRoleType(marketParticipantTso.getTsoMarketParticipantRoleType());
                     contract.submitTransaction(CREATE_SYSTEM_OPERATOR, objectMapper.writeValueAsString(systemOperator));
                 } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
                     throw new TechnicalException("Erreur technique lors de création du market participant TSO", exception);
@@ -163,9 +163,9 @@ public class MarketParticipantRepository {
             }
             return systemOperators.stream().map(systemOperator -> {
                 MarketParticipantTso marketParticipantTso = new MarketParticipantTso();
-                marketParticipantTso.setTsoMarketParticipantMrid(systemOperator.getSystemOperatorMarketParticipantMrId());
-                marketParticipantTso.setTsoMarketParticipantName(systemOperator.getMarketParticipantName());
-                marketParticipantTso.setTsoMarketParticipantRoleType(systemOperator.getMarketParticipantRoleType());
+                marketParticipantTso.setTsoMarketParticipantMrid(systemOperator.getSystemOperatorMarketParticipantMrid());
+                marketParticipantTso.setTsoMarketParticipantName(systemOperator.getSystemOperatorMarketParticipantName());
+                marketParticipantTso.setTsoMarketParticipantRoleType(systemOperator.getSystemOperatorMarketParticipantRoleType());
                 return marketParticipantTso;
             }).collect(toList());
         } catch (IOException exception) {

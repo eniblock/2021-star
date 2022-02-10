@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SystemOperator {
-    private String systemOperatorMarketParticipantMrId;
-    private String marketParticipantName;
-    private String marketParticipantRoleType;
+    private String systemOperatorMarketParticipantMrid;
+    private String systemOperatorMarketParticipantName;
+    private String systemOperatorMarketParticipantRoleType;
 }

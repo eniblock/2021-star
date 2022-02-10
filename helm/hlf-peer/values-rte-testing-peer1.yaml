@@ -14,6 +14,7 @@ peer:
   gossip:
     # bootstrap: peer2-hlf-peer.rte-testing:7051
     endpoint: peer1-hlf-peer.rte-testing:7051
+    externalEndpoint: peer1.rte.testing.star.eniblock.fr:443
   chaincodes:
     - name: star
       address: peer1-chaincode-hlf-chaincode:7777

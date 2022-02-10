@@ -1,22 +1,111 @@
-<mat-stepper #stepperRef [linear]="true">
+<mat-stepper #stepperRef [linear]="true" class="disabledHeaderNavigation">
 
   <mat-step [stepControl]="form" label="Formulaire">
     <form [formGroup]="form">
-      <mat-form-field appearance="outline">
-        <mat-label>Name</mat-label>
-        <input matInput placeholder="Last name, First name" formControlName="test">
-      </mat-form-field>
-      <div>
-        <button mat-raised-button color="primary" matStepperNext>Suivant</button>
+
+      <div class="row">
+
+        <div class="col-12 fw-bold mb-2">
+          Entités
+        </div>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Code de l'automate (origine)</mat-label>
+          <input matInput placeholder="Code de l'automate (origine)" formControlName="originAutomationRegisteredResourceMrid">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Levier de flexibilité, code site (Destination)</mat-label>
+          <input matInput placeholder="Levier de flexibilité, code site (Destination)" formControlName="registeredResourceMrid">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Entité émettrice</mat-label>
+          <input matInput placeholder="Entité émettrice" formControlName="senderMarketParticipantMrid">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Entité réceptrice</mat-label>
+          <input matInput placeholder="Entité réceptrice" formControlName="receiverMarketParticipantMrid">
+        </mat-form-field>
+
+
+        <div class="col-12 fw-bold mt-4 mb-2">
+          Consignes
+        </div>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Valeur de consigne</mat-label>
+          <input matInput placeholder="Valeur de consigne" formControlName="orderValue" type="number">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Unité de puissance</mat-label>
+          <mat-select formControlName="measurementUnitName">
+            <mat-option [value]="'KW'">KW</mat-option>
+            <mat-option [value]="'MW'">MW</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <div class="col-12 fw-bold mt-4 mb-2">
+          Horodatage
+        </div>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Horodatage de fin de limitation - date</mat-label>
+          <input matInput placeholder="Horodatage de fin de limitation - date" [matDatepicker]="pickerDate" formControlName="timestampDate">
+          <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDate></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Horodatage de fin de limitation - heure (exemple 15:24:23)</mat-label>
+          <input matInput placeholder="Horodatage de fin de limitation - heure (exemple 15:24:23)" formControlName="timestampTime">
+        </mat-form-field>
+
+
+        <div class="col-12 fw-bold mt-4 mb-2">
+          Définition de l'ordre
+        </div>
+
+        <mat-form-field class="col-12 col-lg-4" appearance="outline">
+          <mat-label>Type d'ordre</mat-label>
+          <input matInput placeholder="Type d'ordre" formControlName="messageType">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-4" appearance="outline">
+          <mat-label>Nature de l'écrêtement</mat-label>
+          <input matInput placeholder="Nature de l'écrêtement" formControlName="businessType">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-4" appearance="outline">
+          <mat-label>Motif de l'ordre</mat-label>
+          <input matInput formControlName="reasonCode">
+        </mat-form-field>
+
+
+        <div class="col-12 text-center mt-3">
+          <button mat-raised-button color="primary" matStepperNext>Suivant</button>
+        </div>
+
       </div>
+
     </form>
   </mat-step>
 
   <mat-step label="Résumé">
-    ...
-    <div>
-      <button mat-raised-button matStepperPrevious>Modifier</button>
-      <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit(stepperRef)">Charger l'ordre</button>
+    <div class="row">
+
+      <div class="col-12">
+        ...
+      </div>
+
+      <div class="col-12 text-center mt-3">
+        <button mat-raised-button class="me-3" matStepperPrevious>Modifier</button>
+        <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit(stepperRef)">Charger l'ordre</button>
+      </div>
+
     </div>
   </mat-step>
 

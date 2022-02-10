@@ -1,4 +1,4 @@
-import { FormulaireOrdreDebutLimitation } from 'src/app/models/OrdreLimitation';
+import { FormulaireOrdreDebutLimitationFichier } from 'src/app/models/OrdreLimitation';
 import { environment } from 'src/environments/environment';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -41,7 +41,7 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
   }
 
   onSubmit() {
-    const form: FormulaireOrdreDebutLimitation = {
+    const form: FormulaireOrdreDebutLimitationFichier = {
       fichier: this.listeFichiers[0].file, // On upload ici un seul fichier
     };
     this.ordreLimitationService

@@ -9,6 +9,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServerErrorInterceptor } from './interceptors/serveur-error-interceptor';
+import {
+  DateAdapter,
+  MatNativeDateModule,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
+import { CustomDateAdapter } from './adapters/custom-date-adapter';
 
 @NgModule({
   imports: [
@@ -19,6 +25,7 @@ import { ServerErrorInterceptor } from './interceptors/serveur-error-interceptor
     BrowserAnimationsModule,
     MatSnackBarModule,
     PageTemplateModule,
+    MatNativeDateModule,
   ],
   declarations: [AppComponent],
   providers: [
@@ -33,6 +40,8 @@ import { ServerErrorInterceptor } from './interceptors/serveur-error-interceptor
       multi: true,
       useClass: ServerErrorInterceptor,
     },
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
+    { provide: DateAdapter, useClass: CustomDateAdapter },
   ],
   bootstrap: [AppComponent],
 })

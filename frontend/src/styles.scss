@@ -212,3 +212,9 @@ h3 {
 .mat-horizontal-content-containe {
   padding: 0px;
 }
+.disabledHeaderNavigation {
+  // Desactiver la navigation en cliquant sur le header
+  .mat-horizontal-stepper-header {
+    pointer-events: none !important;
+  }
+}

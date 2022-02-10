@@ -8,7 +8,7 @@ import {
 } from 'src/app/components/micro-components/uploader-fichier/uploader-fichier.component';
 import { OrdreLimitationService } from 'src/app/services/api/ordre-limitation.service';
 import { tailleFichierToStr } from 'src/app/components/micro-components/uploader-fichier/uploader-fichier-tools';
-import { FormulaireOrdreDebutLimitation } from 'src/app/models/OrdreLimitation';
+import { FormulaireOrdreFinLimitationFichier } from 'src/app/models/OrdreLimitation';
 
 @Component({
   selector: 'app-form-ordre-fin-limitation-fichier',
@@ -41,7 +41,7 @@ export class FormOrdreFinLimitationFichierComponent implements OnInit {
   }
 
   onSubmit() {
-    const form: FormulaireOrdreDebutLimitation = {
+    const form: FormulaireOrdreFinLimitationFichier = {
       fichier: this.listeFichiers[0].file, // On upload ici un seul fichier
     };
     this.ordreLimitationService

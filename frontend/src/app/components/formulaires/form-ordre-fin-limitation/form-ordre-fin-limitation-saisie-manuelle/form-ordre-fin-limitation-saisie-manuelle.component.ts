@@ -15,7 +15,7 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
     registeredResourceMrid: ['', Validators.required],
     senderMarketParticipantMrid: ['', Validators.required],
     receiverMarketParticipantMrid: ['', Validators.required],
-    orderValue: ['', Validators.required],
+    orderValue: ['', [Validators.required, Validators.pattern('[0-9]+')]],
     measurementUnitName: ['', Validators.required],
     timestampDate: ['', Validators.required],
     timestampTime: [
@@ -30,6 +30,8 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
     reasonCode: ['', Validators.required],
   });
 
+  endCreatedDateTime: Date = new Date();
+
   constructor(
     private formBuilder: FormBuilder,
     private ordreLimitationService: OrdreLimitationService
@@ -37,13 +39,18 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
 
   ngOnInit() {}
 
+  toResume(stepperRef: MatStepper) {
+    this.endCreatedDateTime = DateHelper.toDatetime(
+      this.form.get('timestampDate')?.value,
+      this.form.get('timestampTime')?.value
+    );
+    stepperRef.next();
+  }
+
   onSubmit(stepperRef: MatStepper) {
     const form = {
       ...this.form.value,
-      endCreatedDateTime: DateHelper.makeJsonDate(
-        this.form.get('timestampDate')?.value,
-        this.form.get('timestampTime')?.value
-      ),
+      endCreatedDateTime: this.endCreatedDateTime,
     };
 
     delete form.timestampDate;

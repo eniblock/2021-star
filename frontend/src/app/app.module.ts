@@ -1,5 +1,5 @@
 import { PageTemplateModule } from './components/page-template/page-template.module';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
@@ -41,6 +41,7 @@ import { CustomDateAdapter } from './adapters/custom-date-adapter';
       useClass: ServerErrorInterceptor,
     },
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
+    { provide: LOCALE_ID, useValue: 'fr' },
     { provide: DateAdapter, useClass: CustomDateAdapter },
   ],
   bootstrap: [AppComponent],

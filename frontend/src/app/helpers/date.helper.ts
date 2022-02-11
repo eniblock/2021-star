@@ -24,35 +24,12 @@ export class DateHelper {
     ];
   }
 
-  static makeJsonDate(date: Date, time: string): Date {
+  static toDatetime(date: Date, time: string): Date {
     const t = DateHelper.stringToTime(time);
     let d = new Date(date.getTime());
     d.setHours(t[0]);
     d.setMinutes(t[1]);
     d.setSeconds(t[2]);
     return d;
-  }
-
-  static dateToJson(date: Date): string {
-    const day = StringHelper.ajouterZerosAGauche(date.getDate(), 2);
-    const month = StringHelper.ajouterZerosAGauche(date.getMonth() + 1, 2);
-    const year = date.getFullYear();
-    const hours = StringHelper.ajouterZerosAGauche(date.getHours(), 2);
-    const minutes = StringHelper.ajouterZerosAGauche(date.getMinutes(), 2);
-    const seconds = StringHelper.ajouterZerosAGauche(date.getSeconds(), 2);
-
-    return (
-      year +
-      '-' +
-      month +
-      '-' +
-      day +
-      'T' +
-      hours +
-      ':' +
-      minutes +
-      ':' +
-      seconds
-    );
   }
 }

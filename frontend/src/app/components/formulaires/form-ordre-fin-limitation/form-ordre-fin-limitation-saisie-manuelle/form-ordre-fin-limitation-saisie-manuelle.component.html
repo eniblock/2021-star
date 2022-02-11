@@ -86,7 +86,7 @@
 
 
         <div class="col-12 text-center mt-3">
-          <button mat-raised-button color="primary" matStepperNext>Suivant</button>
+          <button mat-raised-button color="primary" (click)="toResume(stepperRef)">Suivant</button>
         </div>
 
       </div>
@@ -97,11 +97,76 @@
   <mat-step label="Résumé">
     <div class="row">
 
-      <div class="col-12">
-        ...
+      <div class="col-12 fw-bold mb-2">
+        Entités
       </div>
 
-      <div class="col-12 text-center mt-3">
+      <div class="col-12 col-lg-6 my-2">
+        Code de l'automate (origine) :
+        {{ form.value.originAutomationRegisteredResourceMrid }}
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Levier de flexibilité, code site (Destination) :
+        {{ form.value.registeredResourceMrid }}
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Entité émettrice :
+        {{ form.value.senderMarketParticipantMrid }}
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Entité réceptrice :
+        {{ form.value.receiverMarketParticipantMrid }}
+      </div>
+
+
+      <div class="col-12 fw-bold mt-4 mb-2">
+        Consignes
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Valeur de consigne :
+        {{ form.value.orderValue }}
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Unité de puissance :
+        {{ form.value.measurementUnitName }}
+      </div>
+
+
+      <div class="col-12 fw-bold mt-4 mb-2">
+        Horodatage
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Horodatage de fin de limitation  :
+        {{ endCreatedDateTime | date:'shortDate' }}, {{ endCreatedDateTime | date:'mediumTime' }}
+      </div>
+
+
+      <div class="col-12 fw-bold mt-4 mb-2">
+        Définition de l'ordre
+      </div>
+
+      <div class="col-12 col-lg-4 my-2">
+        Type d'ordre :
+        {{ form.value.messageType }}
+      </div>
+
+      <div class="col-12 col-lg-4 my-2">
+        Nature de l'écrêtement :
+        {{ form.value.businessType }}
+      </div>
+
+      <div class="col-12 col-lg-4 my-2">
+        Motif de l'ordre :
+        {{ form.value.reasonCode }}
+      </div>
+
+      <div class="col-12 text-center mt-4">
         <button mat-raised-button class="me-3" matStepperPrevious>Modifier</button>
         <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit(stepperRef)">Charger l'ordre</button>
       </div>

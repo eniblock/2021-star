@@ -11,7 +11,7 @@ backend:
 
   peerConnectionSecret: star-peer-connection
   peerUserIdSecret: star-user-id
-  peerConnectionUser: Admin
+  peerConnectionUser: User1
   peerConnectionOrganization: org
 
   instance: tso

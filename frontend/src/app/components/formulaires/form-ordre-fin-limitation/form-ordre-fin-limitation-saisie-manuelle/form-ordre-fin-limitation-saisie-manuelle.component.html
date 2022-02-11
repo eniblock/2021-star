@@ -95,7 +95,7 @@
   </mat-step>
 
   <mat-step label="Résumé">
-    <div class="row">
+    <div class="row panel-message p-4 mt-3">
 
       <div class="col-12 fw-bold mb-2">
         Entités
@@ -103,22 +103,22 @@
 
       <div class="col-12 col-lg-6 my-2">
         Code de l'automate (origine) :
-        {{ form.value.originAutomationRegisteredResourceMrid }}
+        <span class="fw-bold">{{ form.value.originAutomationRegisteredResourceMrid }}</span>
       </div>
 
       <div class="col-12 col-lg-6 my-2">
         Levier de flexibilité, code site (Destination) :
-        {{ form.value.registeredResourceMrid }}
+        <span class="fw-bold">{{ form.value.registeredResourceMrid }}</span>
       </div>
 
       <div class="col-12 col-lg-6 my-2">
         Entité émettrice :
-        {{ form.value.senderMarketParticipantMrid }}
+        <span class="fw-bold">{{ form.value.senderMarketParticipantMrid }}</span>
       </div>
 
       <div class="col-12 col-lg-6 my-2">
         Entité réceptrice :
-        {{ form.value.receiverMarketParticipantMrid }}
+        <span class="fw-bold">{{ form.value.receiverMarketParticipantMrid }}</span>
       </div>
 
 
@@ -128,12 +128,12 @@
 
       <div class="col-12 col-lg-6 my-2">
         Valeur de consigne :
-        {{ form.value.orderValue }}
+        <span class="fw-bold">{{ form.value.orderValue }}</span>
       </div>
 
       <div class="col-12 col-lg-6 my-2">
         Unité de puissance :
-        {{ form.value.measurementUnitName }}
+        <span class="fw-bold">{{ form.value.measurementUnitName }}</span>
       </div>
 
 
@@ -143,7 +143,7 @@
 
       <div class="col-12 col-lg-6 my-2">
         Horodatage de fin de limitation  :
-        {{ endCreatedDateTime | date:'shortDate' }}, {{ endCreatedDateTime | date:'mediumTime' }}
+        <span class="fw-bold">{{ endCreatedDateTime | date:'shortDate' }}, {{ endCreatedDateTime | date:'mediumTime' }}</span>
       </div>
 
 
@@ -153,21 +153,21 @@
 
       <div class="col-12 col-lg-4 my-2">
         Type d'ordre :
-        {{ form.value.messageType }}
+        <span class="fw-bold">{{ form.value.messageType }}</span>
       </div>
 
       <div class="col-12 col-lg-4 my-2">
         Nature de l'écrêtement :
-        {{ form.value.businessType }}
+        <span class="fw-bold">{{ form.value.businessType }}</span>
       </div>
 
       <div class="col-12 col-lg-4 my-2">
         Motif de l'ordre :
-        {{ form.value.reasonCode }}
+        <span class="fw-bold">{{ form.value.reasonCode }}</span>
       </div>
 
       <div class="col-12 text-center mt-4">
-        <button mat-raised-button class="me-3" matStepperPrevious>Modifier</button>
+        <button mat-raised-button class="me-3 text-primary" matStepperPrevious>Modifier</button>
         <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit(stepperRef)">Charger l'ordre</button>
       </div>
 

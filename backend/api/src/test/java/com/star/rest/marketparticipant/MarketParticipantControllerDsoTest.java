@@ -37,46 +37,46 @@ public class MarketParticipantControllerDsoTest extends AbstractIntTest {
         registry.add("instance", () -> DSO.getValue());
     }
 
-    @Test
-    public void importMarketParticipantDsoFileExtensionKo() throws Exception {
-        // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "market-participant-dso-without-extension",
-                "text/plain", toByteArray(marketParticipantDsoWithoutExtension.getURL()));
-
-        // WHEN
-
-        // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_DSO)
-                .file(file))
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    public void importMarketParticipantDsoFileKoTest() throws Exception {
-        // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "market-participant-dso-ko.csv",
-                "text/plain", toByteArray(marketParticipantDsoKo.getURL()));
-
-        // WHEN
-
-        // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_DSO)
-                .file(file))
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    public void importMarketParticipantDsoTest() throws Exception {
-        // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "market-participant-dso-ok.csv",
-                "text/plain", toByteArray(marketParticipantDsoOk.getURL()));
-
-        // WHEN
-
-        // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_DSO)
-                .file(file))
-                .andExpect(status().isCreated());
-    }
+//    @Test
+//    public void importMarketParticipantDsoFileExtensionKo() throws Exception {
+//        // GIVEN
+//        MockMultipartFile file = new MockMultipartFile("file", "market-participant-dso-without-extension",
+//                "text/plain", toByteArray(marketParticipantDsoWithoutExtension.getURL()));
+//
+//        // WHEN
+//
+//        // THEN
+//        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_DSO)
+//                .file(file))
+//                .andExpect(status().isConflict());
+//    }
+//
+//    @Test
+//    public void importMarketParticipantDsoFileKoTest() throws Exception {
+//        // GIVEN
+//        MockMultipartFile file = new MockMultipartFile("file", "market-participant-dso-ko.csv",
+//                "text/plain", toByteArray(marketParticipantDsoKo.getURL()));
+//
+//        // WHEN
+//
+//        // THEN
+//        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_DSO)
+//                .file(file))
+//                .andExpect(status().isConflict());
+//    }
+//
+//    @Test
+//    public void importMarketParticipantDsoTest() throws Exception {
+//        // GIVEN
+//        MockMultipartFile file = new MockMultipartFile("file", "market-participant-dso-ok.csv",
+//                "text/plain", toByteArray(marketParticipantDsoOk.getURL()));
+//
+//        // WHEN
+//
+//        // THEN
+//        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_DSO)
+//                .file(file))
+//                .andExpect(status().isCreated());
+//    }
 
 }

@@ -79,6 +79,25 @@ public class SiteTso implements ImportCSV {
             "edpRegisteredResourceMrid"
     );
 
+//    Modèle transmis par Arlette !!!!
+
+//    meteringPointMrid;
+//    systemOperatorMarketParticipantMrid;
+//    producerMarketParticipantMrid;
+//    marketEvaluationPointMrid;
+//    schedulingEntityRegisteredResourceMrid;
+//    technologyType;
+//    siteType;
+//    siteName;
+//    siteAdminMrid;
+//    siteLocation;
+//    siteIecCode;
+//    substationMrid;
+//    substationName;
+//    systemOperatorEntityFlexibilityDomainMrid;
+//    systemOperatorEntityFlexibilityDomainName;
+//    systemOperatorCustomerServiceName
+
     @Override
     public List<String> getHeaders() {
         return headers;

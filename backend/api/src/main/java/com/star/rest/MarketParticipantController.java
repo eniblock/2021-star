@@ -3,7 +3,7 @@ package com.star.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.exception.TechnicalException;
-import com.star.models.participant.MarketParticipant;
+import com.star.models.participant.ImportMarketParticipantResult;
 import com.star.models.participant.SystemOperator;
 import com.star.models.participant.dso.ImportMarketParticipantDsoResult;
 import com.star.models.participant.tso.ImportMarketParticipantTsoResult;
@@ -51,31 +51,9 @@ public class MarketParticipantController {
     @Value("${instance}")
     private InstanceEnum instance;
 
-
     @Autowired
     private MarketParticipantService marketParticipantService;
 
-    @Operation(summary = "Post a market participant DSO CSV file.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Create successfully market participant DSO",
-                    content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
-    @PostMapping("/dso")
-    public ResponseEntity<ImportMarketParticipantDsoResult> importMarketParticipantDso(@RequestParam MultipartFile file) {
-        // Un acteur TSO ou producer n'a pas le droit de charger des fichiers participants de DSO
-        if (TSO.equals(instance) || PRODUCER.equals(instance)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        ImportMarketParticipantDsoResult importMarketParticipantDsoResult;
-        try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
-            importMarketParticipantDsoResult = marketParticipantService.importMarketParticipantDso(file.getOriginalFilename(), streamReader);
-        } catch (IOException | TechnicalException exception) {
-            log.error("Echec de l'import  du fichier {}. Erreur : ", file.getOriginalFilename(), exception);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return ResponseEntity.status(isEmpty(importMarketParticipantDsoResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantDsoResult);
-    }
 
     @Operation(summary = "Post a market participant TSO CSV file.")
     @ApiResponses(value = {
@@ -83,22 +61,67 @@ public class MarketParticipantController {
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
-    @PostMapping("/tso")
-    public ResponseEntity<ImportMarketParticipantTsoResult> importMarketParticipantTso(@RequestParam MultipartFile file) {
+    @PostMapping
+    public ResponseEntity<ImportMarketParticipantResult> importMarketParticipant(@RequestParam MultipartFile file) {
         // Un acteur DSO ou producer n'a pas le droit de charger des fichiers participants de TSO
-        if (DSO.equals(instance) || PRODUCER.equals(instance)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        ImportMarketParticipantTsoResult importMarketParticipantTsoResult;
+//        if (DSO.equals(instance) || PRODUCER.equals(instance)) {
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
+        ImportMarketParticipantResult importMarketParticipantResult;
         try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
-            importMarketParticipantTsoResult = marketParticipantService.importMarketParticipantTso(file.getOriginalFilename(), streamReader);
+            importMarketParticipantResult = marketParticipantService.importMarketParticipant(file.getOriginalFilename(), streamReader);
         } catch (IOException | TechnicalException exception) {
             log.error("Echec de l'import  du fichier {}. Erreur : ", file.getOriginalFilename(), exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.status(isEmpty(importMarketParticipantTsoResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantTsoResult);
+        return ResponseEntity.status(isEmpty(importMarketParticipantResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantResult);
 
     }
+
+//    @Operation(summary = "Post a market participant DSO CSV file.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "201", description = "Create successfully market participant DSO",
+//                    content = {@Content(mediaType = "application/json")}),
+//            @ApiResponse(responseCode = "409", description = "Error in the file"),
+//            @ApiResponse(responseCode = "500", description = "Internal error")})
+//    @PostMapping("/dso")
+//    public ResponseEntity<ImportMarketParticipantDsoResult> importMarketParticipantDso(@RequestParam MultipartFile file) {
+//        // Un acteur TSO ou producer n'a pas le droit de charger des fichiers participants de DSO
+//        if (TSO.equals(instance) || PRODUCER.equals(instance)) {
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
+//        ImportMarketParticipantDsoResult importMarketParticipantDsoResult;
+//        try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
+//            importMarketParticipantDsoResult = marketParticipantService.importMarketParticipantDso(file.getOriginalFilename(), streamReader);
+//        } catch (IOException | TechnicalException exception) {
+//            log.error("Echec de l'import  du fichier {}. Erreur : ", file.getOriginalFilename(), exception);
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        return ResponseEntity.status(isEmpty(importMarketParticipantDsoResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantDsoResult);
+//    }
+//
+//    @Operation(summary = "Post a market participant TSO CSV file.")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "201", description = "Create successfully market participant TSO",
+//                    content = {@Content(mediaType = "application/json")}),
+//            @ApiResponse(responseCode = "409", description = "Error in the file"),
+//            @ApiResponse(responseCode = "500", description = "Internal error")})
+//    @PostMapping("/tso")
+//    public ResponseEntity<ImportMarketParticipantTsoResult> importMarketParticipantTso(@RequestParam MultipartFile file) {
+//        // Un acteur DSO ou producer n'a pas le droit de charger des fichiers participants de TSO
+//        if (DSO.equals(instance) || PRODUCER.equals(instance)) {
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
+//        ImportMarketParticipantTsoResult importMarketParticipantTsoResult;
+//        try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
+//            importMarketParticipantTsoResult = marketParticipantService.importMarketParticipantTso(file.getOriginalFilename(), streamReader);
+//        } catch (IOException | TechnicalException exception) {
+//            log.error("Echec de l'import  du fichier {}. Erreur : ", file.getOriginalFilename(), exception);
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        return ResponseEntity.status(isEmpty(importMarketParticipantTsoResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantTsoResult);
+//
+//    }
 
     @Operation(summary = "Get list of market participant")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get list of market participant",

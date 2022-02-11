@@ -95,6 +95,34 @@ public class MarketParticipantRepository {
         return marketParticipantTsos;
     }
 
+
+
+
+    /**
+     * Permet de stocker les markets participants TSO dans la blockchain
+     *
+     * @param systemOperators liste des markets participants TSO à enregistrer dans la blockchain
+     * @return
+     * @throws TechnicalException
+     */
+    public List<SystemOperator> saveMarketParticipant(List<SystemOperator> systemOperators) throws TechnicalException, BusinessException {
+        if (CollectionUtils.isEmpty(systemOperators)) {
+            return Collections.emptyList();
+        }
+        log.info("Sauvegarde des markets participants tso : {}", systemOperators);
+        for (SystemOperator systemOperator : systemOperators) {
+            if (systemOperator != null) {
+                try {
+                    contract.submitTransaction(CREATE_SYSTEM_OPERATOR, objectMapper.writeValueAsString(systemOperator));
+                } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
+                    throw new TechnicalException("Erreur technique lors de création du market participant TSO", exception);
+                } catch (ContractException contractException) {
+                    throw new BusinessException(contractException.getMessage());
+                }
+            }
+        }
+        return systemOperators;
+    }
     public List<SystemOperator> getSystemOperators() throws JsonProcessingException, ContractException {
         byte[] response = contract.evaluateTransaction(GET_ALL_SYSTEM_OPERATOR);
         return Arrays.asList(objectMapper.readValue(new String(response), SystemOperator[].class));

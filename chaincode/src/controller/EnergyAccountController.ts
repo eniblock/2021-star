@@ -54,7 +54,7 @@ export class EnergyAccountController {
         } catch (error) {
             throw new Error(`ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value`);
         }
-        if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
+        if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(
                 `Energy Account, sender: ${identity} does not have write access for ${energyAccountInput.energyAccountMarketDocumentMrid} creation. (Wrong SystemOperator)`,
             );
@@ -125,7 +125,7 @@ export class EnergyAccountController {
         } catch (error) {
             throw new Error(`ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value`);
         }
-        if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
+        if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(
                 `Energy Account, sender: ${identity} does not provide his own systemOperatorEicCode therefore he does not have read access.`,
             );

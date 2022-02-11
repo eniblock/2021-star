@@ -29,18 +29,18 @@ public class MarketParticipantControllerTsoForbiddenTest extends AbstractIntTest
         registry.add("instance", () -> "dso");
     }
 
-    @Test
-    public void importMarketParticipantTsoTest() throws Exception {
-        // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "market-participant-tso-ok.csv",
-                "text/plain", toByteArray(marketParticipantTsoOk.getURL()));
-
-        // WHEN
-
-        // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_TSO)
-                .file(file))
-                .andExpect(status().isForbidden());
-    }
+//    @Test
+//    public void importMarketParticipantTsoTest() throws Exception {
+//        // GIVEN
+//        MockMultipartFile file = new MockMultipartFile("file", "market-participant-tso-ok.csv",
+//                "text/plain", toByteArray(marketParticipantTsoOk.getURL()));
+//
+//        // WHEN
+//
+//        // THEN
+//        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_TSO)
+//                .file(file))
+//                .andExpect(status().isForbidden());
+//    }
 
 }

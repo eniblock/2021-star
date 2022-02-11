@@ -51,104 +51,104 @@ public class MarketParticipantTsoServiceTest extends AbstractTest {
     @Autowired
     private MarketParticipantService marketParticipantService;
 
-    @Test
-    public void testImportMarketParticipantTsoFileNameNullEtReaderNull() {
-        // GIVEN
-
-        // WHEN
-        Assertions.assertThrows(IllegalArgumentException.class, () -> marketParticipantService.importMarketParticipantTso(null, null));
-
-        // THEN
-    }
-
-    @Test
-    public void testImportMarketParticipantTsoFileNameNull() {
-        // GIVEN
-
-        // WHEN
-        Assertions.assertThrows(IllegalArgumentException.class, () -> marketParticipantService.importMarketParticipantTso(null, csvMarketParticipantTsoOk));
-
-        // THEN
-    }
-
-    @Test
-    public void testImportMarketParticipantTsoReaderNul() {
-        // GIVEN
-
-        // WHEN
-        Assertions.assertThrows(IllegalArgumentException.class, () -> marketParticipantService.importMarketParticipantTso("file-name.csv", null));
-
-        // THEN
-    }
-
-    @Test
-    public void testImportMarketParticipantTsoSansHeader() throws IOException, TechnicalException {
-        // GIVEN
-        String fileName = "market-participant-tso-sans-header.csv";
-
-        // WHEN
-        ImportMarketParticipantTsoResult importMarketParticipantTsoResult = marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoWithoutHeader);
-
-        // THEN
-        assertThat(importMarketParticipantTsoResult .getErrors()).hasSize(1);
-        String error = importMarketParticipantTsoResult .getErrors().get(0);
-        assertThat(error).contains("Fichier "+fileName);
-        assertThat(error).contains("Structure attendue : "+ new MarketParticipantTso().getHeaders());
-        assertThat(importMarketParticipantTsoResult.getDatas()).isEmpty();
-    }
-
-    @Test
-    public void testImportMarketParticipantTsoHeaderInvalide() throws IOException, TechnicalException {
-        // GIVEN
-        String fileName = "market-participant-tso-header-invalide.csv";
-
-        // WHEN
-        ImportMarketParticipantTsoResult importMarketParticipantTsoResult = marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoWrongHeader);
-
-        // THEN
-        assertThat(importMarketParticipantTsoResult .getErrors()).hasSize(1);
-        String error = importMarketParticipantTsoResult .getErrors().get(0);
-        assertThat(error).contains("Fichier "+fileName);
-        assertThat(error).contains("Structure attendue : "+ new MarketParticipantTso().getHeaders());
-        assertThat(importMarketParticipantTsoResult.getDatas()).isEmpty();
-        verifyNoInteractions(marketParticipantRepository);
-    }
-
-    @Test
-    public void testImportMarketParticipantTsoSansDonnes() {
-        // GIVEN
-        String fileName = "market-participant-tso-sans-donnees.csv";
-
-        // WHEN
-        Assertions.assertThrows(IllegalArgumentException.class, () -> marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoWithoutData));
-
-        // THEN
-    }
-
-    @Test
-    public void testImportMarketParticipantTsoAvecDonneesKO() throws IOException, TechnicalException {
-        // GIVEN
-        String fileName = "market-participant-tso-donnees-ko.csv";
-
-        // WHEN
-        marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoDataKo);
-
-        // THEN
-        verifyNoInteractions(marketParticipantRepository);
-    }
-
-    @Test
-    public void testImportMarketParticipantTsoOk() throws IOException, TechnicalException {
-        // GIVEN
-        String fileName = "market-participant-tso-ok.csv";
-
-        // WHEN
-        marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoOk);
-
-        // THEN
-        Mockito.verify(marketParticipantRepository, Mockito.times(1)).saveMarketParticipantTso(marketParticipantTsoArgumentCaptor.capture());
-        MarketParticipantTso marketParticipantTso = marketParticipantTsoArgumentCaptor.getValue().get(0);
-        assertThat(marketParticipantTso).extracting("tsoMarketParticipantMrid", "tsoMarketParticipantName", "tsoMarketParticipantRoleType").containsExactly("RTE01EIC", "RTE", "A49");
-    }
+//    @Test
+//    public void testImportMarketParticipantTsoFileNameNullEtReaderNull() {
+//        // GIVEN
+//
+//        // WHEN
+//        Assertions.assertThrows(IllegalArgumentException.class, () -> marketParticipantService.importMarketParticipantTso(null, null));
+//
+//        // THEN
+//    }
+//
+//    @Test
+//    public void testImportMarketParticipantTsoFileNameNull() {
+//        // GIVEN
+//
+//        // WHEN
+//        Assertions.assertThrows(IllegalArgumentException.class, () -> marketParticipantService.importMarketParticipantTso(null, csvMarketParticipantTsoOk));
+//
+//        // THEN
+//    }
+//
+//    @Test
+//    public void testImportMarketParticipantTsoReaderNul() {
+//        // GIVEN
+//
+//        // WHEN
+//        Assertions.assertThrows(IllegalArgumentException.class, () -> marketParticipantService.importMarketParticipantTso("file-name.csv", null));
+//
+//        // THEN
+//    }
+//
+//    @Test
+//    public void testImportMarketParticipantTsoSansHeader() throws IOException, TechnicalException {
+//        // GIVEN
+//        String fileName = "market-participant-tso-sans-header.csv";
+//
+//        // WHEN
+//        ImportMarketParticipantTsoResult importMarketParticipantTsoResult = marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoWithoutHeader);
+//
+//        // THEN
+//        assertThat(importMarketParticipantTsoResult .getErrors()).hasSize(1);
+//        String error = importMarketParticipantTsoResult .getErrors().get(0);
+//        assertThat(error).contains("Fichier "+fileName);
+//        assertThat(error).contains("Structure attendue : "+ new MarketParticipantTso().getHeaders());
+//        assertThat(importMarketParticipantTsoResult.getDatas()).isEmpty();
+//    }
+//
+//    @Test
+//    public void testImportMarketParticipantTsoHeaderInvalide() throws IOException, TechnicalException {
+//        // GIVEN
+//        String fileName = "market-participant-tso-header-invalide.csv";
+//
+//        // WHEN
+//        ImportMarketParticipantTsoResult importMarketParticipantTsoResult = marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoWrongHeader);
+//
+//        // THEN
+//        assertThat(importMarketParticipantTsoResult .getErrors()).hasSize(1);
+//        String error = importMarketParticipantTsoResult .getErrors().get(0);
+//        assertThat(error).contains("Fichier "+fileName);
+//        assertThat(error).contains("Structure attendue : "+ new MarketParticipantTso().getHeaders());
+//        assertThat(importMarketParticipantTsoResult.getDatas()).isEmpty();
+//        verifyNoInteractions(marketParticipantRepository);
+//    }
+//
+//    @Test
+//    public void testImportMarketParticipantTsoSansDonnes() {
+//        // GIVEN
+//        String fileName = "market-participant-tso-sans-donnees.csv";
+//
+//        // WHEN
+//        Assertions.assertThrows(IllegalArgumentException.class, () -> marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoWithoutData));
+//
+//        // THEN
+//    }
+//
+//    @Test
+//    public void testImportMarketParticipantTsoAvecDonneesKO() throws IOException, TechnicalException {
+//        // GIVEN
+//        String fileName = "market-participant-tso-donnees-ko.csv";
+//
+//        // WHEN
+//        marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoDataKo);
+//
+//        // THEN
+//        verifyNoInteractions(marketParticipantRepository);
+//    }
+//
+//    @Test
+//    public void testImportMarketParticipantTsoOk() throws IOException, TechnicalException {
+//        // GIVEN
+//        String fileName = "market-participant-tso-ok.csv";
+//
+//        // WHEN
+//        marketParticipantService.importMarketParticipantTso(fileName, csvMarketParticipantTsoOk);
+//
+//        // THEN
+//        Mockito.verify(marketParticipantRepository, Mockito.times(1)).saveMarketParticipantTso(marketParticipantTsoArgumentCaptor.capture());
+//        MarketParticipantTso marketParticipantTso = marketParticipantTsoArgumentCaptor.getValue().get(0);
+//        assertThat(marketParticipantTso).extracting("tsoMarketParticipantMrid", "tsoMarketParticipantName", "tsoMarketParticipantRoleType").containsExactly("RTE01EIC", "RTE", "A49");
+//    }
 
 }

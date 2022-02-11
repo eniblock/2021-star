@@ -1,10 +1,10 @@
 provider "kubernetes" {
-  config_path = "~/.kube/star.yml"
+  config_path = "~/.kube/star.yaml"
 }
 
 provider "helm" {
   kubernetes {
-      config_path = "~/.kube/star.yml"
+      config_path = "~/.kube/star.yaml"
   }
 }
 

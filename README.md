@@ -57,6 +57,8 @@ starts only the enedis backend and frontend.
 tilt up -- enedis producer rte
 ```
 
+starts the backend and frontend for the 3 organizations.
+
 ### Shuting down the application
 
 ```bash

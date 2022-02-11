@@ -6,6 +6,14 @@ docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/testing:/hlf/testing hyperledge
 docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/testing:/hlf/testing hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/testing configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock /hlf/testing/generated/genesis.block
 docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/testing:/hlf/testing hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/testing configtxgen -profile TwoOrgsChannel -outputCreateChannelTx /hlf/testing/generated/star.tx -channelID star
 
+./hlf/testing/ccp-generate.sh enedis
+./hlf/testing/ccp-generate.sh producer
+./hlf/testing/ccp-generate.sh rte
+
+./hlf/testing/user-generate.sh enedis
+./hlf/testing/user-generate.sh producer
+./hlf/testing/user-generate.sh rte
+
 function generate_secrets {
     # orderer
     echo ---

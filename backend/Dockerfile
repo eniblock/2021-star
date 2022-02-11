@@ -19,7 +19,7 @@ FROM openjdk:11 as dev
 VOLUME /tmp
 
 COPY --from=build  /workspace/app/api/target/api*.jar /app/api.jar
-ENTRYPOINT ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005","-jar","/app/api.jar"]
+ENTRYPOINT ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005","-jar","/app/api.jar"]
 
 FROM dev
 ENTRYPOINT ["java", "-jar","/app/api.jar"]

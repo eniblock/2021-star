@@ -45,9 +45,6 @@ public class ProducerServiceTest extends AbstractTest {
     @Captor
     private ArgumentCaptor<List<Producer>> producerArgumentCaptor;
 
-    @Captor
-    private ArgumentCaptor<String> userTsoArgumentCaptor;
-
     @MockBean
     private ProducerRepository producerRepository;
 
@@ -149,7 +146,7 @@ public class ProducerServiceTest extends AbstractTest {
         producerService.importProducers(fileName, producerOk);
 
         // THEN
-        Mockito.verify(producerRepository, Mockito.times(1)).saveProducers(producerArgumentCaptor.capture(), userTsoArgumentCaptor.capture());
+        Mockito.verify(producerRepository, Mockito.times(1)).saveProducers(producerArgumentCaptor.capture());
         Producer producer = producerArgumentCaptor.getValue().get(0);
         assertThat(producer).extracting("producerMarketParticipantMrid", "producerMarketParticipantName", "producerMarketParticipantRoleType").containsExactly("EolienFRvert28EIC","EolienFR vert Cie","A21");
     }

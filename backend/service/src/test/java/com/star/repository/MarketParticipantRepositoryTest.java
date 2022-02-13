@@ -3,8 +3,7 @@ package com.star.repository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
-import com.star.models.participant.dso.MarketParticipantDso;
-import com.star.models.participant.tso.MarketParticipantTso;
+import com.star.models.participant.SystemOperator;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -17,6 +16,7 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
@@ -29,9 +29,6 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
     private static final String DSO_MARKET_PARTICIPANT_NAME = "ENEDIS";
     private static final String DSO_MARKET_PARTICIPANT_ROLE_TYPE = "A50";
 
-    private static final String TSO_MARKET_PARTICIPANT_MRID = "RTE02EC";
-    private static final String TSO_MARKET_PARTICIPANT_NAME = "RTE";
-    private static final String TSO_MARKET_PARTICIPANT_ROLE_TYPE = "E49";
 
     @Autowired
     private MarketParticipantRepository marketParticipantRepository;
@@ -43,26 +40,26 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
     private ArgumentCaptor<String> objectArgumentCaptor;
 
     @Test
-    public void testSaveMarketParticipantDsoEmptyList() throws TechnicalException {
+    public void testSaveMarketParticipantEmptyList() throws TechnicalException {
         // GIVEN
 
         // WHEN
-        marketParticipantRepository.saveMarketParticipantDso(Collections.emptyList());
+        marketParticipantRepository.saveMarketParticipant(Collections.emptyList());
 
         // THEN
         verifyNoInteractions(contract);
     }
 
     @Test
-    public void testSaveMarketParticipantDso() throws TechnicalException, InterruptedException, TimeoutException, ContractException, JsonProcessingException {
+    public void testSaveMarketParticipants() throws TechnicalException, InterruptedException, TimeoutException, ContractException {
         // GIVEN
-        MarketParticipantDso marketParticipantDso = new MarketParticipantDso();
-        marketParticipantDso.setDsoMarketParticipantMrid(DSO_MARKET_PARTICIPANT_MRID);
-        marketParticipantDso.setDsoMarketParticipantName(DSO_MARKET_PARTICIPANT_NAME);
-        marketParticipantDso.setDsoMarketParticipantRoleType(DSO_MARKET_PARTICIPANT_ROLE_TYPE);
+        SystemOperator systemOperator = new SystemOperator();
+        systemOperator.setSystemOperatorMarketParticipantMrid(DSO_MARKET_PARTICIPANT_MRID);
+        systemOperator.setSystemOperatorMarketParticipantName(DSO_MARKET_PARTICIPANT_NAME);
+        systemOperator.setSystemOperatorMarketParticipantRoleType(DSO_MARKET_PARTICIPANT_ROLE_TYPE);
 
         // WHEN
-        marketParticipantRepository.saveMarketParticipantDso(Arrays.asList(marketParticipantDso));
+        marketParticipantRepository.saveMarketParticipant(Arrays.asList(systemOperator));
 
         // THEN
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
@@ -70,7 +67,6 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(MarketParticipantRepository.CREATE_SYSTEM_OPERATOR);
     }
 
-//    TODO
 //    @Test
 //    public void testGetSystemOperators() throws ContractException, JsonProcessingException {
 //        // GIVEN
@@ -84,33 +80,4 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
 //        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture());
 //        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(MarketParticipantRepository.GET_ALL_SYSTEM_OPERATOR);
 //    }
-
-
-    @Test
-    public void testSaveMarketParticipantTsoEmptyList() throws TechnicalException {
-        // GIVEN
-
-        // WHEN
-        marketParticipantRepository.saveMarketParticipantTso(Collections.emptyList());
-
-        // THEN
-        verifyNoInteractions(contract);
-    }
-
-    @Test
-    public void testSaveMarketParticipantTso() throws TechnicalException, InterruptedException, TimeoutException, ContractException, JsonProcessingException {
-        // GIVEN
-        MarketParticipantTso marketParticipantTso = new MarketParticipantTso();
-        marketParticipantTso.setTsoMarketParticipantMrid(TSO_MARKET_PARTICIPANT_MRID);
-        marketParticipantTso.setTsoMarketParticipantName(TSO_MARKET_PARTICIPANT_NAME);
-        marketParticipantTso.setTsoMarketParticipantRoleType(TSO_MARKET_PARTICIPANT_ROLE_TYPE);
-
-        // WHEN
-        marketParticipantRepository.saveMarketParticipantTso(Arrays.asList(marketParticipantTso));
-
-        // THEN
-        Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
-                objectArgumentCaptor.capture());
-        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(MarketParticipantRepository.CREATE_SYSTEM_OPERATOR);
-    }
 }

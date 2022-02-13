@@ -1,9 +1,9 @@
 package com.star.service;
 
 import com.star.enums.DocTypeEnum;
+import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.imports.ImportResult;
-import com.star.models.participant.dso.ImportMarketParticipantDsoResult;
 import com.star.models.producer.ImportProducerResult;
 import com.star.models.producer.Producer;
 import com.star.repository.ProducerRepository;
@@ -14,9 +14,9 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -38,15 +38,16 @@ public class ProducerService {
     private MessageSource messageSource;
 
     /**
-     * Permet d'importer les market participants DSO selon les informations contenues dans le fichier CSV passé en paramètre.
+     * Permet d'importer les producers selon les informations contenues dans le fichier CSV passé en paramètre.
      *
-     * @param fileName     nom du fichier CSV à traiter.
+     * @param fileName nom du fichier CSV à traiter.
      * @param streamReader le contenu du fichier CSV à traiter, en tant qu'objet {@link Reader}
-     * @return {@link ImportMarketParticipantDsoResult} contenant les participants importés et les éventuelles erreurs des lignes ne respectant pas le format.
+     * @return {@link ImportProducerResult} contenant les producers importés et les éventuelles erreurs des lignes ne respectant pas le format.
      * @throws IOException
+     * @throws BusinessException
      * @throws TechnicalException
      */
-    public ImportProducerResult importProducers(String fileName, Reader streamReader) throws IOException, TechnicalException {
+    public ImportProducerResult importProducers(String fileName, Reader streamReader) throws IOException, BusinessException, TechnicalException {
         importUtilsService.checkFile(fileName, streamReader);
         ImportProducerResult importProducerResult = new ImportProducerResult();
         CSVParser csvParser = importUtilsService.getCsvParser(streamReader);
@@ -68,12 +69,12 @@ public class ProducerService {
         importProducerResult.getDatas().forEach(producer -> {
             producer.setDocType(DocTypeEnum.PRODUCER.getDocType());
         });
-        importProducerResult.setDatas(producerRepository.saveProducers(importProducerResult.getDatas(), null));
+        importProducerResult.setDatas(producerRepository.saveProducers(importProducerResult.getDatas()));
         return importProducerResult;
     }
 
 
-    public List<Producer> getProducers() throws TechnicalException {
+    public List<Producer> getProducers() throws BusinessException, TechnicalException {
         return producerRepository.getProducers();
     }
 

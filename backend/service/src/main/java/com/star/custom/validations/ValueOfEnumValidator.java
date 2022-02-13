@@ -1,5 +1,7 @@
 package com.star.custom.validations;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.Arrays;
@@ -17,6 +19,7 @@ public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, St
     public void initialize(ValueOfEnum constraintAnnotation) {
         Class<? extends Enum<?>> enumClass = constraintAnnotation.enumClass();
         acceptedValues = Arrays.asList(enumClass.getEnumConstants()).stream().map(element -> element.toString()).collect(Collectors.toList());
+        acceptedValues.addAll(Arrays.asList(enumClass.getEnumConstants()).stream().map(element -> element.name()).collect(Collectors.toList()));
     }
 
     @Override

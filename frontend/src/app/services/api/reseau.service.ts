@@ -34,7 +34,7 @@ export class ReseauService {
     }
     let urlParams = this.urlService.toUrlParams(formToSend);
     return this.httpClient.get<PaginationReponse<RechercheReseauEntite>>(
-      `${environment.serverUrl}/site/tso?${urlParams}`
+      `${environment.serverUrl}/site?${urlParams}`
     );
   }
 

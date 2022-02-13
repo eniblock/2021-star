@@ -49,6 +49,14 @@ export class Star extends Contract {
         }
     }
 
+    public async DeleteSystemOperator(ctx: Context, id: string) {
+        try {
+            return (await SystemOperatorController.deleteSystemOperator(ctx, id));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async GetAllSystemOperator(
         ctx: Context) {
         try {
@@ -80,6 +88,14 @@ export class Star extends Contract {
     public async UpdateProducer(ctx: Context, inputStr: string) {
         try {
             return (await ProducerController.updateProducer(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async DeleteProducer(ctx: Context, id: string) {
+        try {
+            return (await ProducerController.deleteProducer(ctx, id));
         } catch (error) {
             throw error;
         }
@@ -119,6 +135,14 @@ export class Star extends Contract {
         id: string) {
         try {
             return (await SiteController.querySite(ctx, id));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async DeleteSite(ctx: Context, id: string) {
+        try {
+            return (await SiteController.deleteSite(ctx, id));
         } catch (error) {
             throw error;
         }

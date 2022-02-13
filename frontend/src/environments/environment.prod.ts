@@ -10,5 +10,5 @@ export const environment = {
     clientId: 'frontend',
   },
   // Tri
-  pageSizes: [5, 10, 20],
+  pageSizes: [1, 5, 10, 20],
 };

@@ -71,6 +71,16 @@ export class SiteController {
         return siteAsBytes.toString();
     }
 
+    public static async deleteSite(
+        ctx: Context,
+        id: string) {
+        await ctx.stub.deleteState(id);
+        console.info(
+            '============= END : Delete %s Site ===========',
+            id,
+        );
+    }
+
     public static async siteExists(ctx: Context, site: string): Promise<boolean> {
         console.info('============= START : Query %s Site ===========', site);
         const siteAsBytes = await ctx.stub.getState(site);

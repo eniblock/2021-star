@@ -1,12 +1,13 @@
 package com.star.rest;
 
+import com.star.enums.InstanceEnum;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.star.rest.enums.InstanceEnum.TSO;
+import static com.star.enums.InstanceEnum.TSO;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

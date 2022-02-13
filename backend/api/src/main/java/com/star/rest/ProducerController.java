@@ -1,10 +1,11 @@
 package com.star.rest;
 
 
+import com.star.enums.InstanceEnum;
+import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.producer.ImportProducerResult;
 import com.star.models.producer.Producer;
-import com.star.rest.enums.InstanceEnum;
 import com.star.service.ProducerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,7 +28,6 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static com.star.rest.enums.InstanceEnum.PRODUCER;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 
@@ -54,8 +54,8 @@ public class ProducerController {
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping
-    public ResponseEntity<ImportProducerResult> importProducer(@RequestParam MultipartFile file) {
-        if (PRODUCER.equals(instance)) {
+    public ResponseEntity<ImportProducerResult> importProducer(@RequestParam MultipartFile file) throws BusinessException {
+        if (InstanceEnum.PRODUCER.equals(instance)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         ImportProducerResult importProducerResult;
@@ -72,7 +72,7 @@ public class ProducerController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get list of producer",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping
-    public ResponseEntity<List<Producer>> getMarketParticipants() throws TechnicalException {
+    public ResponseEntity<List<Producer>> getMarketParticipants() throws TechnicalException, BusinessException {
         return ResponseEntity.ok(producerService.getProducers());
     }
 

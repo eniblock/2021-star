@@ -1,9 +1,7 @@
 package com.star.mapper.site;
 
 import com.star.dto.site.SiteDTO;
-import com.star.enums.TechnologyTypeEnum;
-import com.star.models.site.dso.SiteDso;
-import com.star.models.site.tso.SiteTso;
+import com.star.models.site.Site;
 import com.star.rest.enums.TypeSiteEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,33 +19,31 @@ import java.util.List;
 public interface SiteMapper {
 
 
-    @Mapping(target = "typeSite", source = "siteDso", qualifiedByName = "mapTypeSiteForSiteDso")
-    @Mapping(target = "siteIecCode", source = "siteDso", qualifiedByName = "mapIecCodeForSiteDso")
+    @Mapping(target = "typeSite", source = "site", qualifiedByName = "mapTypeSiteForSite")
+    @Mapping(target = "siteIecCode", source = "site", qualifiedByName = "mapIecCodeForSite")
     @Mapping(target = "systemOperatorMarketParticipantName", ignore = true)
-    @Mapping(target = "technologyType", expression = "java(com.star.enums.TechnologyTypeEnum.fromValue(siteDso.getTechnologyType()))")
-    SiteDTO beanDsoToDto(SiteDso siteDso);
+    @Mapping(target = "technologyType", expression = "java(com.star.enums.TechnologyTypeEnum.fromValue(site.getTechnologyType()))")
+    SiteDTO beanToDto(Site site);
 
-    @Mapping(target = "typeSite", source = "siteTso", qualifiedByName = "mapTypeSiteForSiteTso")
-    @Mapping(target = "technologyType", expression = "java(com.star.enums.TechnologyTypeEnum.fromValue(siteTso.getTechnologyType()))")
-    SiteDTO beanTsoToDto(SiteTso siteTso);
+//    @Mapping(target = "typeSite", source = "siteTso", qualifiedByName = "mapTypeSiteForSiteTso")
+//    @Mapping(target = "technologyType", expression = "java(com.star.enums.TechnologyTypeEnum.fromValue(siteTso.getTechnologyType()))")
+//    SiteDTO beanTsoToDto(Site site);
 
-    List<SiteDTO> beanDsoToDtos(List<SiteDso> siteDsos);
+    List<SiteDTO> beanTsoToDtos(List<Site> sites);
 
-    List<SiteDTO> beanTsoToDtos(List<SiteTso> siteTsos);
-
-    @Named("mapTypeSiteForSiteDso")
-    default TypeSiteEnum mapTypeSiteForSiteDso(SiteDso siteDso) {
+    @Named("mapTypeSiteForSite")
+    default TypeSiteEnum mapTypeSiteForSite(Site site) {
         return TypeSiteEnum.HTA;
     }
 
-    @Named("mapIecCodeForSiteDso")
-    default String mapIecCodeForSiteDso(SiteDso siteDso) {
+    @Named("mapIecCodeForSite")
+    default String mapIecCodeForSite(Site site) {
         return null;
     }
 
-    @Named("mapTypeSiteForSiteTso")
-    default TypeSiteEnum mapTypeSiteForSiteTso(SiteTso siteTso) {
-        return TypeSiteEnum.HTB;
-    }
+//    @Named("mapTypeSiteForSiteTso")
+//    default TypeSiteEnum mapTypeSiteForSiteTso(Site site) {
+//        return TypeSiteEnum.HTB;
+//    }
 
 }

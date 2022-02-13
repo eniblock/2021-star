@@ -1,8 +1,7 @@
 package com.star.mapper.site;
 
 import com.star.dto.site.SiteDTOResponse;
-import com.star.models.site.dso.SiteDsoResponse;
-import com.star.models.site.tso.SiteTsoResponse;
+import com.star.models.site.SiteResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -23,12 +22,7 @@ public abstract class SiteResponseMapper {
 
     @Mapping(target = "content", source = "records")
     @Mapping(target = "totalElements", source = "fetchedRecordsCount")
-    public abstract SiteDTOResponse beanDsoToDto(SiteDsoResponse siteDsoResponse);
-
-
-    @Mapping(target = "content", source = "records")
-    @Mapping(target = "totalElements", source = "fetchedRecordsCount")
-    public abstract SiteDTOResponse beanTsoToDto(SiteTsoResponse siteTsoResponse);
+    public abstract SiteDTOResponse beanToDto(SiteResponse siteResponse);
 
     @AfterMapping
     protected void convertContentAndBookmark(@MappingTarget SiteDTOResponse siteDTOResponse) {

@@ -2,11 +2,10 @@ package com.star.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.site.dso.SiteDso;
-import com.star.models.site.dso.SiteDsoResponse;
-import com.star.models.site.tso.SiteTso;
-import com.star.models.site.tso.SiteTsoResponse;
+import com.star.models.site.Site;
+import com.star.models.site.SiteResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hyperledger.fabric.gateway.Contract;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -37,65 +38,81 @@ public class SiteRepository {
     private ObjectMapper objectMapper;
 
     /**
-     * @param siteDsos
+     * @param sites
      * @return
      * @throws TechnicalException
      */
-    public List<SiteDso> saveSiteDso(List<SiteDso> siteDsos) throws TechnicalException {
-        if (CollectionUtils.isEmpty(siteDsos)) {
+    public List<Site> saveSites(List<Site> sites) throws TechnicalException, BusinessException {
+        if (CollectionUtils.isEmpty(sites)) {
             return Collections.emptyList();
         }
-        log.info("Sauvegarde des sites dso : {}", siteDsos);
-        for (SiteDso siteDso : siteDsos) {
-            if (siteDso != null) {
+        log.info("Sauvegarde des sites : {}", sites);
+        for (Site site : sites) {
+            if (site != null) {
                 try {
-                    contract.submitTransaction(CREATE_SITE, objectMapper.writeValueAsString(siteDso));
-                } catch (ContractException | TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur lors de création du site DSO", exception);
+                    contract.submitTransaction(CREATE_SITE, objectMapper.writeValueAsString(site));
+                } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
+                    throw new TechnicalException("Erreur technique lors de création du site ", exception);
+                } catch (ContractException contractException) {
+                    throw new BusinessException(contractException.getMessage());
                 }
             }
         }
-        return siteDsos;
+        return sites;
     }
 
-    public boolean existSite(String meteringPointMrid) throws TechnicalException {
+    public boolean existSite(String meteringPointMrid) throws BusinessException, TechnicalException {
         try {
             byte[] response = contract.evaluateTransaction(SITE_EXISTS, meteringPointMrid);
             return objectMapper.readValue(response, Boolean.class);
-        } catch (ContractException | IOException exception) {
-            throw new TechnicalException("Erreur lors de la recherche du site", exception);
+        } catch (IOException exception) {
+            throw new TechnicalException("Erreur technique lors de la vérification de l'existence du site", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
         }
     }
 
-    public SiteDsoResponse findSiteDsoByQuery(String query, String pageSize, String bookmark) throws ContractException, JsonProcessingException {
-        byte[] response = contract.evaluateTransaction(GET_SITE_WITH_PAGINATION, query, pageSize, bookmark);
-        return response != null ? objectMapper.readValue(new String(response), SiteDsoResponse.class) : null;
+    public SiteResponse findSiteByQuery(String query, String pageSize, String bookmark) throws BusinessException, TechnicalException {
+        try {
+            byte[] response = contract.evaluateTransaction(GET_SITE_WITH_PAGINATION, query, pageSize, bookmark);
+            return response != null ? objectMapper.readValue(new String(response), SiteResponse.class) : null;
+        } catch (JsonProcessingException exception) {
+            throw new TechnicalException("Erreur technique lors de la recherche des sites", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
     }
 
-    /**
-     * @param siteTsos
-     * @return
-     * @throws TechnicalException
-     */
-    public List<SiteTso> saveSiteTso(List<SiteTso> siteTsos) throws TechnicalException {
-        if (CollectionUtils.isEmpty(siteTsos)) {
-            return Collections.emptyList();
-        }
-        log.info("Sauvegarde des sites tso : {}", siteTsos);
-        for (SiteTso siteTso : siteTsos) {
-            if (siteTso != null) {
-                try {
-                    contract.submitTransaction(CREATE_SITE, objectMapper.writeValueAsString(siteTso));
-                } catch (ContractException | TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur lors de création du site TSO", exception);
-                }
+
+    public void deleteAll() {
+        List<String> producers = Arrays.asList(new String[]{"17Y100A101R0629X", "17Y100A102R0629X", "17Y100A103R0629X"});
+        List<String> sites = Arrays.asList(new String[]{"PRM30001510803649", "PRM30001510803425",
+                "PRM30001510803313", "PRM30001510803537", "PRM30001510855938",
+                "PRM30001510855387", "PRM30001510838174", "PRM30001510840980", "PRM50050651219759"});
+        List<String> marketparticipants = Arrays.asList(new String[]{"17V0000009927464"});
+
+        producers.forEach(s -> {
+            try {
+                contract.submitTransaction("DeleteProducer", s);
+            } catch (ContractException | TimeoutException | InterruptedException e) {
+                e.printStackTrace();
             }
-        }
-        return siteTsos;
-    }
+        });
 
-    public SiteTsoResponse findSiteTsoByQuery(String query, String pageSize, String bookmark) throws ContractException, JsonProcessingException {
-        byte[] response = contract.evaluateTransaction(GET_SITE_WITH_PAGINATION, query, pageSize, bookmark);
-        return response != null ? objectMapper.readValue(new String(response), SiteTsoResponse.class) : null;
+        marketparticipants.forEach(s -> {
+            try {
+                contract.submitTransaction("DeleteSystemOperator", s);
+            } catch (ContractException | TimeoutException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        sites.forEach(s -> {
+            try {
+                contract.submitTransaction("DeleteSite", s);
+            } catch (ContractException | TimeoutException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

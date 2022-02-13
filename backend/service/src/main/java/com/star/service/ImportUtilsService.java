@@ -100,9 +100,9 @@ public class ImportUtilsService {
     /**
      * Vérifier une ligne du corps du fichier
      */
-    public String validateRecord(String fileName, CSVRecord csvRecord, ImportCSV importCS) {
+    public String validateRecord(String fileName, CSVRecord csvRecord, ImportCSV importCSV) {
         Validator validator = validatorFactory.getValidator();
-        Set<ConstraintViolation<ImportCSV>> violations = validator.validate(importCS);
+        Set<ConstraintViolation<ImportCSV>> violations = validator.validate(importCSV);
         if (isEmpty(violations)) {
             return null;
         }

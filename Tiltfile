@@ -7,7 +7,7 @@ config.define_string_list('orgs', args=True)
 cfg = config.parse()
 
 env = cfg.get('env', 'dev')
-orgs = cfg.get('orgs', ['rte'])
+orgs = cfg.get('orgs', ['enedis'])
 
 clk_k8s = 'clk --force-color k8s -c ' + k8s_context() + ' '
 load('ext://kubectl_build', 'image_build', 'kubectl_build_registry_secret',

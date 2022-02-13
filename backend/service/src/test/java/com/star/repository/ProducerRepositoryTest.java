@@ -25,7 +25,6 @@ import static org.mockito.Mockito.verifyNoInteractions;
  */
 public class ProducerRepositoryTest extends AbstractTest {
 
-    private static final String USER_ID = "USER_ID";
     private static final String PRODUCER_MARKET_PARTICIPANT_MRID = "PRODUCER02EIC";
     private static final String PRODUCER_MARKET_PARTICIPANT_NAME = "PRODUCER";
     private static final String PRODUCER_MARKET_PARTICIPANT_ROLE_TYPE = "A50";
@@ -44,7 +43,7 @@ public class ProducerRepositoryTest extends AbstractTest {
         // GIVEN
 
         // WHEN
-        producerRepository.saveProducers(Collections.emptyList(), USER_ID);
+        producerRepository.saveProducers(Collections.emptyList());
 
         // THEN
         verifyNoInteractions(contract);
@@ -59,7 +58,7 @@ public class ProducerRepositoryTest extends AbstractTest {
         producer.setProducerMarketParticipantRoleType(PRODUCER_MARKET_PARTICIPANT_ROLE_TYPE);
 
         // WHEN
-        producerRepository.saveProducers(Arrays.asList(producer), USER_ID);
+        producerRepository.saveProducers(Arrays.asList(producer));
 
         // THEN
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),

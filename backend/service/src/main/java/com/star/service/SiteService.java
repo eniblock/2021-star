@@ -41,6 +41,7 @@ import static com.star.enums.InstanceEnum.DSO;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
@@ -105,7 +106,7 @@ public class SiteService {
         importSiteResult.getDatas().forEach(site -> {
             site.setProducerMarketParticipantName(mapProducers.get(site.getProducerMarketParticipantMrid()));
             if (site.getTechnologyType() != null) {
-                site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getValue());
+                site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getLabel());
             }
         });
         importSiteResult.setDatas(siteRepository.saveSites(importSiteResult.getDatas()));
@@ -115,7 +116,7 @@ public class SiteService {
 
     public SiteResponse findSite(SiteCrteria siteCrteria, String bookmark, Pageable pageable) throws BusinessException, TechnicalException {
         boolean useIndex = false;
-        Sort.Order producerMarketParticipantNameOrder = pageable.getSort().getOrderFor("producerMarketParticipantName");
+            Sort.Order producerMarketParticipantNameOrder = pageable.getSort().getOrderFor("producerMarketParticipantName");
         Sort.Order technologyTypeOrder = pageable.getSort().getOrderFor("technologyType");
         List<Selector> selectors = new ArrayList<>();
         QueryBuilder queryBuilder;
@@ -131,18 +132,18 @@ public class SiteService {
                 queryBuilder = new QueryBuilder(Operation.and(selectors.toArray(new Selector[]{})));
                 break;
         }
-//        TODO
-//        if (technologyTypeOrder != null) {
-//            useIndex = true;
-//            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(technologyTypeOrder.getProperty()));
-//        }
-//        if (producerMarketParticipantNameOrder != null) {
-//            useIndex = true;
-//            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(producerMarketParticipantNameOrder.getProperty()));
-//        }
-//        if (useIndex) {
-//            queryBuilder.useIndex(SITE.getIndexName());
-//        }
+        if (technologyTypeOrder != null) {
+            useIndex = true;
+            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(technologyTypeOrder.getProperty()));
+            queryBuilder.useIndex(SITE.getIndexName(), "indexTechnologyType");
+        } else if (producerMarketParticipantNameOrder != null) {
+            useIndex = true;
+            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(producerMarketParticipantNameOrder.getProperty()));
+            queryBuilder.useIndex(SITE.getIndexName(), "indexProducerMarketParticipantName");
+        }
+        if (!useIndex) {
+            queryBuilder.useIndex(SITE.getIndexName());
+        }
         String query = queryBuilder.build();
         log.info("Transaction query: " + query);
         SiteResponse siteResponse = siteRepository.findSiteByQuery(query, String.valueOf(pageable.getPageSize()), bookmark);
@@ -180,7 +181,7 @@ public class SiteService {
         }
 
         if (isNotEmpty(siteCrteria.getTechnologyType())) {
-            List<String> technologies = siteCrteria.getTechnologyType().stream().map(technologyTypeEnum -> technologyTypeEnum.getValue()).collect(toList());
+            List<String> technologies = siteCrteria.getTechnologyType().stream().map(technologyTypeEnum -> technologyTypeEnum.getLabel()).collect(toList());
             selectors.add(Expression.in("technologyType", StringUtils.join(technologies, "\",\"")));
         }
     }
@@ -199,13 +200,13 @@ public class SiteService {
             }
             List<String> errors = importUtilsService.validateRecord(fileName, csvRecord, site);
             if (DSO.equals(instance)) {
-                String error = messageSource.getMessage("import.file.line.error",
-                        new String[]{fileName, String.valueOf(lineNumber)}, null);
-                if(StringUtils.isBlank(site.getMarketEvaluationPointMrid())) {
-                   errors.add(error+"Le champ marketEvaluationPointMrid est obligatoire");
+                if(isBlank(site.getMarketEvaluationPointMrid())) {
+                   errors.add(messageSource.getMessage("import.site.marketEvaluationPointMrid.line.error",
+                           new String[]{fileName, String.valueOf(lineNumber)}, null));
                 }
-                if (StringUtils.isBlank(site.getSchedulingEntityRegisteredResourceMrid())) {
-                    errors.add(error+"Le champ schedulingEntityRegisteredResourceMrid est obligatoire");
+                if (isBlank(site.getSchedulingEntityRegisteredResourceMrid())) {
+                    errors.add(messageSource.getMessage("import.site.schedulingEntityRegisteredResourceMrid.line.error",
+                            new String[]{fileName, String.valueOf(lineNumber)}, null));
                 }
             }
             if (CollectionUtils.isNotEmpty(errors)) {

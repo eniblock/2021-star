@@ -37,10 +37,7 @@ public class Site implements ImportCSV {
     private String siteIecCode;
     @NotBlank(message = "Le champ producerMarketParticipantMrid est obligatoire")
     private String producerMarketParticipantMrid;
-//    @NotBlank(message = "Le champ marketEvaluationPointMrid est obligatoire") // TODO : à améliorer
     private String marketEvaluationPointMrid;
-
-//    @NotBlank(message = "Le champ schedulingEntityRegisteredResourceMrid est obligatoire") // TODO : à améliorer
     private String schedulingEntityRegisteredResourceMrid;
     @NotBlank(message = "Le champ substationMrid est obligatoire")
     private String substationMrid;

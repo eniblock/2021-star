@@ -1,10 +1,10 @@
 {
    "index":{
       "fields":[
-         "docType", "instance","siteId", "systemOperatorMarketParticipantMrid","technologyType", "siteType",
+         "docType", "systemOperatorMarketParticipantMrid","technologyType", "siteType",
          "meteringPointMrid","siteName","siteLocation","siteIecCode","producerMarketParticipantMrid","substationMrid",
-         "substationName","systemOperatorEntityFlexibilityDomainMrid", "systemOperatorEntityFlexibilityDomainName","systemOperatorCustomerServiceName",
-         "ppeSiteCode","edpRegisteredResourceMrid", "schedulingEntityRegisteredResourceMrid","producerMarketParticipantName"
+         "substationName","systemOperatorEntityFlexibilityDomainMrid", "systemOperatorEntityFlexibilityDomainName",
+         "systemOperatorCustomerServiceName","schedulingEntityRegisteredResourceMrid","producerMarketParticipantName"
       ]
    },
    "ddoc":"indexSiteDoc",

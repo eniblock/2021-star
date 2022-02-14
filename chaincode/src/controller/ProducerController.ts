@@ -88,16 +88,6 @@ export class ProducerController {
         );
     }
 
-    public static async deleteProducer(
-        ctx: Context,
-        id: string) {
-        await ctx.stub.deleteState(id);
-        console.info(
-            '============= END : Delete %s Producer Market Participant ===========',
-            id,
-        );
-    }
-
     public static async getAllProducer(ctx: Context): Promise<string> {
         const allResults = [];
         const query = `{"selector": {"docType": "producer"}}`;

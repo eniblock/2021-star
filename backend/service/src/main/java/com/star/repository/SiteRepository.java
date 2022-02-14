@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
-import java.sql.Time;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -81,38 +79,5 @@ public class SiteRepository {
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }
-    }
-
-
-    public void deleteAll() {
-        List<String> producers = Arrays.asList(new String[]{"17Y100A101R0629X", "17Y100A102R0629X", "17Y100A103R0629X"});
-        List<String> sites = Arrays.asList(new String[]{"PRM30001510803649", "PRM30001510803425",
-                "PRM30001510803313", "PRM30001510803537", "PRM30001510855938",
-                "PRM30001510855387", "PRM30001510838174", "PRM30001510840980", "PRM50050651219759"});
-        List<String> marketparticipants = Arrays.asList(new String[]{"17V0000009927464"});
-
-        producers.forEach(s -> {
-            try {
-                contract.submitTransaction("DeleteProducer", s);
-            } catch (ContractException | TimeoutException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-
-        marketparticipants.forEach(s -> {
-            try {
-                contract.submitTransaction("DeleteSystemOperator", s);
-            } catch (ContractException | TimeoutException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-
-        sites.forEach(s -> {
-            try {
-                contract.submitTransaction("DeleteSite", s);
-            } catch (ContractException | TimeoutException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
     }
 }

@@ -53,14 +53,6 @@ export class SystemOperatorController {
         return sompAsBytes.toString();
     }
 
-    public static async deleteSystemOperator(ctx: Context, id: string) {
-        await ctx.stub.deleteState(id);
-        console.info(
-            '============= END : Delete %s SystemOperator ===========',
-            id,
-        );
-    }
-
     public static async updateSystemOperator(
         ctx: Context,
         inputStr: string) {

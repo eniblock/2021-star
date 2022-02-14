@@ -185,10 +185,6 @@ public class SiteService {
         }
     }
 
-    public void deleteAll(){
-        siteRepository.deleteAll();
-    }
-
     private void validateBody(String fileName, CSVParser csvParser, ImportResult importResult, InstanceEnum instance) {
         // Vérifier le contenu du fichier
         for (CSVRecord csvRecord : csvParser) {

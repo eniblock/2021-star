@@ -48,7 +48,6 @@ export class SiteController {
         }
 
         const producerAsBytes = await ctx.stub.getState(siteInput.producerMarketParticipantMrid);
-
         if (!producerAsBytes || producerAsBytes.length === 0) {
             throw new Error(`Producer : ${siteInput.producerMarketParticipantMrid} does not exist for site creation`);
         }
@@ -69,16 +68,6 @@ export class SiteController {
         console.info('============= END   : Query %s Site ===========');
         console.info(site, siteAsBytes.toString());
         return siteAsBytes.toString();
-    }
-
-    public static async deleteSite(
-        ctx: Context,
-        id: string) {
-        await ctx.stub.deleteState(id);
-        console.info(
-            '============= END : Delete %s Site ===========',
-            id,
-        );
     }
 
     public static async siteExists(ctx: Context, site: string): Promise<boolean> {

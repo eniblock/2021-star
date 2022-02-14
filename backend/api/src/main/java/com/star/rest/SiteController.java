@@ -120,9 +120,4 @@ public class SiteController {
                 .substationName(substationName).siteName(siteName).technologyType(technologyType).build();
         return ResponseEntity.status(HttpStatus.OK).body(siteResponseMapper.beanToDto(siteService.findSite(criteria, bookmark, pageRequest)));
     }
-
-    @DeleteMapping
-    public void deleteAll(){
-        siteService.deleteAll();
-    }
 }

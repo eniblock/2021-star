@@ -7,6 +7,7 @@ import com.cloudant.client.api.query.QueryBuilder;
 import com.cloudant.client.api.query.Selector;
 import com.star.enums.DocTypeEnum;
 import com.star.enums.InstanceEnum;
+import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.imports.ImportResult;
@@ -38,7 +39,6 @@ import java.util.stream.Collectors;
 import static com.star.enums.DocTypeEnum.SITE;
 import static com.star.enums.InstanceEnum.DSO;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -102,7 +102,12 @@ public class SiteService {
         }
         Map<String, String> mapProducers = producerRepository.getProducers().stream()
                 .collect(Collectors.toMap(Producer::getProducerMarketParticipantMrid, Producer::getProducerMarketParticipantName));
-        importSiteResult.getDatas().forEach(site -> site.setProducerMarketParticipantName(mapProducers.get(site.getProducerMarketParticipantMrid())));
+        importSiteResult.getDatas().forEach(site -> {
+            site.setProducerMarketParticipantName(mapProducers.get(site.getProducerMarketParticipantMrid()));
+            if (site.getTechnologyType() != null) {
+                site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getValue());
+            }
+        });
         importSiteResult.setDatas(siteRepository.saveSites(importSiteResult.getDatas()));
         return importSiteResult;
     }
@@ -196,20 +201,19 @@ public class SiteService {
             } catch (IllegalArgumentException illegalArgumentException) {
                 importUtilsService.handleConstructorException(fileName, importResult, lineNumber, illegalArgumentException);
             }
-
-            String errorRecord = importUtilsService.validateRecord(fileName, csvRecord, site);
+            List<String> errors = importUtilsService.validateRecord(fileName, csvRecord, site);
             if (DSO.equals(instance)) {
+                String error = messageSource.getMessage("import.file.line.error",
+                        new String[]{fileName, String.valueOf(lineNumber)}, null);
                 if(StringUtils.isBlank(site.getMarketEvaluationPointMrid())) {
-                   errorRecord = errorRecord+joining(System.getProperty("line.separator"))+ "Le champ marketEvaluationPointMrid est obligatoire";
+                   errors.add(error+"Le champ marketEvaluationPointMrid est obligatoire");
                 }
                 if (StringUtils.isBlank(site.getSchedulingEntityRegisteredResourceMrid())) {
-                    errorRecord = errorRecord+joining(System.getProperty("line.separator"))+ "LLe champ schedulingEntityRegisteredResourceMrid est obligatoire";
+                    errors.add(error+"Le champ schedulingEntityRegisteredResourceMrid est obligatoire");
                 }
             }
-            // Si
-            if (errorRecord != null) {
-                log.error(errorRecord);
-                importResult.getErrors().add(errorRecord);
+            if (CollectionUtils.isNotEmpty(errors)) {
+                importResult.getErrors().addAll(errors);
             } else {
                 importResult.getDatas().add(site);
             }

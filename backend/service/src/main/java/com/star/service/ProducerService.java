@@ -91,10 +91,9 @@ public class ProducerService {
                 importUtilsService.handleConstructorException(fileName, importResult, lineNumber, illegalArgumentException);
             }
             // Erreur de validation des annotations
-            String errorRecord = importUtilsService.validateRecord(fileName, csvRecord, producer);
-            if (errorRecord != null) {
-                log.error(errorRecord);
-                importResult.getErrors().add(errorRecord);
+            List<String> errors = importUtilsService.validateRecord(fileName, csvRecord, producer);
+            if (CollectionUtils.isNotEmpty(errors)) {
+                importResult.getErrors().addAll(errors);
             } else {
                 importResult.getDatas().add(producer);
             }

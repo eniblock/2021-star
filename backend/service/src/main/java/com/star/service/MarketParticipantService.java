@@ -89,10 +89,9 @@ public class MarketParticipantService {
                 importUtilsService.handleConstructorException(fileName, importResult, lineNumber, illegalArgumentException);
             }
             // Erreur de validation des annotations
-            String errorRecord = importUtilsService.validateRecord(fileName, csvRecord, systemOperator);
-            if (errorRecord != null) {
-                log.error(errorRecord);
-                importResult.getErrors().add(errorRecord);
+            List<String> errors = importUtilsService.validateRecord(fileName, csvRecord, systemOperator);
+            if (CollectionUtils.isNotEmpty(errors)) {
+                importResult.getErrors().addAll(errors);
             } else {
                 importResult.getDatas().add(systemOperator);
             }

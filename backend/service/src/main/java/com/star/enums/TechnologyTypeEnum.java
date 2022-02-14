@@ -2,6 +2,8 @@ package com.star.enums;
 
 import java.util.Arrays;
 
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
@@ -28,7 +30,7 @@ public enum TechnologyTypeEnum {
 
     public static TechnologyTypeEnum fromValue(String value) {
         for (TechnologyTypeEnum technologyTypeEnum : TechnologyTypeEnum.values()) {
-            if (technologyTypeEnum.value.equalsIgnoreCase(value)) {
+            if (equalsIgnoreCase(technologyTypeEnum.value, value) || equalsIgnoreCase(technologyTypeEnum.name(), value)) {
                 return technologyTypeEnum;
             }
         }

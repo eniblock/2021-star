@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.stream.Collectors.joining;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 /**
@@ -82,8 +81,6 @@ public class ImportUtilsService {
         if (isStructureErrorDetected) {
             errorMessage = messageSource.getMessage(LINE_ERROR_KEY,
                     new String[]{fileName, "1"}, null) + "Structure attendue : " + expectedHeaders + " , reçue : " + actualHeaders;
-        }
-        if (errorMessage != null) {
             log.error("Erreur lors de l'import :  {}", errorMessage);
             importResult.getErrors().add(errorMessage);
         }
@@ -100,22 +97,22 @@ public class ImportUtilsService {
     /**
      * Vérifier une ligne du corps du fichier
      */
-    public String validateRecord(String fileName, CSVRecord csvRecord, ImportCSV importCSV) {
+    public List<String> validateRecord(String fileName, CSVRecord csvRecord, ImportCSV importCSV) {
         Validator validator = validatorFactory.getValidator();
         Set<ConstraintViolation<ImportCSV>> violations = validator.validate(importCSV);
         if (isEmpty(violations)) {
-            return null;
+            return new ArrayList<>();
         }
+        List<String> errors = new ArrayList<>();
         Map<String, String> fieldErrorMap = new HashMap<>();
         long lineNumber = csvRecord.getRecordNumber() + 1;
         String error = messageSource.getMessage(LINE_ERROR_KEY,
                 new String[]{fileName, String.valueOf(lineNumber)}, null);
-        List<String> errors = new ArrayList<>();
         for (ConstraintViolation<ImportCSV> violation : violations) {
             fieldErrorMap.put(violation.getPropertyPath().toString(), violation.getMessage());
-            errors.add(error + violation.getPropertyPath().toString() + " - " + violation.getMessage());
+            errors.add(error + " - " + violation.getMessage());
         }
-        return errors.stream().collect(joining(System.getProperty("line.separator")));
+        return errors;
     }
 
     public void handleConstructorException(String fileName, ImportResult importResult, Long lineNumber,

@@ -1,9 +1,0 @@
-global:
-  dev: true
-
-ingress:
-  enabled: true
-  host: "star.localhost"
-
-mail:
-  dev: true

@@ -1,0 +1,84 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# ---------------------------------------------------------------------------
+# "OrdererOrgs" - Definition of organizations managing orderer nodes
+# ---------------------------------------------------------------------------
+OrdererOrgs:
+  - Name: Orderer
+    Domain: orderer
+    EnableNodeOUs: true
+
+    Specs:
+      - Hostname: orderer1
+        SANS:
+          - 0.0.0.0
+          - orderer1.orderer.localhost
+          - orderer1-hlf-ord.orderer
+      - Hostname: orderer2
+        SANS:
+          - 0.0.0.0
+          - orderer2.orderer.localhost
+          - orderer2-hlf-ord.orderer
+      - Hostname: orderer3
+        SANS:
+          - 0.0.0.0
+          - orderer3.orderer.localhost
+          - orderer3-hlf-ord.orderer
+
+# ---------------------------------------------------------------------------
+# "PeerOrgs" - Definition of organizations managing peer nodes
+# ---------------------------------------------------------------------------
+PeerOrgs:
+  - Name: enedis
+    Domain: enedis
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer1
+        SANS:
+          - 0.0.0.0
+          - peer1.enedis.localhost
+          - peer1-hlf-peer.enedis
+      # - Hostname: peer2
+      #   SANS:
+      #     - 0.0.0.0
+      #     - peer2.enedis.localhost
+      #     - peer2-hlf-peer.enedis
+    Users:
+      Count: 1
+
+  - Name: rte
+    Domain: rte
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer1
+        SANS:
+          - 0.0.0.0
+          - peer1.rte.localhost
+          - peer1-hlf-peer.rte
+      # - Hostname: peer2
+      #   SANS:
+      #     - 0.0.0.0
+      #     - peer2.rte.localhost
+      #     - peer2-hlf-peer.rte
+    Users:
+      Count: 1
+
+  - Name: producer
+    Domain: producer
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer1
+        SANS:
+          - 0.0.0.0
+          - peer1.producer.localhost
+          - peer1-hlf-peer.producer
+      # - Hostname: peer2
+      #   SANS:
+      #     - 0.0.0.0
+      #     - peer2.producer.localhost
+      #     - peer2-hlf-peer.producer
+    Users:
+      Count: 1

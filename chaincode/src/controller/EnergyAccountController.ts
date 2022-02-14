@@ -54,7 +54,7 @@ export class EnergyAccountController {
         } catch (error) {
             throw new Error(`ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value`);
         }
-        if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
+        if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(
                 `Energy Account, sender: ${identity} does not have write access for ${energyAccountInput.energyAccountMarketDocumentMrid} creation. (Wrong SystemOperator)`,
             );
@@ -125,7 +125,7 @@ export class EnergyAccountController {
         } catch (error) {
             throw new Error(`ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value`);
         }
-        if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
+        if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(
                 `Energy Account, sender: ${identity} does not provide his own systemOperatorEicCode therefore he does not have read access.`,
             );
@@ -241,28 +241,4 @@ export class EnergyAccountController {
         }
         return JSON.stringify(allResults);
     }
-
-    // public static async getAllEnergyAccount(ctx: Context): Promise<string> {
-    //     const allResults = [];
-    //     const query = `{"selector": {"docType": "energyAccount"}}`;
-    //     const identity = await ctx.stub.getMspID();
-    //     if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-    //         throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
-    //     }
-
-    //     const iterator = await ctx.stub.getQueryResult(query);
-    //     let result = await iterator.next();
-    //     while (!result.done) {
-    //         const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-    //         let record;
-    //         try {
-    //             record = JSON.parse(strValue);
-    //         } catch (err) {
-    //             record = strValue;
-    //         }
-    //         allResults.push(record);
-    //         result = await iterator.next();
-    //     }
-    //     return JSON.stringify(allResults);
-    // }
 }

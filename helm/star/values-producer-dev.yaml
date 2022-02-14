@@ -1,0 +1,13 @@
+global:
+  dev: true
+
+ingress:
+  enabled: true
+  host: "producer.localhost"
+
+backend:
+  peerConnectionOrganization: producer
+  instance: producer
+
+mail:
+  dev: true

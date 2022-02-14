@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface ImportResult<T extends ImportCSV> {
     List<T> getDatas();
+
     void setDatas(List<T> importBeans);
+
     List<String> getErrors();
 }

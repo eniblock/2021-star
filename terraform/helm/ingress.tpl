@@ -1,5 +1,7 @@
 controller:
   setAsDefaultIngress: true
+  extraArgs:
+    enable-ssl-passthrough: ""
   metrics:
     enabled: true
     serviceMonitor:

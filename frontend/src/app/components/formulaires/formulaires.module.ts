@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+<<<<<<< HEAD
 import { FormReseauRechercheComponent } from './form-reseau-recherche/form-reseau-recherche.component';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { FormOrdreDebutLimitationComponent } from './form-ordre-debut-limitation/form-ordre-debut-limitation.component';
@@ -15,17 +16,25 @@ import { FormOrdreFinLimitationSaisieManuelleComponent } from './form-ordre-fin-
 import { MatRadioModule } from '@angular/material/radio';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+=======
+import { ReseauRechercheComponent } from './reseau-recherche/reseau-recherche.component';
+import { PipesModule } from 'src/app/pipes/pipes.module';
+>>>>>>> develop
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
+<<<<<<< HEAD
     MicroComponentsModule,
+=======
+>>>>>>> develop
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
     PipesModule,
+<<<<<<< HEAD
     MatRadioModule,
     MatStepperModule,
     MatDatepickerModule,
@@ -42,5 +51,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     FormOrdreDebutLimitationComponent,
     FormOrdreFinLimitationComponent,
   ],
+=======
+  ],
+  declarations: [ReseauRechercheComponent],
+  exports: [ReseauRechercheComponent],
+>>>>>>> develop
 })
 export class FormulairesModule {}

@@ -6,6 +6,7 @@
 *~
 *.orig
 *.bak
+.helm
 
 HELP.md
 target/
@@ -67,3 +68,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# secrets
+secrets-*.yaml

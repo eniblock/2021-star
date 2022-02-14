@@ -14,7 +14,11 @@ export class ReseauPaginationComponent implements OnInit {
     FormulairePagination<OrdreRechercheReseau>
   >();
 
+<<<<<<< HEAD
   @Input() pageSize = environment.pageSizes[0];
+=======
+  @Input() pagesize = environment.pageSizes[0];
+>>>>>>> develop
   @Input() order = OrdreRechercheReseau.producerMarketParticipantName;
 
   ordreRechercheReseauEnum = OrdreRechercheReseau;
@@ -22,7 +26,11 @@ export class ReseauPaginationComponent implements OnInit {
   pageSizes = environment.pageSizes;
 
   form: FormGroup = this.formBuilder.group({
+<<<<<<< HEAD
     pageSize: [],
+=======
+    pagesize: [],
+>>>>>>> develop
     order: [],
   });
 
@@ -30,7 +38,11 @@ export class ReseauPaginationComponent implements OnInit {
 
   ngOnInit() {
     this.form.patchValue({
+<<<<<<< HEAD
       pageSize: this.pageSize,
+=======
+      pagesize: this.pagesize,
+>>>>>>> develop
       order: this.order,
     });
   }

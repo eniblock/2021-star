@@ -1,0 +1,73 @@
+ingress:
+  enabled: true
+  host: peer1.enedis.staging.star.eniblock.fr
+  secretName: hlf--peer1-tls
+
+##################################
+## Peer configuration options    #
+##################################
+peer:
+  tls:
+    server:
+      enabled: true
+  mspID: enedis
+  gossip:
+    bootstrap: peer2-hlf-peer.enedis-staging:7051
+    endpoint: peer1-hlf-peer.enedis-staging:7051
+    externalEndpoint: peer1.enedis.staging.star.eniblock.fr:443
+  chaincodes:
+    - name: star
+      address: peer1-chaincode-hlf-chaincode:7777
+      label: star
+      orderer_address: orderer1.orderer.staging.star.eniblock.fr:443
+      channel: star
+
+# Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
+secrets:
+  ## These secrets should contain the Orderer crypto materials and credentials
+  # peer: {}
+  peer:
+    ## Credentials, saved under keys 'CA_USERNAME' and 'CA_PASSWORD'
+    # cred: hlf--peer1-cred
+
+    ## Certificate, saved under key 'cert.pem'
+    cert: hlf--peer1-idcert
+
+    ## Key, saved under 'key.pem'
+    key: hlf--peer1-idkey
+
+    ## CA Cert, saved under 'cacert.pem'
+    caCert: hlf--peer1-cacert
+
+    ## Intermediate CA Cert (optional), saved under 'intermediatecacert.pem'
+    # intCaCert: hlf--peer1-caintcert
+
+    ## TLS secret, saved under keys 'tls.crt' and 'tls.key' (to conform with K8S nomenclature)
+    tls: hlf--peer1-tls
+
+    ## TLS root CA certificate saved under key 'cert.pem'
+    tlsRootCert: hlf--peer1-tlsrootcert
+
+    # ## TLS secret, saved under keys 'tls.crt' and 'tls.key' (to conform with K8S nomenclature)
+    # tlsClient: hlf--peer1-tls-client
+
+    # ## TLS client root CA certificates saved under any names (as there may be multiple)
+    # tlsClientRootCert: hlf--peer1-client-tlsrootcert
+
+    ## This should contain "channel" transaction derived from a configtx.yaml
+    ## configtxgen -profile ComposerChannel -channelID composerchannel -outputCreateChannelTx composerchannel.tx
+  channels:
+    - name: star
+      secretName: starchannel
+      orderer_address: orderer1.orderer.staging.star.eniblock.fr:443
+
+  ## This should contain the Certificate of the Peer Organisation admin
+  ## This is necessary to successfully run the peer
+  adminCert: hlf--peer1-admincert
+
+  ## This should contain the Private Key of the Peer Organisation admin
+  ## This is necessary to successfully join a channel
+  adminKey: hlf--peer1-adminkey
+
+  ## This should include the Orderer TLS 'cacert.pem'
+  ordTlsRootCert: hlf--ord-tlsrootcert

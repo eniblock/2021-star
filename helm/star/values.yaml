@@ -9,6 +9,13 @@ image:
 backend:
   enabled: true
 
+  peerConnectionSecret: star-peer-connection
+  peerUserIdSecret: star-user-id
+  peerConnectionUser: User1
+  peerConnectionOrganization: org
+
+  instance: tso
+
   image:
     repository: "registry.gitlab.com/xdev-tech/star/backend"
     pullPolicy: IfNotPresent

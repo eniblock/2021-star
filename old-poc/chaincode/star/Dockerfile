@@ -10,8 +10,8 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-EXPOSE 9997
+EXPOSE 9999
 
-ENV star_1.0:f601cecdf4b22636f31fc8cf8057b297e0a736f6ab4dce68311170f38cc9d6d4=changeme
+ENV star_1.0:30373b8f0e566a1d08925fe5e30880cf386e77b634b85b42d5fd85cba59480b8=changeme
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
-CMD sh -c "/app/node_modules/.bin/fabric-chaincode-node server --chaincode-address star.bno.star.com:9997 --chaincode-id $star_1.0:f601cecdf4b22636f31fc8cf8057b297e0a736f6ab4dce68311170f38cc9d6d4"
+CMD sh -c "/app/node_modules/.bin/fabric-chaincode-node server --chaincode-address 0.0.0.0:9999 --chaincode-id star_1.0:30373b8f0e566a1d08925fe5e30880cf386e77b634b85b42d5fd85cba59480b8"

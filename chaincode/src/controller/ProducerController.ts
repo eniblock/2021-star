@@ -28,12 +28,12 @@ export class ProducerController {
 
         producerInput.docType = 'producer';
         await ctx.stub.putState(
-            producerInput.producerMarketParticipantMrId,
+            producerInput.producerMarketParticipantMrid,
             Buffer.from(JSON.stringify(producerInput)),
         );
         console.info(
             '============= END   : Create %s Producer Market Participant ===========',
-            producerInput.producerMarketParticipantMrId,
+            producerInput.producerMarketParticipantMrid,
         );
     }
 
@@ -73,18 +73,18 @@ export class ProducerController {
         );
 
         producerInput.docType = 'producer';
-        const prodAsBytes = await ctx.stub.getState(producerInput.producerMarketParticipantMrId);
+        const prodAsBytes = await ctx.stub.getState(producerInput.producerMarketParticipantMrid);
         if (!prodAsBytes || prodAsBytes.length === 0) {
-            throw new Error(`${producerInput.producerMarketParticipantMrId} does not exist`);
+            throw new Error(`${producerInput.producerMarketParticipantMrid} does not exist`);
         }
 
         await ctx.stub.putState(
-            producerInput.producerMarketParticipantMrId,
+            producerInput.producerMarketParticipantMrid,
             Buffer.from(JSON.stringify(producerInput)),
         );
         console.info(
             '============= END : Update %s Producer Market Participant ===========',
-            producerInput.producerMarketParticipantMrId,
+            producerInput.producerMarketParticipantMrid,
         );
     }
 

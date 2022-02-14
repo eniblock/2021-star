@@ -43,7 +43,7 @@ describe('Star Tests SITES', () => {
                 if (chaincodeStub.states) {
                     const copied = Object.assign({}, chaincodeStub.states);
                     for (let key in copied) {
-                        if (copied[key] == 'non-json-value') { 
+                        if (copied[key] == 'non-json-value') {
                             yield {value: copied[key]};
                             continue
                         }
@@ -73,10 +73,10 @@ describe('Star Tests SITES', () => {
                                     // console.log('yield=', queryProd, objProd);
                                     yield {value: copied[key]};
                                 }
-                            // } 
+                            // }
                             // else {
                             //     yield {value: copied[key]};
-                            // }                           
+                            // }
                         }
                     }
                 }
@@ -102,7 +102,7 @@ describe('Star Tests SITES', () => {
         //     chaincodeStub.putState.rejects('failed inserting key');
 
         //     let star = new Star();
-        //     chaincodeStub.MspiID = 'RTEMSP';
+        //     chaincodeStub.MspiID = 'rte';
         //     try {
         //         await star.CreateSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
         //         // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
@@ -115,7 +115,7 @@ describe('Star Tests SITES', () => {
 
         it('should return ERROR on CreateSite NON-JSON Value', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             try {
                 await star.CreateSite(transactionContext, 'RTE01EIC');
             } catch(err) {
@@ -126,7 +126,7 @@ describe('Star Tests SITES', () => {
 
         it('should return ERROR createSite HTB System operator missing', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
@@ -140,7 +140,7 @@ describe('Star Tests SITES', () => {
 
         it('should return ERROR createSite HTB Producer missing', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
 
             try {
@@ -153,7 +153,7 @@ describe('Star Tests SITES', () => {
 
         it('should return ERROR createSite HTB wrong MSPID', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
@@ -168,7 +168,7 @@ describe('Star Tests SITES', () => {
 
         it('should return ERROR createSite HTB missing marketEvaluationPointMrid optional field for HTA', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
@@ -183,7 +183,7 @@ describe('Star Tests SITES', () => {
 
         it('should return ERROR createSite HTB missing technologyType mandatory field', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
@@ -207,17 +207,17 @@ describe('Star Tests SITES', () => {
                 siteName: 'Ferme éolienne de Genonville',
                 substationMrid: 'GDO A4RTD',
                 substationName: 'CIVRAY',
-                marketEvaluationPointMrid: 'CodePPE', // optional 
-                schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
-                siteAdminMrid: '489 981 029', // optional 
-                siteLocation: 'Biscarosse', // optional 
-                siteIecCode: 'S7X0000013077478', // optional 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
-                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+                marketEvaluationPointMrid: 'CodePPE', // optional
+                schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional
+                siteAdminMrid: '489 981 029', // optional
+                siteLocation: 'Biscarosse', // optional
+                siteIecCode: 'S7X0000013077478', // optional
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
@@ -237,17 +237,17 @@ describe('Star Tests SITES', () => {
                 siteName: 'Ferme éolienne de Genonville',
                 substationMrid: 'GDO A4RTD',
                 substationName: 'CIVRAY',
-                // marketEvaluationPointMrid: 'CodePPE', // optional 
-                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
-                siteAdminMrid: '489 981 029', // optional 
-                siteLocation: 'Biscarosse', // optional 
-                siteIecCode: 'S7X0000013077478', // optional 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
-                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+                // marketEvaluationPointMrid: 'CodePPE', // optional
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional
+                siteAdminMrid: '489 981 029', // optional
+                siteLocation: 'Biscarosse', // optional
+                siteIecCode: 'S7X0000013077478', // optional
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927464\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
@@ -267,17 +267,17 @@ describe('Star Tests SITES', () => {
                 siteName: 'Ferme éolienne de Genonville',
                 substationMrid: 'GDO A4RTD',
                 substationName: 'CIVRAY',
-                // marketEvaluationPointMrid: 'CodePPE', // optional 
-                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
-                siteAdminMrid: '489 981 029', // optional 
-                siteLocation: 'Biscarosse', // optional 
-                siteIecCode: 'S7X0000013077478', // optional 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
-                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+                // marketEvaluationPointMrid: 'CodePPE', // optional
+                // schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional
+                siteAdminMrid: '489 981 029', // optional
+                siteLocation: 'Biscarosse', // optional
+                siteIecCode: 'S7X0000013077478', // optional
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927464\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             chaincodeStub.MspiID = 'FakeMSP';
@@ -294,7 +294,7 @@ describe('Star Tests SITES', () => {
     describe('Test QuerySite', () => {
         it('should return ERROR on QuerySite', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             try {
                 await star.QuerySite(transactionContext, 'toto');
             } catch (err) {
@@ -314,17 +314,17 @@ describe('Star Tests SITES', () => {
                 siteName: 'Ferme éolienne de Genonville',
                 substationMrid: 'GDO A4RTD',
                 substationName: 'CIVRAY',
-                marketEvaluationPointMrid: 'CodePPE', // optional 
-                schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional 
-                siteAdminMrid: '489 981 029', // optional 
-                siteLocation: 'Biscarosse', // optional 
-                siteIecCode: 'S7X0000013077478', // optional 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional 
-                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional 
+                marketEvaluationPointMrid: 'CodePPE', // optional
+                schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional
+                siteAdminMrid: '489 981 029', // optional
+                siteLocation: 'Biscarosse', // optional
+                siteIecCode: 'S7X0000013077478', // optional
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional
+                systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(site));
@@ -352,14 +352,14 @@ describe('Star Tests SITES', () => {
 
             const siteHTA: Site = {meteringPointMrid: 'PDL00000000289766', systemOperatorMarketParticipantMrid: '17V0000009927464', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927464\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTA));
-    
+
             const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTB));
@@ -401,14 +401,14 @@ describe('Star Tests SITES', () => {
 
             const siteHTA: Site = {meteringPointMrid: 'PDL00000000289766', systemOperatorMarketParticipantMrid: '17V0000009927464', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927464\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTA));
-    
+
             const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTB));
@@ -461,14 +461,14 @@ describe('Star Tests SITES', () => {
 
             const siteHTA: Site = {meteringPointMrid: 'PDL00000000289766', systemOperatorMarketParticipantMrid: '17V0000009927464', producerMarketParticipantMrid: '17X0000013097450', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927464\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097450\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTA));
-    
+
             const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTB));
@@ -510,14 +510,14 @@ describe('Star Tests SITES', () => {
 
             const siteHTA: Site = {meteringPointMrid: 'PDL00000000289766', systemOperatorMarketParticipantMrid: '17V0000009927464', producerMarketParticipantMrid: '17X000001309745X', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927464\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTA));
-    
+
             const siteHTB: Site = {meteringPointMrid: 'PDL00000000289767', systemOperatorMarketParticipantMrid: '17V000000992746D', producerMarketParticipantMrid: '17X0000013097450', technologyType: 'Eolien', siteType: 'Injection', siteName: 'Ferme éolienne de Genonville', substationMrid: 'GDO A4RTD', substationName: 'CIVRAY', marketEvaluationPointMrid: 'CodePPE', schedulingEntityRegisteredResourceMrid: 'CodeEDP', siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'}
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097450\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTB));
@@ -589,52 +589,52 @@ describe('Star Tests SITES', () => {
                 systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres',
             }
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927468\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013077450\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001307745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(siteHTAprodA));
             await star.CreateSite(transactionContext, JSON.stringify(siteHTAprodB));
-    
+
             const siteHTBProdA: Site = {
-                meteringPointMrid: 'PDL00000000289767', 
-                systemOperatorMarketParticipantMrid: '17V0000009927469', 
-                producerMarketParticipantMrid: '17X000001307745X', 
-                technologyType: 'Eolien', 
-                siteType: 'Injection', 
-                siteName: 'Ferme éolienne de Genonville', 
-                substationMrid: 'GDO A4RTD', 
-                substationName: 'CIVRAY', 
-                marketEvaluationPointMrid: 'CodePPE', 
-                schedulingEntityRegisteredResourceMrid: 'CodeEDP', 
-                siteAdminMrid: '489 981 029', 
-                siteLocation: 'Biscarosse', 
-                siteIecCode: 'S7X0000013077478', 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', 
+                meteringPointMrid: 'PDL00000000289767',
+                systemOperatorMarketParticipantMrid: '17V0000009927469',
+                producerMarketParticipantMrid: '17X000001307745X',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                marketEvaluationPointMrid: 'CodePPE',
+                schedulingEntityRegisteredResourceMrid: 'CodeEDP',
+                siteAdminMrid: '489 981 029',
+                siteLocation: 'Biscarosse',
+                siteIecCode: 'S7X0000013077478',
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511',
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1',
                 systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'
             }
 
             const siteHTBProdB: Site = {
-                meteringPointMrid: 'PDL00000000289768', 
-                systemOperatorMarketParticipantMrid: '17V0000009927469', 
-                producerMarketParticipantMrid: '17X0000013077450', 
-                technologyType: 'Eolien', 
-                siteType: 'Injection', 
-                siteName: 'Ferme éolienne de Genonville', 
-                substationMrid: 'GDO A4RTD', 
-                substationName: 'CIVRAY', 
-                marketEvaluationPointMrid: 'CodePPE', 
-                schedulingEntityRegisteredResourceMrid: 'CodeEDP', 
-                siteAdminMrid: '489 981 029', 
-                siteLocation: 'Biscarosse', 
-                siteIecCode: 'S7X0000013077478', 
-                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', 
-                systemOperatorEntityFlexibilityDomainName: 'Départ 1', 
+                meteringPointMrid: 'PDL00000000289768',
+                systemOperatorMarketParticipantMrid: '17V0000009927469',
+                producerMarketParticipantMrid: '17X0000013077450',
+                technologyType: 'Eolien',
+                siteType: 'Injection',
+                siteName: 'Ferme éolienne de Genonville',
+                substationMrid: 'GDO A4RTD',
+                substationName: 'CIVRAY',
+                marketEvaluationPointMrid: 'CodePPE',
+                schedulingEntityRegisteredResourceMrid: 'CodeEDP',
+                siteAdminMrid: '489 981 029',
+                siteLocation: 'Biscarosse',
+                siteIecCode: 'S7X0000013077478',
+                systemOperatorEntityFlexibilityDomainMrid: 'PSC4511',
+                systemOperatorEntityFlexibilityDomainName: 'Départ 1',
                 systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927469\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             // await star.createProducer(transactionContext, '17X0000013097450', 'EolienFR vert Cie', 'A21');
             // await star.createProducer(transactionContext, '17X000001307745X', 'EolienFR vert Cie', 'A21');

@@ -1,6 +1,7 @@
 package com.star.service;
 
 import com.star.enums.FileExtensionEnum;
+import com.star.exception.TechnicalException;
 import com.star.models.participant.ImportCSV;
 import com.star.models.participant.ImportResult;
 import com.star.models.participant.MarketParticipant;
@@ -8,8 +9,7 @@ import com.star.models.participant.dso.ImportMarketParticipantDsoResult;
 import com.star.models.participant.dso.MarketParticipantDso;
 import com.star.models.participant.tso.ImportMarketParticipantTsoResult;
 import com.star.models.participant.tso.MarketParticipantTso;
-import com.star.repository.MarketParticipantDsoRepository;
-import com.star.repository.MarketParticipantTsoRepository;
+import com.star.repository.MarketParticipantRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.csv.CSVFormat;
@@ -51,21 +51,21 @@ public class MarketParticipantService {
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
     @Autowired
-    private MarketParticipantDsoRepository marketParticipantDsoRepository;
+    private MarketParticipantRepository marketParticipantRepository;
 
-    @Autowired
-    private MarketParticipantTsoRepository marketParticipantTsoRepository;
     @Autowired
     private MessageSource messageSource;
 
     /**
      * Permet d'importer les market participants DSO selon les informations contenues dans le fichier CSV passé en paramètre.
-     * @param fileName nom du fichier CSV à traiter.
+     *
+     * @param fileName     nom du fichier CSV à traiter.
      * @param streamReader le contenu du fichier CSV à traiter, en tant qu'objet {@link Reader}
      * @return {@link ImportMarketParticipantDsoResult} contenant les participants importés et les éventuelles erreurs des lignes ne respectant pas le format.
      * @throws IOException
+     * @throws TechnicalException
      */
-    public ImportMarketParticipantDsoResult importMarketParticipantDso(String fileName, Reader streamReader) throws IOException {
+    public ImportMarketParticipantDsoResult importMarketParticipantDso(String fileName, Reader streamReader) throws IOException, TechnicalException {
         checkFile(fileName, streamReader);
         ImportMarketParticipantDsoResult importMarketParticipantDsoResult = new ImportMarketParticipantDsoResult();
         CSVParser csvParser = getCsvParser(streamReader);
@@ -82,19 +82,20 @@ public class MarketParticipantService {
         if (CollectionUtils.isEmpty(importMarketParticipantDsoResult.getErrors()) && CollectionUtils.isEmpty(importMarketParticipantDsoResult.getDatas())) {
             throw new IllegalArgumentException(messageSource.getMessage("import.market.participant.file.data.not.empty", null, null));
         }
-        importMarketParticipantDsoResult.setDatas(marketParticipantDsoRepository.save(importMarketParticipantDsoResult.getDatas(), null));
+        importMarketParticipantDsoResult.setDatas(marketParticipantRepository.saveMarketParticipantDso(importMarketParticipantDsoResult.getDatas()));
         return importMarketParticipantDsoResult;
     }
 
 
     /**
      * Permet d'importer les market participants TSO selon les informations contenues dans le fichier CSV passé en paramètre.
-     * @param fileName nom du fichier CSV à traiter.
+     *
+     * @param fileName     nom du fichier CSV à traiter.
      * @param streamReader le contenu du fichier CSV à traiter, en tant qu'objet {@link Reader}
      * @return {@link ImportMarketParticipantTsoResult} contenant les participants importés et les éventuelles erreurs des lignes ne respectant pas le format.
      * @throws IOException
      */
-    public ImportMarketParticipantTsoResult importMarketParticipantTso(String fileName, Reader streamReader) throws IOException {
+    public ImportMarketParticipantTsoResult importMarketParticipantTso(String fileName, Reader streamReader) throws IOException, TechnicalException {
         checkFile(fileName, streamReader);
         ImportMarketParticipantTsoResult importMarketParticipantTsoResult = new ImportMarketParticipantTsoResult();
         CSVParser csvParser = getCsvParser(streamReader);
@@ -111,17 +112,17 @@ public class MarketParticipantService {
         if (CollectionUtils.isEmpty(importMarketParticipantTsoResult.getErrors()) && CollectionUtils.isEmpty(importMarketParticipantTsoResult.getDatas())) {
             throw new IllegalArgumentException(messageSource.getMessage("import.market.participant.file.data.not.empty", null, null));
         }
-        importMarketParticipantTsoResult.setDatas(marketParticipantTsoRepository.save(importMarketParticipantTsoResult.getDatas(), null));
+        importMarketParticipantTsoResult.setDatas(marketParticipantRepository.saveMarketParticipantTso(importMarketParticipantTsoResult.getDatas()));
         return importMarketParticipantTsoResult;
     }
 
     /**
      * Retourne un objet contenant la liste des market participant DSO et des market participant TSO
+     *
      * @return
      */
-    public MarketParticipant getMarketParticipant() {
-        return new MarketParticipant(marketParticipantDsoRepository.getMarketParticipantDsos(),
-                marketParticipantTsoRepository.getMarketParticipantTsos());
+    public MarketParticipant getMarketParticipant() throws TechnicalException {
+        return new MarketParticipant(marketParticipantRepository.getMarketParticipantDsos(), marketParticipantRepository.getMarketParticipantTsos());
     }
 
     /**

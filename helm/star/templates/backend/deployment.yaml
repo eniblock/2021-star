@@ -28,6 +28,8 @@ spec:
         {{- include "star.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: backend
         {{ include "star.fullname" . }}-ipfs-client: "true"
+        # allows to contact the peers
+        hlf-peer-msp-id: {{ .Values.backend.peerConnectionOrganization }}
     spec:
       {{- with .Values.backend.imagePullSecrets }}
       imagePullSecrets:
@@ -40,9 +42,19 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
           {{- toYaml .Values.backend.securityContext | nindent 12 }}
-          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           env:
+            - name: INSTANCE
+              value: {{ .Values.backend.instance }}
+
+            - name: HYPERLEDGER_FABRIC_GATEWAY_NETWORKCONFIG
+              value: /var/hyperledger/peer/connection.yaml
+            - name: HYPERLEDGER_FABRIC_GATEWAY_WALLET
+              value: /var/hyperledger/wallet
+            - name: HYPERLEDGER_FABRIC_GATEWAY_IDENTITYID
+              value: {{ .Values.backend.peerConnectionUser }}
+
             # mail config
             - name: spring.mail.host
               valueFrom:
@@ -130,6 +142,18 @@ spec:
             failureThreshold: 12
           resources:
           {{- toYaml .Values.backend.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /var/hyperledger/peer
+              name: peer-connection
+            - mountPath: /var/hyperledger/wallet
+              name: peer-user-id
+      volumes:
+        - name: peer-connection
+          secret:
+            secretName: {{ .Values.backend.peerConnectionSecret }}
+        - name: peer-user-id
+          secret:
+            secretName: {{ .Values.backend.peerUserIdSecret }}
       {{- with .Values.backend.nodeSelector }}
       nodeSelector:
       {{- toYaml . | nindent 8 }}

@@ -1,0 +1,18 @@
+ingress:
+  enabled: true
+  host: orderer1.orderer.localhost
+  secretName: hlf--orderer1-tls
+
+secrets:
+  ord:
+    cert: hlf--orderer1-idcert
+    key: hlf--orderer1-idkey
+    caCert: hlf--orderer1-cacert
+
+    tls: hlf--orderer1-tls
+    tlsRootCert: hlf--orderer1-tlsrootcert
+
+podLabels:
+  orderer1-hlf-ord-client: "true"
+  orderer2-hlf-ord-client: "true"
+  orderer3-hlf-ord-client: "true"

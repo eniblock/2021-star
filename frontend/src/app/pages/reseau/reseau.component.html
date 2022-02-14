@@ -5,14 +5,22 @@
 
 <div class="row my-3">
   <div class="col">
+<<<<<<< HEAD
     <app-form-reseau-recherche (formSubmit)="rechercher($event)" ></app-form-reseau-recherche>
+=======
+    <app-reseau-recherche (formSubmit)="rechercher($event)" ></app-reseau-recherche>
+>>>>>>> develop
   </div>
 </div>
 
 <div class="row mt-4" *ngIf="resultatsRecherche.length > 0">
   <div class="col">
     <div class="mb-3">{{ totalElements }} {{ totalElements>1?'résultats':'résultat' }}</div>
+<<<<<<< HEAD
     <app-reseau-pagination (paginationModifiee)="paginationModifiee($event)" [pageSize]="pageSize" [order]="order"></app-reseau-pagination>
+=======
+    <app-reseau-pagination (paginationModifiee)="paginationModifiee($event)" [pagesize]="pagesize" [order]="order"></app-reseau-pagination>
+>>>>>>> develop
   </div>
 </div>
 

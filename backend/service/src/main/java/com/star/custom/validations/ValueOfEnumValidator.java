@@ -4,9 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -18,8 +18,10 @@ public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, St
     @Override
     public void initialize(ValueOfEnum constraintAnnotation) {
         Class<? extends Enum<?>> enumClass = constraintAnnotation.enumClass();
-        acceptedValues = Arrays.asList(enumClass.getEnumConstants()).stream().map(element -> element.toString()).collect(Collectors.toList());
-        acceptedValues.addAll(Arrays.asList(enumClass.getEnumConstants()).stream().map(element -> element.name()).collect(Collectors.toList()));
+        acceptedValues = new ArrayList<>();
+        for (Enum<?> enumElement : Arrays.asList(enumClass.getEnumConstants())) {
+            acceptedValues.addAll(Arrays.asList(StringUtils.split(enumElement.toString(), ",")));
+        }
     }
 
     @Override

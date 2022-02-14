@@ -1,8 +1,9 @@
 package com.star.enums;
 
-import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 
-import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -10,27 +11,34 @@ import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
  */
 public enum TechnologyTypeEnum {
 
-    EOLIEN("Eolien"),
-    PHOTOVOLTAIQUE("Photovoltaïque");
+    EOLIEN("Eolien", "éolien,eolien"),
+    PHOTOVOLTAIQUE("Photovoltaïque", "photovoltaïque,photovoltaique,Photovoltaique");
 
-    private String value;
+    private String label;
+    private String values;
 
-    TechnologyTypeEnum(String value) {
-        this.value = value;
+    TechnologyTypeEnum(String label, String values) {
+        this.label = label;
+        this.values = values;
     }
 
-    public String getValue() {
-        return this.value;
+    public String getLabel() {
+        return this.label;
+    }
+
+    public String getValues() {
+        return this.values;
     }
 
     @Override
     public String toString() {
-        return this.value;
+        return this.name()+","+this.getLabel()+","+this.getValues();
     }
 
     public static TechnologyTypeEnum fromValue(String value) {
         for (TechnologyTypeEnum technologyTypeEnum : TechnologyTypeEnum.values()) {
-            if (equalsIgnoreCase(technologyTypeEnum.value, value) || equalsIgnoreCase(technologyTypeEnum.name(), value)) {
+            List<String> values = Arrays.asList(StringUtils.split(technologyTypeEnum.toString(), ","));
+            if (values.contains(value)) {
                 return technologyTypeEnum;
             }
         }

@@ -14,11 +14,11 @@ import { Observable } from 'rxjs';
 export class OrdreLimitationService {
   constructor(private httpClient: HttpClient) {}
 
-  creerOrdreDebutAvecFichier(
+  creerOrdreDebutAvecFichiers(
     formulaireOrdreDebutLimitationFichier: FormulaireOrdreDebutLimitationFichier
   ): Observable<void> {
     let formData = new FormData();
-    formData.append('fichier', formulaireOrdreDebutLimitationFichier.fichier);
+    this.appendFiles(formData, formulaireOrdreDebutLimitationFichier.files);
 
     return this.httpClient.post<void>(
       `${environment.serverUrl}/ordreLimitations/debut/fichier`,
@@ -26,11 +26,11 @@ export class OrdreLimitationService {
     );
   }
 
-  creerOrdreFinAvecFichier(
+  creerOrdreFinAvecFichiers(
     formulaireOrdreFinLimitationFichier: FormulaireOrdreFinLimitationFichier
   ): Observable<void> {
     let formData = new FormData();
-    formData.append('fichier', formulaireOrdreFinLimitationFichier.fichier);
+    this.appendFiles(formData, formulaireOrdreFinLimitationFichier.files);
 
     return this.httpClient.post<void>(
       `${environment.serverUrl}/ordreLimitations/fin/fichier`,
@@ -43,5 +43,11 @@ export class OrdreLimitationService {
       `${environment.serverUrl}/ordreLimitations/fin/`,
       form
     );
+  }
+
+  private appendFiles(formData: FormData, files: File[]) {
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files[]', files[i]);
+    }
   }
 }

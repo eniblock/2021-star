@@ -42,10 +42,10 @@ export class FormOrdreFinLimitationFichierComponent implements OnInit {
 
   onSubmit() {
     const form: FormulaireOrdreFinLimitationFichier = {
-      fichier: this.listeFichiers[0].file, // On upload ici un seul fichier
+      files: this.listeFichiers.map((f) => f.file), // On upload ici un seul fichier
     };
     this.ordreLimitationService
-      .creerOrdreFinAvecFichier(form)
+      .creerOrdreFinAvecFichiers(form)
       .subscribe((ok) => {
         this.uploadEffectue = true;
       });

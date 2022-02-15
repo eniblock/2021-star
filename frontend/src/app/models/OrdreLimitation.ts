@@ -1,9 +1,9 @@
 export interface FormulaireOrdreDebutLimitationFichier {
-  fichier: File;
+  files: File[];
 }
 
 export interface FormulaireOrdreFinLimitationFichier {
-  fichier: File;
+  files: File[];
 }
 
 export interface FormulaireOrdreFinLimitation {

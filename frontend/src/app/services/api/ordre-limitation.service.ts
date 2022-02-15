@@ -21,7 +21,7 @@ export class OrdreLimitationService {
     this.appendFiles(formData, formulaireOrdreDebutLimitationFichier.files);
 
     return this.httpClient.post<void>(
-      `${environment.serverUrl}/ordreLimitations/debut/fichier`,
+      `${environment.serverUrl}/ordreLimitations/debut/files`,
       formData
     );
   }
@@ -33,7 +33,7 @@ export class OrdreLimitationService {
     this.appendFiles(formData, formulaireOrdreFinLimitationFichier.files);
 
     return this.httpClient.post<void>(
-      `${environment.serverUrl}/ordreLimitations/fin/fichier`,
+      `${environment.serverUrl}/ordreLimitations/fin/files`,
       formData
     );
   }

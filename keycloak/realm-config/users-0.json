@@ -1,0 +1,45 @@
+{
+  "realm" : "{{.Env.REALM}}",
+  "users" : [ {
+    "id" : "aae4aaf7-69c0-4c90-adb8-3b6f848e31c4",
+    "createdTimestamp" : 1606743707654,
+    "username" : "admin",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "email" : "admin@theblockchainxdev.com",
+    "credentials" : [ {
+      "id" : "8a855cfd-41ed-4d62-950a-5367a04257d6",
+      "type" : "password",
+      "createdDate" : 1606743724645,
+      "secretData" : "{\"value\":\"PeQn1mTq+5n3+GzeayoGxIZR7qMho+SNSHG/JinhTOetYjDy7hhGv3e1E1Shc9JUJq+HqLpruZhisGk9XmrDwg==\",\"salt\":\"42CmdpV4sAwPLzsDyWD+ww==\"}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : ["{{.Env.IDP_ADMIN_ROLE}}", "{{.Env.ADMIN_ROLE}}", "uma_authorization", "offline_access"],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "03ac730e-63e6-495d-8cf2-584c16f0c95e",
+    "createdTimestamp" : 1607426427730,
+    "username" : "service-account-backend",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "serviceAccountClientId" : "backend",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "uma_authorization", "offline_access" ],
+    "clientRoles" : {
+      "realm-management" : [ "view-users", "manage-users", "view-realm", "manage-realm" ],
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ]
+}

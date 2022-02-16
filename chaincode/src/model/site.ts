@@ -7,6 +7,7 @@ export class Site {
 
     public static readonly schema = Yup.object().shape({
         docType: Yup.string().notRequired(),
+        instance: Yup.string().notRequired(),
         meteringPointMrid: Yup.string().required('meteringPointMrid is a compulsory field (string)'),
         producerMarketParticipantMrid: Yup.string().required('producerMarketParticipantMrid is a compulsory field (string)'),
         siteName: Yup.string().required('siteName is a compulsory field (string)'),
@@ -24,6 +25,7 @@ export class Site {
         systemOperatorCustomerServiceName: Yup.string().notRequired(),
         systemOperatorEntityFlexibilityDomainMrid: Yup.string().notRequired(),
         systemOperatorEntityFlexibilityDomainName: Yup.string().notRequired(),
+        producerMarketParticipantName: Yup.string().notRequired(),
     });
 
     public docType?: string;
@@ -44,4 +46,5 @@ export class Site {
     public systemOperatorEntityFlexibilityDomainMrid?: string;
     public systemOperatorEntityFlexibilityDomainName?: string;
     public systemOperatorCustomerServiceName?: string;
+    public producerMarketParticipantName?: string;
 }

@@ -58,6 +58,15 @@ export class Star extends Contract {
         }
     }
 
+    public async GetSystemOperatorByQuery(
+        ctx: Context, query: string) {
+        try {
+            return (await SystemOperatorController.getSystemOperatorByQuery(ctx, query));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     /*      Producer      */
 
     public async CreateProducer(ctx: Context, inputStr: string) {
@@ -110,6 +119,26 @@ export class Star extends Contract {
         id: string) {
         try {
             return (await SiteController.querySite(ctx, id));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async SiteExists(
+        ctx: Context,
+        id: string) {
+        try {
+            return (await SiteController.siteExists(ctx, id));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async GetSiteWithPagination(
+        ctx: Context,
+        query: string, pageSize: number, bookmark: string) {
+        try {
+            return (await SiteController.getSitesByQuery(ctx, query, pageSize, bookmark));
         } catch (error) {
             throw error;
         }

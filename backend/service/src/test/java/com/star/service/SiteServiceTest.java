@@ -2,24 +2,29 @@ package com.star.service;
 
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
+import com.star.models.producer.Producer;
 import com.star.models.site.ImportSiteResult;
 import com.star.models.site.Site;
+import com.star.repository.ProducerRepository;
 import com.star.repository.SiteRepository;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.star.enums.InstanceEnum.TSO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
@@ -49,8 +54,14 @@ class SiteServiceTest extends AbstractTest {
     @Captor
     private ArgumentCaptor<List<Site>> siteArgumentCaptor;
 
+    @Captor
+    private ArgumentCaptor<String> meteringPointMridCaptor;
+
     @MockBean
     private SiteRepository siteRepository;
+
+    @MockBean
+    private ProducerRepository producerRepository;
 
     @Autowired
     private SiteService siteService;
@@ -153,18 +164,26 @@ class SiteServiceTest extends AbstractTest {
         verifyNoInteractions(contract);
     }
 
-//      TODO
-//    @Test
-//    public void testImportSiteOk() throws IOException, TechnicalException, ContractException {
-//        // GIVEN
-//        String fileName = "site-donnees-ok.csv";
-//        Mockito.when(siteRepository.existSite(anyString())).thenReturn(false);
-//
-//        // WHEN
-//        siteService.importSite(fileName, csvSiteDsoOk);
-//
-//        // THEN
-//        Mockito.verify(siteRepository, Mockito.times(1)).saveSiteDso(siteDsoArgumentCaptor.capture());
-//    }
+    @Test
+    public void testImportSiteOk() throws IOException, TechnicalException, ContractException {
+        // GIVEN
+        String fileName = "site-ok.csv";
+        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
+                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
+        Mockito.when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
+        Mockito.when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
 
+        // WHEN
+        siteService.importSite(fileName, csvSiteOk, TSO);
+
+        // THEN
+        Mockito.verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
+        Mockito.verify(siteRepository, Mockito.times(1)).saveSites(siteArgumentCaptor.capture());
+        assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PRM30001510803649");
+        assertThat(siteArgumentCaptor.getValue()).hasSize(1);
+        List<Site> sites = siteArgumentCaptor.getValue();
+        assertThat(sites.get(0)).extracting("systemOperatorMarketParticipantMrid", "meteringPointMrid", "producerMarketParticipantMrid", "technologyType", "systemOperatorCustomerServiceName")
+                .containsExactly("17V0000009927464","PRM30001510803649","17Y100A101R0629X", "Eolien", "ARD Ouest");
+
+    }
 }

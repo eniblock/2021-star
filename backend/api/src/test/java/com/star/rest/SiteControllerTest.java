@@ -1,12 +1,20 @@
 package com.star.rest;
 
+import com.star.models.producer.Producer;
+import com.star.repository.ProducerRepository;
+import com.star.repository.SiteRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
+
 import static org.apache.commons.io.IOUtils.toByteArray;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -15,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 class SiteControllerTest extends AbstractIntTest {
 
-    private static final String URL_DSO = SiteController.PATH;
+    private static final String URL = SiteController.PATH;
 
     @Value("classpath:/site/site-without-extension")
     private Resource siteWithoutExtension;
@@ -26,6 +34,9 @@ class SiteControllerTest extends AbstractIntTest {
     @Value("classpath:/site/site-ok.csv")
     private Resource siteOk;
 
+    @MockBean
+    private ProducerRepository producerRepository;
+
     @Test
     void importSiteFileExtensionKo() throws Exception {
         // GIVEN
@@ -35,7 +46,7 @@ class SiteControllerTest extends AbstractIntTest {
         // WHEN
 
         // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_DSO)
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
                 .file(file))
                 .andExpect(status().isConflict());
     }
@@ -49,26 +60,29 @@ class SiteControllerTest extends AbstractIntTest {
         // WHEN
 
         // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_DSO)
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
                 .file(file))
                 .andExpect(status().isConflict());
     }
 
 //    TODO
-//    @Test
-//    public void importSiteTest() throws Exception {
-//        // GIVEN
-//        MockMultipartFile file = new MockMultipartFile("file", "site-dso-ok.csv",
-//                "text/plain", toByteArray(siteOk.getURL()));
-//        byte[] response = "false".getBytes();
-//        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PDL00000000289770")).thenReturn(response);
-//
-//        // WHEN
-//
-//        // THEN
-//        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_DSO)
-//                .file(file))
-//                .andExpect(status().isCreated());
-//    }
+    @Test
+    public void importSiteTest() throws Exception {
+        // GIVEN
+        MockMultipartFile file = new MockMultipartFile("file", "site-ok.csv",
+                "text/plain", toByteArray(siteOk.getURL()));
+        when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
+        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PRM30001510803649")).thenReturn("false".getBytes());
+        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
+                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
+        when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
+
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
+                .file(file))
+                .andExpect(status().isCreated());
+    }
 
 }

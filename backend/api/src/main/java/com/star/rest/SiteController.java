@@ -99,7 +99,7 @@ public class SiteController {
      * @throws TechnicalException
      */
     @GetMapping
-    public ResponseEntity<SiteDTOResponse> findSiteDso(
+    public ResponseEntity<SiteDTOResponse> findSite(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "order", required = false) String order,

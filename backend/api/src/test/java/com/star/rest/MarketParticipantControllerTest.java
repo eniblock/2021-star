@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class MarketParticipantControllerTest extends AbstractIntTest {
+class MarketParticipantControllerTest extends AbstractIntTest {
 
     private static final String URL = MarketParticipantController.PATH;
 
@@ -31,7 +31,7 @@ public class MarketParticipantControllerTest extends AbstractIntTest {
 
 
     @Test
-    public void importMarketParticipantFileExtensionKo() throws Exception {
+    void importMarketParticipantFileExtensionKo() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "market-participant-dso-without-extension",
                 "text/plain", toByteArray(marketParticipantWithoutExtension.getURL()));
@@ -45,7 +45,7 @@ public class MarketParticipantControllerTest extends AbstractIntTest {
     }
 
     @Test
-    public void importMarketParticipantFileKoTest() throws Exception {
+    void importMarketParticipantFileKoTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "market-participant-ko.csv",
                 "text/plain", toByteArray(marketParticipantKo.getURL()));
@@ -59,7 +59,7 @@ public class MarketParticipantControllerTest extends AbstractIntTest {
     }
 
     @Test
-    public void importMarketParticipantTest() throws Exception {
+    void importMarketParticipantTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "market-participant-ok.csv",
                 "text/plain", toByteArray(marketParticipantOk.getURL()));

@@ -116,7 +116,7 @@ public class SiteService {
 
     public SiteResponse findSite(SiteCrteria siteCrteria, String bookmark, Pageable pageable) throws BusinessException, TechnicalException {
         boolean useIndex = false;
-            Sort.Order producerMarketParticipantNameOrder = pageable.getSort().getOrderFor("producerMarketParticipantName");
+        Sort.Order producerMarketParticipantNameOrder = pageable.getSort().getOrderFor("producerMarketParticipantName");
         Sort.Order technologyTypeOrder = pageable.getSort().getOrderFor("technologyType");
         List<Selector> selectors = new ArrayList<>();
         QueryBuilder queryBuilder;
@@ -201,11 +201,11 @@ public class SiteService {
             }
             List<String> errors = importUtilsService.validateRecord(fileName, csvRecord, site);
             if (DSO.equals(instance)) {
-                if(isBlank(site.getMarketEvaluationPointMrid())) {
-                   errors.add(messageSource.getMessage("import.site.marketEvaluationPointMrid.line.error",
-                           new String[]{fileName, String.valueOf(lineNumber)}, null));
+                if (site != null && isBlank(site.getMarketEvaluationPointMrid())) {
+                    errors.add(messageSource.getMessage("import.site.marketEvaluationPointMrid.line.error",
+                            new String[]{fileName, String.valueOf(lineNumber)}, null));
                 }
-                if (isBlank(site.getSchedulingEntityRegisteredResourceMrid())) {
+                if (site != null && isBlank(site.getSchedulingEntityRegisteredResourceMrid())) {
                     errors.add(messageSource.getMessage("import.site.schedulingEntityRegisteredResourceMrid.line.error",
                             new String[]{fileName, String.valueOf(lineNumber)}, null));
                 }

@@ -35,6 +35,7 @@ public class SystemOperator implements ImportCSV {
             "systemOperatorMarketParticipantName",
             "systemOperatorMarketParticipantRoleType"
     );
+
     @Override
     public List<String> getHeaders() {
         return headers;

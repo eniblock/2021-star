@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.csv.CSVRecord;
+
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.List;

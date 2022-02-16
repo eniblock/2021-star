@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class SiteServiceTest extends AbstractTest {
+class SiteServiceTest extends AbstractTest {
 
     @Value("classpath:/site/site-ok.csv")
     private Reader csvSiteOk;
@@ -56,7 +56,7 @@ public class SiteServiceTest extends AbstractTest {
     private SiteService siteService;
 
     @Test
-    public void testImportSiteFileNameNullEtReaderNull() {
+    void testImportSiteFileNameNullEtReaderNull() {
         // GIVEN
 
         // WHEN
@@ -66,7 +66,7 @@ public class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportSiteFileNameNull() {
+    void testImportSiteFileNameNull() {
         // GIVEN
 
         // WHEN
@@ -76,7 +76,7 @@ public class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportSiteReaderNul() {
+    void testImportSiteReaderNul() {
         // GIVEN
 
         // WHEN
@@ -86,7 +86,7 @@ public class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportSiteSansHeader() throws IOException, TechnicalException, ContractException {
+    void testImportSiteSansHeader() throws IOException, TechnicalException, ContractException {
         // GIVEN
         String fileName = "site-sans-header.csv";
 
@@ -102,7 +102,7 @@ public class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testSiteHeaderInvalide() throws IOException, TechnicalException, ContractException {
+    void testSiteHeaderInvalide() throws IOException, TechnicalException, ContractException {
         // GIVEN
         String fileName = "site-header-invalide.csv";
 
@@ -119,7 +119,7 @@ public class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportSiteSansDonnes() {
+    void testImportSiteSansDonnes() {
         // GIVEN
         String fileName = "site-sans-donnees.csv";
 
@@ -130,7 +130,7 @@ public class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportSiteAvecDonneesKO() throws IOException, TechnicalException, ContractException {
+    void testImportSiteAvecDonneesKO() throws IOException, TechnicalException, ContractException {
         // GIVEN
         String fileName = "site-donnees-ko.csv";
 
@@ -142,7 +142,7 @@ public class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportSiteAvecTechnologyTypeKO() throws IOException, TechnicalException, ContractException {
+    void testImportSiteAvecTechnologyTypeKO() throws IOException, TechnicalException, ContractException {
         // GIVEN
         String fileName = "site-technology-type-ko.csv";
 

@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class ProducerServiceTest extends AbstractTest {
+class ProducerServiceTest extends AbstractTest {
 
     @Value("classpath:/producer/producer-ok.csv")
     private Reader producerOk;
@@ -52,7 +52,7 @@ public class ProducerServiceTest extends AbstractTest {
     private ProducerService producerService;
 
     @Test
-    public void testImportProducerFileNameNullEtReaderNull() {
+    void testImportProducerFileNameNullEtReaderNull() {
         // GIVEN
 
         // WHEN
@@ -62,7 +62,7 @@ public class ProducerServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportProducerFileNameNull() {
+    void testImportProducerFileNameNull() {
         // GIVEN
 
         // WHEN
@@ -72,7 +72,7 @@ public class ProducerServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportProducerReaderNul() {
+    void testImportProducerReaderNul() {
         // GIVEN
 
         // WHEN
@@ -82,7 +82,7 @@ public class ProducerServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportProducersSansHeader() throws IOException, TechnicalException {
+    void testImportProducersSansHeader() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "producer-sans-header.csv";
 
@@ -98,7 +98,7 @@ public class ProducerServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportProducerHeaderInvalide() throws IOException, TechnicalException {
+    void testImportProducerHeaderInvalide() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "producer-header-invalide.csv";
 
@@ -115,7 +115,7 @@ public class ProducerServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportProducerSansDonnes() {
+    void testImportProducerSansDonnes() {
         // GIVEN
         String fileName = "producer-sans-donnees.csv";
 
@@ -126,7 +126,7 @@ public class ProducerServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportProducerAvecDonneesKO() throws IOException, TechnicalException {
+    void testImportProducerAvecDonneesKO() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "producer-donnees-ko.csv";
 
@@ -138,7 +138,7 @@ public class ProducerServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportProducerOk() throws IOException, TechnicalException {
+    void testImportProducerOk() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "producer-ok.csv";
 

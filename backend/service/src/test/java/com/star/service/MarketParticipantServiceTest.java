@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class MarketParticipantServiceTest extends AbstractTest {
+class MarketParticipantServiceTest extends AbstractTest {
 
     @Value("classpath:/marketParticipant/market-participant-ok.csv")
     private Reader csvMarketParticipantOk;
@@ -54,7 +54,7 @@ public class MarketParticipantServiceTest extends AbstractTest {
     private MarketParticipantService marketParticipantService;
 
     @Test
-    public void testImportMarketParticipantFileNameNullEtReaderNull() {
+    void testImportMarketParticipantFileNameNullEtReaderNull() {
         // GIVEN
 
         // WHEN
@@ -64,7 +64,7 @@ public class MarketParticipantServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportMarketParticipantFileNameNull() {
+    void testImportMarketParticipantFileNameNull() {
         // GIVEN
 
         // WHEN
@@ -74,7 +74,7 @@ public class MarketParticipantServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportMarketParticipantReaderNul() {
+    void testImportMarketParticipantReaderNul() {
         // GIVEN
 
         // WHEN
@@ -84,7 +84,7 @@ public class MarketParticipantServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportMarketParticipantSansHeader() throws TechnicalException, IOException {
+    void testImportMarketParticipantSansHeader() throws TechnicalException, IOException {
         // GIVEN
         String fileName = "market-participant-sans-header.csv";
 
@@ -100,7 +100,7 @@ public class MarketParticipantServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportMarketParticipantHeaderInvalide() throws IOException, TechnicalException {
+    void testImportMarketParticipantHeaderInvalide() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "market-participant-header-invalide.csv";
 
@@ -117,7 +117,7 @@ public class MarketParticipantServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportMarketParticipantSansDonnes() {
+    void testImportMarketParticipantSansDonnes() {
         // GIVEN
         String fileName = "market-participant-sans-donnees.csv";
 
@@ -128,7 +128,7 @@ public class MarketParticipantServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportMarketParticipantAvecDonneesKO() throws IOException, TechnicalException {
+    void testImportMarketParticipantAvecDonneesKO() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "market-participant-donnees-ko.csv";
 
@@ -140,7 +140,7 @@ public class MarketParticipantServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportMarketParticipantDsoOk() throws IOException, TechnicalException {
+    void testImportMarketParticipantDsoOk() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "market-participant-ok.csv";
 

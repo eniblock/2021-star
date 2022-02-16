@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class ProducerRepositoryTest extends AbstractTest {
+class ProducerRepositoryTest extends AbstractTest {
 
     private static final String PRODUCER_MARKET_PARTICIPANT_MRID = "PRODUCER02EIC";
     private static final String PRODUCER_MARKET_PARTICIPANT_NAME = "PRODUCER";
@@ -39,7 +39,7 @@ public class ProducerRepositoryTest extends AbstractTest {
     private ArgumentCaptor<String> objectArgumentCaptor;
 
     @Test
-    public void testSaveProducersEmptyList() throws TechnicalException {
+    void testSaveProducersEmptyList() throws TechnicalException {
         // GIVEN
 
         // WHEN
@@ -50,7 +50,7 @@ public class ProducerRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void testSaveProducers() throws TechnicalException, InterruptedException, TimeoutException, ContractException, JsonProcessingException {
+    void testSaveProducers() throws TechnicalException, InterruptedException, TimeoutException, ContractException, JsonProcessingException {
         // GIVEN
         Producer producer = new Producer();
         producer.setProducerMarketParticipantMrid(PRODUCER_MARKET_PARTICIPANT_MRID);
@@ -67,7 +67,7 @@ public class ProducerRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void testGetProducers() throws ContractException, TechnicalException {
+    void testGetProducers() throws ContractException, TechnicalException {
         // GIVEN
         Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
 

@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class ProducerControllerTest extends AbstractIntTest {
+class ProducerControllerTest extends AbstractIntTest {
 
     private static final String URL = ProducerController.PATH;
 
@@ -30,7 +30,7 @@ public class ProducerControllerTest extends AbstractIntTest {
 
 
     @Test
-    public void importProducerFileExtensionKo() throws Exception {
+    void importProducerFileExtensionKo() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "producer-without-extension",
                 "text/plain", toByteArray(producerWithoutExtension.getURL()));
@@ -44,7 +44,7 @@ public class ProducerControllerTest extends AbstractIntTest {
     }
 
     @Test
-    public void importProducerFileKoTest() throws Exception {
+    void importProducerFileKoTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "producer-ko.csv",
                 "text/plain", toByteArray(producerKo.getURL()));
@@ -58,7 +58,7 @@ public class ProducerControllerTest extends AbstractIntTest {
     }
 
     @Test
-    public void importProducerTest() throws Exception {
+    void importProducerTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "producer-ok.csv",
                 "text/plain", toByteArray(producerOk.getURL()));

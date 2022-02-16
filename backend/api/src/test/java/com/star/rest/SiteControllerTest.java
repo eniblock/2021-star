@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class SiteControllerTest extends AbstractIntTest {
+class SiteControllerTest extends AbstractIntTest {
 
     private static final String URL_DSO = SiteController.PATH;
 
@@ -27,7 +27,7 @@ public class SiteControllerTest extends AbstractIntTest {
     private Resource siteOk;
 
     @Test
-    public void importSiteFileExtensionKo() throws Exception {
+    void importSiteFileExtensionKo() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-without-extension",
                 "text/plain", toByteArray(siteWithoutExtension.getURL()));
@@ -41,7 +41,7 @@ public class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
-    public void importSiteFileKoTest() throws Exception {
+    void importSiteFileKoTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-ko.csv",
                 "text/plain", toByteArray(siteKo.getURL()));

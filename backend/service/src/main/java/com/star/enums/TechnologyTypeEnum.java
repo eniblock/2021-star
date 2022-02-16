@@ -32,7 +32,7 @@ public enum TechnologyTypeEnum {
 
     @Override
     public String toString() {
-        return this.name()+","+this.getLabel()+","+this.getValues();
+        return this.name() + "," + this.getLabel() + "," + this.getValues();
     }
 
     public static TechnologyTypeEnum fromValue(String value) {

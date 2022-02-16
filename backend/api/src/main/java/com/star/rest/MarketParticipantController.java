@@ -3,7 +3,6 @@ package com.star.rest;
 
 import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.exception.TechnicalException;
 import com.star.models.participant.ImportMarketParticipantResult;
 import com.star.models.participant.SystemOperator;

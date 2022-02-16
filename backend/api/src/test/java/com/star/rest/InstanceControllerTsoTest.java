@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class InstanceControllerTsoTest extends AbstractIntTest {
+class InstanceControllerTsoTest extends AbstractIntTest {
 
     @DynamicPropertySource
     private static void registerProperties(DynamicPropertyRegistry registry) {
@@ -23,7 +23,7 @@ public class InstanceControllerTsoTest extends AbstractIntTest {
     }
 
     @Test
-    public void instanceTsoTest() throws Exception {
+    void instanceTsoTest() throws Exception {
         // GIVEN
 
         // WHEN

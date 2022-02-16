@@ -35,6 +35,7 @@ public class ProducerRepository {
 
     /**
      * Permet de stocker les producers dans la blockchain
+     *
      * @param producers liste des producers à enregistrer dans la blockchain
      * @return
      * @throws BusinessException

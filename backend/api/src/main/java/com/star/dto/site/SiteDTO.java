@@ -18,7 +18,7 @@ public class SiteDTO {
     private String siteLocation;
     private String siteIecCode;
     private String producerMarketParticipantMrid;
-    private String producerMarketParticipantName;;
+    private String producerMarketParticipantName;
     private String substationMrid;
     private String substationName;
     private String systemOperatorEntityFlexibilityDomainMrid;

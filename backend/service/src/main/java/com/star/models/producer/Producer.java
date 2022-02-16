@@ -3,9 +3,11 @@ package com.star.models.producer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.star.models.imports.ImportCSV;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.csv.CSVRecord;
+
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class MarketParticipantRepositoryTest extends AbstractTest {
+class MarketParticipantRepositoryTest extends AbstractTest {
 
     private static final String DSO_MARKET_PARTICIPANT_MRID = "ENEDIS02EIC";
     private static final String DSO_MARKET_PARTICIPANT_NAME = "ENEDIS";
@@ -40,7 +40,7 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
     private ArgumentCaptor<String> objectArgumentCaptor;
 
     @Test
-    public void testSaveMarketParticipantEmptyList() throws TechnicalException {
+    void testSaveMarketParticipantEmptyList() throws TechnicalException {
         // GIVEN
 
         // WHEN
@@ -51,7 +51,7 @@ public class MarketParticipantRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void testSaveMarketParticipants() throws TechnicalException, InterruptedException, TimeoutException, ContractException {
+    void testSaveMarketParticipants() throws TechnicalException, InterruptedException, TimeoutException, ContractException {
         // GIVEN
         SystemOperator systemOperator = new SystemOperator();
         systemOperator.setSystemOperatorMarketParticipantMrid(DSO_MARKET_PARTICIPANT_MRID);

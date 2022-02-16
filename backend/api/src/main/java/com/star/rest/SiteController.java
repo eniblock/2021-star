@@ -22,7 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -98,8 +98,8 @@ public class SiteController {
      * @throws BusinessException
      * @throws TechnicalException
      */
-    @RequestMapping
-    public ResponseEntity<SiteDTOResponse> findSiteDso(
+    @GetMapping
+    public ResponseEntity<SiteDTOResponse> findSite(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "order", required = false) String order,

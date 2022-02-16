@@ -31,7 +31,6 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
                 .antMatchers(ApiRestVersion.VERSION + "/**").authenticated()
                 .anyRequest()
                 .authenticated();
-        http.csrf().disable();
     }
 
     @Autowired

@@ -1,5 +1,6 @@
 package com.star.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.models.producer.Producer;
 import com.star.models.site.Site;
@@ -7,6 +8,8 @@ import com.star.models.site.SiteResponse;
 import com.star.repository.ProducerRepository;
 import com.star.repository.SiteRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
@@ -41,8 +44,9 @@ class SiteControllerTest extends AbstractIntTest {
     @MockBean
     private ProducerRepository producerRepository;
 
-    @MockBean
-    private SiteRepository siteRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     @Test
     void importSiteFileExtensionKo() throws Exception {
@@ -107,7 +111,8 @@ class SiteControllerTest extends AbstractIntTest {
         // GIVEN
         Site site = Site.builder().technologyType(TechnologyTypeEnum.EOLIEN.name()).build();
         SiteResponse siteResponse = SiteResponse.builder().bookmark("bookmark").fetchedRecordsCount(1).records(Arrays.asList(site)).build();
-        when(siteRepository.findSiteByQuery(any(), any(), any())).thenReturn(siteResponse);
+        byte[] result = objectMapper.writeValueAsBytes(siteResponse);
+        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
 
         // WHEN
 

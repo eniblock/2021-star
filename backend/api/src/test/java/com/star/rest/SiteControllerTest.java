@@ -1,6 +1,9 @@
 package com.star.rest;
 
+import com.star.enums.TechnologyTypeEnum;
 import com.star.models.producer.Producer;
+import com.star.models.site.Site;
+import com.star.models.site.SiteResponse;
 import com.star.repository.ProducerRepository;
 import com.star.repository.SiteRepository;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import java.util.Arrays;
 import static org.apache.commons.io.IOUtils.toByteArray;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -36,6 +40,9 @@ class SiteControllerTest extends AbstractIntTest {
 
     @MockBean
     private ProducerRepository producerRepository;
+
+    @MockBean
+    private SiteRepository siteRepository;
 
     @Test
     void importSiteFileExtensionKo() throws Exception {
@@ -65,9 +72,8 @@ class SiteControllerTest extends AbstractIntTest {
                 .andExpect(status().isConflict());
     }
 
-//    TODO
     @Test
-    public void importSiteTest() throws Exception {
+    void importSiteTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-ok.csv",
                 "text/plain", toByteArray(siteOk.getURL()));
@@ -83,6 +89,34 @@ class SiteControllerTest extends AbstractIntTest {
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
                 .file(file))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void findSiteWithoutOrderTest() throws Exception {
+        // GIVEN
+
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.get(URL))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void findSiteTest() throws Exception {
+        // GIVEN
+        Site site = Site.builder().technologyType(TechnologyTypeEnum.EOLIEN.name()).build();
+        SiteResponse siteResponse = SiteResponse.builder().bookmark("bookmark").fetchedRecordsCount(1).records(Arrays.asList(site)).build();
+        when(siteRepository.findSiteByQuery(any(), any(), any())).thenReturn(siteResponse);
+
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.get(URL + "?order=technologyType"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.bookmark").value(siteResponse.getBookmark()))
+                .andExpect(jsonPath("$.totalElements").value(siteResponse.getFetchedRecordsCount()))
+                .andExpect(jsonPath("$.content[0].technologyType").value(site.getTechnologyType()));
     }
 
 }

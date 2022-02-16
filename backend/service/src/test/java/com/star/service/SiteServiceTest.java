@@ -3,6 +3,7 @@ package com.star.service;
 import com.star.AbstractTest;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.TechnicalException;
+import com.star.models.producer.Producer;
 import com.star.models.site.ImportSiteResult;
 import com.star.models.site.Site;
 import com.star.models.site.SiteCrteria;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,10 +24,12 @@ import org.springframework.data.domain.Sort;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.star.enums.InstanceEnum.TSO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
@@ -69,6 +73,9 @@ class SiteServiceTest extends AbstractTest {
 
     @MockBean
     private SiteRepository siteRepository;
+
+    @MockBean
+    private ProducerRepository producerRepository;
 
     @Autowired
     private SiteService siteService;
@@ -114,8 +121,7 @@ class SiteServiceTest extends AbstractTest {
         // THEN
         assertThat(importSiteResult.getErrors()).hasSize(1);
         String error = importSiteResult.getErrors().get(0);
-        assertThat(error).contains("Fichier " + fileName);
-        assertThat(error).contains("Structure attendue : " + new Site().getHeaders());
+        assertThat(error).contains("Fichier " + fileName).contains("Structure attendue : " + new Site().getHeaders());
         assertThat(importSiteResult.getDatas()).isEmpty();
     }
 
@@ -130,8 +136,7 @@ class SiteServiceTest extends AbstractTest {
         // THEN
         assertThat(importSiteResult.getErrors()).hasSize(1);
         String error = importSiteResult.getErrors().get(0);
-        assertThat(error).contains("Fichier " + fileName);
-        assertThat(error).contains("Structure attendue : " + new Site().getHeaders());
+        assertThat(error).contains("Fichier " + fileName).contains("Structure attendue : " + new Site().getHeaders());
         verifyNoInteractions(contract);
         assertThat(importSiteResult.getDatas()).isEmpty();
     }
@@ -172,7 +177,7 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    public void testImportSiteOk() throws IOException, TechnicalException, ContractException {
+    void testImportSiteOk() throws IOException, TechnicalException, ContractException {
         // GIVEN
         String fileName = "site-ok.csv";
         Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
@@ -196,7 +201,7 @@ class SiteServiceTest extends AbstractTest {
 
 
     @Test
-    public void testFindSite() throws IOException, TechnicalException, ContractException {
+    void testFindSite() throws IOException, TechnicalException, ContractException {
         // GIVEN
         String bookmark = "kBHIYBiy198";
         SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test")

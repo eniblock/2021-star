@@ -66,9 +66,7 @@ public class ProducerService {
         if (CollectionUtils.isEmpty(importProducerResult.getErrors()) && CollectionUtils.isEmpty(importProducerResult.getDatas())) {
             throw new IllegalArgumentException(messageSource.getMessage("import.file.data.not.empty", null, null));
         }
-        importProducerResult.getDatas().forEach(producer -> {
-            producer.setDocType(DocTypeEnum.PRODUCER.getDocType());
-        });
+        importProducerResult.getDatas().forEach(producer -> producer.setDocType(DocTypeEnum.PRODUCER.getDocType()));
         importProducerResult.setDatas(producerRepository.saveProducers(importProducerResult.getDatas()));
         return importProducerResult;
     }

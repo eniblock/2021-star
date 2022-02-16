@@ -92,8 +92,7 @@ class ProducerServiceTest extends AbstractTest {
         // THEN
         assertThat(importProducerResult .getErrors()).hasSize(1);
         String error = importProducerResult .getErrors().get(0);
-        assertThat(error).contains("Fichier "+fileName);
-        assertThat(error).contains("Structure attendue : "+ new Producer().getHeaders());
+        assertThat(error).contains("Fichier "+fileName).contains("Structure attendue : "+ new Producer().getHeaders());
         assertThat(importProducerResult.getDatas()).isEmpty();
     }
 
@@ -108,8 +107,7 @@ class ProducerServiceTest extends AbstractTest {
         // THEN
         assertThat(importProducerResult .getErrors()).hasSize(1);
         String error = importProducerResult .getErrors().get(0);
-        assertThat(error).contains("Fichier "+fileName);
-        assertThat(error).contains("Structure attendue : "+ new Producer().getHeaders());
+        assertThat(error).contains("Fichier "+fileName).contains("Structure attendue : "+ new Producer().getHeaders());
         assertThat(importProducerResult.getDatas()).isEmpty();
         verifyNoInteractions(producerRepository);
     }

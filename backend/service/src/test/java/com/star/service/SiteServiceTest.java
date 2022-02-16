@@ -3,7 +3,6 @@ package com.star.service;
 import com.star.AbstractTest;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.TechnicalException;
-import com.star.models.producer.Producer;
 import com.star.models.site.ImportSiteResult;
 import com.star.models.site.Site;
 import com.star.models.site.SiteCrteria;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,12 +22,10 @@ import org.springframework.data.domain.Sort;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.star.enums.InstanceEnum.TSO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
@@ -73,9 +69,6 @@ class SiteServiceTest extends AbstractTest {
 
     @MockBean
     private SiteRepository siteRepository;
-
-    @MockBean
-    private ProducerRepository producerRepository;
 
     @Autowired
     private SiteService siteService;

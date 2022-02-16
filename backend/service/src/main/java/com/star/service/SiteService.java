@@ -132,18 +132,19 @@ public class SiteService {
                 queryBuilder = new QueryBuilder(Operation.and(selectors.toArray(new Selector[]{})));
                 break;
         }
-        if (technologyTypeOrder != null) {
-            useIndex = true;
-            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(technologyTypeOrder.getProperty()));
-            queryBuilder.useIndex(SITE.getIndexName(), "indexTechnologyType");
-        } else if (producerMarketParticipantNameOrder != null) {
-            useIndex = true;
-            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(producerMarketParticipantNameOrder.getProperty()));
-            queryBuilder.useIndex(SITE.getIndexName(), "indexProducerMarketParticipantName");
-        }
-        if (!useIndex) {
-            queryBuilder.useIndex(SITE.getIndexName());
-        }
+//        TODO : à réactiver lorsque les indexes seront consommées sur la blockchain
+//        if (technologyTypeOrder != null) {
+//            useIndex = true;
+//            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(technologyTypeOrder.getProperty()));
+//            queryBuilder.useIndex(SITE.getIndexName(), "indexTechnologyType");
+//        } else if (producerMarketParticipantNameOrder != null) {
+//            useIndex = true;
+//            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(producerMarketParticipantNameOrder.getProperty()));
+//            queryBuilder.useIndex(SITE.getIndexName(), "indexProducerMarketParticipantName");
+//        }
+//        if (!useIndex) {
+//            queryBuilder.useIndex(SITE.getIndexName());
+//        }
         String query = queryBuilder.build();
         log.info("Transaction query: " + query);
         SiteResponse siteResponse = siteRepository.findSiteByQuery(query, String.valueOf(pageable.getPageSize()), bookmark);

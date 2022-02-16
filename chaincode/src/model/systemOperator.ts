@@ -10,13 +10,13 @@ export class SystemOperator {
         systemOperatorMarketParticipantMrid: Yup.string().required(
             'systemOperatorMarketParticipantMrid is a compulsory string.'),
         systemOperatorMarketParticipantName: Yup.string().required(
-            'marketParticipantName is a compulsory string.'),
+            'systemOperatorMarketParticipantName is a compulsory string.'),
         systemOperatorMarketParticipantRoleType: Yup.string().required(
-            'marketParticipantRoleType is a compulsory string.'),
-        });
+            'systemOperatorMarketParticipantRoleType is a compulsory string.'),
+    });
 
     public docType?: string;
     public systemOperatorMarketParticipantName: string;                   // PK
-    public systemOperatorMarketParticipantRoleType: string;               // FK
+    public systemOperatorMarketParticipantRoleType: string;     // FK
     public systemOperatorMarketParticipantMrid: string;     // FK
 }

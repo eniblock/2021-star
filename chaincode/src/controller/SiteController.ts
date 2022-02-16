@@ -48,6 +48,7 @@ export class SiteController {
         }
 
         const producerAsBytes = await ctx.stub.getState(siteInput.producerMarketParticipantMrid);
+
         if (!producerAsBytes || producerAsBytes.length === 0) {
             throw new Error(`Producer : ${siteInput.producerMarketParticipantMrid} does not exist for site creation`);
         }

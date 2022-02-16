@@ -37,11 +37,17 @@ export class ActivationDocumentController {
             activationDocumentInput.measurementUnitName !== MeasurementUnitType.KW) {
             throw new Error(`Organisation, ${identity} does not have write access for MW orders`);
         }
-
-        const siteAsBytes = await ctx.stub.getState(activationDocumentInput.registeredResourceMrid);
-        if (!siteAsBytes || siteAsBytes.length === 0) {
-            throw new Error(`Site : ${activationDocumentInput.registeredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
+        if (identity === OrganizationTypeMsp.ENEDIS ) {
+            // TODO check the following statement if ENEDIS
+            const siteAsBytes = await ctx.stub.getState(activationDocumentInput.registeredResourceMrid);
+            if (!siteAsBytes || siteAsBytes.length === 0) {
+                throw new Error(`Site : ${activationDocumentInput.registeredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
+            }
         }
+        // TDO create a check when RTE if registeredResourceMrid exist in yellowPages MASTER DATA
+        //
+        //
+        //
 
         if (activationDocumentInput.senderMarketParticipantMrid) {
             const systemOperatorAsBytes = await ctx.stub.getState(activationDocumentInput.senderMarketParticipantMrid);
@@ -66,29 +72,81 @@ export class ActivationDocumentController {
             activationDocumentInput.startCreatedDateTime &&
             activationDocumentInput.endCreatedDateTime
         ) {
+            // TODO change getState to getQueryResult to check if
+            // ENEDIS originAutomataRegisteredMrid exist in yellow page
+            // string array registeredRessourceMrid !
             const yellowAsBytes = await ctx.stub.getState(activationDocumentInput.originAutomataRegisteredResourceMrid);
+            // const query = `{"selector": {"docType": "yellowPages",
+            // "registeredRessourceMrid":
+            // "${activationDocumentInput.originAutomataRegisteredResourceMrid}"}}`;
+            // const allResults = [];
+            // const iterator = await ctx.stub.getQueryResult(query);
+            // let result = await iterator.next();
+            // while (!result.done) {
+            //     const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            //     let record;
+            //     try {
+            //         record = JSON.parse(strValue);
+            //     } catch (err) {
+            //         record = strValue;
+            //     }
+            //     allResults.push(record);
+            //     result = await iterator.next();
+            // }
+            // try {
+            //     const test = YellowPages.schema.validateSync(
+            //         allResults[0],
+            //         {strict: true, abortEarly: false},
+            //     );
+            //     } catch (err) {
+            //     return ;
+            // }
+
+            // const order: YellowPages = allResults[0];
+
             if (!yellowAsBytes || yellowAsBytes.length === 0) {
                 throw new Error(`Yellow Page : ${activationDocumentInput.originAutomataRegisteredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
             }
             // console.log('yellowAsBytes for BB reconciliation=', yellowAsBytes.toString());
             const yellowObj: YellowPages = JSON.parse(yellowAsBytes.toString());
+
+            // console.log('yellowObj=', yellowObj); //
+
+            // console.log('activationDocumentInput.activationDocumentMrid=',
+            //     activationDocumentInput.activationDocumentMrid);
+            // console.log('activationDocumentInput.senderMarketParticipantMrid=',
+            //     activationDocumentInput.senderMarketParticipantMrid);
+            // console.log('yellowObj.registeredResourceMrid=',
+            //      yellowObj.registeredResourceMrid[0]);
+            // console.log('activationDocumentInput.startCreatedDateTime=',
+            //      activationDocumentInput.startCreatedDateTime);
+
             activationDocumentInput.reconciliation = true;
             const ret = await ActivationDocumentController.checkForReconciliationBB(
                 ctx,
                 activationDocumentInput.activationDocumentMrid,
                 activationDocumentInput.senderMarketParticipantMrid,
-                activationDocumentInput.registeredResourceMrid,
+                yellowObj.registeredResourceMrid[0], // 1st one
                 activationDocumentInput.startCreatedDateTime,
             );
             if (ret) {
+                // console.log('ret=', ret); //
                 if (!activationDocumentInput.subOrderList) {
                     activationDocumentInput.subOrderList = [];
                     activationDocumentInput.subOrderList.push(ret);
                 } else {
                     activationDocumentInput.subOrderList.push(ret);
                 }
+                // console.log('activationDocumentInput=', activationDocumentInput);
             }
         } else if (activationDocumentInput.orderEnd) {
+            console.log('activationDocumentInput.activationDocumentMrid=',
+                activationDocumentInput.activationDocumentMrid);
+            console.log('activationDocumentInput.registeredResourceMrid=',
+                activationDocumentInput.registeredResourceMrid);
+            console.log('activationDocumentInput.startCreatedDateTime=',
+                activationDocumentInput.startCreatedDateTime);
+
             const ret = await ActivationDocumentController.checkForReconciliationBE(
                 ctx,
                 activationDocumentInput.activationDocumentMrid,
@@ -131,6 +189,7 @@ export class ActivationDocumentController {
             allResults.push(record);
             result = await iterator.next();
         }
+        console.log('allResults=', JSON.parse(JSON.stringify(allResults))); //
         return JSON.stringify(allResults);
     }
 
@@ -163,7 +222,7 @@ export class ActivationDocumentController {
         console.info('============= START : checkForReconciliationBB ActivationDocument ===========');
         const datetmp = new Date(queryDate);
         // console.log(new Date());
-        // console.log ('queryDate=', queryDate);
+        console.log ('queryDate=', queryDate);
         // console.log ('datetmp=', datetmp);
         // console.log ('dateday=', datetmp.getDate());
         // console.log ('datemonth=', datetmp.getMonth());
@@ -176,13 +235,13 @@ export class ActivationDocumentController {
         datetmp.setUTCMilliseconds(0);
         datetmp.setUTCSeconds(0);
         const dateMinus5min = new Date(datetmp.getTime() - 300000);
-        // console.log ('dateMinus5min=', dateMinus5min);
+        console.log ('dateMinus5min=', dateMinus5min);
 
         const allResults = [];
         const query = `{
             "selector": {
                 "docType": "activationDocument",
-                "senderMarketParticipantMrid": "${senderMarketParticipantMrid}",
+                "receiverMarketParticipantMrid": "${senderMarketParticipantMrid}",
                 "registeredResourceMrid": "${registeredResourceMrid}",
                 "reconciliation": false,
                 "startCreatedDateTime": {
@@ -213,12 +272,13 @@ export class ActivationDocumentController {
             try {
                 record = JSON.parse(strValue);
             } catch (err) {
+                console.log('==============IN CATCH=================');
                 record = strValue;
             }
             allResults.push(record);
             result = await iterator.next();
         }
-        // console.log('allResults=', JSON.stringify(allResults));
+        // console.log('allResults=', JSON.parse(JSON.stringify(allResults)));
 
         try {
             const test = ActivationDocument.schema.validateSync(
@@ -230,9 +290,8 @@ export class ActivationDocumentController {
         }
 
         const order: ActivationDocument = allResults[0];
-        // console.log('orderBB=', order);
+        // console.log('orderBB=', order); //
         if (order) {
-            // order.reconciliation = true;
             if (!order.subOrderList) {
                 order.subOrderList = [];
                 order.subOrderList.push(activationDocumentMrid);
@@ -243,6 +302,7 @@ export class ActivationDocumentController {
                 order.activationDocumentMrid,
                 Buffer.from(JSON.stringify(order)),
             );
+            // console.log('orderBB=', order); //
             return order.activationDocumentMrid;
         }
         return;

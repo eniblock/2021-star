@@ -46,22 +46,21 @@ describe('Star Tests EnergyAmount', () => {
                     const copied = Object.assign({}, chaincodeStub.states);
                     for (let key in copied) {
                         // console.log('copied[key]=', copied[key].toString());
-                        if (copied[key] == 'non-json-value') { 
+                        if (copied[key] == 'non-json-value') {
                             // console.log('IN IF copied[key]=', copied[key]);
 
                             yield {value: copied[key]};
                             continue
                         }
                         const obJson = JSON.parse(copied[key].toString('utf8'));
-                        // console.log('obJson=', obJson);
+                        console.log('obJson=', obJson);
                         const objStr: string = obJson.docType;
                         console.log('querystring=', query);
                         const queryJson = JSON.parse(query);
                         console.log('queryJson=', queryJson);
                         const queryStr = queryJson.selector.docType
-                        // console.log('queryStr=', queryStr , 'objStr=', objStr);
+                        console.log('queryStr=', queryStr , 'objStr=', objStr);
                         if (queryStr == objStr) {
-                            // if (queryJson.selector.systemOperatorMarketParticipantMrid) {
                                 const queryM = queryJson.selector.registeredResourceMrid;
                                 console.log('queryM=', queryM);
                                 const objM = obJson.registeredResourceMrid;
@@ -72,35 +71,35 @@ describe('Star Tests EnergyAmount', () => {
                                 console.log('objO=', objO);
                                 if (queryO && objO && queryO == objO && queryM == objM) {
                                     const queryS = queryJson.selector.startCreatedDateTime;
-                                    // console.log('queryS=', queryS);
+                                    console.log('queryS=', queryS);
                                     const objS = obJson.startCreatedDateTime;
-                                    // console.log('objS=', objS);
+                                    console.log('objS=', objS);
                                     const queryE = queryJson.selector.endCreatedDateTime;
-                                    // console.log('queryE=', queryE);
+                                    console.log('queryE=', queryE);
                                     const objE = obJson.endCreatedDateTime;
-                                    // console.log('objE=', objE);
+                                    console.log('objE=', objE);
                                         if (queryS == objS && queryE == objE) {
                                             yield {value: copied[key]};
                                         }
                                 } else if (queryM == objM) {
-                                    // console.log('obJson.createdDateTime=', obJson.createdDateTime);
+                                    console.log('obJson.startCreatedDateTime=', obJson.createdDateTime);
                                     const objDate = new Date(obJson.createdDateTime)
-                                    // console.log ('objDate=', objDate);
+                                    console.log ('objDate=', objDate);
 
-                                    // console.log('queryJson.createdDateTime=', queryJson.selector.createdDateTime);
+                                    // console.log('queryJson.startCreatedDateTime=', queryJson.selector.startCreatedDateTime);
                                     const queryDate = new Date(queryJson.selector.createdDateTime['$gte'])
-                                    // console.log ('queryDate=', queryDate);
+                                    console.log ('queryDate=', queryDate);
 
                                     // console.log('queryJson.deleteMeTime=', queryJson.selector.deleteMeTime);
-                                    // console.log(queryJson.selector.deleteMeTime,'=',obJson.createdDateTime)
-                                    // if (obJson.createdDateTime == queryJson.selector.deleteMeTime) {
+                                    // console.log(queryJson.selector.deleteMeTime,'=',obJson.startCreatedDateTime)
+                                    // if (obJson.startCreatedDateTime == queryJson.selector.deleteMeTime) {
                                     //     yield {value: copied[key]};
                                     // }
                                     // console.log(objDate.getUTCFullYear(), objDate.getUTCMonth(), objDate.getUTCDate());
                                     // console.log(queryDate.getUTCFullYear(), queryDate.getUTCMonth(), queryDate.getUTCDate());
                                     if (objDate.getUTCFullYear() == queryDate.getUTCFullYear() &&
                                         objDate.getUTCMonth() == queryDate.getUTCMonth() &&
-                                        objDate.getUTCDate() == queryDate.getUTCDate()) 
+                                        objDate.getUTCDate() == queryDate.getUTCDate())
                                     {
                                         yield {value: copied[key]};
                                     }
@@ -114,7 +113,7 @@ describe('Star Tests EnergyAmount', () => {
                                 //     // console.log('yield=', queryS, objS);
                                 //     yield {value: copied[key]};
                                 // }
-                                
+
                                 // const queryM = queryJson.selector.registeredResourceMrid;
                                 // // console.log('queryM=', queryM);
                                 // const objM = obJson.registeredResourceMrid;
@@ -132,14 +131,14 @@ describe('Star Tests EnergyAmount', () => {
                                     // console.log('yield=', queryProd, objProd);
                                     // yield {value: copied[key]};
                                 // }
-                            // } 
+                            // }
                             // else {
                             //     yield {value: copied[key]};
-                            // }                           
+                            // }
                         }
                         // console.log('end of loop')
                     }
-                } 
+                }
                 // else {
                 //     console.log('Query result =>EEEEELLLLLLLSSSSSSEEEEE')
                 // }
@@ -184,9 +183,9 @@ describe('Star Tests EnergyAmount', () => {
                 'senderMarketParticipantRole is a compulsory string',
                 'timeInterval is a compulsory string'
             ];
-              
+
             try {
-                await star.CreateTSOEnergyAmount(transactionContext, 
+                await star.CreateTSOEnergyAmount(transactionContext,
                     `{\"nergyAmountMarketDocumentMrid\": \"ea4cef73-ff6b-400b-8957-d34000eb30a1\",\"ctivationDocumentMrid\": \"string\",\"egisteredResourceMrid\": \"PRM50012536123456\",\"uantity\": \"number\",\"easurementUnitName\": \"KW\",\"evisionNumber\": \"1\",\"usinessType\": \"A14 / Z14\",\"ocStatus\": \"A02\",\"rocessType\": \"A05\",\"lassificationType\": \"A02\",\"reaDomain\": \"17X100A100A0001A\",\"enderMarketParticipantMrid\": \"17V0000009927454\",\"enderMarketParticipantRole\": \"A50\",\"eceiverMarketParticipantMrid\": \"Producteur1\",\"eceiverMarketParticipantRole\": \"A32\",\"reatedDateTime\": \"2021-10-22T10:29:10.000Z\",\"imeInterval\": \"2021-10-22T01:01:01.001Z / 2021-10-22T23:59:59.999Z\"}`
                 );
             } catch(err) {
@@ -386,7 +385,7 @@ describe('Star Tests EnergyAmount', () => {
             // console.log(obj);
             obj.registeredResourceMrid = 'toto';
             // console.log(obj);
-            chaincodeStub.states['8c56459a-794a-4ed1-a7f6-33b0064508f1'] = Buffer.from(JSON.stringify(obj)); 
+            chaincodeStub.states['8c56459a-794a-4ed1-a7f6-33b0064508f1'] = Buffer.from(JSON.stringify(obj));
             // console.log(chaincodeStub.states['8c56459a-794a-4ed1-a7f6-33b0064508f1'].toString());
             // console.log(chaincodeStub.states);
             try {
@@ -597,13 +596,13 @@ describe('Star Tests EnergyAmount', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
-      
-            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
-            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
 
             const nrj : EnergyAmount = {
                 energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-                activationDocumentMrid: "CIVRA/PRM50012536123456/2021-10-23T11:29:10.000Z/2021-10-23T22:29:10.000Z",
+                activationDocumentMrid: "MANSLE/PRM50012536123456/2021-10-23T11:29:10.000Z/2021-10-23T22:29:10.000Z",
                 registeredResourceMrid: "PRM50012536123456",
                 quantity: "number",
                 measurementUnitName: "KW",
@@ -635,13 +634,13 @@ describe('Star Tests EnergyAmount', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
-      
-            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
-            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
 
             const nrj : EnergyAmount = {
                 energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-                activationDocumentMrid: "CIVRA/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                activationDocumentMrid: "MANSLE/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
                 registeredResourceMrid: "PRM50012536123456",
                 quantity: "number",
                 measurementUnitName: "KW",
@@ -673,13 +672,13 @@ describe('Star Tests EnergyAmount', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
-      
-            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
-            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
 
             const nrj : EnergyAmount = {
                 energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-                activationDocumentMrid: "CIVRA/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                activationDocumentMrid: "MANSLE/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
                 registeredResourceMrid: "PRM50012536123456",
                 quantity: "number",
                 measurementUnitName: "KW",
@@ -711,13 +710,13 @@ describe('Star Tests EnergyAmount', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
-      
-            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
-            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
 
             const nrj : EnergyAmount = {
                 energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-                activationDocumentMrid: "CIVRA/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                activationDocumentMrid: "MANSLE/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
                 registeredResourceMrid: "PRM50012536123456",
                 quantity: "number",
                 measurementUnitName: "KW",
@@ -749,13 +748,13 @@ describe('Star Tests EnergyAmount', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
-      
-            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
-            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17X000001309745X\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
 
             const nrj : EnergyAmount = {
                 energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-                activationDocumentMrid: "CIVRA/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                activationDocumentMrid: "MANSLE/PRM50012536123456/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
                 registeredResourceMrid: "PRM50012536123456",
                 quantity: "number",
                 measurementUnitName: "KW",
@@ -905,7 +904,7 @@ describe('Star Tests EnergyAmount', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
-            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\",\"originAutomataRegisteredResourceMrid\": \"CRIVA1_ENEDIS_Y411\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"MW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T10:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V000000992746D\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f1\",\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": \"PRM50012536123456\",\"measurementUnitName\": \"MW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T10:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V000000992746D\",\"receiverMarketParticipantMrid\": \"17X000001309745X\"}');
 
             const nrj1 : EnergyAmount = {
                 energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
@@ -961,7 +960,7 @@ describe('Star Tests EnergyAmount', () => {
 
             let ret = await star.GetEnergyAmountForSystemOperator(transactionContext, nrj1.registeredResourceMrid, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            console.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
             const expected: EnergyAmount[] = [
@@ -1346,13 +1345,13 @@ describe('Star Tests EnergyAmount', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309746Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123467\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309746Y\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
-      
-            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123467\",\"systemOperatorMarketParticipantMrid\": \"17X000001309746Y\"}');
-            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123467\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309746Y\"}');
+
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17X000001309746Y\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": \"PRM50012536123467\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309746Y\"}');
 
             const nrj2 : EnergyAmount = {
                 energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-                activationDocumentMrid: "CIVRA/PRM50012536123467/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                activationDocumentMrid: "MANSLE/PRM50012536123467/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
                 registeredResourceMrid: "PRM50012536123467",
                 quantity: "number",
                 measurementUnitName: "KW",
@@ -1383,7 +1382,7 @@ describe('Star Tests EnergyAmount', () => {
                 {
                     docType: "energyAmount",
                     energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-                    activationDocumentMrid: "CIVRA/PRM50012536123467/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                    activationDocumentMrid: "MANSLE/PRM50012536123467/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
                     registeredResourceMrid: "PRM50012536123467",
                     quantity: "number",
                     measurementUnitName: "KW",
@@ -1406,6 +1405,7 @@ describe('Star Tests EnergyAmount', () => {
         });
 
      });
+
     describe('Test ENI GetEnergyAmountByProducer', () => {
         it('should return SUCCESS on GetEnergyAmountByProducer', async () => {
             let star = new Star();
@@ -1440,13 +1440,13 @@ describe('Star Tests EnergyAmount', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309746Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, '{\"meteringPointMrid\": \"PRM50012536123467\",\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"producerMarketParticipantMrid\": \"17X000001309746Y\",\"technologyType\": \"Eolien\",\"siteType\": \"Injection\",\"siteName\": \"Ferme éolienne de Genonville\",\"substationMrid\": \"GDO A4RTD\",\"substationName\": \"CIVRAY\",\"siteAdminMrid\": \"489 981 029\", \"siteLocation\": \"Biscarosse\", \"siteIecCode\": \"S7X0000013077478\", \"systemOperatorEntityFlexibilityDomainMrid\": \"PSC4511\", \"systemOperatorEntityFlexibilityDomainName\": \"Départ 1\", \"systemOperatorCustomerServiceName\": \"DR Nantes Deux-Sèvres\"}');
-      
-            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123467\",\"systemOperatorMarketParticipantMrid\": \"17X000001309746Y\"}');
-            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"CIVRA\",\"registeredResourceMrid\": \"PRM50012536123467\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309746Y\"}');
+
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17X000001309746Y\"}');
+            await star.CreateActivationDocument(transactionContext, '{\"activationDocumentMrid\": \"8c56459a-794a-4ed1-a7f6-33b0064508f3\",\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": \"PRM50012536123467\",\"measurementUnitName\": \"KW\",\"messageType\": \"string\",\"businessType\": \"string\",\"orderType\": \"string\",\"orderEnd\": false,\"orderValue\": \"1\",\"startCreatedDateTime\": \"2021-10-22T11:29:10.000Z\",\"endCreatedDateTime\": \"2021-10-22T22:29:10.000Z\",\"revisionNumber\": \"1\",\"reasonCode\": \"string\",\"senderMarketParticipantMrid\": \"17V0000009927454\",\"receiverMarketParticipantMrid\": \"17X000001309746Y\"}');
 
             const nrj2 : EnergyAmount = {
                 energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-                activationDocumentMrid: "CIVRA/PRM50012536123467/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                activationDocumentMrid: "MANSLE/PRM50012536123467/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
                 registeredResourceMrid: "PRM50012536123467",
                 quantity: "number",
                 measurementUnitName: "KW",
@@ -1478,7 +1478,7 @@ describe('Star Tests EnergyAmount', () => {
                 {
                     docType: "energyAmount",
                     energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-                    activationDocumentMrid: "CIVRA/PRM50012536123467/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+                    activationDocumentMrid: "MANSLE/PRM50012536123467/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
                     registeredResourceMrid: "PRM50012536123467",
                     quantity: "number",
                     measurementUnitName: "KW",

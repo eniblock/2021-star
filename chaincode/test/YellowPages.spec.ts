@@ -44,7 +44,7 @@ describe('Star Tests YELLOW PAGES', () => {
                 if (chaincodeStub.states) {
                     const copied = Object.assign({}, chaincodeStub.states);
                     for (let key in copied) {
-                        if (copied[key] == 'non-json-value') { 
+                        if (copied[key] == 'non-json-value') {
                             yield {value: copied[key]};
                             continue
                         }
@@ -95,10 +95,10 @@ describe('Star Tests YELLOW PAGES', () => {
             chaincodeStub.MspiID = 'RTEMSP';
 
             try {
-                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "CRIVA1_ENEDIS_Y411","registeredResourceMrid": "PDL00000000289766","systemOperatorMarketParticipantMrid": "17V000000992746D"}');
+                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "MANSLE","registeredResourceMrid": ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],"systemOperatorMarketParticipantMrid": "17V000000992746D"}');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('System Operator : 17V000000992746D does not exist in Yellow Pages CRIVA1_ENEDIS_Y411.');
+                expect(err.message).to.equal('System Operator : 17V000000992746D does not exist in Yellow Pages MANSLE.');
             }
         });
 
@@ -108,10 +108,10 @@ describe('Star Tests YELLOW PAGES', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
 
             try {
-                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "CRIVA1_ENEDIS_Y411","registeredResourceMrid": "PDL00000000289766","systemOperatorMarketParticipantMrid": "17V000000992746D"}');
+                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "MANSLE","registeredResourceMrid": ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],"systemOperatorMarketParticipantMrid": "17V000000992746D"}');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Site : PDL00000000289766 does not exist in Yellow Pages CRIVA1_ENEDIS_Y411.');
+                expect(err.message).to.equal('Site : PDL00000000289766 does not exist in Yellow Pages MANSLE.');
             }
         });
 
@@ -125,7 +125,7 @@ describe('Star Tests YELLOW PAGES', () => {
 
             chaincodeStub.MspiID = 'FakeMSP';
             try {
-                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "CRIVA1_ENEDIS_Y411","registeredResourceMrid": "PDL00000000289766","systemOperatorMarketParticipantMrid": "17V000000992746D"}');
+                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "MANSLE","registeredResourceMrid": ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],"systemOperatorMarketParticipantMrid": "17V000000992746D"}');
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access for Yellow Pages.');
@@ -141,7 +141,7 @@ describe('Star Tests YELLOW PAGES', () => {
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             try {
-                await star.CreateYellowPages(transactionContext, '{"registeredResourceMrid": "PDL00000000289766","systemOperatorMarketParticipantMrid": "17V000000992746D"}');
+                await star.CreateYellowPages(transactionContext, '{"registeredResourceMrid": ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],"systemOperatorMarketParticipantMrid": "17V000000992746D"}');
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('originAutomataRegisteredResourceMrid is a compulsory string.');
@@ -157,10 +157,10 @@ describe('Star Tests YELLOW PAGES', () => {
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             try {
-                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "CRIVA1_ENEDIS_Y411","systemOperatorMarketParticipantMrid": "17V000000992746D"}');
+                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "MANSLE","systemOperatorMarketParticipantMrid": "17V000000992746D"}');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('registeredResourceMrid is a compulsory string.');
+                expect(err.message).to.equal('registeredResourceMrid is a compulsory string array.');
             }
         });
 
@@ -173,7 +173,7 @@ describe('Star Tests YELLOW PAGES', () => {
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             try {
-                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "CRIVA1_ENEDIS_Y411","registeredResourceMrid": "PDL00000000289766"}');
+                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "MANSLE","registeredResourceMrid": ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"]}');
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('systemOperatorMarketParticipantMrid is a compulsory string.');
@@ -204,16 +204,16 @@ describe('Star Tests YELLOW PAGES', () => {
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(site));
-            
+
             const yellowPage: YellowPages = {
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411',
-                registeredResourceMrid: 'PDL00000000289766',
+                originAutomataRegisteredResourceMrid: 'MANSLE',
+                registeredResourceMrid: ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],
                 systemOperatorMarketParticipantMrid: '17V000000992746D'
             };
-        
+
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
 
-            let ret = JSON.parse((await chaincodeStub.getState("CRIVA1_ENEDIS_Y411")).toString());
+            let ret = JSON.parse((await chaincodeStub.getState("MANSLE")).toString());
             expect(ret).to.eql( Object.assign({docType: 'yellowPages'}, yellowPage ));
         });
     });
@@ -257,8 +257,8 @@ describe('Star Tests YELLOW PAGES', () => {
             await star.CreateSite(transactionContext, JSON.stringify(siteB));
 
             const yellowPage: YellowPages = {
-                originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
-                registeredResourceMrid: "PDL00000000289766",
+                originAutomataRegisteredResourceMrid: "MANSLE",
+                registeredResourceMrid: ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],
                 systemOperatorMarketParticipantMrid: "17V000000992746D",
             };
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
@@ -271,8 +271,8 @@ describe('Star Tests YELLOW PAGES', () => {
             const expected: YellowPages[] = [
                 {
                     docType: "yellowPages",
-                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
-                    registeredResourceMrid: "PDL00000000289766",
+                    originAutomataRegisteredResourceMrid: "MANSLE",
+                    registeredResourceMrid: ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],
                     systemOperatorMarketParticipantMrid: "17V000000992746D"
                 }
         ];
@@ -301,8 +301,8 @@ describe('Star Tests YELLOW PAGES', () => {
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X0000013097450\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(sit));
             const yellowPage: YellowPages = {
-                originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
-                registeredResourceMrid: "PDL00000000289766",
+                originAutomataRegisteredResourceMrid: "MANSLE",
+                registeredResourceMrid: ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],
                 systemOperatorMarketParticipantMrid: "17V000000992746D",
             };
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
@@ -316,8 +316,8 @@ describe('Star Tests YELLOW PAGES', () => {
                 'non-json-value',
                 {
                     docType: "yellowPages",
-                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
-                    registeredResourceMrid: "PDL00000000289766",
+                    originAutomataRegisteredResourceMrid: "MANSLE",
+                    registeredResourceMrid: ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],
                     systemOperatorMarketParticipantMrid: "17V000000992746D"
                 }
         ];

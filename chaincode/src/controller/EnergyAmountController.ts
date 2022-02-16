@@ -307,7 +307,7 @@ export class EnergyAmountController {
                     "$lte": ${JSON.stringify(dateDown)}
                 },
                 "sort": [{
-                    "createdDateTime" : "desc"
+                    "startCreatedDateTime" : "desc"
                 }]
             }
         }`;

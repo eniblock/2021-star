@@ -15,7 +15,7 @@ export class ActivationDocument {
         messageType: Yup.string().required('messageType is required').typeError('messageType must be a string'),
         orderEnd: Yup.boolean().required('orderEnd is required').typeError('orderEnd must be a boolean'),
         orderType: Yup.string().required('orderType is required').typeError('orderType must be a string'),
-        orderValue: Yup.string().notRequired().matches(/^[0-9]+(\.[0-9]+)?$/),
+        orderValue: Yup.string().notRequired().matches(/^[0-9]+([,.][0-9]+)?$/),
         originAutomataRegisteredResourceMrid: Yup.string().required(
             'originAutomataRegisteredResourceMrid is required').typeError('originAutomataRegisteredResourceMrid must be a string'),
         reasonCode: Yup.string().notRequired(),
@@ -23,7 +23,7 @@ export class ActivationDocument {
         reconciliation: Yup.bool().notRequired(),
         registeredResourceMrid: Yup.string().required(
             'registeredResourceMrid is required')/*.matches(/^[0-9]{14}$/)*/.typeError('registeredResourceMrid must be a string'),
-        revisionNumber: Yup.string().notRequired().matches(/^[0-9]*$/),
+        revisionNumber: Yup.string().notRequired().matches(/^[0-9]+$/),
         senderMarketParticipantMrid: Yup.string().notRequired(),
         startCreatedDateTime: Yup.string().notRequired(),
         subOrderList: Yup.array().notRequired(),

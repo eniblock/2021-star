@@ -29,23 +29,23 @@ export class YellowPagesController {
 
         const systemOperatorAsBytes = await ctx.stub.getState(yellowPagesInput.systemOperatorMarketParticipantMrid);
         if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
-            throw new Error(`System Operator : ${yellowPagesInput.systemOperatorMarketParticipantMrid} does not exist in Yellow Pages ${yellowPagesInput.originAutomataRegisteredResourceMrid}.`);
+            throw new Error(`System Operator : ${yellowPagesInput.systemOperatorMarketParticipantMrid} does not exist in Yellow Pages ${yellowPagesInput.originAutomationRegisteredResourceMrid}.`);
         }
 
         const siteAsBytes = await ctx.stub.getState(yellowPagesInput.registeredResourceMrid);
         if (!siteAsBytes || siteAsBytes.length === 0) {
-            throw new Error(`Site : ${yellowPagesInput.registeredResourceMrid} does not exist in Yellow Pages ${yellowPagesInput.originAutomataRegisteredResourceMrid}.`);
+            throw new Error(`Site : ${yellowPagesInput.registeredResourceMrid} does not exist in Yellow Pages ${yellowPagesInput.originAutomationRegisteredResourceMrid}.`);
         }
 
         yellowPagesInput.docType = 'yellowPages';
 
         await ctx.stub.putState(
-            yellowPagesInput.originAutomataRegisteredResourceMrid,
+            yellowPagesInput.originAutomationRegisteredResourceMrid,
             Buffer.from(JSON.stringify(yellowPagesInput)),
         );
         console.info(
             '============= END   : Create %s YellowPages ===========',
-            yellowPagesInput.originAutomataRegisteredResourceMrid,
+            yellowPagesInput.originAutomationRegisteredResourceMrid,
         );
     }
 

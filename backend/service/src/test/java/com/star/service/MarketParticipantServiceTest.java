@@ -5,20 +5,19 @@ import com.star.exception.TechnicalException;
 import com.star.models.participant.ImportMarketParticipantResult;
 import com.star.models.participant.SystemOperator;
 import com.star.repository.MarketParticipantRepository;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -94,7 +93,7 @@ class MarketParticipantServiceTest extends AbstractTest {
         // THEN
         assertThat(importMarketParticipantResult.getErrors()).hasSize(1);
         String error = importMarketParticipantResult.getErrors().get(0);
-        assertThat(error).contains("Fichier "+fileName).contains("Structure attendue : "+ new SystemOperator().getHeaders());
+        assertThat(error).contains("Fichier " + fileName).contains("Structure attendue : " + new SystemOperator().getHeaders());
         assertThat(importMarketParticipantResult.getDatas()).isEmpty();
     }
 
@@ -109,7 +108,7 @@ class MarketParticipantServiceTest extends AbstractTest {
         // THEN
         assertThat(importMarketParticipantResult.getErrors()).hasSize(1);
         String error = importMarketParticipantResult.getErrors().get(0);
-        assertThat(error).contains("Fichier "+fileName).contains("Structure attendue : "+ new SystemOperator().getHeaders());
+        assertThat(error).contains("Fichier " + fileName).contains("Structure attendue : " + new SystemOperator().getHeaders());
         verifyNoInteractions(marketParticipantRepository);
         assertThat(importMarketParticipantResult.getDatas()).isEmpty();
     }
@@ -149,7 +148,7 @@ class MarketParticipantServiceTest extends AbstractTest {
         Mockito.verify(marketParticipantRepository, Mockito.times(1)).saveMarketParticipant(systemOperatorArgumentCaptor.capture());
         SystemOperator systemOperator = systemOperatorArgumentCaptor.getValue().get(0);
         assertThat(systemOperator).extracting("systemOperatorMarketParticipantMrid", "systemOperatorMarketParticipantName", "systemOperatorMarketParticipantRoleType")
-                .containsExactly("17V0000009927464","RTE","A50");
+                .containsExactly("17V0000009927464", "RTE", "A50");
 
     }
 

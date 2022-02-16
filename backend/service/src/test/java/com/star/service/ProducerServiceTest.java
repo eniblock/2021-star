@@ -90,9 +90,9 @@ class ProducerServiceTest extends AbstractTest {
         ImportProducerResult importProducerResult = producerService.importProducers(fileName, producerWithoutHeader);
 
         // THEN
-        assertThat(importProducerResult .getErrors()).hasSize(1);
-        String error = importProducerResult .getErrors().get(0);
-        assertThat(error).contains("Fichier "+fileName).contains("Structure attendue : "+ new Producer().getHeaders());
+        assertThat(importProducerResult.getErrors()).hasSize(1);
+        String error = importProducerResult.getErrors().get(0);
+        assertThat(error).contains("Fichier " + fileName).contains("Structure attendue : " + new Producer().getHeaders());
         assertThat(importProducerResult.getDatas()).isEmpty();
     }
 
@@ -105,9 +105,9 @@ class ProducerServiceTest extends AbstractTest {
         ImportProducerResult importProducerResult = producerService.importProducers(fileName, producerWrongHeader);
 
         // THEN
-        assertThat(importProducerResult .getErrors()).hasSize(1);
-        String error = importProducerResult .getErrors().get(0);
-        assertThat(error).contains("Fichier "+fileName).contains("Structure attendue : "+ new Producer().getHeaders());
+        assertThat(importProducerResult.getErrors()).hasSize(1);
+        String error = importProducerResult.getErrors().get(0);
+        assertThat(error).contains("Fichier " + fileName).contains("Structure attendue : " + new Producer().getHeaders());
         assertThat(importProducerResult.getDatas()).isEmpty();
         verifyNoInteractions(producerRepository);
     }
@@ -146,7 +146,7 @@ class ProducerServiceTest extends AbstractTest {
         // THEN
         Mockito.verify(producerRepository, Mockito.times(1)).saveProducers(producerArgumentCaptor.capture());
         Producer producer = producerArgumentCaptor.getValue().get(0);
-        assertThat(producer).extracting("producerMarketParticipantMrid", "producerMarketParticipantName", "producerMarketParticipantRoleType").containsExactly("EolienFRvert28EIC","EolienFR vert Cie","A21");
+        assertThat(producer).extracting("producerMarketParticipantMrid", "producerMarketParticipantName", "producerMarketParticipantRoleType").containsExactly("EolienFRvert28EIC", "EolienFR vert Cie", "A21");
     }
 
 }

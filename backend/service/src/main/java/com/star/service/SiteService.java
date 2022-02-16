@@ -87,7 +87,7 @@ public class SiteService {
             return importSiteResult;
         }
         // Vérifier que les ids n'existent pas déjà
-        List<String> meteringPointMrids = importSiteResult.getDatas().stream().map(siteDso -> siteDso.getMeteringPointMrid()).collect(toList());
+        List<String> meteringPointMrids = importSiteResult.getDatas().stream().map(Site::getMeteringPointMrid).collect(toList());
         for (String meteringPointMrid : meteringPointMrids) {
             if (siteRepository.existSite(meteringPointMrid)) {
                 importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.exist.error",
@@ -147,8 +147,7 @@ public class SiteService {
 //        }
         String query = queryBuilder.build();
         log.info("Transaction query: " + query);
-        SiteResponse siteResponse = siteRepository.findSiteByQuery(query, String.valueOf(pageable.getPageSize()), bookmark);
-        return siteResponse;
+        return siteRepository.findSiteByQuery(query, String.valueOf(pageable.getPageSize()), bookmark);
     }
 
 
@@ -182,7 +181,7 @@ public class SiteService {
         }
 
         if (isNotEmpty(siteCrteria.getTechnologyType())) {
-            List<String> technologies = siteCrteria.getTechnologyType().stream().map(technologyTypeEnum -> technologyTypeEnum.getLabel()).collect(toList());
+            List<String> technologies = siteCrteria.getTechnologyType().stream().map(TechnologyTypeEnum::getLabel).collect(toList());
             selectors.add(Expression.in("technologyType", StringUtils.join(technologies, "\",\"")));
         }
     }
@@ -200,12 +199,12 @@ public class SiteService {
                 importUtilsService.handleConstructorException(fileName, importResult, lineNumber, illegalArgumentException);
             }
             List<String> errors = importUtilsService.validateRecord(fileName, csvRecord, site);
-            if (DSO.equals(instance)) {
-                if (site != null && isBlank(site.getMarketEvaluationPointMrid())) {
+            if (DSO.equals(instance) && site != null) {
+                if (isBlank(site.getMarketEvaluationPointMrid())) {
                     errors.add(messageSource.getMessage("import.site.marketEvaluationPointMrid.line.error",
                             new String[]{fileName, String.valueOf(lineNumber)}, null));
                 }
-                if (site != null && isBlank(site.getSchedulingEntityRegisteredResourceMrid())) {
+                if (isBlank(site.getSchedulingEntityRegisteredResourceMrid())) {
                     errors.add(messageSource.getMessage("import.site.schedulingEntityRegisteredResourceMrid.line.error",
                             new String[]{fileName, String.valueOf(lineNumber)}, null));
                 }

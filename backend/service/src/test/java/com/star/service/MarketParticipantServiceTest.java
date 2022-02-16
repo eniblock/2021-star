@@ -94,8 +94,7 @@ class MarketParticipantServiceTest extends AbstractTest {
         // THEN
         assertThat(importMarketParticipantResult.getErrors()).hasSize(1);
         String error = importMarketParticipantResult.getErrors().get(0);
-        assertThat(error).contains("Fichier "+fileName);
-        assertThat(error).contains("Structure attendue : "+ new SystemOperator().getHeaders());
+        assertThat(error).contains("Fichier "+fileName).contains("Structure attendue : "+ new SystemOperator().getHeaders());
         assertThat(importMarketParticipantResult.getDatas()).isEmpty();
     }
 
@@ -110,8 +109,7 @@ class MarketParticipantServiceTest extends AbstractTest {
         // THEN
         assertThat(importMarketParticipantResult.getErrors()).hasSize(1);
         String error = importMarketParticipantResult.getErrors().get(0);
-        assertThat(error).contains("Fichier "+fileName);
-        assertThat(error).contains("Structure attendue : "+ new SystemOperator().getHeaders());
+        assertThat(error).contains("Fichier "+fileName).contains("Structure attendue : "+ new SystemOperator().getHeaders());
         verifyNoInteractions(marketParticipantRepository);
         assertThat(importMarketParticipantResult.getDatas()).isEmpty();
     }

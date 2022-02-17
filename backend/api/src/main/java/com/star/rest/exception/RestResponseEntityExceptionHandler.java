@@ -1,8 +1,10 @@
 package com.star.rest.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import lombok.extern.slf4j.Slf4j;
+import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +49,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 HttpStatus.CONFLICT, request);
     }
 
-    @ExceptionHandler(value = {TechnicalException.class})
+    @ExceptionHandler(value = {TechnicalException.class, JsonProcessingException.class, ContractException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected ResponseEntity<Object> handleTechnicalException(RuntimeException runtimeException, WebRequest request) {
         logError(runtimeException);

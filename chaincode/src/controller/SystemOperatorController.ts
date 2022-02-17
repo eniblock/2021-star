@@ -115,4 +115,22 @@ export class SystemOperatorController {
         }
         return JSON.stringify(allResults);
     }
+
+    public static async getSystemOperatorByQuery(ctx: Context, query: string): Promise<string> {
+        const allResults = [];
+        const iterator = await ctx.stub.getQueryResult(query);
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } catch (err) {
+                record = strValue;
+            }
+            allResults.push(record);
+            result = await iterator.next();
+        }
+        return JSON.stringify(allResults);
+    }
 }

@@ -1,6 +1,6 @@
 package com.star.rest;
 
-import com.star.rest.enums.InstanceEnum;
+import com.star.enums.InstanceEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

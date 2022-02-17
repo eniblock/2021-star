@@ -9,10 +9,10 @@ export class ProducerController {
         inputStr: string) {
         console.info('============= START : Create Producer Market Participant ===========');
 
-        const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access to create a producer`);
-        }
+        // const identity = await ctx.stub.getMspID();
+        // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+        //     throw new Error(`Organisation, ${identity} does not have write access to create a producer`);
+        // }
 
         let producerObj: Producer;
         try {

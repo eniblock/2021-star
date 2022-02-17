@@ -291,7 +291,7 @@ export class EnergyAmountController {
         } catch (error) {
             throw new Error(`ERROR createTSOEnergyAmount getSystemOperator-> Input string NON-JSON value`);
         }
-        if (!identity.toLowerCase().includes(systemOperatorObj.marketParticipantName.toLowerCase())) {
+        if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(
                 `Energy Amount, sender: ${identity} does not provide his own systemOperatorEicCode therefore he does not have read access.`,
             );

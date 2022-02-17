@@ -1,0 +1,18 @@
+<div class="row my-2">
+  
+  <mat-radio-group class="col-12" [value]="modeChargementSelected" (change)="onChangeModeChargement($event.value)">
+    <strong class="pe-4">Mode de chargement :</strong>
+    <mat-radio-button class="me-3" color="primary" [value]="modeChargement" *ngFor="let modeChargement of allModesChargement">{{ modeChargement }}</mat-radio-button>
+  </mat-radio-group>
+
+</div>
+
+<div class="row my-3">
+  <div class="col-12">
+
+    <app-form-ordre-fin-limitation-fichier *ngIf="modeChargementSelected == ModeChargement.ImportFichier"></app-form-ordre-fin-limitation-fichier>
+
+    <app-form-ordre-fin-limitation-saisie-manuelle *ngIf="modeChargementSelected == ModeChargement.SaisieManuelle"></app-form-ordre-fin-limitation-saisie-manuelle>
+  
+  </div>
+</div>

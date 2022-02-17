@@ -1,4 +1,6 @@
+import { registerLocaleData } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import localeFr from '@angular/common/locales/fr';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +10,7 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    registerLocaleData(localeFr, 'fr');
+  }
 }

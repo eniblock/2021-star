@@ -10,12 +10,14 @@ import { ReseauService } from 'src/app/services/api/reseau.service';
   styleUrls: ['./accueil.component.css'],
 })
 export class AccueilComponent implements OnInit {
+  PATH_ROUTE = PATH_ROUTE;
+
   constructor(private router: Router, private reseauService: ReseauService) {}
 
   ngOnInit() {}
 
   formSubmit(form: FormulaireRechercheReseau) {
     this.reseauService.pushFormulaireRecherche(form);
-    this.router.navigate([PATH_ROUTE.RESEAU]);
+    this.router.navigate(['/', PATH_ROUTE.RESEAU]);
   }
 }

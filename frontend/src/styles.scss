@@ -36,6 +36,11 @@ h3 {
   cursor: pointer;
 }
 
+// Listes
+.list-group-big-lines {
+  line-height: 3em !important;
+}
+
 // Formulaires
 .mat-form-field-appearance-outline .mat-form-field-outline {
   background-color: #ffffff; // couleur de fond des inputs
@@ -149,5 +154,67 @@ h3 {
 
   .body {
     background-color: white;
+  }
+}
+
+// Bouton de navigation
+.boutonNavigation {
+  padding: 10px 40px;
+  border-radius: 35px;
+  background-color: $mat-primary;
+  display: inline-block !important;
+  cursor: pointer;
+  span {
+    color: white !important;
+  }
+}
+
+// Uploader fichiers
+.uploaderFichier {
+  color: inherit !important;
+  .ngx-file-drop__content {
+    color: inherit !important;
+  }
+  .ngx-file-drop__drop-zone {
+    height: 150px !important;
+    border: 2px dashed $mat-text !important;
+    border-radius: 30px !important;
+    background-color: white !important;
+  }
+  .ngx-file-drop__content {
+    height: 150px !important;
+  }
+}
+.uploaderFichier.full .ngx-file-drop__drop-zone {
+  border: 1px solid $mat-text !important;
+  background-color: rgb(197, 197, 197) !important;
+}
+.upload-fichier-table {
+  background-color: white;
+  border-radius: 30px !important;
+  padding: 20px 40px;
+}
+.tailleMaxFichiers {
+  font-size: 0.8em;
+}
+
+// div panel messages
+.panel-message {
+  background-color: white !important;
+  border-radius: 15px !important;
+}
+
+// Stepper
+.mat-stepper-horizontal,
+.mat-stepper-vertical {
+  background-color: inherit !important;
+}
+.mat-horizontal-content-containe {
+  padding: 0px;
+}
+.disabledHeaderNavigation {
+  // Desactiver la navigation en cliquant sur le header
+  .mat-horizontal-stepper-header {
+    pointer-events: none !important;
   }
 }

@@ -1,5 +1,5 @@
 import { PageTemplateModule } from './components/page-template/page-template.module';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
@@ -9,6 +9,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServerErrorInterceptor } from './interceptors/serveur-error-interceptor';
+import {
+  DateAdapter,
+  MatNativeDateModule,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
+import { CustomDateAdapter } from './adapters/custom-date-adapter';
 
 @NgModule({
   imports: [
@@ -19,6 +25,7 @@ import { ServerErrorInterceptor } from './interceptors/serveur-error-interceptor
     BrowserAnimationsModule,
     MatSnackBarModule,
     PageTemplateModule,
+    MatNativeDateModule,
   ],
   declarations: [AppComponent],
   providers: [
@@ -33,6 +40,9 @@ import { ServerErrorInterceptor } from './interceptors/serveur-error-interceptor
       multi: true,
       useClass: ServerErrorInterceptor,
     },
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
+    { provide: LOCALE_ID, useValue: 'fr' },
+    { provide: DateAdapter, useClass: CustomDateAdapter },
   ],
   bootstrap: [AppComponent],
 })

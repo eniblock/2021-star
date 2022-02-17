@@ -41,7 +41,7 @@ export class AuthGuard extends KeycloakAuthGuard {
       return this.authenticated;
     } else {
       // redirect to error page if the user doesn't have the role to access
-      this.router.navigate([PATH_ROUTE.ERROR]);
+      this.router.navigate(['/', PATH_ROUTE.ERROR]);
       return false;
     }
   }

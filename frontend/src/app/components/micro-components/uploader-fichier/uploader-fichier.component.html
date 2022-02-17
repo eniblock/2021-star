@@ -1,0 +1,47 @@
+<div class="row">
+
+  <ngx-file-drop #ngxFileDrop [class]="'col-12 my-3 ' + className + ' ' + (!multiple && fichiers.length>0 ? 'full' : '' )"
+    [accept]="accept"
+    [directory]="directory"
+    [multiple]="multiple"
+    (onFileDrop)="dropped($event)"
+    [style]="!multiple && fichiers.length>0 ? '' : 'cursor: pointer;'"
+    (click)="!multiple && fichiers.length>0 ? null : ngxFileDrop?.openFileSelector()">
+    
+      <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+        <div class="d-flex flex-column">
+          <div class="text-center">
+            <i class="fas fa-paperclip me-2"></i>
+            <strong class="me-1">Sélectionner {{ multiple ? 'des fichiers' : 'un fichier' }}</strong> ou glisser {{ multiple ? 'des fichiers' : 'un fichier' }}.
+          </div>
+          <div class="text-center" *ngIf="accept != '*'">(Fichiers acceptés : {{ accept }})</div>
+        </div>
+      </ng-template>
+
+  </ngx-file-drop>
+
+  <div class="upload-fichier-table col-12 mt-4" *ngIf="fichiers.length > 0">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item list-group-big-lines" *ngFor="let item of fichiers">
+        <div class="float-end">
+          <button mat-icon-button (click)="deleteFichier(item)">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="float-end" *ngIf="item.extensionAccepte">
+          {{ item.tailleStr }}
+        </div>
+        <div class="float-end text-danger" *ngIf="!item.extensionAccepte">
+          Format non reconnu
+        </div>
+        <div>
+          {{ item.nom }}
+        </div>
+      </li>
+      <li class="list-group-item list-group-big-lines text-end me-3">
+        Total : {{ tailleFichiersStr }}
+      </li>
+    </ul>
+  </div>
+
+</div>

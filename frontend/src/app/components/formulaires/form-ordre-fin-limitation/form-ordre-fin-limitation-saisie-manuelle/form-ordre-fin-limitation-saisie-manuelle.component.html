@@ -1,0 +1,191 @@
+<mat-stepper #stepperRef [linear]="true" class="disabledHeaderNavigation">
+
+  <mat-step [stepControl]="form" label="Formulaire">
+    <form [formGroup]="form">
+
+      <div class="row">
+
+        <div class="col-12 fw-bold mb-2">
+          Entités
+        </div>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Code de l'automate (origine)</mat-label>
+          <input matInput placeholder="Code de l'automate (origine)" formControlName="originAutomationRegisteredResourceMrid">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Levier de flexibilité, code site (Destination)</mat-label>
+          <input matInput placeholder="Levier de flexibilité, code site (Destination)" formControlName="registeredResourceMrid">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Entité émettrice</mat-label>
+          <input matInput placeholder="Entité émettrice" formControlName="senderMarketParticipantMrid">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Entité réceptrice</mat-label>
+          <input matInput placeholder="Entité réceptrice" formControlName="receiverMarketParticipantMrid">
+        </mat-form-field>
+
+
+        <div class="col-12 fw-bold mt-4 mb-2">
+          Consignes
+        </div>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Valeur de consigne</mat-label>
+          <input matInput placeholder="Valeur de consigne" formControlName="orderValue">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Unité de puissance</mat-label>
+          <mat-select formControlName="measurementUnitName">
+            <mat-option [value]="'KW'">KW</mat-option>
+            <mat-option [value]="'MW'">MW</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <div class="col-12 fw-bold mt-4 mb-2">
+          Horodatage
+        </div>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Horodatage de fin de limitation - date</mat-label>
+          <input matInput placeholder="Horodatage de fin de limitation - date" [matDatepicker]="pickerDate" formControlName="timestampDate">
+          <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDate></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Horodatage de fin de limitation - heure (exemple 15:24:23)</mat-label>
+          <input matInput placeholder="Horodatage de fin de limitation - heure (exemple 15:24:23)" formControlName="timestampTime">
+        </mat-form-field>
+
+
+        <div class="col-12 fw-bold mt-4 mb-2">
+          Définition de l'ordre
+        </div>
+
+        <mat-form-field class="col-12 col-lg-4" appearance="outline">
+          <mat-label>Type d'ordre</mat-label>
+          <input matInput placeholder="Type d'ordre" formControlName="messageType">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-4" appearance="outline">
+          <mat-label>Nature de l'écrêtement</mat-label>
+          <input matInput placeholder="Nature de l'écrêtement" formControlName="businessType">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-4" appearance="outline">
+          <mat-label>Motif de l'ordre</mat-label>
+          <input matInput formControlName="reasonCode">
+        </mat-form-field>
+
+
+        <div class="col-12 text-center mt-3">
+          <button mat-raised-button color="primary" (click)="toResume(stepperRef)">Suivant</button>
+        </div>
+
+      </div>
+
+    </form>
+  </mat-step>
+
+  <mat-step label="Résumé">
+    <div class="row panel-message p-4 mt-3">
+
+      <div class="col-12 fw-bold mb-2">
+        Entités
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Code de l'automate (origine) :
+        <span class="fw-bold">{{ form.value.originAutomationRegisteredResourceMrid }}</span>
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Levier de flexibilité, code site (Destination) :
+        <span class="fw-bold">{{ form.value.registeredResourceMrid }}</span>
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Entité émettrice :
+        <span class="fw-bold">{{ form.value.senderMarketParticipantMrid }}</span>
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Entité réceptrice :
+        <span class="fw-bold">{{ form.value.receiverMarketParticipantMrid }}</span>
+      </div>
+
+
+      <div class="col-12 fw-bold mt-4 mb-2">
+        Consignes
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Valeur de consigne :
+        <span class="fw-bold">{{ form.value.orderValue }}</span>
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Unité de puissance :
+        <span class="fw-bold">{{ form.value.measurementUnitName }}</span>
+      </div>
+
+
+      <div class="col-12 fw-bold mt-4 mb-2">
+        Horodatage
+      </div>
+
+      <div class="col-12 col-lg-6 my-2">
+        Horodatage de fin de limitation  :
+        <span class="fw-bold">{{ endCreatedDateTime | date:'shortDate' }}, {{ endCreatedDateTime | date:'mediumTime' }}</span>
+      </div>
+
+
+      <div class="col-12 fw-bold mt-4 mb-2">
+        Définition de l'ordre
+      </div>
+
+      <div class="col-12 col-lg-4 my-2">
+        Type d'ordre :
+        <span class="fw-bold">{{ form.value.messageType }}</span>
+      </div>
+
+      <div class="col-12 col-lg-4 my-2">
+        Nature de l'écrêtement :
+        <span class="fw-bold">{{ form.value.businessType }}</span>
+      </div>
+
+      <div class="col-12 col-lg-4 my-2">
+        Motif de l'ordre :
+        <span class="fw-bold">{{ form.value.reasonCode }}</span>
+      </div>
+
+      <div class="col-12 text-center mt-4">
+        <button mat-raised-button class="me-3 text-primary" matStepperPrevious>Modifier</button>
+        <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit(stepperRef)">Charger l'ordre</button>
+      </div>
+
+    </div>
+  </mat-step>
+
+  <mat-step label="Envoyé">
+    <div class="row mt-3">
+      <div class="col-12 offset-lg-2 col-lg-8 p-4 panel-message text-center">
+        <img class="mt-3" src="assets/img/general/valid.svg"/>
+        <div class="my-3">
+          L'ordre de fin a bien été chargée
+        </div>
+        <a (click)="reset(stepperRef)" class="mt-3 boutonNavigation">
+          <span>Charger à nouveau</span>
+        </a>
+      </div>
+    </div>
+  </mat-step>
+
+</mat-stepper>

@@ -26,6 +26,7 @@ export class InstanceService {
         this.httpClient.get<Instance>(`${environment.serverUrl}/instance`)
       );
     } else {
+      // Si on est pas en prod => on va chercher la valeur directement aupès du back
       return this.httpClient.get<Instance>(`${environment.serverUrl}/instance`);
     }
   }

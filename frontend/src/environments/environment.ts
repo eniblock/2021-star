@@ -14,7 +14,9 @@ export const environment = {
     clientId: 'frontend',
   },
   // Tri
-  pageSizes: [1, 5, 10, 20],
+  pageSizes: [5, 10, 20],
+  // Upload des fichiers
+  tailleMaxUploadFichiers: 5000000, // En octets
 };
 
 /*

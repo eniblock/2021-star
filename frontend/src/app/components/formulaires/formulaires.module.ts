@@ -15,6 +15,7 @@ import { FormOrdreFinLimitationSaisieManuelleComponent } from './form-ordre-fin-
 import { MatRadioModule } from '@angular/material/radio';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { FormActivationsRechercheComponent } from './form-activations-recherche/form-activations-recherche.component';
 
 @NgModule({
   imports: [
@@ -36,11 +37,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     FormOrdreFinLimitationComponent,
     FormOrdreFinLimitationFichierComponent,
     FormOrdreFinLimitationSaisieManuelleComponent,
+    FormActivationsRechercheComponent,
   ],
   exports: [
     FormReseauRechercheComponent,
     FormOrdreDebutLimitationComponent,
     FormOrdreFinLimitationComponent,
+    FormActivationsRechercheComponent,
   ],
 })
 export class FormulairesModule {}

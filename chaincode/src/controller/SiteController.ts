@@ -60,6 +60,50 @@ export class SiteController {
         );
     }
 
+    public static async updateSite(ctx: Context, inputStr: string): Promise<void> {
+        let siteObj: Site;
+        try {
+            siteObj = JSON.parse(inputStr);
+        } catch (error) {
+            throw new Error(`ERROR updateSite-> Input string NON-JSON value`);
+        }
+        const siteInput = Site.schema.validateSync(
+            siteObj,
+            {strict: true, abortEarly: false},
+        );
+        const identity = await ctx.stub.getMspID();
+        if (siteInput.marketEvaluationPointMrid && siteInput.schedulingEntityRegisteredResourceMrid) {
+            if (identity !== OrganizationTypeMsp.RTE) {
+                throw new Error(`Organisation, ${identity} does not have write access for HTB(HV) sites`);
+            }
+        } else if (!siteInput.marketEvaluationPointMrid && !siteInput.schedulingEntityRegisteredResourceMrid) {
+            if (identity !== OrganizationTypeMsp.ENEDIS) {
+                throw new Error(`Organisation, ${identity} does not have write access for HTA(MV) sites`);
+            }
+        } else {
+            throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
+        }
+        const siteAsBytes = await ctx.stub.getState(siteInput.meteringPointMrid);
+        if (!siteAsBytes || siteAsBytes.length === 0) {
+            throw new Error(`${siteInput} does not exist. Can not be updated.`);
+        }
+        const systemOperatorAsBytes = await ctx.stub.getState(siteInput.systemOperatorMarketParticipantMrid);
+        if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
+            throw new Error(`System Operator : ${siteInput.systemOperatorMarketParticipantMrid} does not exist for site creation`);
+        }
+        const producerAsBytes = await ctx.stub.getState(siteInput.producerMarketParticipantMrid);
+        if (!producerAsBytes || producerAsBytes.length === 0) {
+            throw new Error(`Producer : ${siteInput.producerMarketParticipantMrid} does not exist for site update`);
+        }
+
+        siteInput.docType = 'site';
+        await ctx.stub.putState(siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
+        console.info(
+            '============= END : Update %s Site ===========',
+            siteInput.meteringPointMrid,
+        );
+    }
+
     public static async querySite(ctx: Context, site: string): Promise<string> {
         console.info('============= START : Query %s Site ===========', site);
         const siteAsBytes = await ctx.stub.getState(site);

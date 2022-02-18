@@ -114,6 +114,14 @@ export class Star extends Contract {
         }
     }
 
+    public async UpdateSite(ctx: Context, inputStr: string) {
+        try {
+            return (await SiteController.updateSite(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async QuerySite(
         ctx: Context,
         id: string) {

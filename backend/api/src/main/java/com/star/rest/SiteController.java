@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,7 +64,7 @@ public class SiteController {
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ImportSiteResult> importSite(@RequestParam MultipartFile file) throws BusinessException {
         if (InstanceEnum.PRODUCER.equals(instance)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -77,6 +78,29 @@ public class SiteController {
         }
         return ResponseEntity.status(isEmpty(importSiteResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importSiteResult);
     }
+
+
+    @Operation(summary = "Update a Site CSV file.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Update successfully site",
+                    content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "409", description = "Error in the file"),
+            @ApiResponse(responseCode = "500", description = "Internal error")})
+    @PostMapping("/update")
+    public ResponseEntity<ImportSiteResult> updateSite(@RequestParam MultipartFile file) throws BusinessException {
+        if (InstanceEnum.PRODUCER.equals(instance)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        ImportSiteResult importSiteResult;
+        try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
+            importSiteResult = siteService.updateSite(file.getOriginalFilename(), streamReader, instance);
+        } catch (IOException | TechnicalException exception) {
+            log.error("Echec de l'import  du fichier {}. Erreur : ", file.getOriginalFilename(), exception);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.status(isEmpty(importSiteResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.OK).body(importSiteResult);
+    }
+
 
     /**
      * Recherche multi-critère de site

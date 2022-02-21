@@ -1,6 +1,5 @@
 package com.star.service;
 
-import com.star.enums.FileExtensionEnum;
 import com.star.models.imports.ImportCSV;
 import com.star.models.imports.ImportResult;
 import lombok.extern.slf4j.Slf4j;
@@ -49,12 +48,12 @@ public class ImportUtilsService {
      * @param fileName
      * @param streamReader
      */
-    public void checkFile(String fileName, Reader streamReader) {
+    public void checkFile(String fileName, Reader streamReader, String extension) {
         Assert.notNull(fileName, messageSource.getMessage("import.fileName.not.null", null, null));
         Assert.notNull(streamReader, messageSource.getMessage("import.file.not.empty", null, null));
-        if (!StringUtils.equalsIgnoreCase(FilenameUtils.getExtension(fileName), FileExtensionEnum.CSV.getValue())) {
+        if (!StringUtils.equalsIgnoreCase(FilenameUtils.getExtension(fileName), extension)) {
             throw new IllegalArgumentException(messageSource.getMessage("import.file.extension.error",
-                    new String[]{FileExtensionEnum.CSV.getValue()}, null));
+                    new String[]{extension}, null));
         }
     }
 

@@ -260,7 +260,7 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const order: ActivationDocument = {
                 activationDocumentMrid: 'string',
-                originAutomataRegisteredResourceMrid: 'string',
+                originAutomationRegisteredResourceMrid: 'string',
                 registeredResourceMrid: '12345678901234',
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -284,7 +284,7 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: '12345678901234', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -327,7 +327,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -370,7 +370,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -413,7 +413,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -456,7 +456,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -481,7 +481,7 @@ describe('Star Tests ActivationDocument', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
+            const yellowPage: YellowPages = {originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
@@ -501,7 +501,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -602,7 +602,7 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -637,7 +637,7 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -697,7 +697,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -740,7 +740,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -796,7 +796,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -820,13 +820,13 @@ describe('Star Tests ActivationDocument', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
+            const yellowPage: YellowPages = {originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
 
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -867,7 +867,7 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
+                    originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: true,
@@ -886,7 +886,7 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
+                    originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: false,
@@ -919,7 +919,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -943,13 +943,13 @@ describe('Star Tests ActivationDocument', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V0000009927454\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
+            const yellowPage: YellowPages = {originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
 
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -990,7 +990,7 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
+                    originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745Y",
                     reconciliation: false,
@@ -1028,7 +1028,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -1052,13 +1052,13 @@ describe('Star Tests ActivationDocument', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"Enedis\",\"marketParticipantRoleType\": \"A50\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
+            const yellowPage: YellowPages = {originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
 
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1099,7 +1099,7 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
+                    originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: true,
@@ -1132,7 +1132,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderA: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1156,13 +1156,13 @@ describe('Star Tests ActivationDocument', () => {
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"17V000000992746D\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
+            const yellowPage: YellowPages = {originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
 
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1203,7 +1203,7 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
+                    originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: false,
@@ -1223,7 +1223,7 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
+                    originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745Y",
                     reconciliation: false,
@@ -1264,7 +1264,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderEnd: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1304,7 +1304,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1332,7 +1332,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderEnd: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1373,7 +1373,7 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1401,7 +1401,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderEnd: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1443,13 +1443,13 @@ describe('Star Tests ActivationDocument', () => {
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',marketEvaluationPointMrid: 'string',schedulingEntityRegisteredResourceMrid:'string',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(site));
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
+            const yellowPage: YellowPages = {originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
 
             const orderBegin: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'PDL00000000289766', // FK1
+                originAutomationRegisteredResourceMrid: 'PDL00000000289766', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1478,7 +1478,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderCouple: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -1518,13 +1518,13 @@ describe('Star Tests ActivationDocument', () => {
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',marketEvaluationPointMrid: 'string',schedulingEntityRegisteredResourceMrid:'string',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(site));
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
+            const yellowPage: YellowPages = {originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
 
             const orderBegin: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'PDL00000000289766', // FK1
+                originAutomationRegisteredResourceMrid: 'PDL00000000289766', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1553,7 +1553,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderCouple: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -1596,13 +1596,13 @@ describe('Star Tests ActivationDocument', () => {
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',marketEvaluationPointMrid: 'string',schedulingEntityRegisteredResourceMrid:'string',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(site));
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
+            const yellowPage: YellowPages = {originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
 
             const orderBegin: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'PDL00000000289766', // FK1
+                originAutomationRegisteredResourceMrid: 'PDL00000000289766', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1631,7 +1631,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderCouple: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -1656,7 +1656,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderEnd: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f3', // PK
-                originAutomataRegisteredResourceMrid: 'PDL00000000289766', // FK1
+                originAutomationRegisteredResourceMrid: 'PDL00000000289766', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1697,13 +1697,13 @@ describe('Star Tests ActivationDocument', () => {
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097454\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',marketEvaluationPointMrid: 'string',schedulingEntityRegisteredResourceMrid:'string',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
             await star.CreateSite(transactionContext, JSON.stringify(site));
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
+            const yellowPage: YellowPages = {originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",registeredResourceMrid: "PDL00000000289766",systemOperatorMarketParticipantMrid: "17V000000992746D"};
             await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
 
             const orderBegin: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'PDL00000000289766', // FK1
+                originAutomationRegisteredResourceMrid: 'PDL00000000289766', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
@@ -1732,7 +1732,7 @@ describe('Star Tests ActivationDocument', () => {
             const orderCouple: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
                 registeredResourceMrid: 'PDL00000000289766', // FK2
                 measurementUnitName: 'KW',
                 messageType: 'string',
@@ -1759,7 +1759,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderEnd: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f3', // PK
-                originAutomataRegisteredResourceMrid: 'PDL00000000289766', // FK1
+                originAutomationRegisteredResourceMrid: 'PDL00000000289766', // FK1
                 registeredResourceMrid: 'PDL00000000289769', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',

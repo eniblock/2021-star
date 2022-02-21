@@ -136,7 +136,7 @@ export class EnergyAmountController {
             "selector":
             {
                 "docType": "activationDocument",
-                "originAutomataRegisteredResourceMrid": "${keySplitted[0]}",
+                "originAutomationRegisteredResourceMrid": "${keySplitted[0]}",
                 "registeredResourceMrid": "${keySplitted[1]}",
                 "startCreatedDateTime": "${keySplitted[2]}",
                 "endCreatedDateTime": "${keySplitted[3]}"

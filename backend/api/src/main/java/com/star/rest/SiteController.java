@@ -78,7 +78,6 @@ public class SiteController {
         return ResponseEntity.status(isEmpty(importSiteResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importSiteResult);
     }
 
-
     /**
      * Recherche multi-critère de site
      *

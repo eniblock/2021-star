@@ -8,7 +8,7 @@ export const environment = {
   hmr: false,
   keycloak: {
     // Url of the Identity Provider
-    issuer: 'https://star.localhost/auth/',
+    issuer: '', //https://star.localhost/auth/
     // Realm
     realm: 'star',
     clientId: 'frontend',

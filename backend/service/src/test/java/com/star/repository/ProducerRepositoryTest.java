@@ -62,7 +62,7 @@ class ProducerRepositoryTest extends AbstractTest {
 
         // THEN
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
-               objectArgumentCaptor.capture());
+                objectArgumentCaptor.capture());
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(ProducerRepository.CREATE_PRODUCER);
     }
 

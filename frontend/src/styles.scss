@@ -115,6 +115,34 @@ h3 {
   color: #fff !important;
 }
 
+// Callout (messages)
+.bd-callout {
+  padding: 1.25rem;
+  border-left: 0.25rem solid;
+  border-radius: 0.25rem;
+}
+.bd-callout-warning {
+  background: #fff3cd;
+  border-color: #f0ad4e !important;
+}
+.bd-callout-warning h5 {
+  color: #856404;
+}
+.bd-callout-info {
+  background: #d1ecf1;
+  border-color: #17a2b8 !important;
+}
+.bd-callout-info h5 {
+  color: #0c5460;
+}
+.bd-callout-danger {
+  background: #f8d7da;
+  border-color: #d9534f !important;
+}
+.bd-callout-danger h5 {
+  color: #721c24;
+}
+
 // Badge
 .badge-star {
   border-radius: 20px;

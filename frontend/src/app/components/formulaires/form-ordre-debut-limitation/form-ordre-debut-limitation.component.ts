@@ -26,6 +26,7 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
   tailleFichierOk = false;
   extensionFichiersOk = false;
   listeFichiers: Fichier[] = [];
+  errors: string[] = [];
 
   uploadEffectue = false;
 
@@ -44,11 +45,14 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
     const form: FormulaireOrdreDebutLimitationFichier = {
       files: this.listeFichiers.map((f) => f.file), // On upload ici un seul fichier
     };
-    this.ordreLimitationService
-      .creerOrdreDebutAvecFichiers(form)
-      .subscribe((ok) => {
+    this.ordreLimitationService.creerOrdreDebutAvecFichiers(form).subscribe(
+      (ok) => {
         this.uploadEffectue = true;
-      });
+      },
+      (error) => {
+        this.errors = error.error.errors;
+      }
+    );
   }
 
   public modificationListeFichiers(listeFichiersEtEtat: ListeFichiersEtEtat) {

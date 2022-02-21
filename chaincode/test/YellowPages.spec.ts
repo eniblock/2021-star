@@ -206,7 +206,7 @@ describe('Star Tests YELLOW PAGES', () => {
             await star.CreateSite(transactionContext, JSON.stringify(site));
 
             const yellowPage: YellowPages = {
-                originAutomataRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411',
+                originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411',
                 registeredResourceMrid: 'PDL00000000289766',
                 systemOperatorMarketParticipantMrid: '17V000000992746D'
             };
@@ -257,7 +257,7 @@ describe('Star Tests YELLOW PAGES', () => {
             await star.CreateSite(transactionContext, JSON.stringify(siteB));
 
             const yellowPage: YellowPages = {
-                originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
+                originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                 registeredResourceMrid: "PDL00000000289766",
                 systemOperatorMarketParticipantMrid: "17V000000992746D",
             };
@@ -271,7 +271,7 @@ describe('Star Tests YELLOW PAGES', () => {
             const expected: YellowPages[] = [
                 {
                     docType: "yellowPages",
-                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
+                    originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     registeredResourceMrid: "PDL00000000289766",
                     systemOperatorMarketParticipantMrid: "17V000000992746D"
                 }
@@ -301,7 +301,7 @@ describe('Star Tests YELLOW PAGES', () => {
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"17X0000013097450\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateSite(transactionContext, JSON.stringify(sit));
             const yellowPage: YellowPages = {
-                originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
+                originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                 registeredResourceMrid: "PDL00000000289766",
                 systemOperatorMarketParticipantMrid: "17V000000992746D",
             };
@@ -316,7 +316,7 @@ describe('Star Tests YELLOW PAGES', () => {
                 'non-json-value',
                 {
                     docType: "yellowPages",
-                    originAutomataRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
+                    originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     registeredResourceMrid: "PDL00000000289766",
                     systemOperatorMarketParticipantMrid: "17V000000992746D"
                 }

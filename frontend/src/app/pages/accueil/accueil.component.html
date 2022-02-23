@@ -6,7 +6,7 @@
       <img src="assets/img/menu-bar/reseau.svg" class="pb-2 me-2">
       Rechercher dans le réseau
     </h2>
-    <app-form-reseau-recherche (formSubmit)="formSubmit($event)"></app-form-reseau-recherche>
+    <app-form-reseau-recherche (formSubmit)="formRechercheReseauSubmit($event)"></app-form-reseau-recherche>
   </div>
 </div>
 
@@ -18,7 +18,7 @@
       <img src="assets/img/menu-bar/histo.svg" class="pb-2 me-2">
       Consulter l'historique des limitations
     </h2>
-    ...
+    <app-form-activations-recherche (formSubmit)="formRechercheActivationsSubmit($event)"></app-form-activations-recherche>
   </div>
 </div>
 

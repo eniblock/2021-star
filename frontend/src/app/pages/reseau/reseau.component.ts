@@ -1,3 +1,4 @@
+import { OrderDirection } from '../../models/enum/OrderDirection.enum';
 import { Component, OnInit } from '@angular/core';
 import { Instance } from 'src/app/models/enum/Instance.enum';
 import { OrdreRechercheReseau } from 'src/app/models/enum/OrdreRechercheReseau.enum';
@@ -66,6 +67,7 @@ export class ReseauComponent implements OnInit {
           pageSize: this.pageSize,
           bookmark: this.lastBookmark,
           order: this.order,
+          orderDirection: OrderDirection.asc,
         };
       this.reseauService
         .rechercher(this.formRecherche, paginationAvecBookmark)

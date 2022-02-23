@@ -2,11 +2,11 @@ import { OrdreRechercheActivations } from './enum/OrdreRechercheActivations.enum
 import { FormulairePagination } from './Pagination';
 
 export interface FormulaireRechercheActivations {
-  registeredResourceMrid: string;
+  originAutomationRegisteredResourceMrid: string;
   producerMarketParticipantMrid: string;
   siteName: string;
-  startCreatedDateTime: string;
-  endCreatedDateTime: string;
+  startCreatedDateTime: string; // JSON
+  endCreatedDateTime: string; // JSON
 }
 
 export interface RechercheActivationsRequete

@@ -4,6 +4,7 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { InstanceService } from 'src/app/services/api/instance.service';
 import { FormulaireRechercheActivations } from 'src/app/models/RechercheActivations';
 import { ActivationsService } from 'src/app/services/api/activations.service';
+import { DateHelper } from 'src/app/helpers/date.helper';
 
 @Component({
   selector: 'app-form-activations-recherche',
@@ -17,7 +18,7 @@ export class FormActivationsRechercheComponent implements OnInit {
   typeInstance?: Instance;
 
   form: FormGroup = this.formBuilder.group({
-    registeredResourceMrid: [''],
+    originAutomationRegisteredResourceMrid: [''],
     producerMarketParticipantMrid: [''],
     siteName: [''],
     startCreatedDateTime: [''],
@@ -45,6 +46,16 @@ export class FormActivationsRechercheComponent implements OnInit {
   }
 
   onSubmit() {
-    this.formSubmit.emit(this.form.value);
+    const f = this.form.value;
+    const form: FormulaireRechercheActivations = {
+      ...f,
+      startCreatedDateTime: !f.startCreatedDateTime
+        ? null
+        : f.startCreatedDateTime.toJSON(),
+      endCreatedDateTime: !f.endCreatedDateTime
+        ? null
+        : f.endCreatedDateTime.toJSON(),
+    };
+    this.formSubmit.emit(form);
   }
 }

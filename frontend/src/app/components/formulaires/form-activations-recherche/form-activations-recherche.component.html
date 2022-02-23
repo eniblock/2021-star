@@ -1,0 +1,69 @@
+<form [formGroup]="form" (submit)="onSubmit()">
+
+  <!-- Recherche avancée : DSO ET TSO -->
+  <div class="row mt-3" *ngIf="typeInstance != InstanceEnum.PRODUCER" [formGroup]="form">
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Poste Source</mat-label>
+      <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid">
+    </mat-form-field>
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Producteur</mat-label>
+      <input matInput placeholder="Producteur" type="text" formControlName="producerMarketParticipantMrid">
+    </mat-form-field>
+
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Date de début</mat-label>
+      <input matInput placeholder="Date de début" [matDatepicker]="pickerDateDebut" formControlName="startCreatedDateTime">
+      <mat-datepicker-toggle matSuffix [for]="pickerDateDebut"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDateDebut></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Date de fin</mat-label>
+      <input matInput placeholder="Date de fin" [matDatepicker]="pickerDateFin" formControlName="endCreatedDateTime">
+      <mat-datepicker-toggle matSuffix [for]="pickerDateFin"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDateFin></mat-datepicker>
+    </mat-form-field>
+
+    <div class="col-12 text-center mt-3">
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Rechercher</button>
+    </div>
+  </div>
+
+
+
+  <!-- Recherche avancée : Producteur -->
+  <div class="row mt-3" *ngIf="typeInstance == InstanceEnum.PRODUCER" [formGroup]="form">
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Poste Source</mat-label>
+      <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid">
+    </mat-form-field>
+    
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Nom du site</mat-label>
+      <input matInput placeholder="Nom du site" type="text" formControlName="siteName">
+    </mat-form-field>
+
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Date de début</mat-label>
+      <input matInput placeholder="Date de début" [matDatepicker]="pickerDateDebut" formControlName="startCreatedDateTime">
+      <mat-datepicker-toggle matSuffix [for]="pickerDateDebut"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDateDebut></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+      <mat-label>Date de fin</mat-label>
+      <input matInput placeholder="Date de fin" [matDatepicker]="pickerDateFin" formControlName="endCreatedDateTime">
+      <mat-datepicker-toggle matSuffix [for]="pickerDateFin"></mat-datepicker-toggle>
+      <mat-datepicker #pickerDateFin></mat-datepicker>
+    </mat-form-field>
+
+    <div class="col-12 text-center mt-3">
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Rechercher</button>
+    </div>
+  </div>
+
+</form>

@@ -78,3 +78,22 @@ echo | openssl s_client -connect peer1-hlf-peer.rte:7051 2>/dev/null | openssl x
 ./grpcurl -cacert /var/hyperledger/tls/server/cert/cacert.pem peer1-hlf-peer.rte:7051 list
 openssl x509 -text -in hlf/generated/crypto-config/peerOrganizations/rte/peers/peer1.rte/tls/server.crt
 ```
+
+# Deployed environments
+
+## testing
+
+https://enedis.testing.star.eniblock.fr/
+
+https://producer.testing.star.eniblock.fr/
+
+https://rte.testing.star.eniblock.fr/
+
+## staging
+
+
+https://enedis.staging.star.eniblock.fr/
+
+https://producer.staging.star.eniblock.fr/
+
+https://rte.staging.star.eniblock.fr/

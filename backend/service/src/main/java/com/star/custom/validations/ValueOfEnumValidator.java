@@ -20,12 +20,13 @@ public class ValueOfEnumValidator implements ConstraintValidator<ValueOfEnum, St
         Class<? extends Enum<?>> enumClass = constraintAnnotation.enumClass();
         acceptedValues = new ArrayList<>();
         for (Enum<?> enumElement : Arrays.asList(enumClass.getEnumConstants())) {
-            acceptedValues.addAll(Arrays.asList(StringUtils.split(enumElement.toString(), ",")));
+            acceptedValues.add(enumElement.name());
         }
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        return acceptedValues.contains(value);
+        String element = StringUtils.upperCase(StringUtils.stripAccents(value));
+        return acceptedValues.contains(element);
     }
 }

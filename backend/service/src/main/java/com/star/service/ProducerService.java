@@ -1,6 +1,7 @@
 package com.star.service;
 
 import com.star.enums.DocTypeEnum;
+import com.star.enums.FileExtensionEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.imports.ImportResult;
@@ -48,7 +49,7 @@ public class ProducerService {
      * @throws TechnicalException
      */
     public ImportProducerResult importProducers(String fileName, Reader streamReader) throws IOException, BusinessException, TechnicalException {
-        importUtilsService.checkFile(fileName, streamReader);
+        importUtilsService.checkFile(fileName, streamReader, FileExtensionEnum.CSV.getValue());
         ImportProducerResult importProducerResult = new ImportProducerResult();
         CSVParser csvParser = importUtilsService.getCsvParser(streamReader);
         // Vérifier le header du fichier

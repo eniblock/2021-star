@@ -59,16 +59,16 @@ export class ActivationDocumentController {
         activationDocumentInput.docType = 'activationDocument';
         activationDocumentInput.reconciliation = false;
 
-        if (!activationDocumentInput.endCreatedDatetime && !activationDocumentInput.orderValue) {
+        if (activationDocumentInput.endCreatedDatetime !== "" && activationDocumentInput.orderValue !== "") {
             throw new Error(`Order must have a limitation value`);
         }
         if (identity === OrganizationTypeMsp.ENEDIS &&
             activationDocumentInput.startCreatedDateTime &&
             activationDocumentInput.endCreatedDateTime
         ) {
-            const yellowAsBytes = await ctx.stub.getState(activationDocumentInput.originAutomataRegisteredResourceMrid);
+            const yellowAsBytes = await ctx.stub.getState(activationDocumentInput.originAutomationRegisteredResourceMrid);
             if (!yellowAsBytes || yellowAsBytes.length === 0) {
-                throw new Error(`Yellow Page : ${activationDocumentInput.originAutomataRegisteredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
+                throw new Error(`Yellow Page : ${activationDocumentInput.originAutomationRegisteredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
             }
             // console.log('yellowAsBytes for BB reconciliation=', yellowAsBytes.toString());
             const yellowObj: YellowPages = JSON.parse(yellowAsBytes.toString());

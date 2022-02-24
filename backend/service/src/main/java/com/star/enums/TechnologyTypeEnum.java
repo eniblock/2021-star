@@ -3,7 +3,6 @@ package com.star.enums;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -11,34 +10,28 @@ import java.util.List;
  */
 public enum TechnologyTypeEnum {
 
-    EOLIEN("Eolien", "éolien,eolien"),
-    PHOTOVOLTAIQUE("Photovoltaïque", "photovoltaïque,photovoltaique,Photovoltaique");
+    EOLIEN("Eolien"),
+    PHOTOVOLTAIQUE("Photovoltaïque");
 
     private String label;
-    private String values;
 
-    TechnologyTypeEnum(String label, String values) {
+    TechnologyTypeEnum(String label) {
         this.label = label;
-        this.values = values;
     }
 
     public String getLabel() {
         return this.label;
     }
 
-    public String getValues() {
-        return this.values;
-    }
-
     @Override
     public String toString() {
-        return this.name() + "," + this.getLabel() + "," + this.getValues();
+        return this.name();
     }
 
     public static TechnologyTypeEnum fromValue(String value) {
+        String element = StringUtils.upperCase(StringUtils.stripAccents(value));
         for (TechnologyTypeEnum technologyTypeEnum : TechnologyTypeEnum.values()) {
-            List<String> values = Arrays.asList(StringUtils.split(technologyTypeEnum.toString(), ","));
-            if (values.contains(value)) {
+            if (StringUtils.equals(element, technologyTypeEnum.name())) {
                 return technologyTypeEnum;
             }
         }

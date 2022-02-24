@@ -6,6 +6,7 @@ import com.cloudant.client.api.query.Operation;
 import com.cloudant.client.api.query.QueryBuilder;
 import com.cloudant.client.api.query.Selector;
 import com.star.enums.DocTypeEnum;
+import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.BusinessException;
@@ -71,7 +72,7 @@ public class SiteService {
      */
     public ImportSiteResult importSite(String fileName, Reader streamReader, InstanceEnum instance) throws IOException, TechnicalException, BusinessException {
 
-        importUtilsService.checkFile(fileName, streamReader);
+        importUtilsService.checkFile(fileName, streamReader, FileExtensionEnum.CSV.getValue());
         ImportSiteResult importSiteResult = new ImportSiteResult();
         CSVParser csvParser = importUtilsService.getCsvParser(streamReader);
         // Vérifier le header du fichier

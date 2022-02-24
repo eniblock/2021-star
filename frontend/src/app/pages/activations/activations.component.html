@@ -8,3 +8,10 @@
     <app-form-activations-recherche (formSubmit)="rechercher($event)" ></app-form-activations-recherche>
   </div>
 </div>
+
+<div class="row mt-4" *ngIf="resultatsRecherche.length > 0">
+  <div class="col">
+    <div class="mb-3">{{ totalElements }} {{ totalElements>1?'résultats':'résultat' }}</div>
+    <app-activations-pagination (paginationModifiee)="paginationModifiee($event)" [pageSize]="pageSize"></app-activations-pagination>
+  </div>
+</div>

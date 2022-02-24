@@ -28,6 +28,7 @@ export class ActivationsService {
     form: FormulaireRechercheActivations,
     pagination: FormulairePagination<OrdreRechercheActivations>
   ): Observable<PaginationReponse<RechercheActivationsEntite>> {
+    console.log(pagination);
     if (true) {
       return this.getMocks(form, pagination);
     }
@@ -83,7 +84,7 @@ export class ActivationsService {
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
-                systemOperatorMarketParticipantRoleType: 'A49',
+                systemOperatorMarketParticipantRoleType: 'TODO',
               },
               {
                 technologyType: TechnologyType.EOLIEN,
@@ -102,7 +103,7 @@ export class ActivationsService {
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
-                systemOperatorMarketParticipantRoleType: 'A49',
+                systemOperatorMarketParticipantRoleType: 'TODO',
               },
               {
                 technologyType: TechnologyType.EOLIEN,
@@ -121,7 +122,7 @@ export class ActivationsService {
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
-                systemOperatorMarketParticipantRoleType: 'A49',
+                systemOperatorMarketParticipantRoleType: 'TODO',
               },
               {
                 technologyType: TechnologyType.EOLIEN,
@@ -140,7 +141,7 @@ export class ActivationsService {
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
-                systemOperatorMarketParticipantRoleType: 'A49',
+                systemOperatorMarketParticipantRoleType: 'TODO',
               },
               {
                 technologyType: TechnologyType.EOLIEN,
@@ -159,7 +160,7 @@ export class ActivationsService {
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
-                systemOperatorMarketParticipantRoleType: 'A49',
+                systemOperatorMarketParticipantRoleType: 'TODO',
               },
             ]
           : [

@@ -32,5 +32,6 @@ export interface RechercheActivationsEntite {
     businessType: string;
     reasonCode: string;
   };
-  systemOperatorMarketParticipantRoleType: string; // Le type d'operator et donc de site (A49 => RTE, A50 => Enedis)
+  //systemOperatorMarketParticipantMrid: string; // Le type d'operator et donc de site (A49 => RTE, A50 => Enedis)
+  systemOperatorMarketParticipantRoleType: string; // L'operator et donc le type de site (A49 => RTE, A50 => Enedis)
 }

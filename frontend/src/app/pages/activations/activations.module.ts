@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { PipesModule } from 'src/app/pipes/pipes.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     MatSelectModule,
     FormulairesModule,
     PipesModule,
+    MatButtonModule,
   ],
   declarations: [ActivationsComponent, ActivationsPaginationComponent],
 })

@@ -15,3 +15,11 @@
     <app-activations-pagination (paginationModifiee)="paginationModifiee($event)" [pageSize]="pageSize"></app-activations-pagination>
   </div>
 </div>
+
+Les résultats...
+
+<div class="row my-3 text-center" *ngIf="afficherBoutonSuite">
+  <div class="col">
+    <button class="h5" mat-button color="primary" (click)="afficherLaSuite()">Voir la suite</button>
+  </div>
+</div>

@@ -29,6 +29,7 @@ docker exec -it cli-peer0.tso.star.com bash
 **inside CLI**
 ```bash
 ## global channel
+
 export CHANNEL_NAME=starnetwork
 export ORDERER=orderer.star.com:7050
 export CHANNEL_TX_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts/starnetwork.tx
@@ -42,7 +43,7 @@ peer channel join -b $CHANNEL_NAME.block
 
 cd /usr/src/app/chaincode/star/package/TSO
 
-tar cvzf code.tar.gz connection.json
+tar cvzf code.tar.gz connection.json META-INF
 
 tar cvzf star_V1.tar.gz metadata.json code.tar.gz
 
@@ -112,7 +113,7 @@ peer channel join -b $CHANNEL_NAME\_0.block
 
 cd /usr/src/app/chaincode/star/package/DSO
 
-tar cvzf code.tar.gz connection.json
+tar cvzf code.tar.gz connection.json META-INF
 
 tar cvzf star_V1.tar.gz metadata.json code.tar.gz
 
@@ -171,6 +172,7 @@ docker exec -it cli-peer0.third.star.com bash
 **Inside CLI**
 ```bash
 ## global channel
+
 export ORDERER=orderer.star.com:7050
 export CHANNEL_NAME=starnetwork
 export ORDERER_TLSCA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/star.com/orderers/orderer.star.com/msp/tlscacerts/tlsca.star.com-cert.pem
@@ -182,7 +184,7 @@ peer channel join -b $CHANNEL_NAME\_0.block
 
 cd /usr/src/app/chaincode/star/package/BNO
 
-tar cvzf code.tar.gz connection.json
+tar cvzf code.tar.gz connection.json META-INF
 
 tar cvzf star_V1.tar.gz metadata.json code.tar.gz
 
@@ -239,7 +241,9 @@ peer lifecycle chaincode commit -o $ORDERER --tls --cafile $ORDERER_TLSCA --chan
 
 ```bash
 docker exec -it cli-peer0.tso.star.com bash
+```
 
+```bash
 export ORDERER=orderer.star.com:7050
 export CHANNEL_NAME=starnetwork
 export CC_NAME=star
@@ -271,7 +275,8 @@ export ORDERER_TLSCA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/o
 
 peer chaincode invoke -c '{"Args":["GetAllSystemOperator"]}' -n $CC_NAME -C $CHANNEL_NAME --waitForEvent -o $ORDERER --cafile $ORDERER_TLSCA --tls --peerAddresses $CORE_PEER_ADDRESS --tlsRootCertFiles $CORE_PEER_TLS_ROOTCERT_FILE --peerAddresses peer0.dso.star.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dso.star.com/peers/peer0.dso.star.com/tls/ca.crt
 
-peer chaincode invoke -c '{"function":"CreateSystemOperator","args":["{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}"]}' -n $CC_NAME -C $CHANNEL_NAME --waitForEvent -o $ORDERER --cafile $ORDERER_TLSCA --tls --peerAddresses $CORE_PEER_ADDRESS --tlsRootCertFiles $CORE_PEER_TLS_ROOTCERT_FILE --peerAddresses peer0.dso.star.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dso.star.com/peers/peer0.dso.star.com/tls/ca.crt
+peer chaincode invoke -c '{"function":"CreateSystemOperator","args":["{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}"]}' -n $CC_NAME -C $CHANNEL_NAME --waitForEvent -o $ORDERER --cafile $ORDERER_TLSCA --tls --peerAddresses $CORE_PEER_ADDRESS --tlsRootCertFiles $CORE_PEER_TLS_ROOTCERT_FILE 
+--peerAddresses peer0.dso.star.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dso.star.com/peers/peer0.dso.star.com/tls/ca.crt
 # --peerAddresses peer0.dso.star.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dso.star.com/peers/peer0.dso.star.com/tls/ca.crt --peerAddresses peer0.third.star.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/third.star.com/peers/peer0.third.star.com/tls/ca.crt
 
 ```
@@ -339,5 +344,22 @@ export ORDERER_TLSCA=/opt/gopath/src/github.com/hyperledger/fabric/peer/organiza
 peer chaincode invoke -c '{"function":"CreateSystemOperator","args":["{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}"]}' -n $CC_NAME -C $CHANNEL_NAME --waitForEvent -o $ORDERER --cafile $ORDERER_TLSCA --tls --peerAddresses $CORE_PEER_ADDRESS --tlsRootCertFiles $CORE_PEER_TLS_ROOTCERT_FILE
 
 peer chaincode invoke -c '{"Args":["GetAllSystemOperator"]}' -n $CC_NAME -C $CHANNEL_NAME --waitForEvent -o $ORDERER --cafile $ORDERER_TLSCA --tls --peerAddresses $CORE_PEER_ADDRESS --tlsRootCertFiles $CORE_PEER_TLS_ROOTCERT_FILE --peerAddresses peer0.enedis.star.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/peerOrganizations/enedis.star.com/peers/peer0.enedis.star.com/tls/ca.crt
+
+```
+
+```bash 
+export CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp
+
+peer chaincode invoke -c '{"Args":["GetAllSystemOperator"]}' -o orderer1.orderer.localhost:443 --channelID star --name star --tls --cafile /var/hyperledger/tls/ord/cert/cacert.pem
+
+peer chaincode invoke -c '{"function":"CreateSystemOperator","args":["{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}"]}' -o orderer1.orderer.localhost:443 --channelID star --name star --tls --cafile /var/hyperledger/tls/ord/cert/cacert.pem
+
+peer chaincode invoke -c '{"Args":["GetAllSystemOperator"]}' -o orderer1.orderer.localhost:443 --channelID star --name star --tls --cafile /var/hyperledger/tls/ord/cert/cacert.pem
+```
+
+
+``` bash
+export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/ordererOrganizations/example.com/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 
 ```

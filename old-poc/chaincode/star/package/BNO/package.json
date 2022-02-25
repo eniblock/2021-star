@@ -12,7 +12,7 @@
         "lint": "tslint -c tslint.json 'src/**/*.ts'",
         "pretest": "npm run lint",
         "test": "nyc --reporter=text --reporter=html mocha -r ts-node/register test/**/*.spec.ts",
-        "start": "fabric-chaincode-node server --chaincode-address star.bno.star.com:9997 --chaincode-id CC_PACKAGE_ID",
+        "start": "fabric-chaincode-node server --chaincode-address star.bno.star.com:9999 --chaincode-id CC_PACKAGE_ID",
         "build": "tsc",
         "build:watch": "tsc -w",
         "prepublishOnly": "npm run build"

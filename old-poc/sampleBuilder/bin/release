@@ -19,4 +19,8 @@ if [ -f $BLD/connection.json ]; then
    exit 0
 fi
 
+if [ -d "$BLD/META-INF" ] ; then
+   cp -a "$BLD/META-INF/"* "$RELEASE/"
+fi
+
 exit 1

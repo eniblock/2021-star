@@ -1,0 +1,264 @@
+// DCF
+[
+    {
+       "technologyType": "string; null",
+       "registeredResourceMrid": "string; null",
+       "producerMarketParticipantName": "string; null",
+       "siteName": "string; null",
+       "producerMarketParticipantMrid": "string; null",
+       "startCreatedDateTime": "string; null",
+       "endCreatedDateTime": "string; null",
+       "energyAmount": "string; null not defined yet",
+       "MessageType": "string; null not defined yet"
+    },
+    [
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        },
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        },
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        }
+    ],
+    {
+       "technologyType": "string; null",
+       "registeredResourceMrid": "string; null",
+       "producerMarketParticipantName": "string; null",
+       "siteName": "string; null",
+       "producerMarketParticipantMrid": "string; null",
+       "startCreatedDateTime": "string; null",
+       "endCreatedDateTime": "string; null",
+       "energyAmount": "string; null not defined yet",
+       "MessageType": "string; null not defined yet"
+    }
+]
+
+// DF
+[
+    {
+       "technologyType": "string; null",
+       "registeredResourceMrid": "string; null",
+       "producerMarketParticipantName": "string; null",
+       "siteName": "string; null",
+       "producerMarketParticipantMrid": "string; null",
+       "startCreatedDateTime": "string; null",
+       "endCreatedDateTime": "string; null",
+       "energyAmount": "string; null not defined yet",
+       "MessageType": "string; null not defined yet"
+    },
+    [],
+    {
+       "technologyType": "string; null",
+       "registeredResourceMrid": "string; null",
+       "producerMarketParticipantName": "string; null",
+       "siteName": "string; null",
+       "producerMarketParticipantMrid": "string; null",
+       "startCreatedDateTime": "string; null",
+       "endCreatedDateTime": "string; null",
+       "energyAmount": "string; null not defined yet",
+       "MessageType": "string; null not defined yet"
+    }
+]
+
+// DC
+[
+    {
+       "technologyType": "string; null",
+       "registeredResourceMrid": "string; null",
+       "producerMarketParticipantName": "string; null",
+       "siteName": "string; null",
+       "producerMarketParticipantMrid": "string; null",
+       "startCreatedDateTime": "string; null",
+       "endCreatedDateTime": "string; null",
+       "energyAmount": "string; null not defined yet",
+       "MessageType": "string; null not defined yet"
+    },
+    [
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        },
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        },
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        }
+    ],
+    {}
+]
+
+// CF
+[
+    {},
+    [
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        },
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        },
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        }
+    ],
+    {
+       "technologyType": "string; null",
+       "registeredResourceMrid": "string; null",
+       "producerMarketParticipantName": "string; null",
+       "siteName": "string; null",
+       "producerMarketParticipantMrid": "string; null",
+       "startCreatedDateTime": "string; null",
+       "endCreatedDateTime": "string; null",
+       "energyAmount": "string; null not defined yet",
+       "MessageType": "string; null not defined yet"
+    }
+]
+
+// C
+[
+    {},
+    [
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        },
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        },
+        {
+            "technologyType": "string; null",
+            "originAutomationRegisteredResourceMrid": "string; null",
+            "producerMarketParticipantName": "string; null",
+            "siteName": "string; null",
+            "producerMarketParticipantMrid": "string; null",
+            "startCreatedDateTime": "string; null",
+            "endCreatedDateTime": "string; null",
+            "energyAmount": "string; null not defined yet",
+            "MessageType": "string; null not defined yet"
+        }
+    ],
+    {}
+]
+
+// D
+[
+    {
+       "technologyType": "string; null",
+       "registeredResourceMrid": "string; null",
+       "producerMarketParticipantName": "string; null",
+       "siteName": "string; null",
+       "producerMarketParticipantMrid": "string; null",
+       "startCreatedDateTime": "string; null",
+       "endCreatedDateTime": "string; null",
+       "energyAmount": "string; null not defined yet",
+       "MessageType": "string; null not defined yet"
+    },
+    [],
+    {}
+]
+
+// F
+[
+    {},
+    [],
+    {
+        "technologyType": "string; null",
+        "registeredResourceMrid": "string; null",
+        "producerMarketParticipantName": "string; null",
+        "siteName": "string; null",
+        "producerMarketParticipantMrid": "string; null",
+        "startCreatedDateTime": "string; null",
+        "endCreatedDateTime": "string; null",
+        "energyAmount": "string; null not defined yet",
+        "MessageType": "string; null not defined yet"
+    }
+]

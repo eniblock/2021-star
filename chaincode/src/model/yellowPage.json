@@ -1,0 +1,72 @@
+// ENEDIS
+{
+    "Longchamp",
+    ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"]
+}
+
+{
+    "AIGRE",
+    ["LONGC_AUT9_60s","LONGC_AUT8_LONGCHAMP"]
+}
+
+
+{
+    "MANSLE",
+    ["LONGC_AUT9_60s","LONGC_AUT8_LONGCHAMP"]
+}
+
+{
+    "CONFOLEN",
+    ["CONF6_AUTO8_CONFOLENS"]
+}
+
+{
+    "CIVRAY",
+    ["CIVRA_AUT3-CIVRAY"]
+}
+
+{
+    "ISLEJOUR",
+    ["IJOU_AUT9-ISLE JOURDAN"]
+}
+
+{
+    "LOUBE",
+    ["LOUB_AUT3_LOUBERT"]
+}
+
+{
+    "CHABA",
+    ["LOUB_AUT3_LOUBERT"]
+}
+
+// RTE
+{
+    "LONGC_AUT9_60s",
+    ["Longchamp","AIGRE","MANSLE"]
+}
+
+{
+    "LONGC_AUT8_LONGCHAMP",
+    ["Longchamp","AIGRE","MANSLE"]
+}
+
+{
+    "LOUB_AUT3_LOUBERT",
+    ["CHABA", "LOUBE"]
+}
+
+{
+    "CONF6_AUTO8_CONFOLENS",
+    "CONFOLEN",
+}
+
+{
+    "CIVRA_AUT3-CIVRAY",
+    "CIVRAY",
+}
+
+{
+    "IJOU_AUT9-ISLE JOURDAN",
+    "ISLEJOUR",
+}

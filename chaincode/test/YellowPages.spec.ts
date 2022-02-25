@@ -102,18 +102,19 @@ describe('Star Tests YELLOW PAGES', () => {
             }
         });
 
-        it('should return ERROR createYellowPages missing Site', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+        // Since the check has been removed for the controller this test is no longer required...
+        // it('should return ERROR createYellowPages missing Site', async () => {
+        //     let star = new Star();
+        //     chaincodeStub.MspiID = 'RTEMSP';
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
 
-            try {
-                await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "MANSLE","registeredResourceMrid": ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],"systemOperatorMarketParticipantMrid": "17V000000992746D"}');
-            } catch(err) {
-                console.info(err.message)
-                expect(err.message).to.equal('Site : PDL00000000289766 does not exist in Yellow Pages MANSLE.');
-            }
-        });
+        //     try {
+        //         await star.CreateYellowPages(transactionContext, '{"originAutomataRegisteredResourceMrid": "MANSLE","registeredResourceMrid": ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],"systemOperatorMarketParticipantMrid": "17V000000992746D"}');
+        //     } catch(err) {
+        //         console.info(err.message)
+        //         expect(err.message).to.equal('Site : PDL00000000289766 does not exist in Yellow Pages MANSLE.');
+        //     }
+        // });
 
         it('should return ERROR createYellowPages wrong MSPID', async () => {
             let star = new Star();

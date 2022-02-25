@@ -41,9 +41,13 @@ export class EnergyAmountController {
             throw new Error(`ERROR createTSOEnergyAmount getActivationDocument-> Input string NON-JSON value`);
         }
 
+        /*
+        Since the yellow page obj has changed this check is not more required
         const siteAsBytes = await ctx.stub.getState(orderObj.registeredResourceMrid);
         if (!siteAsBytes || siteAsBytes.length === 0) {
-            throw new Error(`Site : ${orderObj.registeredResourceMrid} does not exist in Activation Document : ${energyAmountInput.activationDocumentMrid} for Energy Amount : ${energyAmountInput.energyAmountMarketDocumentMrid} creation.`);
+            throw new Error(`Site : ${orderObj.registeredResourceMrid} does not exist in \
+            Activation Document : ${energyAmountInput.activationDocumentMrid} for Energy Amount : \
+            ${energyAmountInput.energyAmountMarketDocumentMrid} creation.`);
         }
 
         let siteObj: Site;
@@ -54,8 +58,12 @@ export class EnergyAmountController {
         }
 
         if (orderObj.registeredResourceMrid !== energyAmountInput.registeredResourceMrid) {
-            throw new Error(`ERROR createTSOEnergyAmount mismatch beetween registeredResourceMrid in Activation Document : ${orderObj.registeredResourceMrid} and Energy Amount : ${energyAmountInput.registeredResourceMrid}.`);
+            throw new Error(`ERROR createTSOEnergyAmount mismatch beetween registeredResourceMrid \
+            in Activation Document : ${orderObj.registeredResourceMrid} and Energy Amount : \
+            ${energyAmountInput.registeredResourceMrid}.`);
         }
+        */
+
         // console.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
         const strSplitted = energyAmountInput.timeInterval.split('/', 2);
         const begin = strSplitted[0];
@@ -307,7 +315,7 @@ export class EnergyAmountController {
                     "$lte": ${JSON.stringify(dateDown)}
                 },
                 "sort": [{
-                    "startCreatedDateTime" : "desc"
+                    "createdDateTime" : "desc"
                 }]
             }
         }`;

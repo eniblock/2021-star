@@ -74,9 +74,9 @@ describe('Star Tests ActivationDocument', () => {
 
                                 }
                                 const queryS = queryJson.selector.senderMarketParticipantMrid;
-                                // console.log('queryS=', queryS);
+                                console.log('queryS=', queryS);
                                 const objS = obJson.senderMarketParticipantMrid;
-                                // console.log('objS=', objS);
+                                console.log('objS=', objS);
                                 if (queryS == objS) {
                                     console.log('yield=', queryS, objS);
                                     yield {value: copied[key]};
@@ -84,9 +84,9 @@ describe('Star Tests ActivationDocument', () => {
                                 }
 
                                 const queryM = queryJson.selector.registeredResourceMrid;
-                                // console.log('queryM=', queryM);
+                                console.log('queryM=', queryM);
                                 const objM = obJson.registeredResourceMrid;
-                                // console.log('objM=', objM);
+                                console.log('objM=', objM);
                                 if (queryM == objM && queryJson.selector.reconciliation == obJson.reconciliation) {
                                     console.log('yield=', queryM, objM);
                                     yield {value: copied[key]};
@@ -132,7 +132,6 @@ describe('Star Tests ActivationDocument', () => {
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////    couple     ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-
     describe('Test CreateActivationDocument couple HTA ENEDIS', () => {
         // it('should return ERROR on CreateActivationDocument', async () => {
         //     chaincodeStub.putState.rejects('failed inserting key');
@@ -446,6 +445,55 @@ describe('Star Tests ActivationDocument', () => {
             }
         });
 
+        it('should return ERROR CreateActivationDocument couple HTA missing site', async () => {
+            let star = new Star();
+            const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
+
+            chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateSite(transactionContext, JSON.stringify(site));
+
+            const order: ActivationDocument = {
+
+                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
+                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
+                registeredResourceMrid: 'PDL00000000289767', // FK2
+                measurementUnitName: 'KW',
+                messageType: 'string',
+                businessType: 'string',
+                orderType: 'string',
+                orderEnd: false,
+
+                orderValue: '1',
+                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
+                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
+                revisionNumber: '1',
+                reasonCode: 'string', // optionnal in case of TVC modulation
+                senderMarketParticipantMrid: '17V000000992746D', // FK?
+                receiverMarketParticipantMrid: '17X000001309745X', // FK?
+                // reconciliation: false,
+                // subOrderList: [],
+            }
+            // console.info('typeof=', new Date().toString());
+
+            // chaincodeStub.MspiID = 'ENEDISMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+
+            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "MANSLE",registeredResourceMrid: ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],systemOperatorMarketParticipantMrid: "17V000000992746D"};
+            await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
+
+            try {
+                await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('Site : PDL00000000289767 does not exist for Activation Document 8c56459a-794a-4ed1-a7f6-33b0064508f1 creation.');
+            }
+            // let ret = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
+            // expect(ret).to.eql( Object.assign({docType: 'activationDocument', reconciliation: true}, order ));
+        });
+
         it('should return SUCCESS CreateActivationDocument couple HTA', async () => {
             let star = new Star();
             const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
@@ -635,8 +683,8 @@ describe('Star Tests ActivationDocument', () => {
             let star = new Star();
             const order: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
+                originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+                registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -656,11 +704,12 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            // await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\"}');
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
-                console.info(err.message)
-                expect(err.message).to.equal('Site : PDL00000000289766 does not exist for Activation Document 8c56459a-794a-4ed1-a7f6-33b0064508f1 creation.');
+                // console.info(err.message)
+                expect(err.message).to.equal('Yellow Pages containing registeredResourceMrid : LONGC_AUT9_60s does not exist for Activation Document 8c56459a-794a-4ed1-a7f6-33b0064508f1 creation.');
             }
         });
 
@@ -713,7 +762,8 @@ describe('Star Tests ActivationDocument', () => {
 
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+            // await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\"}');
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
             } catch(err) {
@@ -734,8 +784,8 @@ describe('Star Tests ActivationDocument', () => {
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
+                originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+                registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -755,6 +805,7 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
             let ret = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
@@ -817,8 +868,8 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'RTEMSP';
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
+                originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+                registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -838,6 +889,7 @@ describe('Star Tests ActivationDocument', () => {
 
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderB));
 
             let ret = await star.GetActivationDocumentByProducer(transactionContext, orderA.receiverMarketParticipantMrid);
@@ -875,11 +927,11 @@ describe('Star Tests ActivationDocument', () => {
                     orderEnd: false,
                     orderType: "string",
                     orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "MANSLE",
+                    originAutomataRegisteredResourceMrid: "AUTOMATE_RTE",
                     reasonCode: "string",
                     receiverMarketParticipantMrid: "17X000001309745X",
                     reconciliation: false,
-                    registeredResourceMrid: "PDL00000000289766",
+                    registeredResourceMrid: "LONGC_AUT9_60s",
                     revisionNumber: "1",
                     senderMarketParticipantMrid: "17V000000992746D",
                     startCreatedDateTime: "2021-10-22T10:29:10.000Z",
@@ -889,108 +941,107 @@ describe('Star Tests ActivationDocument', () => {
             expect(ret).to.eql(expected);
         });
 
-        it('should return SUCCESS on getActivationDocumentByproducer for non JSON value', async () => {
-            let star = new Star();
-            chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
-                chaincodeStub.states = {};
-                chaincodeStub.states[key] = 'non-json-value';
-            });
+        // it('should return SUCCESS on getActivationDocumentByproducer for non JSON value', async () => {
+        //     let star = new Star();
+        //     chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
+        //         chaincodeStub.states = {};
+        //         chaincodeStub.states[key] = 'non-json-value';
+        //     });
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746F\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+        //     chaincodeStub.MspiID = 'ENEDISMSP';
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746F\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+        //     const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+        //     await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+        //     await star.CreateSite(transactionContext, JSON.stringify(site));
 
-            const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
+        //     const orderA: ActivationDocument = {
+        //         activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
+        //         originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
+        //         registeredResourceMrid: 'PDL00000000289766', // FK2
+        //         measurementUnitName: 'KW',
+        //         messageType: 'string',
+        //         businessType: 'string',
+        //         orderType: 'string',
+        //         orderEnd: false,
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            await star.CreateSite(transactionContext, JSON.stringify(site));
+        //         orderValue: '1',
+        //         startCreatedDateTime: "2021-10-22T10:29:10.000Z",
+        //         endCreatedDateTime: "2021-10-22T23:29:10.000Z",
+        //         revisionNumber: '1',
+        //         reasonCode: 'string', // optionnal in case of TVC modulation
+        //         senderMarketParticipantMrid: '17V000000992746D', // FK?
+        //         receiverMarketParticipantMrid: '17X000001309745X', // FK?
+        //         // reconciliation: false,
+        //         // subOrderList: [],
+        //     }
 
-            const orderA: ActivationDocument = {
-                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
-                measurementUnitName: 'KW',
-                messageType: 'string',
-                businessType: 'string',
-                orderType: 'string',
-                orderEnd: false,
+        //     chaincodeStub.MspiID = 'ENEDISMSP';
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+        //     await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
-                orderValue: '1',
-                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
-                revisionNumber: '1',
-                reasonCode: 'string', // optionnal in case of TVC modulation
-                senderMarketParticipantMrid: '17V000000992746D', // FK?
-                receiverMarketParticipantMrid: '17X000001309745X', // FK?
-                // reconciliation: false,
-                // subOrderList: [],
-            }
+        //     const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "MANSLE",registeredResourceMrid: ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],systemOperatorMarketParticipantMrid: "17V000000992746D"};
+        //     await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
+        //     await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+        //     const orderB: ActivationDocument = {
+        //         activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
+        //         originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+        //         registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
+        //         measurementUnitName: 'MW',
+        //         messageType: 'string',
+        //         businessType: 'string',
+        //         orderType: 'string',
+        //         orderEnd: false,
 
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "MANSLE",registeredResourceMrid: ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],systemOperatorMarketParticipantMrid: "17V000000992746D"};
-            await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
+        //         orderValue: '1',
+        //         startCreatedDateTime: "2021-10-22T10:29:10.000Z",
+        //         endCreatedDateTime: "2021-10-22T23:29:10.000Z",
+        //         revisionNumber: '1',
+        //         reasonCode: 'string', // optionnal in case of TVC modulation
+        //         senderMarketParticipantMrid: '17V000000992746D', // FK?
+        //         receiverMarketParticipantMrid: '17X000001309745Y', // FK?
+        //         // reconciliation: false,
+        //         // subOrderList: [],
+        //     }
 
-            const orderB: ActivationDocument = {
-                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
-                measurementUnitName: 'MW',
-                messageType: 'string',
-                businessType: 'string',
-                orderType: 'string',
-                orderEnd: false,
+        //     chaincodeStub.MspiID = 'RTEMSP';
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+        //     await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+        //     await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\"}');
+        //     await star.CreateActivationDocument(transactionContext, JSON.stringify(orderB));
 
-                orderValue: '1',
-                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
-                revisionNumber: '1',
-                reasonCode: 'string', // optionnal in case of TVC modulation
-                senderMarketParticipantMrid: '17V000000992746D', // FK?
-                receiverMarketParticipantMrid: '17X000001309745Y', // FK?
-                // reconciliation: false,
-                // subOrderList: [],
-            }
+        //     let retB = await star.GetActivationDocumentByProducer(transactionContext, orderB.receiverMarketParticipantMrid);
+        //     retB = JSON.parse(retB);
+        //     // console.log('retB=', retB)
+        //     expect(retB.length).to.equal(2);
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(orderB));
+        //     const expected = [
+        //         'non-json-value',
+        //         {
+        //             activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
+        //             businessType: "string",
+        //             docType: "activationDocument",
+        //             endCreatedDateTime: "2021-10-22T23:29:10.000Z",
+        //             measurementUnitName: "MW",
+        //             messageType: "string",
+        //             orderEnd: false,
+        //             orderType: "string",
+        //             orderValue: "1",
+        //             originAutomataRegisteredResourceMrid: "MANSLE",
+        //             reasonCode: "string",
+        //             receiverMarketParticipantMrid: "17X000001309745Y",
+        //             reconciliation: false,
+        //             registeredResourceMrid: "PDL00000000289766",
+        //             revisionNumber: "1",
+        //             senderMarketParticipantMrid: "17V000000992746D",
+        //             startCreatedDateTime: "2021-10-22T10:29:10.000Z",
+        //         }
+        //    ];
 
-            let retB = await star.GetActivationDocumentByProducer(transactionContext, orderB.receiverMarketParticipantMrid);
-            retB = JSON.parse(retB);
-            // console.log('retB=', retB)
-            expect(retB.length).to.equal(2);
-
-            const expected = [
-                'non-json-value',
-                {
-                    activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
-                    businessType: "string",
-                    docType: "activationDocument",
-                    endCreatedDateTime: "2021-10-22T23:29:10.000Z",
-                    measurementUnitName: "MW",
-                    messageType: "string",
-                    orderEnd: false,
-                    orderType: "string",
-                    orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "MANSLE",
-                    reasonCode: "string",
-                    receiverMarketParticipantMrid: "17X000001309745Y",
-                    reconciliation: false,
-                    registeredResourceMrid: "PDL00000000289766",
-                    revisionNumber: "1",
-                    senderMarketParticipantMrid: "17V000000992746D",
-                    startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-                }
-           ];
-
-            expect(retB).to.eql(expected);
-        });
-   });
+        //     expect(retB).to.eql(expected);
+        // });
+    });
 
     describe('Test GetActivationDocumentBySystemOperator', () => {
         it('should return OK on GetActivationDocumentBySystemOperator empty', async () => {
@@ -1043,8 +1094,8 @@ describe('Star Tests ActivationDocument', () => {
 
             const orderB: ActivationDocument = {
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
+                originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+                registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -1065,6 +1116,7 @@ describe('Star Tests ActivationDocument', () => {
             chaincodeStub.MspiID = 'RTEMSP';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(orderB));
 
             let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, orderA.senderMarketParticipantMrid);
@@ -1097,195 +1149,197 @@ describe('Star Tests ActivationDocument', () => {
             expect(ret).to.eql(expected);
         });
 
-        it('should return SUCCESS on getActivationDocumentBySystemOperator for non JSON value', async () => {
-            let star = new Star();
-            chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
-                chaincodeStub.states = {};
-                chaincodeStub.states[key] = 'non-json-value';
-            });
+        // it('should return SUCCESS on getActivationDocumentBySystemOperator for non JSON value', async () => {
+        //     let star = new Star();
+        //     chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
+        //         chaincodeStub.states = {};
+        //         chaincodeStub.states[key] = 'non-json-value';
+        //     });
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746L\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+        //     chaincodeStub.MspiID = 'ENEDISMSP';
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746L\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
 
-            const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
+        //     const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            await star.CreateSite(transactionContext, JSON.stringify(site));
+        //     chaincodeStub.MspiID = 'ENEDISMSP';
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+        //     await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+        //     await star.CreateSite(transactionContext, JSON.stringify(site));
 
-            const orderA: ActivationDocument = {
-                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
-                measurementUnitName: 'MW',
-                messageType: 'string',
-                businessType: 'string',
-                orderType: 'string',
-                orderEnd: false,
+        //     const orderA: ActivationDocument = {
+        //         activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
+        //         originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
+        //         registeredResourceMrid: 'PDL00000000289766', // FK2
+        //         measurementUnitName: 'MW',
+        //         messageType: 'string',
+        //         businessType: 'string',
+        //         orderType: 'string',
+        //         orderEnd: false,
 
-                orderValue: '1',
-                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
-                revisionNumber: '1',
-                reasonCode: 'string', // optionnal in case of TVC modulation
-                senderMarketParticipantMrid: '17V0000009927454', // FK?
-                receiverMarketParticipantMrid: '17X000001309745X', // FK?
-                // reconciliation: false,
-                // subOrderList: [],
-            }
+        //         orderValue: '1',
+        //         startCreatedDateTime: "2021-10-22T10:29:10.000Z",
+        //         endCreatedDateTime: "2021-10-22T23:29:10.000Z",
+        //         revisionNumber: '1',
+        //         reasonCode: 'string', // optionnal in case of TVC modulation
+        //         senderMarketParticipantMrid: '17V0000009927454', // FK?
+        //         receiverMarketParticipantMrid: '17X000001309745X', // FK?
+        //         // reconciliation: false,
+        //         // subOrderList: [],
+        //     }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+        //     chaincodeStub.MspiID = 'RTEMSP';
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+        //     await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745Y\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
-            const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "MANSLE",registeredResourceMrid: ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],systemOperatorMarketParticipantMrid: "17V000000992746D"};
-            await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
+        //     const yellowPage: YellowPages = {originAutomataRegisteredResourceMrid: "MANSLE",registeredResourceMrid: ["LONGC_AUT9_60s", "LONGC_AUT8_LONGCHAMP"],systemOperatorMarketParticipantMrid: "17V000000992746D"};
+        //     await star.CreateYellowPages(transactionContext, JSON.stringify(yellowPage));
+        //     await star.CreateActivationDocument(transactionContext, JSON.stringify(orderA));
 
-            const orderB: ActivationDocument = {
-                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
-                measurementUnitName: 'MW',
-                messageType: 'string',
-                businessType: 'string',
-                orderType: 'string',
-                orderEnd: false,
+        //     const orderB: ActivationDocument = {
+        //         activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
+        //         originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+        //         registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
+        //         measurementUnitName: 'MW',
+        //         messageType: 'string',
+        //         businessType: 'string',
+        //         orderType: 'string',
+        //         orderEnd: false,
 
-                orderValue: '1',
-                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-                endCreatedDateTime: "2021-10-22T23:29:10.000Z",
-                revisionNumber: '1',
-                reasonCode: 'string', // optionnal in case of TVC modulation
-                senderMarketParticipantMrid: '17V0000009927454', // FK?
-                receiverMarketParticipantMrid: '17X000001309745Y', // FK?
-                // reconciliation: false,
-                // subOrderList: [],
-            }
+        //         orderValue: '1',
+        //         startCreatedDateTime: "2021-10-22T10:29:10.000Z",
+        //         endCreatedDateTime: "2021-10-22T23:29:10.000Z",
+        //         revisionNumber: '1',
+        //         reasonCode: 'string', // optionnal in case of TVC modulation
+        //         senderMarketParticipantMrid: '17V0000009927454', // FK?
+        //         receiverMarketParticipantMrid: '17X000001309745Y', // FK?
+        //         // reconciliation: false,
+        //         // subOrderList: [],
+        //     }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            // await star.CreateSystemOperator(transactionContext, '17V0000009927454', 'RTE', 'A49');
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(orderB));
+        //     chaincodeStub.MspiID = 'RTEMSP';
+        //     // await star.CreateSystemOperator(transactionContext, '17V0000009927454', 'RTE', 'A49');
+        //     await star.CreateActivationDocument(transactionContext, JSON.stringify(orderB));
 
-            let retB = await star.GetActivationDocumentBySystemOperator(transactionContext, orderB.senderMarketParticipantMrid);
-            retB = JSON.parse(retB);
-            // console.log('retB=', retB)
-            expect(retB.length).to.equal(3);
+        //     let retB = await star.GetActivationDocumentBySystemOperator(transactionContext, orderB.senderMarketParticipantMrid);
+        //     retB = JSON.parse(retB);
+        //     // console.log('retB=', retB)
+        //     expect(retB.length).to.equal(3);
 
-            const expected = [
-                'non-json-value',
-                {
-                    activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1",
-                    businessType: "string",
-                    docType: "activationDocument",
-                    endCreatedDateTime: "2021-10-22T23:29:10.000Z",
-                    measurementUnitName: "MW",
-                    messageType: "string",
-                    orderEnd: false,
-                    orderType: "string",
-                    orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "MANSLE",
-                    reasonCode: "string",
-                    receiverMarketParticipantMrid: "17X000001309745X",
-                    reconciliation: false,
-                    registeredResourceMrid: "PDL00000000289766",
-                    revisionNumber: "1",
-                    senderMarketParticipantMrid: "17V0000009927454",
-                    startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-                },
-                {
+        //     const expected = [
+        //         'non-json-value',
+        //         {
+        //             activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1",
+        //             businessType: "string",
+        //             docType: "activationDocument",
+        //             endCreatedDateTime: "2021-10-22T23:29:10.000Z",
+        //             measurementUnitName: "MW",
+        //             messageType: "string",
+        //             orderEnd: false,
+        //             orderType: "string",
+        //             orderValue: "1",
+        //             originAutomataRegisteredResourceMrid: "MANSLE",
+        //             reasonCode: "string",
+        //             receiverMarketParticipantMrid: "17X000001309745X",
+        //             reconciliation: false,
+        //             registeredResourceMrid: "PDL00000000289766",
+        //             revisionNumber: "1",
+        //             senderMarketParticipantMrid: "17V0000009927454",
+        //             startCreatedDateTime: "2021-10-22T10:29:10.000Z",
+        //         },
+        //         {
 
-                    activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
-                    businessType: "string",
-                    docType: "activationDocument",
-                    endCreatedDateTime: "2021-10-22T23:29:10.000Z",
-                    measurementUnitName: "MW",
-                    messageType: "string",
-                    orderEnd: false,
-                    orderType: "string",
-                    orderValue: "1",
-                    originAutomataRegisteredResourceMrid: "MANSLE",
-                    reasonCode: "string",
-                    receiverMarketParticipantMrid: "17X000001309745Y",
-                    reconciliation: false,
-                    registeredResourceMrid: "PDL00000000289766",
-                    revisionNumber: "1",
-                    senderMarketParticipantMrid: "17V0000009927454",
-                    startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-                }
-           ];
+        //             activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
+        //             businessType: "string",
+        //             docType: "activationDocument",
+        //             endCreatedDateTime: "2021-10-22T23:29:10.000Z",
+        //             measurementUnitName: "MW",
+        //             messageType: "string",
+        //             orderEnd: false,
+        //             orderType: "string",
+        //             orderValue: "1",
+        //             originAutomataRegisteredResourceMrid: "MANSLE",
+        //             reasonCode: "string",
+        //             receiverMarketParticipantMrid: "17X000001309745Y",
+        //             reconciliation: false,
+        //             registeredResourceMrid: "PDL00000000289766",
+        //             revisionNumber: "1",
+        //             senderMarketParticipantMrid: "17V0000009927454",
+        //             startCreatedDateTime: "2021-10-22T10:29:10.000Z",
+        //         }
+        //    ];
 
-            expect(retB).to.eql(expected);
-        });
+        //     expect(retB).to.eql(expected);
+        // });
     });
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////    BB/BE     ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
     describe('Test OrderEnd RTE', () => {
-        it('should return SUCCESS CreateActivationDocument end order HTB RTE for NON-JSON value', async () => {
-            let star = new Star();
+        // it('should return SUCCESS CreateActivationDocument end order HTB RTE for NON-JSON value', async () => {
+        //     let star = new Star();
 
-            chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
-                chaincodeStub.states = {};
-                chaincodeStub.states[key] = 'non-json-value';
-            });
+        //     chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
+        //         chaincodeStub.states = {};
+        //         chaincodeStub.states[key] = 'non-json-value';
+        //     });
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"1\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            // await star.CreateSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
-            // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
-            const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
-            await star.CreateSite(transactionContext, JSON.stringify(site));
-            chaincodeStub.MspiID = 'RTEMSP';
+        //     chaincodeStub.MspiID = 'ENEDISMSP';
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"1\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+        //     await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+        //     // await star.CreateSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
+        //     // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
+        //     const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
+        //     await star.CreateSite(transactionContext, JSON.stringify(site));
 
-            // await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
+        //     // await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
-            const orderEnd: ActivationDocument = {
+        //     const orderEnd: ActivationDocument = {
 
-                activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
-                measurementUnitName: 'MW',
-                messageType: 'string',
-                businessType: 'string',
-                orderType: 'string',
-                orderEnd: true,
+        //         activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
+        //         originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+        //         registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
+        //         measurementUnitName: 'MW',
+        //         messageType: 'string',
+        //         businessType: 'string',
+        //         orderType: 'string',
+        //         orderEnd: true,
 
-                orderValue: '1',
-                startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-                revisionNumber: '1',
-                reasonCode: 'string', // optionnal in case of TVC modulation
-                senderMarketParticipantMrid: '17V000000992746D', // FK?
-                receiverMarketParticipantMrid: '17X000001309745X', // FK?
-                // reconciliation: false,
-                subOrderList: [''],
-            }
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(orderEnd));
+        //         orderValue: '1',
+        //         startCreatedDateTime: "2021-10-22T10:29:10.000Z",
+        //         revisionNumber: '1',
+        //         reasonCode: 'string', // optionnal in case of TVC modulation
+        //         senderMarketParticipantMrid: '17V000000992746D', // FK?
+        //         receiverMarketParticipantMrid: '17X000001309745X', // FK?
+        //         // reconciliation: false,
+        //         subOrderList: [''],
+        //     }
+        //     chaincodeStub.MspiID = 'RTEMSP';
+        //     await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+        //     await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+        //     await star.CreateActivationDocument(transactionContext, JSON.stringify(orderEnd));
 
 
-            // let ret = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
-            // expect(ret).to.eql( Object.assign({docType: 'activationDocument', reconciliation: true, subOrderList: ['8c56459a-794a-4ed1-a7f6-33b0064508f2']}, order ));
-            let retEnd = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f2")).toString());
-            expect(retEnd).to.eql( Object.assign({docType: 'activationDocument', reconciliation: false}, orderEnd ));
-        });
+        //     // let ret = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
+        //     // expect(ret).to.eql( Object.assign({docType: 'activationDocument', reconciliation: true, subOrderList: ['8c56459a-794a-4ed1-a7f6-33b0064508f2']}, order ));
+        //     let retEnd = JSON.parse((await chaincodeStub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f2")).toString());
+        //     expect(retEnd).to.eql( Object.assign({docType: 'activationDocument', reconciliation: false}, orderEnd ));
+        // });
 
         it('should return SUCCESS CreateActivationDocument end order HTB RTE', async () => {
             let star = new Star();
-            const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            await star.CreateSite(transactionContext, JSON.stringify(site));
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
 
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
+                originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+                registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -1302,16 +1356,13 @@ describe('Star Tests ActivationDocument', () => {
                 // subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
             const orderEnd: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
+                originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+                registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -1339,18 +1390,17 @@ describe('Star Tests ActivationDocument', () => {
         it('should return SUCCESS CreateActivationDocument end order HTB RTE for coverage', async () => {
             let star = new Star();
 
-            const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V0000009927454',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
-
-            chaincodeStub.MspiID = 'ENEDISMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+            chaincodeStub.MspiID = 'RTEMSP';
+            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            await star.CreateSite(transactionContext, JSON.stringify(site));
+            await star.CreateYellowPages(transactionContext, '{\"originAutomataRegisteredResourceMrid\": \"MANSLE\",\"registeredResourceMrid\": [\"LONGC_AUT9_60s\", \"LONGC_AUT8_LONGCHAMP\"],\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\"}');
+            await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123456\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
 
             const order: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
+                originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+                registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
@@ -1367,16 +1417,16 @@ describe('Star Tests ActivationDocument', () => {
                 subOrderList: [],
             }
 
-            chaincodeStub.MspiID = 'RTEMSP';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
+            // chaincodeStub.MspiID = 'RTEMSP';
+            // await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+            // await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
 
             const orderEnd: ActivationDocument = {
 
                 activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-                originAutomataRegisteredResourceMrid: 'MANSLE', // FK1
-                registeredResourceMrid: 'PDL00000000289766', // FK2
+                originAutomataRegisteredResourceMrid: 'AUTOMATE_RTE', // FK1
+                registeredResourceMrid: 'LONGC_AUT9_60s', // FK2
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',

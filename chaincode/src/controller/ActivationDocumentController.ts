@@ -37,17 +37,57 @@ export class ActivationDocumentController {
             activationDocumentInput.measurementUnitName !== MeasurementUnitType.KW) {
             throw new Error(`Organisation, ${identity} does not have write access for MW orders`);
         }
-        if (identity === OrganizationTypeMsp.ENEDIS ) {
+        if (identity === OrganizationTypeMsp.ENEDIS) {
             // TODO check the following statement if ENEDIS
             const siteAsBytes = await ctx.stub.getState(activationDocumentInput.registeredResourceMrid);
             if (!siteAsBytes || siteAsBytes.length === 0) {
                 throw new Error(`Site : ${activationDocumentInput.registeredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
             }
+        } else if (identity === OrganizationTypeMsp.RTE) {
+            const query = `{
+                "selector": {
+                    "docType": "yellowPages",
+                    "registeredResourceMrid": {
+                        "$elemMatch": {
+                            "$eq": "${activationDocumentInput.registeredResourceMrid}"
+                        }
+                    }
+                }
+            }`;
+
+            const iterator = await ctx.stub.getQueryResult(query);
+            let result = await iterator.next();
+            console.log('result=', result);
+            const allResults = [];
+            while (!result.done) {
+                const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+                console.log('strValue=', strValue);
+                let record;
+                try {
+                    record = JSON.parse(strValue);
+                } catch (err) {
+                    // record = strValue;
+                }
+                allResults.push(record);
+                result = await iterator.next();
+            }
+            console.log('allResults=', JSON.parse(JSON.stringify(allResults))); //
+            try {
+                const test = YellowPages.schema.validateSync(
+                    allResults[0],
+                    {strict: true, abortEarly: false},
+                );
+                } catch (err) {
+                return ;
+            }
+
+            const yellowPagesObj: YellowPages = allResults[0];
+
+            if (yellowPagesObj === undefined) {
+                throw new Error(`Yellow Pages containing registeredResourceMrid : ${activationDocumentInput.registeredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
+            }
+
         }
-        // TDO create a check when RTE if registeredResourceMrid exist in yellowPages MASTER DATA
-        //
-        //
-        //
 
         if (activationDocumentInput.senderMarketParticipantMrid) {
             const systemOperatorAsBytes = await ctx.stub.getState(activationDocumentInput.senderMarketParticipantMrid);
@@ -140,12 +180,12 @@ export class ActivationDocumentController {
                 // console.log('activationDocumentInput=', activationDocumentInput);
             }
         } else if (activationDocumentInput.orderEnd) {
-            console.log('activationDocumentInput.activationDocumentMrid=',
-                activationDocumentInput.activationDocumentMrid);
-            console.log('activationDocumentInput.registeredResourceMrid=',
-                activationDocumentInput.registeredResourceMrid);
-            console.log('activationDocumentInput.startCreatedDateTime=',
-                activationDocumentInput.startCreatedDateTime);
+            // console.log('activationDocumentInput.activationDocumentMrid=',
+            //     activationDocumentInput.activationDocumentMrid);
+            // console.log('activationDocumentInput.registeredResourceMrid=',
+            //     activationDocumentInput.registeredResourceMrid);
+            // console.log('activationDocumentInput.startCreatedDateTime=',
+            //     activationDocumentInput.startCreatedDateTime);
 
             const ret = await ActivationDocumentController.checkForReconciliationBE(
                 ctx,

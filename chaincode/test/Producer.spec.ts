@@ -43,7 +43,7 @@ describe('Star Tests PRODUCERS', () => {
                 if (chaincodeStub.states) {
                     const copied = Object.assign({}, chaincodeStub.states);
                     for (let key in copied) {
-                        if (copied[key] == 'non-json-value') { 
+                        if (copied[key] == 'non-json-value') {
                             yield {value: copied[key]};
                             continue
                         }
@@ -78,7 +78,7 @@ describe('Star Tests PRODUCERS', () => {
         //     chaincodeStub.putState.rejects('failed inserting key');
 
         //     let star = new Star();
-        //     chaincodeStub.MspiID = 'RTEMSP';
+        //     chaincodeStub.MspiID = 'rte';
         //     try {
         //         await star.CreateProducer(transactionContext, '{\"producerMarketParticipantName\": \"EolienFRvert28EIC\",\"producerMarketParticipantRoleType\": \"EolienFR vert Cie\",\"marketParticipantRoleType\": \"A21\"}');
         //     } catch(err) {
@@ -99,7 +99,7 @@ describe('Star Tests PRODUCERS', () => {
 
         it('should return ERROR NON-JSON value', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             try {
                 await star.CreateProducer(transactionContext, 'toto');
             } catch(err) {
@@ -117,7 +117,7 @@ describe('Star Tests PRODUCERS', () => {
                 producerMarketParticipantRoleType: 'A21'
             };
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateProducer(transactionContext, JSON.stringify(producer));
 
             let ret = JSON.parse((await chaincodeStub.getState("EolienFRvert28EIC")).toString());
@@ -133,7 +133,7 @@ describe('Star Tests PRODUCERS', () => {
                 producerMarketParticipantRoleType: 'A21'
             };
 
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateProducer(transactionContext, JSON.stringify(producer));
 
             let ret = JSON.parse((await chaincodeStub.getState("EolienFRvert28EIC")).toString());
@@ -144,7 +144,7 @@ describe('Star Tests PRODUCERS', () => {
     describe('Test queryProducer', () => {
         it('should return ERROR on queryProducer', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             try {
                 await star.QueryProducer(transactionContext, 'toto');
@@ -156,7 +156,7 @@ describe('Star Tests PRODUCERS', () => {
 
         it('should return SUCCESS on queryProducer', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             const producer: Producer = {
                 docType: 'producer',
@@ -175,7 +175,7 @@ describe('Star Tests PRODUCERS', () => {
     describe('Test updateProducer', () => {
         it('should return ERROR wrong MSPID', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
@@ -189,7 +189,7 @@ describe('Star Tests PRODUCERS', () => {
 
         it('should return ERROR NON-JSON value', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             try {
                 await star.UpdateProducer(transactionContext, 'toto');
             } catch(err) {
@@ -200,7 +200,7 @@ describe('Star Tests PRODUCERS', () => {
 
         it('should return ERROR on updateProducer producer doesn\'t exist', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
 
             try {
@@ -212,7 +212,7 @@ describe('Star Tests PRODUCERS', () => {
 
         it('should return SUCCESS on updateProducer', async () => {
             let star = new Star();
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
             await star.UpdateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"toto\"}');
 
@@ -241,11 +241,11 @@ describe('Star Tests PRODUCERS', () => {
         it('should return success on getAllProducer', async () => {
             let star = new Star();
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
             let ret = await star.GetAllProducer(transactionContext);
             ret = JSON.parse(ret);
@@ -267,11 +267,11 @@ describe('Star Tests PRODUCERS', () => {
                 chaincodeStub.states[key] = 'non-json-value';
             });
 
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert22EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            chaincodeStub.MspiID = 'RTEMSP';
+            chaincodeStub.MspiID = 'rte';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            chaincodeStub.MspiID = 'ENEDISMSP';
+            chaincodeStub.MspiID = 'enedis';
             await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
 
             let ret = await star.GetAllProducer(transactionContext);

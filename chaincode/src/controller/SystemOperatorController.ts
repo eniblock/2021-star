@@ -25,7 +25,6 @@ export class SystemOperatorController {
             systemOperatorObj,
             {strict: true, abortEarly: false},
         );
-
         if (!identity.toLowerCase().includes(systemOperatorInput.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
@@ -77,8 +76,8 @@ export class SystemOperatorController {
             {strict: true, abortEarly: false},
         );
 
-        if (!identity.includes(systemOperatorInput.systemOperatorMarketParticipantName)) {
-            throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorInput.systemOperatorMarketParticipantName}`);
+        if (!identity.toLowerCase().includes(systemOperatorInput.systemOperatorMarketParticipantName.toLowerCase())) {
+            throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
         const sompAsBytes = await ctx.stub.getState(systemOperatorInput.systemOperatorMarketParticipantMrid);

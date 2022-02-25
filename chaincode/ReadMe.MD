@@ -350,9 +350,9 @@ class declarations with a schema to check optional and mandatory files, format v
 main file
 
 ## test folder
-unit test since the no more mock stub in V2.0 I had to make a mock states and fake functions to simulate a real ledger BDDs etc...
+unit test since the no more mock stub in V2.0, I had to make a mock states and fake functions to simulate a real ledger BDDs etc...
 
-1 file for each controllers
+1 file for each controllers (dumb tests to pass coverage limit 80%)
 
 ## tsconfig.json and tslint.json
 config for ts and lint.

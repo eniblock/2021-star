@@ -88,7 +88,7 @@ for org in orgs:
 
 local_resource('helm lint',
             'docker run --rm -t -v $PWD:/app registry.gitlab.com/xdev-tech/build/helm:2.0' +
-            ' lint helm/star --values helm/star/values-' + env + '-rte.yaml',
+            ' lint helm/star --values helm/star/values-rte-' + env + '.yaml',
             'helm/star/', allow_parallel=True)
 
 
@@ -133,7 +133,7 @@ for orderer in ['orderer1', 'orderer2', 'orderer3']:
 
     helm_remote('hlf-ord',
         repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-        version="0.1.0-develop.24",
+        version="0.1.0-develop.31",
         namespace='orderer',
         release_name=orderer,
         values=['helm/hlf-ord/values-orderer-' + env + '-' + orderer + '.yaml'],
@@ -171,23 +171,15 @@ for org in ['enedis', 'rte', 'producer']:
 
         helm_remote('hlf-peer',
             repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-            version="0.1.0-develop.24",
+            version="0.1.0-develop.31",
             namespace=org,
             release_name=peer,
             values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],
         )
 
         k8s_resource(peer + '-hlf-peer:deployment:' + org, labels=[org])
-
-        helm_remote('hlf-chaincode',
-            repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-            version="0.1.0-develop.24",
-            namespace=org,
-            release_name=peer + '-chaincode',
-            values=['helm/hlf-chaincode/values-' + org + '-' + env + '.yaml'],
-        )
         k8s_resource(peer + '-hlf-peer-couchdb:statefulset:' + org, labels=[org])
-        k8s_resource(peer + '-chaincode-hlf-chaincode:deployment:' + org, labels=[org])
+        k8s_resource(peer + '-hlf-peer-star:deployment:' + org, labels=[org])
         k8s_resource(peer + '-hlf-peer-jc-star:job:' + org, labels=[org])
         k8s_resource(peer + '-hlf-peer-rc-star:job:' + org, labels=[org])
 
@@ -195,4 +187,3 @@ for org in ['enedis', 'rte', 'producer']:
             local(clk_k8s + 'add-domain ' + peer + '.' + org + '.localhost')
         if config.tilt_subcommand == 'down' and not cfg.get("no-volumes"):
             local('kubectl --context ' + k8s_context() + ' -n ' + org + ' delete pvc --selector=app.kubernetes.io/instance=' + peer + ' --wait=false')
-            local('kubectl --context ' + k8s_context() + ' -n ' + org + ' delete pvc --selector=app.kubernetes.io/instance=' + peer + '-chaincode --wait=false')

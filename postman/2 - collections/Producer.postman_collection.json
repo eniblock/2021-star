@@ -1,0 +1,111 @@
+{
+	"info": {
+		"_postman_id": "13bb1642-d2d3-4fa0-8f74-612667f96a8e",
+		"name": "Producer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RTE - Post a producer CSV file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/producer",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"producer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Get list of producer",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/producer",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"producer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Post a producer CSV file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/producer",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"producer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Get list of producer",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/producer",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"producer"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

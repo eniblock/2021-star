@@ -1,0 +1,215 @@
+{
+	"info": {
+		"_postman_id": "5d66fc67-5231-4a8e-8b38-3b1e689be2df",
+		"name": "Site",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RTE - Post a Site CSV file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/site",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"site"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Find site by criteria",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/site?page&pageSize&order&bookmark&technologyType&producerMarketParticipantMrid&producerMarketParticipantName&siteName&substationName&substationMrid&siteIecCode&meteringPointMrId",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"site"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": null
+						},
+						{
+							"key": "pageSize",
+							"value": null
+						},
+						{
+							"key": "order",
+							"value": null,
+							"description": "producerMarketParticipantName ou technologyType"
+						},
+						{
+							"key": "bookmark",
+							"value": null
+						},
+						{
+							"key": "technologyType",
+							"value": null,
+							"description": "Eolien et/ou  Photovoltaïque"
+						},
+						{
+							"key": "producerMarketParticipantMrid",
+							"value": null
+						},
+						{
+							"key": "producerMarketParticipantName",
+							"value": null
+						},
+						{
+							"key": "siteName",
+							"value": null
+						},
+						{
+							"key": "substationName",
+							"value": null
+						},
+						{
+							"key": "substationMrid",
+							"value": null
+						},
+						{
+							"key": "siteIecCode",
+							"value": null
+						},
+						{
+							"key": "meteringPointMrId",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Post a Site CSV file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/site",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"site"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Find site by criteria",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/site?page&pageSize&order&bookmark&technologyType&producerMarketParticipantMrid&producerMarketParticipantName&siteName&substationName&substationMrid&siteIecCode&meteringPointMrId",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"site"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": null
+						},
+						{
+							"key": "pageSize",
+							"value": null
+						},
+						{
+							"key": "order",
+							"value": null,
+							"description": "producerMarketParticipantName ou technologyType"
+						},
+						{
+							"key": "bookmark",
+							"value": null
+						},
+						{
+							"key": "technologyType",
+							"value": null,
+							"description": "Eolien et/ou  Photovoltaïque"
+						},
+						{
+							"key": "producerMarketParticipantMrid",
+							"value": null
+						},
+						{
+							"key": "producerMarketParticipantName",
+							"value": null
+						},
+						{
+							"key": "siteName",
+							"value": null
+						},
+						{
+							"key": "substationName",
+							"value": null
+						},
+						{
+							"key": "substationMrid",
+							"value": null
+						},
+						{
+							"key": "siteIecCode",
+							"value": null
+						},
+						{
+							"key": "meteringPointMrId",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

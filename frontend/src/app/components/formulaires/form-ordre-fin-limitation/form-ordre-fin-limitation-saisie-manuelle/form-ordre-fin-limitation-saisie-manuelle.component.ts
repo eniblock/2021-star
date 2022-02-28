@@ -61,6 +61,9 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
     const form = {
       ...this.form.value,
       endCreatedDateTime: this.endCreatedDateTime,
+      messageType: this.form.value.messageType.code,
+      businessType: this.form.value.businessType.code,
+      reasonCode: this.form.value.reasonCode.code,
     };
 
     delete form.timestampDate;
@@ -93,7 +96,7 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
 
   selectionMessageType() {
     this.selectBusinessTypes = getAllBusinessTypesByMessageTypeCode(
-      this.form.value.messageType
+      this.form.value.messageType.code
     );
     this.form.get('businessType')?.setValue('');
     this.form.get('businessType')?.enable();
@@ -105,7 +108,7 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
 
   selectionBusinessType() {
     this.selectReasonCodes = getAllReasonCodeByBusinessTypeCode(
-      this.form.value.businessType
+      this.form.value.businessType.code
     );
     this.form.get('reasonCode')?.setValue('');
     this.form.get('reasonCode')?.enable();

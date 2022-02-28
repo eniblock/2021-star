@@ -72,21 +72,21 @@
         <mat-form-field class="col-12 col-lg-4" appearance="outline">
           <mat-label>Type d'ordre</mat-label>
           <mat-select formControlName="messageType" (selectionChange)="selectionMessageType()">
-            <mat-option *ngFor="let mt of selectMessageTypes" [value]="mt.code">{{ mt.label }}</mat-option>
+            <mat-option *ngFor="let mt of selectMessageTypes" [value]="mt">{{ mt.label }}</mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field class="col-12 col-lg-4" appearance="outline">
           <mat-label>Nature de l'écrêtement</mat-label>
           <mat-select formControlName="businessType" (selectionChange)="selectionBusinessType()">
-            <mat-option *ngFor="let bt of selectBusinessTypes" [value]="bt.code">{{ bt.label }}</mat-option>
+            <mat-option *ngFor="let bt of selectBusinessTypes" [value]="bt">{{ bt.label }}</mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field class="col-12 col-lg-4" appearance="outline">
           <mat-label>Motif de l'ordre</mat-label>
           <mat-select formControlName="reasonCode">
-            <mat-option *ngFor="let rc of selectReasonCodes" [value]="rc.code">{{ rc.label }}</mat-option>
+            <mat-option *ngFor="let rc of selectReasonCodes" [value]="rc">{{ rc.label }}</mat-option>
           </mat-select>
         </mat-form-field>
 
@@ -159,17 +159,17 @@
 
       <div class="col-12 col-lg-4 my-2">
         Type d'ordre :<br/>
-        <span class="fw-bold">{{ form.value.messageType }}</span>
+        <span class="fw-bold">{{ form.value.messageType?.label }} ({{ form.value.messageType?.code }})</span>
       </div>
 
       <div class="col-12 col-lg-4 my-2">
         Nature de l'écrêtement :<br/>
-        <span class="fw-bold">{{ form.value.businessType }}</span>
+        <span class="fw-bold">{{ form.value.businessType?.label }} ({{ form.value.businessType?.code }})</span>
       </div>
 
       <div class="col-12 col-lg-4 my-2">
         Motif de l'ordre :<br/>
-        <span class="fw-bold">{{ form.value.reasonCode }}</span>
+        <span class="fw-bold">{{ form.value.reasonCode?.label }} ({{ form.value.reasonCode?.code }})</span>
       </div>
 
       <div class="col-12 text-center mt-4">

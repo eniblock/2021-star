@@ -92,7 +92,7 @@
 
 
         <div class="col-12 text-center mt-3">
-          <button mat-raised-button color="primary" (click)="toResume(stepperRef)">Suivant</button>
+          <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="toResume(stepperRef)">Suivant</button>
         </div>
 
       </div>

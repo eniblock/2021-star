@@ -31,8 +31,8 @@ export const getReasonCodes = (businessTypeCode: string): CodeLabel[] => {
 export const messageTypes = {
   A98: 'Aléa - ordre TVC simple',
   A54: 'Ordre Tor',
-  A97: 'Ordre TVC de modulation',
-  B23: "Offres à activer (Mécanisme d'ajustement)",
+  //A97: 'Ordre TVC de modulation',
+  //B23: "Offres à activer (Mécanisme d'ajustement)",
 };
 
 export const businessTypes = {

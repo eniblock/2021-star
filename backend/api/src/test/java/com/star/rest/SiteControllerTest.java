@@ -30,7 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 class SiteControllerTest extends AbstractIntTest {
 
-    private static final String URL = SiteController.PATH;
+    private static final String URL_SEARCH = SiteController.PATH;
+    private static final String URL_CREATE = SiteController.PATH+"/create";
+    private static final String URL_UPDATE = SiteController.PATH+"/update";
 
     @Value("classpath:/site/site-without-extension")
     private Resource siteWithoutExtension;
@@ -57,7 +59,7 @@ class SiteControllerTest extends AbstractIntTest {
         // WHEN
 
         // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_CREATE)
                 .file(file))
                 .andExpect(status().isConflict());
     }
@@ -71,7 +73,7 @@ class SiteControllerTest extends AbstractIntTest {
         // WHEN
 
         // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_CREATE)
                 .file(file))
                 .andExpect(status().isConflict());
     }
@@ -90,9 +92,47 @@ class SiteControllerTest extends AbstractIntTest {
         // WHEN
 
         // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_CREATE)
                 .file(file))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void updateSiteTestKo() throws Exception {
+        // GIVEN
+        MockMultipartFile file = new MockMultipartFile("file", "site-ok.csv",
+                "text/plain", toByteArray(siteOk.getURL()));
+        when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
+        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PRM30001510803649")).thenReturn("false".getBytes());
+        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
+                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
+        when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
+
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_UPDATE)
+                .file(file))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void updateSiteTest() throws Exception {
+        // GIVEN
+        MockMultipartFile file = new MockMultipartFile("file", "site-ok.csv",
+                "text/plain", toByteArray(siteOk.getURL()));
+        when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
+        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PRM30001510803649")).thenReturn("true".getBytes());
+        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
+                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
+        when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
+
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_UPDATE)
+                .file(file))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -102,7 +142,7 @@ class SiteControllerTest extends AbstractIntTest {
         // WHEN
 
         // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.get(URL))
+        this.mockMvc.perform(MockMvcRequestBuilders.get(URL_CREATE))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -117,7 +157,7 @@ class SiteControllerTest extends AbstractIntTest {
         // WHEN
 
         // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.get(URL + "?order=technologyType"))
+        this.mockMvc.perform(MockMvcRequestBuilders.get(URL_SEARCH + "?order=technologyType"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookmark").value(siteResponse.getBookmark()))
                 .andExpect(jsonPath("$.totalElements").value(siteResponse.getFetchedRecordsCount()))

@@ -72,22 +72,7 @@ public class SiteService {
      * @throws IOException
      */
     public ImportSiteResult importSite(String fileName, Reader streamReader, InstanceEnum instance) throws IOException, TechnicalException, BusinessException {
-
-        importUtilsService.checkFile(fileName, streamReader, FileExtensionEnum.CSV.getValue());
-        ImportSiteResult importSiteResult = new ImportSiteResult();
-        CSVParser csvParser = importUtilsService.getCsvParser(streamReader);
-        // Vérifier le header du fichier
-        importUtilsService.validateHeader(fileName, csvParser, new Site(), importSiteResult);
-        if (isNotEmpty(importSiteResult.getErrors())) {
-            importSiteResult.setDatas(emptyList());
-            return importSiteResult;
-        }
-        // Vérifier le contenu du fichier
-        this.validateBody(fileName, csvParser, importSiteResult, instance);
-        if (isNotEmpty(importSiteResult.getErrors())) {
-            importSiteResult.setDatas(emptyList());
-            return importSiteResult;
-        }
+        ImportSiteResult importSiteResult = checkFile(fileName, streamReader, instance);
         // Vérifier que les ids n'existent pas déjà
         List<String> meteringPointMrids = importSiteResult.getDatas().stream().map(Site::getMeteringPointMrid).collect(toList());
         for (String meteringPointMrid : meteringPointMrids) {
@@ -112,6 +97,44 @@ public class SiteService {
             }
         });
         importSiteResult.setDatas(siteRepository.saveSites(importSiteResult.getDatas()));
+        return importSiteResult;
+    }
+
+
+    /**
+     * Permet d'importer les sites selon les informations contenues dans le fichier CSV passé en paramètre.
+     *
+     * @param fileName     nom du fichier CSV à traiter.
+     * @param streamReader le contenu du fichier CSV à traiter, en tant qu'objet {@link Reader}
+     * @return {@link ImportSiteResult} contenant les sites importés et les éventuelles erreurs des lignes ne respectant pas le format.
+     * @throws IOException
+     */
+    public ImportSiteResult updateSite(String fileName, Reader streamReader, InstanceEnum instance) throws IOException, TechnicalException, BusinessException {
+        ImportSiteResult importSiteResult = checkFile(fileName, streamReader, instance);
+        // Vérifier que les ids existent pas déjà
+        List<String> meteringPointMrids = importSiteResult.getDatas().stream().map(Site::getMeteringPointMrid).collect(toList());
+        for (String meteringPointMrid : meteringPointMrids) {
+            if (!siteRepository.existSite(meteringPointMrid)) {
+                importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.unknown.error",
+                        new String[]{meteringPointMrid}, null));
+            }
+        }
+        if (isNotEmpty(importSiteResult.getErrors())) {
+            importSiteResult.setDatas(emptyList());
+            return importSiteResult;
+        }
+        if (CollectionUtils.isEmpty(importSiteResult.getErrors()) && CollectionUtils.isEmpty(importSiteResult.getDatas())) {
+            throw new IllegalArgumentException(messageSource.getMessage("import.file.data.not.empty", null, null));
+        }
+        Map<String, String> mapProducers = producerRepository.getProducers().stream()
+                .collect(Collectors.toMap(Producer::getProducerMarketParticipantMrid, Producer::getProducerMarketParticipantName));
+        importSiteResult.getDatas().forEach(site -> {
+            site.setProducerMarketParticipantName(mapProducers.get(site.getProducerMarketParticipantMrid()));
+            if (site.getTechnologyType() != null) {
+                site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getLabel());
+            }
+        });
+        importSiteResult.setDatas(siteRepository.updateSites(importSiteResult.getDatas()));
         return importSiteResult;
     }
 
@@ -184,6 +207,25 @@ public class SiteService {
             List<String> technologies = siteCrteria.getTechnologyType().stream().map(TechnologyTypeEnum::getLabel).collect(toList());
             selectors.add(Expression.in("technologyType", StringUtils.join(technologies, "\",\"")));
         }
+    }
+
+    private ImportSiteResult checkFile(String fileName, Reader streamReader, InstanceEnum instance) throws IOException {
+        importUtilsService.checkFile(fileName, streamReader, FileExtensionEnum.CSV.getValue());
+        ImportSiteResult importSiteResult = new ImportSiteResult();
+        CSVParser csvParser = importUtilsService.getCsvParser(streamReader);
+        // Vérifier le header du fichier
+        importUtilsService.validateHeader(fileName, csvParser, new Site(), importSiteResult);
+        if (isNotEmpty(importSiteResult.getErrors())) {
+            importSiteResult.setDatas(emptyList());
+            return importSiteResult;
+        }
+        // Vérifier le contenu du fichier
+        this.validateBody(fileName, csvParser, importSiteResult, instance);
+        if (isNotEmpty(importSiteResult.getErrors())) {
+            importSiteResult.setDatas(emptyList());
+            return importSiteResult;
+        }
+        return importSiteResult;
     }
 
     private void validateBody(String fileName, CSVParser csvParser, ImportResult importResult, InstanceEnum instance) {

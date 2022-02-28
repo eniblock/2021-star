@@ -111,7 +111,7 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    void testImportSiteSansHeader() throws IOException, TechnicalException, ContractException {
+    void testImportSiteSansHeader() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "site-sans-header.csv";
 
@@ -126,7 +126,7 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    void testSiteHeaderInvalide() throws IOException, TechnicalException, ContractException {
+    void testSiteHeaderInvalide() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "site-header-invalide.csv";
 
@@ -153,7 +153,7 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    void testImportSiteAvecDonneesKO() throws IOException, TechnicalException, ContractException {
+    void testImportSiteAvecDonneesKO() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "site-donnees-ko.csv";
 
@@ -165,7 +165,7 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    void testImportSiteAvecTechnologyTypeKO() throws IOException, TechnicalException, ContractException {
+    void testImportSiteAvecTechnologyTypeKO() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "site-technology-type-ko.csv";
 

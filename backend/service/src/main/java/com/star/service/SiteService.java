@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 
 import static com.star.enums.DocTypeEnum.SITE;
 import static com.star.enums.InstanceEnum.DSO;
+import static com.star.enums.InstanceEnum.TSO;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -200,7 +201,7 @@ public class SiteService {
                 importUtilsService.handleConstructorException(fileName, importResult, lineNumber, illegalArgumentException);
             }
             List<String> errors = importUtilsService.validateRecord(fileName, csvRecord, site);
-            if (DSO.equals(instance) && site != null) {
+            if (TSO.equals(instance) && site != null) {
                 if (isBlank(site.getMarketEvaluationPointMrid())) {
                     errors.add(messageSource.getMessage("import.site.marketEvaluationPointMrid.line.error",
                             new String[]{fileName, String.valueOf(lineNumber)}, null));

@@ -115,7 +115,6 @@ public class SiteService {
         return importSiteResult;
     }
 
-
     public SiteResponse findSite(SiteCrteria siteCrteria, String bookmark, Pageable pageable) throws BusinessException, TechnicalException {
         boolean useIndex = false;
         Sort.Order producerMarketParticipantNameOrder = pageable.getSort().getOrderFor("producerMarketParticipantName");
@@ -134,19 +133,18 @@ public class SiteService {
                 queryBuilder = new QueryBuilder(Operation.and(selectors.toArray(new Selector[]{})));
                 break;
         }
-//        TODO : à réactiver lorsque les indexes seront consommées sur la blockchain
-//        if (technologyTypeOrder != null) {
-//            useIndex = true;
-//            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(technologyTypeOrder.getProperty()));
-//            queryBuilder.useIndex(SITE.getIndexName(), "indexTechnologyType");
-//        } else if (producerMarketParticipantNameOrder != null) {
-//            useIndex = true;
-//            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(producerMarketParticipantNameOrder.getProperty()));
-//            queryBuilder.useIndex(SITE.getIndexName(), "indexProducerMarketParticipantName");
-//        }
-//        if (!useIndex) {
-//            queryBuilder.useIndex(SITE.getIndexName());
-//        }
+        if (technologyTypeOrder != null) {
+            useIndex = true;
+            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(technologyTypeOrder.getProperty()));
+            queryBuilder.useIndex(SITE.getIndexName(), "indexTechnologyType");
+        } else if (producerMarketParticipantNameOrder != null) {
+            useIndex = true;
+            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(producerMarketParticipantNameOrder.getProperty()));
+            queryBuilder.useIndex(SITE.getIndexName(), "indexProducerMarketParticipantName");
+        }
+        if (!useIndex) {
+            queryBuilder.useIndex(SITE.getIndexName());
+        }
         String query = queryBuilder.build();
         log.info("Transaction query: " + query);
         return siteRepository.findSiteByQuery(query, String.valueOf(pageable.getPageSize()), bookmark);

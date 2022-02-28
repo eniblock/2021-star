@@ -1,72 +1,139 @@
-export const getMessagesTypes = (): CodeLabel[] => {
-  return Object.entries(messageTypes).map(([type, value]) =>
-    toCodeLabel(type, value)
+export interface Motif {
+  code: string;
+  label: string;
+  sousMotifCodes: string[];
+}
+
+export const messageTypes: Motif[] = [
+  {
+    code: 'A98',
+    label: 'Aléa - ordre TVC simple',
+    sousMotifCodes: ['C55', 'A53'],
+  },
+  {
+    code: 'A54',
+    label: 'Ordre Tor',
+    sousMotifCodes: ['C55', 'A53'],
+  },
+  //A97: 'Ordre TVC de modulation',
+  //B23: "Offres à activer (Mécanisme d'ajustement)",
+];
+
+export const businessTypes: Motif[] = [
+  {
+    code: 'C55',
+    label: 'Ordres TC ou TVC',
+    sousMotifCodes: ['A70', 'A98', 'Z71', 'Z72', 'Z73', 'Z74', 'Z91', 'Z92'],
+  },
+  {
+    code: 'A53',
+    label: 'Travaux Programmés',
+    sousMotifCodes: ['ZB1', 'ZB2', 'ZB3', 'ZB4', 'ZB5', 'ZB6'],
+  },
+];
+
+export const reasonCodes: Motif[] = [
+  {
+    code: 'A70',
+    label: 'Réseau complet',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'A98',
+    label: 'Aléa - ordre TVC simple',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'Z71',
+    label: 'Réseau complet IST min',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'Z72',
+    label: 'Réseau complet ORA',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'Z73',
+    label: 'Réseau complet DIM Optimal',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'Z74',
+    label: 'Réseau complet Contrat Amont',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'Z91',
+    label: 'Aléa Réseau Evacuation',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'Z92',
+    label: 'Aléa Réseau Amont',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'ZB1',
+    label: 'Travaux Programmés CART',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'ZB2',
+    label: 'Travaux Programmés CART-RU',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'ZB3',
+    label: 'Travaux Programmés CART-RII',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'ZB4',
+    label: 'Travaux Programmés CART-RVU',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'ZB5',
+    label: 'Travaux Programmés CART Contrat Amont',
+    sousMotifCodes: [],
+  },
+  {
+    code: 'ZB6',
+    label: 'Travaux Programmés CART GP',
+    sousMotifCodes: [],
+  },
+];
+
+export const getMessageTypeByCode = (code: string): Motif => {
+  const t = messageTypes.filter((mt) => mt.code == code);
+  return t[0];
+};
+
+export const getBusinessTypeByCode = (code: string): Motif => {
+  const t = businessTypes.filter((mt) => mt.code == code);
+  return t[0];
+};
+
+export const getreasonCodeByCode = (code: string): Motif => {
+  const t = reasonCodes.filter((mt) => mt.code == code);
+  return t[0];
+};
+
+export const getAllBusinessTypesByMessageTypeCode = (
+  messageTypeCode: string
+): Motif[] => {
+  const messageType = getMessageTypeByCode(messageTypeCode);
+  return businessTypes.filter((bt) =>
+    messageType.sousMotifCodes.includes(bt.code)
   );
 };
 
-export const getBusinessTypes = (messageTypeCode: string): CodeLabel[] => {
-  if (messageTypeCode == 'A98' || messageTypeCode == 'A54') {
-    return Object.entries(businessTypes).map(([type, value]) =>
-      toCodeLabel(type, value)
-    );
-  } else {
-    return [];
-  }
+export const getAllReasonCodeByBusinessTypeCode = (
+  businessTypeCode: string
+): Motif[] => {
+  const businessType = getBusinessTypeByCode(businessTypeCode);
+  return reasonCodes.filter((rc) =>
+    businessType.sousMotifCodes.includes(rc.code)
+  );
 };
-
-export const getReasonCodes = (businessTypeCode: string): CodeLabel[] => {
-  if (businessTypeCode == 'C55') {
-    return Object.entries(reasonCodes_grp1).map(([type, value]) =>
-      toCodeLabel(type, value)
-    );
-  } else if (businessTypeCode == 'A53') {
-    return Object.entries(reasonCodes_grp2).map(([type, value]) =>
-      toCodeLabel(type, value)
-    );
-  } else {
-    return [];
-  }
-};
-
-export const messageTypes = {
-  A98: 'Aléa - ordre TVC simple',
-  A54: 'Ordre Tor',
-  //A97: 'Ordre TVC de modulation',
-  //B23: "Offres à activer (Mécanisme d'ajustement)",
-};
-
-export const businessTypes = {
-  C55: 'Ordres TC ou TVC',
-  A53: 'Travaux Programmés',
-};
-
-export const reasonCodes_grp1 = {
-  A70: 'Réseau complet',
-  A98: 'Aléa - ordre TVC simple',
-  Z71: 'Réseau complet IST min',
-  Z72: 'Réseau complet ORA',
-  Z73: 'Réseau complet DIM Optimal',
-  Z74: 'Réseau complet Contrat Amont',
-  Z91: 'Aléa Réseau Evacuation',
-  Z92: 'Aléa Réseau Amont',
-};
-
-export const reasonCodes_grp2 = {
-  ZB1: 'Travaux Programmés CART',
-  ZB2: 'Travaux Programmés CART-RU',
-  ZB3: 'Travaux Programmés CART-RII',
-  ZB4: 'Travaux Programmés CART-RVU',
-  ZB5: 'Travaux Programmés CART Contrat Amont',
-  ZB6: 'Travaux Programmés CART GP',
-};
-
-export interface CodeLabel {
-  code: string;
-  label: string;
-  subEntities?: CodeLabel[];
-}
-
-const toCodeLabel = (key: any, value: any): CodeLabel => ({
-  code: key,
-  label: value,
-});

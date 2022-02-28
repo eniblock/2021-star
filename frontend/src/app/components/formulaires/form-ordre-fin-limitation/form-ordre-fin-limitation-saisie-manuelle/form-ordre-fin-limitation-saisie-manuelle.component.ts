@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { DateHelper } from 'src/app/helpers/date.helper';
 import {
-  CodeLabel,
-  getMessagesTypes,
-  getBusinessTypes,
-  getReasonCodes,
+  getAllBusinessTypesByMessageTypeCode,
+  getAllReasonCodeByBusinessTypeCode,
+  messageTypes,
+  Motif,
 } from 'src/app/models/Motifs';
 import { OrdreLimitationService } from 'src/app/services/api/ordre-limitation.service';
 
@@ -38,9 +38,9 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
 
   endCreatedDateTime: Date = new Date();
 
-  selectMessageTypes: CodeLabel[] = getMessagesTypes();
-  selectBusinessTypes: CodeLabel[] | null = null;
-  selectReasonCodes: CodeLabel[] | null = null;
+  selectMessageTypes: Motif[] = messageTypes;
+  selectBusinessTypes: Motif[] | null = null;
+  selectReasonCodes: Motif[] | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -92,23 +92,21 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
   }
 
   selectionMessageType() {
-    this.selectBusinessTypes = getBusinessTypes(this.form.value.messageType);
+    this.selectBusinessTypes = getAllBusinessTypesByMessageTypeCode(
+      this.form.value.messageType
+    );
     this.form.get('businessType')?.setValue('');
-    if (
-      this.selectBusinessTypes != null &&
-      this.selectBusinessTypes.length > 0
-    ) {
-      this.form.get('businessType')?.enable();
-    } else {
-      this.form.get('businessType')?.disable();
-    }
+    this.form.get('businessType')?.enable();
+
     this.selectReasonCodes = null;
     this.form.get('reasonCode')?.setValue('');
     this.form.get('reasonCode')?.disable();
   }
 
   selectionBusinessType() {
-    this.selectReasonCodes = getReasonCodes(this.form.value.businessType);
+    this.selectReasonCodes = getAllReasonCodeByBusinessTypeCode(
+      this.form.value.businessType
+    );
     this.form.get('reasonCode')?.setValue('');
     this.form.get('reasonCode')?.enable();
   }

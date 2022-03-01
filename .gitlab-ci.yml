@@ -104,6 +104,7 @@ helm:
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
+      --set "peer.chaincodes[0].image.tag=$star_version"
     # star
     - helm dependency update ./helm/star
     - helm upgrade --install --wait --timeout 8m

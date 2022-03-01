@@ -93,6 +93,7 @@ helm:
     - if [ -z "$CI_COMMIT_TAG" ]; then star_version=$star_version-$CI_COMMIT_REF_SLUG; fi
     - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
     - helm repo update
+    - kubectl delete -n ${CI_ENVIRONMENT_NAME} job --all
     # peers
     - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       peer1 hlf-k8s/hlf-peer

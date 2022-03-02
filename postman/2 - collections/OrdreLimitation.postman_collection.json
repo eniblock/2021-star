@@ -1,0 +1,38 @@
+{
+	"info": {
+		"_postman_id": "2f06c17f-9996-49d4-b925-b0cdc002800d",
+		"name": "OrdreLimitation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RTE - Post ordre Debut limitation JSON file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/ordreLimitations/debut/files",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"ordreLimitations",
+						"debut",
+						"files"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

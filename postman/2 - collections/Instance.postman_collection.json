@@ -1,0 +1,44 @@
+{
+	"info": {
+		"_postman_id": "ccfdadd0-bf1c-45c4-86c6-9be3f1b918ec",
+		"name": "Instance",
+		"description": "Instance Collection to get information about instance of the service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RTE - Get instance of the backend",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_rte}}/instance",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"instance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Get instance of the backend",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_enedis}}/instance",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"instance"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

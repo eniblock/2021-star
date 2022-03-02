@@ -18,7 +18,7 @@ export class OrdreRechercheReseauPipe implements PipeTransform {
   toString(value: OrdreRechercheReseau): string {
     switch (value) {
       case OrdreRechercheReseau.producerMarketParticipantName:
-        return 'Lieu de production';
+        return 'Nom du producteur';
       case OrdreRechercheReseau.technologyType:
         return 'Filière';
     }

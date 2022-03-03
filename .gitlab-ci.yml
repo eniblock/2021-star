@@ -9,7 +9,7 @@ variables:
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
   HLF_K8S_VERSION: 0.1.0-develop.31
 
-sonarcloud-check:
+sonarcloud-check-backend:
   stage: test
   image: maven:3.6.3-jdk-11
   cache:
@@ -19,6 +19,25 @@ sonarcloud-check:
   script:
     - cd backend
     - mvn verify sonar:sonar -Dsonar.projectKey=xdev-tech_star
+  only:
+    - merge_requests
+    - master
+    - develop
+    
+sonarcloud-check-frontend:
+  dependencies:
+    - test
+  stage: lint
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - cd frontend
+    - sonar-scanner -Dsonar.projectVersion=$(git tag --sort=creatordate --merged|grep '^v'|tail -1) -Dsonar.go.coverage.reportPaths=helper/coverage.out
   only:
     - merge_requests
     - master

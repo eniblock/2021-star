@@ -89,7 +89,7 @@ export class SiteController {
         }
         const systemOperatorAsBytes = await ctx.stub.getState(siteInput.systemOperatorMarketParticipantMrid);
         if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
-            throw new Error(`System Operator : ${siteInput.systemOperatorMarketParticipantMrid} does not exist for site creation`);
+            throw new Error(`System Operator : ${siteInput.systemOperatorMarketParticipantMrid} does not exist for site update`);
         }
         const producerAsBytes = await ctx.stub.getState(siteInput.producerMarketParticipantMrid);
         if (!producerAsBytes || producerAsBytes.length === 0) {

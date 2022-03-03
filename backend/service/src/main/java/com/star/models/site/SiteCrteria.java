@@ -1,5 +1,6 @@
 package com.star.models.site;
 
+import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +25,6 @@ public class SiteCrteria {
     private String producerMarketParticipantMrid;
     private String siteIecCode;
     private String meteringPointMrId;
+    private InstanceEnum instance;
     private List<TechnologyTypeEnum> technologyType;
 }

@@ -10,6 +10,9 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.substring;
+
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
@@ -29,7 +32,11 @@ public interface SiteMapper {
 
     @Named("mapTypeSiteForSite")
     default TypeSiteEnum mapTypeSiteForSite(Site site) {
-        return TypeSiteEnum.HTA;
+        if (equalsIgnoreCase(Site.CODE_SITE_HTA, substring(site.getMeteringPointMrid(), 0, 3))) {
+            return TypeSiteEnum.HTA;
+        } else {
+            return TypeSiteEnum.HTB;
+        }
     }
 
     @Named("mapIecCodeForSite")

@@ -1,6 +1,7 @@
 package com.star.service;
 
 import com.star.AbstractTest;
+import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.TechnicalException;
 import com.star.models.producer.Producer;
@@ -245,7 +246,7 @@ class SiteServiceTest extends AbstractTest {
     void testFindSite() throws IOException, TechnicalException, ContractException {
         // GIVEN
         String bookmark = "kBHIYBiy198";
-        SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test")
+        SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(TSO)
                 .meteringPointMrId("PLJGHVG17868").producerMarketParticipantMrid("PRODUCER_MR_ID")
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME")
                 .technologyType(Arrays.asList(TechnologyTypeEnum.EOLIEN)).build();

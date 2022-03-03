@@ -23,6 +23,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Site implements ImportCSV {
+    public static final String CODE_SITE_HTA = "PRM";
+    public static final String CODE_SITE_HTB_PDL = "PDL";
+    public static final String CODE_SITE_HTB_CART = "CART";
 
     @NotBlank(message = "Le champ systemOperatorMarketParticipantMrid est obligatoire")
     private String systemOperatorMarketParticipantMrid;

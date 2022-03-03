@@ -30,8 +30,6 @@ public class OrdreDebutLimitation implements ImportCSV {
     private String originAutomationRegisteredResourceMrid;
     @NotBlank(message = "Le champ registeredResourceMrid est obligatoire")
     private String registeredResourceMrid;
-    @NotBlank(message = "Le champ orderType est obligatoire")
-    private String orderType;
     private String orderValue;
     @ValueOfEnum(enumClass = MeasurementUnitTypeEnum.class, message = " must be any of MW/KW")
     private String measurementUnitName;

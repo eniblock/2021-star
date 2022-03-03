@@ -71,22 +71,28 @@
 
         <mat-form-field class="col-12 col-lg-4" appearance="outline">
           <mat-label>Type d'ordre</mat-label>
-          <input matInput placeholder="Type d'ordre" formControlName="messageType">
+          <mat-select formControlName="messageType" (selectionChange)="selectionMessageType()">
+            <mat-option *ngFor="let mt of selectMessageTypes" [value]="mt">{{ mt.label }}</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field class="col-12 col-lg-4" appearance="outline">
           <mat-label>Nature de l'écrêtement</mat-label>
-          <input matInput placeholder="Nature de l'écrêtement" formControlName="businessType">
+          <mat-select formControlName="businessType" (selectionChange)="selectionBusinessType()">
+            <mat-option *ngFor="let bt of selectBusinessTypes" [value]="bt">{{ bt.label }}</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field class="col-12 col-lg-4" appearance="outline">
           <mat-label>Motif de l'ordre</mat-label>
-          <input matInput formControlName="reasonCode">
+          <mat-select formControlName="reasonCode">
+            <mat-option *ngFor="let rc of selectReasonCodes" [value]="rc">{{ rc.label }}</mat-option>
+          </mat-select>
         </mat-form-field>
 
 
         <div class="col-12 text-center mt-3">
-          <button mat-raised-button color="primary" (click)="toResume(stepperRef)">Suivant</button>
+          <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="toResume(stepperRef)">Suivant</button>
         </div>
 
       </div>
@@ -152,18 +158,18 @@
       </div>
 
       <div class="col-12 col-lg-4 my-2">
-        Type d'ordre :
-        <span class="fw-bold">{{ form.value.messageType }}</span>
+        Type d'ordre :<br/>
+        <span class="fw-bold">{{ form.value.messageType?.label }} ({{ form.value.messageType?.code }})</span>
       </div>
 
       <div class="col-12 col-lg-4 my-2">
-        Nature de l'écrêtement :
-        <span class="fw-bold">{{ form.value.businessType }}</span>
+        Nature de l'écrêtement :<br/>
+        <span class="fw-bold">{{ form.value.businessType?.label }} ({{ form.value.businessType?.code }})</span>
       </div>
 
       <div class="col-12 col-lg-4 my-2">
-        Motif de l'ordre :
-        <span class="fw-bold">{{ form.value.reasonCode }}</span>
+        Motif de l'ordre :<br/>
+        <span class="fw-bold">{{ form.value.reasonCode?.label }} ({{ form.value.reasonCode?.code }})</span>
       </div>
 
       <div class="col-12 text-center mt-4">

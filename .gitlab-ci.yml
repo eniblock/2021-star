@@ -27,7 +27,7 @@ sonarcloud-check-backend:
 sonarcloud-check-frontend:
   dependencies:
     - test
-  stage: lint
+  stage: test
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]

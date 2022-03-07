@@ -21,12 +21,41 @@
 					]
 				},
 				"url": {
-					"raw": "{{base_url_rte}}/site",
+					"raw": "{{base_url_rte}}/site/create",
 					"host": [
 						"{{base_url_rte}}"
 					],
 					"path": [
-						"site"
+						"site",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Update a Site CSV file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/site/update",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"site",
+						"update"
 					]
 				}
 			},
@@ -45,7 +74,7 @@
 					"formdata": []
 				},
 				"url": {
-					"raw": "{{base_url_rte}}/site?page&pageSize&order&bookmark&technologyType&producerMarketParticipantMrid&producerMarketParticipantName&siteName&substationName&substationMrid&siteIecCode&meteringPointMrId",
+					"raw": "{{base_url_rte}}/site?page&pageSize&order=&bookmark&technologyType&producerMarketParticipantMrid&producerMarketParticipantName&siteName&substationName&substationMrid&siteIecCode&meteringPointMrId",
 					"host": [
 						"{{base_url_rte}}"
 					],
@@ -63,7 +92,7 @@
 						},
 						{
 							"key": "order",
-							"value": null,
+							"value": "",
 							"description": "producerMarketParticipantName ou technologyType"
 						},
 						{
@@ -124,12 +153,41 @@
 					]
 				},
 				"url": {
-					"raw": "{{base_url_enedis}}/site",
+					"raw": "{{base_url_enedis}}/site/create",
 					"host": [
 						"{{base_url_enedis}}"
 					],
 					"path": [
-						"site"
+						"site",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Update a Site CSV file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/site/update",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"site",
+						"update"
 					]
 				}
 			},
@@ -148,7 +206,7 @@
 					"formdata": []
 				},
 				"url": {
-					"raw": "{{base_url_enedis}}/site?page&pageSize&order&bookmark&technologyType&producerMarketParticipantMrid&producerMarketParticipantName&siteName&substationName&substationMrid&siteIecCode&meteringPointMrId",
+					"raw": "{{base_url_enedis}}/site?page&pageSize&order=&bookmark&technologyType&producerMarketParticipantMrid&producerMarketParticipantName&siteName&substationName&substationMrid&siteIecCode&meteringPointMrId",
 					"host": [
 						"{{base_url_enedis}}"
 					],
@@ -166,7 +224,7 @@
 						},
 						{
 							"key": "order",
-							"value": null,
+							"value": "",
 							"description": "producerMarketParticipantName ou technologyType"
 						},
 						{

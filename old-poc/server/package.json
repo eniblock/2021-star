@@ -10,11 +10,11 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@nestjs/common": "6.10.11",
+    "@nestjs/common": "7.4.3",
     "@nestjs/core": "6.10.11",
     "@nestjs/swagger": "4.0.9",
     "bcryptjs": "2.4.3",
-    "axios": "^0.19.0",
+    "axios": "^0.20.0",
     "class-transformer": "0.2.3",
     "class-validator": "0.11.0",
     "csvtojson": "2.0.10",

@@ -1,5 +1,4 @@
 FROM node:16-alpine
-COPY --from=registry.gitlab.com/xdev-tech/xdev-enterprise-business-network/hlf-k8s/ccid:develop /ccid /ccid
 
 WORKDIR /app
 
@@ -8,6 +7,8 @@ RUN npm ci
 
 COPY . .
 RUN npm run build
+
+COPY META-INF /META-INF
 
 EXPOSE 9999
 

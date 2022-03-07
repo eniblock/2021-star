@@ -1,0 +1,112 @@
+{
+	"info": {
+		"_postman_id": "ca3c97c2-aeab-43e6-9f59-00f224bcbfa6",
+		"name": "MarketParticipant",
+		"description": "Instance Collection to POST/GET information about market participant",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RTE - Post market participant CSV file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/participant",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"participant"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Get list of market participant",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/participant",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"participant"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Post market participant CSV file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/participant",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"participant"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Get list of market participant",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/participant",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"participant"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

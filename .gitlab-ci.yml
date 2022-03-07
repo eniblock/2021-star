@@ -7,7 +7,7 @@ stages:
 variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-  HLF_K8S_VERSION: 0.1.0-develop.24
+  HLF_K8S_VERSION: 0.1.0-develop.31
 
 sonarcloud-check:
   stage: test
@@ -93,30 +93,20 @@ helm:
     - if [ -z "$CI_COMMIT_TAG" ]; then star_version=$star_version-$CI_COMMIT_REF_SLUG; fi
     - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
     - helm repo update
-    # chaincode
-    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
-      peer1-chaincode hlf-k8s/hlf-chaincode
-      -n ${CI_ENVIRONMENT_NAME}
-      --post-renderer kbldpp
-      --values helm/hlf-chaincode/values-${CI_ENVIRONMENT_NAME}.yaml
-      --set image.tag=$star_version
-    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
-      peer2-chaincode hlf-k8s/hlf-chaincode
-      -n ${CI_ENVIRONMENT_NAME}
-      --post-renderer kbldpp
-      --values helm/hlf-chaincode/values-${CI_ENVIRONMENT_NAME}.yaml
-      --set image.tag=$star_version
+    - kubectl delete -n ${CI_ENVIRONMENT_NAME} job --all
     # peers
     - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       peer1 hlf-k8s/hlf-peer
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1.yaml
+      --set "peer.chaincodes[0].image.tag=$star_version"
     - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       peer2 hlf-k8s/hlf-peer
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
+      --set "peer.chaincodes[0].image.tag=$star_version"
     # star
     - helm dependency update ./helm/star
     - helm upgrade --install --wait --timeout 8m

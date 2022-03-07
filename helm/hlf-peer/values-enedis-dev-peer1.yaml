@@ -20,10 +20,16 @@ peer:
     externalEndpoint: peer1.enedis.localhost:443
   chaincodes:
     - name: star
-      address: peer1-chaincode-hlf-chaincode:7777
       label: star
       orderer_address: orderer1.orderer.localhost:443
       channel: star
+      image:
+        repository: registry.gitlab.com/xdev-tech/star/chaincode
+      command:
+        - sh
+        - -c
+        - '/app/node_modules/.bin/fabric-chaincode-node server --chaincode-address $CHAINCODE_ADDRESS --chaincode-id $CHAINCODE_ID'
+      metaInf: true
 
 # Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
 secrets:

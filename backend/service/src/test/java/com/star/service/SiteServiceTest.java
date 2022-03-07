@@ -30,7 +30,10 @@ import java.util.List;
 import static com.star.enums.InstanceEnum.TSO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -111,7 +114,7 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    void testImportSiteSansHeader() throws IOException, TechnicalException, ContractException {
+    void testImportSiteSansHeader() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "site-sans-header.csv";
 
@@ -126,7 +129,7 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    void testSiteHeaderInvalide() throws IOException, TechnicalException, ContractException {
+    void testSiteHeaderInvalide() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "site-header-invalide.csv";
 
@@ -153,7 +156,7 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    void testImportSiteAvecDonneesKO() throws IOException, TechnicalException, ContractException {
+    void testImportSiteAvecDonneesKO() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "site-donnees-ko.csv";
 
@@ -165,7 +168,7 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    void testImportSiteAvecTechnologyTypeKO() throws IOException, TechnicalException, ContractException {
+    void testImportSiteAvecTechnologyTypeKO() throws IOException, TechnicalException {
         // GIVEN
         String fileName = "site-technology-type-ko.csv";
 
@@ -189,8 +192,8 @@ class SiteServiceTest extends AbstractTest {
         siteService.importSite(fileName, csvSiteOk, TSO);
 
         // THEN
-        Mockito.verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
-        Mockito.verify(siteRepository, Mockito.times(1)).saveSites(siteArgumentCaptor.capture());
+        verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
+        verify(siteRepository, Mockito.times(1)).saveSites(siteArgumentCaptor.capture());
         assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PRM30001510803649");
         assertThat(siteArgumentCaptor.getValue()).hasSize(1);
         List<Site> sites = siteArgumentCaptor.getValue();
@@ -199,6 +202,44 @@ class SiteServiceTest extends AbstractTest {
 
     }
 
+    @Test
+    void testUpdateUnknownSite() throws IOException, TechnicalException, ContractException {
+        // GIVEN
+        String fileName = "site-ok.csv";
+        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
+                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
+        Mockito.when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
+        Mockito.when(siteRepository.existSite(any())).thenReturn(false);
+
+        // WHEN
+        siteService.updateSite(fileName, csvSiteOk, TSO);
+
+        // THEN
+        verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
+        assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PRM30001510803649");
+        verify(siteRepository, never()).updateSites(any());
+    }
+
+    @Test
+    void testUpdateExistsSite() throws IOException, TechnicalException {
+        // GIVEN
+        String fileName = "site-ok.csv";
+        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
+                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
+        Mockito.when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
+        Mockito.when(siteRepository.existSite(any())).thenReturn(true);
+
+        // WHEN
+        siteService.updateSite(fileName, csvSiteOk, TSO);
+
+        // THEN
+        verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
+        assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PRM30001510803649");
+        verify(siteRepository, Mockito.times(1)).updateSites(siteArgumentCaptor.capture());
+        List<Site> sites = siteArgumentCaptor.getValue();
+        assertThat(sites.get(0)).extracting("systemOperatorMarketParticipantMrid", "meteringPointMrid", "producerMarketParticipantMrid", "technologyType", "systemOperatorCustomerServiceName")
+                .containsExactly("17V0000009927464", "PRM30001510803649", "17Y100A101R0629X", "Eolien", "ARD Ouest");
+    }
 
     @Test
     void testFindSite() throws IOException, TechnicalException, ContractException {
@@ -218,7 +259,7 @@ class SiteServiceTest extends AbstractTest {
         SiteResponse siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
 
         // THEN
-        Mockito.verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());
+        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());
 
         assertThat(pageSizeCaptor.getValue()).isEqualTo(String.valueOf(pageRequest.getPageSize()));
         assertThat(bookmarkCaptor.getValue()).isEqualTo(bookmark);

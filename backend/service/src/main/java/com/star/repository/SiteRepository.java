@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class SiteRepository {
     public static final String CREATE_SITE = "CreateSite";
+    public static final String UPDATE_SITE = "UpdateSite";
     public static final String SITE_EXISTS = "SiteExists";
     public static final String GET_SITE_WITH_PAGINATION = "GetSiteWithPagination";
 
@@ -45,10 +46,23 @@ public class SiteRepository {
             return Collections.emptyList();
         }
         log.info("Sauvegarde des sites : {}", sites);
+        return writeSitesToBc(sites, CREATE_SITE);
+    }
+
+
+    public List<Site> updateSites(List<Site> sites) throws TechnicalException, BusinessException {
+        if (CollectionUtils.isEmpty(sites)) {
+            return Collections.emptyList();
+        }
+        log.info("Modification des sites : {}", sites);
+        return writeSitesToBc(sites, UPDATE_SITE);
+    }
+
+    private List<Site> writeSitesToBc(List<Site> sites, String bcApiName) throws TechnicalException {
         for (Site site : sites) {
             if (site != null) {
                 try {
-                    contract.submitTransaction(CREATE_SITE, objectMapper.writeValueAsString(site));
+                    contract.submitTransaction(bcApiName, objectMapper.writeValueAsString(site));
                 } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
                     throw new TechnicalException("Erreur technique lors de création du site ", exception);
                 } catch (ContractException contractException) {

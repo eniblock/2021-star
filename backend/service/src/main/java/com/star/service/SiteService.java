@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.star.enums.DocTypeEnum.SITE;
-import static com.star.enums.InstanceEnum.DSO;
 import static com.star.enums.InstanceEnum.TSO;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -206,6 +205,22 @@ public class SiteService {
         if (isNotEmpty(siteCrteria.getTechnologyType())) {
             List<String> technologies = siteCrteria.getTechnologyType().stream().map(TechnologyTypeEnum::getLabel).collect(toList());
             selectors.add(Expression.in("technologyType", StringUtils.join(technologies, "\",\"")));
+        }
+        switch (siteCrteria.getInstance()) {
+            case DSO: // Site HTA (Enedis)
+                selectors.add(Expression.regex("meteringPointMrid", "(?i)("+ Site.CODE_SITE_HTA +")+"));
+                break;
+            case TSO: // Site HBT (RTE)
+                selectors.add(Operation.or(
+                        Expression.regex("meteringPointMrid", "(?i)("+ Site.CODE_SITE_HTB_PDL +")+"),
+                        Expression.regex("meteringPointMrid", "(?i)("+ Site.CODE_SITE_HTB_CART +")+")
+                        ));
+                break;
+            case PRODUCER:
+//                TODO : Il faut récupérer producerMarketParticipantMrid du producer connecté et filtré les sites avec ce producerMarketParticipantMrid.
+                break;
+            default:
+                break;
         }
     }
 

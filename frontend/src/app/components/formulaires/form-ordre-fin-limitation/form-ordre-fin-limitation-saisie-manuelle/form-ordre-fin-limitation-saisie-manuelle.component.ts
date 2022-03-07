@@ -2,6 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { DateHelper } from 'src/app/helpers/date.helper';
+import {
+  getAllBusinessTypesByMessageTypeCode,
+  getAllReasonCodeByBusinessTypeCode,
+  messageTypes,
+  Motif,
+} from 'src/app/models/Motifs';
 import { OrdreLimitationService } from 'src/app/services/api/ordre-limitation.service';
 
 @Component({
@@ -26,11 +32,15 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
       ],
     ],
     messageType: ['', Validators.required],
-    businessType: ['', Validators.required],
-    reasonCode: ['', Validators.required],
+    businessType: [{ value: '', disabled: true }, Validators.required],
+    reasonCode: [{ value: '', disabled: true }, Validators.required],
   });
 
   endCreatedDateTime: Date = new Date();
+
+  selectMessageTypes: Motif[] = messageTypes;
+  selectBusinessTypes: Motif[] | null = null;
+  selectReasonCodes: Motif[] | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,6 +61,9 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
     const form = {
       ...this.form.value,
       endCreatedDateTime: this.endCreatedDateTime,
+      messageType: this.form.value.messageType.code,
+      businessType: this.form.value.businessType.code,
+      reasonCode: this.form.value.reasonCode.code,
     };
 
     delete form.timestampDate;
@@ -79,5 +92,25 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
       control.markAsUntouched();
     });
     */
+  }
+
+  selectionMessageType() {
+    this.selectBusinessTypes = getAllBusinessTypesByMessageTypeCode(
+      this.form.value.messageType.code
+    );
+    this.form.get('businessType')?.setValue('');
+    this.form.get('businessType')?.enable();
+
+    this.selectReasonCodes = null;
+    this.form.get('reasonCode')?.setValue('');
+    this.form.get('reasonCode')?.disable();
+  }
+
+  selectionBusinessType() {
+    this.selectReasonCodes = getAllReasonCodeByBusinessTypeCode(
+      this.form.value.businessType.code
+    );
+    this.form.get('reasonCode')?.setValue('');
+    this.form.get('reasonCode')?.enable();
   }
 }

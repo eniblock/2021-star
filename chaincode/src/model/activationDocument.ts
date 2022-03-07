@@ -14,7 +14,6 @@ export class ActivationDocument {
         measurementUnitName: Yup.string().required('measurementUnitName is required').matches(/\bMW|\bKW/).typeError('measurementUnitName must be a Enumerator MW or KW'),
         messageType: Yup.string().required('messageType is required').typeError('messageType must be a string'),
         orderEnd: Yup.boolean().required('orderEnd is required').typeError('orderEnd must be a boolean'),
-        orderType: Yup.string().required('orderType is required').typeError('orderType must be a string'),
         orderValue: Yup.string().notRequired(),
         originAutomationRegisteredResourceMrid: Yup.string().required(
             'originAutomationRegisteredResourceMrid is required').typeError('originAutomationRegisteredResourceMrid must be a string'),
@@ -37,7 +36,6 @@ export class ActivationDocument {
     public measurementUnitName: string;
     public messageType: string;
     public businessType: string;
-    public orderType: string;
     public orderEnd: boolean;
     public orderValue?: string;
     public startCreatedDateTime?: string;

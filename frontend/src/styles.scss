@@ -185,6 +185,36 @@ h3 {
   }
 }
 
+// Activations
+.activations {
+  background-color: rgb(0, 0, 0, 0);
+  border-collapse: separate;
+  border-spacing: 0 10px !important;
+
+  thead {
+    background-color: $mat-primary;
+  }
+
+  .mat-header-cell {
+    color: white !important;
+  }
+
+  tr td {
+    /*To remove the last border*/
+    border-bottom: 0 solid;
+  }
+
+  tbody {
+    tr {
+      background-color: white;
+    }
+    td {
+      padding-top: 25px !important;
+      padding-bottom: 25px !important;
+    }
+  }
+}
+
 // Bouton de navigation
 .boutonNavigation {
   padding: 10px 40px;

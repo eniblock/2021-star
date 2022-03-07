@@ -127,8 +127,8 @@ class OrdreLimitationServiceTest extends AbstractTest {
         assertThat(ordreDebutLimitationArgumentCaptor.getValue()).hasSize(1);
         OrdreDebutLimitation ordreDebutLimitation = ordreDebutLimitationArgumentCaptor.getValue().get(0);
         assertThat(ordreDebutLimitation).extracting("originAutomationRegisteredResourceMrid", "registeredResourceMrid",
-                "measurementUnitName", "startCreatedDateTime", "messageType", "businessType", "reasonCode", "orderType", "orderEnd")
-                .containsExactly("ORIGIN_LNKINS_LKNZ", "PRM30001510803649", "MW", "", "message type", "business Type", "reason code", "order type", false);
+                "measurementUnitName", "startCreatedDateTime", "messageType", "businessType", "reasonCode", "orderEnd")
+                .containsExactly("ORIGIN_LNKINS_LKNZ", "PRM30001510803649", "MW", "", "message type", "business Type", "reason code", false);
 
     }
 

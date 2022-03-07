@@ -265,7 +265,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd:  false
             };
 
@@ -289,7 +288,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -332,7 +330,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -375,7 +373,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -418,7 +415,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -461,7 +457,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -506,7 +501,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 // orderValue: '1',
@@ -607,7 +602,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -642,7 +636,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -702,7 +696,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -745,7 +739,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -801,7 +795,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -831,7 +825,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -865,7 +858,6 @@ describe('Star Tests ActivationDocument', () => {
                     measurementUnitName: "KW",
                     messageType: "string",
                     orderEnd: false,
-                    orderType: "string",
                     orderValue: "1",
                     originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
@@ -884,7 +876,7 @@ describe('Star Tests ActivationDocument', () => {
                     measurementUnitName: "MW",
                     messageType: "string",
                     orderEnd: false,
-                    orderType: "string",
+                    
                     orderValue: "1",
                     originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
@@ -924,7 +916,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -954,7 +946,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -988,7 +979,7 @@ describe('Star Tests ActivationDocument', () => {
                     measurementUnitName: "MW",
                     messageType: "string",
                     orderEnd: false,
-                    orderType: "string",
+                    
                     orderValue: "1",
                     originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
@@ -1033,7 +1024,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1063,7 +1054,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1097,7 +1088,7 @@ describe('Star Tests ActivationDocument', () => {
                     measurementUnitName: "KW",
                     messageType: "string",
                     orderEnd: false,
-                    orderType: "string",
+                    
                     orderValue: "1",
                     originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
@@ -1137,7 +1128,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1167,7 +1158,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1201,7 +1192,7 @@ describe('Star Tests ActivationDocument', () => {
                     measurementUnitName: "MW",
                     messageType: "string",
                     orderEnd: false,
-                    orderType: "string",
+                    
                     orderValue: "1",
                     originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
@@ -1221,7 +1212,7 @@ describe('Star Tests ActivationDocument', () => {
                     measurementUnitName: "MW",
                     messageType: "string",
                     orderEnd: false,
-                    orderType: "string",
+                    
                     orderValue: "1",
                     originAutomationRegisteredResourceMrid: "CRIVA1_ENEDIS_Y411",
                     reasonCode: "string",
@@ -1269,7 +1260,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: true,
 
                 orderValue: '1',
@@ -1309,7 +1299,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1337,7 +1327,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: true,
 
                 orderValue: '1',
@@ -1378,7 +1368,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1406,7 +1395,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: true,
 
                 orderValue: '1',
@@ -1454,7 +1443,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1483,7 +1471,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1529,7 +1516,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1558,7 +1545,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1607,7 +1594,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1636,7 +1622,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1661,7 +1647,6 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
                 orderEnd: true,
 
                 orderValue: '1',
@@ -1708,7 +1693,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1737,7 +1722,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'KW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: false,
 
                 orderValue: '1',
@@ -1764,7 +1749,7 @@ describe('Star Tests ActivationDocument', () => {
                 measurementUnitName: 'MW',
                 messageType: 'string',
                 businessType: 'string',
-                orderType: 'string',
+                
                 orderEnd: true,
 
                 orderValue: '1',

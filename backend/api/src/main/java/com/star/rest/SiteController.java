@@ -140,7 +140,7 @@ public class SiteController {
         PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
         SiteCrteria criteria = SiteCrteria.builder().meteringPointMrId(meteringPointMrId).producerMarketParticipantMrid(producerMarketParticipantMrid)
                 .producerMarketParticipantName(producerMarketParticipantName).siteIecCode(siteIecCode).substationMrid(substationMrid)
-                .substationName(substationName).siteName(siteName).technologyType(technologyType).build();
+                .substationName(substationName).siteName(siteName).technologyType(technologyType).instance(instance).build();
         return ResponseEntity.status(HttpStatus.OK).body(siteResponseMapper.beanToDto(siteService.findSite(criteria, bookmark, pageRequest)));
     }
 }

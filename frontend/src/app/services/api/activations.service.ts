@@ -28,7 +28,6 @@ export class ActivationsService {
     form: FormulaireRechercheActivations,
     pagination: FormulairePagination<OrdreRechercheActivations>
   ): Observable<PaginationReponse<RechercheActivationsEntite>> {
-    console.log(pagination);
     if (true) {
       return this.getMocks(form, pagination);
     }
@@ -79,12 +78,17 @@ export class ActivationsService {
                 endCreatedDateTimeRte: '20220114T13:14:23.511Z',
                 typeLimitation: TypeLimitation.MANUELLE,
                 quantity: 23,
-                motif: {
+                motifRte: {
                   messageType: 'A98',
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
-                systemOperatorMarketParticipantRoleType: 'TODO',
+                motifEnedis: {
+                  messageType: 'A98',
+                  businessType: 'C55',
+                  reasonCode: 'A70',
+                },
+                systemOperatorMarketParticipantRoleType: 'A49',
               },
               {
                 technologyType: TechnologyType.EOLIEN,
@@ -98,12 +102,17 @@ export class ActivationsService {
                 endCreatedDateTimeRte: '20220114T13:14:23.511Z',
                 typeLimitation: TypeLimitation.MANUELLE,
                 quantity: 23,
-                motif: {
+                motifRte: {
                   messageType: 'A98',
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
-                systemOperatorMarketParticipantRoleType: 'TODO',
+                motifEnedis: {
+                  messageType: 'A98',
+                  businessType: 'C55',
+                  reasonCode: 'A70',
+                },
+                systemOperatorMarketParticipantRoleType: 'A49',
               },
               {
                 technologyType: TechnologyType.EOLIEN,
@@ -117,12 +126,17 @@ export class ActivationsService {
                 endCreatedDateTimeRte: '20220114T13:14:23.511Z',
                 typeLimitation: TypeLimitation.MANUELLE,
                 quantity: 23,
-                motif: {
+                motifRte: {
                   messageType: 'A98',
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
-                systemOperatorMarketParticipantRoleType: 'TODO',
+                motifEnedis: {
+                  messageType: 'A98',
+                  businessType: 'C55',
+                  reasonCode: 'A70',
+                },
+                systemOperatorMarketParticipantRoleType: 'A49',
               },
               {
                 technologyType: TechnologyType.EOLIEN,
@@ -136,12 +150,17 @@ export class ActivationsService {
                 endCreatedDateTimeRte: '20220114T13:14:23.511Z',
                 typeLimitation: TypeLimitation.MANUELLE,
                 quantity: 23,
-                motif: {
+                motifRte: {
                   messageType: 'A98',
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
-                systemOperatorMarketParticipantRoleType: 'TODO',
+                motifEnedis: {
+                  messageType: 'A98',
+                  businessType: 'C55',
+                  reasonCode: 'A70',
+                },
+                systemOperatorMarketParticipantRoleType: 'A49',
               },
               {
                 technologyType: TechnologyType.EOLIEN,
@@ -155,12 +174,17 @@ export class ActivationsService {
                 endCreatedDateTimeRte: '20220114T13:14:23.511Z',
                 typeLimitation: TypeLimitation.MANUELLE,
                 quantity: 23,
-                motif: {
+                motifRte: {
                   messageType: 'A98',
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
-                systemOperatorMarketParticipantRoleType: 'TODO',
+                motifEnedis: {
+                  messageType: 'A98',
+                  businessType: 'C55',
+                  reasonCode: 'A70',
+                },
+                systemOperatorMarketParticipantRoleType: 'A49',
               },
             ]
           : [
@@ -176,7 +200,12 @@ export class ActivationsService {
                 endCreatedDateTimeRte: '20220114T13:14:23.511Z',
                 typeLimitation: TypeLimitation.MANUELLE,
                 quantity: 23,
-                motif: {
+                motifRte: {
+                  messageType: 'A98',
+                  businessType: 'C55',
+                  reasonCode: 'A70',
+                },
+                motifEnedis: {
                   messageType: 'A98',
                   businessType: 'C55',
                   reasonCode: 'A70',

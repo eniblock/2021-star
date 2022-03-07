@@ -16,7 +16,11 @@
   </div>
 </div>
 
-Les résultats...
+<div class="row my-3" *ngIf="resultatsRecherche.length > 0">
+  <div class="col-12 my-3">
+    <app-activations-resultat [data]="resultatsRecherche"></app-activations-resultat>
+  </div>
+</div>
 
 <div class="row my-3 text-center" *ngIf="afficherBoutonSuite">
   <div class="col">

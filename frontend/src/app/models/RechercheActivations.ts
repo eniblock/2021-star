@@ -27,11 +27,18 @@ export interface RechercheActivationsEntite {
   endCreatedDateTimeRte?: string; // JSON
   typeLimitation?: TypeLimitation;
   quantity?: number;
-  motif?: {
+  motifRte?: {
     messageType: string;
     businessType: string;
     reasonCode: string;
   };
-  //systemOperatorMarketParticipantMrid: string; // Le type d'operator et donc de site (A49 => RTE, A50 => Enedis)
-  systemOperatorMarketParticipantRoleType: string; // L'operator et donc le type de site (A49 => RTE, A50 => Enedis)
+  motifEnedis?: {
+    messageType: string;
+    businessType: string;
+    reasonCode: string;
+  };
+  systemOperatorMarketParticipantRoleType: string; // The operator, so the type of site (A49 => RTE, A50 => Enedis)
+  // For RTE => the motif to considered is "motifRte"
+  // For Enedis => the motif to considered is "motifEnedis"
+  // For a producer => look at "systemOperatorMarketParticipantRoleType", that allows us to know if the producer is HTA (so "motifEnedis") or HTB (so "motifRTE")
 }

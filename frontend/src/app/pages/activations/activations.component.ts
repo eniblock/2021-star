@@ -23,6 +23,7 @@ export class ActivationsComponent implements OnInit {
   pageSize = environment.pageSizes[0];
   lastBookmark: string | null = null;
   order = OrdreRechercheActivations.siteName;
+  orderDirection = OrderDirection.asc;
 
   totalElements: number = -1;
   resultatsRecherche: RechercheActivationsEntite[] = [];
@@ -65,7 +66,7 @@ export class ActivationsComponent implements OnInit {
           pageSize: this.pageSize,
           bookmark: this.lastBookmark,
           order: this.order,
-          orderDirection: OrderDirection.asc,
+          orderDirection: this.orderDirection,
         };
       this.activationsService
         .rechercher(this.formRecherche, paginationAvecBookmark)
@@ -76,8 +77,6 @@ export class ActivationsComponent implements OnInit {
             resultat.content
           );
           this.afficherBoutonSuite = resultat.content.length >= this.pageSize;
-
-          console.log(this.resultatsRecherche);
         });
     }
   }

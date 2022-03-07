@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivationsResultatComponent } from './activations-resultat/activations-resultat.component';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { ActivationsResultatComponent } from './activations-resultat/activations
     FormulairesModule,
     PipesModule,
     MatButtonModule,
+    MatTableModule,
   ],
   declarations: [
     ActivationsComponent,

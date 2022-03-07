@@ -9,7 +9,23 @@ import { RechercheActivationsEntite } from 'src/app/models/RechercheActivations'
 export class ActivationsResultatComponent implements OnInit {
   @Input() data: RechercheActivationsEntite[] = [];
 
+  columnsToDisplay: string[] = [
+    'technologyType',
+    'originAutomationRegisteredResourceMrid',
+    'producerMarketParticipantName',
+    'siteName',
+    'producerMarketParticipantMrid',
+    'debutLimitation',
+    'finLimitation',
+    'typeLimitation',
+    'quantity',
+    'motif',
+    'indemnisation',
+  ];
+
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.data);
+  }
 }

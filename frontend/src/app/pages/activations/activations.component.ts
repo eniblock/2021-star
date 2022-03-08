@@ -12,6 +12,25 @@ import { OrderDirection } from 'src/app/models/enum/OrderDirection.enum';
 import { environment } from 'src/environments/environment';
 import { PageSizeAndVisibilityFieldsEvent } from './activations-pagination/activations-pagination.component';
 
+export const ACTIVATIONS_TABLE_COLUMNS_DEF = [
+  { id: 'technologyType', champ: 'Filière' },
+  { id: 'originAutomationRegisteredResourceMrid', champ: 'Poste Source' },
+  { id: 'producerMarketParticipantName', champ: 'Nom Producteur' },
+  { id: 'siteName', champ: 'Nom Site' },
+  { id: 'producerMarketParticipantMrid', champ: 'Code Producteur' },
+  { id: 'debutLimitation', champ: 'Début limitation' },
+  { id: 'finLimitation', champ: 'Fin limitation' },
+  { id: 'typeLimitation', champ: 'Type de limitation' },
+  { id: 'quantity', champ: 'ENE/I' },
+  { id: 'motif', champ: 'Motif' },
+  { id: 'indemnisation', champ: 'Eligible indemnisation' },
+];
+
+export const activationColumnIdToChamp = (id: string) => {
+  const r = ACTIVATIONS_TABLE_COLUMNS_DEF.find((def) => def.id == id)?.champ;
+  return r == null ? '' : r;
+};
+
 @Component({
   selector: 'app-activations',
   templateUrl: './activations.component.html',

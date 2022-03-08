@@ -2,50 +2,51 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Instance } from 'src/app/models/enum/Instance.enum';
 import { InstanceService } from 'src/app/services/api/instance.service';
+import { activationColumnIdToChamp } from '../activations.component';
 
 export interface ColumnDef {
   id: string;
-  label: string;
+  champ: string;
 }
 
-const ALL_TSO_COLUMNS: ColumnDef[] = [
-  { id: 'technologyType', label: 'Filière' },
-  { id: 'originAutomationRegisteredResourceMrid', label: 'Poste Source' },
-  { id: 'producerMarketParticipantName', label: 'Nom Producteur' },
-  { id: 'siteName', label: 'Nom Site' },
-  { id: 'producerMarketParticipantMrid', label: 'Code Producteur' },
-  { id: 'debutLimitation', label: 'Début limitation' },
-  { id: 'finLimitation', label: 'Fin limitation' },
-  { id: 'typeLimitation', label: 'Type de limitation' },
-  { id: 'quantity', label: 'ENE/I' },
-  { id: 'motif', label: 'Motif' },
-  { id: 'indemnisation', label: 'Eligible indemnisation' },
+const ALL_TSO_COLUMNS_ID: string[] = [
+  'technologyType',
+  'originAutomationRegisteredResourceMrid',
+  'producerMarketParticipantName',
+  'siteName',
+  'producerMarketParticipantMrid',
+  'debutLimitation',
+  'finLimitation',
+  'typeLimitation',
+  'quantity',
+  'motif',
+  'indemnisation',
 ];
 
-const ALL_DSO_COLUMNS: ColumnDef[] = [
-  { id: 'technologyType', label: 'Filière' },
-  { id: 'originAutomationRegisteredResourceMrid', label: 'Poste Source' },
-  { id: 'producerMarketParticipantName', label: 'Nom Producteur' },
-  { id: 'siteName', label: 'Nom Site' },
-  { id: 'producerMarketParticipantMrid', label: 'Code Producteur' },
-  { id: 'debutLimitation', label: 'Début limitation' },
-  { id: 'finLimitation', label: 'Fin limitation' },
-  { id: 'typeLimitation', label: 'Type de limitation' },
-  { id: 'quantity', label: 'ENE/I' },
-  { id: 'motif', label: 'Motif' },
-  { id: 'indemnisation', label: 'Eligible indemnisation' },
+const ALL_DSO_COLUMNS_ID: string[] = [
+  'technologyType',
+  'originAutomationRegisteredResourceMrid',
+  'producerMarketParticipantName',
+  'siteName',
+  'producerMarketParticipantMrid',
+  'debutLimitation',
+  'finLimitation',
+  'typeLimitation',
+  'quantity',
+  'motif',
+  'indemnisation',
 ];
 
-const ALL_PRODUCER_COLUMNS: ColumnDef[] = [
-  { id: 'technologyType', label: 'Filière' },
-  { id: 'originAutomationRegisteredResourceMrid', label: 'Poste Source' },
-  { id: 'siteName', label: 'Nom Site' },
-  { id: 'debutLimitation', label: 'Début limitation' },
-  { id: 'finLimitation', label: 'Fin limitation' },
-  { id: 'typeLimitation', label: 'Type de limitation' },
-  { id: 'quantity', label: 'ENE/I' },
-  { id: 'motif', label: 'Motif' },
-  { id: 'indemnisation', label: 'Eligible indemnisation' },
+const ALL_PRODUCER_COLUMNS_ID: string[] = [
+  'technologyType',
+  'originAutomationRegisteredResourceMrid',
+  'siteName',
+  'debutLimitation',
+  'finLimitation',
+  'typeLimitation',
+  'quantity',
+  'motif',
+  'indemnisation',
 ];
 
 @Component({
@@ -76,19 +77,34 @@ export class ActivationsColumnSelectorComponent implements OnInit {
   private initAllColumns(instance: Instance): void {
     switch (instance) {
       case Instance.TSO:
-        this.allColumns = ALL_TSO_COLUMNS;
+        this.allColumns = ALL_TSO_COLUMNS_ID.map((id) => ({
+          id: id,
+          champ: activationColumnIdToChamp(id),
+        }));
         break;
       case Instance.DSO:
-        this.allColumns = ALL_DSO_COLUMNS;
+        this.allColumns = ALL_DSO_COLUMNS_ID.map((id) => ({
+          id: id,
+          champ: activationColumnIdToChamp(id),
+        }));
         break;
       case Instance.PRODUCER:
-        this.allColumns = ALL_PRODUCER_COLUMNS;
+        this.allColumns = ALL_PRODUCER_COLUMNS_ID.map((id) => ({
+          id: id,
+          champ: activationColumnIdToChamp(id),
+        }));
         break;
     }
+
+    // Select initialisation
     this.form.get('columns')?.setValue(this.allColumns);
+
+    // Update table columns
+    this.formChange();
   }
 
   formChange() {
-    console.log(this.form.value.columns);
+    const result = (this.form.value.columns as ColumnDef[]).map((c) => c.id);
+    this.columnsToDisplayChange.emit(result);
   }
 }

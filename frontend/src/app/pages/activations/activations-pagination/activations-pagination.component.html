@@ -1,6 +1,6 @@
 <form class="row" [formGroup]="form">
 
-  <mat-form-field class="col-6" appearance="outline">
+  <mat-form-field class="col-12" appearance="outline">
     <mat-label>Afficher</mat-label>
     <mat-select formControlName="pageSize" (selectionChange)="formChange()">
       <mat-option *ngFor="let pageSize of pageSizes" [value]="pageSize">{{ pageSize }}</mat-option>

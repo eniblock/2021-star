@@ -11,6 +11,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivationsResultatsComponent } from './activations-resultats/activations-resultats.component';
 import { MatTableModule } from '@angular/material/table';
+import { ActivationsColumnSelectorComponent } from './activations-column-selector/activations-column-selector.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { MatTableModule } from '@angular/material/table';
     ActivationsComponent,
     ActivationsPaginationComponent,
     ActivationsResultatsComponent,
+    ActivationsColumnSelectorComponent,
   ],
 })
 export class ActivationsModule {}

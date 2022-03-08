@@ -31,15 +31,17 @@ export class ActivationsComponent implements OnInit {
 
   typeInstance?: Instance;
 
+  columnsToDisplay: string[] = [];
+
   constructor(
     private instanceService: InstanceService,
     private activationsService: ActivationsService
   ) {}
 
   ngOnInit() {
-    this.instanceService
-      .getTypeInstance()
-      .subscribe((instance) => (this.typeInstance = instance));
+    this.instanceService.getTypeInstance().subscribe((instance) => {
+      this.typeInstance = instance;
+    });
   }
 
   rechercher(form: FormulaireRechercheActivations) {
@@ -86,5 +88,9 @@ export class ActivationsComponent implements OnInit {
     this.totalElements = -1;
     this.resultatsRecherche = [];
     this.afficherBoutonSuite = false;
+  }
+
+  updateColumnsToDisplay(columnsToDisplay: string[]) {
+    this.columnsToDisplay = columnsToDisplay;
   }
 }

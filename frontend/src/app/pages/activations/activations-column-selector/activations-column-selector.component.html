@@ -1,0 +1,16 @@
+<form class="row" [formGroup]="form">
+
+  <mat-form-field class="col-12" appearance="outline">
+    <mat-label>Champs</mat-label>
+    <mat-select formControlName="columns" multiple (selectionChange)="formChange()">
+      <mat-select-trigger>
+        {{ form.value.columns.length>0 ? form.value.columns[0].label : ''}}
+        <span *ngIf="form.value.columns.length > 1">
+          (+{{form.value.columns.length - 1}} {{form.value.columns.length === 2 ? 'autre' : 'autres'}})
+        </span>
+      </mat-select-trigger>
+      <mat-option *ngFor="let c of allColumns" [value]="c">{{c.label}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+</form>

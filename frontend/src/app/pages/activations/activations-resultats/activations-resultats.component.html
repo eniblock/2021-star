@@ -1,57 +1,57 @@
 <table mat-table [dataSource]="data" class="w-100 activations">
   
   <ng-container matColumnDef="technologyType">
-    <th mat-header-cell *matHeaderCellDef> {{activationColumnIdToChamp('technologyType')+"pp"}} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('technologyType') }} </th>
     <td mat-cell *matCellDef="let element"> {{element.technologyType}} </td>
   </ng-container>
   
   <ng-container matColumnDef="originAutomationRegisteredResourceMrid">
-    <th mat-header-cell *matHeaderCellDef> Poste Source </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('originAutomationRegisteredResourceMrid') }} </th>
     <td mat-cell *matCellDef="let element"> {{element.originAutomationRegisteredResourceMrid}} </td>
   </ng-container>
   
   <ng-container matColumnDef="producerMarketParticipantName">
-    <th mat-header-cell *matHeaderCellDef> Nom Producteur </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('producerMarketParticipantName') }} </th>
     <td mat-cell *matCellDef="let element"> {{element.producerMarketParticipantName}} </td>
   </ng-container>
   
   <ng-container matColumnDef="siteName">
-    <th mat-header-cell *matHeaderCellDef> Nom Site </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('siteName') }} </th>
     <td mat-cell *matCellDef="let element"> {{element.siteName}} </td>
   </ng-container>
   
   <ng-container matColumnDef="producerMarketParticipantMrid">
-    <th mat-header-cell *matHeaderCellDef> Code Producteur </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('producerMarketParticipantMrid') }} </th>
     <td mat-cell *matCellDef="let element"> {{element.producerMarketParticipantMrid}} </td>
   </ng-container>
   
   <ng-container matColumnDef="debutLimitation">
-    <th mat-header-cell *matHeaderCellDef> Début limitation </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('debutLimitation') }} </th>
     <td mat-cell *matCellDef="let element"> ??? </td>
   </ng-container>
   
   <ng-container matColumnDef="finLimitation">
-    <th mat-header-cell *matHeaderCellDef> Fin limitation </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('finLimitation') }} </th>
     <td mat-cell *matCellDef="let element"> ??? </td>
   </ng-container>
   
   <ng-container matColumnDef="typeLimitation">
-    <th mat-header-cell *matHeaderCellDef> Type de limitation </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('typeLimitation') }} </th>
     <td mat-cell *matCellDef="let element"> ??? </td>
   </ng-container>
   
   <ng-container matColumnDef="quantity">
-    <th mat-header-cell *matHeaderCellDef> ENE/I </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('quantity') }} </th>
     <td mat-cell *matCellDef="let element"> {{element.quantity}} (ajouter unité)</td>
   </ng-container>
   
   <ng-container matColumnDef="motif">
-    <th mat-header-cell *matHeaderCellDef> Motif </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('motif') }} </th>
     <td mat-cell *matCellDef="let element"> ??? </td>
   </ng-container>
   
   <ng-container matColumnDef="indemnisation">
-    <th mat-header-cell *matHeaderCellDef> Eligible indemnisation </th>
+    <th mat-header-cell *matHeaderCellDef> {{ activationColumnIdToChamp('indemnisation') }} </th>
     <td mat-cell *matCellDef="let element"> TODO </td>
   </ng-container>
 

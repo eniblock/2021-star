@@ -97,7 +97,9 @@ export class ActivationsColumnSelectorComponent implements OnInit {
     }
 
     // Select initialisation
-    this.form.get('columns')?.setValue(this.allColumns);
+    this.form
+      .get('columns')
+      ?.setValue(this.allColumns.slice(0, this.allColumns.length - 4));
 
     // Update table columns
     this.formChange();

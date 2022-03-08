@@ -1,6 +1,6 @@
-import { InstanceService } from 'src/app/services/api/instance.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RechercheActivationsEntite } from 'src/app/models/RechercheActivations';
+import { Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-activations-resultats',
@@ -10,8 +10,9 @@ import { RechercheActivationsEntite } from 'src/app/models/RechercheActivations'
 export class ActivationsResultatsComponent implements OnInit {
   @Input() data: RechercheActivationsEntite[] = [];
   @Input() columnsToDisplay: string[] = [];
+  @Output() sortChange = new EventEmitter<Sort>();
 
-  constructor(private InstanceService: InstanceService) {}
+  constructor() {}
 
   ngOnInit() {
     console.log(this.data);

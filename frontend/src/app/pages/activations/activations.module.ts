@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActivationsResultatsComponent } from './activations-resultats/activations-resultats.component';
 import { MatTableModule } from '@angular/material/table';
 import { ActivationsColumnSelectorComponent } from './activations-column-selector/activations-column-selector.component';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { ActivationsColumnSelectorComponent } from './activations-column-selecto
     PipesModule,
     MatButtonModule,
     MatTableModule,
+    MatSortModule,
   ],
   declarations: [
     ActivationsComponent,

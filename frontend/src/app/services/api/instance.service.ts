@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Instance } from '../../models/enum/Instance.enum';
 import { CacheService } from '../common/cache.service';
+
+const MOCK: Instance | null = Instance.TSO;
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +28,9 @@ export class InstanceService {
         this.httpClient.get<Instance>(`${environment.serverUrl}/instance`)
       );
     } else {
+      if (MOCK != null) {
+        return of(MOCK);
+      }
       // Si on est pas en prod => on va chercher la valeur directement aupès du back
       return this.httpClient.get<Instance>(`${environment.serverUrl}/instance`);
     }

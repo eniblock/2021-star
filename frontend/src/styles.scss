@@ -193,6 +193,9 @@ h3 {
 
   thead {
     background-color: $mat-primary;
+    th {
+      font-size: 0.9rem;
+    }
   }
 
   .mat-header-cell {

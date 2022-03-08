@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { MatButtonModule } from '@angular/material/button';
-import { ActivationsResultatComponent } from './activations-resultat/activations-resultat.component';
+import { ActivationsResultatsComponent } from './activations-resultats/activations-resultats.component';
 import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
@@ -27,7 +27,7 @@ import { MatTableModule } from '@angular/material/table';
   declarations: [
     ActivationsComponent,
     ActivationsPaginationComponent,
-    ActivationsResultatComponent,
+    ActivationsResultatsComponent,
   ],
 })
 export class ActivationsModule {}

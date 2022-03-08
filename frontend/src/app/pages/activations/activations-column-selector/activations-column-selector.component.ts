@@ -2,12 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Instance } from 'src/app/models/enum/Instance.enum';
 import { InstanceService } from 'src/app/services/api/instance.service';
-import { activationColumnIdToChamp } from '../activations.component';
-
-export interface ColumnDef {
-  id: string;
-  champ: string;
-}
 
 const ALL_TSO_COLUMNS_ID: string[] = [
   'technologyType',
@@ -61,7 +55,7 @@ export class ActivationsColumnSelectorComponent implements OnInit {
     columns: [],
   });
 
-  allColumns: ColumnDef[] = [];
+  allColumns: string[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -77,22 +71,13 @@ export class ActivationsColumnSelectorComponent implements OnInit {
   private initAllColumns(instance: Instance): void {
     switch (instance) {
       case Instance.TSO:
-        this.allColumns = ALL_TSO_COLUMNS_ID.map((id) => ({
-          id: id,
-          champ: activationColumnIdToChamp(id),
-        }));
+        this.allColumns = ALL_TSO_COLUMNS_ID;
         break;
       case Instance.DSO:
-        this.allColumns = ALL_DSO_COLUMNS_ID.map((id) => ({
-          id: id,
-          champ: activationColumnIdToChamp(id),
-        }));
+        this.allColumns = ALL_DSO_COLUMNS_ID;
         break;
       case Instance.PRODUCER:
-        this.allColumns = ALL_PRODUCER_COLUMNS_ID.map((id) => ({
-          id: id,
-          champ: activationColumnIdToChamp(id),
-        }));
+        this.allColumns = ALL_PRODUCER_COLUMNS_ID;
         break;
     }
 
@@ -106,7 +91,6 @@ export class ActivationsColumnSelectorComponent implements OnInit {
   }
 
   formChange() {
-    const result = (this.form.value.columns as ColumnDef[]).map((c) => c.id);
-    this.columnsToDisplayChange.emit(result);
+    this.columnsToDisplayChange.emit(this.form.value.columns);
   }
 }

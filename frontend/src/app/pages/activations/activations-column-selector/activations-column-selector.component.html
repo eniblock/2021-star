@@ -4,12 +4,12 @@
     <mat-label>Champs</mat-label>
     <mat-select formControlName="columns" multiple (selectionChange)="formChange()">
       <mat-select-trigger>
-        {{ form.value.columns.length>0 ? form.value.columns[0].champ : ''}}
+        {{ form.value.columns.length>0 ? (form.value.columns[0] | ActivationTableField) : ''}}
         <span *ngIf="form.value.columns.length > 1">
           (+{{form.value.columns.length - 1}} {{form.value.columns.length === 2 ? 'autre' : 'autres'}})
         </span>
       </mat-select-trigger>
-      <mat-option *ngFor="let c of allColumns" [value]="c">{{c.champ}}</mat-option>
+      <mat-option *ngFor="let c of allColumns" [value]="c">{{c | ActivationTableField}}</mat-option>
     </mat-select>
   </mat-form-field>
 

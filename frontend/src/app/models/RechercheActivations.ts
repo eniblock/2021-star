@@ -1,6 +1,7 @@
 import { OrdreRechercheActivations } from './enum/OrdreRechercheActivations.enum';
 import { TechnologyType } from './enum/TechnologyType.enum';
 import { TypeLimitation } from './enum/TypeLimitation.enum';
+import { TypeSite } from './enum/TypeSite.enum';
 import { FormulairePagination } from './Pagination';
 
 export interface FormulaireRechercheActivations {
@@ -37,8 +38,5 @@ export interface RechercheActivationsEntite {
     businessType: string;
     reasonCode: string;
   };
-  systemOperatorMarketParticipantRoleType: string; // The operator, so the type of site (A49 => RTE, A50 => Enedis)
-  // For RTE => the motif to considered is "motifRte"
-  // For Enedis => the motif to considered is "motifEnedis"
-  // For a producer => look at "systemOperatorMarketParticipantRoleType", that allows us to know if the producer is HTA (so "motifEnedis") or HTB (so "motifRTE")
+  typeSite: TypeSite;
 }

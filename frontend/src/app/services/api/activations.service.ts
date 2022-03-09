@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { OrdreRechercheActivations } from 'src/app/models/enum/OrdreRechercheActivations.enum';
 import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
 import { TypeLimitation } from 'src/app/models/enum/TypeLimitation.enum';
+import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
 import {
   FormulairePagination,
   PaginationReponse,
@@ -93,7 +94,7 @@ const getMocks = (
                 businessType: 'C55',
                 reasonCode: 'A70',
               },
-              systemOperatorMarketParticipantRoleType: 'A49',
+              typeSite: TypeSite.HTA,
             },
             {
               technologyType: TechnologyType.EOLIEN,
@@ -117,7 +118,7 @@ const getMocks = (
                 businessType: 'C55',
                 reasonCode: 'A70',
               },
-              systemOperatorMarketParticipantRoleType: 'A49',
+              typeSite: TypeSite.HTA,
             },
             {
               technologyType: TechnologyType.EOLIEN,
@@ -141,7 +142,7 @@ const getMocks = (
                 businessType: 'C55',
                 reasonCode: 'A70',
               },
-              systemOperatorMarketParticipantRoleType: 'A49',
+              typeSite: TypeSite.HTA,
             },
             {
               technologyType: TechnologyType.EOLIEN,
@@ -165,7 +166,7 @@ const getMocks = (
                 businessType: 'C55',
                 reasonCode: 'A70',
               },
-              systemOperatorMarketParticipantRoleType: 'A49',
+              typeSite: TypeSite.HTA,
             },
             {
               technologyType: TechnologyType.EOLIEN,
@@ -189,7 +190,7 @@ const getMocks = (
                 businessType: 'C55',
                 reasonCode: 'A70',
               },
-              systemOperatorMarketParticipantRoleType: 'A49',
+              typeSite: TypeSite.HTA,
             },
           ]
         : [
@@ -215,7 +216,7 @@ const getMocks = (
                 businessType: 'C55',
                 reasonCode: 'A70',
               },
-              systemOperatorMarketParticipantRoleType: 'A50',
+              typeSite: TypeSite.HTB,
             },
           ],
   });

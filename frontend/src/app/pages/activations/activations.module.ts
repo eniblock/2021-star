@@ -13,12 +13,14 @@ import { ActivationsResultatsComponent } from './activations-resultats/activatio
 import { MatTableModule } from '@angular/material/table';
 import { ActivationsColumnSelectorComponent } from './activations-column-selector/activations-column-selector.component';
 import { MatSortModule } from '@angular/material/sort';
+import { MicroComponentsModule } from 'src/app/components/micro-components/micro-components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     ActivationsRoutes,
     ReactiveFormsModule,
+    MicroComponentsModule,
     MatFormFieldModule,
     MatSelectModule,
     FormulairesModule,

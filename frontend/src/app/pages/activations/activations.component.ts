@@ -11,6 +11,7 @@ import { OrdreRechercheActivations } from 'src/app/models/enum/OrdreRechercheAct
 import { OrderDirection } from 'src/app/models/enum/OrderDirection.enum';
 import { environment } from 'src/environments/environment';
 import { PageSizeAndVisibilityFieldsEvent } from './activations-pagination/activations-pagination.component';
+import { Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-activations',
@@ -92,5 +93,17 @@ export class ActivationsComponent implements OnInit {
 
   updateColumnsToDisplay(columnsToDisplay: string[]) {
     this.columnsToDisplay = columnsToDisplay;
+  }
+
+  sortChange(sort: Sort) {
+    if (sort.direction != '') {
+      this.order = (OrdreRechercheActivations as any)[sort.active];
+      this.orderDirection = sort.direction as any;
+    } else {
+      this.order = OrdreRechercheActivations.siteName;
+      this.orderDirection = OrderDirection.asc;
+    }
+    this.resetResultats();
+    this.lancerRecherche();
   }
 }

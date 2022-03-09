@@ -40,8 +40,11 @@ class SiteControllerTest extends AbstractIntTest {
     @Value("classpath:/site/site-ko.csv")
     private Resource siteKo;
 
-    @Value("classpath:/site/site-ok.csv")
-    private Resource siteOk;
+    @Value("classpath:/site/site-tso-ko.csv")
+    private Resource siteTsoKo;
+
+    @Value("classpath:/site/site-tso-ok.csv")
+    private Resource siteTsoOk;
 
     @MockBean
     private ProducerRepository producerRepository;
@@ -79,12 +82,31 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
-    void importSiteTest() throws Exception {
+    void importSiteDsoOnTsoInstanceTest() throws Exception {
         // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "site-ok.csv",
-                "text/plain", toByteArray(siteOk.getURL()));
+        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ko.csv",
+                "text/plain", toByteArray(siteTsoKo.getURL()));
         when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
         when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PRM30001510803649")).thenReturn("false".getBytes());
+        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
+                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
+        when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
+
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_CREATE)
+                .file(file))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void importSiteTest() throws Exception {
+        // GIVEN
+        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
+                "text/plain", toByteArray(siteTsoOk.getURL()));
+        when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
+        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "CART30001510803649")).thenReturn("false".getBytes());
         Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
                 producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
         when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
@@ -101,7 +123,7 @@ class SiteControllerTest extends AbstractIntTest {
     void updateSiteTestKo() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-ok.csv",
-                "text/plain", toByteArray(siteOk.getURL()));
+                "text/plain", toByteArray(siteTsoKo.getURL()));
         when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
         when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PRM30001510803649")).thenReturn("false".getBytes());
         Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
@@ -117,12 +139,31 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
-    void updateSiteTest() throws Exception {
+    void updateSiteDsoOnTsoInstanceTest() throws Exception {
         // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "site-ok.csv",
-                "text/plain", toByteArray(siteOk.getURL()));
+        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ko.csv",
+                "text/plain", toByteArray(siteTsoKo.getURL()));
         when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
         when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PRM30001510803649")).thenReturn("true".getBytes());
+        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
+                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
+        when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
+
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_UPDATE)
+                .file(file))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void updateSiteTest() throws Exception {
+        // GIVEN
+        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
+                "text/plain", toByteArray(siteTsoOk.getURL()));
+        when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
+        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "CART30001510803649")).thenReturn("true".getBytes());
         Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
                 producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
         when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));

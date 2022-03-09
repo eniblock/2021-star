@@ -38,9 +38,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.star.enums.DocTypeEnum.SITE;
+import static com.star.enums.InstanceEnum.DSO;
 import static com.star.enums.InstanceEnum.TSO;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -71,31 +73,10 @@ public class SiteService {
      * @throws IOException
      */
     public ImportSiteResult importSite(String fileName, Reader streamReader, InstanceEnum instance) throws IOException, TechnicalException, BusinessException {
-        ImportSiteResult importSiteResult = checkFile(fileName, streamReader, instance);
-        // Vérifier que les ids n'existent pas déjà
-        List<String> meteringPointMrids = importSiteResult.getDatas().stream().map(Site::getMeteringPointMrid).collect(toList());
-        for (String meteringPointMrid : meteringPointMrids) {
-            if (siteRepository.existSite(meteringPointMrid)) {
-                importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.exist.error",
-                        new String[]{meteringPointMrid}, null));
-            }
+        ImportSiteResult importSiteResult = verifyBusinessRules(checkFileContent(fileName, streamReader, instance), instance, true);
+        if (isEmpty(importSiteResult.getErrors())) {
+            importSiteResult.setDatas(siteRepository.saveSites(importSiteResult.getDatas()));
         }
-        if (isNotEmpty(importSiteResult.getErrors())) {
-            importSiteResult.setDatas(emptyList());
-            return importSiteResult;
-        }
-        if (CollectionUtils.isEmpty(importSiteResult.getErrors()) && CollectionUtils.isEmpty(importSiteResult.getDatas())) {
-            throw new IllegalArgumentException(messageSource.getMessage("import.file.data.not.empty", null, null));
-        }
-        Map<String, String> mapProducers = producerRepository.getProducers().stream()
-                .collect(Collectors.toMap(Producer::getProducerMarketParticipantMrid, Producer::getProducerMarketParticipantName));
-        importSiteResult.getDatas().forEach(site -> {
-            site.setProducerMarketParticipantName(mapProducers.get(site.getProducerMarketParticipantMrid()));
-            if (site.getTechnologyType() != null) {
-                site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getLabel());
-            }
-        });
-        importSiteResult.setDatas(siteRepository.saveSites(importSiteResult.getDatas()));
         return importSiteResult;
     }
 
@@ -109,31 +90,10 @@ public class SiteService {
      * @throws IOException
      */
     public ImportSiteResult updateSite(String fileName, Reader streamReader, InstanceEnum instance) throws IOException, TechnicalException, BusinessException {
-        ImportSiteResult importSiteResult = checkFile(fileName, streamReader, instance);
-        // Vérifier que les ids existent pas déjà
-        List<String> meteringPointMrids = importSiteResult.getDatas().stream().map(Site::getMeteringPointMrid).collect(toList());
-        for (String meteringPointMrid : meteringPointMrids) {
-            if (!siteRepository.existSite(meteringPointMrid)) {
-                importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.unknown.error",
-                        new String[]{meteringPointMrid}, null));
-            }
+        ImportSiteResult importSiteResult = verifyBusinessRules(checkFileContent(fileName, streamReader, instance), instance, false);
+        if (isEmpty(importSiteResult.getErrors())) {
+            importSiteResult.setDatas(siteRepository.updateSites(importSiteResult.getDatas()));
         }
-        if (isNotEmpty(importSiteResult.getErrors())) {
-            importSiteResult.setDatas(emptyList());
-            return importSiteResult;
-        }
-        if (CollectionUtils.isEmpty(importSiteResult.getErrors()) && CollectionUtils.isEmpty(importSiteResult.getDatas())) {
-            throw new IllegalArgumentException(messageSource.getMessage("import.file.data.not.empty", null, null));
-        }
-        Map<String, String> mapProducers = producerRepository.getProducers().stream()
-                .collect(Collectors.toMap(Producer::getProducerMarketParticipantMrid, Producer::getProducerMarketParticipantName));
-        importSiteResult.getDatas().forEach(site -> {
-            site.setProducerMarketParticipantName(mapProducers.get(site.getProducerMarketParticipantMrid()));
-            if (site.getTechnologyType() != null) {
-                site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getLabel());
-            }
-        });
-        importSiteResult.setDatas(siteRepository.updateSites(importSiteResult.getDatas()));
         return importSiteResult;
     }
 
@@ -173,7 +133,7 @@ public class SiteService {
     }
 
 
-    private void addCriteria(List<Selector> selectors, SiteCrteria siteCrteria, DocTypeEnum docTypeEnum) {
+    private void addCriteria(List<Selector> selectors, SiteCrteria siteCrteria, DocTypeEnum docTypeEnum) throws BusinessException {
         selectors.add(Expression.eq("docType", docTypeEnum.getDocType()));
         if (isNotBlank(siteCrteria.getSiteName())) {
             selectors.add(Expression.eq("siteName", siteCrteria.getSiteName()));
@@ -199,32 +159,82 @@ public class SiteService {
         }
 
         if (isNotBlank(siteCrteria.getMeteringPointMrId())) {
-            selectors.add(Expression.eq("meteringPointMrId", siteCrteria.getMeteringPointMrId()));
+            String meteringPointMrId = siteCrteria.getMeteringPointMrId();
+            if ((DSO.equals(siteCrteria.getInstance()) && Site.isSiteHTA(meteringPointMrId)) ||
+                    TSO.equals(siteCrteria.getInstance()) && Site.isSiteHTB(meteringPointMrId)) {
+                selectors.add(Expression.eq("meteringPointMrId", siteCrteria.getMeteringPointMrId()));
+            } else {
+                throw new BusinessException(messageSource.getMessage("import.file.meteringpointmrid.acces.error",
+                        new String[]{meteringPointMrId, siteCrteria.getInstance().getValue()}, null));
+            }
+        } else {
+            switch (siteCrteria.getInstance()) {
+                case DSO: // Site HTA (Enedis)
+                    selectors.add(Expression.regex("meteringPointMrid", "(?i)(" + Site.CODE_SITE_HTA + ")+"));
+                    break;
+                case TSO: // Site HBT (RTE)
+                    selectors.add(Operation.or(
+                            Expression.regex("meteringPointMrid", "(?i)(" + Site.CODE_SITE_HTB_PDL + ")+"),
+                            Expression.regex("meteringPointMrid", "(?i)(" + Site.CODE_SITE_HTB_CART + ")+")
+                    ));
+                    break;
+                case PRODUCER:
+                    break;
+                default:
+                    break;
+            }
         }
 
         if (isNotEmpty(siteCrteria.getTechnologyType())) {
             List<String> technologies = siteCrteria.getTechnologyType().stream().map(TechnologyTypeEnum::getLabel).collect(toList());
             selectors.add(Expression.in("technologyType", StringUtils.join(technologies, "\",\"")));
         }
-        switch (siteCrteria.getInstance()) {
-            case DSO: // Site HTA (Enedis)
-                selectors.add(Expression.regex("meteringPointMrid", "(?i)("+ Site.CODE_SITE_HTA +")+"));
-                break;
-            case TSO: // Site HBT (RTE)
-                selectors.add(Operation.or(
-                        Expression.regex("meteringPointMrid", "(?i)("+ Site.CODE_SITE_HTB_PDL +")+"),
-                        Expression.regex("meteringPointMrid", "(?i)("+ Site.CODE_SITE_HTB_CART +")+")
-                        ));
-                break;
-            case PRODUCER:
-//                TODO : Il faut récupérer producerMarketParticipantMrid du producer connecté et filtré les sites avec ce producerMarketParticipantMrid.
-                break;
-            default:
-                break;
-        }
+
     }
 
-    private ImportSiteResult checkFile(String fileName, Reader streamReader, InstanceEnum instance) throws IOException {
+    private ImportSiteResult verifyBusinessRules(ImportSiteResult importSiteResult, InstanceEnum instance, boolean create) throws TechnicalException {
+        // Vérifier que les ids n'existent pas déjà
+        List<String> meteringPointMrids = importSiteResult.getDatas().stream().map(Site::getMeteringPointMrid).collect(toList());
+        for (String meteringPointMrId : meteringPointMrids) {
+            boolean existSite = siteRepository.existSite(meteringPointMrId);
+            // Traitmeent s'il s'agit d'une création de site.
+            if (create && existSite) {
+                importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.exist.error",
+                        new String[]{meteringPointMrId}, null));
+            }
+            // Traitmeent s'il s'agit d'un update de site
+            if (!create && !existSite) {
+                importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.unknown.error",
+                        new String[]{meteringPointMrId}, null));
+            }
+
+            if ((DSO.equals(instance) && Site.isSiteHTB(meteringPointMrId)) ||
+                    TSO.equals(instance) && Site.isSiteHTA(meteringPointMrId)) {
+                importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.import.error",
+                        new String[]{meteringPointMrId, instance.getValue()}, null));
+            }
+        }
+        if (isNotEmpty(importSiteResult.getErrors())) {
+            importSiteResult.setDatas(emptyList());
+            return importSiteResult;
+        }
+        if (CollectionUtils.isEmpty(importSiteResult.getErrors()) && CollectionUtils.isEmpty(importSiteResult.getDatas())) {
+            throw new IllegalArgumentException(messageSource.getMessage("import.file.data.not.empty", null, null));
+        }
+        Map<String, String> mapProducers = producerRepository.getProducers().stream()
+                .collect(Collectors.toMap(Producer::getProducerMarketParticipantMrid, Producer::getProducerMarketParticipantName));
+        importSiteResult.getDatas().forEach(site -> {
+            site.setProducerMarketParticipantName(mapProducers.get(site.getProducerMarketParticipantMrid()));
+            if (site.getTechnologyType() != null) {
+                site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getLabel());
+            }
+        });
+
+        return importSiteResult;
+    }
+
+
+    private ImportSiteResult checkFileContent(String fileName, Reader streamReader, InstanceEnum instance) throws IOException {
         importUtilsService.checkFile(fileName, streamReader, FileExtensionEnum.CSV.getValue());
         ImportSiteResult importSiteResult = new ImportSiteResult();
         CSVParser csvParser = importUtilsService.getCsvParser(streamReader);

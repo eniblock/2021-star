@@ -9,6 +9,7 @@ import com.star.exception.TechnicalException;
 import com.star.mapper.site.SiteResponseMapper;
 import com.star.models.site.ImportSiteResult;
 import com.star.models.site.SiteCrteria;
+import com.star.security.SecurityUtils;
 import com.star.service.SiteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +36,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static com.star.enums.InstanceEnum.PRODUCER;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 
@@ -66,7 +67,7 @@ public class SiteController {
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping("/create")
     public ResponseEntity<ImportSiteResult> importSite(@RequestParam MultipartFile file) throws BusinessException {
-        if (InstanceEnum.PRODUCER.equals(instance)) {
+        if (PRODUCER.equals(instance)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         ImportSiteResult importSiteResult;
@@ -88,7 +89,7 @@ public class SiteController {
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping("/update")
     public ResponseEntity<ImportSiteResult> updateSite(@RequestParam MultipartFile file) throws BusinessException {
-        if (InstanceEnum.PRODUCER.equals(instance)) {
+        if (PRODUCER.equals(instance)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         ImportSiteResult importSiteResult;
@@ -125,7 +126,7 @@ public class SiteController {
     public ResponseEntity<SiteDTOResponse> findSite(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(value = "order", required = false) String order,
+            @RequestParam(value = "order") String order,
             @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
             @RequestParam(value = "technologyType", required = false) List<TechnologyTypeEnum> technologyType,
             @RequestParam(value = "producerMarketParticipantMrid", required = false) String producerMarketParticipantMrid,
@@ -141,6 +142,9 @@ public class SiteController {
         SiteCrteria criteria = SiteCrteria.builder().meteringPointMrId(meteringPointMrId).producerMarketParticipantMrid(producerMarketParticipantMrid)
                 .producerMarketParticipantName(producerMarketParticipantName).siteIecCode(siteIecCode).substationMrid(substationMrid)
                 .substationName(substationName).siteName(siteName).technologyType(technologyType).instance(instance).build();
+        if (PRODUCER.equals(instance)) {
+            criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid());
+        }
         return ResponseEntity.status(HttpStatus.OK).body(siteResponseMapper.beanToDto(siteService.findSite(criteria, bookmark, pageRequest)));
     }
 }

@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @Ignore("Base class for test.")
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = StarApplication.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(locations = "classpath:application-test.yml")
 @ContextConfiguration(classes = {TestApiConfiguration.class})
 public abstract class AbstractIntTest {

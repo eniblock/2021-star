@@ -3,6 +3,7 @@ package com.star.service;
 import com.star.AbstractTest;
 import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
+import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.producer.Producer;
 import com.star.models.site.ImportSiteResult;
@@ -42,8 +43,11 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
  */
 class SiteServiceTest extends AbstractTest {
 
-    @Value("classpath:/site/site-ok.csv")
-    private Reader csvSiteOk;
+    @Value("classpath:/site/site-tso-ok.csv")
+    private Reader csvSiteTsoOk;
+
+    @Value("classpath:/site/site-tso-ko.csv")
+    private Reader csvSiteTsoKo;
 
     @Value("classpath:/site/site-technology-type-ko.csv")
     private Reader csvSiteTechnologieTypeKo;
@@ -99,7 +103,7 @@ class SiteServiceTest extends AbstractTest {
         // GIVEN
 
         // WHEN
-        Assertions.assertThrows(IllegalArgumentException.class, () -> siteService.importSite(null, csvSiteOk, TSO));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> siteService.importSite(null, csvSiteTsoOk, TSO));
 
         // THEN
     }
@@ -181,65 +185,106 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    void testImportSiteOk() throws IOException, TechnicalException, ContractException {
+    void testImportSiteDsoOnTsoInstance() throws IOException, TechnicalException, ContractException {
         // GIVEN
-        String fileName = "site-ok.csv";
+        String fileName = "site-tso-ko.csv";
         Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
                 producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
         Mockito.when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
         Mockito.when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
 
         // WHEN
-        siteService.importSite(fileName, csvSiteOk, TSO);
+        siteService.importSite(fileName, csvSiteTsoKo, TSO);
+
+        // THEN
+        verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
+        verify(siteRepository, Mockito.times(0)).saveSites(siteArgumentCaptor.capture());
+
+
+    }
+
+
+    @Test
+    void testImportSiteOk() throws IOException, TechnicalException, ContractException {
+        // GIVEN
+        String fileName = "site-tso-ok.csv";
+        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
+                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
+        Mockito.when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
+        Mockito.when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
+
+        // WHEN
+        siteService.importSite(fileName, csvSiteTsoOk, TSO);
 
         // THEN
         verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
         verify(siteRepository, Mockito.times(1)).saveSites(siteArgumentCaptor.capture());
-        assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PRM30001510803649");
+        assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PDL30001510803649");
         assertThat(siteArgumentCaptor.getValue()).hasSize(1);
         List<Site> sites = siteArgumentCaptor.getValue();
         assertThat(sites.get(0)).extracting("systemOperatorMarketParticipantMrid", "meteringPointMrid", "producerMarketParticipantMrid", "technologyType", "systemOperatorCustomerServiceName")
-                .containsExactly("17V0000009927464", "PRM30001510803649", "17Y100A101R0629X", "Eolien", "ARD Ouest");
+                .containsExactly("17V0000009927464", "PDL30001510803649", "17Y100A101R0629X", "Eolien", "ARD Ouest");
 
     }
 
     @Test
-    void testUpdateUnknownSite() throws IOException, TechnicalException, ContractException {
+    void testUpdateUnknownSite() throws IOException, TechnicalException {
         // GIVEN
-        String fileName = "site-ok.csv";
+        String fileName = "site-tso-ok.csv";
         Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
                 producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
         Mockito.when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
         Mockito.when(siteRepository.existSite(any())).thenReturn(false);
 
         // WHEN
-        siteService.updateSite(fileName, csvSiteOk, TSO);
+        siteService.updateSite(fileName, csvSiteTsoOk, TSO);
 
         // THEN
         verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
-        assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PRM30001510803649");
+        assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PDL30001510803649");
         verify(siteRepository, never()).updateSites(any());
     }
 
     @Test
     void testUpdateExistsSite() throws IOException, TechnicalException {
         // GIVEN
-        String fileName = "site-ok.csv";
+        String fileName = "site-tso-ok.csv";
         Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
                 producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
         Mockito.when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
         Mockito.when(siteRepository.existSite(any())).thenReturn(true);
 
         // WHEN
-        siteService.updateSite(fileName, csvSiteOk, TSO);
+        siteService.updateSite(fileName, csvSiteTsoOk, TSO);
 
         // THEN
         verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
-        assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PRM30001510803649");
+        assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PDL30001510803649");
         verify(siteRepository, Mockito.times(1)).updateSites(siteArgumentCaptor.capture());
         List<Site> sites = siteArgumentCaptor.getValue();
         assertThat(sites.get(0)).extracting("systemOperatorMarketParticipantMrid", "meteringPointMrid", "producerMarketParticipantMrid", "technologyType", "systemOperatorCustomerServiceName")
-                .containsExactly("17V0000009927464", "PRM30001510803649", "17Y100A101R0629X", "Eolien", "ARD Ouest");
+                .containsExactly("17V0000009927464", "PDL30001510803649", "17Y100A101R0629X", "Eolien", "ARD Ouest");
+    }
+
+    @Test
+    void testFindSiteDsoOnTsoInstance() throws IOException, ContractException {
+        // GIVEN
+        String bookmark = "kBHIYBiy198";
+        SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(TSO)
+                .meteringPointMrId("PRMJGHVG17868").producerMarketParticipantMrid("PRODUCER_MR_ID")
+                .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME")
+                .technologyType(Arrays.asList(TechnologyTypeEnum.EOLIEN)).build();
+        SiteResponse siteResponse = SiteResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        Sort sort = Sort.by("technologyType");
+        PageRequest pageRequest = PageRequest.of(0, 10, sort);
+        byte[] result = objectMapper.writeValueAsBytes(siteResponse);
+        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
+
+        // WHEN
+        Assertions.assertThrows(BusinessException.class, () -> siteService.findSite(siteCrteria, bookmark, pageRequest));
+
+
+        // THEN
     }
 
     @Test
@@ -247,7 +292,7 @@ class SiteServiceTest extends AbstractTest {
         // GIVEN
         String bookmark = "kBHIYBiy198";
         SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(TSO)
-                .meteringPointMrId("PLJGHVG17868").producerMarketParticipantMrid("PRODUCER_MR_ID")
+                .meteringPointMrId("PDLJGHVG17868").producerMarketParticipantMrid("PRODUCER_MR_ID")
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME")
                 .technologyType(Arrays.asList(TechnologyTypeEnum.EOLIEN)).build();
         SiteResponse siteResponse = SiteResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();

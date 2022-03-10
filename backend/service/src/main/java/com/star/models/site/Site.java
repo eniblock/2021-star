@@ -14,6 +14,9 @@ import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.substring;
+
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
@@ -101,5 +104,14 @@ public class Site implements ImportCSV {
         this.systemOperatorEntityFlexibilityDomainMrid = csvRecord.get(headers.get(13));
         this.systemOperatorEntityFlexibilityDomainName = csvRecord.get(headers.get(14));
         this.systemOperatorCustomerServiceName = csvRecord.get(headers.get(15));
+    }
+
+    public static boolean isSiteHTA(String meteringPointMrid) {
+        return equalsIgnoreCase(Site.CODE_SITE_HTA, substring(meteringPointMrid, 0, 3));
+    }
+
+    public static boolean isSiteHTB(String meteringPointMrid) {
+        return equalsIgnoreCase(Site.CODE_SITE_HTB_CART, substring(meteringPointMrid, 0, 4)) ||
+                equalsIgnoreCase(Site.CODE_SITE_HTB_PDL, substring(meteringPointMrid, 0, 3));
     }
 }

@@ -30,6 +30,9 @@
         <sonar.organization>xdev-tech</sonar.organization>
         <jacoco.version>0.8.7</jacoco.version>
         <sonarqube.version>3.8.0.2131</sonarqube.version>
+        <sonar.coverage.exclusions>models/**/*</sonar.coverage.exclusions>
+        <sonar.exclusions>models/**/*</sonar.exclusions>
+        <sonar.jacoco.excludes>models/**/*</sonar.jacoco.excludes>
         <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
     </properties>
     <dependencies>

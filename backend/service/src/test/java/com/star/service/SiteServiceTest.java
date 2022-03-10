@@ -29,6 +29,7 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.star.enums.InstanceEnum.DSO;
 import static com.star.enums.InstanceEnum.TSO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -312,5 +313,59 @@ class SiteServiceTest extends AbstractTest {
         String queryValue = queryCaptor.getValue();
         assertThat(queryValue).contains("docType", "siteName", "substationName", "substationMrid",
                 "producerMarketParticipantName", "producerMarketParticipantMrid", "siteIecCode", "meteringPointMrId", "technologyType");
+    }
+
+
+
+
+    @Test
+    void testFindSiteWithoutMeteringPointMrIdOnTso() throws IOException, TechnicalException, ContractException {
+        // GIVEN
+        String bookmark = "kBHIYBiy198";
+        SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(TSO)
+                .producerMarketParticipantMrid("PRODUCER_MR_ID")
+                .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
+        SiteResponse siteResponse = SiteResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        Sort sort = Sort.by("technologyType");
+        PageRequest pageRequest = PageRequest.of(0, 10, sort);
+        byte[] result = objectMapper.writeValueAsBytes(siteResponse);
+        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
+
+        // WHEN
+        SiteResponse siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
+
+        // THEN
+        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());
+
+        assertThat(pageSizeCaptor.getValue()).isEqualTo(String.valueOf(pageRequest.getPageSize()));
+        assertThat(bookmarkCaptor.getValue()).isEqualTo(bookmark);
+        String queryValue = queryCaptor.getValue();
+        assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
+    }
+
+    @Test
+    void testFindSiteWithoutMeteringPointMrIdOnDso() throws IOException, TechnicalException, ContractException {
+        // GIVEN
+        String bookmark = "kBHIYBiy198";
+        SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(DSO)
+                .producerMarketParticipantMrid("PRODUCER_MR_ID")
+                .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
+        SiteResponse siteResponse = SiteResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        Sort sort = Sort.by("producerMarketParticipantName");
+        PageRequest pageRequest = PageRequest.of(0, 10, sort);
+        byte[] result = objectMapper.writeValueAsBytes(siteResponse);
+        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
+
+        // WHEN
+        SiteResponse siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
+
+        // THEN
+        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());
+
+        assertThat(pageSizeCaptor.getValue()).isEqualTo(String.valueOf(pageRequest.getPageSize()));
+        assertThat(bookmarkCaptor.getValue()).isEqualTo(bookmark);
+        String queryValue = queryCaptor.getValue();
+        assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTA);
+        assertThat(queryValue).doesNotContain(Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
     }
 }

@@ -38,8 +38,7 @@ public class HyperLedgerFabricConfiguration {
 
     @Bean
     public Network network() throws IOException {
-        Network network = this.gateway().getNetwork(channel);
-        return network;
+        return this.gateway().getNetwork(channel);
     }
 
     @Bean
@@ -50,19 +49,15 @@ public class HyperLedgerFabricConfiguration {
     @Bean
     public Wallet wallet() throws IOException {
         // Create a CA client for interacting with the CA.
-        Path walletDirectory = Paths.get(wallet);
-        return Wallets.newFileSystemWallet(walletDirectory);
+        return Wallets.newFileSystemWallet(Paths.get(wallet));
     }
 
     @Bean
     public Gateway gateway() throws IOException {
-        // Path to a common connection profile describing the network.
-        Path networkConfigFile = Paths.get(networkConfig);
-
         // Configure the gateway connection used to access the network.
         Gateway.Builder builder = Gateway.createBuilder()
                 .identity(this.wallet(), identityId)
-                .networkConfig(networkConfigFile).discovery(true);
+                .networkConfig(Paths.get(networkConfig)).discovery(true);
         return builder.connect();
     }
 }

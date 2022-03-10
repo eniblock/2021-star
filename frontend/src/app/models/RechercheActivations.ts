@@ -1,7 +1,7 @@
 import { OrdreRechercheActivations } from './enum/OrdreRechercheActivations.enum';
 import { TechnologyType } from './enum/TechnologyType.enum';
-import { TypeLimitation } from './enum/TypeLimitation.enum';
 import { TypeSite } from './enum/TypeSite.enum';
+import { Motif } from './Motifs';
 import { FormulairePagination } from './Pagination';
 
 export interface FormulaireRechercheActivations {
@@ -26,17 +26,8 @@ export interface RechercheActivationsEntite {
   endCreatedDateTimeEnedis?: string; // JSON
   startCreatedDateTimeRte?: string; // JSON
   endCreatedDateTimeRte?: string; // JSON
-  typeLimitation?: TypeLimitation;
   quantity?: number;
-  motifRte?: {
-    messageType: string;
-    businessType: string;
-    reasonCode: string;
-  };
-  motifEnedis?: {
-    messageType: string;
-    businessType: string;
-    reasonCode: string;
-  };
+  motifRte?: Motif;
+  motifEnedis?: Motif;
   typeSite: TypeSite;
 }

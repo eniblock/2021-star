@@ -1,10 +1,31 @@
+/* ******************************************** */
+/*                    Les motifs                */
+/* ******************************************** */
 export interface Motif {
+  messageType: string;
+  businessType: string;
+  reasonCode: string;
+}
+
+export const motifIsEqualTo = (motif1: Motif, motif2: Motif): boolean => {
+  return (
+    motif1.messageType == motif2.messageType &&
+    motif1.businessType == motif2.businessType &&
+    motif1.reasonCode == motif2.reasonCode
+  );
+};
+
+/* ******************************************************** */
+/*                    Liens entre les motifs                */
+/* ******************************************************** */
+
+export interface MotifCode {
   code: string;
   label: string;
   sousMotifCodes: string[];
 }
 
-export const messageTypes: Motif[] = [
+export const messageTypes: MotifCode[] = [
   {
     code: 'A98',
     label: 'Aléa - ordre TVC simple',
@@ -19,7 +40,7 @@ export const messageTypes: Motif[] = [
   //B23: "Offres à activer (Mécanisme d'ajustement)",
 ];
 
-export const businessTypes: Motif[] = [
+export const businessTypes: MotifCode[] = [
   {
     code: 'C55',
     label: 'Ordres TC ou TVC',
@@ -32,7 +53,7 @@ export const businessTypes: Motif[] = [
   },
 ];
 
-export const reasonCodes: Motif[] = [
+export const reasonCodes: MotifCode[] = [
   {
     code: 'A70',
     label: 'Réseau complet',
@@ -105,24 +126,24 @@ export const reasonCodes: Motif[] = [
   },
 ];
 
-export const getMessageTypeByCode = (code: string): Motif => {
+export const getMessageTypeByCode = (code: string): MotifCode => {
   const t = messageTypes.filter((mt) => mt.code == code);
   return t[0];
 };
 
-export const getBusinessTypeByCode = (code: string): Motif => {
+export const getBusinessTypeByCode = (code: string): MotifCode => {
   const t = businessTypes.filter((mt) => mt.code == code);
   return t[0];
 };
 
-export const getreasonCodeByCode = (code: string): Motif => {
+export const getreasonCodeByCode = (code: string): MotifCode => {
   const t = reasonCodes.filter((mt) => mt.code == code);
   return t[0];
 };
 
 export const getAllBusinessTypesByMessageTypeCode = (
   messageTypeCode: string
-): Motif[] => {
+): MotifCode[] => {
   const messageType = getMessageTypeByCode(messageTypeCode);
   return businessTypes.filter((bt) =>
     messageType.sousMotifCodes.includes(bt.code)
@@ -131,7 +152,7 @@ export const getAllBusinessTypesByMessageTypeCode = (
 
 export const getAllReasonCodeByBusinessTypeCode = (
   businessTypeCode: string
-): Motif[] => {
+): MotifCode[] => {
   const businessType = getBusinessTypeByCode(businessTypeCode);
   return reasonCodes.filter((rc) =>
     businessType.sousMotifCodes.includes(rc.code)

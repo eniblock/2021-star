@@ -6,7 +6,7 @@ import {
   getAllBusinessTypesByMessageTypeCode,
   getAllReasonCodeByBusinessTypeCode,
   messageTypes,
-  Motif,
+  MotifCode,
 } from 'src/app/models/Motifs';
 import { OrdreLimitationService } from 'src/app/services/api/ordre-limitation.service';
 
@@ -38,9 +38,9 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
 
   endCreatedDateTime: Date = new Date();
 
-  selectMessageTypes: Motif[] = messageTypes;
-  selectBusinessTypes: Motif[] | null = null;
-  selectReasonCodes: Motif[] | null = null;
+  selectMessageTypes: MotifCode[] = messageTypes;
+  selectBusinessTypes: MotifCode[] | null = null;
+  selectReasonCodes: MotifCode[] | null = null;
 
   constructor(
     private formBuilder: FormBuilder,

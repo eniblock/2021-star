@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { OrdreRechercheActivations } from 'src/app/models/enum/OrdreRechercheActivations.enum';
 import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
-import { TypeLimitation } from 'src/app/models/enum/TypeLimitation.enum';
 import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
 import {
   FormulairePagination,
@@ -82,7 +81,6 @@ const getMocks = (
               endCreatedDateTimeEnedis: '20220114T15:12:23.511Z',
               startCreatedDateTimeRte: '20220113T11:12:23.511Z',
               endCreatedDateTimeRte: '20220114T13:14:23.511Z',
-              typeLimitation: TypeLimitation.MANUELLE,
               quantity: 23,
               motifRte: {
                 messageType: 'A98',
@@ -106,17 +104,12 @@ const getMocks = (
               endCreatedDateTimeEnedis: '20220114T15:12:23.511Z',
               startCreatedDateTimeRte: '20220113T11:12:23.511Z',
               endCreatedDateTimeRte: '20220114T13:14:23.511Z',
-              typeLimitation: TypeLimitation.MANUELLE,
               quantity: 23,
-              motifRte: {
-                messageType: 'A98',
-                businessType: 'C55',
-                reasonCode: 'A70',
-              },
+              motifRte: undefined,
               motifEnedis: {
-                messageType: 'A98',
-                businessType: 'C55',
-                reasonCode: 'A70',
+                messageType: 'D01',
+                businessType: 'Z03',
+                reasonCode: 'Y98',
               },
               typeSite: TypeSite.HTA,
             },
@@ -130,18 +123,13 @@ const getMocks = (
               endCreatedDateTimeEnedis: '20220114T15:12:23.511Z',
               startCreatedDateTimeRte: '20220113T11:12:23.511Z',
               endCreatedDateTimeRte: '20220114T13:14:23.511Z',
-              typeLimitation: TypeLimitation.MANUELLE,
               quantity: 23,
               motifRte: {
                 messageType: 'A98',
                 businessType: 'C55',
                 reasonCode: 'A70',
               },
-              motifEnedis: {
-                messageType: 'A98',
-                businessType: 'C55',
-                reasonCode: 'A70',
-              },
+              motifEnedis: undefined,
               typeSite: TypeSite.HTA,
             },
             {
@@ -154,7 +142,6 @@ const getMocks = (
               endCreatedDateTimeEnedis: '20220114T15:12:23.511Z',
               startCreatedDateTimeRte: '20220113T11:12:23.511Z',
               endCreatedDateTimeRte: '20220114T13:14:23.511Z',
-              typeLimitation: TypeLimitation.MANUELLE,
               quantity: 23,
               motifRte: {
                 messageType: 'A98',
@@ -178,7 +165,6 @@ const getMocks = (
               endCreatedDateTimeEnedis: '20220114T15:12:23.511Z',
               startCreatedDateTimeRte: '20220113T11:12:23.511Z',
               endCreatedDateTimeRte: '20220114T13:14:23.511Z',
-              typeLimitation: TypeLimitation.MANUELLE,
               quantity: 23,
               motifRte: {
                 messageType: 'A98',
@@ -204,7 +190,6 @@ const getMocks = (
               endCreatedDateTimeEnedis: '20220114T15:12:23.511Z',
               startCreatedDateTimeRte: '20220113T11:12:23.511Z',
               endCreatedDateTimeRte: '20220114T13:14:23.511Z',
-              typeLimitation: TypeLimitation.MANUELLE,
               quantity: 23,
               motifRte: {
                 messageType: 'A98',

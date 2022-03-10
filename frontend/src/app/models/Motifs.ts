@@ -30,6 +30,60 @@ export const motifRteToString = (motif?: Motif): string => {
     return '';
   } else if (motifIsEqualTo(motif, 'A98', 'C55', 'A70')) {
     return 'Réseau complet';
+  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'A98')) {
+    return 'Aléa';
+  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'A70')) {
+    return 'Réseau complet';
+  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'A98')) {
+    return 'Aléa';
+  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z71')) {
+    return 'Réseau complet - IST min';
+  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z72')) {
+    return 'Réseau complet - ORA';
+  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z73')) {
+    return 'Réseau complet - Dim Optimal';
+  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z74')) {
+    return 'Réseau complet - Contrat Amont';
+  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB1')) {
+    return 'Travaux Programmés - CART';
+  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB2')) {
+    return 'Travaux Programmés - CART-RU';
+  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB3')) {
+    return 'Travaux Programmés - CART-RII';
+  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB4')) {
+    return 'Travaux Programmés - CART-RVU';
+  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB5')) {
+    return 'Travaux Programmés - Contrat Amont';
+  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB6')) {
+    return 'Travaux Programmés - Contrat GP';
+  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z91')) {
+    return 'Aléa - Réseau Evacuation';
+  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z92')) {
+    return 'Aléa - Réseau Amont';
+  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z71')) {
+    return 'Réseau complet - IST min';
+  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z72')) {
+    return 'Réseau complet - ORA';
+  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z73')) {
+    return 'Réseau complet - Dim Optimal';
+  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z74')) {
+    return 'Réseau complet - Contrat Amont';
+  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB1')) {
+    return 'Travaux Programmés - CART';
+  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB2')) {
+    return 'Travaux Programmés - CART-RU';
+  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB3')) {
+    return 'Travaux Programmés - CART-RII';
+  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB4')) {
+    return 'Travaux Programmés - CART-RVU';
+  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB5')) {
+    return 'Travaux Programmés - Contrat Amont';
+  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB6')) {
+    return 'Travaux Programmés - Contrat GP';
+  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z91')) {
+    return 'Aléa - Réseau Evacuation';
+  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z92')) {
+    return 'Aléa - Réseau Amont';
   }
   return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;
 };

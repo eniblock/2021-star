@@ -38,20 +38,21 @@ export class ActivationsResultatsComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.instanceService.getTypeInstance().subscribe((instance) => {
       this.instance = instance;
-      this.updateContent();
+      this.computeData();
     });
   }
 
-  private updateContent() {
+  private computeData() {
     this.dataComputed = this.data.map((rae) => {
       const limitationType = this.getLimitationType(
         rae.motifRte,
         rae.motifEnedis
       );
       const motif = this.getMotif(rae.motifRte, rae.motifEnedis, rae.typeSite);
+      const showDate = this.whichDateMustBeShown(rae.typeSite, rae.motifEnedis);
       return {
         ...rae,
-        showDate: this.whichDateMustBeShown(rae.typeSite, rae.motifEnedis),
+        showDate: showDate,
         motif: motif,
         limitationType: limitationType,
       };
@@ -88,16 +89,14 @@ export class ActivationsResultatsComponent implements OnChanges {
     motifEnedis: Motif | undefined,
     typeSite: TypeSite
   ): string {
-    if (this.instance == Instance.TSO) {
+    if (
+      this.instance == Instance.TSO ||
+      (this.instance == Instance.PRODUCER && typeSite == TypeSite.HTB) // A producer can see only his own site.
+    ) {
       return motifRteToString(motifRte);
-    } else if (this.instance == Instance.DSO) {
-      return motifEnedisToString(motifEnedis);
-    } else if (this.instance == Instance.PRODUCER && typeSite == TypeSite.HTB) {
-      return motifRteToString(motifRte);
-    } else if (this.instance == Instance.PRODUCER && typeSite == TypeSite.HTA) {
+    } else {
       return motifEnedisToString(motifEnedis);
     }
-    return '---';
   }
 
   private getLimitationType(
@@ -105,23 +104,10 @@ export class ActivationsResultatsComponent implements OnChanges {
     motifEnedis: Motif | undefined
   ): TypeLimitation {
     if (
-      motifEnedis == null ||
-      motifEnedis.messageType == null ||
-      motifEnedis.businessType == null ||
-      motifEnedis.reasonCode == null
-    ) {
-      return TypeLimitation.AUTOMATIQUE;
-    } else if (
-      motifRte != null &&
-      motifRte.messageType != null &&
-      motifRte.businessType != null &&
-      motifRte.reasonCode != null
-    ) {
-      return TypeLimitation.AUTOMATIQUE;
-    } else if (
-      motifIsEqualTo(motifEnedis, 'D01', 'Z02', 'A70') ||
-      motifIsEqualTo(motifEnedis, 'D01', 'Z03', 'Y98') ||
-      motifIsEqualTo(motifEnedis, 'D01', 'Z04', 'Y99')
+      motifEnedis != null &&
+      (motifIsEqualTo(motifEnedis, 'D01', 'Z02', 'A70') ||
+        motifIsEqualTo(motifEnedis, 'D01', 'Z03', 'Y98') ||
+        motifIsEqualTo(motifEnedis, 'D01', 'Z04', 'Y99'))
     ) {
       return TypeLimitation.MANUELLE;
     }

@@ -18,7 +18,7 @@ import java.util.Collections;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR, uses = {SiteMapper.class})
 public abstract class SiteResponseMapper {
 
-    private static final String NIL = "nil";
+    public static final String NIL = "nil";
 
     @Mapping(target = "content", source = "records")
     @Mapping(target = "totalElements", source = "fetchedRecordsCount")

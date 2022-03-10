@@ -32,12 +32,14 @@
     <td mat-cell *matCellDef="let element"> 
       <div *ngIf="element.showDate.showRteDate">
         <div class="text-emph">Début RTE</div>
-        {{ element.startCreatedDateTimeRte | date:'shortDate' }}<br/><strong>{{ element.startCreatedDateTimeRte | date:'mediumTime' }}</strong>
+        <span *ngIf="element.startCreatedDateTimeRte">{{ element.startCreatedDateTimeRte | date:'shortDate' }}<br/><strong>{{ element.startCreatedDateTimeRte | date:'mediumTime' }}</strong></span>
+        <span *ngIf="!element.startCreatedDateTimeRte">-</span>
       </div>
       <div *ngIf="element.showDate.showRteDate && element.showDate.showEnedisDate" class="pt-3"></div>
       <div *ngIf="element.showDate.showEnedisDate">
         <div class="text-emph">Début Enedis</div>
-        {{ element.startCreatedDateTimeEnedis | date:'shortDate' }}<br/><strong>{{ element.startCreatedDateTimeEnedis | date:'mediumTime' }}</strong>
+        <span *ngIf="element.startCreatedDateTimeEnedis">{{ element.startCreatedDateTimeEnedis | date:'shortDate' }}<br/><strong>{{ element.startCreatedDateTimeEnedis | date:'mediumTime' }}</strong></span>
+        <span *ngIf="!element.startCreatedDateTimeEnedis">-</span>
       </div>
     </td>
   </ng-container>
@@ -47,12 +49,14 @@
     <td mat-cell *matCellDef="let element"> 
       <div *ngIf="element.showDate.showRteDate">
         <div class="text-emph">Fin RTE</div>
-        {{ element.endCreatedDateTimeRte | date:'shortDate' }}<br/><strong>{{ element.endCreatedDateTimeRte | date:'mediumTime' }}</strong>
+        <span *ngIf="element.endCreatedDateTimeRte">{{ element.endCreatedDateTimeRte | date:'shortDate' }}<br/><strong>{{ element.endCreatedDateTimeRte | date:'mediumTime' }}</strong></span>
+        <span *ngIf="!element.endCreatedDateTimeRte">-</span>
       </div>
       <div *ngIf="element.showDate.showRteDate && element.showDate.showEnedisDate" class="pt-3"></div>
       <div *ngIf="element.showDate.showEnedisDate">
         <div class="text-emph">Fin Enedis</div>
-        {{ element.endCreatedDateTimeEnedis | date:'shortDate' }}<br/><strong>{{ element.endCreatedDateTimeEnedis | date:'mediumTime' }}</strong>
+        <span *ngIf="element.endCreatedDateTimeEnedis">{{ element.endCreatedDateTimeEnedis | date:'shortDate' }}<br/><strong>{{ element.endCreatedDateTimeEnedis | date:'mediumTime' }}</strong></span>
+        <span *ngIf="!element.endCreatedDateTimeEnedis">-</span>
       </div>
     </td>
   </ng-container>

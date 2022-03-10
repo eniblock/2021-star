@@ -7,12 +7,45 @@ export interface Motif {
   reasonCode: string;
 }
 
-export const motifIsEqualTo = (motif1: Motif, motif2: Motif): boolean => {
+export const motifIsEqualTo = (
+  motif1: Motif,
+  messageType: string,
+  businessType: string,
+  reasonCode: string
+): boolean => {
   return (
-    motif1.messageType == motif2.messageType &&
-    motif1.businessType == motif2.businessType &&
-    motif1.reasonCode == motif2.reasonCode
+    motif1.messageType == messageType &&
+    motif1.businessType == businessType &&
+    motif1.reasonCode == reasonCode
   );
+};
+
+export const motifRteToString = (motif?: Motif): string => {
+  if (
+    motif == null ||
+    motif.messageType == null ||
+    motif.businessType == null ||
+    motif.reasonCode == null
+  ) {
+    return '';
+  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'A70')) {
+    return 'Réseau complet';
+  }
+  return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;
+};
+
+export const motifEnedisToString = (motif?: Motif): string => {
+  if (
+    motif == null ||
+    motif.messageType == null ||
+    motif.businessType == null ||
+    motif.reasonCode == null
+  ) {
+    return '';
+  } else if (motifIsEqualTo(motif, '', '', '')) {
+    return '';
+  }
+  return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;
 };
 
 /* ******************************************************** */

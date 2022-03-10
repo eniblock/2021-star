@@ -10,38 +10,71 @@ import {
 import { RechercheActivationsEntite } from 'src/app/models/RechercheActivations';
 import { Sort } from '@angular/material/sort';
 import { TypeLimitation } from 'src/app/models/enum/TypeLimitation.enum';
-import { Motif, motifIsEqualTo } from 'src/app/models/Motifs';
+import {
+  Motif,
+  motifEnedisToString,
+  motifIsEqualTo,
+  motifRteToString,
+} from 'src/app/models/Motifs';
+import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
+import { InstanceService } from 'src/app/services/api/instance.service';
+import { Instance } from 'src/app/models/enum/Instance.enum';
 
 @Component({
   selector: 'app-activations-resultats',
   templateUrl: './activations-resultats.component.html',
   styleUrls: ['./activations-resultats.component.css'],
 })
-export class ActivationsResultatsComponent implements OnInit, OnChanges {
+export class ActivationsResultatsComponent implements OnChanges {
   @Input() data: RechercheActivationsEntite[] = [];
   @Input() columnsToDisplay: string[] = [];
   @Output() sortChange = new EventEmitter<Sort>();
 
   dataComputed: any = [];
 
-  constructor() {}
+  instance?: Instance;
 
-  ngOnInit() {}
+  constructor(private instanceService: InstanceService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.instanceService.getTypeInstance().subscribe((instance) => {
+      this.instance = instance;
+      this.updateContent();
+    });
+  }
+
+  private updateContent() {
     this.dataComputed = this.data.map((rae) => {
       const limitationType = this.getLimitationType(
         rae.motifRte,
         rae.motifEnedis
       );
+      const motif = this.getMotif(rae.motifRte, rae.motifEnedis, rae.typeSite);
       return {
         ...rae,
         showRteDates: true,
         showEnedisDates: true,
-        motif: '??? Le motif',
+        motif: motif,
         limitationType: limitationType,
       };
     });
+  }
+
+  private getMotif(
+    motifRte: Motif | undefined,
+    motifEnedis: Motif | undefined,
+    typeSite: TypeSite
+  ): string {
+    if (this.instance == Instance.TSO) {
+      return motifRteToString(motifRte);
+    } else if (this.instance == Instance.DSO) {
+      return motifEnedisToString(motifEnedis);
+    } else if (this.instance == Instance.PRODUCER && typeSite == TypeSite.HTB) {
+      return motifRteToString(motifRte);
+    } else if (this.instance == Instance.PRODUCER && typeSite == TypeSite.HTA) {
+      return motifEnedisToString(motifEnedis);
+    }
+    return '---';
   }
 
   private getLimitationType(
@@ -63,21 +96,9 @@ export class ActivationsResultatsComponent implements OnInit, OnChanges {
     ) {
       return TypeLimitation.AUTOMATIQUE;
     } else if (
-      motifIsEqualTo(motifEnedis, {
-        messageType: 'D01',
-        businessType: 'Z02',
-        reasonCode: 'A70',
-      }) ||
-      motifIsEqualTo(motifEnedis, {
-        messageType: 'D01',
-        businessType: 'Z03',
-        reasonCode: 'Y98',
-      }) ||
-      motifIsEqualTo(motifEnedis, {
-        messageType: 'D01',
-        businessType: 'Z04',
-        reasonCode: 'Y99',
-      })
+      motifIsEqualTo(motifEnedis, 'D01', 'Z02', 'A70') ||
+      motifIsEqualTo(motifEnedis, 'D01', 'Z03', 'Y98') ||
+      motifIsEqualTo(motifEnedis, 'D01', 'Z04', 'Y99')
     ) {
       return TypeLimitation.MANUELLE;
     }

@@ -217,6 +217,11 @@ h3 {
     td {
       padding-top: 25px !important;
       padding-bottom: 25px !important;
+      color: $mat-text !important;
+    }
+    .text-emph {
+      color: $mat-primary !important;
+      font-weight: 500;
     }
   }
 }

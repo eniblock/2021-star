@@ -92,7 +92,7 @@ const getMocks = (
                 businessType: 'C55',
                 reasonCode: 'A70',
               },
-              typeSite: TypeSite.HTA,
+              typeSite: TypeSite.HTB,
             },
             {
               technologyType: TechnologyType.EOLIEN,
@@ -149,8 +149,8 @@ const getMocks = (
                 reasonCode: 'A70',
               },
               motifEnedis: {
-                messageType: 'A98',
-                businessType: 'C55',
+                messageType: 'D01',
+                businessType: 'Z01',
                 reasonCode: 'A70',
               },
               typeSite: TypeSite.HTA,

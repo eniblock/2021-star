@@ -3,7 +3,6 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
@@ -52,12 +51,36 @@ export class ActivationsResultatsComponent implements OnChanges {
       const motif = this.getMotif(rae.motifRte, rae.motifEnedis, rae.typeSite);
       return {
         ...rae,
-        showRteDates: true,
-        showEnedisDates: true,
+        showDate: this.whichDateMustBeShown(rae.typeSite, rae.motifEnedis),
         motif: motif,
         limitationType: limitationType,
       };
     });
+  }
+
+  private whichDateMustBeShown(
+    typeSite: TypeSite,
+    motifEnedis: Motif | undefined
+  ): { showRteDate: boolean; showEnedisDate: boolean } {
+    if (typeSite == TypeSite.HTB) {
+      return {
+        showRteDate: true,
+        showEnedisDate: false,
+      };
+    } else if (
+      motifEnedis != null &&
+      motifIsEqualTo(motifEnedis, 'D01', 'Z01', 'A70')
+    ) {
+      return {
+        showRteDate: true,
+        showEnedisDate: true,
+      };
+    } else {
+      return {
+        showRteDate: false,
+        showEnedisDate: true,
+      };
+    }
   }
 
   private getMotif(

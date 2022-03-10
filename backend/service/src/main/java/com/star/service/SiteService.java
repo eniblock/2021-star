@@ -5,7 +5,6 @@ import com.cloudant.client.api.query.Expression;
 import com.cloudant.client.api.query.Operation;
 import com.cloudant.client.api.query.QueryBuilder;
 import com.cloudant.client.api.query.Selector;
-import com.star.enums.DocTypeEnum;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
@@ -40,6 +39,8 @@ import java.util.stream.Collectors;
 import static com.star.enums.DocTypeEnum.SITE;
 import static com.star.enums.InstanceEnum.DSO;
 import static com.star.enums.InstanceEnum.TSO;
+import static com.star.models.site.Site.isSiteHTA;
+import static com.star.models.site.Site.isSiteHTB;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -54,6 +55,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 @Slf4j
 public class SiteService {
+    private static final String REGEX = "(?i)(";
+    private static final String METERING_POINT_MRID = "meteringPointMrid";
 
     @Autowired
     private MessageSource messageSource;
@@ -97,13 +100,14 @@ public class SiteService {
         return importSiteResult;
     }
 
-    public SiteResponse findSite(SiteCrteria siteCrteria, String bookmark, Pageable pageable) throws BusinessException, TechnicalException {
+    public SiteResponse findSite(SiteCrteria siteCriteria, String bookmark, Pageable pageable) throws BusinessException, TechnicalException {
         boolean useIndex = false;
         Sort.Order producerMarketParticipantNameOrder = pageable.getSort().getOrderFor("producerMarketParticipantName");
         Sort.Order technologyTypeOrder = pageable.getSort().getOrderFor("technologyType");
         List<Selector> selectors = new ArrayList<>();
+        selectors.add(Expression.eq("docType", SITE.getDocType()));
         QueryBuilder queryBuilder;
-        addCriteria(selectors, siteCrteria, SITE);
+        addCriteria(selectors, siteCriteria);
         switch (selectors.size()) {
             case 0:
                 queryBuilder = new QueryBuilder(EmptyExpression.empty());
@@ -133,8 +137,7 @@ public class SiteService {
     }
 
 
-    private void addCriteria(List<Selector> selectors, SiteCrteria siteCrteria, DocTypeEnum docTypeEnum) throws BusinessException {
-        selectors.add(Expression.eq("docType", docTypeEnum.getDocType()));
+    private void addCriteria(List<Selector> selectors, SiteCrteria siteCrteria) throws BusinessException {
         if (isNotBlank(siteCrteria.getSiteName())) {
             selectors.add(Expression.eq("siteName", siteCrteria.getSiteName()));
         }
@@ -160,8 +163,8 @@ public class SiteService {
 
         if (isNotBlank(siteCrteria.getMeteringPointMrId())) {
             String meteringPointMrId = siteCrteria.getMeteringPointMrId();
-            if ((DSO.equals(siteCrteria.getInstance()) && Site.isSiteHTA(meteringPointMrId)) ||
-                    TSO.equals(siteCrteria.getInstance()) && Site.isSiteHTB(meteringPointMrId)) {
+            if ((DSO.equals(siteCrteria.getInstance()) && isSiteHTA(meteringPointMrId)) ||
+                    TSO.equals(siteCrteria.getInstance()) && isSiteHTB(meteringPointMrId)) {
                 selectors.add(Expression.eq("meteringPointMrId", siteCrteria.getMeteringPointMrId()));
             } else {
                 throw new BusinessException(messageSource.getMessage("import.file.meteringpointmrid.acces.error",
@@ -170,12 +173,12 @@ public class SiteService {
         } else {
             switch (siteCrteria.getInstance()) {
                 case DSO: // Site HTA (Enedis)
-                    selectors.add(Expression.regex("meteringPointMrid", "(?i)(" + Site.CODE_SITE_HTA + ")+"));
+                    selectors.add(Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTA + ")+"));
                     break;
                 case TSO: // Site HBT (RTE)
                     selectors.add(Operation.or(
-                            Expression.regex("meteringPointMrid", "(?i)(" + Site.CODE_SITE_HTB_PDL + ")+"),
-                            Expression.regex("meteringPointMrid", "(?i)(" + Site.CODE_SITE_HTB_CART + ")+")
+                            Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTB_PDL + ")+"),
+                            Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTB_CART + ")+")
                     ));
                     break;
                 case PRODUCER:
@@ -208,8 +211,8 @@ public class SiteService {
                         new String[]{meteringPointMrId}, null));
             }
 
-            if ((DSO.equals(instance) && Site.isSiteHTB(meteringPointMrId)) ||
-                    TSO.equals(instance) && Site.isSiteHTA(meteringPointMrId)) {
+            if ((DSO.equals(instance) && isSiteHTB(meteringPointMrId)) ||
+                    TSO.equals(instance) && isSiteHTA(meteringPointMrId)) {
                 importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.import.error",
                         new String[]{meteringPointMrId, instance.getValue()}, null));
             }

@@ -96,8 +96,14 @@ export const motifEnedisToString = (motif?: Motif): string => {
     motif.reasonCode == null
   ) {
     return '';
-  } else if (motifIsEqualTo(motif, '', '', '')) {
-    return '';
+  } else if (motifIsEqualTo(motif, 'D01', 'Z01', 'A70')) {
+    return 'Contrainte RPT avec ASR';
+  } else if (motifIsEqualTo(motif, 'D01', 'Z02', 'A70')) {
+    return 'Contrainte RPT sans ASR';
+  } else if (motifIsEqualTo(motif, 'D01', 'Z03', 'Y98')) {
+    return 'Incident RTE';
+  } else if (motifIsEqualTo(motif, 'D01', 'Z04', 'Y99')) {
+    return 'Incident Enedis';
   }
   return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;
 };

@@ -1,10 +1,10 @@
+import { DateHelper } from 'src/app/helpers/date.helper';
 import { Instance } from 'src/app/models/enum/Instance.enum';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { InstanceService } from 'src/app/services/api/instance.service';
 import { FormulaireRechercheActivations } from 'src/app/models/RechercheActivations';
 import { ActivationsService } from 'src/app/services/api/activations.service';
-import { DateHelper } from 'src/app/helpers/date.helper';
 
 @Component({
   selector: 'app-form-activations-recherche',
@@ -20,7 +20,6 @@ export class FormActivationsRechercheComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({
     originAutomationRegisteredResourceMrid: [''],
     producerMarketParticipantMrid: [''],
-    siteName: [''],
     startCreatedDateTime: [''],
     endCreatedDateTime: [''],
   });
@@ -35,12 +34,21 @@ export class FormActivationsRechercheComponent implements OnInit {
     this.instanceService.getTypeInstance().subscribe((typeInstance) => {
       this.typeInstance = typeInstance;
     });
-
     // On charge le formulaire en cache si y'en a un
     const formSauvegardeDansStorage: FormulaireRechercheActivations =
       this.activationsService.popFormulaireRecherche();
     if (formSauvegardeDansStorage != null) {
       this.form.patchValue(formSauvegardeDansStorage);
+      if (this.form.value.startCreatedDateTime) {
+        this.form
+          .get('startCreatedDateTime')
+          ?.setValue(new Date(this.form.value.startCreatedDateTime));
+      }
+      if (this.form.value.endCreatedDateTime) {
+        this.form
+          .get('endCreatedDateTime')
+          ?.setValue(new Date(this.form.value.endCreatedDateTime));
+      }
       this.onSubmit();
     }
   }

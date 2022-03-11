@@ -312,7 +312,7 @@ class SiteServiceTest extends AbstractTest {
         assertThat(bookmarkCaptor.getValue()).isEqualTo(bookmark);
         String queryValue = queryCaptor.getValue();
         assertThat(queryValue).contains("docType", "siteName", "substationName", "substationMrid",
-                "producerMarketParticipantName", "producerMarketParticipantMrid", "siteIecCode", "meteringPointMrId", "technologyType");
+                "producerMarketParticipantName", "producerMarketParticipantMrid", "siteIecCode", "meteringPointMrid", "technologyType");
     }
 
 

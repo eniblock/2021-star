@@ -3,6 +3,7 @@ import { MeasurementUnitType } from '../enums/MesurementUnitType';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { ActivationDocument } from '../model/activationDocument';
 import { YellowPages } from '../model/yellowPages';
+import { isEmpty } from 'lodash';
 
 export class ActivationDocumentController {
 
@@ -59,7 +60,7 @@ export class ActivationDocumentController {
         activationDocumentInput.docType = 'activationDocument';
         activationDocumentInput.reconciliation = false;
 
-        if (activationDocumentInput.endCreatedDatetime !== "" && activationDocumentInput.orderValue !== "") {
+        if (isEmpty(activationDocumentInput.endCreatedDatetime) && isEmpty(activationDocumentInput.orderValue)) {
             throw new Error(`Order must have a limitation value`);
         }
         if (identity === OrganizationTypeMsp.ENEDIS &&

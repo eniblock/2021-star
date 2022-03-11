@@ -74,6 +74,7 @@ public class ProducerController {
             content = {@Content(mediaType = "application/json")})})
     @GetMapping
     public ResponseEntity<List<Producer>> getMarketParticipants() throws TechnicalException, BusinessException {
+        // TODO : filtre quand on est sur un environnement producer
         return ResponseEntity.ok(producerService.getProducers());
     }
 

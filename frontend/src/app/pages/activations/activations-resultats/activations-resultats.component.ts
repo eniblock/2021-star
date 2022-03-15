@@ -29,6 +29,8 @@ export class ActivationsResultatsComponent implements OnChanges {
   @Input() columnsToDisplay: string[] = [];
   @Output() sortChange = new EventEmitter<Sort>();
 
+  TypeSite = TypeSite;
+
   dataComputed: any = [];
 
   instance?: Instance;
@@ -45,11 +47,18 @@ export class ActivationsResultatsComponent implements OnChanges {
   private computeData() {
     this.dataComputed = this.data.map((rae) => {
       const limitationType = this.getLimitationType(
-        rae.motifRte,
-        rae.motifEnedis
+        rae.rte?.motif,
+        rae.enedis?.motif
       );
-      const motif = this.getMotif(rae.motifRte, rae.motifEnedis, rae.typeSite);
-      const showDate = this.whichDateMustBeShown(rae.typeSite, rae.motifEnedis);
+      const motif = this.getMotif(
+        rae.rte?.motif,
+        rae.enedis?.motif,
+        rae.typeSite
+      );
+      const showDate = this.whichDateMustBeShown(
+        rae.typeSite,
+        rae.enedis?.motif
+      );
       return {
         ...rae,
         showDate: showDate,

@@ -15,18 +15,20 @@ export interface RechercheActivationsRequete
   extends FormulairePagination<OrdreRechercheActivations>,
     FormulaireRechercheActivations {}
 
+export interface SystemOperatorData {
+  originAutomationRegisteredResourceMrid?: string;
+  startCreatedDateTime?: string; // JSON
+  endCreatedDateTime?: string; // JSON
+  quantity?: number;
+  motif?: Motif;
+}
+
 export interface RechercheActivationsEntite {
   technologyType?: TechnologyType;
-  originAutomationRegisteredResourceMrid?: string;
+  producerMarketParticipantMrid?: string;
   producerMarketParticipantName?: string;
   siteName?: string;
-  producerMarketParticipantMrid?: string;
-  startCreatedDateTimeEnedis?: string; // JSON
-  endCreatedDateTimeEnedis?: string; // JSON
-  startCreatedDateTimeRte?: string; // JSON
-  endCreatedDateTimeRte?: string; // JSON
-  quantity?: number;
-  motifRte?: Motif;
-  motifEnedis?: Motif;
   typeSite: TypeSite;
+  rte?: SystemOperatorData;
+  enedis?: SystemOperatorData;
 }

@@ -24,7 +24,7 @@ export class DateHelper {
     ];
   }
 
-  static toDatetime(date: Date, time: string): Date {
+  public static toDatetime(date: Date, time: string): Date {
     const t = DateHelper.stringToTime(time);
     let d = new Date(date.getTime());
     d.setHours(t[0]);

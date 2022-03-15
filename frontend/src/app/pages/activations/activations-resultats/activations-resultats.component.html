@@ -1,0 +1,86 @@
+<table mat-table matSort [dataSource]="dataComputed" class="w-100 activations" (matSortChange)="sortChange.emit($event)">
+  
+  <ng-container matColumnDef="technologyType">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'technologyType' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> 
+      <app-icon-technology-type [technologyType]="element.technologyType"></app-icon-technology-type>
+    </td>
+  </ng-container>
+  
+  <ng-container matColumnDef="originAutomationRegisteredResourceMrid">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'originAutomationRegisteredResourceMrid' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> <strong>{{ element.originAutomationRegisteredResourceMrid }}</strong> </td>
+  </ng-container>
+  
+  <ng-container matColumnDef="producerMarketParticipantName">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'producerMarketParticipantName' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> <strong>{{ element.producerMarketParticipantName }}</strong> </td>
+  </ng-container>
+  
+  <ng-container matColumnDef="siteName">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'siteName' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> {{ element.siteName }} </td>
+  </ng-container>
+  
+  <ng-container matColumnDef="producerMarketParticipantMrid">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'producerMarketParticipantMrid' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> {{ element.producerMarketParticipantMrid }} </td>
+  </ng-container>
+  
+  <ng-container matColumnDef="debutLimitation">
+    <th mat-header-cell *matHeaderCellDef> {{ 'debutLimitation' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> 
+      <div *ngIf="element.showDate.showRteDate">
+        <div class="text-emph">Début RTE</div>
+        <span *ngIf="element.startCreatedDateTimeRte">{{ element.startCreatedDateTimeRte | date:'shortDate' }}<br/><strong>{{ element.startCreatedDateTimeRte | date:'mediumTime' }}</strong></span>
+        <span *ngIf="!element.startCreatedDateTimeRte">-</span>
+      </div>
+      <div *ngIf="element.showDate.showRteDate && element.showDate.showEnedisDate" class="pt-3"></div>
+      <div *ngIf="element.showDate.showEnedisDate">
+        <div class="text-emph">Début Enedis</div>
+        <span *ngIf="element.startCreatedDateTimeEnedis">{{ element.startCreatedDateTimeEnedis | date:'shortDate' }}<br/><strong>{{ element.startCreatedDateTimeEnedis | date:'mediumTime' }}</strong></span>
+        <span *ngIf="!element.startCreatedDateTimeEnedis">-</span>
+      </div>
+    </td>
+  </ng-container>
+  
+  <ng-container matColumnDef="finLimitation">
+    <th mat-header-cell *matHeaderCellDef> {{ 'finLimitation' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> 
+      <div *ngIf="element.showDate.showRteDate">
+        <div class="text-emph">Fin RTE</div>
+        <span *ngIf="element.endCreatedDateTimeRte">{{ element.endCreatedDateTimeRte | date:'shortDate' }}<br/><strong>{{ element.endCreatedDateTimeRte | date:'mediumTime' }}</strong></span>
+        <span *ngIf="!element.endCreatedDateTimeRte">-</span>
+      </div>
+      <div *ngIf="element.showDate.showRteDate && element.showDate.showEnedisDate" class="pt-3"></div>
+      <div *ngIf="element.showDate.showEnedisDate">
+        <div class="text-emph">Fin Enedis</div>
+        <span *ngIf="element.endCreatedDateTimeEnedis">{{ element.endCreatedDateTimeEnedis | date:'shortDate' }}<br/><strong>{{ element.endCreatedDateTimeEnedis | date:'mediumTime' }}</strong></span>
+        <span *ngIf="!element.endCreatedDateTimeEnedis">-</span>
+      </div>
+    </td>
+  </ng-container>
+  
+  <ng-container matColumnDef="typeLimitation">
+    <th mat-header-cell *matHeaderCellDef> {{ 'typeLimitation' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> {{ element.limitationType }} </td>
+  </ng-container>
+  
+  <ng-container matColumnDef="quantity">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'quantity' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> {{ element.quantity }}</td>
+  </ng-container>
+  
+  <ng-container matColumnDef="motif">
+    <th mat-header-cell *matHeaderCellDef> {{ 'motif' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> {{ element.motif }} </td>
+  </ng-container>
+  
+  <ng-container matColumnDef="indemnisation">
+    <th mat-header-cell *matHeaderCellDef> {{ 'indemnisation' | ActivationTableField}} </th>
+    <td mat-cell *matCellDef="let element"> - </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+</table>

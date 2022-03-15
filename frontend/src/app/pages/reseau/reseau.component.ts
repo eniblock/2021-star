@@ -24,9 +24,7 @@ export class ReseauComponent implements OnInit {
   order = OrdreRechercheReseau.producerMarketParticipantName;
 
   totalElements: number = -1;
-
   resultatsRecherche: RechercheReseauEntite[] = [];
-
   afficherBoutonSuite = false;
 
   typeInstance?: Instance;

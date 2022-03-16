@@ -15,7 +15,7 @@ export class DateHelper {
     return DateHelper.makeDate(day, month, year);
   }
 
-  public static stringToTime(dateStr: string): number[] {
+  private static stringToTime(dateStr: string): number[] {
     const timeParts = dateStr.split(':');
     return [
       parseInt(timeParts[0], 10),

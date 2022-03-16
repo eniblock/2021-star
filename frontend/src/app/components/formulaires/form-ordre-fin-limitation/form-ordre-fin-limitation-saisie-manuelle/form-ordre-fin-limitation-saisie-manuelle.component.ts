@@ -60,7 +60,7 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
   onSubmit(stepperRef: MatStepper) {
     const form = {
       ...this.form.value,
-      endCreatedDateTime: this.endCreatedDateTime,
+      endCreatedDateTime: this.endCreatedDateTime.toJSON().split('.')[0] + 'Z',
       messageType: this.form.value.messageType.code,
       businessType: this.form.value.businessType.code,
       reasonCode: this.form.value.reasonCode.code,

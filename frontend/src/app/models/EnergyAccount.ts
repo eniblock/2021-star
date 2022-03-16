@@ -11,5 +11,5 @@ export interface EnergyAccount {
   timeInterval: string; // Format : YYYY-MM-DDThh:mmZ / YYYY-MM-DDThh:mmZ
   resolution: string; // Format : PnYnMnDTnHnMnS
   measurementUnitName: MeasurementUnitName;
-  energyAccountPoint: EnergyAccountPoint[];
+  energyAccountPoints: EnergyAccountPoint[];
 }

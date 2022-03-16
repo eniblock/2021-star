@@ -73,7 +73,7 @@ const getMocks = (
       pagination.bookmark == null
         ? [
             {
-              meteringPointMrid: 'mpmrid1', // NEW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+              meteringPointMrid: 'mpmrid1',
               technologyType: TechnologyType.EOLIEN,
               producerMarketParticipantName: 'Prod2',
               producerMarketParticipantMrid: '17Y100A102R0629X',
@@ -89,8 +89,8 @@ const getMocks = (
                   businessType: 'C55',
                   reasonCode: 'Z71',
                 },
-                orderValue: 13, // NEW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                measurementUnitName: MeasurementUnitName.MW, // NEW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                orderValue: 13,
+                measurementUnitName: MeasurementUnitName.MW,
               },
               enedis: {
                 originAutomationRegisteredResourceMrid: 'CONFOLENS',
@@ -102,8 +102,8 @@ const getMocks = (
                   businessType: '',
                   reasonCode: '',
                 },
-                orderValue: 13, // NEW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                measurementUnitName: MeasurementUnitName.MW, // NEW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                orderValue: 13,
+                measurementUnitName: MeasurementUnitName.MW,
               },
             },
             {

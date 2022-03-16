@@ -1,3 +1,4 @@
+import { MeasurementUnitName } from './enum/MeasurementUnitName.enum';
 import { OrdreRechercheActivations } from './enum/OrdreRechercheActivations.enum';
 import { TechnologyType } from './enum/TechnologyType.enum';
 import { TypeSite } from './enum/TypeSite.enum';
@@ -21,9 +22,12 @@ export interface SystemOperatorData {
   endCreatedDateTime?: string; // JSON
   quantity?: number;
   motif?: Motif;
+  orderValue?: number; // Consigne graph
+  measurementUnitName?: MeasurementUnitName; // Consigne graph
 }
 
 export interface RechercheActivationsEntite {
+  meteringPointMrid: string;
   technologyType?: TechnologyType;
   producerMarketParticipantMrid?: string;
   producerMarketParticipantName?: string;

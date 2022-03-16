@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { MeasurementUnitName } from 'src/app/models/enum/MeasurementUnitName.enum';
 import { OrdreRechercheActivations } from 'src/app/models/enum/OrdreRechercheActivations.enum';
 import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
 import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
@@ -72,6 +73,7 @@ const getMocks = (
       pagination.bookmark == null
         ? [
             {
+              meteringPointMrid: 'mpmrid1', // NEW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
               technologyType: TechnologyType.EOLIEN,
               producerMarketParticipantName: 'Prod2',
               producerMarketParticipantMrid: '17Y100A102R0629X',
@@ -87,6 +89,8 @@ const getMocks = (
                   businessType: 'C55',
                   reasonCode: 'Z71',
                 },
+                orderValue: 13, // NEW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                measurementUnitName: MeasurementUnitName.MW, // NEW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
               },
               enedis: {
                 originAutomationRegisteredResourceMrid: 'CONFOLENS',
@@ -98,9 +102,12 @@ const getMocks = (
                   businessType: '',
                   reasonCode: '',
                 },
+                orderValue: 13, // NEW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                measurementUnitName: MeasurementUnitName.MW, // NEW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
               },
             },
             {
+              meteringPointMrid: 'mpmrid2',
               technologyType: TechnologyType.EOLIEN,
               producerMarketParticipantName: 'Prodtest',
               producerMarketParticipantMrid: '17Y100A101R0629X',
@@ -116,6 +123,8 @@ const getMocks = (
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
+                orderValue: 13,
+                measurementUnitName: MeasurementUnitName.MW,
               },
               enedis: {
                 originAutomationRegisteredResourceMrid: 'MANSLE',
@@ -127,9 +136,12 @@ const getMocks = (
                   businessType: '',
                   reasonCode: '',
                 },
+                orderValue: 13,
+                measurementUnitName: MeasurementUnitName.MW,
               },
             },
             {
+              meteringPointMrid: 'mpmrid3',
               technologyType: TechnologyType.EOLIEN,
               producerMarketParticipantName: 'Prod3',
               producerMarketParticipantMrid: '17Y100A103R0629X',
@@ -145,6 +157,8 @@ const getMocks = (
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
+                orderValue: 13,
+                measurementUnitName: MeasurementUnitName.MW,
               },
               enedis: {
                 originAutomationRegisteredResourceMrid: 'MANSLE',
@@ -156,9 +170,12 @@ const getMocks = (
                   businessType: 'Z01',
                   reasonCode: 'A70',
                 },
+                orderValue: 13,
+                measurementUnitName: MeasurementUnitName.MW,
               },
             },
             {
+              meteringPointMrid: 'mpmrid4',
               technologyType: TechnologyType.EOLIEN,
               producerMarketParticipantName: 'Prod2',
               producerMarketParticipantMrid: '17Y100A102R0629X',
@@ -174,6 +191,8 @@ const getMocks = (
                   businessType: 'C55',
                   reasonCode: 'A70',
                 },
+                orderValue: 13,
+                measurementUnitName: MeasurementUnitName.MW,
               },
               enedis: {
                 originAutomationRegisteredResourceMrid: 'LONGCHAMPS',
@@ -185,6 +204,8 @@ const getMocks = (
                   businessType: 'Z01',
                   reasonCode: 'A70',
                 },
+                orderValue: 13,
+                measurementUnitName: MeasurementUnitName.MW,
               },
             },
           ]

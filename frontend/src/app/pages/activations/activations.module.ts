@@ -16,7 +16,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MicroComponentsModule } from 'src/app/components/micro-components/micro-components.module';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { GraphModule } from 'src/app/components/graph/graph.module';
-import { GraphComponent } from 'src/app/components/graph/graph.component';
+import { ActivationGraphComponent } from './activation-graph/activation-graph.component';
 
 @NgModule({
   imports: [
@@ -39,7 +39,7 @@ import { GraphComponent } from 'src/app/components/graph/graph.component';
     ActivationsPaginationComponent,
     ActivationsResultatsComponent,
     ActivationsColumnSelectorComponent,
-    GraphComponent,
+    ActivationGraphComponent,
   ],
 })
 export class ActivationsModule {}

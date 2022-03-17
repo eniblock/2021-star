@@ -18,6 +18,8 @@ import {
 import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
 import { InstanceService } from 'src/app/services/api/instance.service';
 import { Instance } from 'src/app/models/enum/Instance.enum';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { GraphComponent } from '../graph/graph.component';
 
 @Component({
   selector: 'app-activations-resultats',
@@ -35,7 +37,10 @@ export class ActivationsResultatsComponent implements OnChanges {
 
   instance?: Instance;
 
-  constructor(private instanceService: InstanceService) {}
+  constructor(
+    private instanceService: InstanceService,
+    private bottomSheet: MatBottomSheet
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.instanceService.getTypeInstance().subscribe((instance) => {
@@ -121,5 +126,17 @@ export class ActivationsResultatsComponent implements OnChanges {
       return TypeLimitation.MANUELLE;
     }
     return TypeLimitation.AUTOMATIQUE;
+  }
+
+  showGraph(activation: RechercheActivationsEntite) {
+    const operatorData =
+      activation.typeSite == TypeSite.HTA ? activation.enedis : activation.rte;
+    this.bottomSheet.open(GraphComponent, {
+      data: {
+        meteringPointMrid: activation.meteringPointMrid,
+        startCreatedDateTime: operatorData?.startCreatedDateTime,
+        endCreatedDateTime: operatorData?.endCreatedDateTime,
+      },
+    });
   }
 }

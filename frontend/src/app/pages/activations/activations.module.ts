@@ -15,6 +15,8 @@ import { ActivationsColumnSelectorComponent } from './activations-column-selecto
 import { MatSortModule } from '@angular/material/sort';
 import { MicroComponentsModule } from 'src/app/components/micro-components/micro-components.module';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { GraphModule } from 'src/app/components/graph/graph.module';
+import { GraphComponent } from 'src/app/components/graph/graph.component';
 
 @NgModule({
   imports: [
@@ -30,12 +32,14 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
     MatTableModule,
     MatSortModule,
     MatBottomSheetModule,
+    GraphModule,
   ],
   declarations: [
     ActivationsComponent,
     ActivationsPaginationComponent,
     ActivationsResultatsComponent,
     ActivationsColumnSelectorComponent,
+    GraphComponent,
   ],
 })
 export class ActivationsModule {}

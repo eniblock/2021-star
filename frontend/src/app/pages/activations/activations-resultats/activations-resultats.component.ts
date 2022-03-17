@@ -19,7 +19,7 @@ import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
 import { InstanceService } from 'src/app/services/api/instance.service';
 import { Instance } from 'src/app/models/enum/Instance.enum';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { GraphComponent } from '../graph/graph.component';
+import { ActivationGraphComponent } from '../activation-graph/activation-graph.component';
 
 @Component({
   selector: 'app-activations-resultats',
@@ -131,7 +131,7 @@ export class ActivationsResultatsComponent implements OnChanges {
   showGraph(activation: RechercheActivationsEntite) {
     const operatorData =
       activation.typeSite == TypeSite.HTA ? activation.enedis : activation.rte;
-    this.bottomSheet.open(GraphComponent, {
+    this.bottomSheet.open(ActivationGraphComponent, {
       data: {
         meteringPointMrid: activation.meteringPointMrid,
         startCreatedDateTime: operatorData?.startCreatedDateTime,

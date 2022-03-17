@@ -4,11 +4,11 @@ import { EnergyAccount } from 'src/app/models/EnergyAccount';
 import { EnergyAccountService } from 'src/app/services/api/energy-account.service';
 
 @Component({
-  selector: 'app-graph',
-  templateUrl: './graph.component.html',
-  styleUrls: ['./graph.component.css'],
+  selector: 'app-activation-graph',
+  templateUrl: './activation-graph.component.html',
+  styleUrls: ['./activation-graph.component.css'],
 })
-export class GraphComponent implements OnInit {
+export class ActivationGraphComponent implements OnInit {
   data: EnergyAccount[] = [];
 
   constructor(

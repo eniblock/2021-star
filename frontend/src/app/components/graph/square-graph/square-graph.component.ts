@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import {
   Component,
   Input,
@@ -35,7 +36,7 @@ export class SquareGraphComponent implements OnInit, OnChanges {
 
   echartsData: EChartsOption = {};
 
-  constructor() {}
+  constructor(public datepipe: DatePipe) {}
 
   ngOnInit() {}
 
@@ -45,6 +46,7 @@ export class SquareGraphComponent implements OnInit, OnChanges {
 
   private makeEchartsData() {
     if (this.graphData != null) {
+      const datepipe = this.datepipe;
       const graphData = this.graphData;
 
       // Searching maximum and minimum timestamp (x-axis)
@@ -64,12 +66,17 @@ export class SquareGraphComponent implements OnInit, OnChanges {
         tooltip: {
           trigger: 'axis',
           formatter: function (params: any, ticket: any, callback: any) {
-            let res = '';
+            console.log(params);
+            let res =
+              datepipe.transform(
+                new Date(params[0].axisValue * 1000),
+                'dd/MM/yyyy hh:mm:ss'
+              ) + '<br/>';
             for (let i = 0; i < params.length; i++) {
               let p = params[i];
-              res = i > 0 ? '<br/>' : '';
+              res += i > 0 ? '<br/>' : '';
               if (p.seriesName != null && p.seriesName != '') {
-                res += p.marker + p.seriesName + ' = ' + p.value[1];
+                res += p.marker + p.seriesName + ' : ' + p.value[1];
               } else {
                 res += p.marker + p.value[1];
               }
@@ -90,12 +97,22 @@ export class SquareGraphComponent implements OnInit, OnChanges {
         },
         xAxis: {
           type: 'value',
-          //minInterval: 1,
+          //////////////minInterval: 1,
           min: minTimestamp,
           max: maxTimestamp,
           name: graphData.xTitle,
           nameLocation: 'middle',
           nameGap: 35,
+          axisLabel: {
+            formatter: function (value: any, index: any) {
+              return (
+                datepipe.transform(new Date(value * 1000), 'dd/MM') +
+                '\n' +
+                datepipe.transform(new Date(value * 1000), 'hh:mm')
+              );
+            },
+          },
+
           splitLine: { show: false },
         },
         yAxis: {

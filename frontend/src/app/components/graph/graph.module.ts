@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { SquareGraphComponent } from './square-graph/square-graph.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 
@@ -10,6 +10,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
       echarts: () => import('echarts'),
     }),
   ],
+  providers: [DatePipe],
   exports: [SquareGraphComponent],
   declarations: [SquareGraphComponent],
 })

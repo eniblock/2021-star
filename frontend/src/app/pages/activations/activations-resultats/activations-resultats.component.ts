@@ -132,6 +132,7 @@ export class ActivationsResultatsComponent implements OnChanges {
     const operatorData =
       activation.typeSite == TypeSite.HTA ? activation.enedis : activation.rte;
     this.bottomSheet.open(ActivationGraphComponent, {
+      panelClass: 'graph-bottom-sheet',
       data: {
         meteringPointMrid: activation.meteringPointMrid,
         startCreatedDateTime: operatorData?.startCreatedDateTime,

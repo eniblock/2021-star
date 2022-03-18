@@ -61,12 +61,24 @@ export class SquareGraphComponent implements OnInit, OnChanges {
         }
       });
 
+      // Graph points wrt graphData
+      graphData.data.forEach((serie, indice) => {
+        let graphPoints: Point[] = [];
+        if (serie.length > 0 && serie[0].x != minTimestamp) {
+          graphPoints.push({ x: minTimestamp, y: serie[0].y });
+        }
+        graphPoints = graphPoints.concat(serie);
+        if (serie.length > 0 && serie[serie.length - 1].x != maxTimestamp) {
+          graphPoints.push({ x: maxTimestamp, y: serie[serie.length - 1].y });
+        }
+        graphData.data[indice] = graphPoints;
+      });
+
       // We init Echarts data
       let echartsData: EChartsOption = {
         tooltip: {
           trigger: 'axis',
           formatter: function (params: any, ticket: any, callback: any) {
-            console.log(params);
             let res =
               datepipe.transform(
                 new Date(params[0].axisValue * 1000),

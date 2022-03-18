@@ -8,7 +8,7 @@ import {
 import { EChartsOption } from 'echarts';
 
 export interface Point {
-  x: number;
+  x: number; // timestamp
   y: number;
 }
 
@@ -45,8 +45,21 @@ export class SquareGraphComponent implements OnInit, OnChanges {
 
   private makeEchartsData() {
     if (this.graphData != null) {
-      const data = this.graphData;
+      const graphData = this.graphData;
 
+      // Searching maximum and minimum timestamp (x-axis)
+      let minTimestamp = Number.MAX_SAFE_INTEGER;
+      let maxTimestamp = Number.MIN_SAFE_INTEGER;
+      const xMin = graphData.data.forEach((serie) => {
+        if (serie.length > 0 && serie[0].x < minTimestamp) {
+          minTimestamp = serie[0].x;
+        }
+        if (serie.length > 0 && serie[serie.length - 1].x > maxTimestamp) {
+          maxTimestamp = serie[serie.length - 1].x;
+        }
+      });
+
+      // We init Echarts data
       let echartsData: EChartsOption = {
         tooltip: {
           trigger: 'axis',
@@ -68,8 +81,8 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           show: true,
           feature: {
             saveAsImage: {
-              title: 'enregistrer',
-              name: data.exportFileName
+              title: 'enregistrer             ',
+              name: graphData.exportFileName
                 .replace(/[^a-z0-9\-]/gi, '_')
                 .toLowerCase(),
             },
@@ -77,14 +90,17 @@ export class SquareGraphComponent implements OnInit, OnChanges {
         },
         xAxis: {
           type: 'value',
-          name: data.xTitle,
+          //minInterval: 1,
+          min: minTimestamp,
+          max: maxTimestamp,
+          name: graphData.xTitle,
           nameLocation: 'middle',
           nameGap: 35,
           splitLine: { show: false },
         },
         yAxis: {
           type: 'value',
-          name: data.yTitle,
+          name: graphData.yTitle,
           nameLocation: 'middle',
           nameGap: 35,
           nameTextStyle: { fontWeight: 'bold' }, // fontSize:14
@@ -92,27 +108,9 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           splitLine: { show: false },
         },
         legend: {
-          data: data.serieNames,
+          data: graphData.serieNames,
         },
-        series: [
-          {
-            name: 'aaa',
-            type: 'line',
-            symbolSize: 10,
-            smooth: false,
-            symbol: 'circle',
-            lineStyle: {
-              type: 'solid',
-            },
-            data: [
-              [15, 0],
-              [-50, 10],
-              [-56.5, 20],
-              [-46.5, 30],
-              [-22.1, 40],
-            ],
-          },
-        ],
+        series: [],
         dataZoom: [
           {
             type: 'inside',
@@ -121,6 +119,17 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           },
         ],
       };
+
+      // We add data
+      graphData.data.forEach((serie, indice) =>
+        (echartsData.series as any).push({
+          name: graphData.serieNames[indice],
+          type: 'line',
+          symbolSize: 10,
+          smooth: false,
+          data: serie.map((p) => [p.x, p.y]),
+        })
+      );
 
       this.echartsData = echartsData;
     }

@@ -13,22 +13,18 @@ export class ActivationGraphComponent implements OnInit {
   data: EnergyAccount[] = [];
   graphData?: GraphData = {
     yTitle: 'Puissance (MW)',
-    serieNames: ['Référence', 'Consigne', 'Comptage'],
+    serieNames: ['Référence', 'Consigne'],
     data: [
       [
-        { x: 1, y: 8 },
-        { x: 3, y: 2 },
-        { x: 4, y: 3 },
-        { x: 5, y: 7 },
-        { x: 6, y: 2 },
+        { x: new Date('2015/04/29 11:24:00').getTime() / 1000, y: 8 },
+        { x: new Date('2015/04/29 11:28:00').getTime() / 1000, y: 2 },
+        { x: new Date('2015/04/29 12:24:00').getTime() / 1000, y: 3 },
       ],
       [
-        { x: 1, y: 1 },
-        { x: 2, y: 2 },
-        { x: 3, y: 2 },
-        { x: 10, y: 3 },
-        { x: 14, y: 2 },
-        { x: 15, y: 4 },
+        { x: new Date('2015/04/29 11:23:00').getTime() / 1000, y: 1 },
+        { x: new Date('2015/04/29 11:29:00').getTime() / 1000, y: 2 },
+        { x: new Date('2015/04/29 12:10:00').getTime() / 1000, y: 2 },
+        { x: new Date('2015/04/29 12:15:00').getTime() / 1000, y: 3 },
       ],
     ],
     exportFileName: 'monFichier',

@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 class OrdreLimitationControllerTest extends AbstractIntTest {
 
-    private static final String URL = OrdreLimitationController.PATH+"/debut/files";
+    private static final String URL = OrdreLimitationController.PATH+"/debut";
 
     @Value("classpath:/ordreLimitation/ordre-debut-limitation-sans-extension")
     private Resource ordreLimitationWithoutExtension;

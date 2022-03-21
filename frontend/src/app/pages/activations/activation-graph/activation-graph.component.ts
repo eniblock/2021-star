@@ -16,7 +16,7 @@ export class ActivationGraphComponent implements OnInit {
     serieNames: ['Référence', 'Consigne'],
     data: [
       [
-        { x: new Date('2015/04/29 11:24:00').getTime() / 1000, y: 8 },
+        { x: new Date('2015/04/28 11:24:00').getTime() / 1000, y: 8 },
         { x: new Date('2015/04/29 11:28:00').getTime() / 1000, y: 4 },
         { x: new Date('2015/04/29 12:24:00').getTime() / 1000, y: 3 },
       ],

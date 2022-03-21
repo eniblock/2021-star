@@ -117,6 +117,7 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           nameGap: 35,
           axisLabel: {
             formatter: function (value: any, index: any) {
+              console.log(value, index);
               return (
                 datepipe.transform(new Date(value * 1000), 'dd/MM') +
                 '\n' +
@@ -151,25 +152,14 @@ export class SquareGraphComponent implements OnInit, OnChanges {
 
       // We add data
       graphData.data.forEach((serie, indice) => {
-        let squareSerie = [];
-        if (serie.length >= 1) {
-          const p = serie[0];
-          squareSerie.push([p.x, p.y]);
-        }
-        for (let i = 1; i < serie.length; i++) {
-          const p_1 = serie[i - 1];
-          const p = serie[i];
-          if (p.y != p_1.y || i == serie.length - 1) {
-            squareSerie.push([p.x, p_1.y]);
-            squareSerie.push([p.x, p.y]);
-          }
-        }
         (echartsData.series as any).push({
           name: graphData.serieNames[indice],
           type: 'line',
-          symbolSize: 10,
+          symbol: 'circle',
+          symbolSize: 5,
+          step: 'end',
           smooth: false,
-          data: squareSerie,
+          data: serie.map((p) => [p.x, p.y]),
         });
       });
 

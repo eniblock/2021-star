@@ -23,7 +23,7 @@ export class ActivationGraphComponent implements OnInit {
       [
         { x: new Date('2015/04/29 11:23:00').getTime() / 1000, y: 1 },
         { x: new Date('2015/04/29 11:29:00').getTime() / 1000, y: 2 },
-        { x: new Date('2015/04/29 12:10:00').getTime() / 1000, y: 2 },
+        { x: new Date('2015/04/29 12:10:00').getTime() / 1000, y: 1 },
         { x: new Date('2015/04/29 12:15:00').getTime() / 1000, y: 7 },
       ],
     ],

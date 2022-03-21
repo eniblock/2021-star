@@ -117,7 +117,6 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           nameGap: 35,
           axisLabel: {
             formatter: function (value: any, index: any) {
-              console.log(value, index);
               return (
                 datepipe.transform(new Date(value * 1000), 'dd/MM') +
                 '\n' +

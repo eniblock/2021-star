@@ -150,15 +150,28 @@ export class SquareGraphComponent implements OnInit, OnChanges {
       };
 
       // We add data
-      graphData.data.forEach((serie, indice) =>
+      graphData.data.forEach((serie, indice) => {
+        let squareSerie = [];
+        if (serie.length >= 1) {
+          const p = serie[0];
+          squareSerie.push([p.x, p.y]);
+        }
+        for (let i = 1; i < serie.length; i++) {
+          const p_1 = serie[i - 1];
+          const p = serie[i];
+          if (p.y != p_1.y || i == serie.length - 1) {
+            squareSerie.push([p.x, p_1.y]);
+            squareSerie.push([p.x, p.y]);
+          }
+        }
         (echartsData.series as any).push({
           name: graphData.serieNames[indice],
           type: 'line',
           symbolSize: 10,
           smooth: false,
-          data: serie.map((p) => [p.x, p.y]),
-        })
-      );
+          data: squareSerie,
+        });
+      });
 
       this.echartsData = echartsData;
     }

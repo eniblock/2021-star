@@ -61,17 +61,17 @@ export class SquareGraphComponent implements OnInit, OnChanges {
         }
       });
 
-      // Graph points wrt graphData
+      // Remove unsed points
       graphData.data.forEach((serie, indice) => {
-        let graphPoints: Point[] = [];
-        if (serie.length > 0 && serie[0].x != minTimestamp) {
-          graphPoints.push({ x: minTimestamp, y: serie[0].y });
-        }
-        graphPoints = graphPoints.concat(serie);
-        if (serie.length > 0 && serie[serie.length - 1].x != maxTimestamp) {
-          graphPoints.push({ x: maxTimestamp, y: serie[serie.length - 1].y });
-        }
-        graphData.data[indice] = graphPoints;
+        graphData.data[indice] = serie.reduce(
+          (acc: Point[], val: Point, index: number) =>
+            acc.length == 0 ||
+            val.y != acc[acc.length - 1].y ||
+            index == serie.length - 1
+              ? [...acc, val]
+              : acc,
+          []
+        );
       });
 
       // We init Echarts data

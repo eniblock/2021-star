@@ -20,6 +20,7 @@ import {
   motifRteToString,
 } from 'src/app/rules/motif-rules';
 import { whichDateMustBeShown } from 'src/app/rules/show-date-rules';
+import { getLimitationType } from 'src/app/rules/limitation-type';
 
 @Component({
   selector: 'app-activations-resultats',
@@ -51,7 +52,7 @@ export class ActivationsResultatsComponent implements OnChanges {
 
   private computeData() {
     this.dataComputed = this.data.map((rae) => {
-      const limitationType = this.getLimitationType(
+      const limitationType = getLimitationType(
         rae.rte?.motif,
         rae.enedis?.motif
       );
@@ -83,21 +84,6 @@ export class ActivationsResultatsComponent implements OnChanges {
     } else {
       return motifEnedisToString(motifEnedis);
     }
-  }
-
-  private getLimitationType(
-    motifRte: Motif | undefined,
-    motifEnedis: Motif | undefined
-  ): TypeLimitation {
-    if (
-      motifEnedis != null &&
-      (motifIsEqualTo(motifEnedis, 'D01', 'Z02', 'A70') ||
-        motifIsEqualTo(motifEnedis, 'D01', 'Z03', 'Y98') ||
-        motifIsEqualTo(motifEnedis, 'D01', 'Z04', 'Y99'))
-    ) {
-      return TypeLimitation.MANUELLE;
-    }
-    return TypeLimitation.AUTOMATIQUE;
   }
 
   showGraph(activation: RechercheActivationsEntite) {

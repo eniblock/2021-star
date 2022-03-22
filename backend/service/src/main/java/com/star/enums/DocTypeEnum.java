@@ -6,7 +6,8 @@ package com.star.enums;
  */
 public enum DocTypeEnum {
     SITE("site", "_design/indexSiteDoc"),
-    PRODUCER("producer", "_design/indexProducerMarketParticipantDoc");
+    PRODUCER("producer", "_design/indexProducerMarketParticipantDoc"),
+    YELLOW_PAGES("yellowPages", "_design/indexYellowPagesDoc");
     private String docType;
     private String indexName;
 

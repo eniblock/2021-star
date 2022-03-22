@@ -1,1 +1,4 @@
-<app-square-graph [graphData]="graphData"></app-square-graph>
+<app-square-graph [graphData]="graphData" *ngIf="!invalidData"></app-square-graph>
+<div class="text-danger d-flex align-items-center justify-content-center" style="height: 100%;" *ngIf="invalidData">
+    <strong>Données non complètes pour tracer ce graphique...</strong>
+</div>

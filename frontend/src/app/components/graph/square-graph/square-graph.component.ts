@@ -17,14 +17,33 @@ export interface GraphData {
   xTitle?: string;
   yTitle?: string;
   serieNames: string[];
-  data: Point[][] /* Ex :
-                          [
-                            [{x:1, y:8}, {x:3, y:2}, {x:4, y:3}],
-                            [{x:1, y:1}, {x:12, y:2}, {x:15, y:2}]
-                          ]
-                  */;
+  data: Point[][];
   exportFileName: string;
 }
+
+/* GraphData exemple :
+{
+  yTitle: 'Puissance (MW)',
+  serieNames: ['Référence', 'Consigne'],
+  data: [
+    [
+      { x: new Date('2015/04/29 11:24:00').getTime(), y: 8 },
+      { x: new Date('2015/04/29 11:28:00').getTime(), y: 4 },
+      { x: new Date('2015/04/29 12:24:00').getTime(), y: 3 },
+      { x: new Date('2015/04/29 13:00:00').getTime(), y: 3 },
+    ],
+    [
+      { x: new Date('2015/04/29 11:24:00').getTime(), y: 1 },
+      { x: new Date('2015/04/29 11:29:00').getTime(), y: 2 },
+      { x: new Date('2015/04/29 11:50:00').getTime(), y: 2 },
+      { x: new Date('2015/04/29 12:10:00').getTime(), y: 1 },
+      { x: new Date('2015/04/29 12:15:00').getTime(), y: 7 },
+      { x: new Date('2015/04/29 14:00:00').getTime(), y: 7 },
+    ],
+  ],
+  exportFileName: 'monFichier',
+}
+*/
 
 @Component({
   selector: 'app-square-graph',

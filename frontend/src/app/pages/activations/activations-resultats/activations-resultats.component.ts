@@ -8,8 +8,7 @@ import {
 } from '@angular/core';
 import { RechercheActivationsEntite } from 'src/app/models/RechercheActivations';
 import { Sort } from '@angular/material/sort';
-import { TypeLimitation } from 'src/app/models/enum/TypeLimitation.enum';
-import { Motif, motifIsEqualTo } from 'src/app/models/Motifs';
+import { Motif } from 'src/app/models/Motifs';
 import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
 import { InstanceService } from 'src/app/services/api/instance.service';
 import { Instance } from 'src/app/models/enum/Instance.enum';
@@ -59,7 +58,8 @@ export class ActivationsResultatsComponent implements OnChanges {
       const motif = this.getMotif(
         rae.rte?.motif,
         rae.enedis?.motif,
-        rae.typeSite
+        rae.typeSite,
+        this.instance
       );
       const showDate = whichDateMustBeShown(rae.typeSite, rae.enedis?.motif);
       return {
@@ -74,11 +74,12 @@ export class ActivationsResultatsComponent implements OnChanges {
   private getMotif(
     motifRte: Motif | undefined,
     motifEnedis: Motif | undefined,
-    typeSite: TypeSite
+    typeSite: TypeSite,
+    instance?: Instance
   ): string {
     if (
-      this.instance == Instance.TSO ||
-      (this.instance == Instance.PRODUCER && typeSite == TypeSite.HTB) // A producer can see only his own site.
+      instance == Instance.TSO ||
+      (instance == Instance.PRODUCER && typeSite == TypeSite.HTB) // A producer can see only his own site.
     ) {
       return motifRteToString(motifRte);
     } else {
@@ -95,6 +96,8 @@ export class ActivationsResultatsComponent implements OnChanges {
         meteringPointMrid: activation.meteringPointMrid,
         startCreatedDateTime: operatorData?.startCreatedDateTime,
         endCreatedDateTime: operatorData?.endCreatedDateTime,
+        orderValueConsign: operatorData?.orderValue,
+        measurementUnitNameConsign: operatorData?.measurementUnitName,
       },
     });
   }

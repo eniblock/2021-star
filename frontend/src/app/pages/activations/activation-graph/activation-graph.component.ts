@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { GraphData } from 'src/app/components/graph/square-graph/square-graph.component';
 import { EnergyAccount } from 'src/app/models/EnergyAccount';
+import { MeasurementUnitName } from 'src/app/models/enum/MeasurementUnitName.enum';
 import { EnergyAccountService } from 'src/app/services/api/energy-account.service';
 
 @Component({
@@ -33,27 +34,38 @@ export class ActivationGraphComponent implements OnInit {
     exportFileName: 'monFichier',
   };
 
+  invalidData = false;
+
   constructor(
     private energyAccountService: EnergyAccountService,
     @Inject(MAT_BOTTOM_SHEET_DATA)
     public bottomSheetParams: {
       meteringPointMrid: string;
-      startCreatedDateTime: string;
-      endCreatedDateTime: string;
+      startCreatedDateTime?: string;
+      endCreatedDateTime?: string;
+      orderValueConsign?: number;
+      measurementUnitNameConsign?: MeasurementUnitName;
     }
   ) {}
 
   ngOnInit() {
-    this.energyAccountService
-      .find(
-        this.bottomSheetParams.meteringPointMrid,
-        this.bottomSheetParams.startCreatedDateTime,
-        this.bottomSheetParams.endCreatedDateTime
-      )
-      .subscribe((data) => {
-        this.data = data;
-        this.makeGraph();
-      });
+    const startCreatedDateTime = this.bottomSheetParams.startCreatedDateTime;
+    const endCreatedDateTime = this.bottomSheetParams.endCreatedDateTime;
+    console.log(this.bottomSheetParams);
+    if (startCreatedDateTime == null || endCreatedDateTime == null) {
+      this.invalidData = true;
+    } else {
+      this.energyAccountService
+        .find(
+          this.bottomSheetParams.meteringPointMrid,
+          startCreatedDateTime,
+          endCreatedDateTime
+        )
+        .subscribe((data) => {
+          this.data = data;
+          this.makeGraph();
+        });
+    }
   }
 
   makeGraph() {

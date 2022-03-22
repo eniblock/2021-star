@@ -82,7 +82,7 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           formatter: function (params: any, ticket: any, callback: any) {
             let res =
               datepipe.transform(
-                new Date(params[0].axisValue * 1000),
+                new Date(params[0].axisValue),
                 'dd/MM/yyyy HH:mm:ss'
               ) + '<br/>';
             for (let i = 0; i < params.length; i++) {
@@ -119,9 +119,9 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           axisLabel: {
             formatter: function (value: any, index: any) {
               return (
-                datepipe.transform(new Date(value * 1000), 'dd/MM') +
+                datepipe.transform(new Date(value), 'dd/MM') +
                 '\n' +
-                datepipe.transform(new Date(value * 1000), 'HH:mm')
+                datepipe.transform(new Date(value), 'HH:mm')
               );
             },
           },

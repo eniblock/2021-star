@@ -54,7 +54,7 @@ export class ActivationGraphComponent implements OnInit {
   makeGraph() {
     console.log(this.bottomSheetParams, this.data);
 
-    let measurementUnitName: MeasurementUnitName | undefined;
+    let globalMeasurementUnitName: MeasurementUnitName;
     let serieNames: string[] = [];
     let data: Point[][] = [];
 
@@ -63,43 +63,61 @@ export class ActivationGraphComponent implements OnInit {
       this.bottomSheetParams.startCreatedDateTime;
     const endCreatedDateTimeConsign = this.bottomSheetParams.endCreatedDateTime;
     const orderValueConsign = this.bottomSheetParams.orderValueConsign;
+    const measurementUnitNameConsign =
+      this.bottomSheetParams.measurementUnitNameConsign;
     if (
       startCreatedDateTimeConsign == null ||
       endCreatedDateTimeConsign == null ||
-      orderValueConsign == null
+      orderValueConsign == null ||
+      measurementUnitNameConsign == null
     ) {
       this.invalidData = true;
       return;
     }
 
     // 2) We get the measurementUnitName
-    measurementUnitName = this.bottomSheetParams.measurementUnitNameConsign;
+    globalMeasurementUnitName = measurementUnitNameConsign;
     this.data.forEach((d) => {
       if (
-        measurementUnitName != null &&
-        d.measurementUnitName != measurementUnitName
+        d.measurementUnitName != null &&
+        d.measurementUnitName != globalMeasurementUnitName
       ) {
         // If we have MW and KW => we choose KW
-        measurementUnitName = MeasurementUnitName.KW;
+        globalMeasurementUnitName = MeasurementUnitName.KW;
       }
     });
-    if (measurementUnitName == null) {
-      this.invalidData = true;
-      return;
-    }
 
     // 3) The consign
     serieNames.push('Consigne'),
       data.push([
         {
           x: jsonDateToValueX(startCreatedDateTimeConsign),
-          y: orderValueConsign,
+          y: this.toUnit(
+            orderValueConsign,
+            measurementUnitNameConsign,
+            globalMeasurementUnitName
+          ),
         },
         {
           x: jsonDateToValueX(endCreatedDateTimeConsign),
-          y: orderValueConsign,
+          y: this.toUnit(
+            orderValueConsign,
+            measurementUnitNameConsign,
+            globalMeasurementUnitName
+          ),
         },
       ]);
+
+    // The other data
+    let d = this.data.sort((d1, d2) => {
+      let comp = d1.processType.localeCompare(d2.processType);
+      if (comp == 0) {
+        return d1.timeInterval.localeCompare(d2.timeInterval);
+      } else {
+        return comp;
+      }
+    });
+    console.log(d);
 
     //////////////////////////////////////
     if (data.length == 0) {
@@ -109,12 +127,26 @@ export class ActivationGraphComponent implements OnInit {
 
     // Final : the graph data
     this.graphData = {
-      yTitle: `Puissance ${measurementUnitName}`,
+      yTitle: `Puissance ${globalMeasurementUnitName}`,
       serieNames: serieNames,
       data: data,
-      exportFileName: `${this.bottomSheetParams.meteringPointMrid}-${this.bottomSheetParams.startCreatedDateTime}-${this.bottomSheetParams.endCreatedDateTime}`,
+      exportFileName: `${this.bottomSheetParams.startCreatedDateTime}_${this.bottomSheetParams.endCreatedDateTime}_${this.bottomSheetParams.meteringPointMrid}`,
     };
 
     console.log(this.graphData);
+  }
+
+  toUnit(
+    value: number,
+    from: MeasurementUnitName,
+    to: MeasurementUnitName
+  ): number {
+    if (from == to) {
+      return value;
+    } else if (from == MeasurementUnitName.MW) {
+      return value * 1000;
+    } else {
+      return value / 1000;
+    }
   }
 }

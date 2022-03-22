@@ -58,7 +58,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
       processType: 'test' as any,
       timeInterval: '2020-01-02T00:00:00/2020-01-02T23:59:59',
       resolution: 'PT10M',
-      measurementUnitName: MeasurementUnitName.KW,
+      measurementUnitName: MeasurementUnitName.MW,
       energyAccountPoints: [
         { inQuantity: 1, position: 3 },
         { inQuantity: 32, position: 0 },
@@ -68,7 +68,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
       processType: ProcessType.A05,
       timeInterval: '2020-01-02T00:00:00/2020-01-02T23:59:59',
       resolution: 'PT5M',
-      measurementUnitName: MeasurementUnitName.KW,
+      measurementUnitName: MeasurementUnitName.MW,
       energyAccountPoints: [
         { inQuantity: 1, position: 2 },
         { inQuantity: 4, position: 5 },

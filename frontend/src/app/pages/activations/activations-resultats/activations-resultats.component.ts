@@ -19,6 +19,7 @@ import {
   motifEnedisToString,
   motifRteToString,
 } from 'src/app/rules/motif-rules';
+import { whichDateMustBeShown } from 'src/app/rules/show-date-rules';
 
 @Component({
   selector: 'app-activations-resultats',
@@ -59,10 +60,7 @@ export class ActivationsResultatsComponent implements OnChanges {
         rae.enedis?.motif,
         rae.typeSite
       );
-      const showDate = this.whichDateMustBeShown(
-        rae.typeSite,
-        rae.enedis?.motif
-      );
+      const showDate = whichDateMustBeShown(rae.typeSite, rae.enedis?.motif);
       return {
         ...rae,
         showDate: showDate,
@@ -70,31 +68,6 @@ export class ActivationsResultatsComponent implements OnChanges {
         limitationType: limitationType,
       };
     });
-  }
-
-  private whichDateMustBeShown(
-    typeSite: TypeSite,
-    motifEnedis: Motif | undefined
-  ): { showRteDate: boolean; showEnedisDate: boolean } {
-    if (typeSite == TypeSite.HTB) {
-      return {
-        showRteDate: true,
-        showEnedisDate: false,
-      };
-    } else if (
-      motifEnedis != null &&
-      motifIsEqualTo(motifEnedis, 'D01', 'Z01', 'A70')
-    ) {
-      return {
-        showRteDate: true,
-        showEnedisDate: true,
-      };
-    } else {
-      return {
-        showRteDate: false,
-        showEnedisDate: true,
-      };
-    }
   }
 
   private getMotif(

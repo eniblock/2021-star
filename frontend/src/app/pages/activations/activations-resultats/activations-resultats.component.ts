@@ -9,17 +9,16 @@ import {
 import { RechercheActivationsEntite } from 'src/app/models/RechercheActivations';
 import { Sort } from '@angular/material/sort';
 import { TypeLimitation } from 'src/app/models/enum/TypeLimitation.enum';
-import {
-  Motif,
-  motifEnedisToString,
-  motifIsEqualTo,
-  motifRteToString,
-} from 'src/app/models/Motifs';
+import { Motif, motifIsEqualTo } from 'src/app/models/Motifs';
 import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
 import { InstanceService } from 'src/app/services/api/instance.service';
 import { Instance } from 'src/app/models/enum/Instance.enum';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ActivationGraphComponent } from '../activation-graph/activation-graph.component';
+import {
+  motifEnedisToString,
+  motifRteToString,
+} from 'src/app/rules/motif-rules';
 
 @Component({
   selector: 'app-activations-resultats',

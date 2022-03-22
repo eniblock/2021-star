@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { DateHelper } from 'src/app/helpers/date.helper';
+import { MotifCode } from 'src/app/models/Motifs';
 import {
   getAllBusinessTypesByMessageTypeCode,
   getAllReasonCodeByBusinessTypeCode,
-  messageTypes,
-  MotifCode,
-} from 'src/app/models/Motifs';
+  MessageTypes,
+} from 'src/app/rules/motif-rules';
 import { OrdreLimitationService } from 'src/app/services/api/ordre-limitation.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
 
   endCreatedDateTime: Date = new Date();
 
-  selectMessageTypes: MotifCode[] = messageTypes;
+  selectMessageTypes: MotifCode[] = MessageTypes;
   selectBusinessTypes: MotifCode[] | null = null;
   selectReasonCodes: MotifCode[] | null = null;
 

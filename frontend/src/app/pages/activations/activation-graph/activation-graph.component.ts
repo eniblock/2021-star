@@ -56,5 +56,7 @@ export class ActivationGraphComponent implements OnInit {
       });
   }
 
-  makeGraph() {}
+  makeGraph() {
+    console.log(this.data);
+  }
 }

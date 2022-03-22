@@ -77,6 +77,7 @@ export class SquareGraphComponent implements OnInit, OnChanges {
       // We init Echarts data
       let echartsData: EChartsOption = {
         tooltip: {
+          show: true,
           trigger: 'axis',
           formatter: function (params: any, ticket: any, callback: any) {
             let res =
@@ -154,7 +155,7 @@ export class SquareGraphComponent implements OnInit, OnChanges {
         (echartsData.series as any).push({
           name: graphData.serieNames[indice],
           type: 'line',
-          symbol: 'circle',
+          symbol: 'none',
           symbolSize: 5,
           step: 'end',
           smooth: false,

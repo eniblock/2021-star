@@ -45,6 +45,9 @@ export interface GraphData {
 }
 */
 
+export const jsonDateToValueX = (jsonDate: string) =>
+  new Date(jsonDate).getTime();
+
 @Component({
   selector: 'app-square-graph',
   templateUrl: './square-graph.component.html',
@@ -141,7 +144,6 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           nameGap: 35,
           axisLabel: {
             formatter: function (value: any, index: any) {
-              console.log(value);
               if (value > 0) {
                 return (
                   datepipe.transform(new Date(value), 'dd/MM') +

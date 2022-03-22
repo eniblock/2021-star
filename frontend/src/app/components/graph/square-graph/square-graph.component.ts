@@ -64,7 +64,11 @@ export class SquareGraphComponent implements OnInit, OnChanges {
   }
 
   private makeEchartsData() {
-    if (this.graphData != null) {
+    if (
+      this.graphData != null &&
+      this.graphData.data != null &&
+      this.graphData.data.length > 0
+    ) {
       const datepipe = this.datepipe;
       const graphData = this.graphData;
 
@@ -137,11 +141,16 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           nameGap: 35,
           axisLabel: {
             formatter: function (value: any, index: any) {
-              return (
-                datepipe.transform(new Date(value), 'dd/MM') +
-                '\n' +
-                datepipe.transform(new Date(value), 'HH:mm')
-              );
+              console.log(value);
+              if (value > 0) {
+                return (
+                  datepipe.transform(new Date(value), 'dd/MM') +
+                  '\n' +
+                  datepipe.transform(new Date(value), 'HH:mm')
+                );
+              } else {
+                return '';
+              }
             },
           },
 

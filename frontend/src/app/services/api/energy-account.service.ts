@@ -21,7 +21,6 @@ export class EnergyAccountService {
     endCreatedDateTime: string
   ): Observable<EnergyAccount[]> {
     if (MOCK) {
-      console.log(meteringPointMrid, startCreatedDateTime, endCreatedDateTime);
       return getMocks();
     }
 

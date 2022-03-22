@@ -12,27 +12,7 @@ import { EnergyAccountService } from 'src/app/services/api/energy-account.servic
 })
 export class ActivationGraphComponent implements OnInit {
   data: EnergyAccount[] = [];
-  graphData?: GraphData = {
-    yTitle: 'Puissance (MW)',
-    serieNames: ['Référence', 'Consigne'],
-    data: [
-      [
-        { x: new Date('2015/04/29 11:24:00').getTime(), y: 8 },
-        { x: new Date('2015/04/29 11:28:00').getTime(), y: 4 },
-        { x: new Date('2015/04/29 12:24:00').getTime(), y: 3 },
-        { x: new Date('2015/04/29 13:00:00').getTime(), y: 3 },
-      ],
-      [
-        { x: new Date('2015/04/29 11:24:00').getTime(), y: 1 },
-        { x: new Date('2015/04/29 11:29:00').getTime(), y: 2 },
-        { x: new Date('2015/04/29 11:50:00').getTime(), y: 2 },
-        { x: new Date('2015/04/29 12:10:00').getTime(), y: 1 },
-        { x: new Date('2015/04/29 12:15:00').getTime(), y: 7 },
-        { x: new Date('2015/04/29 14:00:00').getTime(), y: 7 },
-      ],
-    ],
-    exportFileName: 'monFichier',
-  };
+  graphData?: GraphData;
 
   invalidData = false;
 
@@ -51,7 +31,6 @@ export class ActivationGraphComponent implements OnInit {
   ngOnInit() {
     const startCreatedDateTime = this.bottomSheetParams.startCreatedDateTime;
     const endCreatedDateTime = this.bottomSheetParams.endCreatedDateTime;
-    console.log(this.bottomSheetParams);
     if (startCreatedDateTime == null || endCreatedDateTime == null) {
       this.invalidData = true;
     } else {
@@ -70,5 +49,31 @@ export class ActivationGraphComponent implements OnInit {
 
   makeGraph() {
     console.log(this.data);
+
+    // 1) We get the measurementUnitName
+    let measurementUnitName = this.bottomSheetParams.measurementUnitNameConsign;
+    this.data.forEach((d) => {
+      if (
+        measurementUnitName != null &&
+        d.measurementUnitName != measurementUnitName
+      ) {
+        // If we have MW and KW => we choose KW
+        measurementUnitName = MeasurementUnitName.KW;
+      }
+    });
+    if (measurementUnitName == null) {
+      this.invalidData = true;
+      return;
+    }
+
+    // Final : the graph data
+    this.graphData = {
+      yTitle: `Puissance ${measurementUnitName}`,
+      serieNames: [],
+      data: [],
+      exportFileName: 'ee',
+    };
+
+    console.log(this.graphData);
   }
 }

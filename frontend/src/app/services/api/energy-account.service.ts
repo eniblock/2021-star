@@ -47,11 +47,11 @@ const getMocks = (): Observable<EnergyAccount[]> => {
       resolution: 'PT10M',
       measurementUnitName: MeasurementUnitName.MW,
       energyAccountPoints: [
-        { inQuantity: 1, position: 2 },
-        { inQuantity: 2, position: 5 },
-        { inQuantity: 3, position: 5 },
-        { inQuantity: 20, position: 7 },
-        { inQuantity: 25, position: 8 },
+        { position: 1, inQuantity: 2 },
+        { position: 2, inQuantity: 5 },
+        { position: 3, inQuantity: 5 },
+        { position: 20, inQuantity: 7 },
+        { position: 25, inQuantity: 8 },
       ],
     },
     {
@@ -60,8 +60,8 @@ const getMocks = (): Observable<EnergyAccount[]> => {
       resolution: 'PT10M',
       measurementUnitName: MeasurementUnitName.MW,
       energyAccountPoints: [
-        { inQuantity: 1, position: 3 },
-        { inQuantity: 32, position: 0 },
+        { position: 1, inQuantity: 3 },
+        { position: 32, inQuantity: 0 },
       ],
     },
     {
@@ -70,13 +70,13 @@ const getMocks = (): Observable<EnergyAccount[]> => {
       resolution: 'PT5M',
       measurementUnitName: MeasurementUnitName.MW,
       energyAccountPoints: [
-        { inQuantity: 1, position: 2 },
-        { inQuantity: 4, position: 5 },
-        { inQuantity: 30, position: 0 },
-        { inQuantity: 31, position: 0 },
-        { inQuantity: 32, position: 0 },
-        { inQuantity: 35, position: 7 },
-        { inQuantity: 78, position: 8 },
+        { position: 1, inQuantity: 2 },
+        { position: 4, inQuantity: 5 },
+        { position: 30, inQuantity: 0 },
+        { position: 31, inQuantity: 0 },
+        { position: 32, inQuantity: 0 },
+        { position: 35, inQuantity: 7 },
+        { position: 78, inQuantity: 8 },
       ],
     },
   ]);

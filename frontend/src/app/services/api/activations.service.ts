@@ -94,16 +94,16 @@ const getMocks = (
               },
               enedis: {
                 originAutomationRegisteredResourceMrid: 'CONFOLENS',
-                startCreatedDateTime: '2022-01-13T13:12:23Z',
-                endCreatedDateTime: '2022-01-14T14:19:23Z',
+                startCreatedDateTime: '2020-01-01T00:00:00Z',
+                endCreatedDateTime: '2020-01-01T23:59:59Z',
                 quantity: 9,
                 motif: {
                   messageType: '',
                   businessType: '',
                   reasonCode: '',
                 },
-                orderValue: 13,
-                measurementUnitName: MeasurementUnitName.MW,
+                orderValue: 13000,
+                measurementUnitName: MeasurementUnitName.KW,
               },
             },
             {

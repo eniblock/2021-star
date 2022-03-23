@@ -1,4 +1,4 @@
-import StringHelper from './string.helpers';
+import { parse } from 'tinyduration';
 
 export class DateHelper {
   public static makeDate(day: number, month: number, year: number): Date {
@@ -31,5 +31,17 @@ export class DateHelper {
     d.setMinutes(t[1]);
     d.setSeconds(t[2]);
     return d;
+  }
+
+  public static durationToMilliseconds(resolution: string): number {
+    const obj = parse(resolution);
+    const seconds =
+      (obj.seconds ? obj.seconds : 0) +
+      (obj.minutes ? obj.minutes : 0) * 60 +
+      (obj.hours ? obj.hours : 0) * 3600 +
+      (obj.days ? obj.days : 0) * 86400 +
+      (obj.months ? obj.months : 0) * 2592000 +
+      (obj.years ? obj.years : 0) * 31536000;
+    return seconds * 1000;
   }
 }

@@ -19,7 +19,7 @@ import {
   motifRteToString,
 } from 'src/app/rules/motif-rules';
 import { whichDateMustBeShown } from 'src/app/rules/show-date-rules';
-import { getLimitationType } from 'src/app/rules/limitation-type';
+import { getLimitationType } from 'src/app/rules/limitation-type-rules';
 
 @Component({
   selector: 'app-activations-resultats',

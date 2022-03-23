@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, enableProdMode } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import {
   GraphData,
@@ -7,7 +7,9 @@ import {
 } from 'src/app/components/graph/square-graph/square-graph.component';
 import { EnergyAccount } from 'src/app/models/EnergyAccount';
 import { MeasurementUnitName } from 'src/app/models/enum/MeasurementUnitName.enum';
+import { processTypeToStr } from 'src/app/rules/process-type-rules';
 import { EnergyAccountService } from 'src/app/services/api/energy-account.service';
+import { DateHelper } from './../../../helpers/date.helper';
 
 @Component({
   selector: 'app-activation-graph',
@@ -52,8 +54,6 @@ export class ActivationGraphComponent implements OnInit {
   }
 
   makeGraph() {
-    console.log(this.bottomSheetParams, this.data);
-
     let globalMeasurementUnitName: MeasurementUnitName;
     let serieNames: string[] = [];
     let data: Point[][] = [];
@@ -109,15 +109,61 @@ export class ActivationGraphComponent implements OnInit {
       ]);
 
     // The other data
-    let d = this.data.sort((d1, d2) => {
-      let comp = d1.processType.localeCompare(d2.processType);
-      if (comp == 0) {
-        return d1.timeInterval.localeCompare(d2.timeInterval);
-      } else {
-        return comp;
-      }
-    });
-    console.log(d);
+    let currentProcessType = 'Consigne...';
+    let currentIndice = 0;
+    this.data
+      .sort((d1, d2) => {
+        let comp = d1.processType.localeCompare(d2.processType);
+        if (comp == 0) {
+          return d1.timeInterval.localeCompare(d2.timeInterval);
+        } else {
+          return comp;
+        }
+      })
+      .forEach((d) => {
+        if (currentProcessType != d.processType) {
+          currentProcessType = d.processType;
+          currentIndice++;
+        }
+        // a) Serie name
+        serieNames[currentIndice] = processTypeToStr(d.processType);
+
+        // b) Data initialisation
+        data[currentIndice] = [];
+
+        // c) Start and end timestamp
+        const startTimestamp = jsonDateToValueX(d.timeInterval.split('/')[0]);
+        const endTimestamp = jsonDateToValueX(d.timeInterval.split('/')[1]);
+
+        // d) Get resolution time in milliseconds
+        const resolutionInMilliseconds = DateHelper.durationToMilliseconds(
+          d.resolution
+        );
+
+        // e) Add points
+        d.energyAccountPoints.forEach((point) => {
+          data[currentIndice].push({
+            x: startTimestamp + (point.position - 1) * resolutionInMilliseconds,
+            y: this.toUnit(
+              point.inQuantity,
+              d.measurementUnitName,
+              globalMeasurementUnitName
+            ),
+          });
+        });
+
+        // f) Add last point
+        if (data[currentIndice].length > 0) {
+          const p = data[currentIndice][data[currentIndice].length - 1];
+          data[currentIndice].push({
+            x: endTimestamp,
+            y: p.y,
+          });
+        }
+
+        //// METTRE LA VALEUR Y DANS LA BONNE UNITE (KW ou MW) => this.toUnit()
+        //// Push les données dans data[][] (pas d'affectation) => le tableau a été créé en b)
+      });
 
     //////////////////////////////////////
     if (data.length == 0) {
@@ -132,8 +178,6 @@ export class ActivationGraphComponent implements OnInit {
       data: data,
       exportFileName: `${this.bottomSheetParams.startCreatedDateTime}_${this.bottomSheetParams.endCreatedDateTime}_${this.bottomSheetParams.meteringPointMrid}`,
     };
-
-    console.log(this.graphData);
   }
 
   toUnit(

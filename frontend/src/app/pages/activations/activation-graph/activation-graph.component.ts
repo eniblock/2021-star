@@ -54,9 +54,11 @@ export class ActivationGraphComponent implements OnInit {
   }
 
   makeGraph() {
+    console.log(this.data, this.bottomSheetParams);
+
     let globalMeasurementUnitName: MeasurementUnitName;
     let serieNames: string[] = [];
-    let data: Point[][] = [];
+    let points: Point[][] = [];
 
     // 1) Tests on component params
     const startCreatedDateTimeConsign =
@@ -89,7 +91,7 @@ export class ActivationGraphComponent implements OnInit {
 
     // 3) The consign
     serieNames.push('Consigne'),
-      data.push([
+      points.push([
         {
           x: jsonDateToValueX(startCreatedDateTimeConsign),
           y: this.toUnit(
@@ -129,7 +131,9 @@ export class ActivationGraphComponent implements OnInit {
         serieNames[currentIndice] = processTypeToStr(d.processType);
 
         // b) Data initialisation
-        data[currentIndice] = [];
+        if (points[currentIndice] == null) {
+          points[currentIndice] = [];
+        }
 
         // c) Start and end timestamp
         const startTimestamp = jsonDateToValueX(d.timeInterval.split('/')[0]);
@@ -142,7 +146,7 @@ export class ActivationGraphComponent implements OnInit {
 
         // e) Add points
         d.energyAccountPoints.forEach((point) => {
-          data[currentIndice].push({
+          points[currentIndice].push({
             x: startTimestamp + (point.position - 1) * resolutionInMilliseconds,
             y: this.toUnit(
               point.inQuantity,
@@ -153,20 +157,17 @@ export class ActivationGraphComponent implements OnInit {
         });
 
         // f) Add last point
-        if (data[currentIndice].length > 0) {
-          const p = data[currentIndice][data[currentIndice].length - 1];
-          data[currentIndice].push({
+        if (points[currentIndice].length > 0) {
+          const p = points[currentIndice][points[currentIndice].length - 1];
+          points[currentIndice].push({
             x: endTimestamp,
             y: p.y,
           });
         }
-
-        //// METTRE LA VALEUR Y DANS LA BONNE UNITE (KW ou MW) => this.toUnit()
-        //// Push les données dans data[][] (pas d'affectation) => le tableau a été créé en b)
       });
 
     //////////////////////////////////////
-    if (data.length == 0) {
+    if (points.length == 0) {
       this.invalidData = true;
       return;
     }
@@ -175,7 +176,7 @@ export class ActivationGraphComponent implements OnInit {
     this.graphData = {
       yTitle: `Puissance ${globalMeasurementUnitName}`,
       serieNames: serieNames,
-      data: data,
+      data: points,
       exportFileName: `${this.bottomSheetParams.startCreatedDateTime}_${this.bottomSheetParams.endCreatedDateTime}_${this.bottomSheetParams.meteringPointMrid}`,
     };
   }

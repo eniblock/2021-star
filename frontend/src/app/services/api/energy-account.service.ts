@@ -43,7 +43,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
   return of([
     {
       processType: ProcessType.A05,
-      timeInterval: '2020-01-01T00:00:00/2020-01-01T23:59:59',
+      timeInterval: '2020-01-01T00:00:00Z/2020-01-01T23:59:59Z',
       resolution: 'PT10M',
       measurementUnitName: MeasurementUnitName.MW,
       energyAccountPoints: [
@@ -56,7 +56,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
     },
     {
       processType: 'test' as any,
-      timeInterval: '2020-01-02T00:00:00/2020-01-02T23:59:59',
+      timeInterval: '2020-01-02T00:00:00Z/2020-01-02T23:59:59Z',
       resolution: 'PT10M',
       measurementUnitName: MeasurementUnitName.MW,
       energyAccountPoints: [
@@ -66,7 +66,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
     },
     {
       processType: ProcessType.A05,
-      timeInterval: '2020-01-02T00:00:00/2020-01-02T23:59:59',
+      timeInterval: '2020-01-02T00:00:00Z/2020-01-02T23:59:59Z',
       resolution: 'PT5M',
       measurementUnitName: MeasurementUnitName.MW,
       energyAccountPoints: [

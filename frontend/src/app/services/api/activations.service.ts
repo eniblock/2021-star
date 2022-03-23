@@ -102,8 +102,8 @@ const getMocks = (
                   businessType: '',
                   reasonCode: '',
                 },
-                orderValue: 13000,
-                measurementUnitName: MeasurementUnitName.KW,
+                orderValue: 13,
+                measurementUnitName: MeasurementUnitName.MW,
               },
             },
             {

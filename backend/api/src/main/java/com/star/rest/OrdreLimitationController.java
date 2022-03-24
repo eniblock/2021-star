@@ -48,9 +48,9 @@ public class OrdreLimitationController {
     @Autowired
     private OrdreLimitationService ordreLimitationService;
 
-    @Operation(summary = "Post ordre Debut limitation JSON file.")
+    @Operation(summary = "Post start limitation order.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Create successfully ordre debut limitation",
+            @ApiResponse(responseCode = "201", description = "Post successfully start limitation order",
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
@@ -76,9 +76,9 @@ public class OrdreLimitationController {
         return ResponseEntity.status(isEmpty(importMarketParticipantResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantResult);
     }
 
-    @Operation(summary = "Liste des ordres de début de limitation.")
+    @Operation(summary = "List of start limitation orders.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Liste des ordres de début de limitation",
+            @ApiResponse(responseCode = "200", description = "List of start limitation orders",
                     content = {@Content(mediaType = "application/json")})})
     @GetMapping(DEBUT)
     public ResponseEntity<List<OrdreLimitation>> getOrdreDebutLimitation() throws BusinessException, TechnicalException {
@@ -88,10 +88,9 @@ public class OrdreLimitationController {
         return ResponseEntity.ok(ordreLimitationService.getOrdreDebutLimitation());
     }
 
-
-    @Operation(summary = "Post couple ordre Debut/Fin limitation JSON file.")
+    @Operation(summary = "Post couple Start/End limit order.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Create successfully ordre debut/fin limitation",
+            @ApiResponse(responseCode = "201", description = "Post  successfully couple Start/End limit order",
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})

@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 public class ProducerRepository {
     public static final String CREATE_PRODUCER = "CreateProducer";
     public static final String GET_ALL_PRODUCER = "GetAllProducer";
+    public static final String QUERY_PRODUCER = "QueryProducer";
 
     @Autowired
     private Contract contract;
@@ -71,6 +72,17 @@ public class ProducerRepository {
         try {
             byte[] response = contract.evaluateTransaction(GET_ALL_PRODUCER);
             return response != null ? Arrays.asList(objectMapper.readValue(new String(response), Producer[].class)) : Collections.emptyList();
+        } catch (JsonProcessingException exception) {
+            throw new TechnicalException("Erreur technique lors de la recherche des producers", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
+    }
+
+    public Producer getProducer(String producerMarketParticipantMrid) throws TechnicalException {
+        try {
+            byte[] response = contract.evaluateTransaction(QUERY_PRODUCER, producerMarketParticipantMrid);
+            return response != null ? objectMapper.readValue(new String(response), Producer.class) : null;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des producers", exception);
         } catch (ContractException contractException) {

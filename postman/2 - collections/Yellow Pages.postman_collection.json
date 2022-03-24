@@ -1,12 +1,12 @@
 {
 	"info": {
-		"_postman_id": "2f06c17f-9996-49d4-b925-b0cdc002800d",
-		"name": "OrdreLimitation",
+		"_postman_id": "4d8e02a5-5ce3-4fec-8327-2705a91e61d6",
+		"name": "Yellow Pages",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "RTE - Post ordre Debut limitation",
+			"name": "RTE - Post a yellow pages",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -14,27 +14,26 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "files",
+							"key": "file",
 							"type": "file",
 							"src": []
 						}
 					]
 				},
 				"url": {
-					"raw": "{{base_url_rte}}/ordreLimitations/debut",
+					"raw": "{{base_url_rte}}/yellow-pages",
 					"host": [
 						"{{base_url_rte}}"
 					],
 					"path": [
-						"ordreLimitations",
-						"debut"
+						"yellow-pages"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "RTE -  Liste des ordres de début de limitation",
+			"name": "RTE - List of yellow pages",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -43,29 +42,22 @@
 				"header": [],
 				"body": {
 					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "files",
-							"type": "file",
-							"src": []
-						}
-					]
+					"formdata": []
 				},
 				"url": {
-					"raw": "{{base_url_rte}}/ordreLimitations/debut",
+					"raw": "{{base_url_rte}}/yellow-pages",
 					"host": [
 						"{{base_url_rte}}"
 					],
 					"path": [
-						"ordreLimitations",
-						"debut"
+						"yellow-pages"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "ENEDIS - Post couple ordre début/fin limitation",
+			"name": "ENEDIS - Post a yellow pages",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -73,20 +65,43 @@
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "files",
+							"key": "file",
 							"type": "file",
 							"src": []
 						}
 					]
 				},
 				"url": {
-					"raw": "{{base_url_enedis}}/ordreLimitations/couple",
+					"raw": "{{base_url_enedis}}/yellow-pages",
 					"host": [
 						"{{base_url_enedis}}"
 					],
 					"path": [
-						"ordreLimitations",
-						"couple"
+						"yellow-pages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - List of yellow pages",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/yellow-pages",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"yellow-pages"
 					]
 				}
 			},

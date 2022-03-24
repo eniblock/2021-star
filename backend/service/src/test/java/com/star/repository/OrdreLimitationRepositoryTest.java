@@ -3,7 +3,7 @@ package com.star.repository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
-import com.star.models.limitation.OrdreDebutLimitation;
+import com.star.models.limitation.OrdreLimitation;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -38,7 +38,7 @@ class OrdreLimitationRepositoryTest extends AbstractTest {
         // GIVEN
 
         // WHEN
-        ordreLimitationRepository.saveOrdreDebutLimitations(Collections.emptyList());
+        ordreLimitationRepository.saveOrdreLimitations(Collections.emptyList());
 
         // THEN
         verifyNoInteractions(contract);
@@ -47,14 +47,14 @@ class OrdreLimitationRepositoryTest extends AbstractTest {
     @Test
     void testSaveOrdreLimitations() throws TechnicalException, InterruptedException, TimeoutException, ContractException, JsonProcessingException {
         // GIVEN
-        OrdreDebutLimitation ordreDebutLimitation = OrdreDebutLimitation.builder().activationDocumentMrid("activation_id")
+        OrdreLimitation ordreLimitation = OrdreLimitation.builder().activationDocumentMrid("activation_id")
                 .originAutomationRegisteredResourceMrid("origin_mrid").registeredResourceMrid("register_id")
                 .orderValue("orderValue").measurementUnitName("mt_unit").messageType("message_type").orderEnd(false).build();
-        String value = ordreDebutLimitation.toString();
+        String value = ordreLimitation.toString();
         Mockito.when(objectMapper.writeValueAsString(any())).thenReturn(value);
 
         // WHEN
-        ordreLimitationRepository.saveOrdreDebutLimitations(Arrays.asList(ordreDebutLimitation));
+        ordreLimitationRepository.saveOrdreLimitations(Arrays.asList(ordreLimitation));
 
         // THEN
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());

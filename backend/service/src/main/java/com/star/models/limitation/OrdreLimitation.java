@@ -23,8 +23,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrdreDebutLimitation implements ImportCSV {
+public class OrdreLimitation implements ImportCSV {
 
+    private String docType;
     private String activationDocumentMrid;
     @NotBlank(message = "Le champ originAutomationRegisteredResourceMrid est obligatoire")
     private String originAutomationRegisteredResourceMrid;
@@ -45,6 +46,7 @@ public class OrdreDebutLimitation implements ImportCSV {
     private boolean orderEnd;
     private String senderMarketParticipantMrid;
     private String receiverMarketParticipantMrid;
+    private List<String> subOrderList;
 
     @JsonIgnore
     @Override

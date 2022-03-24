@@ -72,7 +72,6 @@ public class ProducerService {
         return importProducerResult;
     }
 
-
     public List<Producer> getProducers() throws BusinessException, TechnicalException {
         return producerRepository.getProducers();
     }
@@ -97,5 +96,9 @@ public class ProducerService {
                 importResult.getDatas().add(producer);
             }
         }
+    }
+
+    public Producer getProducer(String producerMarketParticipantMrid) throws TechnicalException {
+        return producerRepository.getProducer(producerMarketParticipantMrid);
     }
 }

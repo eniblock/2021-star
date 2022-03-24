@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.producer.Producer;
 import com.star.models.yellowpages.YellowPages;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;

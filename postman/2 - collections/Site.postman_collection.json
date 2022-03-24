@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "RTE - Post a Site CSV file",
+			"name": "RTE - Post a Site",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -34,7 +34,7 @@
 			"response": []
 		},
 		{
-			"name": "RTE - Update a Site CSV file",
+			"name": "RTE - Update a Site",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -138,7 +138,7 @@
 			"response": []
 		},
 		{
-			"name": "ENEDIS - Post a Site CSV file",
+			"name": "ENEDIS - Post a Site",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -166,7 +166,7 @@
 			"response": []
 		},
 		{
-			"name": "ENEDIS - Update a Site CSV file",
+			"name": "ENEDIS - Update a Site",
 			"request": {
 				"method": "POST",
 				"header": [],

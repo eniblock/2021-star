@@ -225,6 +225,17 @@ export class Star extends Contract {
         }
     }
 
+    public async GetActivationDocumentByQuery(
+        ctx: Context,
+        query: string) {
+        try {
+            return (await ActivationDocumentController.getActivationDocumentByQuery(ctx, query));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
     /*      Yellow Pages       */
 
     public async CreateYellowPages(ctx: Context, inputStr: string) {

@@ -6,7 +6,6 @@ import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.imports.ImportResult;
 import com.star.models.producer.ImportProducerResult;
-import com.star.models.producer.Producer;
 import com.star.models.yellowpages.ImportYellowPagesResult;
 import com.star.models.yellowpages.YellowPages;
 import com.star.repository.YellowPagesRepository;

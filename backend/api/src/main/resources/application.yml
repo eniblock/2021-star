@@ -52,7 +52,7 @@ hyperledger-fabric:
 logging:
   level:
     com:
-      syscom: INFO
+      star: WARN
     org:
       springframework: WARN
       hyperledger:

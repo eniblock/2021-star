@@ -49,7 +49,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
       energyAccountPoints: [
         { position: 1, inQuantity: 2 },
         { position: 2, inQuantity: 5 },
-        { position: 3, inQuantity: 5 },
+        { position: 3, inQuantity: 5 }, // unused point (same inQuantity)
         { position: 20, inQuantity: 7 },
         { position: 25, inQuantity: 8 },
       ],

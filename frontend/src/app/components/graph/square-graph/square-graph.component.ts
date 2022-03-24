@@ -180,6 +180,13 @@ export class SquareGraphComponent implements OnInit, OnChanges {
         ],
       };
 
+      // We look for all abscisses
+      let allAbscisses = graphData.data
+        .map((serie) => serie.map((p) => p.x)) // get abcisses
+        .reduce((acc, val) => acc.concat(val), []) // reduce
+        .sort((x1, x2) => x1 - x2); // order by abscisse value
+      allAbscisses = [...new Set(allAbscisses)]; // Remove doublons
+
       // We add data
       graphData.data.forEach((serie, indice) => {
         (echartsData.series as any).push({
@@ -189,11 +196,29 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           symbolSize: 5,
           step: 'end',
           smooth: false,
-          data: serie.map((p) => [p.x, p.y]),
+          data: this.toData(serie, allAbscisses),
         });
       });
 
       this.echartsData = echartsData;
     }
+  }
+
+  private toData(serie: Point[], allAbscisses: number[]) {
+    let points: Point[] = [];
+    let currentIndice = 0;
+    if (serie.length > 0) {
+      allAbscisses.forEach((x) => {
+        if (x >= serie[0].x && x <= serie[serie.length - 1].x) {
+          if (x == serie[currentIndice].x) {
+            points.push({ x: x, y: serie[currentIndice].y });
+            currentIndice++;
+          } else {
+            points.push({ x: x, y: serie[currentIndice - 1].y });
+          }
+        }
+      });
+    }
+    return points.map((p) => [p.x, p.y]);
   }
 }

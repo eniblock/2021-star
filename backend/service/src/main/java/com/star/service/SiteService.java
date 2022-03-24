@@ -132,7 +132,7 @@ public class SiteService {
             queryBuilder.useIndex(SITE.getIndexName());
         }
         String query = queryBuilder.build();
-        log.info("Transaction query: " + query);
+        log.debug("Transaction query: " + query);
         return siteRepository.findSiteByQuery(query, String.valueOf(pageable.getPageSize()), bookmark);
     }
 
@@ -205,7 +205,7 @@ public class SiteService {
                 importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.exist.error",
                         new String[]{meteringPointMrId}, null));
             }
-            // Traitmeent s'il s'agit d'un update de site
+            // Traitement s'il s'agit d'un update de site
             if (!create && !existSite) {
                 importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.unknown.error",
                         new String[]{meteringPointMrId}, null));

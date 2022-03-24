@@ -15,19 +15,19 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImportOrdreDebutLimitationResult implements ImportResult<OrdreDebutLimitation> {
+public class ImportOrdreLimitationResult implements ImportResult<OrdreLimitation> {
 
-    List<OrdreDebutLimitation> datas = new ArrayList<>();
+    List<OrdreLimitation> datas = new ArrayList<>();
     List<String> errors = new ArrayList<>();
 
     @Override
-    public List<OrdreDebutLimitation> getDatas() {
+    public List<OrdreLimitation> getDatas() {
         return datas;
     }
 
     @Override
-    public void setDatas(List<OrdreDebutLimitation> ordreDebutLimitations) {
-        this.datas = ordreDebutLimitations;
+    public void setDatas(List<OrdreLimitation> ordreLimitations) {
+        this.datas = ordreLimitations;
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.producer.ImportProducerResult;
 import com.star.models.producer.Producer;
+import com.star.security.SecurityUtils;
 import com.star.service.ProducerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,8 +29,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
+import static com.star.enums.InstanceEnum.PRODUCER;
+import static java.util.Arrays.asList;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.springframework.http.ResponseEntity.ok;
 
 
 /**
@@ -74,7 +77,11 @@ public class ProducerController {
             content = {@Content(mediaType = "application/json")})})
     @GetMapping
     public ResponseEntity<List<Producer>> getMarketParticipants() throws TechnicalException, BusinessException {
-        return ResponseEntity.ok(producerService.getProducers());
+        if (PRODUCER.equals(instance)) {
+            return ok(asList(producerService.getProducer(SecurityUtils.getProducerMarketParticipantMrid())));
+        } else {
+            return ok(producerService.getProducers());
+        }
     }
 
 }

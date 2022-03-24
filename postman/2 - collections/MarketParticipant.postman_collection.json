@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "RTE - Post market participant CSV file",
+			"name": "RTE - Post market participant",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -58,7 +58,7 @@
 			"response": []
 		},
 		{
-			"name": "ENEDIS - Post market participant CSV file",
+			"name": "ENEDIS - Post market participant",
 			"request": {
 				"method": "POST",
 				"header": [],

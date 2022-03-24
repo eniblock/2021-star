@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "RTE - Post a producer CSV file",
+			"name": "RTE - Post a producer",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -33,7 +33,7 @@
 			"response": []
 		},
 		{
-			"name": "RTE - Get list of producer",
+			"name": "RTE - List of producer",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -57,7 +57,7 @@
 			"response": []
 		},
 		{
-			"name": "ENEDIS - Post a producer CSV file",
+			"name": "ENEDIS - Post a producer",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -84,7 +84,7 @@
 			"response": []
 		},
 		{
-			"name": "ENEDIS - Get list of producer",
+			"name": "ENEDIS -  List of producer",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},

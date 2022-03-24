@@ -95,7 +95,7 @@ const getMocks = (
               enedis: {
                 originAutomationRegisteredResourceMrid: 'CONFOLENS',
                 startCreatedDateTime: '2020-01-01T00:00:00Z',
-                endCreatedDateTime: '2020-01-01T23:59:59Z',
+                endCreatedDateTime: '2020-01-02T23:59:59Z',
                 quantity: 9,
                 motif: {
                   messageType: '',

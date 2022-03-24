@@ -21,7 +21,7 @@ export interface GraphData {
   exportFileName: string;
 }
 
-/* GraphData exemple :
+/* GraphData example :
 {
   yTitle: 'Puissance (MW)',
   serieNames: ['Référence', 'Consigne'],
@@ -162,7 +162,7 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           type: 'value',
           name: graphData.yTitle,
           nameLocation: 'middle',
-          nameGap: 35,
+          nameGap: 60,
           nameTextStyle: { fontWeight: 'bold' }, // fontSize:14
           axisPointer: { snap: true },
           splitLine: { show: false },

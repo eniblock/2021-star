@@ -54,8 +54,6 @@ export class ActivationGraphComponent implements OnInit {
   }
 
   makeGraph() {
-    console.log(this.data, this.bottomSheetParams);
-
     let globalMeasurementUnitName: MeasurementUnitName;
     let serieNames: string[] = [];
     let points: Point[][] = [];

@@ -36,6 +36,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -77,7 +78,7 @@ public class OrdreLimitationService {
                         new String[]{fichierOrdreLimitation.getFileName()}, null));
             }
             // Vérifier que le champ "endCreatedDateTime" est vide,
-            if (ordreLimitation.getEndCreatedDateTime() != null) {
+            if (isNotBlank(ordreLimitation.getEndCreatedDateTime())) {
                 errors.add(messageSource.getMessage("import.ordreLimitation.debut.endCreatedDateTime.error",
                         new String[]{fichierOrdreLimitation.getFileName()}, null));
             }

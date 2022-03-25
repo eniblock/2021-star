@@ -63,8 +63,7 @@ export class ActivationDocumentController {
         if (isEmpty(activationDocumentInput.endCreatedDatetime) && isEmpty(activationDocumentInput.orderValue)) {
             throw new Error(`Order must have a limitation value`);
         }
-        if (identity === OrganizationTypeMsp.ENEDIS &&
-            activationDocumentInput.startCreatedDateTime &&
+        if (activationDocumentInput.startCreatedDateTime &&
             activationDocumentInput.endCreatedDateTime
         ) {
             const yellowAsBytes = await ctx.stub.getState(activationDocumentInput.originAutomationRegisteredResourceMrid);

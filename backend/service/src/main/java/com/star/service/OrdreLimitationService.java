@@ -7,12 +7,14 @@ import com.cloudant.client.api.query.Selector;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
+import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.limitation.FichierOrdreLimitation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.repository.OrdreLimitationRepository;
+import com.star.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,12 @@ import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.star.enums.DocTypeEnum.ACTIVATION_DOCUMENT;
+import static com.star.utils.DateUtils.getLocalDateTime;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -56,7 +60,7 @@ public class OrdreLimitationService {
     private MessageSource messageSource;
 
 
-    public ImportOrdreLimitationResult importOrdreDebutLimitation(List<FichierOrdreLimitation> fichierOrdreLimitations) throws BusinessException, TechnicalException, IOException {
+    public ImportOrdreLimitationResult importOrdreDebutLimitation(List<FichierOrdreLimitation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
         Assert.notEmpty(fichierOrdreLimitations, messageSource.getMessage("import.ordreLimitation.files.empty", new String[]{}, null));
         fichierOrdreLimitations.forEach(fichierOrdreLimitation -> importUtilsService.checkFile(fichierOrdreLimitation.getFileName(),
                 new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
@@ -72,16 +76,20 @@ public class OrdreLimitationService {
                 errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichierOrdreLimitation.getFileName()}, null));
                 break;
             }
-            // Vérifier que le champ "startCreatedDateTime" est renseigné
-            if (ordreLimitation.getStartCreatedDateTime() == null) {
-                errors.add(messageSource.getMessage("import.ordreLimitation.debut.startCreatedDateTime.error",
+            try {
+                if (getLocalDateTime(ordreLimitation.getStartCreatedDateTime()) == null) {
+                    errors.add(messageSource.getMessage("import.ordreLimitation.debut.startCreatedDateTime.error",
+                            new String[]{fichierOrdreLimitation.getFileName()}, null));
+                }
+                if (getLocalDateTime(ordreLimitation.getEndCreatedDateTime()) != null) {
+                    errors.add(messageSource.getMessage("import.ordreLimitation.debut.endCreatedDateTime.error",
+                            new String[]{fichierOrdreLimitation.getFileName()}, null));
+                }
+            } catch (DateTimeParseException dateTimeParseException) {
+                throw new BusinessException(messageSource.getMessage("import.ordreLimitation.date.format.error",
                         new String[]{fichierOrdreLimitation.getFileName()}, null));
             }
-            // Vérifier que le champ "endCreatedDateTime" est vide,
-            if (isNotBlank(ordreLimitation.getEndCreatedDateTime())) {
-                errors.add(messageSource.getMessage("import.ordreLimitation.debut.endCreatedDateTime.error",
-                        new String[]{fichierOrdreLimitation.getFileName()}, null));
-            }
+
             // le champ "orderEnd" doit être à false
             if (ordreLimitation.isOrderEnd()) {
                 errors.add(messageSource.getMessage("import.ordreLimitation.debut.orderEnd.error",
@@ -99,6 +107,7 @@ public class OrdreLimitationService {
         } else {
             ordreDebutLimitations.forEach(ordreDebutLimitation -> {
                 ordreDebutLimitation.setActivationDocumentMrid(randomUUID().toString());
+                ordreDebutLimitation.setInstance(instance.getValue());
                 ordreDebutLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
                 ordreDebutLimitation.setSubOrderList(new ArrayList<>());
                 ordreDebutLimitation.setEndCreatedDateTime(EMPTY);
@@ -120,7 +129,7 @@ public class OrdreLimitationService {
         return importOrdreDebutLimitationResult;
     }
 
-    public ImportOrdreLimitationResult importCoupleOrdreDebutFin(List<FichierOrdreLimitation> fichierOrdreLimitations) throws BusinessException, TechnicalException, IOException {
+    public ImportOrdreLimitationResult importCoupleOrdreDebutFin(List<FichierOrdreLimitation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
         Assert.notEmpty(fichierOrdreLimitations, messageSource.getMessage("import.ordreLimitation.files.empty", new String[]{}, null));
         fichierOrdreLimitations.forEach(fichierOrdreLimitation -> importUtilsService.checkFile(fichierOrdreLimitation.getFileName(),
                 new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
@@ -136,15 +145,18 @@ public class OrdreLimitationService {
                 errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichierOrdreLimitation.getFileName()}, null));
                 break;
             }
-            // Vérifier que le champ "startCreatedDateTime" est renseigné,
-            if (ordreLimitation.getStartCreatedDateTime() == null) {
-                errors.add(messageSource.getMessage("import.ordreLimitation.couple.startCreatedDateTime.error",
-                        new String[]{fichierOrdreLimitation.getFileName()}, null));
-            }
+            try {
+                if (getLocalDateTime(ordreLimitation.getStartCreatedDateTime()) == null) {
+                    errors.add(messageSource.getMessage("import.ordreLimitation.couple.startCreatedDateTime.error",
+                            new String[]{fichierOrdreLimitation.getFileName()}, null));
+                }
 
-            // Vérifier que le champ "endCreatedDateTime" est renseigné
-            if (ordreLimitation.getEndCreatedDateTime() == null) {
-                errors.add(messageSource.getMessage("import.ordreLimitation.couple.endCreatedDateTime.error",
+                if (getLocalDateTime(ordreLimitation.getEndCreatedDateTime()) == null) {
+                    errors.add(messageSource.getMessage("import.ordreLimitation.couple.endCreatedDateTime.error",
+                            new String[]{fichierOrdreLimitation.getFileName()}, null));
+                }
+            } catch (DateTimeParseException dateTimeParseException) {
+                throw new BusinessException(messageSource.getMessage("import.ordreLimitation.date.format.error",
                         new String[]{fichierOrdreLimitation.getFileName()}, null));
             }
             // le champ "orderEnd" doit être à false
@@ -164,6 +176,7 @@ public class OrdreLimitationService {
         } else {
             ordreLimitations.forEach(ordreDebutLimitation -> {
                 ordreDebutLimitation.setActivationDocumentMrid(randomUUID().toString());
+                ordreDebutLimitation.setInstance(instance.getValue());
                 ordreDebutLimitation.setSubOrderList(new ArrayList<>());
                 ordreDebutLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
                 if (ordreDebutLimitation.getOrderValue() == null) {
@@ -190,9 +203,10 @@ public class OrdreLimitationService {
         return objectMapper;
     }
 
-    public List<OrdreLimitation> getOrdreDebutLimitation() throws TechnicalException {
+    public List<OrdreLimitation> getOrdreDebutLimitation(InstanceEnum instance) throws TechnicalException {
         List<Selector> selectors = new ArrayList<>();
         selectors.add(Expression.eq("docType", ACTIVATION_DOCUMENT.getDocType()));
+        selectors.add(Expression.eq("instance", instance.getValue()));
         selectors.add(Expression.eq("endCreatedDateTime", EMPTY));
         selectors.add(Expression.eq("orderEnd", false));
         selectors.add(Expression.eq("reconciliation", false));

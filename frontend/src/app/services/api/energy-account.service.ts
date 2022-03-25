@@ -54,6 +54,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
         { position: 25, inQuantity: 8 },
       ],
     },
+    /*
     {
       processType: 'unkhown' as any, // an unkonwn processType
       timeInterval: '2020-01-01T00:00:00Z/2020-01-02T23:59:59Z',
@@ -64,6 +65,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
         { position: 32, inQuantity: 0 },
       ],
     },
+    */
     {
       processType: ProcessType.A05,
       timeInterval: '2020-01-02T00:00:00Z/2020-01-02T23:59:59Z',

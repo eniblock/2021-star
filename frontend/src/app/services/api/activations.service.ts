@@ -81,8 +81,8 @@ const getMocks = (
               typeSite: TypeSite.HTA,
               rte: {
                 originAutomationRegisteredResourceMrid: 'CONFOLENS',
-                startCreatedDateTime: '2022-01-16T11:22:23.511Z',
-                endCreatedDateTime: '2022-01-17T15:54:23.511Z',
+                startCreatedDateTime: '2020-01-01T00:00:00Z',
+                endCreatedDateTime: '2020-01-02T23:59:59Z',
                 quantity: 9,
                 motif: {
                   messageType: 'A98',
@@ -115,8 +115,8 @@ const getMocks = (
               typeSite: TypeSite.HTA,
               rte: {
                 originAutomationRegisteredResourceMrid: 'MANSLE',
-                startCreatedDateTime: '2022-01-13T11:12:23.511Z',
-                endCreatedDateTime: '2022-01-14T13:14:23',
+                startCreatedDateTime: '2020-01-01T00:00:00Z',
+                endCreatedDateTime: '2020-01-02T23:59:59Z',
                 quantity: 23,
                 motif: {
                   messageType: 'A54',
@@ -128,8 +128,8 @@ const getMocks = (
               },
               enedis: {
                 originAutomationRegisteredResourceMrid: 'MANSLE',
-                startCreatedDateTime: '2022-01-14T13:12:23.511Z',
-                endCreatedDateTime: '2022-01-14T15:12:23.511Z',
+                startCreatedDateTime: '2020-01-01T00:00:00Z',
+                endCreatedDateTime: '2020-01-02T23:59:59Z',
                 quantity: 23,
                 motif: {
                   messageType: '',
@@ -149,8 +149,8 @@ const getMocks = (
               typeSite: TypeSite.HTA,
               rte: {
                 originAutomationRegisteredResourceMrid: 'MANSLE',
-                startCreatedDateTime: '2022-01-23T09:24:23.511Z',
-                endCreatedDateTime: '2022-01-24T10:14:17.511Z',
+                startCreatedDateTime: '2020-01-01T00:00:00Z',
+                endCreatedDateTime: '2020-01-02T23:59:59Z',
                 quantity: 17,
                 motif: {
                   messageType: 'A54',
@@ -162,8 +162,8 @@ const getMocks = (
               },
               enedis: {
                 originAutomationRegisteredResourceMrid: 'MANSLE',
-                startCreatedDateTime: '2022-01-22T13:12:23.511Z',
-                endCreatedDateTime: '2022-01-22T22:32:43.511Z',
+                startCreatedDateTime: '2020-01-01T00:00:00Z',
+                endCreatedDateTime: '2020-01-02T23:59:59Z',
                 quantity: 17,
                 motif: {
                   messageType: 'D01',
@@ -183,8 +183,8 @@ const getMocks = (
               typeSite: TypeSite.HTA,
               rte: {
                 originAutomationRegisteredResourceMrid: 'LONGCHAMPS',
-                startCreatedDateTime: '2022-01-21T09:24:23.511Z',
-                endCreatedDateTime: '2022-01-21T15:14:23.511Z',
+                startCreatedDateTime: '2020-01-01T00:00:00Z',
+                endCreatedDateTime: '2020-01-02T23:59:59Z',
                 quantity: 23,
                 motif: {
                   messageType: 'A98',
@@ -196,8 +196,8 @@ const getMocks = (
               },
               enedis: {
                 originAutomationRegisteredResourceMrid: 'LONGCHAMPS',
-                startCreatedDateTime: '2022-01-16T13:12:23.511Z',
-                endCreatedDateTime: '2022-01-17T15:12:23.511Z',
+                startCreatedDateTime: '2020-01-01T00:00:00Z',
+                endCreatedDateTime: '2020-01-02T23:59:59Z',
                 quantity: 23,
                 motif: {
                   messageType: 'D01',

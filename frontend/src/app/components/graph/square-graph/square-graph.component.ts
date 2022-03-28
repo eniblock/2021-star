@@ -19,6 +19,7 @@ export interface GraphData {
   serieNames: string[];
   data: Point[][];
   exportFileName: string;
+  seriesThatMustBeInterpolated: number[]; // the indice of the serie where we have to interpolate each point
 }
 
 /* GraphData example :
@@ -41,6 +42,7 @@ export interface GraphData {
       { x: new Date('2015/04/29 14:00:00').getTime(), y: 7 },
     ],
   ],
+  seriesThatMustBeInterpolated: []; 
   exportFileName: 'monFichier',
 }
 */
@@ -196,7 +198,9 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           symbolSize: 5,
           step: 'end',
           smooth: false,
-          data: this.toData(serie, allAbscisses),
+          data: graphData.seriesThatMustBeInterpolated.some((i) => i == indice)
+            ? this.interpolateSerieOnAllAbscisses(serie, allAbscisses)
+            : serie.map((p) => [p.x, p.y]),
         });
       });
 
@@ -204,7 +208,10 @@ export class SquareGraphComponent implements OnInit, OnChanges {
     }
   }
 
-  private toData(serie: Point[], allAbscisses: number[]) {
+  private interpolateSerieOnAllAbscisses(
+    serie: Point[],
+    allAbscisses: number[]
+  ) {
     let points: Point[] = [];
     let currentIndice = 0;
     if (serie.length > 0) {

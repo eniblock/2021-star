@@ -176,6 +176,7 @@ export class ActivationGraphComponent implements OnInit {
       serieNames: serieNames,
       data: points,
       exportFileName: `${this.bottomSheetParams.startCreatedDateTime}_${this.bottomSheetParams.endCreatedDateTime}_${this.bottomSheetParams.meteringPointMrid}`,
+      seriesThatMustBeInterpolated: [0],
     };
   }
 

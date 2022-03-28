@@ -1,5 +1,6 @@
 import { environment } from 'src/environments/environment';
 import {
+  FormulaireOrdreDebutEtFinLimitationFichier,
   FormulaireOrdreDebutLimitationFichier,
   FormulaireOrdreFinLimitation,
   FormulaireOrdreFinLimitationFichier,
@@ -34,6 +35,21 @@ export class OrdreLimitationService {
 
     return this.httpClient.post<void>(
       `${environment.serverUrl}/ordreLimitations/fin/files`,
+      formData
+    );
+  }
+
+  creerOrdreDebutFinAvecFichiers(
+    formulaireOrdreDebutEtFinLimitationFichier: FormulaireOrdreDebutEtFinLimitationFichier
+  ): Observable<void> {
+    let formData = new FormData();
+    this.appendFiles(
+      formData,
+      formulaireOrdreDebutEtFinLimitationFichier.files
+    );
+
+    return this.httpClient.post<void>(
+      `${environment.serverUrl}/ordreLimitations/couple/files`,
       formData
     );
   }

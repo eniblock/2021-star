@@ -59,10 +59,10 @@ export class FormActivationsRechercheComponent implements OnInit {
       ...f,
       startCreatedDateTime: !f.startCreatedDateTime
         ? null
-        : f.startCreatedDateTime.toJSON(),
+        : f.startCreatedDateTime.toJSON().split('.')[0] + 'Z',
       endCreatedDateTime: !f.endCreatedDateTime
         ? null
-        : f.endCreatedDateTime.toJSON(),
+        : f.endCreatedDateTime.toJSON().split('.')[0] + 'Z',
     };
     this.formSubmit.emit(form);
   }

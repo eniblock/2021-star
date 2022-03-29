@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 export enum TypeImport {
   OrdreDebutLimitation = 'Ordre de début de limitation',
   OrdreFinLimitation = 'Ordre de fin de limitation',
+  OrdreDebutEtFinLimitation = 'Ordre de  début et de fin de limitation',
 }
 
 @Component({
@@ -32,6 +33,7 @@ export class ChargerComponent implements OnInit {
         this.typesImport = [
           TypeImport.OrdreDebutLimitation,
           TypeImport.OrdreFinLimitation,
+          TypeImport.OrdreDebutEtFinLimitation,
         ];
         break;
       case Instance.DSO:

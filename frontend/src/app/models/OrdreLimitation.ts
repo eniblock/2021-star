@@ -6,6 +6,10 @@ export interface FormulaireOrdreFinLimitationFichier {
   files: File[];
 }
 
+export interface FormulaireOrdreDebutEtFinLimitationFichier {
+  files: File[];
+}
+
 export interface FormulaireOrdreFinLimitation {
   originAutomationRegisteredResourceMrid: string;
   registeredResourceMrid: string;

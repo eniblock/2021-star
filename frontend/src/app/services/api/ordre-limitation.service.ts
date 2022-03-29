@@ -1,5 +1,6 @@
 import { environment } from 'src/environments/environment';
 import {
+  FormulaireOrdreDebutEtFinLimitationFichier,
   FormulaireOrdreDebutLimitationFichier,
   FormulaireOrdreFinLimitation,
   FormulaireOrdreFinLimitationFichier,
@@ -21,7 +22,7 @@ export class OrdreLimitationService {
     this.appendFiles(formData, formulaireOrdreDebutLimitationFichier.files);
 
     return this.httpClient.post<void>(
-      `${environment.serverUrl}/ordreLimitations/debut/files`,
+      `${environment.serverUrl}/ordreLimitations/debut`,
       formData
     );
   }
@@ -33,14 +34,29 @@ export class OrdreLimitationService {
     this.appendFiles(formData, formulaireOrdreFinLimitationFichier.files);
 
     return this.httpClient.post<void>(
-      `${environment.serverUrl}/ordreLimitations/fin/files`,
+      `${environment.serverUrl}/ordreLimitations/fin`,
+      formData
+    );
+  }
+
+  creerOrdreDebutFinAvecFichiers(
+    formulaireOrdreDebutEtFinLimitationFichier: FormulaireOrdreDebutEtFinLimitationFichier
+  ): Observable<void> {
+    let formData = new FormData();
+    this.appendFiles(
+      formData,
+      formulaireOrdreDebutEtFinLimitationFichier.files
+    );
+
+    return this.httpClient.post<void>(
+      `${environment.serverUrl}/ordreLimitations/couple`,
       formData
     );
   }
 
   creerOrdreFin(form: FormulaireOrdreFinLimitation): Observable<void> {
     return this.httpClient.post<void>(
-      `${environment.serverUrl}/ordreLimitations/fin/`,
+      `${environment.serverUrl}/ordreLimitations/fin`,
       form
     );
   }

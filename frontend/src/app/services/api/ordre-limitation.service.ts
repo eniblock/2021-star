@@ -22,7 +22,7 @@ export class OrdreLimitationService {
     this.appendFiles(formData, formulaireOrdreDebutLimitationFichier.files);
 
     return this.httpClient.post<void>(
-      `${environment.serverUrl}/ordreLimitations/debut/files`,
+      `${environment.serverUrl}/ordreLimitations/debut`,
       formData
     );
   }
@@ -34,7 +34,7 @@ export class OrdreLimitationService {
     this.appendFiles(formData, formulaireOrdreFinLimitationFichier.files);
 
     return this.httpClient.post<void>(
-      `${environment.serverUrl}/ordreLimitations/fin/files`,
+      `${environment.serverUrl}/ordreLimitations/fin`,
       formData
     );
   }
@@ -49,14 +49,14 @@ export class OrdreLimitationService {
     );
 
     return this.httpClient.post<void>(
-      `${environment.serverUrl}/ordreLimitations/couple/files`,
+      `${environment.serverUrl}/ordreLimitations/couple`,
       formData
     );
   }
 
   creerOrdreFin(form: FormulaireOrdreFinLimitation): Observable<void> {
     return this.httpClient.post<void>(
-      `${environment.serverUrl}/ordreLimitations/fin/`,
+      `${environment.serverUrl}/ordreLimitations/fin`,
       form
     );
   }

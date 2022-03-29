@@ -16,7 +16,7 @@ import { FormulaireOrdreFinLimitationFichier } from 'src/app/models/OrdreLimitat
   styleUrls: ['./form-ordre-fin-limitation-fichier.component.css'],
 })
 export class FormOrdreFinLimitationFichierComponent implements OnInit {
-  form: FormGroup = this.formBuilder.group({}); // Il n'y a pas besoin de formulaire ici (car seulement un fichier à uploader)
+  form: FormGroup = this.formBuilder.group({});
 
   PATH_ROUTE = PATH_ROUTE;
 
@@ -43,7 +43,7 @@ export class FormOrdreFinLimitationFichierComponent implements OnInit {
 
   onSubmit() {
     const form: FormulaireOrdreFinLimitationFichier = {
-      files: this.listeFichiers.map((f) => f.file), // On upload ici un seul fichier
+      files: this.listeFichiers.map((f) => f.file),
     };
     this.ordreLimitationService.creerOrdreFinAvecFichiers(form).subscribe(
       (ok) => {

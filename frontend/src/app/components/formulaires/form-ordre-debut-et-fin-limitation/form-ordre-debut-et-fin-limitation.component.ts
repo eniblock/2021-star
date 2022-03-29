@@ -1,4 +1,4 @@
-import { FormulaireOrdreDebutLimitationFichier } from 'src/app/models/OrdreLimitation';
+import { FormulaireOrdreDebutEtFinLimitationFichier } from 'src/app/models/OrdreLimitation';
 import { environment } from 'src/environments/environment';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -7,15 +7,15 @@ import {
   ListeFichiersEtEtat,
 } from '../../micro-components/uploader-fichier/uploader-fichier.component';
 import { tailleFichierToStr } from '../../micro-components/uploader-fichier/uploader-fichier-tools';
-import { OrdreLimitationService } from './../../../services/api/ordre-limitation.service';
+import { OrdreLimitationService } from '../../../services/api/ordre-limitation.service';
 import { PATH_ROUTE } from 'src/app/app-routing.module';
 
 @Component({
-  selector: 'app-form-ordre-debut-limitation',
-  templateUrl: './form-ordre-debut-limitation.component.html',
-  styleUrls: ['./form-ordre-debut-limitation.component.css'],
+  selector: 'app-form-ordre-debut-et-fin-limitation',
+  templateUrl: './form-ordre-debut-et-fin-limitation.component.html',
+  styleUrls: ['./form-ordre-debut-et-fin-limitation.component.css'],
 })
-export class FormOrdreDebutLimitationComponent implements OnInit {
+export class FormOrdreDebutEtFinLimitationComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({});
 
   PATH_ROUTE = PATH_ROUTE;
@@ -42,10 +42,10 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
   }
 
   onSubmit() {
-    const form: FormulaireOrdreDebutLimitationFichier = {
+    const form: FormulaireOrdreDebutEtFinLimitationFichier = {
       files: this.listeFichiers.map((f) => f.file),
     };
-    this.ordreLimitationService.creerOrdreDebutAvecFichiers(form).subscribe(
+    this.ordreLimitationService.creerOrdreDebutFinAvecFichiers(form).subscribe(
       (ok) => {
         this.uploadEffectue = true;
       },

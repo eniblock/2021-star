@@ -14,6 +14,9 @@ import { MatTableModule } from '@angular/material/table';
 import { ActivationsColumnSelectorComponent } from './activations-column-selector/activations-column-selector.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MicroComponentsModule } from 'src/app/components/micro-components/micro-components.module';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { GraphModule } from 'src/app/components/graph/graph.module';
+import { ActivationGraphComponent } from './activation-graph/activation-graph.component';
 
 @NgModule({
   imports: [
@@ -28,12 +31,15 @@ import { MicroComponentsModule } from 'src/app/components/micro-components/micro
     MatButtonModule,
     MatTableModule,
     MatSortModule,
+    MatBottomSheetModule,
+    GraphModule,
   ],
   declarations: [
     ActivationsComponent,
     ActivationsPaginationComponent,
     ActivationsResultatsComponent,
     ActivationsColumnSelectorComponent,
+    ActivationGraphComponent,
   ],
 })
 export class ActivationsModule {}

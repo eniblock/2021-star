@@ -13,7 +13,7 @@ a {
   text-decoration: none;
 }
 
-// Titres
+// Titles
 h1 {
   font-weight: lighter !important;
   font-size: 2em;
@@ -36,12 +36,12 @@ h3 {
   cursor: pointer;
 }
 
-// Listes
+// Lists
 .list-group-big-lines {
   line-height: 3em !important;
 }
 
-// Formulaires
+// Forms
 .mat-form-field-appearance-outline .mat-form-field-outline {
   background-color: #ffffff; // couleur de fond des inputs
   border-radius: 5px;
@@ -166,7 +166,7 @@ h3 {
 }
 .reseau-resultat-detail {
   border-radius: 15px;
-  overflow: hidden; // Permet aux divs enfant de "respecter" le radius du parent
+  overflow: hidden; // Allows achild divs enfant to "respect" the radius of their parent
 
   .header {
     background-color: $mat-primary;
@@ -228,7 +228,7 @@ h3 {
   }
 }
 
-// Bouton de navigation
+// Navigation buttons
 .boutonNavigation {
   padding: 10px 40px;
   border-radius: 35px;
@@ -240,7 +240,7 @@ h3 {
   }
 }
 
-// Uploader fichiers
+// Files uploader
 .uploaderFichier {
   color: inherit !important;
   .ngx-file-drop__content {
@@ -288,4 +288,14 @@ h3 {
   .mat-horizontal-stepper-header {
     pointer-events: none !important;
   }
+}
+
+// Graph
+.graph-bottom-sheet {
+  min-width: 80vw !important;
+  min-height: 50vh !important;
+}
+.echarts {
+  width: 100%;
+  height: 100%;
 }

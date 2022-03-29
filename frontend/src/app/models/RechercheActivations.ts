@@ -1,3 +1,4 @@
+import { MeasurementUnitName } from './enum/MeasurementUnitName.enum';
 import { OrdreRechercheActivations } from './enum/OrdreRechercheActivations.enum';
 import { TechnologyType } from './enum/TechnologyType.enum';
 import { TypeSite } from './enum/TypeSite.enum';
@@ -15,18 +16,23 @@ export interface RechercheActivationsRequete
   extends FormulairePagination<OrdreRechercheActivations>,
     FormulaireRechercheActivations {}
 
-export interface RechercheActivationsEntite {
-  technologyType?: TechnologyType;
+export interface SystemOperatorData {
   originAutomationRegisteredResourceMrid?: string;
+  startCreatedDateTime?: string; // JSON
+  endCreatedDateTime?: string; // JSON
+  quantity?: number;
+  motif?: Motif;
+  orderValue?: number; // Consigne graph
+  measurementUnitName?: MeasurementUnitName; // Consigne graph
+}
+
+export interface RechercheActivationsEntite {
+  meteringPointMrid: string;
+  technologyType?: TechnologyType;
+  producerMarketParticipantMrid?: string;
   producerMarketParticipantName?: string;
   siteName?: string;
-  producerMarketParticipantMrid?: string;
-  startCreatedDateTimeEnedis?: string; // JSON
-  endCreatedDateTimeEnedis?: string; // JSON
-  startCreatedDateTimeRte?: string; // JSON
-  endCreatedDateTimeRte?: string; // JSON
-  quantity?: number;
-  motifRte?: Motif;
-  motifEnedis?: Motif;
   typeSite: TypeSite;
+  rte?: SystemOperatorData;
+  enedis?: SystemOperatorData;
 }

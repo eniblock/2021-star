@@ -92,7 +92,7 @@ export class ActivationsComponent implements OnInit {
   }
 
   updateColumnsToDisplay(columnsToDisplay: string[]) {
-    this.columnsToDisplay = columnsToDisplay;
+    this.columnsToDisplay = [...columnsToDisplay, 'actions'];
   }
 
   sortChange(sort: Sort) {

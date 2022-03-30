@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.star.enums.InstanceEnum.DSO;
+import static com.star.enums.InstanceEnum.PRODUCER;
 import static com.star.enums.InstanceEnum.TSO;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
@@ -68,7 +68,7 @@ public class OrdreLimitationController {
             for (MultipartFile file : files) {
                 fichierOrdreLimitations.add(new FichierOrdreLimitation(file.getOriginalFilename(), file.getInputStream()));
             }
-            importMarketParticipantResult = ordreLimitationService.importOrdreDebutLimitation(fichierOrdreLimitations);
+            importMarketParticipantResult = ordreLimitationService.importOrdreDebutLimitation(fichierOrdreLimitations, instance);
         } catch (IOException | TechnicalException exception) {
             log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -85,7 +85,7 @@ public class OrdreLimitationController {
         if (!TSO.equals(instance)) { // Seul RTE peut obtenir la liste des ordres de début de limitation
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        return ResponseEntity.ok(ordreLimitationService.getOrdreDebutLimitation());
+        return ResponseEntity.ok(ordreLimitationService.getOrdreDebutLimitation(instance));
     }
 
     @Operation(summary = "Post couple Start/End limit order.")
@@ -96,7 +96,7 @@ public class OrdreLimitationController {
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping("/couple")
     public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(@RequestParam MultipartFile[] files) throws BusinessException {
-        if (!DSO.equals(instance)) { // Seul Enedis peut inscrire des couples d'ordre
+        if (PRODUCER.equals(instance)) { // Seuls RTE et Enedis peuvent inscrire des couples d'ordre
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (files == null || files.length == 0) {
@@ -108,7 +108,7 @@ public class OrdreLimitationController {
             for (MultipartFile file : files) {
                 fichierCoupleOrdreLimitations.add(new FichierOrdreLimitation(file.getOriginalFilename(), file.getInputStream()));
             }
-            importMarketParticipantResult = ordreLimitationService.importCoupleOrdreDebutFin(fichierCoupleOrdreLimitations);
+            importMarketParticipantResult = ordreLimitationService.importCoupleOrdreDebutFin(fichierCoupleOrdreLimitations, instance);
         } catch (IOException | TechnicalException exception) {
             log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

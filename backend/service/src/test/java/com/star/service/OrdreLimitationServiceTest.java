@@ -1,6 +1,7 @@
 package com.star.service;
 
 import com.star.AbstractTest;
+import com.star.enums.InstanceEnum;
 import com.star.exception.TechnicalException;
 import com.star.models.limitation.FichierOrdreLimitation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
@@ -22,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.star.enums.InstanceEnum.DSO;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -58,7 +60,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         // GIVEN
 
         // WHEN
-        Assertions.assertThrows(IllegalArgumentException.class, () -> ordreLimitationService.importOrdreDebutLimitation(null));
+        IllegalArgumentException illegalArgumentException = Assertions.assertThrows(IllegalArgumentException.class, () -> ordreLimitationService.importOrdreDebutLimitation(null, DSO));
 
         // THEN
     }
@@ -68,7 +70,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         // GIVEN
 
         // WHEN
-        Assertions.assertThrows(IllegalArgumentException.class, () -> ordreLimitationService.importOrdreDebutLimitation(new ArrayList<>()));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> ordreLimitationService.importOrdreDebutLimitation(new ArrayList<>(), DSO));
 
         // THEN
     }
@@ -79,7 +81,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         String fileName = "ordre-debut-limitation-sans-extension";
 
         // WHEN
-        Assertions.assertThrows(IllegalArgumentException.class, () -> ordreLimitationService.importOrdreDebutLimitation(asList(createFichierOrdreLimitation(fileName, ordreDebutLimitationWithoutExtension))));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> ordreLimitationService.importOrdreDebutLimitation(asList(createFichierOrdreLimitation(fileName, ordreDebutLimitationWithoutExtension)), DSO));
 
         // THEN
     }
@@ -90,7 +92,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         String fileName = "ordre-debut-limitation-sans-donnees.json";
 
         // WHEN
-        ImportOrdreLimitationResult importOrdreLimitationResult = ordreLimitationService.importOrdreDebutLimitation(asList(createFichierOrdreLimitation(fileName, ordreDebutLimitationWithoutData)));
+        ImportOrdreLimitationResult importOrdreLimitationResult = ordreLimitationService.importOrdreDebutLimitation(asList(createFichierOrdreLimitation(fileName, ordreDebutLimitationWithoutData)), DSO);
 
         // THEN
         assertThat(importOrdreLimitationResult.getErrors()).hasSize(1);
@@ -105,7 +107,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         String fileName = "ordre-debut-limitation-donnees-ko.json";
 
         // WHEN
-        ImportOrdreLimitationResult importOrdreLimitationResult = ordreLimitationService.importOrdreDebutLimitation(asList(createFichierOrdreLimitation(fileName, ordreDebutLimitationDataKo)));
+        ImportOrdreLimitationResult importOrdreLimitationResult = ordreLimitationService.importOrdreDebutLimitation(asList(createFichierOrdreLimitation(fileName, ordreDebutLimitationDataKo)), DSO);
 
         // THEN
         assertThat(importOrdreLimitationResult.getErrors()).isNotEmpty();
@@ -119,7 +121,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         String fileName = "ordre-debut-limitation-ok.json";
 
         // WHEN
-        ImportOrdreLimitationResult importOrdreLimitationResult = ordreLimitationService.importOrdreDebutLimitation(asList(createFichierOrdreLimitation(fileName, ordreDebutLimitationOk)));
+        ImportOrdreLimitationResult importOrdreLimitationResult = ordreLimitationService.importOrdreDebutLimitation(asList(createFichierOrdreLimitation(fileName, ordreDebutLimitationOk)), DSO);
 
         // THEN
         assertThat(importOrdreLimitationResult.getErrors()).isEmpty();
@@ -128,7 +130,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         OrdreLimitation ordreLimitation = ordreDebutLimitationArgumentCaptor.getValue().get(0);
         assertThat(ordreLimitation).extracting("originAutomationRegisteredResourceMrid", "registeredResourceMrid",
                 "measurementUnitName", "startCreatedDateTime", "messageType", "businessType", "reasonCode", "orderEnd")
-                .containsExactly("ORIGIN_LNKINS_LKNZ", "PRM30001510803649", "MW", "", "message type", "business Type", "reason code", false);
+                .containsExactly("ORIGIN_LNKINS_LKNZ", "PRM30001510803649", "MW", "2020-01-01T14:30:00", "message type", "business Type", "reason code", false);
 
     }
 

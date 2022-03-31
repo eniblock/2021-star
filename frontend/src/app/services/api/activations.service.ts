@@ -43,7 +43,7 @@ export class ActivationsService {
     };
     let urlParams = this.urlService.toUrlParams(formToSend);
     return this.httpClient.get<PaginationReponse<RechercheActivationsEntite>>(
-      `${environment.serverUrl}/activations?${urlParams}`
+      `${environment.serverUrl}/ordreLimitations?${urlParams}`
     );
   }
 

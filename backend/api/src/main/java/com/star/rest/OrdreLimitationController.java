@@ -1,5 +1,6 @@
 package com.star.rest;
 
+import com.star.dto.limitationorder.LimitationOrderDTOResponse;
 import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
@@ -16,11 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -94,7 +91,7 @@ public class OrdreLimitationController {
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
-    @PostMapping("/couple")
+    @PostMapping()
     public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(@RequestParam MultipartFile[] files) throws BusinessException {
         if (!DSO.equals(instance)) { // Seul Enedis peut inscrire des couples d'ordre
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -114,5 +111,22 @@ public class OrdreLimitationController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.status(isEmpty(importMarketParticipantResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantResult);
+    }
+
+    @Operation(summary = "Get limit orders.")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limit orders",
+            content = {@Content(mediaType = "application/json")})})
+    @GetMapping()
+    public ResponseEntity<LimitationOrderDTOResponse> findLimitationOrder(
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+            @RequestParam(value = "order") String order,
+            @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
+            @RequestParam(value = "originAutomationRegisteredResourceMrid", required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
+            @RequestParam(value = "producerMarketParticipantMrid", required = false, defaultValue = "") String producerMarketParticipantMrid,
+            @RequestParam(value = "startCreatedDateTime", required = false, defaultValue = "") String startCreatedDateTime,
+            @RequestParam(value = "endCreatedDateTime", required = false, defaultValue = "") String endCreatedDateTime
+    ) {
+        return null;
     }
 }

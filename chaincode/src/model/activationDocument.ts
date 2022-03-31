@@ -24,7 +24,6 @@ export class ActivationDocument {
             'registeredResourceMrid is required').typeError('registeredResourceMrid must be a string'),
         revisionNumber: Yup.string().notRequired().matches(/^[0-9]*$/),
         senderMarketParticipantMrid: Yup.string().notRequired(),
-        instance: Yup.string().notRequired(), // Colonne à supprimer dès qu'on passera sur l'architecture PDC
         startCreatedDateTime: Yup.string().notRequired(),
         subOrderList: Yup.array().notRequired(),
         testDateTime: Yup.string().notRequired(),
@@ -46,6 +45,5 @@ export class ActivationDocument {
     public senderMarketParticipantMrid?: string; // FK?
     public receiverMarketParticipantMrid?: string; // FK?
     public reconciliation?: boolean;
-    public instance?: string; // TODO bien préciser ici que j'ai eu l'accord de Guillaume Saluden (lundi 16:40 à la fin de la réunions sur la nouvelle archiecture) pour ajouter l'instance
     public subOrderList?: string[];
 }

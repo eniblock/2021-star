@@ -206,7 +206,7 @@ public class OrdreLimitationService {
     public List<OrdreLimitation> getOrdreDebutLimitation(InstanceEnum instance) throws TechnicalException {
         List<Selector> selectors = new ArrayList<>();
         selectors.add(Expression.eq("docType", ACTIVATION_DOCUMENT.getDocType()));
-//        selectors.add(Expression.eq("instance", instance.getValue()));
+        selectors.add(Expression.eq("instance", instance.getValue()));
         selectors.add(Expression.eq("endCreatedDateTime", EMPTY));
         selectors.add(Expression.eq("orderEnd", false));
         selectors.add(Expression.eq("reconciliation", false));

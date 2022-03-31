@@ -25,6 +25,7 @@ export class ActivationDocument {
         revisionNumber: Yup.string().notRequired().matches(/^[0-9]*$/),
         senderMarketParticipantMrid: Yup.string().notRequired(),
         startCreatedDateTime: Yup.string().notRequired(),
+        instance: Yup.string().notRequired(),
         subOrderList: Yup.array().notRequired(),
         testDateTime: Yup.string().notRequired(),
     });
@@ -45,5 +46,6 @@ export class ActivationDocument {
     public senderMarketParticipantMrid?: string; // FK?
     public receiverMarketParticipantMrid?: string; // FK?
     public reconciliation?: boolean;
+    public instance?: boolean;
     public subOrderList?: string[];
 }

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.star.enums.InstanceEnum.DSO;
 import static com.star.enums.InstanceEnum.PRODUCER;
 import static com.star.enums.InstanceEnum.TSO;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;

@@ -16,16 +16,16 @@ import java.util.Collections;
  * SPDX-License-Identifier: Apache-2.0
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR, uses = {SiteMapper.class})
-public abstract class SiteResponseMapper {
+public interface SiteResponseMapper {
 
     public static final String NIL = "nil";
 
     @Mapping(target = "content", source = "records")
     @Mapping(target = "totalElements", source = "fetchedRecordsCount")
-    public abstract SiteDTOResponse beanToDto(SiteResponse siteResponse);
+    SiteDTOResponse beanToDto(SiteResponse siteResponse);
 
     @AfterMapping
-    protected void convertContentAndBookmark(@MappingTarget SiteDTOResponse siteDTOResponse) {
+    default void convertContentAndBookmark(@MappingTarget SiteDTOResponse siteDTOResponse) {
         if (siteDTOResponse != null) {
             if (siteDTOResponse.getContent() == null) {
                 siteDTOResponse.setContent(Collections.emptyList());

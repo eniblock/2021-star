@@ -3,7 +3,7 @@
     "fields":["docType","activationDocumentMrid","originAutomationRegisteredResourceMrid", "registeredResourceMrid",
       "measurementUnitName", "messageType", "businessType", "orderEnd", "orderValue", "startCreatedDateTime",
       "endCreatedDateTime", "revisionNumber", "reasonCode", "senderMarketParticipantMrid", "receiverMarketParticipantMrid",
-      "reconciliation", "subOrderList"]
+      "reconciliation", "subOrderList", "instance"]
   },
   "ddoc":"indexActivationDocumentDoc",
   "name":"indexActivationDocument",

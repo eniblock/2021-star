@@ -38,6 +38,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 public class OrdreLimitationController {
     public static final String PATH = ApiRestVersion.VERSION + "/ordreLimitations";
     public static final String DEBUT = "/debut";
+    public static final String COUPLE = "/couple";
 
     @Value("${instance}")
     private InstanceEnum instance;
@@ -91,7 +92,7 @@ public class OrdreLimitationController {
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
-    @PostMapping()
+    @PostMapping(COUPLE)
     public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(@RequestParam MultipartFile[] files) throws BusinessException {
         if (PRODUCER.equals(instance)) { // Seuls RTE et Enedis peuvent inscrire des couples d'ordre
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);

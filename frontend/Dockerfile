@@ -14,6 +14,6 @@ FROM dev AS build
 
 RUN npm run build-prod
 
-FROM nginx:1.19.2-alpine
+FROM nginx:1.20-alpine
 COPY nginx.conf /etc/nginx/templates/default.conf.template
 COPY --from=build /usr/src/app/dist/frontend /usr/share/nginx/html

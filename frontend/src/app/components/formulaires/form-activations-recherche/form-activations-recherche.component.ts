@@ -1,10 +1,9 @@
-import { DateHelper } from 'src/app/helpers/date.helper';
 import { Instance } from 'src/app/models/enum/Instance.enum';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { InstanceService } from 'src/app/services/api/instance.service';
-import { FormulaireRechercheActivations } from 'src/app/models/RechercheActivations';
-import { ActivationsService } from 'src/app/services/api/activations.service';
+import { FormulaireRechercheHistoriqueLimitation } from 'src/app/models/RechercheHistoriqueLimitation';
+import { HistoriqueLimitationService } from 'src/app/services/api/historique-limitation.service';
 
 @Component({
   selector: 'app-form-activations-recherche',
@@ -12,7 +11,8 @@ import { ActivationsService } from 'src/app/services/api/activations.service';
   styleUrls: ['./form-activations-recherche.component.css'],
 })
 export class FormActivationsRechercheComponent implements OnInit {
-  @Output() formSubmit = new EventEmitter<FormulaireRechercheActivations>();
+  @Output() formSubmit =
+    new EventEmitter<FormulaireRechercheHistoriqueLimitation>();
 
   InstanceEnum = Instance;
   typeInstance?: Instance;
@@ -26,7 +26,7 @@ export class FormActivationsRechercheComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private activationsService: ActivationsService,
+    private historiqueLimitationService: HistoriqueLimitationService,
     private instanceService: InstanceService
   ) {}
 
@@ -35,8 +35,8 @@ export class FormActivationsRechercheComponent implements OnInit {
       this.typeInstance = typeInstance;
     });
     // On charge le formulaire en cache si y'en a un
-    const formSauvegardeDansStorage: FormulaireRechercheActivations =
-      this.activationsService.popFormulaireRecherche();
+    const formSauvegardeDansStorage: FormulaireRechercheHistoriqueLimitation =
+      this.historiqueLimitationService.popFormulaireRecherche();
     if (formSauvegardeDansStorage != null) {
       this.form.patchValue(formSauvegardeDansStorage);
       if (this.form.value.startCreatedDateTime) {
@@ -55,7 +55,7 @@ export class FormActivationsRechercheComponent implements OnInit {
 
   onSubmit() {
     const f = this.form.value;
-    const form: FormulaireRechercheActivations = {
+    const form: FormulaireRechercheHistoriqueLimitation = {
       ...f,
       startCreatedDateTime: !f.startCreatedDateTime
         ? null

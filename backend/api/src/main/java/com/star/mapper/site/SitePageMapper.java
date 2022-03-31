@@ -1,6 +1,7 @@
 package com.star.mapper.site;
 
-import com.star.dto.site.SiteDTOResponse;
+import com.star.dto.common.PageResponse;
+import com.star.dto.site.SiteDTO;
 import com.star.models.site.SiteResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.AfterMapping;
@@ -16,22 +17,22 @@ import java.util.Collections;
  * SPDX-License-Identifier: Apache-2.0
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR, uses = {SiteMapper.class})
-public interface SiteResponseMapper {
+public interface SitePageMapper {
 
     public static final String NIL = "nil";
 
     @Mapping(target = "content", source = "records")
     @Mapping(target = "totalElements", source = "fetchedRecordsCount")
-    SiteDTOResponse beanToDto(SiteResponse siteResponse);
+    PageResponse<SiteDTO> beanToDto(SiteResponse siteResponse);
 
     @AfterMapping
-    default void convertContentAndBookmark(@MappingTarget SiteDTOResponse siteDTOResponse) {
-        if (siteDTOResponse != null) {
-            if (siteDTOResponse.getContent() == null) {
-                siteDTOResponse.setContent(Collections.emptyList());
+    default void convertContentAndBookmark(@MappingTarget PageResponse<SiteDTO> paginationResponse) {
+        if (paginationResponse != null) {
+            if (paginationResponse.getContent() == null) {
+                paginationResponse.setContent(Collections.emptyList());
             }
-            if (StringUtils.equalsIgnoreCase(siteDTOResponse.getBookmark(), NIL)) {
-                siteDTOResponse.setBookmark(null);
+            if (StringUtils.equalsIgnoreCase(paginationResponse.getBookmark(), NIL)) {
+                paginationResponse.setBookmark(null);
             }
         }
     }

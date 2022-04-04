@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SiteResponse {
-    private List<Site> records;
-    private int fetchedRecordsCount;
-    private String bookmark;
+    protected List<Site> records;
+    protected int fetchedRecordsCount;
+    protected String bookmark;
 }

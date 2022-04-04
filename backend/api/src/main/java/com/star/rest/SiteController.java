@@ -1,12 +1,13 @@
 package com.star.rest;
 
 
-import com.star.dto.site.SiteDTOResponse;
+import com.star.dto.common.PageResponse;
+import com.star.dto.site.SiteDTO;
 import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.mapper.site.SiteResponseMapper;
+import com.star.mapper.site.SitePageMapper;
 import com.star.models.site.ImportSiteResult;
 import com.star.models.site.SiteCrteria;
 import com.star.security.SecurityUtils;
@@ -57,7 +58,7 @@ public class SiteController {
     private SiteService siteService;
 
     @Autowired
-    private SiteResponseMapper siteResponseMapper;
+    private SitePageMapper siteResponseMapper;
 
     @Operation(summary = "Post a Site CSV file.")
     @ApiResponses(value = {
@@ -123,7 +124,7 @@ public class SiteController {
      * @throws TechnicalException
      */
     @GetMapping
-    public ResponseEntity<SiteDTOResponse> findSite(
+    public ResponseEntity<PageResponse<SiteDTO>> findSite(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "order") String order,

@@ -1,6 +1,5 @@
 package com.star.rest;
 
-import com.star.dto.limitationorder.LimitationOrderDTOResponse;
 import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
@@ -115,20 +114,4 @@ public class OrdreLimitationController {
         return ResponseEntity.status(isEmpty(importMarketParticipantResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantResult);
     }
 
-    @Operation(summary = "Get limit orders.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limit orders",
-            content = {@Content(mediaType = "application/json")})})
-    @GetMapping()
-    public ResponseEntity<LimitationOrderDTOResponse> findLimitationOrder(
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(value = "order") String order,
-            @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
-            @RequestParam(value = "originAutomationRegisteredResourceMrid", required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
-            @RequestParam(value = "producerMarketParticipantMrid", required = false, defaultValue = "") String producerMarketParticipantMrid,
-            @RequestParam(value = "startCreatedDateTime", required = false, defaultValue = "") String startCreatedDateTime,
-            @RequestParam(value = "endCreatedDateTime", required = false, defaultValue = "") String endCreatedDateTime
-    ) {
-        return null;
-    }
 }

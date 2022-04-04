@@ -1,7 +1,7 @@
 package com.star.rest;
 
 import com.star.dto.common.PageResponse;
-import com.star.dto.historiqueLimitation.HistoriqueLimitationDTO;
+import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.enums.InstanceEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -47,7 +47,7 @@ public class HistoriqueLimitationController {
             @RequestParam(value = "siteName", required = false, defaultValue = "") String siteName,
             @RequestParam(value = "activationDocumentMrid", required = false, defaultValue = "") String activationDocumentMrid
     ) {
-        var p = new PageResponse();
+        var p = new PageResponse<HistoriqueLimitationDTO>();
         log.info("--------------------------");
         log.info(pageSize + "");
         log.info(page + "originAutomationRegisteredResourceMrid");

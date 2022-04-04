@@ -1,4 +1,4 @@
-package com.star.dto.historiqueLimitation;
+package com.star.dto.historiquelimitation;
 
 import lombok.Getter;
 import lombok.Setter;

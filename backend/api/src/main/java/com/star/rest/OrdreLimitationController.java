@@ -6,6 +6,7 @@ import com.star.exception.TechnicalException;
 import com.star.models.limitation.FichierOrdreLimitation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
+import com.star.models.limitation.OrdreLimitationCriteria;
 import com.star.service.OrdreLimitationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.star.enums.InstanceEnum.DSO;
 import static com.star.enums.InstanceEnum.PRODUCER;
 import static com.star.enums.InstanceEnum.TSO;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -112,6 +112,21 @@ public class OrdreLimitationController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.status(isEmpty(importMarketParticipantResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantResult);
+    }
+
+    @Operation(summary = "Get limit orders.")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limit orders",
+            content = {@Content(mediaType = "application/json")})})
+    @GetMapping()
+    public ResponseEntity<List<OrdreLimitation>> findLimitationOrder(
+            @RequestParam(value = "activationDocumentMrid", required = false, defaultValue = "") String activationDocumentMrid
+    ) throws TechnicalException {
+        if (PRODUCER.equals(instance)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        var criteria = OrdreLimitationCriteria.builder().activationDocumentMrid(activationDocumentMrid).build();
+        return ResponseEntity.ok(ordreLimitationService.findLimitationOrders(criteria));
     }
 
 }

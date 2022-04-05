@@ -1,9 +1,6 @@
 package com.star.service;
 
-import com.cloudant.client.api.query.Expression;
-import com.cloudant.client.api.query.Operation;
-import com.cloudant.client.api.query.QueryBuilder;
-import com.cloudant.client.api.query.Selector;
+import com.cloudant.client.api.query.*;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
@@ -13,8 +10,8 @@ import com.star.exception.TechnicalException;
 import com.star.models.limitation.FichierOrdreLimitation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
+import com.star.models.limitation.OrdreLimitationCriteria;
 import com.star.repository.OrdreLimitationRepository;
-import com.star.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +35,7 @@ import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -214,5 +209,32 @@ public class OrdreLimitationService {
         String query = queryBuilder.build();
         log.debug("Transaction query: " + query);
         return ordreLimitationRepository.findOrderByQuery(query);
+    }
+
+    public List<OrdreLimitation> findLimitationOrders(OrdreLimitationCriteria criteria) throws TechnicalException {
+        var selectors = new ArrayList<Selector>();
+        selectors.add(Expression.eq("docType", ACTIVATION_DOCUMENT.getDocType()));
+        QueryBuilder queryBuilder;
+        addCriteria(selectors, criteria);
+        switch (selectors.size()) {
+            case 0:
+                queryBuilder = new QueryBuilder(EmptyExpression.empty());
+                break;
+            case 1:
+                queryBuilder = new QueryBuilder(selectors.get(0));
+                break;
+            default:
+                queryBuilder = new QueryBuilder(Operation.and(selectors.toArray(new Selector[]{})));
+                break;
+        }
+        String query = queryBuilder.build();
+        log.debug("Transaction query: " + query);
+        return ordreLimitationRepository.findLimitationOrders(query);
+    }
+
+    private void addCriteria(List<Selector> selectors, OrdreLimitationCriteria criteria) {
+        if (isNotBlank(criteria.getActivationDocumentMrid())) {
+            selectors.add(Expression.eq("activationDocumentMrid", criteria.getActivationDocumentMrid()));
+        }
     }
 }

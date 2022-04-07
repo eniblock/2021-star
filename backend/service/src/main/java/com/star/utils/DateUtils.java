@@ -12,7 +12,7 @@ public final class DateUtils {
     }
 
     public static LocalDateTime getLocalDateTime(String date) throws DateTimeParseException {
-        if (date == null) {
+        if (date == null || date.equals("")) {
             return null;
         }
         try {

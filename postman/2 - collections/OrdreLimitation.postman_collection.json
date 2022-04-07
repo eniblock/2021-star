@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2f06c17f-9996-49d4-b925-b0cdc002800d",
+		"_postman_id": "60103f6a-9a87-423b-bb17-874d353e2b6d",
 		"name": "OrdreLimitation",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -59,6 +59,29 @@
 					"path": [
 						"ordreLimitations",
 						"debut"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE -  Liste des ordres",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_rte}}/ordreLimitations?activationDocumentMrid=",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"ordreLimitations"
+					],
+					"query": [
+						{
+							"key": "activationDocumentMrid",
+							"value": ""
+						}
 					]
 				}
 			},

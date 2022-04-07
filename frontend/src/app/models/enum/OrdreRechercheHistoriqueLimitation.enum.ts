@@ -1,4 +1,4 @@
-export enum OrdreRechercheActivations {
+export enum OrdreRechercheHistoriqueLimitation {
   technologyType = 'technologyType',
   originAutomationRegisteredResourceMrid = 'originAutomationRegisteredResourceMrid',
   producerMarketParticipantName = 'producerMarketParticipantName',

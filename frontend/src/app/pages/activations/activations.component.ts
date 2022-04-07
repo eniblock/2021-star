@@ -1,17 +1,17 @@
-import {
-  FormulaireRechercheActivations,
-  RechercheActivationsEntite,
-} from './../../models/RechercheActivations';
 import { Component, OnInit } from '@angular/core';
 import { Instance } from 'src/app/models/enum/Instance.enum';
 import { InstanceService } from 'src/app/services/api/instance.service';
-import { ActivationsService } from 'src/app/services/api/activations.service';
 import { FormulairePagination } from 'src/app/models/Pagination';
-import { OrdreRechercheActivations } from 'src/app/models/enum/OrdreRechercheActivations.enum';
 import { OrderDirection } from 'src/app/models/enum/OrderDirection.enum';
 import { environment } from 'src/environments/environment';
 import { PageSizeAndVisibilityFieldsEvent } from './activations-pagination/activations-pagination.component';
 import { Sort } from '@angular/material/sort';
+import {
+  FormulaireRechercheHistoriqueLimitation,
+  RechercheHistoriqueLimitationEntite,
+} from 'src/app/models/RechercheHistoriqueLimitation';
+import { OrdreRechercheHistoriqueLimitation } from 'src/app/models/enum/OrdreRechercheHistoriqueLimitation.enum';
+import { HistoriqueLimitationService } from 'src/app/services/api/historique-limitation.service';
 
 @Component({
   selector: 'app-activations',
@@ -19,15 +19,15 @@ import { Sort } from '@angular/material/sort';
   styleUrls: ['./activations.component.css'],
 })
 export class ActivationsComponent implements OnInit {
-  formRecherche?: FormulaireRechercheActivations;
+  formRecherche?: FormulaireRechercheHistoriqueLimitation;
 
   pageSize = environment.pageSizes[0];
   lastBookmark: string | null = null;
-  order = OrdreRechercheActivations.siteName;
+  order = OrdreRechercheHistoriqueLimitation.siteName;
   orderDirection = OrderDirection.asc;
 
   totalElements: number = -1;
-  resultatsRecherche: RechercheActivationsEntite[] = [];
+  resultatsRecherche: RechercheHistoriqueLimitationEntite[] = [];
   afficherBoutonSuite = false;
 
   typeInstance?: Instance;
@@ -36,7 +36,7 @@ export class ActivationsComponent implements OnInit {
 
   constructor(
     private instanceService: InstanceService,
-    private activationsService: ActivationsService
+    private historiqueLimitationService: HistoriqueLimitationService
   ) {}
 
   ngOnInit() {
@@ -45,7 +45,7 @@ export class ActivationsComponent implements OnInit {
     });
   }
 
-  rechercher(form: FormulaireRechercheActivations) {
+  rechercher(form: FormulaireRechercheHistoriqueLimitation) {
     this.resetResultats();
     this.formRecherche = form;
     this.lancerRecherche();
@@ -64,14 +64,14 @@ export class ActivationsComponent implements OnInit {
 
   private lancerRecherche() {
     if (this.formRecherche != undefined) {
-      const paginationAvecBookmark: FormulairePagination<OrdreRechercheActivations> =
+      const paginationAvecBookmark: FormulairePagination<OrdreRechercheHistoriqueLimitation> =
         {
           pageSize: this.pageSize,
           bookmark: this.lastBookmark,
           order: this.order,
           orderDirection: this.orderDirection,
         };
-      this.activationsService
+      this.historiqueLimitationService
         .rechercher(this.formRecherche, paginationAvecBookmark)
         .subscribe((resultat) => {
           this.lastBookmark = resultat.bookmark ? resultat.bookmark : null;
@@ -97,10 +97,10 @@ export class ActivationsComponent implements OnInit {
 
   sortChange(sort: Sort) {
     if (sort.direction != '') {
-      this.order = (OrdreRechercheActivations as any)[sort.active];
+      this.order = (OrdreRechercheHistoriqueLimitation as any)[sort.active];
       this.orderDirection = sort.direction as any;
     } else {
-      this.order = OrdreRechercheActivations.siteName;
+      this.order = OrdreRechercheHistoriqueLimitation.siteName;
       this.orderDirection = OrderDirection.asc;
     }
     this.resetResultats();

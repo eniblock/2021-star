@@ -1,12 +1,12 @@
 package com.star.rest;
 
-import com.star.dto.limitationorder.LimitationOrderDTOResponse;
 import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.limitation.FichierOrdreLimitation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
+import com.star.models.limitation.OrdreLimitationCriteria;
 import com.star.service.OrdreLimitationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.star.enums.InstanceEnum.DSO;
 import static com.star.enums.InstanceEnum.PRODUCER;
 import static com.star.enums.InstanceEnum.TSO;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -119,16 +118,15 @@ public class OrdreLimitationController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limit orders",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping()
-    public ResponseEntity<LimitationOrderDTOResponse> findLimitationOrder(
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(value = "order") String order,
-            @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
-            @RequestParam(value = "originAutomationRegisteredResourceMrid", required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
-            @RequestParam(value = "producerMarketParticipantMrid", required = false, defaultValue = "") String producerMarketParticipantMrid,
-            @RequestParam(value = "startCreatedDateTime", required = false, defaultValue = "") String startCreatedDateTime,
-            @RequestParam(value = "endCreatedDateTime", required = false, defaultValue = "") String endCreatedDateTime
-    ) {
-        return null;
+    public ResponseEntity<List<OrdreLimitation>> findLimitationOrder(
+            @RequestParam(value = "activationDocumentMrid", required = false, defaultValue = "") String activationDocumentMrid
+    ) throws TechnicalException {
+        if (PRODUCER.equals(instance)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        var criteria = OrdreLimitationCriteria.builder().activationDocumentMrid(activationDocumentMrid).build();
+        return ResponseEntity.ok(ordreLimitationService.findLimitationOrders(criteria));
     }
+
 }

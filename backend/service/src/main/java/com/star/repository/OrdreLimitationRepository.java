@@ -25,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 public class OrdreLimitationRepository {
     public static final String CREATE = "CreateActivationDocument";
     public static final String GET_ORDER_BY_QUERY = "GetActivationDocumentByQuery";
+    public static final String GET_BY_QUERY = "GetActivationDocumentByQuery";
 
     @Autowired
     private Contract contract;
@@ -65,6 +66,17 @@ public class OrdreLimitationRepository {
             return response != null ? objectMapper.readValue(new String(response), List.class) : null;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des ordres de limitation", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
+    }
+
+    public List<OrdreLimitation> findLimitationOrders(String query) throws TechnicalException {
+        try {
+            byte[] response = contract.evaluateTransaction(GET_BY_QUERY, query);
+            return response != null ? objectMapper.readValue(new String(response), List.class) : null;
+        } catch (JsonProcessingException exception) {
+            throw new TechnicalException("Erreur technique lors de la recherche des sites", exception);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }

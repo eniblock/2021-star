@@ -1,13 +1,21 @@
 package com.star.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.star.models.limitation.OrdreLimitation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
+
 import static org.apache.commons.io.IOUtils.toByteArray;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -16,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 class OrdreLimitationControllerTest extends AbstractIntTest {
 
-    private static final String URL = OrdreLimitationController.PATH+"/debut";
+    private static final String URL = OrdreLimitationController.PATH + "/debut";
 
     @Value("classpath:/ordreLimitation/ordre-debut-limitation-sans-extension")
     private Resource ordreLimitationWithoutExtension;
@@ -26,6 +34,9 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
 
     @Value("classpath:/ordreLimitation/ordre-debut-limitation-ok.json")
     private Resource ordreLimitationOk;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @Test
@@ -49,7 +60,7 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
-                .file(file))
+                        .file(file))
                 .andExpect(status().isConflict());
     }
 
@@ -63,7 +74,7 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
-                .file(file))
+                        .file(file))
                 .andExpect(status().isConflict());
     }
 
@@ -77,8 +88,23 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
-                .file(file))
+                        .file(file))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void findLimitationOrder() throws Exception {
+        // GIVEN
+        var limitationOrder = OrdreLimitation.builder().activationDocumentMrid("123123").build();
+        byte[] result = objectMapper.writeValueAsBytes(Arrays.asList(limitationOrder));
+        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(result);
+
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.get(OrdreLimitationController.PATH))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].activationDocumentMrid").value(limitationOrder.getActivationDocumentMrid()));
     }
 
 }

@@ -6,7 +6,6 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { RechercheActivationsEntite } from 'src/app/models/RechercheActivations';
 import { Sort } from '@angular/material/sort';
 import { Motif } from 'src/app/models/Motifs';
 import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
@@ -20,6 +19,7 @@ import {
 } from 'src/app/rules/motif-rules';
 import { whichDateMustBeShown } from 'src/app/rules/show-date-rules';
 import { getLimitationType } from 'src/app/rules/limitation-type-rules';
+import { RechercheHistoriqueLimitationEntite } from 'src/app/models/RechercheHistoriqueLimitation';
 
 @Component({
   selector: 'app-activations-resultats',
@@ -27,7 +27,7 @@ import { getLimitationType } from 'src/app/rules/limitation-type-rules';
   styleUrls: ['./activations-resultats.component.css'],
 })
 export class ActivationsResultatsComponent implements OnChanges {
-  @Input() data: RechercheActivationsEntite[] = [];
+  @Input() data: RechercheHistoriqueLimitationEntite[] = [];
   @Input() columnsToDisplay: string[] = [];
   @Output() sortChange = new EventEmitter<Sort>();
 
@@ -87,7 +87,7 @@ export class ActivationsResultatsComponent implements OnChanges {
     }
   }
 
-  showGraph(activation: RechercheActivationsEntite) {
+  showGraph(activation: RechercheHistoriqueLimitationEntite) {
     const operatorData =
       activation.typeSite == TypeSite.HTA ? activation.enedis : activation.rte;
     this.bottomSheet.open(ActivationGraphComponent, {

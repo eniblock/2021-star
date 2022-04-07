@@ -39,6 +39,7 @@ public class HistoriqueLimitationController {
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "order") String order,
+            @RequestParam(value = "orderDirection") String orderDirection,
             @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
             @RequestParam(value = "originAutomationRegisteredResourceMrid", required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
             @RequestParam(value = "producerMarketParticipantMrid", required = false, defaultValue = "") String producerMarketParticipantMrid,

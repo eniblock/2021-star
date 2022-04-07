@@ -39,7 +39,7 @@ class HistoriqueLimitationControllerTest extends AbstractIntTest {
         // WHEN
 
         // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.get(URL_SEARCH))
+        this.mockMvc.perform(MockMvcRequestBuilders.get(URL_SEARCH + "?order=producerMarketParticipantMrid&orderDirection=asc"))
                 .andExpect(status().is2xxSuccessful());
     }
 

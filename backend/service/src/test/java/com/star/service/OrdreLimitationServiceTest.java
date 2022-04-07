@@ -1,13 +1,16 @@
 package com.star.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.AbstractTest;
-import com.star.enums.InstanceEnum;
 import com.star.exception.TechnicalException;
 import com.star.models.limitation.FichierOrdreLimitation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
+import com.star.models.limitation.OrdreLimitationCriteria;
+import com.star.models.site.SiteResponse;
 import com.star.repository.OrdreLimitationRepository;
 import org.apache.commons.io.IOUtils;
+import org.hyperledger.fabric.gateway.ContractException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -26,6 +29,8 @@ import java.util.List;
 import static com.star.enums.InstanceEnum.DSO;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
@@ -54,6 +59,9 @@ class OrdreLimitationServiceTest extends AbstractTest {
 
     @Autowired
     private OrdreLimitationService ordreLimitationService;
+
+    @Captor
+    private ArgumentCaptor<String> queryCaptor;
 
     @Test
     void testImportOrdreDebutLimitationNull() {
@@ -129,7 +137,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         assertThat(ordreDebutLimitationArgumentCaptor.getValue()).hasSize(1);
         OrdreLimitation ordreLimitation = ordreDebutLimitationArgumentCaptor.getValue().get(0);
         assertThat(ordreLimitation).extracting("originAutomationRegisteredResourceMrid", "registeredResourceMrid",
-                "measurementUnitName", "startCreatedDateTime", "messageType", "businessType", "reasonCode", "orderEnd")
+                        "measurementUnitName", "startCreatedDateTime", "messageType", "businessType", "reasonCode", "orderEnd")
                 .containsExactly("ORIGIN_LNKINS_LKNZ", "PRM30001510803649", "MW", "2020-01-01T14:30:00", "message type", "business Type", "reason code", false);
 
     }
@@ -139,5 +147,24 @@ class OrdreLimitationServiceTest extends AbstractTest {
         fichierOrdreLimitation.setFileName(fileName);
         fichierOrdreLimitation.setInputStream(IOUtils.toInputStream(IOUtils.toString(reader), StandardCharsets.UTF_8));
         return fichierOrdreLimitation;
+    }
+
+    @Test
+    void testFindLimitationOrders() throws JsonProcessingException, ContractException, TechnicalException {
+        // GIVEN
+        var ordreLimitationCriteria = OrdreLimitationCriteria.builder().activationDocumentMrid("val")
+                .build();
+        var ordreLimitation = OrdreLimitation.builder().activationDocumentMrid("val").build();
+        byte[] result = objectMapper.writeValueAsBytes(ordreLimitation);
+        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(result);
+
+        // WHEN
+        var ordreLimitationResulte = ordreLimitationService.findLimitationOrders(ordreLimitationCriteria);
+
+        // THEN
+        verify(ordreLimitationRepository, Mockito.times(1)).findLimitationOrders(queryCaptor.capture());
+
+        String queryValue = queryCaptor.getValue();
+        assertThat(queryValue).contains("activationDocumentMrid");
     }
 }

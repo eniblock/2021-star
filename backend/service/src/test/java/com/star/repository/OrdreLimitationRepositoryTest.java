@@ -17,6 +17,7 @@ import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
@@ -61,4 +62,19 @@ class OrdreLimitationRepositoryTest extends AbstractTest {
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.CREATE);
         assertThat(objectArgumentCaptor.getValue()).isEqualTo(value);
     }
+
+    @Test
+    void findLimitationOrders() throws ContractException, TechnicalException {
+        // GIVEN
+        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
+        var anyArguments = "myArgs...";
+
+        // WHEN
+        ordreLimitationRepository.findLimitationOrders(anyArguments);
+
+        // THEN
+        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), eq(anyArguments));
+        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(OrdreLimitationRepository.GET_BY_QUERY);
+    }
+
 }

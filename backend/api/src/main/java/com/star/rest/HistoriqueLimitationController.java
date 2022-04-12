@@ -1,6 +1,6 @@
 package com.star.rest;
 
-import com.star.dto.common.PageResponse;
+import com.star.dto.common.PageResponseDTO;
 import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.enums.InstanceEnum;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
@@ -15,15 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Arrays;
 
 import static com.star.enums.InstanceEnum.PRODUCER;
 
@@ -47,7 +44,7 @@ public class HistoriqueLimitationController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limit orders",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping()
-    public ResponseEntity<PageResponse<HistoriqueLimitationDTO>> findLimitationOrder(
+    public ResponseEntity<PageResponseDTO<HistoriqueLimitationDTO>> findLimitationOrder(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "order") String order,

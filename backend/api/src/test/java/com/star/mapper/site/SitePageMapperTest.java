@@ -1,6 +1,6 @@
 package com.star.mapper.site;
 
-import com.star.dto.common.PageResponse;
+import com.star.dto.common.PageResponseDTO;
 import com.star.models.site.SiteResponse;
 import com.star.rest.AbstractIntTest;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ public class SitePageMapperTest extends AbstractIntTest {
         SiteResponse siteResponse = new SiteResponse();
         siteResponse.setBookmark(SitePageMapper.NIL);
 
-        PageResponse siteDTOResponse = siteResponseMapper.beanToDto(siteResponse);
+        PageResponseDTO siteDTOResponse = siteResponseMapper.beanToDto(siteResponse);
         // WHEN
 
         // THEN

@@ -1,6 +1,6 @@
 package com.star.mapper.site;
 
-import com.star.dto.common.PageResponse;
+import com.star.dto.common.PageResponseDTO;
 import com.star.dto.site.SiteDTO;
 import com.star.models.site.SiteResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -23,10 +23,10 @@ public interface SitePageMapper {
 
     @Mapping(target = "content", source = "records")
     @Mapping(target = "totalElements", source = "fetchedRecordsCount")
-    PageResponse<SiteDTO> beanToDto(SiteResponse siteResponse);
+    PageResponseDTO<SiteDTO> beanToDto(SiteResponse siteResponse);
 
     @AfterMapping
-    default void convertContentAndBookmark(@MappingTarget PageResponse<SiteDTO> paginationResponse) {
+    default void convertContentAndBookmark(@MappingTarget PageResponseDTO<SiteDTO> paginationResponse) {
         if (paginationResponse != null) {
             if (paginationResponse.getContent() == null) {
                 paginationResponse.setContent(Collections.emptyList());

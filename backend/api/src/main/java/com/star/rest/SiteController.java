@@ -1,7 +1,7 @@
 package com.star.rest;
 
 
-import com.star.dto.common.PageResponse;
+import com.star.dto.common.PageResponseDTO;
 import com.star.dto.site.SiteDTO;
 import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
@@ -120,7 +120,7 @@ public class SiteController {
      * @throws TechnicalException
      */
     @GetMapping
-    public ResponseEntity<PageResponse<SiteDTO>> findSite(
+    public ResponseEntity<PageResponseDTO<SiteDTO>> findSite(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "order") String order,

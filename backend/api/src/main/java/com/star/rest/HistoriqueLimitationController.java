@@ -3,20 +3,29 @@ package com.star.rest;
 import com.star.dto.common.PageResponse;
 import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.enums.InstanceEnum;
+import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
+import com.star.security.SecurityUtils;
+import com.star.service.HistoriqueLimitationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+
+import static com.star.enums.InstanceEnum.PRODUCER;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -31,6 +40,9 @@ public class HistoriqueLimitationController {
     @Value("${instance}")
     private InstanceEnum instance;
 
+    @Autowired
+    private HistoriqueLimitationService historiqueLimitationService;
+
     @Operation(summary = "Get limitation history.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limit orders",
             content = {@Content(mediaType = "application/json")})})
@@ -43,21 +55,26 @@ public class HistoriqueLimitationController {
             @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
             @RequestParam(value = "originAutomationRegisteredResourceMrid", required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
             @RequestParam(value = "producerMarketParticipantMrid", required = false, defaultValue = "") String producerMarketParticipantMrid,
+            @RequestParam(value = "siteName", required = false, defaultValue = "") String siteName,
             @RequestParam(value = "startCreatedDateTime", required = false, defaultValue = "") String startCreatedDateTime,
             @RequestParam(value = "endCreatedDateTime", required = false, defaultValue = "") String endCreatedDateTime,
-            @RequestParam(value = "siteName", required = false, defaultValue = "") String siteName,
             @RequestParam(value = "activationDocumentMrid", required = false, defaultValue = "") String activationDocumentMrid
     ) {
-        var p = new PageResponse<HistoriqueLimitationDTO>();
-        log.info("--------------------------");
-        log.info(pageSize + "");
-        log.info(page + "originAutomationRegisteredResourceMrid");
-        log.info(page + "producerMarketParticipantMrid");
-        p.setBookmark("");
-        p.setTotalElements(1);
-        var h = new HistoriqueLimitationDTO();
-        h.setMeteringPointMrid("aze");
-        p.setContent(Arrays.asList(h));
-        return ResponseEntity.status(HttpStatus.OK).body(p);
+        Assert.notNull(order, "Order must not be null");
+        Sort sort = Sort.by(order);
+        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
+        var criteria = HistoriqueLimitationCriteria.builder()
+                .originAutomationRegisteredResourceMrid(originAutomationRegisteredResourceMrid)
+                .producerMarketParticipantMrid(producerMarketParticipantMrid)
+                .siteName(siteName)
+                .startCreatedDateTime(startCreatedDateTime)
+                .endCreatedDateTime(endCreatedDateTime)
+                .activationDocumentMrid(activationDocumentMrid)
+                .build();
+        if (PRODUCER.equals(instance)) {
+            // A producer can get only his own site data
+            criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid());
+        }
+        return null;//ResponseEntity.status(HttpStatus.OK).body(siteHistoriqueLimitationMapper.beanToDto(historiqueLimitationService.findSite(criteria, bookmark, pageRequest)));
     }
 }

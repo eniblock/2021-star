@@ -1,7 +1,6 @@
 package com.star.rest;
 
-import com.star.dto.common.PageResponseDTO;
-import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
+import com.star.dto.common.OrderDirection;
 import com.star.enums.InstanceEnum;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.security.SecurityUtils;
@@ -15,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,14 +40,14 @@ public class HistoriqueLimitationController {
     private HistoriqueLimitationService historiqueLimitationService;
 
     @Operation(summary = "Get limitation history.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limit orders",
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limitation history",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping()
-    public ResponseEntity<PageResponseDTO<HistoriqueLimitationDTO>> findLimitationOrder(
+    public ResponseEntity<Integer> findLimitationHistory(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(value = "order") String order,
-            @RequestParam(value = "orderDirection") String orderDirection,
+            @RequestParam(value = "order", required = false) String order,
+            @RequestParam(value = "orderDirection", required = false, defaultValue = "asc") OrderDirection orderDirection,
             @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
             @RequestParam(value = "originAutomationRegisteredResourceMrid", required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
             @RequestParam(value = "producerMarketParticipantMrid", required = false, defaultValue = "") String producerMarketParticipantMrid,
@@ -57,8 +56,8 @@ public class HistoriqueLimitationController {
             @RequestParam(value = "endCreatedDateTime", required = false, defaultValue = "") String endCreatedDateTime,
             @RequestParam(value = "activationDocumentMrid", required = false, defaultValue = "") String activationDocumentMrid
     ) {
-        Assert.notNull(order, "Order must not be null");
-        Sort sort = Sort.by(order);
+        Sort sort = Sort.by(order != null ? order : "siteName");
+        sort = orderDirection.equals(OrderDirection.asc) ? sort.ascending() : sort.descending();
         PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
         var criteria = HistoriqueLimitationCriteria.builder()
                 .originAutomationRegisteredResourceMrid(originAutomationRegisteredResourceMrid)
@@ -72,6 +71,6 @@ public class HistoriqueLimitationController {
             // A producer can get only his own site data
             criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid());
         }
-        return null;//ResponseEntity.status(HttpStatus.OK).body(siteHistoriqueLimitationMapper.beanToDto(historiqueLimitationService.findSite(criteria, bookmark, pageRequest)));
+        return ResponseEntity.status(HttpStatus.OK).body(1);//new PageResponseDTO<>());//ResponseEntity.status(HttpStatus.OK).body(siteHistoriqueLimitationMapper.beanToDto(historiqueLimitationService.findSite(criteria, bookmark, pageRequest)));
     }
 }

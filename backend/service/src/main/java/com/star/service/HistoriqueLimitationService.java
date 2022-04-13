@@ -1,5 +1,7 @@
 package com.star.service;
 
+import com.star.models.common.PageHLF;
+import com.star.models.historiquelimitation.HistoriqueLimitation;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -12,9 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class HistoriqueLimitationService {
-
-    /*
-    public HistoriqueLimitation findSite(HistoriqueLimitationCriteria criteria, String bookmark, PageRequest pageRequest) {
+    public PageHLF<HistoriqueLimitation> findHistorique(HistoriqueLimitationCriteria criteria, String bookmark, PageRequest pageRequest) {
+        return null;
     }
-     */
+
 }

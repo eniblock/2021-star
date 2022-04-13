@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageResponse<E> {
+public class PageHLF<E> {
     protected List<E> records;
     protected int fetchedRecordsCount;
     protected String bookmark;

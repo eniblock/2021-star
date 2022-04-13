@@ -10,7 +10,7 @@ import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.common.PageResponse;
+import com.star.models.common.PageHLF;
 import com.star.models.imports.ImportResult;
 import com.star.models.producer.Producer;
 import com.star.models.site.ImportSiteResult;
@@ -100,7 +100,7 @@ public class SiteService {
         return importSiteResult;
     }
 
-    public PageResponse<Site> findSite(SiteCrteria siteCriteria, String bookmark, Pageable pageable) throws BusinessException, TechnicalException {
+    public PageHLF<Site> findSite(SiteCrteria siteCriteria, String bookmark, Pageable pageable) throws BusinessException, TechnicalException {
         boolean useIndex = false;
         Sort.Order producerMarketParticipantNameOrder = pageable.getSort().getOrderFor("producerMarketParticipantName");
         Sort.Order technologyTypeOrder = pageable.getSort().getOrderFor("technologyType");

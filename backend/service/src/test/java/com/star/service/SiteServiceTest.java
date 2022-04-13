@@ -4,7 +4,7 @@ import com.star.AbstractTest;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.common.PageResponse;
+import com.star.models.common.PageHLF;
 import com.star.models.producer.Producer;
 import com.star.models.site.ImportSiteResult;
 import com.star.models.site.Site;
@@ -273,7 +273,7 @@ class SiteServiceTest extends AbstractTest {
                 .meteringPointMrId("PRMJGHVG17868").producerMarketParticipantMrid("PRODUCER_MR_ID")
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME")
                 .technologyType(Arrays.asList(TechnologyTypeEnum.EOLIEN)).build();
-        var siteResponse = PageResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
         byte[] result = objectMapper.writeValueAsBytes(siteResponse);
@@ -294,7 +294,7 @@ class SiteServiceTest extends AbstractTest {
                 .meteringPointMrId("PDLJGHVG17868").producerMarketParticipantMrid("PRODUCER_MR_ID")
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME")
                 .technologyType(Arrays.asList(TechnologyTypeEnum.EOLIEN)).build();
-        var siteResponse = PageResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
         byte[] result = objectMapper.writeValueAsBytes(siteResponse);
@@ -323,7 +323,7 @@ class SiteServiceTest extends AbstractTest {
         SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(TSO)
                 .producerMarketParticipantMrid("PRODUCER_MR_ID")
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
-        var siteResponse = PageResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
         byte[] result = objectMapper.writeValueAsBytes(siteResponse);
@@ -348,7 +348,7 @@ class SiteServiceTest extends AbstractTest {
         SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(DSO)
                 .producerMarketParticipantMrid("PRODUCER_MR_ID")
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
-        var siteResponse = PageResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("producerMarketParticipantName");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
         byte[] result = objectMapper.writeValueAsBytes(siteResponse);

@@ -1,7 +1,10 @@
 package com.star.rest;
 
 import com.star.dto.common.OrderDirection;
+import com.star.dto.common.PageDTO;
+import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.enums.InstanceEnum;
+import com.star.mapper.historiquelimitation.HistoriqueLimitationPageMapper;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.security.SecurityUtils;
 import com.star.service.HistoriqueLimitationService;
@@ -39,11 +42,14 @@ public class HistoriqueLimitationController {
     @Autowired
     private HistoriqueLimitationService historiqueLimitationService;
 
+    @Autowired
+    private HistoriqueLimitationPageMapper historiqueLimitationPageMapper;
+
     @Operation(summary = "Get limitation history.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limitation history",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping()
-    public ResponseEntity<Integer> findLimitationHistory(
+    public ResponseEntity<PageDTO<HistoriqueLimitationDTO>> findLimitationHistory(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "order", required = false) String order,
@@ -71,6 +77,6 @@ public class HistoriqueLimitationController {
             // A producer can get only his own site data
             criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(1);//new PageResponseDTO<>());//ResponseEntity.status(HttpStatus.OK).body(siteHistoriqueLimitationMapper.beanToDto(historiqueLimitationService.findSite(criteria, bookmark, pageRequest)));
+        return ResponseEntity.status(HttpStatus.OK).body(historiqueLimitationPageMapper.beanToDto(historiqueLimitationService.findHistorique(criteria, bookmark, pageRequest)));
     }
 }

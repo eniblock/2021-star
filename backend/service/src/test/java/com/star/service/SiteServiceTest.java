@@ -1,15 +1,14 @@
 package com.star.service;
 
 import com.star.AbstractTest;
-import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
+import com.star.models.common.PageResponse;
 import com.star.models.producer.Producer;
 import com.star.models.site.ImportSiteResult;
 import com.star.models.site.Site;
 import com.star.models.site.SiteCrteria;
-import com.star.models.site.SiteResponse;
 import com.star.repository.ProducerRepository;
 import com.star.repository.SiteRepository;
 import org.hyperledger.fabric.gateway.ContractException;
@@ -36,7 +35,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -275,7 +273,7 @@ class SiteServiceTest extends AbstractTest {
                 .meteringPointMrId("PRMJGHVG17868").producerMarketParticipantMrid("PRODUCER_MR_ID")
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME")
                 .technologyType(Arrays.asList(TechnologyTypeEnum.EOLIEN)).build();
-        SiteResponse siteResponse = SiteResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        var siteResponse = PageResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
         byte[] result = objectMapper.writeValueAsBytes(siteResponse);
@@ -296,14 +294,14 @@ class SiteServiceTest extends AbstractTest {
                 .meteringPointMrId("PDLJGHVG17868").producerMarketParticipantMrid("PRODUCER_MR_ID")
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME")
                 .technologyType(Arrays.asList(TechnologyTypeEnum.EOLIEN)).build();
-        SiteResponse siteResponse = SiteResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        var siteResponse = PageResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
         byte[] result = objectMapper.writeValueAsBytes(siteResponse);
         Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
 
         // WHEN
-        SiteResponse siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
+        var siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
 
         // THEN
         verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());
@@ -325,14 +323,14 @@ class SiteServiceTest extends AbstractTest {
         SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(TSO)
                 .producerMarketParticipantMrid("PRODUCER_MR_ID")
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
-        SiteResponse siteResponse = SiteResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        var siteResponse = PageResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
         byte[] result = objectMapper.writeValueAsBytes(siteResponse);
         Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
 
         // WHEN
-        SiteResponse siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
+        var siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
 
         // THEN
         verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());
@@ -350,14 +348,14 @@ class SiteServiceTest extends AbstractTest {
         SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(DSO)
                 .producerMarketParticipantMrid("PRODUCER_MR_ID")
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
-        SiteResponse siteResponse = SiteResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
+        var siteResponse = PageResponse.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("producerMarketParticipantName");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
         byte[] result = objectMapper.writeValueAsBytes(siteResponse);
         Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
 
         // WHEN
-        SiteResponse siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
+        var siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
 
         // THEN
         verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());

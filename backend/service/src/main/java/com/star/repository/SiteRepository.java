@@ -1,11 +1,12 @@
 package com.star.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
+import com.star.models.common.PageResponse;
 import com.star.models.site.Site;
-import com.star.models.site.SiteResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hyperledger.fabric.gateway.Contract;
@@ -84,10 +85,11 @@ public class SiteRepository {
         }
     }
 
-    public SiteResponse findSiteByQuery(String query, String pageSize, String bookmark) throws BusinessException, TechnicalException {
+    public PageResponse<Site> findSiteByQuery(String query, String pageSize, String bookmark) throws BusinessException, TechnicalException {
         try {
             byte[] response = contract.evaluateTransaction(GET_SITE_WITH_PAGINATION, query, pageSize, bookmark);
-            return response != null ? objectMapper.readValue(new String(response), SiteResponse.class) : null;
+            return response != null ? objectMapper.readValue(new String(response), new TypeReference<PageResponse<Site>>() {
+            }) : null;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des sites", exception);
         } catch (ContractException contractException) {

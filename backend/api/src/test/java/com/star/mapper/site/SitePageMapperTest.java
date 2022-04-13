@@ -1,7 +1,8 @@
 package com.star.mapper.site;
 
 import com.star.dto.common.PageResponseDTO;
-import com.star.models.site.SiteResponse;
+import com.star.models.common.PageResponse;
+import com.star.models.site.Site;
 import com.star.rest.AbstractIntTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class SitePageMapperTest extends AbstractIntTest {
     @Test
     void mapperSiteResponseTest() {
         // GIVEN
-        SiteResponse siteResponse = new SiteResponse();
+        var siteResponse = new PageResponse<Site>();
         siteResponse.setBookmark(SitePageMapper.NIL);
 
         PageResponseDTO siteDTOResponse = siteResponseMapper.beanToDto(siteResponse);

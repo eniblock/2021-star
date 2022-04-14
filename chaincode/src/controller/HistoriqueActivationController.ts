@@ -1,5 +1,10 @@
 import {Context} from "fabric-contract-api";
 
+/*
+  TODO :
+  THIS CONTROLLER IS A MOCK !
+ */
+
 export class HistoriqueActivationController {
 
     public static async getHistoriqueByQuery(
@@ -27,7 +32,14 @@ export class HistoriqueActivationController {
             } catch (err) {
                 record = strValue;
             }
-            allResults.push(record);
+            allResults.push({
+                meteringPointMrid: "meteringPointMrid-mock",
+                technologyType: "Eolien",
+                producerMarketParticipantMrid: "producerMarketParticipantMrid-mock",
+                producerMarketParticipantName: "producerMarketParticipantName-mock",
+                siteName: "siteName-mock",
+                ordreLimitation: record,
+            });
             result = await iterator.next();
         }
         return allResults;

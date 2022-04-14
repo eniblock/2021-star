@@ -20,6 +20,6 @@ public interface HistoriqueLimitationPageMapper extends ContentAndBookmarkMapper
 
     @Mapping(target = "content", source = "records")
     @Mapping(target = "totalElements", source = "fetchedRecordsCount")
-    PageDTO<HistoriqueLimitationDTO> beanToDto(PageHLF<HistoriqueLimitation> siteResponse);
+    PageDTO<HistoriqueLimitationDTO> beanToDto(PageHLF<HistoriqueLimitation> pageHLF);
 
 }

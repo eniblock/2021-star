@@ -36,9 +36,27 @@ public class HistoriqueLimitationService {
 
     public PageHLF<HistoriqueLimitation> findHistorique(HistoriqueLimitationCriteria criteria, String bookmark, PaginationDto pagination) throws TechnicalException {
         var selectors = new ArrayList<Selector>();
-        selectors.add(Expression.eq("docType", ACTIVATION_DOCUMENT.getDocType()));
+        var DOC_TYPE = ACTIVATION_DOCUMENT.getDocType();
+        var INDEX_NAME = ACTIVATION_DOCUMENT.getIndexName();
+        selectors.add(Expression.eq("docType", DOC_TYPE));
         addCriteria(selectors, criteria);
         var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
+
+        // Index and order
+        if (pagination.getOrder() != null) {
+            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(pagination.getOrder()));
+            switch (pagination.getOrder()) {
+                case "originAutomationRegisteredResourceMrid":
+                    // TODO : create this index !!!
+                    queryBuilder.useIndex(INDEX_NAME, "indexOriginAutomationRegisteredResourceMrid");
+                    break;
+            }
+        } else {
+            queryBuilder.useIndex(INDEX_NAME);
+        }
+
+        //
+
 
         // TODO : Etape 1 => remonter toutes les données !
 

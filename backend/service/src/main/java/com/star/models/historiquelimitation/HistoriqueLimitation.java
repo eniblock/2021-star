@@ -1,5 +1,6 @@
 package com.star.models.historiquelimitation;
 
+import com.star.models.limitation.OrdreLimitation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +17,10 @@ import lombok.NoArgsConstructor;
 public class HistoriqueLimitation {
 
     private String meteringPointMrid;
+    private String technologyType;
+    private String producerMarketParticipantMrid;
+    private String producerMarketParticipantName;
+    private String siteName;
+    private OrdreLimitation ordreLimitation;
 
 }

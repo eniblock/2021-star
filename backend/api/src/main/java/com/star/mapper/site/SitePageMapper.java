@@ -18,6 +18,6 @@ public interface SitePageMapper extends ContentAndBookmarkMapper<SiteDTO> {
 
     @Mapping(target = "content", source = "records")
     @Mapping(target = "totalElements", source = "fetchedRecordsCount")
-    PageDTO<SiteDTO> beanToDto(PageHLF<Site> siteResponse);
+    PageDTO<SiteDTO> beanToDto(PageHLF<Site> pageHLF);
 
 }

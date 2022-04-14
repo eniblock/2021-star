@@ -18,6 +18,7 @@ import com.star.models.site.Site;
 import com.star.models.site.SiteCrteria;
 import com.star.repository.ProducerRepository;
 import com.star.repository.SiteRepository;
+import com.star.service.helpers.QueryBuilderHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.csv.CSVParser;
@@ -100,25 +101,14 @@ public class SiteService {
         return importSiteResult;
     }
 
-    public PageHLF<Site> findSite(SiteCrteria siteCriteria, String bookmark, Pageable pageable) throws BusinessException, TechnicalException {
+    public PageHLF<Site> findSite(SiteCrteria criteria, String bookmark, Pageable pageable) throws BusinessException, TechnicalException {
         boolean useIndex = false;
         Sort.Order producerMarketParticipantNameOrder = pageable.getSort().getOrderFor("producerMarketParticipantName");
         Sort.Order technologyTypeOrder = pageable.getSort().getOrderFor("technologyType");
-        List<Selector> selectors = new ArrayList<>();
+        var selectors = new ArrayList<Selector>();
         selectors.add(Expression.eq("docType", SITE.getDocType()));
-        QueryBuilder queryBuilder;
-        addCriteria(selectors, siteCriteria);
-        switch (selectors.size()) {
-            case 0:
-                queryBuilder = new QueryBuilder(EmptyExpression.empty());
-                break;
-            case 1:
-                queryBuilder = new QueryBuilder(selectors.get(0));
-                break;
-            default:
-                queryBuilder = new QueryBuilder(Operation.and(selectors.toArray(new Selector[]{})));
-                break;
-        }
+        addCriteria(selectors, criteria);
+        var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
         if (technologyTypeOrder != null) {
             useIndex = true;
             queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(technologyTypeOrder.getProperty()));

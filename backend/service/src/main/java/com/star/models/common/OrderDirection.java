@@ -1,4 +1,4 @@
-package com.star.dto.common;
+package com.star.models.common;
 
 public enum OrderDirection {
     asc,

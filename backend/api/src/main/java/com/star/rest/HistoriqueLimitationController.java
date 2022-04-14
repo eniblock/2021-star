@@ -1,9 +1,11 @@
 package com.star.rest;
 
-import com.star.dto.common.OrderDirection;
+import com.star.models.common.OrderDirection;
 import com.star.dto.common.PageDTO;
+import com.star.models.common.PaginationDto;
 import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.enums.InstanceEnum;
+import com.star.exception.TechnicalException;
 import com.star.mapper.historiquelimitation.HistoriqueLimitationPageMapper;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.security.SecurityUtils;
@@ -15,8 +17,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,21 +50,24 @@ public class HistoriqueLimitationController {
             content = {@Content(mediaType = "application/json")})})
     @GetMapping()
     public ResponseEntity<PageDTO<HistoriqueLimitationDTO>> findLimitationHistory(
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(value = "order", required = false) String order,
-            @RequestParam(value = "orderDirection", required = false, defaultValue = "asc") OrderDirection orderDirection,
-            @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
-            @RequestParam(value = "originAutomationRegisteredResourceMrid", required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
-            @RequestParam(value = "producerMarketParticipantMrid", required = false, defaultValue = "") String producerMarketParticipantMrid,
-            @RequestParam(value = "siteName", required = false, defaultValue = "") String siteName,
-            @RequestParam(value = "startCreatedDateTime", required = false, defaultValue = "") String startCreatedDateTime,
-            @RequestParam(value = "endCreatedDateTime", required = false, defaultValue = "") String endCreatedDateTime,
-            @RequestParam(value = "activationDocumentMrid", required = false, defaultValue = "") String activationDocumentMrid
-    ) {
-        Sort sort = Sort.by(order != null ? order : "siteName");
-        sort = orderDirection.equals(OrderDirection.asc) ? sort.ascending() : sort.descending();
-        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int pageSize,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false, defaultValue = "asc") OrderDirection orderDirection,
+            @RequestParam(required = false, defaultValue = "") String bookmark,
+            @RequestParam(required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
+            @RequestParam(required = false, defaultValue = "") String producerMarketParticipantMrid,
+            @RequestParam(required = false, defaultValue = "") String siteName,
+            @RequestParam(required = false, defaultValue = "") String startCreatedDateTime,
+            @RequestParam(required = false, defaultValue = "") String endCreatedDateTime,
+            @RequestParam(required = false, defaultValue = "") String activationDocumentMrid
+    ) throws TechnicalException {
+        var pagination = PaginationDto.builder()
+                .page(page)
+                .pageSize(pageSize)
+                .order(order)
+                .orderDirection(orderDirection)
+                .build();
         var criteria = HistoriqueLimitationCriteria.builder()
                 .originAutomationRegisteredResourceMrid(originAutomationRegisteredResourceMrid)
                 .producerMarketParticipantMrid(producerMarketParticipantMrid)
@@ -77,6 +80,6 @@ public class HistoriqueLimitationController {
             // A producer can get only his own site data
             criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(historiqueLimitationPageMapper.beanToDto(historiqueLimitationService.findHistorique(criteria, bookmark, pageRequest)));
+        return ResponseEntity.status(HttpStatus.OK).body(historiqueLimitationPageMapper.beanToDto(historiqueLimitationService.findHistorique(criteria, bookmark, pagination)));
     }
 }

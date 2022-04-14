@@ -1,11 +1,27 @@
 package com.star.service;
 
+import com.cloudant.client.api.query.Expression;
+import com.cloudant.client.api.query.Selector;
+import com.star.exception.BusinessException;
+import com.star.exception.TechnicalException;
 import com.star.models.common.PageHLF;
+import com.star.models.common.PaginationDto;
 import com.star.models.historiquelimitation.HistoriqueLimitation;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
+import com.star.models.site.SiteCrteria;
+import com.star.repository.HistoriqueLimitationRepository;
+import com.star.service.helpers.QueryBuilderHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.star.enums.DocTypeEnum.ACTIVATION_DOCUMENT;
+import static com.star.enums.DocTypeEnum.SITE;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -14,8 +30,37 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class HistoriqueLimitationService {
-    public PageHLF<HistoriqueLimitation> findHistorique(HistoriqueLimitationCriteria criteria, String bookmark, PageRequest pageRequest) {
-        return null;
+
+    @Autowired
+    private HistoriqueLimitationRepository historiqueLimitationRepository;
+
+    public PageHLF<HistoriqueLimitation> findHistorique(HistoriqueLimitationCriteria criteria, String bookmark, PaginationDto pagination) throws TechnicalException {
+        var selectors = new ArrayList<Selector>();
+        selectors.add(Expression.eq("docType", ACTIVATION_DOCUMENT.getDocType()));
+        addCriteria(selectors, criteria);
+        var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
+
+        // TODO : Etape 1 => remonter toutes les données !
+
+        // TODO : Check pagination
+
+        // TODO : Check filtre (formulaire)
+
+        // TODO : Check tri
+
+        String query = queryBuilder.build();
+        log.debug("Transaction query: " + query);
+        return historiqueLimitationRepository.findHistoriqueByQuery(query, String.valueOf(pagination.getPageSize()), bookmark);
+    }
+
+    private void addCriteria(List<Selector> selectors, HistoriqueLimitationCriteria criteria) throws BusinessException {
+        if (isNotBlank(criteria.getSiteName())) {
+            selectors.add(Expression.eq("siteName", criteria.getSiteName()));
+        }
+        // TODO : à finir !!!
+
+        // TODO : Normalement => pas de pb avec les producteurs (recuperer que leurs données) => filtre dans le controleur
+
     }
 
 }

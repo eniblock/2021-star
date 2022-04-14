@@ -21,6 +21,7 @@ public class HistoriqueLimitation {
     private String producerMarketParticipantMrid;
     private String producerMarketParticipantName;
     private String siteName;
-    private OrdreLimitation ordreLimitation;
+    private OrdreLimitation ordreLimitationEnedis;
+    private OrdreLimitation ordreLimitationRte;
 
 }

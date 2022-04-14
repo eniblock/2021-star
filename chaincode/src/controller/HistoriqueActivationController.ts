@@ -32,17 +32,18 @@ export class HistoriqueActivationController {
             } catch (err) {
                 record = strValue;
             }
+
             allResults.push({
                 meteringPointMrid: "meteringPointMrid-mock",
                 technologyType: "Eolien",
                 producerMarketParticipantMrid: "producerMarketParticipantMrid-mock",
-                producerMarketParticipantName: "producerMarketParticipantName-mock",
+                producerMarketParticipantName: "producgetSenderMarketParticipantMriderMarketParticipantName-mock",
                 siteName: "siteName-mock",
-                ordreLimitation: record,
+                ordreLimitationEnedis: record.instance=='dso' ? record : null, // Remplacer null par un ordre réconcilié (et "push" autant de fois qu'il y a d'ordre réconcilié)
+                ordreLimitationRte: record.instance=='tso' ? record : null, // Remplacer null par un ordre réconcilié (et "push" autant de fois qu'il y a d'ordre réconcilié)
             });
             result = await iterator.next();
         }
         return allResults;
     }
-
 }

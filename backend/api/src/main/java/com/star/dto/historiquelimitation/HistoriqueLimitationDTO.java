@@ -19,5 +19,7 @@ public class HistoriqueLimitationDTO {
     private String producerMarketParticipantName;
     private String siteName;
     private TypeSiteEnum typeSite;
+    private HistoriqueLimitationOrdreDTO rte;
+    private HistoriqueLimitationOrdreDTO enedis;
 
 }

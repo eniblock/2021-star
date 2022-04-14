@@ -43,14 +43,9 @@ public class HistoriqueLimitationService {
         var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
 
         // Index and order
-        if (pagination.getOrder() != null) {
+        if ("originAutomationRegisteredResourceMrid".equals(pagination.getOrder())) {
             queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(pagination.getOrder()));
-            switch (pagination.getOrder()) {
-                case "originAutomationRegisteredResourceMrid":
-                    // TODO : create this index !!!
-                    queryBuilder.useIndex(INDEX_NAME, "indexOriginAutomationRegisteredResourceMrid");
-                    break;
-            }
+            queryBuilder.useIndex(INDEX_NAME, "indexOriginAutomationRegisteredResourceMrid");
         } else {
             queryBuilder.useIndex(INDEX_NAME);
         }

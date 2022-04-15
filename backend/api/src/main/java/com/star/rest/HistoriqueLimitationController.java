@@ -50,7 +50,6 @@ public class HistoriqueLimitationController {
             content = {@Content(mediaType = "application/json")})})
     @GetMapping()
     public ResponseEntity<PageDTO<HistoriqueLimitationDTO>> findLimitationHistory(
-            @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int pageSize,
             @RequestParam(required = false) String order,
             @RequestParam(required = false, defaultValue = "asc") OrderDirection orderDirection,
@@ -63,7 +62,6 @@ public class HistoriqueLimitationController {
             @RequestParam(required = false, defaultValue = "") String activationDocumentMrid
     ) throws TechnicalException {
         var pagination = PaginationDto.builder()
-                .page(page)
                 .pageSize(pageSize)
                 .order(order)
                 .orderDirection(orderDirection)

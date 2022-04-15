@@ -37,7 +37,7 @@ export class HistoriqueActivationController {
                 meteringPointMrid: "meteringPointMrid-mock",
                 technologyType: "Eolien",
                 producerMarketParticipantMrid: "producerMarketParticipantMrid-mock",
-                producerMarketParticipantName: "producgetSenderMarketParticipantMriderMarketParticipantName-mock",
+                producerMarketParticipantName: "producerMarketParticipantName-mock",
                 siteName: "siteName-mock",
                 ordreLimitationEnedis: record.instance=='dso' ? record : null, // Remplacer null par un ordre réconcilié (et "push" autant de fois qu'il y a d'ordre réconcilié)
                 ordreLimitationRte: record.instance=='tso' ? record : null, // Remplacer null par un ordre réconcilié (et "push" autant de fois qu'il y a d'ordre réconcilié)

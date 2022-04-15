@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaginationDto {
-    private int page;
     private int pageSize;
     private String order;
     private OrderDirection orderDirection;

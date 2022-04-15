@@ -92,6 +92,8 @@ public class HistoriqueLimitationService {
         if (aDateDebut || aDateFin) { // If there are dates => we search taking it into account
             // 1) We increase DateFin of 1 day
             // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // TODO : 1 -> permettre l'import avec un "Z" à la fin, sinon les heures sont en local !!!
+            // TODO : 2 -> incrémenter la date de fin de 24 heures
             log.debug("------------------------------------------------------------");
             log.debug(dateFin);
             // 2) The search

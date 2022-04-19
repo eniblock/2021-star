@@ -7,7 +7,6 @@ import com.star.models.limitation.FichierOrdreLimitation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.limitation.OrdreLimitationCriteria;
-import com.star.models.site.SiteResponse;
 import com.star.repository.OrdreLimitationRepository;
 import org.apache.commons.io.IOUtils;
 import org.hyperledger.fabric.gateway.ContractException;
@@ -138,7 +137,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         OrdreLimitation ordreLimitation = ordreDebutLimitationArgumentCaptor.getValue().get(0);
         assertThat(ordreLimitation).extracting("originAutomationRegisteredResourceMrid", "registeredResourceMrid",
                         "measurementUnitName", "startCreatedDateTime", "messageType", "businessType", "reasonCode", "orderEnd")
-                .containsExactly("ORIGIN_LNKINS_LKNZ", "PRM30001510803649", "MW", "2020-01-01T14:30:00", "message type", "business Type", "reason code", false);
+                .containsExactly("ORIGIN_LNKINS_LKNZ", "PRM30001510803649", "MW", "2020-01-01T14:30:00Z", "message type", "business Type", "reason code", false);
 
     }
 

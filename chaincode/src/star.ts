@@ -12,6 +12,7 @@ import { SiteController } from './controller/SiteController';
 import { SystemOperatorController } from './controller/SystemOperatorController';
 import { ViewMarketParticipantController } from './controller/ViewMarketParticipantController';
 import { YellowPagesController } from './controller/YellowPagesController';
+import {HistoriqueActivationController} from "./controller/HistoriqueActivationController";
 
 export class Star extends Contract {
 
@@ -234,6 +235,18 @@ export class Star extends Contract {
             throw error;
         }
     }
+
+    /*      Historique limitation       */
+    public async GetHistoriqueWithPagination(
+        ctx: Context,
+        query: string, pageSize: number, bookmark: string) {
+        try {
+            return (await HistoriqueActivationController.getHistoriqueByQuery(ctx, query, pageSize, bookmark));
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
 
     /*      Yellow Pages       */

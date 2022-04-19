@@ -1,6 +1,6 @@
 <form [formGroup]="form" (submit)="onSubmit()">
 
-  <!-- Recherche avancée : DSO ET TSO -->
+  <!-- Recherche DSO ET TSO -->
   <div class="row mt-3" *ngIf="typeInstance != InstanceEnum.PRODUCER" [formGroup]="form">
     
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
@@ -34,7 +34,7 @@
 
 
 
-  <!-- Recherche avancée : Producteur -->
+  <!-- Recherche Producteur -->
   <div class="row mt-3" *ngIf="typeInstance == InstanceEnum.PRODUCER" [formGroup]="form">
     
     <mat-form-field class="col-12 col-lg-6" appearance="outline">

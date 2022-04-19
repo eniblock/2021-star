@@ -1,7 +1,8 @@
 package com.star.mapper.site;
 
-import com.star.dto.common.PageResponse;
-import com.star.models.site.SiteResponse;
+import com.star.dto.common.PageDTO;
+import com.star.models.common.PageHLF;
+import com.star.models.site.Site;
 import com.star.rest.AbstractIntTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SitePageMapperTest extends AbstractIntTest {
 
     @Autowired
-    private SitePageMapper siteResponseMapper;
+    private SitePageMapper sitePageMapper;
 
     @Test
     void mapperSiteResponseTest() {
         // GIVEN
-        SiteResponse siteResponse = new SiteResponse();
+        var siteResponse = new PageHLF<Site>();
         siteResponse.setBookmark(SitePageMapper.NIL);
 
-        PageResponse siteDTOResponse = siteResponseMapper.beanToDto(siteResponse);
+        PageDTO siteDTOResponse = sitePageMapper.beanToDto(siteResponse);
         // WHEN
 
         // THEN

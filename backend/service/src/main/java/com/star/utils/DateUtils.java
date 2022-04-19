@@ -9,17 +9,23 @@ import java.time.format.DateTimeParseException;
  * SPDX-License-Identifier: Apache-2.0
  */
 public final class DateUtils {
+
+    public final static DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
     private DateUtils() {
     }
 
-    public static LocalDateTime getLocalDateTime(String date) throws DateTimeParseException {
+    public static LocalDateTime toLocalDateTime(String date) throws DateTimeParseException {
         if (date == null || date.equals("")) {
             return null;
         }
-        try {
-            return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
-        } catch (DateTimeParseException dateTimeParseException) {
-            throw dateTimeParseException;
+        return LocalDateTime.parse(date, DATETIME_FORMATTER);
+    }
+
+    public static String toJson(LocalDateTime date) {
+        if (date == null || date.equals("")) {
+            return null;
         }
+        return date.format(DATETIME_FORMATTER);
     }
 }

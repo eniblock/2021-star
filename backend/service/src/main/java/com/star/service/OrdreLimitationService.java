@@ -12,6 +12,7 @@ import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.limitation.OrdreLimitationCriteria;
 import com.star.repository.OrdreLimitationRepository;
+import com.star.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.star.enums.DocTypeEnum.ACTIVATION_DOCUMENT;
-import static com.star.utils.DateUtils.getLocalDateTime;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -72,11 +72,11 @@ public class OrdreLimitationService {
                 break;
             }
             try {
-                if (getLocalDateTime(ordreLimitation.getStartCreatedDateTime()) == null) {
+                if (DateUtils.toLocalDateTime(ordreLimitation.getStartCreatedDateTime()) == null) {
                     errors.add(messageSource.getMessage("import.ordreLimitation.debut.startCreatedDateTime.error",
                             new String[]{fichierOrdreLimitation.getFileName()}, null));
                 }
-                if (getLocalDateTime(ordreLimitation.getEndCreatedDateTime()) != null) {
+                if (DateUtils.toLocalDateTime(ordreLimitation.getEndCreatedDateTime()) != null) {
                     errors.add(messageSource.getMessage("import.ordreLimitation.debut.endCreatedDateTime.error",
                             new String[]{fichierOrdreLimitation.getFileName()}, null));
                 }
@@ -141,12 +141,12 @@ public class OrdreLimitationService {
                 break;
             }
             try {
-                if (getLocalDateTime(ordreLimitation.getStartCreatedDateTime()) == null) {
+                if (DateUtils.toLocalDateTime(ordreLimitation.getStartCreatedDateTime()) == null) {
                     errors.add(messageSource.getMessage("import.ordreLimitation.couple.startCreatedDateTime.error",
                             new String[]{fichierOrdreLimitation.getFileName()}, null));
                 }
 
-                if (getLocalDateTime(ordreLimitation.getEndCreatedDateTime()) == null) {
+                if (DateUtils.toLocalDateTime(ordreLimitation.getEndCreatedDateTime()) == null) {
                     errors.add(messageSource.getMessage("import.ordreLimitation.couple.endCreatedDateTime.error",
                             new String[]{fichierOrdreLimitation.getFileName()}, null));
                 }

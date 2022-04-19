@@ -2,29 +2,24 @@ package com.star.service;
 
 import com.cloudant.client.api.query.Expression;
 import com.cloudant.client.api.query.Selector;
-import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.common.PageHLF;
 import com.star.models.common.PaginationDto;
 import com.star.models.historiquelimitation.HistoriqueLimitation;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
-import com.star.models.site.SiteCrteria;
 import com.star.repository.HistoriqueLimitationRepository;
 import com.star.service.helpers.QueryBuilderHelper;
+import com.star.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.star.enums.DocTypeEnum.ACTIVATION_DOCUMENT;
-import static com.star.enums.DocTypeEnum.SITE;
 import static com.star.enums.InstanceEnum.PRODUCER;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
@@ -88,11 +83,8 @@ public class HistoriqueLimitationService {
         }
         if (aDateDebut || aDateFin) { // If there are dates => we search taking it into account
             // 1) We increase DateFin of 1 day
-            // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // TODO : 1 -> permettre l'import avec un "Z" à la fin, sinon les heures sont en local !!!
-            // TODO : 2 -> incrémenter la date de fin de 24 heures
-            log.debug("------------------------------------------------------------");
-            log.debug(dateFin);
+            var dFin = DateUtils.toLocalDateTime(dateFin);
+            dateFin = DateUtils.toJson(dFin.plusDays(1));
             // 2) The search
             selectors.add(Expression.gt("endCreatedDateTime", dateDebut));
             selectors.add(Expression.lt("startCreatedDateTime", dateFin));

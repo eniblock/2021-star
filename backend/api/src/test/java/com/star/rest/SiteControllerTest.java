@@ -2,9 +2,9 @@ package com.star.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.TechnologyTypeEnum;
+import com.star.models.common.PageHLF;
 import com.star.models.producer.Producer;
 import com.star.models.site.Site;
-import com.star.models.site.SiteResponse;
 import com.star.repository.ProducerRepository;
 import com.star.repository.SiteRepository;
 import org.junit.jupiter.api.Test;
@@ -191,7 +191,7 @@ class SiteControllerTest extends AbstractIntTest {
     void findSiteTest() throws Exception {
         // GIVEN
         Site site = Site.builder().technologyType(TechnologyTypeEnum.EOLIEN.name()).build();
-        SiteResponse siteResponse = SiteResponse.builder().bookmark("bookmark").fetchedRecordsCount(1).records(Arrays.asList(site)).build();
+        var siteResponse = PageHLF.builder().bookmark("bookmark").fetchedRecordsCount(1).records(Arrays.asList(site)).build();
         byte[] result = objectMapper.writeValueAsBytes(siteResponse);
         Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
 

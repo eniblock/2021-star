@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "a753ea98-2666-46e1-8e17-7afaee7ef2f4",
+		"name": "HistoriqueLimitations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RTE - Get list of limitation history",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/historiqueLimitations",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"historiqueLimitations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enedis - Get list of limitation history Copy 2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/historiqueLimitations",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"historiqueLimitations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Producer - Get list of limitation history Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_producer}}/historiqueLimitations",
+					"host": [
+						"{{base_url_producer}}"
+					],
+					"path": [
+						"historiqueLimitations"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

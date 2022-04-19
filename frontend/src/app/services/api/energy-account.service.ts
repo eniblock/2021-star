@@ -21,7 +21,7 @@ export class EnergyAccountService {
     endCreatedDateTime: string
   ): Observable<EnergyAccount[]> {
     if (MOCK) {
-      return getMocks();
+      return getEmptyMock();
     }
 
     const data = {
@@ -39,6 +39,10 @@ export class EnergyAccountService {
 /* *********************************************************
                                MOCKS
    ********************************************************* */
+const getEmptyMock = (): Observable<EnergyAccount[]> => {
+  return of([]);
+}
+
 const getMocks = (): Observable<EnergyAccount[]> => {
   return of([
     {

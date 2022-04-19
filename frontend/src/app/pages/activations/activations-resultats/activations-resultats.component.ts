@@ -50,20 +50,20 @@ export class ActivationsResultatsComponent implements OnChanges {
   }
 
   private computeData() {
-    this.dataComputed = this.data.map((rae) => {
+    this.dataComputed = this.data.map((rhl) => {
       const limitationType = getLimitationType(
-        rae.rte?.motif,
-        rae.enedis?.motif
+        rhl.rte?.motif,
+        rhl.enedis?.motif
       );
       const motif = this.getMotif(
-        rae.rte?.motif,
-        rae.enedis?.motif,
-        rae.typeSite,
+        rhl.rte?.motif,
+        rhl.enedis?.motif,
+        rhl.typeSite,
         this.instance
       );
-      const showDate = whichDateMustBeShown(rae.typeSite, rae.enedis?.motif);
+      const showDate = whichDateMustBeShown(rhl.typeSite, rhl.enedis?.motif);
       return {
-        ...rae,
+        ...rhl,
         showDate: showDate,
         motif: motif,
         limitationType: limitationType,

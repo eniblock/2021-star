@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "60103f6a-9a87-423b-bb17-874d353e2b6d",
+		"_postman_id": "4dd9de63-a662-4a24-a630-82bd51ec84fb",
 		"name": "OrdreLimitation",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -110,6 +110,29 @@
 					"path": [
 						"ordreLimitations",
 						"couple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS -  Liste des ordres",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_enedis}}/ordreLimitations?activationDocumentMrid=",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"ordreLimitations"
+					],
+					"query": [
+						{
+							"key": "activationDocumentMrid",
+							"value": ""
+						}
 					]
 				}
 			},

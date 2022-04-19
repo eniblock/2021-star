@@ -25,7 +25,7 @@ public interface SiteMapper {
     @Mapping(target = "technologyType", expression = "java(com.star.enums.TechnologyTypeEnum.fromValue(site.getTechnologyType()))")
     SiteDTO beanToDto(Site site);
 
-    List<SiteDTO> beanTsoToDtos(List<Site> sites);
+    List<SiteDTO> beanToDtos(List<Site> sites);
 
     @Named("mapTypeSiteForSite")
     default TypeSiteEnum mapTypeSiteForSite(Site site) {
@@ -36,4 +36,5 @@ public interface SiteMapper {
     default String mapIecCodeForSite(Site site) {
         return null;
     }
+
 }

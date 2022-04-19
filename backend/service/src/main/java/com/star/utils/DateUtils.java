@@ -1,6 +1,7 @@
 package com.star.utils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 /**
@@ -16,7 +17,7 @@ public final class DateUtils {
             return null;
         }
         try {
-            return LocalDateTime.parse(date);
+            return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
         } catch (DateTimeParseException dateTimeParseException) {
             throw dateTimeParseException;
         }

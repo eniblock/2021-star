@@ -1,5 +1,6 @@
 package com.star.models.historiquelimitation;
 
+import com.star.enums.InstanceEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +22,7 @@ public class HistoriqueLimitationCriteria {
     private String startCreatedDateTime;
     private String endCreatedDateTime;
     private String activationDocumentMrid;
+
+    private InstanceEnum instance;
 
 }

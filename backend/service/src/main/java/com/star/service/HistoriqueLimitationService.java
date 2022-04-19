@@ -35,9 +35,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 public class HistoriqueLimitationService {
 
-    @Value("${instance}")
-    private InstanceEnum instance;
-
     @Autowired
     private HistoriqueLimitationRepository historiqueLimitationRepository;
 
@@ -69,7 +66,7 @@ public class HistoriqueLimitationService {
         if (isNotBlank(criteria.getProducerMarketParticipantMrid())) {
             selectors.add(Expression.eq("producerMarketParticipantMrid", criteria.getProducerMarketParticipantMrid()));
         }
-        if (isNotBlank(criteria.getSiteName()) && !PRODUCER.equals(instance)) {
+        if (isNotBlank(criteria.getSiteName()) && !PRODUCER.equals(criteria.getInstance())) {
             selectors.add(Expression.eq("siteName", criteria.getSiteName()));
         }
         if (isNotBlank(criteria.getActivationDocumentMrid())) {

@@ -73,6 +73,7 @@ public class HistoriqueLimitationController {
                 .startCreatedDateTime(startCreatedDateTime)
                 .endCreatedDateTime(endCreatedDateTime)
                 .activationDocumentMrid(activationDocumentMrid)
+                .instance(instance)
                 .build();
         if (PRODUCER.equals(instance)) {
             // A producer can get only his own site data

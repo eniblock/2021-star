@@ -23,7 +23,7 @@ public final class DateUtils {
     }
 
     public static String toJson(LocalDateTime date) {
-        if (date == null || date.equals("")) {
+        if (date == null) {
             return null;
         }
         return date.format(DATETIME_FORMATTER);

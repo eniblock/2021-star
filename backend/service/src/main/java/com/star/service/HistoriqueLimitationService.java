@@ -89,6 +89,10 @@ public class HistoriqueLimitationService {
             selectors.add(Expression.gt("endCreatedDateTime", dateDebut));
             selectors.add(Expression.lt("startCreatedDateTime", dateFin));
         }
+
+        // Only "full" activationDocument : with a start and an end date
+        selectors.add(Expression.ne("endCreatedDateTime", ""));
+        selectors.add(Expression.ne("startCreatedDateTime", ""));
     }
 
 }

@@ -1,15 +1,15 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 import {
   GraphData,
   jsonDateToValueX,
   Point,
 } from 'src/app/components/graph/square-graph/square-graph.component';
-import { EnergyAccount } from 'src/app/models/EnergyAccount';
-import { MeasurementUnitName } from 'src/app/models/enum/MeasurementUnitName.enum';
-import { processTypeToStr } from 'src/app/rules/process-type-rules';
-import { EnergyAccountService } from 'src/app/services/api/energy-account.service';
-import { DateHelper } from './../../../helpers/date.helper';
+import {EnergyAccount} from 'src/app/models/EnergyAccount';
+import {MeasurementUnitName} from 'src/app/models/enum/MeasurementUnitName.enum';
+import {processTypeToStr} from 'src/app/rules/process-type-rules';
+import {EnergyAccountService} from 'src/app/services/api/energy-account.service';
+import {DateHelper} from './../../../helpers/date.helper';
 
 @Component({
   selector: 'app-activation-graph',
@@ -32,7 +32,8 @@ export class ActivationGraphComponent implements OnInit {
       orderValueConsign?: number;
       measurementUnitNameConsign?: MeasurementUnitName;
     }
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     const startCreatedDateTime = this.bottomSheetParams.startCreatedDateTime;
@@ -88,25 +89,25 @@ export class ActivationGraphComponent implements OnInit {
     });
 
     // 3) The consign
-    serieNames.push('Consigne'),
-      points.push([
-        {
-          x: jsonDateToValueX(startCreatedDateTimeConsign),
-          y: this.toUnit(
-            orderValueConsign,
-            measurementUnitNameConsign,
-            globalMeasurementUnitName
-          ),
-        },
-        {
-          x: jsonDateToValueX(endCreatedDateTimeConsign),
-          y: this.toUnit(
-            orderValueConsign,
-            measurementUnitNameConsign,
-            globalMeasurementUnitName
-          ),
-        },
-      ]);
+    serieNames.push('Consigne');
+    points.push([
+      {
+        x: jsonDateToValueX(startCreatedDateTimeConsign),
+        y: this.toUnit(
+          orderValueConsign,
+          measurementUnitNameConsign,
+          globalMeasurementUnitName
+        ),
+      },
+      {
+        x: jsonDateToValueX(endCreatedDateTimeConsign),
+        y: this.toUnit(
+          orderValueConsign,
+          measurementUnitNameConsign,
+          globalMeasurementUnitName
+        ),
+      },
+    ]);
 
     // The other data
     let currentProcessType = 'Consigne...';

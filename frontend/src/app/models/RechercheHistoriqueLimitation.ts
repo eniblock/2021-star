@@ -8,6 +8,7 @@ import { FormulairePagination } from './Pagination';
 export interface FormulaireRechercheHistoriqueLimitation {
   originAutomationRegisteredResourceMrid: string;
   producerMarketParticipantMrid: string;
+  siteName: string;
   startCreatedDateTime: string; // JSON
   endCreatedDateTime: string; // JSON
 }

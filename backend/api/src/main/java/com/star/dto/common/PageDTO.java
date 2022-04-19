@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class PageResponse<E> {
+public class PageDTO<E> {
     private List<E> content;
     private int totalElements;
     private String bookmark;

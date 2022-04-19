@@ -1,4 +1,4 @@
-package com.star.models.site;
+package com.star.models.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +15,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SiteResponse {
-    protected List<Site> records;
+public class PageHLF<E> {
+    protected List<E> records;
     protected int fetchedRecordsCount;
     protected String bookmark;
 }

@@ -20,6 +20,7 @@ export class FormActivationsRechercheComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({
     originAutomationRegisteredResourceMrid: [''],
     producerMarketParticipantMrid: [''],
+    siteName: [''],
     startCreatedDateTime: [''],
     endCreatedDateTime: [''],
   });

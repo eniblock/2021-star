@@ -14,7 +14,7 @@
     <description>Module APIs contient les APIs REST et la configuration de l'application springboot</description>
     <properties>
         <image_path/>
-        <keycloak.version>15.0.0</keycloak.version>
+        <keycloak.version>12.0.4</keycloak.version>
         <swagger.version>1.5.2</swagger.version>
     </properties>
 

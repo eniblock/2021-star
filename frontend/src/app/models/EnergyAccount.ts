@@ -1,6 +1,10 @@
 import { MeasurementUnitName } from './enum/MeasurementUnitName.enum';
 import { ProcessType } from './enum/ProcessType.enum';
 
+export interface FormulaireEnergyAccount {
+  files: File[];
+}
+
 export interface EnergyAccountPoint {
   inQuantity: number;
   position: number;

@@ -17,6 +17,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormActivationsRechercheComponent } from './form-activations-recherche/form-activations-recherche.component';
 import { FormOrdreDebutEtFinLimitationComponent } from './form-ordre-debut-et-fin-limitation/form-ordre-debut-et-fin-limitation.component';
+import { FormCourbeComptageReferenceComponent } from './form-courbe-comptage-reference/form-courbe-comptage-reference.component';
 
 @NgModule({
   imports: [
@@ -40,13 +41,15 @@ import { FormOrdreDebutEtFinLimitationComponent } from './form-ordre-debut-et-fi
     FormOrdreFinLimitationSaisieManuelleComponent,
     FormOrdreDebutEtFinLimitationComponent,
     FormActivationsRechercheComponent,
+    FormCourbeComptageReferenceComponent,
   ],
-  exports: [
-    FormReseauRechercheComponent,
-    FormOrdreDebutLimitationComponent,
-    FormOrdreFinLimitationComponent,
-    FormOrdreDebutEtFinLimitationComponent,
-    FormActivationsRechercheComponent,
-  ],
+    exports: [
+        FormReseauRechercheComponent,
+        FormOrdreDebutLimitationComponent,
+        FormOrdreFinLimitationComponent,
+        FormOrdreDebutEtFinLimitationComponent,
+        FormActivationsRechercheComponent,
+        FormCourbeComptageReferenceComponent,
+    ],
 })
 export class FormulairesModule {}

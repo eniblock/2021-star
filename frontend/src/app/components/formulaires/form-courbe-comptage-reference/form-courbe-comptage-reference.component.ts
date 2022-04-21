@@ -1,20 +1,17 @@
-import { FormulaireOrdreDebutLimitationFichier } from 'src/app/models/OrdreLimitation';
-import { environment } from 'src/environments/environment';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import {
-  Fichier,
-  ListeFichiersEtEtat,
-} from '../../micro-components/uploader-fichier/uploader-fichier.component';
-import { tailleFichierToStr } from '../../micro-components/uploader-fichier/uploader-fichier-tools';
-import { OrdreLimitationService } from './../../../services/api/ordre-limitation.service';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {environment} from "../../../../environments/environment";
+import {Fichier, ListeFichiersEtEtat} from "../../micro-components/uploader-fichier/uploader-fichier.component";
+import {tailleFichierToStr} from "../../micro-components/uploader-fichier/uploader-fichier-tools";
+import {FormulaireOrdreDebutEtFinLimitationFichier} from "../../../models/OrdreLimitation";
+import {EnergyAccountService} from "../../../services/api/energy-account.service";
 
 @Component({
-  selector: 'app-form-ordre-debut-limitation',
-  templateUrl: './form-ordre-debut-limitation.component.html',
-  styleUrls: ['./form-ordre-debut-limitation.component.css'],
+  selector: 'app-form-courbe-comptage-reference',
+  templateUrl: './form-courbe-comptage-reference.component.html',
+  styleUrls: ['./form-courbe-comptage-reference.component.css']
 })
-export class FormOrdreDebutLimitationComponent implements OnInit {
+export class FormCourbeComptageReferenceComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({});
 
   tailleMaxUploadFichiers = environment.tailleMaxUploadFichiers;
@@ -29,7 +26,7 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private ordreLimitationService: OrdreLimitationService
+    private energyAccountService: EnergyAccountService
   ) {}
 
   ngOnInit() {
@@ -39,10 +36,10 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
   }
 
   onSubmit() {
-    const form: FormulaireOrdreDebutLimitationFichier = {
+    const form: FormulaireOrdreDebutEtFinLimitationFichier = {
       files: this.listeFichiers.map((f) => f.file),
     };
-    this.ordreLimitationService.creerOrdreDebutAvecFichiers(form).subscribe(
+    this.energyAccountService.creer(form).subscribe(
       (ok) => {
         this.uploadEffectue = true;
       },
@@ -64,4 +61,5 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
     this.listeFichiers = [];
     this.uploadEffectue = false;
   }
+
 }

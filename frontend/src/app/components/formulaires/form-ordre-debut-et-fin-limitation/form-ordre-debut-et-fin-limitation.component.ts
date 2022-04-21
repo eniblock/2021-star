@@ -8,7 +8,6 @@ import {
 } from '../../micro-components/uploader-fichier/uploader-fichier.component';
 import { tailleFichierToStr } from '../../micro-components/uploader-fichier/uploader-fichier-tools';
 import { OrdreLimitationService } from '../../../services/api/ordre-limitation.service';
-import { PATH_ROUTE } from 'src/app/app-routing.module';
 
 @Component({
   selector: 'app-form-ordre-debut-et-fin-limitation',
@@ -17,8 +16,6 @@ import { PATH_ROUTE } from 'src/app/app-routing.module';
 })
 export class FormOrdreDebutEtFinLimitationComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({});
-
-  PATH_ROUTE = PATH_ROUTE;
 
   tailleMaxUploadFichiers = environment.tailleMaxUploadFichiers;
   tailleMaxUploadFichiersStr = '...';

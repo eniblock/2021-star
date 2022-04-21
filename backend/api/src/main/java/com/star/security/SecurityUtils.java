@@ -3,12 +3,10 @@ package com.star.security;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.AccessToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.Principal;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -19,12 +17,24 @@ public final class SecurityUtils {
     private SecurityUtils() {
     }
 
-    private static Optional<Authentication> getInternalAuthentication() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());
+    public static KeycloakAuthenticationToken getKeycloakAuthenticationToken() {
+        var securityContext = SecurityContextHolder.getContext();
+        if (securityContext == null) {
+            return null;
+        }
+        var authentication = securityContext.getAuthentication();
+        if (authentication == null) {
+            return null;
+        }
+        if (authentication.getClass() == KeycloakAuthenticationToken.class) {
+            return (KeycloakAuthenticationToken) authentication;
+        } else {
+            return null;
+        }
     }
 
     public static String getProducerMarketParticipantMrid() {
-        KeycloakAuthenticationToken keycloakAuthenticationToken = getKeycloakAuthenticationToken();
+        var keycloakAuthenticationToken = getKeycloakAuthenticationToken();
         if (keycloakAuthenticationToken == null) {
             return null;
         }
@@ -41,11 +51,4 @@ public final class SecurityUtils {
         return producerMarketParticipantMrid;
     }
 
-    private static KeycloakAuthenticationToken getKeycloakAuthenticationToken() {
-        Optional<Authentication> authOpt = getInternalAuthentication();
-        if (!authOpt.isPresent()) {
-            return null;
-        }
-        return (KeycloakAuthenticationToken) authOpt.get();
-    }
 }

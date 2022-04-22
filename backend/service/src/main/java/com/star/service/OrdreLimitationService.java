@@ -7,7 +7,7 @@ import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.limitation.FichierOrdreLimitation;
+import com.star.models.common.FichierImportation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.limitation.OrdreLimitationCriteria;
@@ -55,7 +55,7 @@ public class OrdreLimitationService {
     private MessageSource messageSource;
 
 
-    public ImportOrdreLimitationResult importOrdreDebutLimitation(List<FichierOrdreLimitation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
+    public ImportOrdreLimitationResult importOrdreDebutLimitation(List<FichierImportation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
         Assert.notEmpty(fichierOrdreLimitations, messageSource.getMessage("import.ordreLimitation.files.empty", new String[]{}, null));
         fichierOrdreLimitations.forEach(fichierOrdreLimitation -> importUtilsService.checkFile(fichierOrdreLimitation.getFileName(),
                 new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
@@ -64,7 +64,7 @@ public class OrdreLimitationService {
         Validator validator = validatorFactory.getValidator();
         List<OrdreLimitation> ordreDebutLimitations = new ArrayList<>();
         ObjectMapper objectMapper = getObjectMapper();
-        for (FichierOrdreLimitation fichierOrdreLimitation : fichierOrdreLimitations) {
+        for (FichierImportation fichierOrdreLimitation : fichierOrdreLimitations) {
             String value = IOUtils.toString(fichierOrdreLimitation.getInputStream(), StandardCharsets.UTF_8);
             OrdreLimitation ordreLimitation = !isBlank(value) ? objectMapper.readValue(value, OrdreLimitation.class) : null;
             if (ordreLimitation == null) {
@@ -124,7 +124,7 @@ public class OrdreLimitationService {
         return importOrdreDebutLimitationResult;
     }
 
-    public ImportOrdreLimitationResult importCoupleOrdreDebutFin(List<FichierOrdreLimitation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
+    public ImportOrdreLimitationResult importCoupleOrdreDebutFin(List<FichierImportation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
         Assert.notEmpty(fichierOrdreLimitations, messageSource.getMessage("import.ordreLimitation.files.empty", new String[]{}, null));
         fichierOrdreLimitations.forEach(fichierOrdreLimitation -> importUtilsService.checkFile(fichierOrdreLimitation.getFileName(),
                 new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
@@ -133,7 +133,7 @@ public class OrdreLimitationService {
         Validator validator = validatorFactory.getValidator();
         List<OrdreLimitation> ordreLimitations = new ArrayList<>();
         ObjectMapper objectMapper = getObjectMapper();
-        for (FichierOrdreLimitation fichierOrdreLimitation : fichierOrdreLimitations) {
+        for (FichierImportation fichierOrdreLimitation : fichierOrdreLimitations) {
             String value = IOUtils.toString(fichierOrdreLimitation.getInputStream(), StandardCharsets.UTF_8);
             OrdreLimitation ordreLimitation = !isBlank(value) ? objectMapper.readValue(value, OrdreLimitation.class) : null;
             if (ordreLimitation == null) {

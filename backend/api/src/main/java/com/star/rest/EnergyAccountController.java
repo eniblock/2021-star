@@ -39,7 +39,7 @@ public class EnergyAccountController {
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping
     public ResponseEntity<Object> importEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
-        if (PRODUCER.equals(instance)) { // Seul RTE et Enedis peut envoyer des ordres de début
+        if (PRODUCER.equals(instance)) { // Onle RTE and Enedis can send energy accounts
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (files == null || files.length == 0) {

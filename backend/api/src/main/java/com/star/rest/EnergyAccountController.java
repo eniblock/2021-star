@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.star.enums.InstanceEnum.PRODUCER;
+import static com.star.enums.InstanceEnum.TSO;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -31,15 +32,16 @@ public class EnergyAccountController {
     @Value("${instance}")
     private InstanceEnum instance;
 
+
     @Operation(summary = "Post an Energy Account.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Post successfully start limitation order",
+            @ApiResponse(responseCode = "201", description = "Post successfully an Energy Account",
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping
     public ResponseEntity<Object> importEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
-        if (PRODUCER.equals(instance)) { // Seul RTE et Enedis peut envoyer des ordres de début
+        if (PRODUCER.equals(instance)) { // Only RTE and Enedis can send Energy Account
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (files == null || files.length == 0) {

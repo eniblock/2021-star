@@ -4,12 +4,11 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
-import com.star.exception.BusinessException;
+import com.star.exception.TechnicalException;
 import com.star.models.common.FichierImportation;
 import com.star.models.energyaccount.EnergyAccount;
 import com.star.models.energyaccount.ImportEnergyAccountResult;
-import com.star.models.limitation.OrdreLimitation;
-import com.star.utils.DateUtils;
+import com.star.repository.EnergyAccountRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +17,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.validation.Validation;
-import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.star.enums.DocTypeEnum.ACTIVATION_DOCUMENT;
+import static com.star.enums.DocTypeEnum.ENERGY_ACCOUNT;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -43,14 +40,21 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Slf4j
 @Service
 public class EnergyAccountService {
+
+    private static final String REVISION_NUMBER = "1";
+
     @Autowired
     private MessageSource messageSource;
+
     @Autowired
     private ImportUtilsService importUtilsService;
 
+    @Autowired
+    private EnergyAccountRepository energyAccountRepository;
+
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
-    public ImportEnergyAccountResult importFichiers(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException {
+    public ImportEnergyAccountResult importFichiers(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
         Assert.notEmpty(fichiers, messageSource.getMessage("import.energyAccount.files.empty", new String[]{}, null));
         fichiers.forEach(fichierOrdreLimitation -> importUtilsService.checkFile(fichierOrdreLimitation.getFileName(),
                 new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
@@ -80,31 +84,15 @@ public class EnergyAccountService {
         if (isNotEmpty(errors)) {
             importEnergyAccountResult.setErrors(errors);
         } else {
-        /*
-            energyAccounts.forEach(ea -> {
-                ordreDebutLimitation.setActivationDocumentMrid(randomUUID().toString());
-                ordreDebutLimitation.setInstance(instance.getValue());
-                ordreDebutLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
-                ordreDebutLimitation.setSubOrderList(new ArrayList<>());
-                ordreDebutLimitation.setEndCreatedDateTime(EMPTY);
-                if (ordreDebutLimitation.getOrderValue() == null) {
-                    ordreDebutLimitation.setOrderValue(EMPTY);
-                }
-                if (ordreDebutLimitation.getReceiverMarketParticipantMrid() == null) {
-                    ordreDebutLimitation.setReceiverMarketParticipantMrid(EMPTY);
-                }
-                if (ordreDebutLimitation.getRevisionNumber() == null) {
-                    ordreDebutLimitation.setRevisionNumber(REVISION_NUMBER);
-                }
-                if (ordreDebutLimitation.getSenderMarketParticipantMrid() == null) {
-                    ordreDebutLimitation.setSenderMarketParticipantMrid(EMPTY);
+            energyAccounts.forEach(energyAccount -> {
+                energyAccount.setEnergyAccountMarketDocumentMrid(randomUUID().toString());
+                energyAccount.setDocType(ENERGY_ACCOUNT.getDocType());
+                if (energyAccount.getRevisionNumber() == null) {
+                    energyAccount.setRevisionNumber(REVISION_NUMBER);
                 }
             });
-            importOrdreDebutLimitationResult.setDatas(ordreLimitationRepository.saveOrdreLimitations(ordreDebutLimitations));
-         */
-
+            importEnergyAccountResult.setDatas(energyAccountRepository.save(energyAccounts));
         }
-
         return importEnergyAccountResult;
     }
 

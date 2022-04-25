@@ -5,7 +5,6 @@ import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.common.FichierImportation;
 import com.star.models.energyaccount.ImportEnergyAccountResult;
-import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.service.EnergyAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -66,7 +65,7 @@ public class EnergyAccountController {
                 fichiers.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
             }
             importEnergyAccountResult = energyAccountService.importFichiers(fichiers, instance);
-        } catch (IOException exception) {
+        } catch (IOException | TechnicalException exception) {
             log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 @Repository
 public class EnergyAccountRepository {
-    public static final String CREATE = "createEnergyAccount";
+    public static final String CREATE = "CreateEnergyAccount";
 
     @Autowired
     private Contract contract;

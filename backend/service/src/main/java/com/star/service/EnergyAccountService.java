@@ -90,6 +90,21 @@ public class EnergyAccountService {
                 if (energyAccount.getRevisionNumber() == null) {
                     energyAccount.setRevisionNumber(REVISION_NUMBER);
                 }
+                if (energyAccount.getMarketEvaluationPointMrid() == null) {
+                    energyAccount.setMarketEvaluationPointMrid(EMPTY);
+                }
+                if (energyAccount.getDocStatus() == null) {
+                    energyAccount.setDocStatus(EMPTY);
+                }
+                if (energyAccount.getProcessType() == null) {
+                    energyAccount.setProcessType(EMPTY);
+                }
+                if (energyAccount.getClassificationType() == null) {
+                    energyAccount.setClassificationType(EMPTY);
+                }
+                if (energyAccount.getProduct() == null) {
+                    energyAccount.setProduct(EMPTY);
+                }
             });
             importEnergyAccountResult.setDatas(energyAccountRepository.save(energyAccounts));
         }

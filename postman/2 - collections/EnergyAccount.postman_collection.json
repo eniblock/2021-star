@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "9ce0a5d3-2e98-43dd-9f66-43e953861ed9",
+		"name": "EnergyAccount",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RTE - Post energy account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/energyAccounts",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"energyAccounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Post energy account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/energyAccounts",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"energyAccounts"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

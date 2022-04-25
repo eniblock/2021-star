@@ -81,7 +81,7 @@ public class OrdreLimitationService {
                             new String[]{fichierOrdreLimitation.getFileName()}, null));
                 }
             } catch (DateTimeParseException dateTimeParseException) {
-                throw new BusinessException(messageSource.getMessage("import.ordreLimitation.date.format.error",
+                throw new BusinessException(messageSource.getMessage("import.date.format.error",
                         new String[]{fichierOrdreLimitation.getFileName()}, null));
             }
 
@@ -91,7 +91,7 @@ public class OrdreLimitationService {
                         new String[]{fichierOrdreLimitation.getFileName()}, null));
             }
             errors.addAll(validator.validate(ordreLimitation).stream().map(violation ->
-                    messageSource.getMessage("import.ordreLimitation.error",
+                    messageSource.getMessage("import.error",
                             new String[]{fichierOrdreLimitation.getFileName(), violation.getMessage()}, null)).collect(toList()));
             if (isEmpty(errors)) {
                 ordreDebutLimitations.add(ordreLimitation);
@@ -140,27 +140,13 @@ public class OrdreLimitationService {
                 errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichierOrdreLimitation.getFileName()}, null));
                 break;
             }
-            try {
-                if (DateUtils.toLocalDateTime(ordreLimitation.getStartCreatedDateTime()) == null) {
-                    errors.add(messageSource.getMessage("import.ordreLimitation.couple.startCreatedDateTime.error",
-                            new String[]{fichierOrdreLimitation.getFileName()}, null));
-                }
-
-                if (DateUtils.toLocalDateTime(ordreLimitation.getEndCreatedDateTime()) == null) {
-                    errors.add(messageSource.getMessage("import.ordreLimitation.couple.endCreatedDateTime.error",
-                            new String[]{fichierOrdreLimitation.getFileName()}, null));
-                }
-            } catch (DateTimeParseException dateTimeParseException) {
-                throw new BusinessException(messageSource.getMessage("import.ordreLimitation.date.format.error",
-                        new String[]{fichierOrdreLimitation.getFileName()}, null));
-            }
             // le champ "orderEnd" doit être à false
             if (ordreLimitation.isOrderEnd()) {
                 errors.add(messageSource.getMessage("import.ordreLimitation.couple.orderEnd.error",
                         new String[]{fichierOrdreLimitation.getFileName()}, null));
             }
             errors.addAll(validator.validate(ordreLimitation).stream().map(violation ->
-                    messageSource.getMessage("import.ordreLimitation.error",
+                    messageSource.getMessage("import.error",
                             new String[]{fichierOrdreLimitation.getFileName(), violation.getMessage()}, null)).collect(toList()));
             if (isEmpty(errors)) {
                 ordreLimitations.add(ordreLimitation);

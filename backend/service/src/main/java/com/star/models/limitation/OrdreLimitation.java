@@ -3,6 +3,7 @@ package com.star.models.limitation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.star.custom.validations.ValueOfEnum;
 import com.star.enums.MeasurementUnitTypeEnum;
+import com.star.models.common.ValidationRegex;
 import com.star.models.imports.ImportCSV;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +36,9 @@ public class OrdreLimitation implements ImportCSV {
     private String orderValue;
     @ValueOfEnum(enumClass = MeasurementUnitTypeEnum.class, message = " must be any of MW/KW")
     private String measurementUnitName;
+    @Pattern(regexp = ValidationRegex.DATETIME_REGEX, message = "Le champ createdDateTime doit être au format : " + ValidationRegex.DATETIME_REGEX_STR)
     private String startCreatedDateTime;
+    @Pattern(regexp = ValidationRegex.DATETIME_REGEX, message = "Le champ endCreatedDateTime doit être au format : " + ValidationRegex.DATETIME_REGEX_STR)
     private String endCreatedDateTime;
     private String revisionNumber;
     @NotBlank(message = "Le champ messageType est obligatoire")

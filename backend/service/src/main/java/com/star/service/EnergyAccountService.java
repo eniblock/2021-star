@@ -1,6 +1,5 @@
 package com.star.service;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
@@ -21,7 +20,6 @@ import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,6 +50,9 @@ public class EnergyAccountService {
     @Autowired
     private EnergyAccountRepository energyAccountRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
     public ImportEnergyAccountResult importFichiers(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
@@ -71,7 +72,7 @@ public class EnergyAccountService {
                 errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichier.getFileName()}, null));
                 break;
             }
-            var energyAccount = getObjectMapper().readValue(fileInside, EnergyAccount.class);
+            var energyAccount = objectMapper.readValue(fileInside, EnergyAccount.class);
             errors.addAll(validator.validate(energyAccount).stream().map(violation ->
                     messageSource.getMessage("import.error",
                             new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
@@ -111,9 +112,4 @@ public class EnergyAccountService {
         return importEnergyAccountResult;
     }
 
-    private ObjectMapper getObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
-        return objectMapper;
-    }
 }

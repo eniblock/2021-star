@@ -1,7 +1,6 @@
 package com.star.service;
 
 import com.cloudant.client.api.query.*;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
@@ -54,6 +53,9 @@ public class OrdreLimitationService {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     public ImportOrdreLimitationResult importOrdreDebutLimitation(List<FichierImportation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
         Assert.notEmpty(fichierOrdreLimitations, messageSource.getMessage("import.ordreLimitation.files.empty", new String[]{}, null));
@@ -63,7 +65,6 @@ public class OrdreLimitationService {
         List<String> errors = new ArrayList<>();
         Validator validator = validatorFactory.getValidator();
         List<OrdreLimitation> ordreDebutLimitations = new ArrayList<>();
-        ObjectMapper objectMapper = getObjectMapper();
         for (FichierImportation fichierOrdreLimitation : fichierOrdreLimitations) {
             String value = IOUtils.toString(fichierOrdreLimitation.getInputStream(), StandardCharsets.UTF_8);
             OrdreLimitation ordreLimitation = !isBlank(value) ? objectMapper.readValue(value, OrdreLimitation.class) : null;
@@ -132,7 +133,6 @@ public class OrdreLimitationService {
         List<String> errors = new ArrayList<>();
         Validator validator = validatorFactory.getValidator();
         List<OrdreLimitation> ordreLimitations = new ArrayList<>();
-        ObjectMapper objectMapper = getObjectMapper();
         for (FichierImportation fichierOrdreLimitation : fichierOrdreLimitations) {
             String value = IOUtils.toString(fichierOrdreLimitation.getInputStream(), StandardCharsets.UTF_8);
             OrdreLimitation ordreLimitation = !isBlank(value) ? objectMapper.readValue(value, OrdreLimitation.class) : null;
@@ -176,12 +176,6 @@ public class OrdreLimitationService {
             importCoupleOrdreLimitationResult.setDatas(ordreLimitationRepository.saveOrdreLimitations(ordreLimitations));
         }
         return importCoupleOrdreLimitationResult;
-    }
-
-    private ObjectMapper getObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
-        return objectMapper;
     }
 
     public List<OrdreLimitation> getOrdreDebutLimitation(InstanceEnum instance) throws TechnicalException {

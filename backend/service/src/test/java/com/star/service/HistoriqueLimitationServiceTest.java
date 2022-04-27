@@ -60,8 +60,6 @@ class HistoriqueLimitationServiceTest extends AbstractTest {
                 .pageSize(10)
                 .orderDirection(OrderDirection.asc)
                 .build();
-        byte[] result = objectMapper.writeValueAsBytes(historiqueLimitationResponse);
-        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
 
         // WHEN
         var siteResponseResult = historiqueLimitationService.findHistorique(historiqueLimitationCriteria, bookmark, paginationDto);

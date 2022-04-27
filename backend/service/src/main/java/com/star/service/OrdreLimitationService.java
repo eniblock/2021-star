@@ -1,13 +1,12 @@
 package com.star.service;
 
 import com.cloudant.client.api.query.*;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.limitation.FichierOrdreLimitation;
+import com.star.models.common.FichierImportation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.limitation.OrdreLimitationCriteria;
@@ -18,13 +17,11 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -53,18 +50,17 @@ public class OrdreLimitationService {
     private OrdreLimitationRepository ordreLimitationRepository;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
-    public ImportOrdreLimitationResult importOrdreDebutLimitation(List<FichierOrdreLimitation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
-        Assert.notEmpty(fichierOrdreLimitations, messageSource.getMessage("import.ordreLimitation.files.empty", new String[]{}, null));
-        fichierOrdreLimitations.forEach(fichierOrdreLimitation -> importUtilsService.checkFile(fichierOrdreLimitation.getFileName(),
-                new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
+    public ImportOrdreLimitationResult importOrdreDebutLimitation(List<FichierImportation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
+        importUtilsService.checkImportFiles(fichierOrdreLimitations, FileExtensionEnum.JSON.getValue());
         ImportOrdreLimitationResult importOrdreDebutLimitationResult = new ImportOrdreLimitationResult();
         List<String> errors = new ArrayList<>();
         Validator validator = validatorFactory.getValidator();
         List<OrdreLimitation> ordreDebutLimitations = new ArrayList<>();
-        ObjectMapper objectMapper = getObjectMapper();
-        for (FichierOrdreLimitation fichierOrdreLimitation : fichierOrdreLimitations) {
+        for (FichierImportation fichierOrdreLimitation : fichierOrdreLimitations) {
             String value = IOUtils.toString(fichierOrdreLimitation.getInputStream(), StandardCharsets.UTF_8);
             OrdreLimitation ordreLimitation = !isBlank(value) ? objectMapper.readValue(value, OrdreLimitation.class) : null;
             if (ordreLimitation == null) {
@@ -81,7 +77,7 @@ public class OrdreLimitationService {
                             new String[]{fichierOrdreLimitation.getFileName()}, null));
                 }
             } catch (DateTimeParseException dateTimeParseException) {
-                throw new BusinessException(messageSource.getMessage("import.ordreLimitation.date.format.error",
+                throw new BusinessException(messageSource.getMessage("import.date.format.error",
                         new String[]{fichierOrdreLimitation.getFileName()}, null));
             }
 
@@ -91,7 +87,7 @@ public class OrdreLimitationService {
                         new String[]{fichierOrdreLimitation.getFileName()}, null));
             }
             errors.addAll(validator.validate(ordreLimitation).stream().map(violation ->
-                    messageSource.getMessage("import.ordreLimitation.error",
+                    messageSource.getMessage("import.error",
                             new String[]{fichierOrdreLimitation.getFileName(), violation.getMessage()}, null)).collect(toList()));
             if (isEmpty(errors)) {
                 ordreDebutLimitations.add(ordreLimitation);
@@ -124,35 +120,18 @@ public class OrdreLimitationService {
         return importOrdreDebutLimitationResult;
     }
 
-    public ImportOrdreLimitationResult importCoupleOrdreDebutFin(List<FichierOrdreLimitation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
-        Assert.notEmpty(fichierOrdreLimitations, messageSource.getMessage("import.ordreLimitation.files.empty", new String[]{}, null));
-        fichierOrdreLimitations.forEach(fichierOrdreLimitation -> importUtilsService.checkFile(fichierOrdreLimitation.getFileName(),
-                new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
+    public ImportOrdreLimitationResult importCoupleOrdreDebutFin(List<FichierImportation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
+        importUtilsService.checkImportFiles(fichierOrdreLimitations, FileExtensionEnum.JSON.getValue());
         ImportOrdreLimitationResult importCoupleOrdreLimitationResult = new ImportOrdreLimitationResult();
         List<String> errors = new ArrayList<>();
         Validator validator = validatorFactory.getValidator();
         List<OrdreLimitation> ordreLimitations = new ArrayList<>();
-        ObjectMapper objectMapper = getObjectMapper();
-        for (FichierOrdreLimitation fichierOrdreLimitation : fichierOrdreLimitations) {
+        for (FichierImportation fichierOrdreLimitation : fichierOrdreLimitations) {
             String value = IOUtils.toString(fichierOrdreLimitation.getInputStream(), StandardCharsets.UTF_8);
             OrdreLimitation ordreLimitation = !isBlank(value) ? objectMapper.readValue(value, OrdreLimitation.class) : null;
             if (ordreLimitation == null) {
                 errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichierOrdreLimitation.getFileName()}, null));
                 break;
-            }
-            try {
-                if (DateUtils.toLocalDateTime(ordreLimitation.getStartCreatedDateTime()) == null) {
-                    errors.add(messageSource.getMessage("import.ordreLimitation.couple.startCreatedDateTime.error",
-                            new String[]{fichierOrdreLimitation.getFileName()}, null));
-                }
-
-                if (DateUtils.toLocalDateTime(ordreLimitation.getEndCreatedDateTime()) == null) {
-                    errors.add(messageSource.getMessage("import.ordreLimitation.couple.endCreatedDateTime.error",
-                            new String[]{fichierOrdreLimitation.getFileName()}, null));
-                }
-            } catch (DateTimeParseException dateTimeParseException) {
-                throw new BusinessException(messageSource.getMessage("import.ordreLimitation.date.format.error",
-                        new String[]{fichierOrdreLimitation.getFileName()}, null));
             }
             // le champ "orderEnd" doit être à false
             if (ordreLimitation.isOrderEnd()) {
@@ -160,7 +139,7 @@ public class OrdreLimitationService {
                         new String[]{fichierOrdreLimitation.getFileName()}, null));
             }
             errors.addAll(validator.validate(ordreLimitation).stream().map(violation ->
-                    messageSource.getMessage("import.ordreLimitation.error",
+                    messageSource.getMessage("import.error",
                             new String[]{fichierOrdreLimitation.getFileName(), violation.getMessage()}, null)).collect(toList()));
             if (isEmpty(errors)) {
                 ordreLimitations.add(ordreLimitation);
@@ -190,12 +169,6 @@ public class OrdreLimitationService {
             importCoupleOrdreLimitationResult.setDatas(ordreLimitationRepository.saveOrdreLimitations(ordreLimitations));
         }
         return importCoupleOrdreLimitationResult;
-    }
-
-    private ObjectMapper getObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
-        return objectMapper;
     }
 
     public List<OrdreLimitation> getOrdreDebutLimitation(InstanceEnum instance) throws TechnicalException {

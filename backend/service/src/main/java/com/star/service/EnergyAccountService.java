@@ -13,12 +13,10 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +54,7 @@ public class EnergyAccountService {
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
     public ImportEnergyAccountResult importFichiers(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
-        importUtilsService.checkImportFiles(fichiers);
+        importUtilsService.checkImportFiles(fichiers, FileExtensionEnum.JSON.getValue());
 
         var importEnergyAccountResult = new ImportEnergyAccountResult();
         var errors = new LinkedList<String>();
@@ -109,7 +107,6 @@ public class EnergyAccountService {
         }
         return importEnergyAccountResult;
     }
-
 
 
 }

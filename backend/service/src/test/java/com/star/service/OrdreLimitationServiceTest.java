@@ -154,8 +154,6 @@ class OrdreLimitationServiceTest extends AbstractTest {
         var ordreLimitationCriteria = OrdreLimitationCriteria.builder().activationDocumentMrid("val")
                 .build();
         var ordreLimitation = OrdreLimitation.builder().activationDocumentMrid("val").build();
-        byte[] result = objectMapper.writeValueAsBytes(ordreLimitation);
-        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(result);
 
         // WHEN
         var ordreLimitationResulte = ordreLimitationService.findLimitationOrders(ordreLimitationCriteria);

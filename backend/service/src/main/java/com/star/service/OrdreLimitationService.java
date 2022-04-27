@@ -17,13 +17,11 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -52,13 +50,12 @@ public class OrdreLimitationService {
     private OrdreLimitationRepository ordreLimitationRepository;
     @Autowired
     private MessageSource messageSource;
-
     @Autowired
     private ObjectMapper objectMapper;
 
 
     public ImportOrdreLimitationResult importOrdreDebutLimitation(List<FichierImportation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
-        importUtilsService.checkImportFiles(fichierOrdreLimitations);
+        importUtilsService.checkImportFiles(fichierOrdreLimitations, FileExtensionEnum.JSON.getValue());
         ImportOrdreLimitationResult importOrdreDebutLimitationResult = new ImportOrdreLimitationResult();
         List<String> errors = new ArrayList<>();
         Validator validator = validatorFactory.getValidator();
@@ -124,7 +121,7 @@ public class OrdreLimitationService {
     }
 
     public ImportOrdreLimitationResult importCoupleOrdreDebutFin(List<FichierImportation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
-        importUtilsService.checkImportFiles(fichierOrdreLimitations);
+        importUtilsService.checkImportFiles(fichierOrdreLimitations, FileExtensionEnum.JSON.getValue());
         ImportOrdreLimitationResult importCoupleOrdreLimitationResult = new ImportOrdreLimitationResult();
         List<String> errors = new ArrayList<>();
         Validator validator = validatorFactory.getValidator();

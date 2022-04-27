@@ -3,7 +3,7 @@ package com.star.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
-import com.star.models.limitation.FichierOrdreLimitation;
+import com.star.models.common.FichierImportation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.limitation.OrdreLimitationCriteria;
@@ -141,8 +141,8 @@ class OrdreLimitationServiceTest extends AbstractTest {
 
     }
 
-    private FichierOrdreLimitation createFichierOrdreLimitation(String fileName, Reader reader) throws IOException {
-        FichierOrdreLimitation fichierOrdreLimitation = new FichierOrdreLimitation();
+    private FichierImportation createFichierOrdreLimitation(String fileName, Reader reader) throws IOException {
+        FichierImportation fichierOrdreLimitation = new FichierImportation();
         fichierOrdreLimitation.setFileName(fileName);
         fichierOrdreLimitation.setInputStream(IOUtils.toInputStream(IOUtils.toString(reader), StandardCharsets.UTF_8));
         return fichierOrdreLimitation;
@@ -154,8 +154,6 @@ class OrdreLimitationServiceTest extends AbstractTest {
         var ordreLimitationCriteria = OrdreLimitationCriteria.builder().activationDocumentMrid("val")
                 .build();
         var ordreLimitation = OrdreLimitation.builder().activationDocumentMrid("val").build();
-        byte[] result = objectMapper.writeValueAsBytes(ordreLimitation);
-        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(result);
 
         // WHEN
         var ordreLimitationResulte = ordreLimitationService.findLimitationOrders(ordreLimitationCriteria);

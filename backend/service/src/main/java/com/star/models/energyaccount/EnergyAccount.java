@@ -1,5 +1,6 @@
 package com.star.models.energyaccount;
 
+import com.star.models.common.ValidationRegex;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 /**
@@ -43,13 +45,17 @@ public class EnergyAccount {
     @NotBlank(message = "Le champ senderMarketParticipantRole est obligatoire")
     private String senderMarketParticipantRole;
     @NotBlank(message = "Le champ createdDateTime est obligatoire")
+    @Pattern(regexp = ValidationRegex.DATETIME_REGEX, message = "Le champ createdDateTime doit être au format : " + ValidationRegex.DATETIME_REGEX_STR)
     private String createdDateTime;
     @NotBlank(message = "Le champ measurementUnitName est obligatoire")
     private String measurementUnitName;
+    @Pattern(regexp = ValidationRegex.RESOLUTION_REGEX, message = "Le champ resolution doit être au format : " + ValidationRegex.RESOLUTION_REGEX_STR)
     private String resolution;
     @NotBlank(message = "Le champ timeInterval est obligatoire")
+    @Pattern(regexp = ValidationRegex.DATETIME_INTERVAL_REGEX, message = "Le champ timeInterval doit être au format : " + ValidationRegex.DATETIME_INTERVAL_REGEX_STR)
     private String timeInterval;
     @NotNull(message = "Le champ timeSeries est obligatoire")
     @NotEmpty(message = "Le champ timeSeries ne doit pas être vide")
     private List<EnergyAccountPoint> timeSeries;
+
 }

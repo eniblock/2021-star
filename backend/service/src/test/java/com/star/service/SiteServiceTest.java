@@ -276,8 +276,6 @@ class SiteServiceTest extends AbstractTest {
         var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
-        byte[] result = objectMapper.writeValueAsBytes(siteResponse);
-        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
 
         // WHEN
         Assertions.assertThrows(BusinessException.class, () -> siteService.findSite(siteCrteria, bookmark, pageRequest));
@@ -297,8 +295,6 @@ class SiteServiceTest extends AbstractTest {
         var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
-        byte[] result = objectMapper.writeValueAsBytes(siteResponse);
-        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
 
         // WHEN
         var siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
@@ -314,8 +310,6 @@ class SiteServiceTest extends AbstractTest {
     }
 
 
-
-
     @Test
     void testFindSiteWithoutMeteringPointMrIdOnTso() throws IOException, TechnicalException, ContractException {
         // GIVEN
@@ -326,8 +320,6 @@ class SiteServiceTest extends AbstractTest {
         var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
-        byte[] result = objectMapper.writeValueAsBytes(siteResponse);
-        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
 
         // WHEN
         var siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
@@ -351,8 +343,6 @@ class SiteServiceTest extends AbstractTest {
         var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("producerMarketParticipantName");
         PageRequest pageRequest = PageRequest.of(0, 10, sort);
-        byte[] result = objectMapper.writeValueAsBytes(siteResponse);
-        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
 
         // WHEN
         var siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);

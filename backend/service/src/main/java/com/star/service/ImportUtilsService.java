@@ -1,5 +1,7 @@
 package com.star.service;
 
+import com.star.enums.FileExtensionEnum;
+import com.star.models.common.FichierImportation;
 import com.star.models.imports.ImportCSV;
 import com.star.models.imports.ImportResult;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +58,12 @@ public class ImportUtilsService {
             throw new IllegalArgumentException(messageSource.getMessage("import.file.extension.error",
                     new String[]{extension}, null));
         }
+    }
+
+    public void checkImportFiles(List<FichierImportation> fichiers) {
+        Assert.notEmpty(fichiers, messageSource.getMessage("import.files.empty", new String[]{}, null));
+        fichiers.forEach(fichierOrdreLimitation -> checkFile(fichierOrdreLimitation.getFileName(),
+                new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
     }
 
     /**

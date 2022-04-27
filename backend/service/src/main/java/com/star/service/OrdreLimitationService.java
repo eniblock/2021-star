@@ -58,9 +58,7 @@ public class OrdreLimitationService {
 
 
     public ImportOrdreLimitationResult importOrdreDebutLimitation(List<FichierImportation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
-        Assert.notEmpty(fichierOrdreLimitations, messageSource.getMessage("import.ordreLimitation.files.empty", new String[]{}, null));
-        fichierOrdreLimitations.forEach(fichierOrdreLimitation -> importUtilsService.checkFile(fichierOrdreLimitation.getFileName(),
-                new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
+        importUtilsService.checkImportFiles(fichierOrdreLimitations);
         ImportOrdreLimitationResult importOrdreDebutLimitationResult = new ImportOrdreLimitationResult();
         List<String> errors = new ArrayList<>();
         Validator validator = validatorFactory.getValidator();
@@ -126,9 +124,7 @@ public class OrdreLimitationService {
     }
 
     public ImportOrdreLimitationResult importCoupleOrdreDebutFin(List<FichierImportation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
-        Assert.notEmpty(fichierOrdreLimitations, messageSource.getMessage("import.ordreLimitation.files.empty", new String[]{}, null));
-        fichierOrdreLimitations.forEach(fichierOrdreLimitation -> importUtilsService.checkFile(fichierOrdreLimitation.getFileName(),
-                new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
+        importUtilsService.checkImportFiles(fichierOrdreLimitations);
         ImportOrdreLimitationResult importCoupleOrdreLimitationResult = new ImportOrdreLimitationResult();
         List<String> errors = new ArrayList<>();
         Validator validator = validatorFactory.getValidator();

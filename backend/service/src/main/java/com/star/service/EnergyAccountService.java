@@ -56,9 +56,7 @@ public class EnergyAccountService {
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
     public ImportEnergyAccountResult importFichiers(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
-        Assert.notEmpty(fichiers, messageSource.getMessage("import.energyAccount.files.empty", new String[]{}, null));
-        fichiers.forEach(fichierOrdreLimitation -> importUtilsService.checkFile(fichierOrdreLimitation.getFileName(),
-                new InputStreamReader(fichierOrdreLimitation.getInputStream()), FileExtensionEnum.JSON.getValue()));
+        importUtilsService.checkImportFiles(fichiers);
 
         var importEnergyAccountResult = new ImportEnergyAccountResult();
         var errors = new LinkedList<String>();
@@ -111,5 +109,7 @@ public class EnergyAccountService {
         }
         return importEnergyAccountResult;
     }
+
+
 
 }

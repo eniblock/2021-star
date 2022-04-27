@@ -27,11 +27,10 @@ sonarcloud-check:
 helm-lint:
   stage: test
   image: registry.gitlab.com/xdev-tech/build/helm:3.1
-  allow_failure: true
   script:
     - helm registry login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - helm dependency update ./helm/star
-    - lint helm/star --values helm/star/values-dev.yaml
+    - lint star helm/star --values helm/star/values-rte-dev.yaml
 
 test:
   image: registry.gitlab.com/xdev-tech/build/deploy:3.1

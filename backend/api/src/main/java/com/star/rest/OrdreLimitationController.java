@@ -3,7 +3,7 @@ package com.star.rest;
 import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.limitation.FichierOrdreLimitation;
+import com.star.models.common.FichierImportation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.limitation.OrdreLimitationCriteria;
@@ -62,9 +62,9 @@ public class OrdreLimitationController {
         }
         ImportOrdreLimitationResult importMarketParticipantResult;
         try {
-            List<FichierOrdreLimitation> fichierOrdreLimitations = new ArrayList<>();
+            List<FichierImportation> fichierOrdreLimitations = new ArrayList<>();
             for (MultipartFile file : files) {
-                fichierOrdreLimitations.add(new FichierOrdreLimitation(file.getOriginalFilename(), file.getInputStream()));
+                fichierOrdreLimitations.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
             }
             importMarketParticipantResult = ordreLimitationService.importOrdreDebutLimitation(fichierOrdreLimitations, instance);
         } catch (IOException | TechnicalException exception) {
@@ -102,9 +102,9 @@ public class OrdreLimitationController {
         }
         ImportOrdreLimitationResult importMarketParticipantResult;
         try {
-            List<FichierOrdreLimitation> fichierCoupleOrdreLimitations = new ArrayList<>();
+            List<FichierImportation> fichierCoupleOrdreLimitations = new ArrayList<>();
             for (MultipartFile file : files) {
-                fichierCoupleOrdreLimitations.add(new FichierOrdreLimitation(file.getOriginalFilename(), file.getInputStream()));
+                fichierCoupleOrdreLimitations.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
             }
             importMarketParticipantResult = ordreLimitationService.importCoupleOrdreDebutFin(fichierCoupleOrdreLimitations, instance);
         } catch (IOException | TechnicalException exception) {

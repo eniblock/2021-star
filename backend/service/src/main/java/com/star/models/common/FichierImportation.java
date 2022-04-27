@@ -1,4 +1,4 @@
-package com.star.models.limitation;
+package com.star.models.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.io.InputStream;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FichierOrdreLimitation {
+public class FichierImportation {
     private String fileName;
     private InputStream inputStream;
 }

@@ -33,6 +33,4 @@ public class AbstractTest {
     @MockBean
     protected Wallet wallet;
 
-    @MockBean
-    protected ObjectMapper objectMapper;
 }

@@ -9,5 +9,9 @@ backend:
   peerConnectionOrganization: enedis
   instance: dso
 
+keycloak:
+  ingress:
+    host: "enedis.localhost"
+
 mail:
   dev: true

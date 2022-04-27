@@ -9,5 +9,9 @@ backend:
   peerConnectionOrganization: producer
   instance: producer
 
+keycloak:
+  ingress:
+    host: "producer.localhost"
+
 mail:
   dev: true

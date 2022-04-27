@@ -4,3 +4,6 @@ ingress:
 backend:
   peerConnectionOrganization: producer
   instance: producer
+keycloak:
+  ingress:
+    host: "producer.testing.star.eniblock.fr"

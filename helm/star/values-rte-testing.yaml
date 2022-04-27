@@ -4,3 +4,6 @@ ingress:
 backend:
   peerConnectionOrganization: rte
   instance: tso
+keycloak:
+  ingress:
+    host: "rte.testing.star.eniblock.fr"

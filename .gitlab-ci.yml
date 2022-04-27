@@ -114,10 +114,11 @@ helm:
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/star/values-${CI_ENVIRONMENT_NAME}.yaml
+      --values $USER
       --set image.tag=$star_version
       --set keycloak.image.tag=$star_version
-      # --set mail.username=$SMTP_USER
-      # --set mail.password=$SMTP_PASSWORD
+      --set mail.username=$SMTP_USER
+      --set mail.password=$SMTP_PASSWORD
 
 .deploy_orderer:
   stage: deploy

@@ -161,75 +161,23 @@ ingress:
           name: ingress
 
 keycloak:
-  nameOverride: keycloak
-  service:
-    type: ClusterIP
-  commonAnnotations:
-    reloader.stakater.com/auto: "true"
   image:
-    registry: registry.gitlab.com
-    repository: xdev-tech/star/keycloak
-    tag: develop
-    pullSecrets: []
-  auth:
-    adminUser: kcadmin
-    existingSecretPerPassword:
-      keyMapping:
-        adminPassword: admin-password
-        managementPassword: management-password
-        databasePassword: postgresql-password
-      adminPassword:
-        name: "{{ .Release.Name }}-{{ .Values.nameOverride }}"
-      managementPassword:
-        name: "{{ .Release.Name }}-{{ .Values.nameOverride }}"
-      databasePassword:
-        name: "{{ .Release.Name }}-{{ .Values.postgresql.nameOverride }}"
-  extraEnvVarsSecret: '{{ .Release.Name }}-keycloak-extra-secrets'
-  podLabels:
-    "{{ .Release.Name }}-{{ .Values.postgresql.nameOverride }}-client": "true"
-  resources:
-    requests:
-      cpu: 50m
-      memory: 750Mi
+    repository: registry.gitlab.com/xdev-tech/star/keycloak
+  imagePullSecrets:
+    - name: gitlab-registry
+  ingress:
+    enabled: true
   metrics:
     enabled: true
-    serviceMonitor:
-      enabled: true
-  postgresql:
-    nameOverride: keycloak-db
-    existingSecret: "{{ .Release.Name }}-{{ .Values.nameOverride }}"
-    persistence:
-      enabled: true
-      size: 1Gi
-    resources:
-      requests:
-        memory: 50Mi
-        cpu: 50m
-    primary:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    rbac:
-      create: true
-    serviceAccount:
-      enabled: true
-    metrics:
-      enabled: true
-      serviceMonitor:
-        enabled: true
-      resources:
-        requests:
-          memory: 32Mi
-          cpu: 10m
-    networkPolicy:
-      enabled: true
-      allowExternal: false
-  extraEnvVars:
-    - name: REALM
-      value: "star"
-    - name: ROLE_ATTRIBUTE_KEY
-      value: "type"
-    - name: ROLE_ATTRIBUTE_VALUE
-      value: "star"
+  configurator:
+    variables:
+      realm_id: star
+      locales:
+        - fr
+      realm_display: ""
+      realm_html_display: ""
+  extraEnvFromExistingSecrets:
+    - '{{ .Release.Name }}-keycloak-extra-secret'
 
 mail:
   dev: false

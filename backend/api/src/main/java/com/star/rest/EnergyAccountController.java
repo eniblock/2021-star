@@ -46,13 +46,13 @@ public class EnergyAccountController {
 
     @Operation(summary = "Post an Energy Account.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Post successfully start limitation order",
+            @ApiResponse(responseCode = "201", description = "Post successfully an Energy Account",
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping
     public ResponseEntity<ImportEnergyAccountResult> importEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
-        if (PRODUCER.equals(instance)) { // Onle RTE and Enedis can send energy accounts
+        if (PRODUCER.equals(instance)) { // Onle RTE and Enedis can send Energy Accounts
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (files == null || files.length == 0) {

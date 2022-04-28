@@ -53,6 +53,7 @@ public class OrdreLimitation implements ImportCSV {
     private String receiverMarketParticipantMrid;
     private String instance;
     private List<String> subOrderList;
+    private Boolean reconciliation;
 
     @JsonIgnore
     @Override

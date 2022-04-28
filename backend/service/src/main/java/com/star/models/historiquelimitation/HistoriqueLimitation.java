@@ -1,5 +1,6 @@
 package com.star.models.historiquelimitation;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.star.models.limitation.OrdreLimitation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

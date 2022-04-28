@@ -1,0 +1,256 @@
+{
+	"info": {
+		"_postman_id": "86115e5c-d7f6-4805-8d21-4d8be12095b9",
+		"name": "_Keycloak",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Config - RTE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{keycloak_rte}}/realms/star/.well-known/openid-configuration",
+					"host": [
+						"{{keycloak_rte}}"
+					],
+					"path": [
+						"realms",
+						"star",
+						".well-known",
+						"openid-configuration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Config - Producer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{keycloak_producer}}/realms/star/.well-known/openid-configuration",
+					"host": [
+						"{{keycloak_producer}}"
+					],
+					"path": [
+						"realms",
+						"star",
+						".well-known",
+						"openid-configuration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Config - Enedis",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{keycloak_enedis}}/realms/star/.well-known/openid-configuration",
+					"host": [
+						"{{keycloak_enedis}}"
+					],
+					"path": [
+						"realms",
+						"star",
+						".well-known",
+						"openid-configuration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get token - RTE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);",
+							"pm.collectionVariables.set(\"access_token\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "frontend",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{keycloak_rte}}/realms/star/protocol/openid-connect/token",
+					"host": [
+						"{{keycloak_rte}}"
+					],
+					"path": [
+						"realms",
+						"star",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get token - Producer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);",
+							"pm.collectionVariables.set(\"access_token\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "frontend",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{keycloak_producer}}/realms/star/protocol/openid-connect/token",
+					"host": [
+						"{{keycloak_producer}}"
+					],
+					"path": [
+						"realms",
+						"star",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get token - Enedis",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);",
+							"pm.collectionVariables.set(\"access_token\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "frontend",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{keycloak_enedis}}/realms/star/protocol/openid-connect/token",
+					"host": [
+						"{{keycloak_enedis}}"
+					],
+					"path": [
+						"realms",
+						"star",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "refresh_token",
+			"value": ""
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		}
+	]
+}

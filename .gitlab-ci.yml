@@ -108,13 +108,12 @@ helm:
       --set "peer.chaincodes[0].image.tag=$star_version"
     # star
     - helm dependency update ./helm/star
-    - echo $USER
     - helm upgrade --install --wait --timeout 8m
       star ./helm/star
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/star/values-${CI_ENVIRONMENT_NAME}.yaml
-      --values $USER
+      --values $USERS
       --set image.tag=$star_version
       --set keycloak.image.tag=$star_version
       --set mail.username=$SMTP_USER

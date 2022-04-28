@@ -84,7 +84,7 @@ for org in orgs:
         k8s_resource('star-keycloak-db', labels=[org])
     else:
         k8s_resource('star-backend:deployment:' + org, labels=[org])
-        k8s_resource('star-maildev', labels=[org])
+        k8s_resource('star-maildev:deployment:' + org, labels=[org])
         k8s_resource('star-frontend:deployment:' + org, labels=[org])
         k8s_resource('star-keycloak:statefulset:' + org, labels=[org])
         k8s_resource('star-keycloak-db:statefulset:' + org, labels=[org])

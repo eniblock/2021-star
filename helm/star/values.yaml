@@ -181,8 +181,8 @@ keycloak:
 
 mail:
   dev: false
-  host: ""
-  port: ""
+  host: "reglisse.o2switch.net"
+  port: "587"
   username: ""
   password: ""
 

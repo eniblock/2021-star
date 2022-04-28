@@ -10,5 +10,17 @@ backend:
   instance: tso
   # peerConnectionUser: Admin
 
+keycloak:
+  ingress:
+    host: "rte.localhost"
+  configurator:
+    secrets:
+      users:
+        - username: test
+          first_name: test
+          last_name: test
+          email: test@star.com
+          initial_password: supersecure
+
 mail:
   dev: true

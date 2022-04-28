@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+secret_settings(disable_scrub=True)
+
 config.define_bool("dev-frontend")
 config.define_bool("no-volumes")
 config.define_string("env")
@@ -50,6 +52,11 @@ image_build(
 image_build(
     'registry.gitlab.com/xdev-tech/star/keycloak',
     'keycloak',
+    live_update=[
+        sync('keycloak/configurator/', '/tf/'),
+        # sync('keycloak/themes/base/login/', '/opt/keycloak/themes/base/login/'),
+        sync('keycloak/theme/custom-theme', '/opt/keycloak/themes/extra/'),
+    ]
 )
 
 # org instances
@@ -71,11 +78,13 @@ for org in orgs:
     #
     if len(orgs) == 1:
         k8s_resource('star-backend', labels=[org], port_forwards="5005:5005")
+        k8s_resource('star-maildev', labels=[org], port_forwards="1080:80")
         k8s_resource('star-frontend', labels=[org])
         k8s_resource('star-keycloak', labels=[org])
         k8s_resource('star-keycloak-db', labels=[org])
     else:
         k8s_resource('star-backend:deployment:' + org, labels=[org])
+        k8s_resource('star-maildev:deployment:' + org, labels=[org])
         k8s_resource('star-frontend:deployment:' + org, labels=[org])
         k8s_resource('star-keycloak:statefulset:' + org, labels=[org])
         k8s_resource('star-keycloak-db:statefulset:' + org, labels=[org])
@@ -87,8 +96,8 @@ for org in orgs:
         )
 
 local_resource('helm lint',
-            'docker run --rm -t -v $PWD:/app registry.gitlab.com/xdev-tech/build/helm:2.0' +
-            ' lint helm/star --values helm/star/values-rte-' + env + '.yaml',
+            'docker run --rm -t -v $PWD:/app registry.gitlab.com/xdev-tech/build/helm:3.1' +
+            ' lint star helm/star --values helm/star/values-rte-' + env + '.yaml',
             'helm/star/', allow_parallel=True)
 
 

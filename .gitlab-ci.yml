@@ -26,15 +26,14 @@ sonarcloud-check:
 
 helm-lint:
   stage: test
-  image: registry.gitlab.com/xdev-tech/build/helm:2.0
-  allow_failure: true
+  image: registry.gitlab.com/xdev-tech/build/helm:3.1
   script:
     - helm registry login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - helm dependency update ./helm/star
-    - lint helm/star --values helm/star/values-dev.yaml
+    - lint star helm/star --values helm/star/values-rte-dev.yaml
 
 test:
-  image: registry.gitlab.com/xdev-tech/build/deploy:2.0
+  image: registry.gitlab.com/xdev-tech/build/deploy:3.1
   script:
     - kubectl config get-contexts
     - kubectl get pod -A
@@ -44,7 +43,7 @@ test:
 docker-chaincode:
   stage: docker
   image:
-    name: registry.gitlab.com/xdev-tech/build/docker:2.0
+    name: registry.gitlab.com/xdev-tech/build/docker:3.1
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - build_with_helm_tag $CI_REGISTRY_IMAGE/chaincode helm/star chaincode
@@ -52,7 +51,7 @@ docker-chaincode:
 docker-keycloak:
   stage: docker
   image:
-    name: registry.gitlab.com/xdev-tech/build/docker:2.0
+    name: registry.gitlab.com/xdev-tech/build/docker:3.1
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - build_with_helm_tag $CI_REGISTRY_IMAGE/keycloak helm/star keycloak
@@ -60,7 +59,7 @@ docker-keycloak:
 docker-backend:
   stage: docker
   image:
-    name: registry.gitlab.com/xdev-tech/build/docker:2.0
+    name: registry.gitlab.com/xdev-tech/build/docker:3.1
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - build_with_helm_tag $CI_REGISTRY_IMAGE/backend helm/star backend
@@ -68,14 +67,14 @@ docker-backend:
 docker-frontend:
   stage: docker
   image:
-    name: registry.gitlab.com/xdev-tech/build/docker:2.0
+    name: registry.gitlab.com/xdev-tech/build/docker:3.1
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - build_with_helm_tag $CI_REGISTRY_IMAGE/frontend helm/star frontend
 
 helm:
   stage: helm
-  image: registry.gitlab.com/xdev-tech/build/helm:2.0
+  image: registry.gitlab.com/xdev-tech/build/helm:3.1
   script:
     - helm registry login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - helm dependency update ./helm/star
@@ -84,7 +83,7 @@ helm:
 
 .deploy_star:
   stage: deploy
-  image: registry.gitlab.com/xdev-tech/build/deploy:2.0
+  image: registry.gitlab.com/xdev-tech/build/deploy:3.1
   variables:
   script:
     - chmod 600 $KUBECONFIG
@@ -114,14 +113,15 @@ helm:
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/star/values-${CI_ENVIRONMENT_NAME}.yaml
+      --values $USER
       --set image.tag=$star_version
       --set keycloak.image.tag=$star_version
-      # --set mail.username=$SMTP_USER
-      # --set mail.password=$SMTP_PASSWORD
+      --set mail.username=$SMTP_USER
+      --set mail.password=$SMTP_PASSWORD
 
 .deploy_orderer:
   stage: deploy
-  image: registry.gitlab.com/xdev-tech/build/deploy:2.0
+  image: registry.gitlab.com/xdev-tech/build/deploy:3.1
   variables:
   script:
     - chmod 600 $KUBECONFIG

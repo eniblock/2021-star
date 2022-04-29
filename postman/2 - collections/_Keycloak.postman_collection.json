@@ -132,8 +132,8 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);",
-							"pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);",
-							"pm.collectionVariables.set(\"access_token\", jsonData.access_token);"
+							"pm.globals.set(\"refresh_token\", jsonData.refresh_token);",
+							"pm.globals.set(\"access_token\", jsonData.access_token);"
 						],
 						"type": "text/javascript"
 					}
@@ -191,8 +191,8 @@
 					"script": {
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);",
-							"pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);",
-							"pm.collectionVariables.set(\"access_token\", jsonData.access_token);"
+							"pm.globals.set(\"refresh_token\", jsonData.refresh_token);",
+							"pm.globals.set(\"access_token\", jsonData.access_token);"
 						],
 						"type": "text/javascript"
 					}

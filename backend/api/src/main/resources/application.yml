@@ -21,19 +21,16 @@ management:
         include: "*"
       base-path: /
 
-# the realm name
+# Keycloak
 keycloak:
-  realm: star-dapp
-  auth-server-url: https://star.localhost/auth/
-  ssl-required: none
-  disable-trust-manager: true
-  # the client name
-  resource: star-backend-springboot
+  realm: star
+  auth-server-url: http://rte.localhost/auth
+  resource: frontend
+  public-client: true
   bearer-only: true
-  credentials:
-    secret: 34f485e9ac95696a0d9f
-  use-resource-role-mappings: true
-  principal-attribute: preferred_username
+  disable-trust-manager: true
+  ssl-required: none
+
 #  Valeur possible : tso/dso/producer
 instance: tso
 

@@ -24,12 +24,12 @@ management:
 # Keycloak
 keycloak:
   realm: star
-  auth-server-url: http://rte.localhost/auth
+  auth-server-url: https://rte.localhost/auth
+  ssl-required: external
+  disable-trust-manager: false
   resource: frontend
-  public-client: true
   bearer-only: true
-  disable-trust-manager: true
-  ssl-required: none
+  public-client: true
 
 #  Valeur possible : tso/dso/producer
 instance: tso

@@ -1,7 +1,5 @@
 package com.star.rest;
 
-import com.star.rest.AbstractIntTest;
-import com.star.rest.ProducerController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;

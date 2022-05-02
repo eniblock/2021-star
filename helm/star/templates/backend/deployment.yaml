@@ -101,6 +101,12 @@ spec:
                   key: BACKEND_SECRET
             - name: KEYCLOAK_ADMIN_CLIENT_PROPERTIES_CLIENT_ID
               value: backend
+            {{- if .Values.global.dev }}
+            - name: KEYCLOAK_SSL_REQUIRED
+              value: "none"
+            - name: KEYCLOAK_DISABLE_TRUST_MANAGER
+              value: "true"
+            {{- end }}
 
             # keycloak spring security
             - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_COLLABORATE_CLIENT_ID

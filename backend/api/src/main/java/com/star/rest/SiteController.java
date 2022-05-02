@@ -140,7 +140,7 @@ public class SiteController {
                 .producerMarketParticipantName(producerMarketParticipantName).siteIecCode(siteIecCode).substationMrid(substationMrid)
                 .substationName(substationName).siteName(siteName).technologyType(technologyType).instance(instance).build();
         if (PRODUCER.equals(instance)) {
-            criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid());
+            criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid(true));
         }
         return ResponseEntity.status(HttpStatus.OK).body(sitePageMapper.beanToDto(siteService.findSite(criteria, bookmark, pageRequest)));
     }

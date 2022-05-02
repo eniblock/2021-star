@@ -30,6 +30,8 @@ public class Site implements ImportCSV {
     public static final String CODE_SITE_HTB_PDL = "PDL";
     public static final String CODE_SITE_HTB_CART = "CART";
 
+    private String docType;
+
     @NotBlank(message = "Le champ systemOperatorMarketParticipantMrid est obligatoire")
     private String systemOperatorMarketParticipantMrid;
     @ValueOfEnum(enumClass = TechnologyTypeEnum.class, message = " must be any of Eolien/Photovoltaïque")

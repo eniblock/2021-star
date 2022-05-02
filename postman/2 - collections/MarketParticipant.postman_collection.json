@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ca3c97c2-aeab-43e6-9f59-00f224bcbfa6",
+		"_postman_id": "80109c00-6e1a-4137-987f-be6f6dc35857",
 		"name": "MarketParticipant",
 		"description": "Instance Collection to POST/GET information about market participant",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -107,6 +107,36 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

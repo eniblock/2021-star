@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ccfdadd0-bf1c-45c4-86c6-9be3f1b918ec",
+		"_postman_id": "498d28aa-266c-4e3f-82a5-a902ebaf3165",
 		"name": "Instance",
 		"description": "Instance Collection to get information about instance of the service",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -39,6 +39,36 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

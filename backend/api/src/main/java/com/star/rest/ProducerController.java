@@ -79,7 +79,7 @@ public class ProducerController {
     @GetMapping
     public ResponseEntity<List<Producer>> getMarketParticipants() throws TechnicalException, BusinessException {
         if (PRODUCER.equals(instance)) {
-            return ok(asList(producerService.getProducer(SecurityUtils.getProducerMarketParticipantMrid())));
+            return ok(asList(producerService.getProducer(SecurityUtils.getProducerMarketParticipantMrid(true))));
         } else {
             return ok(producerService.getProducers());
         }

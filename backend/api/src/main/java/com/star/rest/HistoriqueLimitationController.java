@@ -77,7 +77,7 @@ public class HistoriqueLimitationController {
                 .build();
         if (PRODUCER.equals(instance)) {
             // A producer can get only his own site data
-            criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid());
+            criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid(true));
         }
         return ResponseEntity.status(HttpStatus.OK).body(historiqueLimitationPageMapper.beanToDto(historiqueLimitationService.findHistorique(criteria, bookmark, pagination)));
     }

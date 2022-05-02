@@ -14,7 +14,7 @@
     <description>Module APIs contient les APIs REST et la configuration de l'application springboot</description>
     <properties>
         <image_path/>
-        <keycloak.version>12.0.4</keycloak.version>
+        <keycloak.version>18.0.0</keycloak.version>
         <swagger.version>1.5.2</swagger.version>
     </properties>
 
@@ -50,12 +50,6 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-spring-boot-starter</artifactId>
-            <version>${keycloak.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-spring-boot-adapter</artifactId>
-            <version>${keycloak.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

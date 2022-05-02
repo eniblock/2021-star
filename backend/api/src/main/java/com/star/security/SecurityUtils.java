@@ -1,5 +1,6 @@
 package com.star.security;
 
+import com.star.exception.TechnicalException;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.AccessToken;
@@ -33,7 +34,7 @@ public final class SecurityUtils {
         }
     }
 
-    public static String getProducerMarketParticipantMrid() {
+    public static String getProducerMarketParticipantMrid(boolean throwExceptionIfNotExists) {
         var keycloakAuthenticationToken = getKeycloakAuthenticationToken();
         if (keycloakAuthenticationToken == null) {
             return null;
@@ -47,6 +48,9 @@ public final class SecurityUtils {
             if (customClaims.containsKey("producerMarketParticipantMrid")) {
                 producerMarketParticipantMrid = String.valueOf(customClaims.get("producerMarketParticipantMrid"));
             }
+        }
+        if (throwExceptionIfNotExists && (producerMarketParticipantMrid == null || producerMarketParticipantMrid.isBlank())) {
+            throw new IllegalArgumentException("Le token de l'utilisateur n'a pas d'attribut \"producerMarketParticipantMrid\" !");
         }
         return producerMarketParticipantMrid;
     }

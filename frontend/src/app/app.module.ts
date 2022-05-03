@@ -3,8 +3,6 @@ import { APP_INITIALIZER, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
-import { keycloakInitializer } from './factories/keycloak-initializer';
-import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,26 +13,21 @@ import {
   MAT_DATE_LOCALE,
 } from '@angular/material/core';
 import { CustomDateAdapter } from './adapters/custom-date-adapter';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
   imports: [
     AppRoutingModule,
     BrowserModule,
     HttpClientModule,
-    KeycloakAngularModule,
     BrowserAnimationsModule,
     MatSnackBarModule,
     PageTemplateModule,
     MatNativeDateModule,
+    MatProgressBarModule,
   ],
   declarations: [AppComponent],
   providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: keycloakInitializer,
-      deps: [KeycloakService],
-      multi: true,
-    },
     {
       provide: HTTP_INTERCEPTORS,
       multi: true,

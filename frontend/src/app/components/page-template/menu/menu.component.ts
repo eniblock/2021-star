@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
 import { PATH_ROUTE } from 'src/app/app-routing.module';
 import { toTypeOrganisationFr } from 'src/app/models/enum/Instance.enum';
 import { InstanceService } from 'src/app/services/api/instance.service';
+import {KeycloakService} from "../../../services/common/keycloak.service";
 
 @Component({
   selector: 'app-menu',
@@ -28,6 +28,6 @@ export class MenuComponent implements OnInit {
   }
 
   deconnexion() {
-    this.keycloakService.logout('/');
+    this.keycloakService.logout();
   }
 }

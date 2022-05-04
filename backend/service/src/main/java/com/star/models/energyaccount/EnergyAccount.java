@@ -1,5 +1,6 @@
 package com.star.models.energyaccount;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.star.models.common.ValidationRegex;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EnergyAccount {
 
+    @JsonIgnore
     private String docType;
     @NotBlank(message = "Le champ energyAccountMarketDocumentMrid est obligatoire")
     private String energyAccountMarketDocumentMrid;

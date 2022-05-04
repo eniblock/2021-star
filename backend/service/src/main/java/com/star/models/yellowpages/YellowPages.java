@@ -22,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 public class YellowPages implements ImportCSV {
 
+    @JsonIgnore
     private String docType;
 
     @NotBlank(message = "Le champ originAutomationRegisteredResourceMrid est obligatoire")

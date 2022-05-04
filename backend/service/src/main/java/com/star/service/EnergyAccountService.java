@@ -53,7 +53,23 @@ public class EnergyAccountService {
 
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
-    public ImportEnergyAccountResult importFichiers(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
+    public ImportEnergyAccountResult createEnergyAccount(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
+        var importEnergyAccountResult = checkFiles(fichiers, true);
+        if (isEmpty(importEnergyAccountResult.getErrors()) && !isEmpty(importEnergyAccountResult.getDatas())) {
+            importEnergyAccountResult.setDatas(energyAccountRepository.save(importEnergyAccountResult.getDatas()));
+        }
+        return importEnergyAccountResult;
+    }
+
+    public ImportEnergyAccountResult updateEnergyAccount(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
+        var importEnergyAccountResult = checkFiles(fichiers, false);
+        if (isEmpty(importEnergyAccountResult.getErrors()) && !isEmpty(importEnergyAccountResult.getDatas())) {
+            importEnergyAccountResult.setDatas(energyAccountRepository.update(importEnergyAccountResult.getDatas()));
+        }
+        return importEnergyAccountResult;
+    }
+
+    private ImportEnergyAccountResult checkFiles(List<FichierImportation> fichiers, boolean creation) throws IOException {
         importUtilsService.checkImportFiles(fichiers, FileExtensionEnum.JSON.getValue());
 
         var importEnergyAccountResult = new ImportEnergyAccountResult();
@@ -76,13 +92,14 @@ public class EnergyAccountService {
                 energyAccounts.add(energyAccount);
             }
         }
-
         // Handling data
         if (isNotEmpty(errors)) {
             importEnergyAccountResult.setErrors(errors);
         } else {
             energyAccounts.forEach(energyAccount -> {
-                energyAccount.setEnergyAccountMarketDocumentMrid(randomUUID().toString());
+                if (creation) {
+                    energyAccount.setEnergyAccountMarketDocumentMrid(randomUUID().toString());
+                }
                 energyAccount.setDocType(ENERGY_ACCOUNT.getDocType());
                 if (energyAccount.getRevisionNumber() == null) {
                     energyAccount.setRevisionNumber(REVISION_NUMBER);
@@ -103,10 +120,9 @@ public class EnergyAccountService {
                     energyAccount.setProduct(EMPTY);
                 }
             });
-            importEnergyAccountResult.setDatas(energyAccountRepository.save(energyAccounts));
+            importEnergyAccountResult.setDatas(energyAccounts);
         }
         return importEnergyAccountResult;
     }
-
 
 }

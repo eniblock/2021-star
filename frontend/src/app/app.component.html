@@ -1,3 +1,12 @@
-<app-page-template>
-    <router-outlet></router-outlet>
+<!-- Chargement Keycloak -->
+<mat-progress-bar mode="indeterminate" *ngIf="connecting"></mat-progress-bar>
+
+<!-- Application -->
+<app-page-template *ngIf="!connecting && authenticated">
+  <router-outlet></router-outlet>
 </app-page-template>
+
+<!-- Keycloak connection error -->
+<ng-container *ngIf="!connecting && !authenticated">
+  <p>Authentication error!</p>
+</ng-container>

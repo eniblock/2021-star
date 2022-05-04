@@ -28,6 +28,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrdreLimitation implements ImportCSV {
 
+    @JsonIgnore
     private String docType;
     private String activationDocumentMrid;
     @NotBlank(message = "Le champ originAutomationRegisteredResourceMrid est obligatoire")
@@ -53,6 +54,7 @@ public class OrdreLimitation implements ImportCSV {
     private String receiverMarketParticipantMrid;
     private String instance;
     private List<String> subOrderList;
+    @JsonIgnore
     private Boolean reconciliation;
 
     @JsonIgnore

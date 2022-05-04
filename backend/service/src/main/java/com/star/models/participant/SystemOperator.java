@@ -20,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SystemOperator implements ImportCSV {
 
+    @JsonIgnore
     private String docType;
 
     @NotBlank(message = "Le champ systemOperatorMarketParticipantMrid est obligatoire")

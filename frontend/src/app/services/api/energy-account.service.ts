@@ -69,7 +69,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
       timeInterval: '2020-01-01T00:00:00Z/2020-01-01T23:59:59Z',
       resolution: 'PT10M',
       measurementUnitName: MeasurementUnitName.MW,
-      energyAccountPoints: [
+      timeSeries: [
         {position: 1, inQuantity: 2},
         {position: 2, inQuantity: 5},
         {position: 3, inQuantity: 5}, // unused point (same inQuantity)
@@ -82,7 +82,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
       timeInterval: '2020-01-01T00:00:00Z/2020-01-02T23:59:59Z',
       resolution: 'PT10M',
       measurementUnitName: MeasurementUnitName.MW,
-      energyAccountPoints: [
+      timeSeries: [
         {position: 1, inQuantity: 3},
         {position: 32, inQuantity: 0},
       ],
@@ -92,7 +92,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
       timeInterval: '2020-01-02T00:00:00Z/2020-01-02T23:59:59Z',
       resolution: 'PT5M',
       measurementUnitName: MeasurementUnitName.MW,
-      energyAccountPoints: [
+      timeSeries: [
         {position: 1, inQuantity: 2},
         {position: 4, inQuantity: 5},
         {position: 30, inQuantity: 0},

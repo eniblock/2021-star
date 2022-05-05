@@ -7,6 +7,7 @@ export enum TypeImport {
   OrdreFinLimitation = 'Ordre de fin de limitation',
   OrdreDebutEtFinLimitation = 'Ordre de début et de fin de limitation',
   CourbeComptageReference = 'Courbe de comptage/référence',
+  CourbeComptage = 'Courbe de comptage',
 }
 
 @Component({
@@ -40,7 +41,7 @@ export class ChargerComponent implements OnInit {
         break;
       case Instance.DSO:
         this.typesImport = [
-          TypeImport.CourbeComptageReference
+          TypeImport.CourbeComptage
         ];
         break;
       case Instance.PRODUCER:

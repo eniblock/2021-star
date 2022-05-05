@@ -144,7 +144,7 @@ export class ActivationGraphComponent implements OnInit {
         );
 
         // e) Add points
-        d.energyAccountPoints.forEach((point) => {
+        d.timeSeries.forEach((point) => {
           points[currentIndice].push({
             x: startTimestamp + (point.position - 1) * resolutionInMilliseconds,
             y: this.toUnit(

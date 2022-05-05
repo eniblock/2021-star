@@ -12,8 +12,8 @@ export interface EnergyAccountPoint {
 
 export interface EnergyAccount {
   processType: ProcessType;
-  timeInterval: string; // Format : YYYY-MM-DDThh:mmZ / YYYY-MM-DDThh:mmZ
+  timeInterval: string; // Format : YYYY-MM-DDThh:mmZ/YYYY-MM-DDThh:mmZ
   resolution: string; // Format : PnYnMnDTnHnMnS
   measurementUnitName: MeasurementUnitName;
-  energyAccountPoints: EnergyAccountPoint[];
+  timeSeries: EnergyAccountPoint[];
 }

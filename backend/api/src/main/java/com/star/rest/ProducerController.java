@@ -6,7 +6,7 @@ import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.producer.ImportProducerResult;
 import com.star.models.producer.Producer;
-import com.star.security.SecurityUtils;
+import com.star.security.SecurityComponent;
 import com.star.service.ProducerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,6 +52,9 @@ public class ProducerController {
     @Autowired
     private ProducerService producerService;
 
+    @Autowired
+    private SecurityComponent securityComponent;
+
     @Operation(summary = "Post a producer CSV file.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Create successfully producer",
@@ -79,7 +82,7 @@ public class ProducerController {
     @GetMapping
     public ResponseEntity<List<Producer>> getMarketParticipants() throws TechnicalException, BusinessException {
         if (PRODUCER.equals(instance)) {
-            return ok(asList(producerService.getProducer(SecurityUtils.getProducerMarketParticipantMrid(true))));
+            return ok(asList(producerService.getProducer(securityComponent.getProducerMarketParticipantMrid(true))));
         } else {
             return ok(producerService.getProducers());
         }

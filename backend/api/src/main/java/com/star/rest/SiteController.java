@@ -10,7 +10,7 @@ import com.star.exception.TechnicalException;
 import com.star.mapper.site.SitePageMapper;
 import com.star.models.site.ImportSiteResult;
 import com.star.models.site.SiteCrteria;
-import com.star.security.SecurityUtils;
+import com.star.security.SecurityComponent;
 import com.star.service.SiteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -55,6 +55,9 @@ public class SiteController {
 
     @Autowired
     private SitePageMapper sitePageMapper;
+
+    @Autowired
+    private SecurityComponent securityComponent;
 
     @Operation(summary = "Post a Site CSV file.")
     @ApiResponses(value = {
@@ -140,7 +143,7 @@ public class SiteController {
                 .producerMarketParticipantName(producerMarketParticipantName).siteIecCode(siteIecCode).substationMrid(substationMrid)
                 .substationName(substationName).siteName(siteName).technologyType(technologyType).instance(instance).build();
         if (PRODUCER.equals(instance)) {
-            criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid(true));
+            criteria.setProducerMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));
         }
         return ResponseEntity.status(HttpStatus.OK).body(sitePageMapper.beanToDto(siteService.findSite(criteria, bookmark, pageRequest)));
     }

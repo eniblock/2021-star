@@ -1,0 +1,14 @@
+{
+   "index":{
+      "fields":[
+         "docType", "energyAccountMarketDocumentMrid","meteringPointMrid", "areaDomain",
+         "senderMarketParticipantMrid","senderMarketParticipantRole","receiverMarketParticipantMrid",
+         "receiverMarketParticipantRole","createdDateTime","measurementUnitName",
+         "timeInterval", "resolution", "timeSeries", "revisionNumber", "businessType",
+         "docStatus", "marketEvaluationPointMrid","processType","classificationType", "product"
+      ]
+   },
+   "ddoc":"indexEnergyAccountDoc",
+   "name":"indexEnergyAccount",
+   "type":"json"
+}

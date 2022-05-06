@@ -126,10 +126,9 @@ class ProducerServiceTest extends AbstractTest {
     @Test
     void testImportProducerAvecDonneesKO() throws IOException, TechnicalException {
         // GIVEN
-        String fileName = "producer-donnees-ko.csv";
 
         // WHEN
-        producerService.importProducers(fileName, producerDataKo);
+        producerService.importProducers("producer-donnees-ko.csv", producerDataKo);
 
         // THEN
         verifyNoInteractions(producerRepository);
@@ -138,10 +137,9 @@ class ProducerServiceTest extends AbstractTest {
     @Test
     void testImportProducerOk() throws IOException, TechnicalException {
         // GIVEN
-        String fileName = "producer-ok.csv";
 
         // WHEN
-        producerService.importProducers(fileName, producerOk);
+        producerService.importProducers("producer-ok.csv", producerOk);
 
         // THEN
         Mockito.verify(producerRepository, Mockito.times(1)).saveProducers(producerArgumentCaptor.capture());

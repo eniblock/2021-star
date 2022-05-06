@@ -278,6 +278,15 @@ export class Star extends Contract {
         }
     }
 
+    public async UpdateEnergyAccount(ctx: Context, inputStr: string) {
+        try {
+            return (await EnergyAccountController.updateEnergyAccount(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
     public async GetEnergyAccountForSystemOperator(
         ctx: Context,
         meteringPointMrid: string,

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.energyaccount.EnergyAccount;
+import com.star.models.site.Site;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hyperledger.fabric.gateway.Contract;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 @Repository
 public class EnergyAccountRepository {
     public static final String CREATE = "CreateEnergyAccount";
+    public static final String UPDATE = "UpdateEnergyAccount";
 
     @Autowired
     private Contract contract;
@@ -44,12 +46,27 @@ public class EnergyAccountRepository {
             return Collections.emptyList();
         }
         log.info("Sauvegarde des energy accounts : {}", energyAccounts);
+        writeEnergyAccountToBc(energyAccounts, CREATE);
+        return energyAccounts;
+    }
+
+    public List<EnergyAccount> update(List<EnergyAccount> energyAccounts) throws TechnicalException {
+        if (CollectionUtils.isEmpty(energyAccounts)) {
+            return Collections.emptyList();
+        }
+        log.info("Modification des energy accounts : {}", energyAccounts);
+        writeEnergyAccountToBc(energyAccounts, UPDATE);
+        return energyAccounts;
+    }
+
+
+    private List<EnergyAccount> writeEnergyAccountToBc(List<EnergyAccount> energyAccounts, String bcApiName) throws TechnicalException {
         for (EnergyAccount energyAccount : energyAccounts) {
             if (energyAccount != null) {
                 try {
-                    contract.submitTransaction(CREATE, objectMapper.writeValueAsString(energyAccount));
+                    contract.submitTransaction(bcApiName, objectMapper.writeValueAsString(energyAccount));
                 } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur technique lors de création de l'ordre de limitation ", exception);
+                    throw new TechnicalException("Erreur technique lors de l'enregistrement de l'energy account ", exception);
                 } catch (ContractException contractException) {
                     throw new BusinessException(contractException.getMessage());
                 }

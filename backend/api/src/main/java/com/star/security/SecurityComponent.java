@@ -61,10 +61,6 @@ public class SecurityComponent {
     }
 
     public boolean isInstance(InstanceEnum instanceEnum) {
-        log.debug("----------------------------------");
-        log.debug("" + instanceEnum);
-        log.debug("" + instance);
-        log.debug("" + instanceEnum.equals(instance));
         return instanceEnum.equals(instance);
     }
 

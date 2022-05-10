@@ -54,9 +54,6 @@ public class EnergyAccountController {
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAccountResult> importEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
-        if (PRODUCER.equals(instance)) { // Onle RTE and Enedis can send Energy Accounts
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }

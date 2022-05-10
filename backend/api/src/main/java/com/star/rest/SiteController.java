@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,10 +67,8 @@ public class SiteController {
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping("/create")
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportSiteResult> importSite(@RequestParam MultipartFile file) throws BusinessException {
-        if (PRODUCER.equals(instance)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         ImportSiteResult importSiteResult;
         try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
             importSiteResult = siteService.importSite(file.getOriginalFilename(), streamReader, instance);
@@ -88,10 +87,8 @@ public class SiteController {
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping("/update")
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportSiteResult> updateSite(@RequestParam MultipartFile file) throws BusinessException {
-        if (PRODUCER.equals(instance)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         ImportSiteResult importSiteResult;
         try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
             importSiteResult = siteService.updateSite(file.getOriginalFilename(), streamReader, instance);

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,10 +63,8 @@ public class ProducerController {
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportProducerResult> importProducer(@RequestParam MultipartFile file) throws BusinessException {
-        if (InstanceEnum.PRODUCER.equals(instance)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         ImportProducerResult importProducerResult;
         try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
             importProducerResult = producerService.importProducers(file.getOriginalFilename(), streamReader);

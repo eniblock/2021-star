@@ -26,5 +26,14 @@ variable "monitoring_domain" {
 
 variable "ip_address" {
   description = "IP address for the cluster"
-  default     = "51.91.81.121"
+  default     = "141.95.163.97"
+}
+
+variable "log_s3_key" {
+  type = string
+}
+
+variable "log_s3_secret" {
+  type = string
+  sensitive = true
 }

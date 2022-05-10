@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,7 +54,23 @@ public class EnergyAccountController {
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<ImportEnergyAccountResult> importEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
+    public ResponseEntity<ImportEnergyAccountResult> createEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
+        return importEnergyAccount(files, true);
+    }
+
+    @Operation(summary = "Update an Energy Account.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Update successfully an Energy Account",
+                    content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "409", description = "Error in the file"),
+            @ApiResponse(responseCode = "500", description = "Internal error")})
+    @PutMapping
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
+    public ResponseEntity<ImportEnergyAccountResult> updateEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
+        return importEnergyAccount(files, false);
+    }
+
+    private ResponseEntity<ImportEnergyAccountResult> importEnergyAccount(MultipartFile[] files, boolean create) throws BusinessException {
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }
@@ -63,13 +80,16 @@ public class EnergyAccountController {
             for (MultipartFile file : files) {
                 fichiers.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
             }
-            importEnergyAccountResult = energyAccountService.importFichiers(fichiers, instance);
+            if (create) {
+                importEnergyAccountResult = energyAccountService.createEnergyAccount(fichiers, instance);
+            } else {
+                importEnergyAccountResult = energyAccountService.updateEnergyAccount(fichiers, instance);
+            }
         } catch (IOException | TechnicalException exception) {
             log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return ResponseEntity.status(CollectionUtils.isEmpty(importEnergyAccountResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importEnergyAccountResult);
+        HttpStatus httpStatus = create ? HttpStatus.CREATED : HttpStatus.OK;
+        return ResponseEntity.status(CollectionUtils.isEmpty(importEnergyAccountResult.getDatas()) ? HttpStatus.CONFLICT : httpStatus).body(importEnergyAccountResult);
     }
-
 }

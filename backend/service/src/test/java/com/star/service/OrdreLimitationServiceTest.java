@@ -67,7 +67,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         // GIVEN
 
         // WHEN
-        IllegalArgumentException illegalArgumentException = Assertions.assertThrows(IllegalArgumentException.class, () -> ordreLimitationService.importOrdreDebutLimitation(null, DSO));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> ordreLimitationService.importOrdreDebutLimitation(null, DSO));
 
         // THEN
     }
@@ -149,11 +149,10 @@ class OrdreLimitationServiceTest extends AbstractTest {
     }
 
     @Test
-    void testFindLimitationOrders() throws JsonProcessingException, ContractException, TechnicalException {
+    void testFindLimitationOrders() throws TechnicalException {
         // GIVEN
         var ordreLimitationCriteria = OrdreLimitationCriteria.builder().activationDocumentMrid("val")
                 .build();
-        var ordreLimitation = OrdreLimitation.builder().activationDocumentMrid("val").build();
 
         // WHEN
         var ordreLimitationResulte = ordreLimitationService.findLimitationOrders(ordreLimitationCriteria);

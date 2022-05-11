@@ -1,10 +1,13 @@
 package com.star.security;
 
-import com.star.exception.TechnicalException;
+import com.star.enums.InstanceEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.AccessToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import java.security.Principal;
 import java.util.Map;
@@ -13,12 +16,14 @@ import java.util.Map;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public final class SecurityUtils {
+@Component
+@Slf4j
+public class SecurityComponent {
 
-    private SecurityUtils() {
-    }
+    @Value("${instance}")
+    private InstanceEnum instance;
 
-    public static KeycloakAuthenticationToken getKeycloakAuthenticationToken() {
+    private KeycloakAuthenticationToken getKeycloakAuthenticationToken() {
         var securityContext = SecurityContextHolder.getContext();
         if (securityContext == null) {
             return null;
@@ -34,7 +39,7 @@ public final class SecurityUtils {
         }
     }
 
-    public static String getProducerMarketParticipantMrid(boolean throwExceptionIfNotExists) {
+    public String getProducerMarketParticipantMrid(boolean throwExceptionIfNotExists) {
         var keycloakAuthenticationToken = getKeycloakAuthenticationToken();
         if (keycloakAuthenticationToken == null) {
             return null;
@@ -53,6 +58,10 @@ public final class SecurityUtils {
             throw new IllegalArgumentException("Le token de l'utilisateur n'a pas d'attribut \"producerMarketParticipantMrid\" !");
         }
         return producerMarketParticipantMrid;
+    }
+
+    public boolean isInstance(InstanceEnum instanceEnum) {
+        return instanceEnum.equals(instance);
     }
 
 }

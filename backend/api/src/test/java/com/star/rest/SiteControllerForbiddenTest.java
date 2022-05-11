@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,8 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 class SiteControllerForbiddenTest extends AbstractIntTest {
 
-    private static final String URL_CREATE = SiteController.PATH+"/create";
-    private static final String URL_UPDATE = SiteController.PATH+"/update";
+    private static final String URL_CREATE = SiteController.PATH + "/create";
+    private static final String URL_UPDATE = SiteController.PATH + "/update";
 
     @DynamicPropertySource
     private static void registerProperties(DynamicPropertyRegistry registry) {
@@ -29,9 +30,8 @@ class SiteControllerForbiddenTest extends AbstractIntTest {
     @Value("classpath:/site/site-tso-ok.csv")
     private Resource siteTsoOk;
 
-
-
     @Test
+    @WithMockUser("spring")
     void importSiteOnProducerInstanceTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
@@ -40,11 +40,12 @@ class SiteControllerForbiddenTest extends AbstractIntTest {
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_CREATE)
-                .file(file))
+                        .file(file))
                 .andExpect(status().isForbidden());
     }
 
     @Test
+    @WithMockUser("spring")
     void updateSiteOnProducerInstanceTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
@@ -53,7 +54,7 @@ class SiteControllerForbiddenTest extends AbstractIntTest {
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_UPDATE)
-                .file(file))
+                        .file(file))
                 .andExpect(status().isForbidden());
     }
 

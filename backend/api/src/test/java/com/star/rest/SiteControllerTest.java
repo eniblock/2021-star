@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
@@ -54,6 +55,7 @@ class SiteControllerTest extends AbstractIntTest {
 
 
     @Test
+    @WithMockUser("spring")
     void importSiteFileExtensionKo() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-without-extension",
@@ -68,6 +70,7 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importSiteFileKoTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-ko.csv",
@@ -82,6 +85,7 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importSiteDsoOnTsoInstanceTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-tso-ko.csv",
@@ -101,6 +105,7 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importSiteTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
@@ -120,6 +125,7 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void updateSiteTestKo() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-ok.csv",
@@ -139,6 +145,7 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void updateSiteDsoOnTsoInstanceTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-tso-ko.csv",
@@ -158,6 +165,7 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void updateSiteTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
@@ -177,6 +185,7 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void findSiteWithoutOrderTest() throws Exception {
         // GIVEN
 
@@ -188,6 +197,7 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void findSiteTest() throws Exception {
         // GIVEN
         Site site = Site.builder().technologyType(TechnologyTypeEnum.EOLIEN.name()).build();

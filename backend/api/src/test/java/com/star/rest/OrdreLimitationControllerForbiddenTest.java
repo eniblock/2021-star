@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -28,6 +29,7 @@ class OrdreLimitationControllerForbiddenTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importOrdreLimitationTestWithForbiddenInstance() throws Exception {
         MockMultipartFile file = new MockMultipartFile("files", "ordre-debut-limitation-ok.json",
                 "text/plain", toByteArray(ordreLimitationOk.getURL()));

@@ -8,7 +8,7 @@ import com.star.enums.InstanceEnum;
 import com.star.exception.TechnicalException;
 import com.star.mapper.historiquelimitation.HistoriqueLimitationPageMapper;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
-import com.star.security.SecurityUtils;
+import com.star.security.SecurityComponent;
 import com.star.service.HistoriqueLimitationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,6 +45,9 @@ public class HistoriqueLimitationController {
     @Autowired
     private HistoriqueLimitationPageMapper historiqueLimitationPageMapper;
 
+    @Autowired
+    private SecurityComponent securityComponent;
+
     @Operation(summary = "Get limitation history.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limitation history",
             content = {@Content(mediaType = "application/json")})})
@@ -77,7 +80,7 @@ public class HistoriqueLimitationController {
                 .build();
         if (PRODUCER.equals(instance)) {
             // A producer can get only his own site data
-            criteria.setProducerMarketParticipantMrid(SecurityUtils.getProducerMarketParticipantMrid(true));
+            criteria.setProducerMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));
         }
         return ResponseEntity.status(HttpStatus.OK).body(historiqueLimitationPageMapper.beanToDto(historiqueLimitationService.findHistorique(criteria, bookmark, pagination)));
     }

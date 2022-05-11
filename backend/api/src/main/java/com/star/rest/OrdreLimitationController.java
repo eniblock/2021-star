@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,8 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.star.enums.InstanceEnum.PRODUCER;
-import static com.star.enums.InstanceEnum.TSO;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 /**
@@ -53,10 +52,8 @@ public class OrdreLimitationController {
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping(DEBUT)
+    @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreDebutLimitation(@RequestParam MultipartFile[] files) throws BusinessException {
-        if (!TSO.equals(instance)) { // Seul RTE peut envoyer des ordres de début
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }
@@ -79,10 +76,8 @@ public class OrdreLimitationController {
             @ApiResponse(responseCode = "200", description = "List of start limitation orders",
                     content = {@Content(mediaType = "application/json")})})
     @GetMapping(DEBUT)
+    @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<List<OrdreLimitation>> getOrdreDebutLimitation() throws BusinessException, TechnicalException {
-        if (!TSO.equals(instance)) { // Seul RTE peut obtenir la liste des ordres de début de limitation
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         return ResponseEntity.ok(ordreLimitationService.getOrdreDebutLimitation(instance));
     }
 
@@ -93,10 +88,8 @@ public class OrdreLimitationController {
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping(COUPLE)
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(@RequestParam MultipartFile[] files) throws BusinessException {
-        if (PRODUCER.equals(instance)) { // Seuls RTE et Enedis peuvent inscrire des couples d'ordre
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }
@@ -118,13 +111,10 @@ public class OrdreLimitationController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limit orders",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping()
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<List<OrdreLimitation>> findLimitationOrder(
             @RequestParam(value = "activationDocumentMrid", required = false, defaultValue = "") String activationDocumentMrid
     ) throws TechnicalException {
-        if (PRODUCER.equals(instance)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-
         var criteria = OrdreLimitationCriteria.builder().activationDocumentMrid(activationDocumentMrid).build();
         return ResponseEntity.ok(ordreLimitationService.findLimitationOrders(criteria));
     }

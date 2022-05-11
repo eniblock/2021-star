@@ -8,6 +8,7 @@ import com.star.models.site.Site;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
@@ -28,6 +29,7 @@ class HistoriqueLimitationControllerTest extends AbstractIntTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @WithMockUser("spring")
     void findLimitationOrder() throws Exception {
         // GIVEN
 
@@ -39,6 +41,7 @@ class HistoriqueLimitationControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void findLimitationHistory() throws Exception {
         // GIVEN
         var historiqueLimitation = HistoriqueLimitation.builder().technologyType(TechnologyTypeEnum.EOLIEN.name()).build();

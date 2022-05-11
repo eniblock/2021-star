@@ -3,6 +3,7 @@ package com.star.rest;
 import com.star.enums.InstanceEnum;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,6 +24,7 @@ class InstanceControllerTsoTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void instanceTsoTest() throws Exception {
         // GIVEN
 

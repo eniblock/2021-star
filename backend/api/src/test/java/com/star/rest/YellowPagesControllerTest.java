@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.apache.commons.io.IOUtils.toByteArray;
@@ -28,6 +29,7 @@ class YellowPagesControllerTest extends AbstractIntTest {
 
 
     @Test
+    @WithMockUser("spring")
     void importYellowPagesFileExtensionKo() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "yellowpages-without-extension",
@@ -42,6 +44,7 @@ class YellowPagesControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importYellowPagesFileKoTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "yellowpages-ko.csv",
@@ -56,6 +59,7 @@ class YellowPagesControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importYellowPagesTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "yellowpages-ok.csv",

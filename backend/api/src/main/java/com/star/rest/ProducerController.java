@@ -6,7 +6,7 @@ import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.producer.ImportProducerResult;
 import com.star.models.producer.Producer;
-import com.star.security.SecurityUtils;
+import com.star.security.SecurityComponent;
 import com.star.service.ProducerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +53,9 @@ public class ProducerController {
     @Autowired
     private ProducerService producerService;
 
+    @Autowired
+    private SecurityComponent securityComponent;
+
     @Operation(summary = "Post a producer CSV file.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Create successfully producer",
@@ -59,10 +63,8 @@ public class ProducerController {
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportProducerResult> importProducer(@RequestParam MultipartFile file) throws BusinessException {
-        if (InstanceEnum.PRODUCER.equals(instance)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         ImportProducerResult importProducerResult;
         try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
             importProducerResult = producerService.importProducers(file.getOriginalFilename(), streamReader);
@@ -79,7 +81,7 @@ public class ProducerController {
     @GetMapping
     public ResponseEntity<List<Producer>> getMarketParticipants() throws TechnicalException, BusinessException {
         if (PRODUCER.equals(instance)) {
-            return ok(asList(producerService.getProducer(SecurityUtils.getProducerMarketParticipantMrid(true))));
+            return ok(asList(producerService.getProducer(securityComponent.getProducerMarketParticipantMrid(true))));
         } else {
             return ok(producerService.getProducers());
         }

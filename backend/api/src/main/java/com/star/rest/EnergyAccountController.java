@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +53,7 @@ public class EnergyAccountController {
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAccountResult> createEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
         return importEnergyAccount(files, true);
     }
@@ -63,14 +65,12 @@ public class EnergyAccountController {
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PutMapping
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAccountResult> updateEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
         return importEnergyAccount(files, false);
     }
 
     private ResponseEntity<ImportEnergyAccountResult> importEnergyAccount(MultipartFile[] files, boolean create) throws BusinessException {
-        if (PRODUCER.equals(instance)) { // Only RTE and Enedis can send Energy Accounts
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }

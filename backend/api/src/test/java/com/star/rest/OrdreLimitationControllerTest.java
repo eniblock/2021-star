@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
@@ -40,6 +41,7 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
 
 
     @Test
+    @WithMockUser("spring")
     void importOrdreLimitationFileNull() {
         // GIVEN
 
@@ -51,6 +53,7 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importOrdreLimitationFileExtensionKo() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("files", "ordre-debut-limitation-sans-extension",
@@ -65,6 +68,7 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importOrdreLimitationFileKoTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("files", "ordre-debut-limitation-ko.json",
@@ -79,6 +83,7 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importOrdreLimitationTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("files", "ordre-debut-limitation-ok.json",
@@ -93,6 +98,7 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void findLimitationOrder() throws Exception {
         // GIVEN
         var limitationOrder = OrdreLimitation.builder().activationDocumentMrid("123123").build();

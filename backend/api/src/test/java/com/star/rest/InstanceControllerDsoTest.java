@@ -2,6 +2,7 @@ package com.star.rest;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,6 +23,7 @@ class InstanceControllerDsoTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void instanceDsoTest() throws Exception {
         // GIVEN
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
@@ -40,6 +41,7 @@ class MarketParticipantControllerTest extends AbstractIntTest {
     private MarketParticipantRepository marketParticipantRepository;
 
     @Test
+    @WithMockUser("spring")
     void importMarketParticipantFileExtensionKo() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "market-participant-dso-without-extension",
@@ -54,6 +56,7 @@ class MarketParticipantControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importMarketParticipantFileKoTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "market-participant-ko.csv",
@@ -68,6 +71,7 @@ class MarketParticipantControllerTest extends AbstractIntTest {
     }
 
     @Test
+    @WithMockUser("spring")
     void importMarketParticipantTest() throws Exception {
         // GIVEN
         SystemOperator systemOperator = new SystemOperator();
@@ -88,6 +92,7 @@ class MarketParticipantControllerTest extends AbstractIntTest {
 
 
     @Test
+    @WithMockUser("spring")
     void findMarketParticipantTest() throws Exception {
         // GIVEN
         SystemOperator systemOperator = new SystemOperator();

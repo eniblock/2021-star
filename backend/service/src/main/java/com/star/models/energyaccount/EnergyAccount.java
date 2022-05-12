@@ -56,6 +56,8 @@ public class EnergyAccount {
     @NotBlank(message = "Le champ timeInterval est obligatoire")
     @Pattern(regexp = ValidationRegex.DATETIME_INTERVAL_REGEX, message = "Le champ timeInterval doit être au format : " + ValidationRegex.DATETIME_INTERVAL_REGEX_STR)
     private String timeInterval;
+    private String startCreatedDateTime;
+    private String endCreatedDateTime;
     @NotNull(message = "Le champ timeSeries est obligatoire")
     @NotEmpty(message = "Le champ timeSeries ne doit pas être vide")
     private List<EnergyAccountPoint> timeSeries;

@@ -1,11 +1,12 @@
 package com.star.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
+import com.star.models.common.PageHLF;
 import com.star.models.energyaccount.EnergyAccount;
-import com.star.models.site.Site;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hyperledger.fabric.gateway.Contract;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeoutException;
 public class EnergyAccountRepository {
     public static final String CREATE = "CreateEnergyAccount";
     public static final String UPDATE = "UpdateEnergyAccount";
+    public static final String GET_ENERGY_ACCOUNT_WITH_PAGINATION = "GetEnergyAccountWithPagination";
 
     @Autowired
     private Contract contract;
@@ -75,4 +77,15 @@ public class EnergyAccountRepository {
         return energyAccounts;
     }
 
+    public PageHLF<EnergyAccount> findEnergyAccountByQuery(String query, String pageSize, String bookmark) throws BusinessException, TechnicalException {
+        try {
+            byte[] response = contract.evaluateTransaction(GET_ENERGY_ACCOUNT_WITH_PAGINATION, query, pageSize, bookmark);
+            return response != null ? objectMapper.readValue(new String(response), new TypeReference<PageHLF<EnergyAccount>>() {
+            }) : null;
+        } catch (JsonProcessingException exception) {
+            throw new TechnicalException("Erreur technique lors de la recherche des courbes de comptage", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
+    }
 }

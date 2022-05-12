@@ -1,6 +1,5 @@
 package com.star.models.historiquelimitation;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.star.models.limitation.OrdreLimitation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoriqueLimitation {
-
     private String meteringPointMrid;
     private String technologyType;
     private String producerMarketParticipantMrid;

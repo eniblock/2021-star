@@ -1,9 +1,14 @@
 package com.star.rest;
 
+import com.star.dto.common.PageDTO;
+import com.star.dto.energyaccount.EnergyAccountDTO;
 import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
+import com.star.mapper.energyaccount.EnergyAccountPageMapper;
 import com.star.models.common.FichierImportation;
+import com.star.models.common.PaginationDto;
+import com.star.models.energyaccount.EnergyAccountCriteria;
 import com.star.models.energyaccount.ImportEnergyAccountResult;
 import com.star.service.EnergyAccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.star.enums.InstanceEnum.PRODUCER;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -42,6 +46,8 @@ public class EnergyAccountController {
 
     @Value("${instance}")
     private InstanceEnum instance;
+    @Autowired
+    private EnergyAccountPageMapper energyAccountPageMapper;
 
     @Autowired
     private EnergyAccountService energyAccountService;
@@ -68,6 +74,36 @@ public class EnergyAccountController {
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAccountResult> updateEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
         return importEnergyAccount(files, false);
+    }
+
+    /**
+     * Recherche multi-critère des courbes de comptage
+     *
+     * @param pageSize
+     * @param bookmark
+     * @param meteringPointMrid
+     * @param startCreatedDateTime
+     * @param endCreatedDateTime
+     * @return
+     * @throws BusinessException
+     * @throws TechnicalException
+     */
+    @GetMapping
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
+    public ResponseEntity<PageDTO<EnergyAccountDTO>> findEnergyAccount(
+            @RequestParam(required = false, defaultValue = "10") int pageSize,
+            @RequestParam(required = false, defaultValue = "") String bookmark,
+            @RequestParam(value = "meteringPointMrid", required = false) String meteringPointMrid,
+            @RequestParam(value = "startCreatedDateTime", required = false) String startCreatedDateTime,
+            @RequestParam(value = "endCreatedDateTime", required = false) String endCreatedDateTime) throws BusinessException, TechnicalException {
+
+        PaginationDto paginationDto = PaginationDto.builder()
+                .pageSize(pageSize)
+                .build();
+        EnergyAccountCriteria energyAccountCriteria = EnergyAccountCriteria.builder().meteringPointMrid(meteringPointMrid)
+                .startCreatedDateTime(startCreatedDateTime).endCreatedDateTime(endCreatedDateTime).build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(energyAccountPageMapper.beanToDto(energyAccountService.findEnergyAccount(energyAccountCriteria, bookmark, paginationDto)));
     }
 
     private ResponseEntity<ImportEnergyAccountResult> importEnergyAccount(MultipartFile[] files, boolean create) throws BusinessException {

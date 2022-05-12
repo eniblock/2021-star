@@ -1,9 +1,7 @@
 package com.star.service;
 
-import com.cloudant.client.api.query.EmptyExpression;
 import com.cloudant.client.api.query.Expression;
 import com.cloudant.client.api.query.Operation;
-import com.cloudant.client.api.query.QueryBuilder;
 import com.cloudant.client.api.query.Selector;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;

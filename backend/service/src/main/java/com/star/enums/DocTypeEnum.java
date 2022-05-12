@@ -8,7 +8,7 @@ public enum DocTypeEnum {
     SITE("site", "_design/indexSiteDoc"),
     PRODUCER("producer", "_design/indexProducerMarketParticipantDoc"),
     ACTIVATION_DOCUMENT("activationDocument", "_design/indexActivationDocumentDoc"),
-    ENERGY_ACCOUNT("energyAccount", "_design/indexEnergyAccountDocumentDoc"),
+    ENERGY_ACCOUNT("energyAccount", "_design/indexEnergyAccountDoc"),
     YELLOW_PAGES("yellowPages", "_design/indexYellowPagesDoc");
     private String docType;
     private String indexName;

@@ -10,7 +10,7 @@ public class ValidationRegex {
             + "T"
             + "(([0-1][0-9])|(2[0-3])):[0-5][0-9]:[0-5][0-9]"
             + "Z";
-    public static final String DATETIME_OR_EMPTY_REGEX = "("+DATETIME_REGEX+")|(^$)";
+    public static final String DATETIME_OR_EMPTY_REGEX = "(" + DATETIME_REGEX + ")|(^$)";
     public static final String DATETIME_REGEX_STR = "YYYY-MM-DDThh:mm:ssZ";
     public static final String RESOLUTION_REGEX = "P([0-9]+Y)*([0-9]+M)*([0-9]+D)*T([0-9]+H)*([0-9]+M)*([0-9]+S)*";
     public static final String RESOLUTION_REGEX_STR = "PnYnMnDTnHnMnS";

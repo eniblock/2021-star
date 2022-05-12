@@ -325,6 +325,16 @@ export class Star extends Contract {
         }
     }
 
+    public async GetEnergyAccountWithPagination(
+        ctx: Context,
+        query: string, pageSize: number, bookmark: string) {
+        try {
+            return (await EnergyAccountController.getEnergyAccountByQuery(ctx, query, pageSize, bookmark));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     /*      Reference Energy Account       */
 
     public async CreateReferenceEnergyAccount(ctx: Context, inputStr: string) {

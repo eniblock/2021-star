@@ -8,7 +8,7 @@ import {
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {FileHelper} from "./helpers/abstract-file-service.service";
+import {FileHelper} from "./helpers/file-helper";
 
 @Injectable({
   providedIn: 'root',

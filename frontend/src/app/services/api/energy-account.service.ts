@@ -6,7 +6,7 @@ import {EnergyAccount, FormulaireEnergyAccount} from 'src/app/models/EnergyAccou
 import {MeasurementUnitName} from 'src/app/models/enum/MeasurementUnitName.enum';
 import {ProcessType} from 'src/app/models/enum/ProcessType.enum';
 import {environment} from 'src/environments/environment';
-import {FileHelper} from "./helpers/abstract-file-service.service";
+import {FileHelper} from "./helpers/file-helper";
 
 const MOCK = true;
 

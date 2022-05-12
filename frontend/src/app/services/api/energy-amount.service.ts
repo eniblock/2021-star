@@ -4,7 +4,7 @@ import {Injectable} from '@angular/core';
 import {FormulaireEnergyAmountFile} from "../../models/EnergyAmount";
 import {Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
-import {FileHelper} from "./helpers/abstract-file-service.service";
+import {FileHelper} from "./helpers/file-helper";
 
 @Injectable({
   providedIn: 'root',

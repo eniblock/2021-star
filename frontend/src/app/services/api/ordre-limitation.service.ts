@@ -1,25 +1,27 @@
-import { environment } from 'src/environments/environment';
+import {environment} from 'src/environments/environment';
 import {
   FormulaireOrdreDebutEtFinLimitationFichier,
   FormulaireOrdreDebutLimitationFichier,
   FormulaireOrdreFinLimitation,
   FormulaireOrdreFinLimitationFichier,
 } from 'src/app/models/OrdreLimitation';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {FileHelper} from "./helpers/file-helper";
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrdreLimitationService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {
+  }
 
   creerOrdreDebutAvecFichiers(
     formulaireOrdreDebutLimitationFichier: FormulaireOrdreDebutLimitationFichier
   ): Observable<void> {
     let formData = new FormData();
-    this.appendFiles(formData, formulaireOrdreDebutLimitationFichier.files);
+    FileHelper.appendFiles(formData, formulaireOrdreDebutLimitationFichier.files);
 
     return this.httpClient.post<void>(
       `${environment.serverUrl}/ordreLimitations/debut`,
@@ -31,7 +33,7 @@ export class OrdreLimitationService {
     formulaireOrdreFinLimitationFichier: FormulaireOrdreFinLimitationFichier
   ): Observable<void> {
     let formData = new FormData();
-    this.appendFiles(formData, formulaireOrdreFinLimitationFichier.files);
+    FileHelper.appendFiles(formData, formulaireOrdreFinLimitationFichier.files);
 
     return this.httpClient.post<void>(
       `${environment.serverUrl}/ordreLimitations/fin`,
@@ -43,7 +45,7 @@ export class OrdreLimitationService {
     formulaireOrdreDebutEtFinLimitationFichier: FormulaireOrdreDebutEtFinLimitationFichier
   ): Observable<void> {
     let formData = new FormData();
-    this.appendFiles(
+    FileHelper.appendFiles(
       formData,
       formulaireOrdreDebutEtFinLimitationFichier.files
     );
@@ -61,9 +63,4 @@ export class OrdreLimitationService {
     );
   }
 
-  private appendFiles(formData: FormData, files: File[]) {
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i], files[i].name);
-    }
-  }
 }

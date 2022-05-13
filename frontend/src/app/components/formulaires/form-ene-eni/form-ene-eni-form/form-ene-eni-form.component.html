@@ -1,1 +1,115 @@
-<p>form-ene-eni-form works!</p>
+<mat-stepper #stepperRef [linear]="true" class="disabledHeaderNavigation">
+
+  <mat-step [stepControl]="form" label="Formulaire">
+    <form [formGroup]="form">
+
+      <div class="row">
+
+        <div class="col-12 fw-bold mb-2">
+          Données de production
+        </div>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Identifiant de limitation (UUID)</mat-label>
+          <input matInput placeholder="Identifiant de limitation (UUID)" formControlName="activationDocumentMrid">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Version de document</mat-label>
+          <input matInput placeholder="Version de document" formControlName="revisionNumber">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Code standard du type de processus</mat-label>
+          <input matInput placeholder="Code standard du type de processus" formControlName="processType">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Code standard du type d’activité métier</mat-label>
+          <input matInput placeholder="Code standard du type d’activité métier" formControlName="businessType">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Code de la méthode de calcul utilisée</mat-label>
+          <input matInput placeholder="Code de la méthode de calcul utilisée" formControlName="classificationType">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Valeur d'énergie mesurée</mat-label>
+          <input matInput placeholder="Valeur d'énergie mesurée" formControlName="quantity">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Unité de puissance</mat-label>
+          <mat-select formControlName="measurementUnitName">
+            <mat-option [value]="'KW'">KW</mat-option>
+            <mat-option [value]="'MW'">MW</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <div class="col-12 fw-bold mt-4 mb-2">
+          Horodatage
+        </div>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Horodatage de fin de limitation - date</mat-label>
+          <input matInput placeholder="Horodatage de début de limitation - date" [matDatepicker]="pickerDateStart" formControlName="timestampDateStart">
+          <mat-datepicker-toggle matSuffix [for]="pickerDateStart"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDateStart></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Horodatage de fin de limitation - heure (exemple 15:24:23)</mat-label>
+          <input matInput placeholder="Horodatage de début de limitation - heure (exemple 15:24:23)" formControlName="timestampTimeStart">
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Horodatage de fin de limitation - date</mat-label>
+          <input matInput placeholder="Horodatage de fin de limitation - date" [matDatepicker]="pickerDateEnd" formControlName="timestampDateEnd">
+          <mat-datepicker-toggle matSuffix [for]="pickerDateEnd"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDateEnd></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="col-12 col-lg-6" appearance="outline">
+          <mat-label>Horodatage de fin de limitation - heure (exemple 15:24:23)</mat-label>
+          <input matInput placeholder="Horodatage de fin de limitation - heure (exemple 15:24:23)" formControlName="timestampTimeEnd">
+        </mat-form-field>
+
+        <div class="col-12 text-center mt-3">
+          <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="toResume(stepperRef)">Suivant</button>
+        </div>
+
+      </div>
+
+    </form>
+  </mat-step>
+
+  <mat-step label="Résumé">
+    <div class="row panel-message p-4 mt-3">
+
+      ...
+
+      <div class="col-12 text-center mt-4">
+        <button mat-raised-button class="me-3 text-primary" matStepperPrevious>Modifier</button>
+        <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit(stepperRef)">Charger l'ordre</button>
+      </div>
+
+    </div>
+  </mat-step>
+
+  <mat-step label="Envoyé">
+    <div class="row mt-3">
+      <div class="col-12 offset-lg-2 col-lg-8 p-4 panel-message text-center">
+        <img class="mt-3" src="assets/img/general/valid.svg"/>
+        <div class="my-3">
+          L'ENE/ENI a bien été chargée
+        </div>
+        <a (click)="reset(stepperRef)" class="mt-3 boutonNavigation">
+          <span>Charger à nouveau</span>
+        </a>
+      </div>
+    </div>
+  </mat-step>
+
+</mat-stepper>

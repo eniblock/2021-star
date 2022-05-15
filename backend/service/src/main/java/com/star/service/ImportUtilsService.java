@@ -61,8 +61,8 @@ public class ImportUtilsService {
 
     public void checkImportFiles(List<FichierImportation> fichiers, String extension) {
         Assert.notEmpty(fichiers, messageSource.getMessage("import.files.empty", new String[]{}, null));
-        fichiers.forEach(fichierOrdreLimitation -> checkFile(fichierOrdreLimitation.getFileName(),
-                new InputStreamReader(fichierOrdreLimitation.getInputStream()), extension));
+        fichiers.forEach(fichier -> checkFile(fichier.getFileName(),
+                new InputStreamReader(fichier.getInputStream()), extension));
     }
 
     /**

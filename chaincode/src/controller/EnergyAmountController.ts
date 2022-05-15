@@ -377,4 +377,39 @@ export class EnergyAmountController {
         }
         return JSON.stringify(allResults);
     }
+
+    public static async getEnergyAmountByQuery(
+        ctx: Context,
+        query: string, pageSize: number, bookmark: string): Promise<any> {
+        const identity = await ctx.stub.getMspID();
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have read access for Energy Amount.`);
+        }
+        let response = await ctx.stub.getQueryResultWithPagination(query, pageSize, bookmark);
+        const {iterator, metadata} = response;
+        let results = await this.getAllResults(iterator);
+        const res = {
+            records:             results,
+            fetchedRecordsCount: metadata.fetchedRecordsCount,
+            bookmark:            metadata.bookmark
+        }
+        return res;
+    }
+
+    static async getAllResults(iterator) {
+        const allResults = [];
+        let result = await iterator.next();
+        while (!result.done) {
+            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+            let record;
+            try {
+                record = JSON.parse(strValue);
+            } catch (err) {
+                record = strValue;
+            }
+            allResults.push(record);
+            result = await iterator.next();
+        }
+        return allResults;
+    }
 }

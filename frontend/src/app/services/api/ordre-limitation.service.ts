@@ -8,7 +8,7 @@ import {
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {FileHelper} from "./helpers/file-helper";
+import {FormDataHelper} from "./helpers/formData-helper";
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,7 @@ export class OrdreLimitationService {
     formulaireOrdreDebutLimitationFichier: FormulaireOrdreDebutLimitationFichier
   ): Observable<void> {
     let formData = new FormData();
-    FileHelper.appendFiles(formData, formulaireOrdreDebutLimitationFichier.files);
+    FormDataHelper.appendFiles(formData, formulaireOrdreDebutLimitationFichier.files);
 
     return this.httpClient.post<void>(
       `${environment.serverUrl}/ordreLimitations/debut`,
@@ -33,7 +33,7 @@ export class OrdreLimitationService {
     formulaireOrdreFinLimitationFichier: FormulaireOrdreFinLimitationFichier
   ): Observable<void> {
     let formData = new FormData();
-    FileHelper.appendFiles(formData, formulaireOrdreFinLimitationFichier.files);
+    FormDataHelper.appendFiles(formData, formulaireOrdreFinLimitationFichier.files);
 
     return this.httpClient.post<void>(
       `${environment.serverUrl}/ordreLimitations/fin`,
@@ -45,7 +45,7 @@ export class OrdreLimitationService {
     formulaireOrdreDebutEtFinLimitationFichier: FormulaireOrdreDebutEtFinLimitationFichier
   ): Observable<void> {
     let formData = new FormData();
-    FileHelper.appendFiles(
+    FormDataHelper.appendFiles(
       formData,
       formulaireOrdreDebutEtFinLimitationFichier.files
     );

@@ -1,4 +1,4 @@
-package com.star.dto.energyaccount;
+package com.star.models.energyamount;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnergyAccountPointDTO {
-    private Integer position;
-    private Integer inQuantity;
+public class EnergyAmountCriteria {
+    private String energyAmountMarketDocumentMrid;
 }

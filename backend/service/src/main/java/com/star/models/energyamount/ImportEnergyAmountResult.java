@@ -1,19 +1,22 @@
-package com.star.dto.energyaccount;
+package com.star.models.energyamount;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnergyAccountPointDTO {
-    private Integer position;
-    private Integer inQuantity;
+public class ImportEnergyAmountResult {
+
+    private List<EnergyAmount> datas = new ArrayList<>();
+    private List<String> errors = new ArrayList<>();
+
 }

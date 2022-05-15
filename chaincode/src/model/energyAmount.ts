@@ -7,7 +7,7 @@ export class EnergyAmount {
 
     public static readonly schema = Yup.object().shape({
         activationDocumentMrid: Yup.string().required(
-            'activationDocumentMrid is a compulsory string').typeError('areaDomain is a compulsory string',
+            'activationDocumentMrid is a compulsory string').typeError('activationDocumentMrid is a compulsory string',
         ),
         areaDomain: Yup.string().required('areaDomain is a compulsory string').typeError('areaDomain is a compulsory string'),
         businessType: Yup.string().notRequired(),
@@ -21,7 +21,7 @@ export class EnergyAmount {
         measurementUnitName: Yup.string().required('measurementUnitName is a compulsory string'),
         processType: Yup.string().notRequired(),
         quantity: Yup.string().required(
-            'quantity is a compulsory string').typeError('areaDomain is a compulsory string',
+            'quantity is a compulsory string').typeError('quantity is a compulsory string',
         ),
         receiverMarketParticipantMrid: Yup.string().required(
             'receiverMarketParticipantMrid is a compulsory string').typeError('receiverMarketParticipantMrid must be a string',
@@ -29,7 +29,7 @@ export class EnergyAmount {
         receiverMarketParticipantRole: Yup.string().required(
             'receiverMarketParticipantRole is a compulsory string').typeError('receiverMarketParticipantRole must be a string',
         ),
-        registeredResourceMrid: Yup.string().required('registeredResourceMrid is a compulsory string').typeError('areaDomain is a compulsory string'),
+        registeredResourceMrid: Yup.string().required('registeredResourceMrid is a compulsory string').typeError('registeredResourceMrid is a compulsory string'),
         revisionNumber: Yup.string().notRequired(),
         senderMarketParticipantMrid: Yup.string().required(
             'senderMarketParticipantMrid is a compulsory string').typeError('senderMarketParticipantMrid must be a string',

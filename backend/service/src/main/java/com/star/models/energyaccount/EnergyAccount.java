@@ -25,7 +25,6 @@ public class EnergyAccount {
 
     @JsonIgnore
     private String docType;
-    @NotBlank(message = "Le champ energyAccountMarketDocumentMrid est obligatoire")
     private String energyAccountMarketDocumentMrid;
     @NotBlank(message = "Le champ meteringPointMrid est obligatoire")
     private String meteringPointMrid;

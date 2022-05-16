@@ -17,7 +17,7 @@ export class FormEneEniFormComponent implements OnInit {
     processType: ['A42', Validators.required],
     businessType: ['C55', Validators.required],
     classificationType: ['', Validators.required],
-    quantity: ['', Validators.required],
+    quantity: ['', [Validators.required, Validators.pattern('[0-9]*')]],
     measurementUnitName: ['', Validators.required],
     timestampDateStart: ['', Validators.required],
     timestampTimeStart: [
@@ -50,12 +50,14 @@ export class FormEneEniFormComponent implements OnInit {
   }
 
   toResume(stepperRef: MatStepper) {
-    /*
-    this.endCreatedDateTime = DateHelper.toDatetime(
-      this.form.get('timestampDate')?.value,
-      this.form.get('timestampTime')?.value
+    this.startDatetimeLimitation = DateHelper.toDatetime(
+      this.form.get('timestampDateStart')?.value,
+      this.form.get('timestampTimeStart')?.value
     );
-     */
+    this.endDatetimeLimitation = DateHelper.toDatetime(
+      this.form.get('timestampDateEnd')?.value,
+      this.form.get('timestampTimeEnd')?.value
+    );
     stepperRef.next();
   }
 

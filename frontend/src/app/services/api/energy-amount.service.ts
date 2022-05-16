@@ -1,7 +1,7 @@
 import {UrlService} from './../common/url.service';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {FormulaireEnergyAmountFile} from "../../models/EnergyAmount";
+import {FormulaireEnergyAmount, FormulaireEnergyAmountFile} from "../../models/EnergyAmount";
 import {Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
 import {FileHelper} from "./helpers/file-helper";
@@ -20,6 +20,13 @@ export class EnergyAmountService {
     return this.httpClient.post<void>(
       `${environment.serverUrl}/energyAmounts`,
       formData
+    );
+  }
+
+  createWithForm(form: FormulaireEnergyAmount): Observable<void> {
+    return this.httpClient.post<void>(
+      `${environment.serverUrl}/energyAmounts`,
+      form
     );
   }
 

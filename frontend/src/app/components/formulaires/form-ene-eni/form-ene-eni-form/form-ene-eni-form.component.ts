@@ -4,6 +4,7 @@ import {OrdreLimitationService} from "../../../../services/api/ordre-limitation.
 import {EnergyAmountService} from "../../../../services/api/energy-amount.service";
 import {MatStepper} from "@angular/material/stepper";
 import {DateHelper} from "../../../../helpers/date.helper";
+import {FormulaireEnergyAmount} from "../../../../models/EnergyAmount";
 
 @Component({
   selector: 'app-form-ene-eni-form',
@@ -62,22 +63,21 @@ export class FormEneEniFormComponent implements OnInit {
   }
 
   onSubmit(stepperRef: MatStepper) {
-    /*
+    const startDatetime = this.startDatetimeLimitation.toJSON().split('.')[0] + 'Z';
+    const endDatetime = this.endDatetimeLimitation.toJSON().split('.')[0] + 'Z';
     const form = {
       ...this.form.value,
-      endCreatedDateTime: this.endCreatedDateTime.toJSON().split('.')[0] + 'Z',
-      messageType: this.form.value.messageType.code,
-      businessType: this.form.value.businessType.code,
-      reasonCode: this.form.value.reasonCode.code,
+      timeInterval: startDatetime + '/' + endDatetime,
     };
 
-    delete form.timestampDate;
-    delete form.timestampTime;
+    delete form.timestampDateStart;
+    delete form.timestampTimeStart;
+    delete form.timestampDateEnd;
+    delete form.timestampTimeEnd;
 
-    this.ordreLimitationService.creerOrdreFin(form).subscribe((ok) => {
-      stepperRef.next(); // On passe sur le dernier step si ca s'est bien passé
+    this.energyAmountService.createWithForm(form).subscribe((ok) => {
+      stepperRef.next(); // Next step if it's ok
     });
-     */
   }
 
   reset(stepperRef: MatStepper) {

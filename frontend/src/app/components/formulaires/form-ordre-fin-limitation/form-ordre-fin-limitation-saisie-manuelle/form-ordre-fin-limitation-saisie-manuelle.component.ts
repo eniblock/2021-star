@@ -70,7 +70,7 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
     delete form.timestampTime;
 
     this.ordreLimitationService.creerOrdreFin(form).subscribe((ok) => {
-      stepperRef.next(); // On passe sur le dernier step si ca s'est bien passé
+      stepperRef.next(); // Next step if it's ok
     });
   }
 

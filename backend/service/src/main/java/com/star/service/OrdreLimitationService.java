@@ -1,6 +1,10 @@
 package com.star.service;
 
-import com.cloudant.client.api.query.*;
+import com.cloudant.client.api.query.EmptyExpression;
+import com.cloudant.client.api.query.Expression;
+import com.cloudant.client.api.query.Operation;
+import com.cloudant.client.api.query.QueryBuilder;
+import com.cloudant.client.api.query.Selector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
@@ -32,7 +36,9 @@ import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)

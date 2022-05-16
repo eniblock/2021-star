@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {OrdreLimitationService} from "../../../../services/api/ordre-limitation.service";
 import {EnergyAmountService} from "../../../../services/api/energy-amount.service";
 import {MatStepper} from "@angular/material/stepper";
 import {DateHelper} from "../../../../helpers/date.helper";
-import {FormulaireEnergyAmount} from "../../../../models/EnergyAmount";
 
 @Component({
   selector: 'app-form-ene-eni-form',

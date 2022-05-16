@@ -1,13 +1,20 @@
 package com.star.service;
 
+import com.cloudant.client.api.query.Expression;
+import com.cloudant.client.api.query.Selector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
+import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.common.FichierImportation;
+import com.star.models.common.PageHLF;
+import com.star.models.common.PaginationDto;
 import com.star.models.energyaccount.EnergyAccount;
+import com.star.models.energyaccount.EnergyAccountCriteria;
 import com.star.models.energyaccount.ImportEnergyAccountResult;
 import com.star.repository.EnergyAccountRepository;
+import com.star.service.helpers.QueryBuilderHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +25,7 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,6 +36,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -100,6 +109,9 @@ public class EnergyAccountService {
                 if (creation) {
                     energyAccount.setEnergyAccountMarketDocumentMrid(randomUUID().toString());
                 }
+                String[] splitDates = energyAccount.getTimeInterval().split("/");
+                energyAccount.setStartCreatedDateTime(splitDates[0]);
+                energyAccount.setEndCreatedDateTime(splitDates[1]);
                 energyAccount.setDocType(ENERGY_ACCOUNT.getDocType());
                 if (energyAccount.getRevisionNumber() == null) {
                     energyAccount.setRevisionNumber(REVISION_NUMBER);
@@ -125,4 +137,21 @@ public class EnergyAccountService {
         return importEnergyAccountResult;
     }
 
+    public PageHLF<EnergyAccount> findEnergyAccount(EnergyAccountCriteria energyAccountCriteria, String bookmark, PaginationDto paginationDto) throws BusinessException, TechnicalException {
+        var selectors = new ArrayList<Selector>();
+        selectors.add(Expression.eq("docType", ENERGY_ACCOUNT.getDocType()));
+        if (isNotBlank(energyAccountCriteria.getMeteringPointMrid())) {
+            selectors.add(Expression.eq("meteringPointMrid", energyAccountCriteria.getMeteringPointMrid()));
+        }
+        if (isNotBlank(energyAccountCriteria.getStartCreatedDateTime())) {
+            selectors.add(Expression.gte("endCreatedDateTime", energyAccountCriteria.getStartCreatedDateTime()));
+        }
+        if (isNotBlank(energyAccountCriteria.getEndCreatedDateTime())) {
+            selectors.add(Expression.lte("startCreatedDateTime", energyAccountCriteria.getEndCreatedDateTime()));
+        }
+        var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
+        String query = queryBuilder.build();
+        log.debug("Transaction query: " + query);
+        return energyAccountRepository.findEnergyAccountByQuery(query, String.valueOf(paginationDto.getPageSize()), bookmark);
+    }
 }

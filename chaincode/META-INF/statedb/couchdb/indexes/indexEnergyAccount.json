@@ -4,7 +4,7 @@
          "docType", "energyAccountMarketDocumentMrid","meteringPointMrid", "areaDomain",
          "senderMarketParticipantMrid","senderMarketParticipantRole","receiverMarketParticipantMrid",
          "receiverMarketParticipantRole","createdDateTime","measurementUnitName",
-         "timeInterval", "resolution", "timeSeries", "revisionNumber", "businessType",
+         "timeInterval", "startCreatedDateTime", "endCreatedDateTime","resolution", "timeSeries", "revisionNumber", "businessType",
          "docStatus", "marketEvaluationPointMrid","processType","classificationType", "product"
       ]
    },

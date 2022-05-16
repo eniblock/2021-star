@@ -62,7 +62,8 @@ export class EnergyAccount {
     public timeInterval: string;
     public resolution: string;
     public timeSeries: EnergyAccountPoint[];
-
+    public startCreatedDateTime: string;
+    public endCreatedDateTime: string;
     public revisionNumber?: string;
     public businessType?: string;
     public docStatus?: string;

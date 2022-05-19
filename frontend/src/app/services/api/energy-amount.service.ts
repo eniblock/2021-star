@@ -4,7 +4,7 @@ import {Injectable} from '@angular/core';
 import {FormulaireEnergyAmount, FormulaireEnergyAmountFile} from "../../models/EnergyAmount";
 import {Observable} from "rxjs";
 import {environment} from "../../../environments/environment";
-import {FileHelper} from "./helpers/file-helper";
+import {FormDataHelper} from "./helpers/formData-helper";
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,7 @@ export class EnergyAmountService {
 
   createWithFile(form: FormulaireEnergyAmountFile): Observable<void> {
     let formData = new FormData();
-    FileHelper.appendFiles(formData, form.files);
+    FormDataHelper.appendFiles(formData, form.files);
     return this.httpClient.post<void>(
       `${environment.serverUrl}/energyAmounts`,
       formData
@@ -24,10 +24,9 @@ export class EnergyAmountService {
   }
 
   createWithForm(form: FormulaireEnergyAmount): Observable<void> {
-    return this.httpClient.post<void>(
-      `${environment.serverUrl}/energyAmounts`,
-      form
-    );
+    let formData = new FormData();
+    FormDataHelper.appendObject(formData, 'energyAmount', form);
+    return this.httpClient.post<void>(`${environment.serverUrl}/energyAmounts`, formData);
   }
 
 };

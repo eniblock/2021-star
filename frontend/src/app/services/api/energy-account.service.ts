@@ -6,7 +6,7 @@ import {EnergyAccount, FormulaireEnergyAccount} from 'src/app/models/EnergyAccou
 import {MeasurementUnitName} from 'src/app/models/enum/MeasurementUnitName.enum';
 import {ProcessType} from 'src/app/models/enum/ProcessType.enum';
 import {environment} from 'src/environments/environment';
-import {FileHelper} from "./helpers/file-helper";
+import {FormDataHelper} from "./helpers/formData-helper";
 
 const MOCK = true;
 
@@ -41,7 +41,7 @@ export class EnergyAccountService {
     formulaireEnergyAccount: FormulaireEnergyAccount
   ): Observable<void> {
     let formData = new FormData();
-    FileHelper.appendFiles(formData, formulaireEnergyAccount.files);
+    FormDataHelper.appendFiles(formData, formulaireEnergyAccount.files);
     return this.httpClient.post<void>(
       `${environment.serverUrl}/energyAccounts`,
       formData

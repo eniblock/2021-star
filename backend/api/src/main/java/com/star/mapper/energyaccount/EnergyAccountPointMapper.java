@@ -16,6 +16,6 @@ public interface EnergyAccountPointMapper {
 
     EnergyAccountPointDTO beanToDto(EnergyAccountPoint energyAccountPoint);
 
-    List<EnergyAccountPointDTO> beanToDtos(List<EnergyAccountPoint> sites);
+    List<EnergyAccountPointDTO> beanToDtos(List<EnergyAccountPoint> energyAccountPoints);
 
 }

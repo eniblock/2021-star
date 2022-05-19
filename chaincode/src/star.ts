@@ -438,4 +438,14 @@ export class Star extends Contract {
             throw error;
         }
     }
+
+    public async GetEnergyAmountWithPagination(
+        ctx: Context,
+        query: string, pageSize: number, bookmark: string) {
+        try {
+            return (await EnergyAmountController.getEnergyAmountByQuery(ctx, query, pageSize, bookmark));
+        } catch (error) {
+            throw error;
+        }
+    }
 }

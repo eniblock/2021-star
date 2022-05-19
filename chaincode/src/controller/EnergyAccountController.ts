@@ -209,7 +209,7 @@ export class EnergyAccountController {
         query: string, pageSize: number, bookmark: string): Promise<any> {
         const identity = await ctx.stub.getMspID();
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have read access for producer's Energy Account.`);
+            throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
         }
         let response = await ctx.stub.getQueryResultWithPagination(query, pageSize, bookmark);
         const {iterator, metadata} = response;

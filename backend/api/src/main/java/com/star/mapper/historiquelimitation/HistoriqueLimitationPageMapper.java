@@ -8,12 +8,8 @@ import com.star.models.common.PageHLF;
 import com.star.models.historiquelimitation.HistoriqueLimitation;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)

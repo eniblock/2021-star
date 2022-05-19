@@ -1,12 +1,12 @@
 package com.star.rest;
 
-import com.star.models.common.OrderDirection;
 import com.star.dto.common.PageDTO;
-import com.star.models.common.PaginationDto;
 import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.enums.InstanceEnum;
 import com.star.exception.TechnicalException;
 import com.star.mapper.historiquelimitation.HistoriqueLimitationPageMapper;
+import com.star.models.common.OrderDirection;
+import com.star.models.common.PaginationDto;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.security.SecurityComponent;
 import com.star.service.HistoriqueLimitationService;

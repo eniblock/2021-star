@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.limitation.OrdreLimitation;
+import com.star.models.producer.Producer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hyperledger.fabric.gateway.Contract;
@@ -12,9 +13,12 @@ import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+
+import static java.util.Collections.emptyList;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -43,7 +47,7 @@ public class OrdreLimitationRepository {
      */
     public List<OrdreLimitation> saveOrdreLimitations(List<OrdreLimitation> ordreLimitations) throws BusinessException, TechnicalException {
         if (CollectionUtils.isEmpty(ordreLimitations)) {
-            return Collections.emptyList();
+            return emptyList();
         }
         log.info("Sauvegarde des ordres de limitation : {}", ordreLimitations);
         for (OrdreLimitation ordreLimitation : ordreLimitations) {
@@ -63,7 +67,7 @@ public class OrdreLimitationRepository {
     public List<OrdreLimitation> findOrderByQuery(String query) throws TechnicalException {
         try {
             byte[] response = contract.evaluateTransaction(GET_ORDER_BY_QUERY, query);
-            return response != null ? objectMapper.readValue(new String(response), List.class) : null;
+            return response != null ? Arrays.asList(objectMapper.readValue(new String(response), OrdreLimitation[].class)) : emptyList();
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des ordres de limitation", exception);
         } catch (ContractException contractException) {
@@ -74,7 +78,7 @@ public class OrdreLimitationRepository {
     public List<OrdreLimitation> findLimitationOrders(String query) throws TechnicalException {
         try {
             byte[] response = contract.evaluateTransaction(GET_BY_QUERY, query);
-            return response != null ? objectMapper.readValue(new String(response), List.class) : null;
+            return response != null ? Arrays.asList(objectMapper.readValue(new String(response), OrdreLimitation[].class)) : emptyList();
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des sites", exception);
         } catch (ContractException contractException) {

@@ -128,7 +128,7 @@ public class EnergyAmountService {
         OrdreLimitationCriteria ordreLimitationCriteria = OrdreLimitationCriteria.builder().activationDocumentMrid(energyAmount.getActivationDocumentMrid()).build();
         List<OrdreLimitation> ordreLimitations = ordreLimitationService.findLimitationOrders(ordreLimitationCriteria);
         if (CollectionUtils.isEmpty(ordreLimitations)) {
-            throw new IllegalArgumentException("ActivationDocumentMrid "+energyAmount.getActivationDocumentMrid()+" is unknown.");
+            throw new IllegalArgumentException("Erreur - ActivationDocumentMrid "+energyAmount.getActivationDocumentMrid()+" ne correspond à aucun ordre de limitation.");
         }
         OrdreLimitation ordreLimitation = ordreLimitations.get(0);
         Optional<SystemOperator> optionalSystemOperator =

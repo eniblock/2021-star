@@ -127,19 +127,47 @@ if not os.path.exists('./hlf/' + env + '/generated/genesis.block'):
 if not os.path.exists('./hlf/' + env + '/generated/star.tx'):
     local(dk_run + 'env FABRIC_CFG_PATH=/hlf/' + env + ' configtxgen -profile TwoOrgsChannel -outputCreateChannelTx /hlf/' + env + '/generated/star.tx -channelID star')
 
+secret_path = './hlf/' + env + '/generated/secrets.yaml'
+if not os.path.exists(secret_path):
+    def generate_secret(param):
+        local('echo --- >> ' + secret_path, quiet=True)
+        local(kc_secret + param + ' >> ' + secret_path, quiet=True)
+
+    generate_secret('-n orderer generic hlf--genesis --from-file=./hlf/' + env + '/generated/genesis.block')
+    generate_secret('-n orderer generic hlf--ord-admincert --from-file=cert.pem=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/users/Admin@orderer/msp/signcerts/Admin@orderer-cert.pem')
+    for orderer in ['orderer1', 'orderer2', 'orderer3']:
+        generate_secret('-n orderer generic hlf--' + orderer + '-idcert --from-file=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/msp/signcerts/' + orderer + '.orderer-cert.pem')
+        generate_secret('-n orderer generic hlf--' + orderer + '-idkey --from-file=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/msp/keystore/priv_sk')
+        generate_secret('-n orderer generic hlf--' + orderer + '-cacert --from-file=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/msp/cacerts/ca.orderer-cert.pem')
+        generate_secret('-n orderer tls hlf--' + orderer + '-tls --key=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/tls/server.key --cert=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/tls/server.crt')
+        generate_secret('-n orderer generic hlf--' + orderer + '-tlsrootcert --from-file=cacert.pem=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/tls/ca.crt')
+
+    for org in ['enedis', 'rte', 'producer']:
+        local('./hlf/dev/ccp-generate.sh ' + org)
+        local('./hlf/dev/user-generate.sh ' + org)
+        generate_secret('-n ' + org + ' generic star-peer-connection --from-file=connection.yaml=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/connection-' + org + '.yaml')
+        generate_secret('-n ' + org + ' generic star-user-id --from-file=User1.id=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/User1.id')
+        generate_secret('-n ' + org + ' generic starchannel --from-file=./hlf/' + env + '/generated/star.tx')
+        generate_secret('-n ' + org + ' generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt')
+        for peer in ['peer1']:
+            generate_secret('-n ' + org + ' generic hlf--' + peer + '-idcert --from-file=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/msp/signcerts/' + peer + '.' + org + '-cert.pem')
+            generate_secret('-n ' + org + ' generic hlf--' + peer + '-idkey --from-file=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/msp/keystore/priv_sk')
+            generate_secret('-n ' + org + ' generic hlf--' + peer + '-cacert --from-file=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/msp/cacerts/ca.' + org + '-cert.pem')
+
+            generate_secret('-n ' + org + ' tls hlf--' + peer + '-tls --key=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/tls/server.key --cert=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/tls/server.crt')
+            generate_secret('-n ' + org + ' generic hlf--' + peer + '-tlsrootcert --from-file=cacert.pem=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/tls/ca.crt')
+
+            generate_secret('-n ' + org + ' tls hlf--' + peer + '-tls-client --key=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/users/Admin@' + org + '/tls/client.key --cert=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/users/Admin@' + org + '/tls/client.crt')
+            generate_secret('-n ' + org + ' generic hlf--' + peer + '-client-tlsrootcert --from-file=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/users/Admin@' + org + '/tls/ca.crt')
+
+            generate_secret('-n ' + org + ' generic hlf--' + peer + '-admincert --from-file=cert.pem=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/users/Admin@' + org + '/msp/signcerts/Admin@' + org + '-cert.pem')
+            generate_secret('-n ' + org + ' generic hlf--' + peer + '-adminkey --from-file=cert.pem=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/users/Admin@' + org + '/msp/keystore/priv_sk')
+
+k8s_yaml(read_file(secret_path))
 
 #### orderers ####
 
-k8s_yaml(local(kc_secret + '-n orderer generic hlf--genesis --from-file=./hlf/' + env + '/generated/genesis.block', quiet=True))
-k8s_yaml(local(kc_secret + '-n orderer generic hlf--ord-admincert --from-file=cert.pem=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/users/Admin@orderer/msp/signcerts/Admin@orderer-cert.pem', quiet=True))
 for orderer in ['orderer1', 'orderer2', 'orderer3']:
-    # create secrets
-    k8s_yaml(local(kc_secret + '-n orderer generic hlf--' + orderer + '-idcert --from-file=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/msp/signcerts/' + orderer + '.orderer-cert.pem', quiet=True))
-    k8s_yaml(local(kc_secret + '-n orderer generic hlf--' + orderer + '-idkey --from-file=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/msp/keystore/priv_sk', quiet=True))
-    k8s_yaml(local(kc_secret + '-n orderer generic hlf--' + orderer + '-cacert --from-file=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/msp/cacerts/ca.orderer-cert.pem', quiet=True))
-    k8s_yaml(local(kc_secret + '-n orderer tls hlf--' + orderer + '-tls --key=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/tls/server.key --cert=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/tls/server.crt', quiet=True))
-    k8s_yaml(local(kc_secret + '-n orderer generic hlf--' + orderer + '-tlsrootcert --from-file=cacert.pem=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/' + orderer + '.orderer/tls/ca.crt', quiet=True))
-
     helm_remote('hlf-ord',
         repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
         version="0.1.0-develop.38",
@@ -158,26 +186,7 @@ for orderer in ['orderer1', 'orderer2', 'orderer3']:
 #### peers ####
 
 for org in ['enedis', 'rte', 'producer']:
-    local('./hlf/dev/ccp-generate.sh ' + org)
-    local('./hlf/dev/user-generate.sh ' + org)
-    k8s_yaml(local(kc_secret + '-n ' + org + ' generic star-peer-connection --from-file=connection.yaml=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/connection-' + org + '.yaml', quiet=True))
-    k8s_yaml(local(kc_secret + '-n ' + org + ' generic star-user-id --from-file=User1.id=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/User1.id', quiet=True))
-    k8s_yaml(local(kc_secret + '-n ' + org + ' generic starchannel --from-file=./hlf/' + env + '/generated/star.tx', quiet=True))
-    k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt', quiet=True))
     for peer in ['peer1']:
-        k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--' + peer + '-idcert --from-file=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/msp/signcerts/' + peer + '.' + org + '-cert.pem', quiet=True))
-        k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--' + peer + '-idkey --from-file=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/msp/keystore/priv_sk', quiet=True))
-        k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--' + peer + '-cacert --from-file=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/msp/cacerts/ca.' + org + '-cert.pem', quiet=True))
-
-        k8s_yaml(local(kc_secret + '-n ' + org + ' tls hlf--' + peer + '-tls --key=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/tls/server.key --cert=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/tls/server.crt', quiet=True))
-        k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--' + peer + '-tlsrootcert --from-file=cacert.pem=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/tls/ca.crt', quiet=True))
-
-        k8s_yaml(local(kc_secret + '-n ' + org + ' tls hlf--' + peer + '-tls-client --key=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/users/Admin@' + org + '/tls/client.key --cert=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/users/Admin@' + org + '/tls/client.crt', quiet=True))
-        k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--' + peer + '-client-tlsrootcert --from-file=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/users/Admin@' + org + '/tls/ca.crt', quiet=True))
-
-        k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--' + peer + '-admincert --from-file=cert.pem=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/users/Admin@' + org + '/msp/signcerts/Admin@' + org + '-cert.pem', quiet=True))
-        k8s_yaml(local(kc_secret + '-n ' + org + ' generic hlf--' + peer + '-adminkey --from-file=cert.pem=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/users/Admin@' + org + '/msp/keystore/priv_sk', quiet=True))
-
         helm_remote('hlf-peer',
             repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
             version="0.1.0-develop.38",

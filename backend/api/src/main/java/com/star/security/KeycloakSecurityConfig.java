@@ -43,9 +43,9 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
                 .and()
                 .authorizeRequests()
                 .antMatchers("/actuator/**").permitAll()
-                .antMatchers("/api/api-docs/**").permitAll()
-                .antMatchers("/api/swagger-ui.html").permitAll()
-                .antMatchers("/api/swagger-ui/**").permitAll()
+                .antMatchers("/v3/api-docs/**").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/health/**").permitAll()
                 .anyRequest().authenticated();
     }

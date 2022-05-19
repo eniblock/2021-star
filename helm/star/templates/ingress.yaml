@@ -27,6 +27,27 @@ spec:
                 name: {{ $fullName }}-backend
                 port:
                   name: http
+          - path: /swagger-ui
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $fullName }}-backend
+                port:
+                  name: http
+          - path: /swagger-ui.html
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $fullName }}-backend
+                port:
+                  name: http
+          - path: /v3/api-docs
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $fullName }}-backend
+                port:
+                  name: http
           - path: /
             pathType: Prefix
             backend:

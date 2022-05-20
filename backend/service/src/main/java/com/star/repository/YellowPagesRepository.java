@@ -45,7 +45,7 @@ public class YellowPagesRepository {
         if (CollectionUtils.isEmpty(yellowPages)) {
             return Collections.emptyList();
         }
-        log.info("Sauvegarde des producers : {}", yellowPages);
+        log.info("Sauvegarde des YellowPages : {}", yellowPages);
         for (YellowPages yellowPage : yellowPages) {
             if (yellowPage != null) {
                 try {

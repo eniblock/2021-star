@@ -4,6 +4,9 @@ import {EnergyAmountService} from "../../../../services/api/energy-amount.servic
 import {MatStepper} from "@angular/material/stepper";
 import {DateHelper} from "../../../../helpers/date.helper";
 
+const PROCESS_TYPE_INIT_VALUE = 'A42';
+const BUSINESS_TYPE_INIT_VALUE = 'A42';
+
 @Component({
   selector: 'app-form-ene-eni-form',
   templateUrl: './form-ene-eni-form.component.html',
@@ -13,8 +16,8 @@ export class FormEneEniFormComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({
     activationDocumentMrid: ['', Validators.required],
     revisionNumber: ['', Validators.required],
-    processType: ['A42', Validators.required],
-    businessType: ['C55', Validators.required],
+    processType: [PROCESS_TYPE_INIT_VALUE, Validators.required],
+    businessType: [BUSINESS_TYPE_INIT_VALUE, Validators.required],
     classificationType: ['', Validators.required],
     quantity: ['', [Validators.required, Validators.pattern('[0-9]*')]],
     measurementUnitName: ['', Validators.required],
@@ -80,6 +83,10 @@ export class FormEneEniFormComponent implements OnInit {
 
   reset(stepperRef: MatStepper) {
     stepperRef.reset();
+    this.form.patchValue({
+      processType: PROCESS_TYPE_INIT_VALUE,
+      businessType: BUSINESS_TYPE_INIT_VALUE,
+    });
   }
 
 }

@@ -89,9 +89,7 @@ export class EnergyAmountController {
 
         // console.log(JSON.stringify(dateBegin));
         // console.log(JSON.stringify(dateEnd));
-        if (JSON.stringify(dateBegin) !== JSON.stringify(dateEnd)) {
-            throw new Error(`ERROR createTSOEnergyAmount mismatch in timeInterval both date must be the same day.(${JSON.stringify(dateBegin)} vs ${JSON.stringify(dateEnd)})`);
-        } else if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
+        if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
             throw new Error(`ERROR createTSOEnergyAmount mismatch between ENE : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
         }
 
@@ -241,9 +239,7 @@ export class EnergyAmountController {
 
         console.log(JSON.stringify(dateBegin));
         console.log(JSON.stringify(dateEnd));
-        if (JSON.stringify(dateBegin) !== JSON.stringify(dateEnd)) {
-            throw new Error(`ERROR createDSOEnergyAmount mismatch in timeInterval both date must be the same day.(${JSON.stringify(dateBegin)} vs ${JSON.stringify(dateEnd)})`);
-        } else if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
+        if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
             throw new Error(`ERROR createDSOEnergyAmount mismatch between ENI : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
         }
 

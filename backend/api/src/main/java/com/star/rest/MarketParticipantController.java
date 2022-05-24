@@ -49,12 +49,13 @@ public class MarketParticipantController {
     @Autowired
     private MarketParticipantService marketParticipantService;
 
-    @Operation(summary = "Post a market participant TSO CSV file.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Create successfully market participant TSO",
-                    content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
+    @Operation(summary = "Post a market participant CSV file.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "201", description = "Create successfully market participant", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportMarketParticipantResult> importMarketParticipant(@RequestParam MultipartFile file) throws BusinessException {

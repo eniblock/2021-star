@@ -14,6 +14,7 @@ import com.star.models.energyamount.EnergyAmountCriteria;
 import com.star.models.energyamount.ImportEnergyAmountResult;
 import com.star.service.EnergyAmountService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -60,16 +61,20 @@ public class EnergyAmountController {
     @Autowired
     private EnergyAmountService energyAmountService;
 
-    @Operation(summary = "Post an Energy Amount.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Post successfully an Energy Amount",
-                    content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
+    @Operation(summary = "Post an energy amount (file or energy amount object).")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "201", description = "Create successfully an energy Amount", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<ImportEnergyAmountResult> createEnergyAmount(@RequestPart(name = "energyAmount", value = "energyAmount", required = false) @Valid EnergyAmountFormDTO energyAmount,
-                                                                       @RequestPart(name = "files", value = "files", required = false) MultipartFile[] files) throws BusinessException {
+    public ResponseEntity<ImportEnergyAmountResult> createEnergyAmount(
+            @Parameter(description = "Energy amount object")
+            @RequestPart(name = "energyAmount", value = "energyAmount", required = false) @Valid EnergyAmountFormDTO energyAmount,
+            @Parameter(description = "CSV file containing energy amount data")
+            @RequestPart(name = "files", value = "files", required = false) MultipartFile[] files) throws BusinessException {
         ImportEnergyAmountResult importEnergyAmountResult = new ImportEnergyAmountResult();
         try {
             if (files != null && files.length > 0) {
@@ -87,9 +92,7 @@ public class EnergyAmountController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.status(isEmpty(importEnergyAmountResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importEnergyAmountResult);
-
     }
-
 
     /**
      * Recherche multi-critère des energy amount
@@ -101,20 +104,24 @@ public class EnergyAmountController {
      * @throws BusinessException
      * @throws TechnicalException
      */
+    @Operation(summary = "Find energy amount by criteria.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Found energy amount", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<PageDTO<EnergyAmountDTO>> findEnergyAmount(
+            @Parameter(description = "Number of responses per page")
             @RequestParam(required = false, defaultValue = "10") int pageSize,
+            @Parameter(description = "bookmark search criteria")
             @RequestParam(required = false, defaultValue = "") String bookmark,
+            @Parameter(description = "energyAmountMarketDocumentMrid search criteria")
             @RequestParam(value = "energyAmountMarketDocumentMrid", required = false) String energyAmountMarketDocumentMrid) throws BusinessException, TechnicalException {
-
-        PaginationDto paginationDto = PaginationDto.builder()
-                .pageSize(pageSize)
-                .build();
+        PaginationDto paginationDto = PaginationDto.builder().pageSize(pageSize).build();
         EnergyAmountCriteria energyAmountCriteria = EnergyAmountCriteria.builder().energyAmountMarketDocumentMrid(energyAmountMarketDocumentMrid).build();
-
         return ResponseEntity.status(HttpStatus.OK).body(energyAmountPageMapper.beanToDto(energyAmountService.findEnergyAmount(
                 energyAmountCriteria, bookmark, paginationDto)));
     }
-
 }

@@ -1,9 +1,9 @@
-import { Context } from 'fabric-contract-api';
-import { MeasurementUnitType } from '../enums/MesurementUnitType';
-import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
-import { ActivationDocument } from '../model/activationDocument';
-import { YellowPages } from '../model/yellowPages';
-import { isEmpty } from 'lodash';
+import {Context} from 'fabric-contract-api';
+import {MeasurementUnitType} from '../enums/MesurementUnitType';
+import {OrganizationTypeMsp} from '../enums/OrganizationMspType';
+import {ActivationDocument} from '../model/activationDocument';
+import {YellowPages} from '../model/yellowPages';
+import {isEmpty} from 'lodash';
 
 export class ActivationDocumentController {
 
@@ -20,10 +20,10 @@ export class ActivationDocumentController {
         let order: ActivationDocument;
         try {
             order = JSON.parse(inputStr);
-          } catch (error) {
+        } catch (error) {
             // console.error('error=', error);
             throw new Error(`ERROR createActivationDocument-> Input string NON-JSON value`);
-          }
+        }
 
         const activationDocumentInput = ActivationDocument.schema.validateSync(
             order,
@@ -66,12 +66,17 @@ export class ActivationDocumentController {
         if (activationDocumentInput.startCreatedDateTime &&
             activationDocumentInput.endCreatedDateTime
         ) {
-            const yellowAsBytes = await ctx.stub.getState(activationDocumentInput.originAutomationRegisteredResourceMrid);
-            if (!yellowAsBytes || yellowAsBytes.length === 0) {
+            let yellowPageCount = 0;
+            const query = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${activationDocumentInput.originAutomationRegisteredResourceMrid}"}}`;
+            const iterator = await ctx.stub.getQueryResult(query);
+            let result = await iterator.next();
+            while (!result.done) {
+                yellowPageCount++;
+                result = await iterator.next();
+            }
+            if (yellowPageCount === 0) {
                 throw new Error(`Yellow Page : ${activationDocumentInput.originAutomationRegisteredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
             }
-            // console.log('yellowAsBytes for BB reconciliation=', yellowAsBytes.toString());
-            const yellowObj: YellowPages = JSON.parse(yellowAsBytes.toString());
             activationDocumentInput.reconciliation = true;
             const ret = await ActivationDocumentController.checkForReconciliationBB(
                 ctx,
@@ -135,7 +140,7 @@ export class ActivationDocumentController {
     }
 
     public static async getActivationDocumentBySystemOperator(
-            ctx: Context, systemOperatorMrid: string): Promise<string> {
+        ctx: Context, systemOperatorMrid: string): Promise<string> {
         const allResults = [];
         const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${systemOperatorMrid}"}}`;
         const iterator = await ctx.stub.getQueryResult(query);
@@ -243,8 +248,8 @@ export class ActivationDocumentController {
                 allResults[0],
                 {strict: true, abortEarly: false},
             );
-            } catch (err) {
-            return ;
+        } catch (err) {
+            return;
         }
 
         const order: ActivationDocument = allResults[0];
@@ -341,8 +346,8 @@ export class ActivationDocumentController {
                 allResults[0],
                 {strict: true, abortEarly: false},
             );
-            } catch (err) {
-            return ;
+        } catch (err) {
+            return;
         }
 
         const order: ActivationDocument = allResults[0];

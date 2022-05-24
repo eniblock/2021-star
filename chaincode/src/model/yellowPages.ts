@@ -7,6 +7,8 @@ export class YellowPages {
 
     public static readonly schema = Yup.object().shape({
         docType: Yup.string().notRequired(),
+        yellowPageMrid: Yup.string().required(
+            'originAutomationRegisteredResourceMrid is a compulsory string.'),
         originAutomationRegisteredResourceMrid: Yup.string().required(
             'originAutomationRegisteredResourceMrid is a compulsory string.'),
         registeredResourceMrid: Yup.string().required(
@@ -16,7 +18,8 @@ export class YellowPages {
     });
 
     public docType?: string;
-    public originAutomationRegisteredResourceMrid: string; // PK
-    public registeredResourceMrid: string; // FK1
-    public systemOperatorMarketParticipantMrid: string; // FK2
+    public yellowPageMrid: string;
+    public originAutomationRegisteredResourceMrid: string; // FK1
+    public registeredResourceMrid: string; // FK2
+    public systemOperatorMarketParticipantMrid: string; // FK3
 }

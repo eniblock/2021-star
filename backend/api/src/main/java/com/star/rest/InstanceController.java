@@ -25,6 +25,11 @@ public class InstanceController {
     @Value("${instance}")
     private InstanceEnum instance;
 
+    /**
+     * API indiquant l'instance (TSO ou DSO) du backend
+     *
+     * @return
+     */
     @Operation(summary = "Get current backend instance")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get current backend instance",
             content = {@Content(mediaType = "application/json")})})

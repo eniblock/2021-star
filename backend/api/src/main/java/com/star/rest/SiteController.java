@@ -13,6 +13,7 @@ import com.star.models.site.SiteCrteria;
 import com.star.security.SecurityComponent;
 import com.star.service.SiteService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -54,25 +55,24 @@ public class SiteController {
 
     @Value("${instance}")
     private InstanceEnum instance;
-
     @Autowired
     private SiteService siteService;
-
     @Autowired
     private SitePageMapper sitePageMapper;
-
     @Autowired
     private SecurityComponent securityComponent;
 
     @Operation(summary = "Post a Site CSV file.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Create successfully site",
-                    content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "201", description = "Create successfully site", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping("/create")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<ImportSiteResult> importSite(@RequestParam MultipartFile file) throws BusinessException {
+    public ResponseEntity<ImportSiteResult> importSite(@Parameter(description = "CSV file containing site data.")
+                                                       @RequestParam MultipartFile file) throws BusinessException {
         ImportSiteResult importSiteResult;
         try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
             importSiteResult = siteService.importSite(file.getOriginalFilename(), streamReader, instance);
@@ -85,14 +85,16 @@ public class SiteController {
 
 
     @Operation(summary = "Update a Site CSV file.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Update successfully site",
-                    content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Update successfully site", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping("/update")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<ImportSiteResult> updateSite(@RequestParam MultipartFile file) throws BusinessException {
+    public ResponseEntity<ImportSiteResult> updateSite(@Parameter(description = "CSV file containing site to update.")
+                                                       @RequestParam MultipartFile file) throws BusinessException {
         ImportSiteResult importSiteResult;
         try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
             importSiteResult = siteService.updateSite(file.getOriginalFilename(), streamReader, instance);
@@ -102,7 +104,6 @@ public class SiteController {
         }
         return ResponseEntity.status(isEmpty(importSiteResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.OK).body(importSiteResult);
     }
-
 
     /**
      * Recherche multi-critère de site
@@ -123,19 +124,37 @@ public class SiteController {
      * @throws BusinessException
      * @throws TechnicalException
      */
+    @Operation(summary = "Find site by criteria.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Found site", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     public ResponseEntity<PageDTO<SiteDTO>> findSite(
+            @Parameter(description = "Number of page per response")
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @Parameter(description = "Number of responses per page")
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+            @Parameter(description = "order search criteria.")
             @RequestParam(value = "order") String order,
+            @Parameter(description = "bookmark search criteria")
             @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
+            @Parameter(description = "technologyType search criteria")
             @RequestParam(value = "technologyType", required = false) List<TechnologyTypeEnum> technologyType,
+            @Parameter(description = "producerMarketParticipantMrid search criteria")
             @RequestParam(value = "producerMarketParticipantMrid", required = false) String producerMarketParticipantMrid,
+            @Parameter(description = "producerMarketParticipantName search criteria")
             @RequestParam(value = "producerMarketParticipantName", required = false) String producerMarketParticipantName,
+            @Parameter(description = "siteName search criteria")
             @RequestParam(value = "siteName", required = false) String siteName,
+            @Parameter(description = "substationName search criteria")
             @RequestParam(value = "substationName", required = false) String substationName,
+            @Parameter(description = "substationMrid search criteria")
             @RequestParam(value = "substationMrid", required = false) String substationMrid,
+            @Parameter(description = "siteIecCode search criteria")
             @RequestParam(value = "siteIecCode", required = false) String siteIecCode,
+            @Parameter(description = "meteringPointMrId search criteria")
             @RequestParam(value = "meteringPointMrId", required = false) String meteringPointMrId) throws BusinessException, TechnicalException {
         Assert.notNull(order, "Order must not be null");
         Sort sort = Sort.by(order);

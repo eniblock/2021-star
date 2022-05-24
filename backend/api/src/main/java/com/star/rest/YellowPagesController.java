@@ -1,19 +1,18 @@
 package com.star.rest;
 
 
-import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.yellowpages.ImportYellowPagesResult;
 import com.star.models.yellowpages.YellowPages;
 import com.star.service.YellowPagesService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,21 +42,19 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 public class YellowPagesController {
     public static final String PATH = ApiRestVersion.VERSION + "/yellow-pages";
 
-    @Value("${instance}")
-    private InstanceEnum instance;
-
     @Autowired
     private YellowPagesService yellowPagesService;
 
     @Operation(summary = "Post yellow Pages CSV file.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Create successfully yellow pages",
-                    content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "201", description = "Create successfully yellow pages", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
             @ApiResponse(responseCode = "409", description = "Error in the file"),
             @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<ImportYellowPagesResult> importYellowPages(@RequestParam MultipartFile file) throws BusinessException {
+    public ResponseEntity<ImportYellowPagesResult> importYellowPages(@Parameter(description = "CSV file containing yellow page data.")
+                                                                     @RequestParam MultipartFile file) throws BusinessException {
         ImportYellowPagesResult importYellowPagesResult;
         try (Reader streamReader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)) {
             importYellowPagesResult = yellowPagesService.importYellowPages(file.getOriginalFilename(), streamReader);
@@ -69,8 +66,10 @@ public class YellowPagesController {
     }
 
     @Operation(summary = "Get list of yellow pages")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get list of yellow pages",
-            content = {@Content(mediaType = "application/json")})})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Get list of yellow pages", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal error")})
     @GetMapping
     public ResponseEntity<List<YellowPages>> getYellowPages() throws TechnicalException, BusinessException {
         return ResponseEntity.ok(yellowPagesService.getYellowPages());

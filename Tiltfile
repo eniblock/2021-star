@@ -186,7 +186,7 @@ for org in ['enedis', 'rte', 'producer']:
             values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],
         )
 
-        k8s_resource(peer + '-hlf-peer:deployment:' + org, labels=[org])
+        k8s_resource(peer + '-hlf-peer:statefulset:' + org, labels=[org])
         k8s_resource(peer + '-hlf-peer-couchdb:statefulset:' + org, labels=[org])
         k8s_resource(peer + '-hlf-peer-star:deployment:' + org, labels=[org])
         k8s_resource(peer + '-hlf-peer-jc-star:job:' + org, labels=[org])

@@ -9,6 +9,7 @@ import com.star.models.limitation.OrdreLimitation;
 import com.star.models.limitation.OrdreLimitationCriteria;
 import com.star.service.OrdreLimitationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -50,14 +51,17 @@ public class OrdreLimitationController {
     private OrdreLimitationService ordreLimitationService;
 
     @Operation(summary = "Post start limitation order.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Post successfully start limitation order",
-                    content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "201", description = "Post successfully start limitation order", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping(DEBUT)
     @PreAuthorize("@securityComponent.isInstance('TSO')")
-    public ResponseEntity<ImportOrdreLimitationResult> importOrdreDebutLimitation(@RequestParam MultipartFile[] files) throws BusinessException {
+    public ResponseEntity<ImportOrdreLimitationResult> importOrdreDebutLimitation(
+            @Parameter(description = "CSV file containing start limitation order data.")
+            @RequestParam MultipartFile[] files) throws BusinessException {
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }
@@ -77,8 +81,9 @@ public class OrdreLimitationController {
 
     @Operation(summary = "List of start limitation orders.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of start limitation orders",
-                    content = {@Content(mediaType = "application/json")})})
+            @ApiResponse(responseCode = "200", description = "List of start limitation orders", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping(DEBUT)
     @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<List<OrdreLimitation>> getOrdreDebutLimitation() throws BusinessException, TechnicalException {
@@ -89,11 +94,14 @@ public class OrdreLimitationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Post  successfully couple Start/End limit order",
                     content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping(COUPLE)
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(@RequestParam MultipartFile[] files) throws BusinessException {
+    public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(
+            @Parameter(description = "CSV file containing couple Start/End limit order data.")
+            @RequestParam MultipartFile[] files) throws BusinessException {
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }
@@ -112,11 +120,14 @@ public class OrdreLimitationController {
     }
 
     @Operation(summary = "Get limit orders.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limit orders",
-            content = {@Content(mediaType = "application/json")})})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Get limit orders", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping()
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<List<OrdreLimitation>> findLimitationOrder(
+            @Parameter(description = "activationDocumentMrid search criteria")
             @RequestParam(value = "activationDocumentMrid", required = false, defaultValue = "") String activationDocumentMrid
     ) throws TechnicalException {
         var criteria = OrdreLimitationCriteria.builder().activationDocumentMrid(activationDocumentMrid).build();

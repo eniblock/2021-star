@@ -12,6 +12,7 @@ import com.star.models.energyaccount.EnergyAccountCriteria;
 import com.star.models.energyaccount.ImportEnergyAccountResult;
 import com.star.service.EnergyAccountService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -48,31 +49,36 @@ public class EnergyAccountController {
     private InstanceEnum instance;
     @Autowired
     private EnergyAccountPageMapper energyAccountPageMapper;
-
     @Autowired
     private EnergyAccountService energyAccountService;
 
     @Operation(summary = "Post an Energy Account.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Post successfully an Energy Account",
-                    content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "201", description = "Create successfully an energy Account", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<ImportEnergyAccountResult> createEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
+    public ResponseEntity<ImportEnergyAccountResult> createEnergyAccount(
+            @Parameter(description = "CSV file containing energy account data")
+            @RequestParam MultipartFile[] files) throws BusinessException {
         return importEnergyAccount(files, true);
     }
 
     @Operation(summary = "Update an Energy Account.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Update successfully an Energy Account",
-                    content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Update successfully an energy Account", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PutMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<ImportEnergyAccountResult> updateEnergyAccount(@RequestParam MultipartFile[] files) throws BusinessException {
+    public ResponseEntity<ImportEnergyAccountResult> updateEnergyAccount(
+            @Parameter(description = "CSV file containing energy account data to update")
+            @RequestParam MultipartFile[] files) throws BusinessException {
         return importEnergyAccount(files, false);
     }
 
@@ -88,13 +94,24 @@ public class EnergyAccountController {
      * @throws BusinessException
      * @throws TechnicalException
      */
+    @Operation(summary = "Find energy account by criteria.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Found energy account", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<PageDTO<EnergyAccountDTO>> findEnergyAccount(
+            @Parameter(description = "Number of responses per page")
             @RequestParam(required = false, defaultValue = "10") int pageSize,
+            @Parameter(description = "bookmark search criteria")
             @RequestParam(required = false, defaultValue = "") String bookmark,
+            @Parameter(description = "meteringPointMrid search criteria")
             @RequestParam(value = "meteringPointMrid", required = false) String meteringPointMrid,
+            @Parameter(description = "startCreatedDateTime search criteria")
             @RequestParam(value = "startCreatedDateTime", required = false) String startCreatedDateTime,
+            @Parameter(description = "endCreatedDateTime search criteria")
             @RequestParam(value = "endCreatedDateTime", required = false) String endCreatedDateTime) throws BusinessException, TechnicalException {
 
         PaginationDto paginationDto = PaginationDto.builder()

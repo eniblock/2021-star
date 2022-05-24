@@ -58,10 +58,10 @@ public class ProducerController {
 
     @Operation(summary = "Post a producer CSV file.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Create successfully producer",
-                    content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
+            @ApiResponse(responseCode = "201", description = "Create successfully producer", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportProducerResult> importProducer(@RequestParam MultipartFile file) throws BusinessException {
@@ -76,8 +76,10 @@ public class ProducerController {
     }
 
     @Operation(summary = "Get list of producer")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get list of producer",
-            content = {@Content(mediaType = "application/json")})})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Get list of producer", content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     public ResponseEntity<List<Producer>> getMarketParticipants() throws TechnicalException, BusinessException {
         if (PRODUCER.equals(instance)) {

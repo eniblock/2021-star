@@ -1,6 +1,6 @@
 {
    "index":{
-      "fields":["docType","originAutomationRegisteredResourceMrid","registeredResourceMrid", "systemOperatorMarketParticipantMrid"]
+      "fields":["docType","yellowPageMrid","originAutomationRegisteredResourceMrid","registeredResourceMrid", "systemOperatorMarketParticipantMrid"]
    },
    "ddoc":"indexYellowPagesDoc",
    "name":"indexYellowPages",

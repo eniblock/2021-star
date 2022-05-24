@@ -35,12 +35,12 @@ export class YellowPagesController {
         yellowPagesInput.docType = 'yellowPages';
 
         await ctx.stub.putState(
-            yellowPagesInput.originAutomationRegisteredResourceMrid,
+            yellowPagesInput.yellowPageMrid,
             Buffer.from(JSON.stringify(yellowPagesInput)),
         );
         console.info(
             '============= END   : Create %s YellowPages ===========',
-            yellowPagesInput.originAutomationRegisteredResourceMrid,
+            yellowPagesInput.yellowPageMrid,
         );
     }
 

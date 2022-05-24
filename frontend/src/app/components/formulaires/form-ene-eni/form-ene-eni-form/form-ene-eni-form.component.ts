@@ -5,7 +5,7 @@ import {MatStepper} from "@angular/material/stepper";
 import {DateHelper} from "../../../../helpers/date.helper";
 
 const PROCESS_TYPE_INIT_VALUE = 'A42';
-const BUSINESS_TYPE_INIT_VALUE = 'A42';
+const BUSINESS_TYPE_INIT_VALUE = 'C55';
 
 @Component({
   selector: 'app-form-ene-eni-form',

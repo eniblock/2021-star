@@ -45,10 +45,9 @@
         </mat-form-field>
 
         <mat-form-field class="col-12 col-lg-6" appearance="outline">
-          <mat-label>Unité de puissance</mat-label>
+          <mat-label>Unité de mesure</mat-label>
           <mat-select formControlName="measurementUnitName">
-            <mat-option [value]="'KW'">KW</mat-option>
-            <mat-option [value]="'MW'">MW</mat-option>
+            <mat-option [value]="'MW'">MWh</mat-option>
           </mat-select>
         </mat-form-field>
 
@@ -138,7 +137,7 @@
       </div>
 
       <div class="col-12 col-lg-6 my-2">
-        Unité de puissance :
+        Unité de mesure :
         <span class="fw-bold">{{ form.value.measurementUnitName }}</span>
       </div>
 

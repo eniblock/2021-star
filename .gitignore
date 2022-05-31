@@ -74,3 +74,6 @@ Thumbs.db
 
 # secrets
 secrets-*.yaml
+
+#Temporary files
+*.tmp

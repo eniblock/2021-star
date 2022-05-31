@@ -4,6 +4,9 @@ import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { EnergyAccount } from '../model/energyAccount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
+import { HLFServices } from './service/HLFservice';
+import { QueryStateService } from './service/QueryStateService';
+import { SiteService } from './service/SiteService';
 
 export class EnergyAccountController {
 
@@ -44,7 +47,7 @@ export class EnergyAccountController {
 
     private static async checkEnergyAccount(ctx: Context,
                                             inputStr: string): Promise<any>{
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Account.`);
         }
@@ -61,8 +64,10 @@ export class EnergyAccountController {
             {strict: true, abortEarly: false},
         );
 
-        const siteAsBytes = await ctx.stub.getState(energyAccountInput.meteringPointMrid);
-        if (!siteAsBytes || siteAsBytes.length === 0) {
+        var siteAsBytes:Uint8Array;
+        try {
+            siteAsBytes = await SiteService.getRaw(ctx,energyAccountInput.meteringPointMrid);
+        } catch(error) {
             throw new Error(`Site : ${energyAccountInput.meteringPointMrid} does not exist for Energy Account ${energyAccountInput.energyAccountMarketDocumentMrid} creation.`);
         }
 
@@ -111,7 +116,7 @@ export class EnergyAccountController {
             systemOperatorEicCode: string,
             startCreatedDateTime: string): Promise<string> {
         const allResults = [];
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
         }
@@ -188,26 +193,13 @@ export class EnergyAccountController {
             }`;
         }
 
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        return await QueryStateService.getQueryStringResult(ctx, query);
     }
 
     public static async getEnergyAccountByQuery(
         ctx: Context,
         query: string, pageSize: number, bookmark: string): Promise<any> {
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
         }
@@ -229,7 +221,7 @@ export class EnergyAccountController {
         producerEicCode: string,
         startCreatedDateTime: string): Promise<string> {
         const allResults = [];
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have read access for producer's Energy Account.`);
         }
@@ -269,20 +261,7 @@ export class EnergyAccountController {
                 }
             }`;
 
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        return await QueryStateService.getQueryStringResult(ctx, query);
     }
 
     static async getAllResults(iterator) {

@@ -1,6 +1,9 @@
 import { Context } from 'fabric-contract-api';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { SystemOperator } from '../model/systemOperator';
+import { HLFServices } from './service/HLFservice';
+import { QueryStateService } from './service/QueryStateService';
+import { SystemOperatorService } from './service/SystemOperatorService';
 
 export class SystemOperatorController {
 
@@ -9,7 +12,7 @@ export class SystemOperatorController {
         inputStr: string) {
         console.info('============= START : Create System Operator Market Participant ===========');
 
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access to create a system operator`);
         }
@@ -30,28 +33,31 @@ export class SystemOperatorController {
             throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
-        systemOperatorObj.docType = 'systemOperator';
+        await SystemOperatorService.write(ctx, systemOperatorObj);
 
-        await ctx.stub.putState(
-            systemOperatorObj.systemOperatorMarketParticipantMrid,
-            Buffer.from(JSON.stringify(systemOperatorObj)),
-        );
         console.info(
             '============= END   : Create %s System Operator Market Participant ===========',
             systemOperatorObj.systemOperatorMarketParticipantMrid,
         );
     }
 
+
+
+
+
     public static async querySystemOperator(ctx: Context, sompId: string): Promise<string> {
         console.info('============= START : Query %s System Operator Market Participant ===========', sompId);
-        const sompAsBytes = await ctx.stub.getState(sompId);
-        if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`${sompId} does not exist`);
-        }
+
+        const sompAsBytes = await SystemOperatorService.getRaw(ctx, sompId);
+
         console.info('============= END   : Query %s System Operator Market Participant ===========');
         console.info(sompId, sompAsBytes.toString());
         return sompAsBytes.toString();
     }
+
+
+
+
 
     public static async updateSystemOperator(
         ctx: Context,
@@ -60,7 +66,7 @@ export class SystemOperatorController {
         console.info(
             '============= START : Update System Operator Market Participant ===========');
 
-        const identity = await ctx.stub.getMspID();
+            const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access to update a system operator`);
         }
@@ -81,56 +87,29 @@ export class SystemOperatorController {
             throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorInput.systemOperatorMarketParticipantName}`);
         }
 
-        const sompAsBytes = await ctx.stub.getState(systemOperatorInput.systemOperatorMarketParticipantMrId);
+        const sompAsBytes = await this.querySystemOperator(ctx, systemOperatorInput.systemOperatorMarketParticipantMrid);
         if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`${systemOperatorInput.systemOperatorMarketParticipantMrId} does not exist`);
+            throw new Error(`${systemOperatorInput.systemOperatorMarketParticipantMrid} does not exist`);
         }
-        systemOperatorInput.docType = 'systemOperator';
 
-        await ctx.stub.putState(
-            systemOperatorInput.systemOperatorMarketParticipantMrId,
-            Buffer.from(JSON.stringify(systemOperatorInput)),
-        );
+        await SystemOperatorService.write(ctx, systemOperatorInput);
+
         console.info(
             '============= END : Update %s System Operator Market Participant ===========',
-            systemOperatorInput.systemOperatorMarketParticipantMrId,
+            systemOperatorInput.systemOperatorMarketParticipantMrid,
         );
     }
 
+
+
+
+
     public static async getAllSystemOperator(ctx: Context): Promise<string> {
-        const allResults = [];
-        const query = `{"selector": {"docType": "systemOperator"}}`;
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        return await QueryStateService.getAllStates(ctx, "systemOperator");
     }
 
+
     public static async getSystemOperatorByQuery(ctx: Context, query: string): Promise<string> {
-        const allResults = [];
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        return await QueryStateService.getQueryStringResult(ctx, query);
     }
 }

@@ -1,6 +1,9 @@
 import { Context } from 'fabric-contract-api';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { Producer } from '../model/producer';
+import { HLFServices } from './service/HLFservice';
+import { ProducerService } from './service/ProducerService';
+import { QueryStateService } from './service/QueryStateService';
 
 export class ProducerController {
 
@@ -9,7 +12,7 @@ export class ProducerController {
         inputStr: string) {
         console.info('============= START : Create Producer Market Participant ===========');
 
-        // const identity = await ctx.stub.getMspID();
+        // const identity = await HLFServices.getMspID(ctx);
         // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
         //     throw new Error(`Organisation, ${identity} does not have write access to create a producer`);
         // }
@@ -26,27 +29,30 @@ export class ProducerController {
             {strict: true, abortEarly: false},
         );
 
-        producerInput.docType = 'producer';
-        await ctx.stub.putState(
-            producerInput.producerMarketParticipantMrid,
-            Buffer.from(JSON.stringify(producerInput)),
-        );
+        await ProducerService.write(ctx, producerInput);
+
         console.info(
             '============= END   : Create %s Producer Market Participant ===========',
             producerInput.producerMarketParticipantMrid,
         );
     }
 
+
+
+
+
+
     public static async queryProducer(ctx: Context, prodId: string): Promise<string> {
         console.info('============= START : Query %s Producer Market Participant ===========', prodId);
-        const prodAsBytes = await ctx.stub.getState(prodId);
-        if (!prodAsBytes || prodAsBytes.length === 0) {
-            throw new Error(`${prodId} does not exist`);
-        }
-        console.info('============= END   : Query %s Producer Market Participant ===========');
-        console.info(prodId, prodAsBytes.toString());
+        const prodAsBytes = await ProducerService.getRaw(ctx, prodId);
+        console.info('============= END   : Query %s Producer Market Participant ===========', prodId);
+        // console.info(prodId, prodAsBytes.toString());
         return prodAsBytes.toString();
     }
+
+
+
+
 
     public static async updateProducer(
         ctx: Context,
@@ -55,7 +61,7 @@ export class ProducerController {
         console.info(
             '============= START : Update Producer Market Participant ===========');
 
-        const identity = await ctx.stub.getMspID();
+            const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access to update a producer`);
         }
@@ -72,38 +78,21 @@ export class ProducerController {
             {strict: true, abortEarly: false},
         );
 
-        producerInput.docType = 'producer';
-        const prodAsBytes = await ctx.stub.getState(producerInput.producerMarketParticipantMrid);
-        if (!prodAsBytes || prodAsBytes.length === 0) {
-            throw new Error(`${producerInput.producerMarketParticipantMrid} does not exist`);
-        }
+        const prodAsBytes = await ProducerService.getRaw(ctx, producerInput.producerMarketParticipantMrid);
 
-        await ctx.stub.putState(
-            producerInput.producerMarketParticipantMrid,
-            Buffer.from(JSON.stringify(producerInput)),
-        );
+        await ProducerService.write(ctx, producerInput);
+
         console.info(
             '============= END : Update %s Producer Market Participant ===========',
             producerInput.producerMarketParticipantMrid,
         );
     }
 
+
+
+
+
     public static async getAllProducer(ctx: Context): Promise<string> {
-        const allResults = [];
-        const query = `{"selector": {"docType": "producer"}}`;
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        return await QueryStateService.getAllStates(ctx, "producer");
     }
 }

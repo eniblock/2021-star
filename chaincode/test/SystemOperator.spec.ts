@@ -2,80 +2,76 @@
 'use strict';
 const sinon = require('sinon');
 const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 const sinonChai = require('sinon-chai');
 const expect = chai.expect;
 
-import { Context } from 'fabric-contract-api'
-import { ChaincodeStub } from 'fabric-shim'
+import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
 import { SystemOperator } from '../src/model/systemOperator';
 
-let assert = sinon.assert;
-chai.use(sinonChai);
+import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
-describe('Star Tests SYSTEM OPERATORS', () => {
-    let transactionContext, chaincodeStub;
-    beforeEach(() => {
-        transactionContext = new Context();
+import { Values } from './Values';
 
-        chaincodeStub = sinon.createStubInstance(ChaincodeStub);
-        transactionContext.setChaincodeStub(chaincodeStub);
-        chaincodeStub.MspiID = 'FakeMspID'
 
-        chaincodeStub.putState.callsFake((key, value) => {
-            if (!chaincodeStub.states) {
-                chaincodeStub.states = {};
+class TestContext {
+    clientIdentity: any;
+    stub: any;
+
+    constructor() {
+        this.clientIdentity = sinon.createStubInstance(ClientIdentity);
+        this.clientIdentity.getMSPID.returns('FakeMspID');
+        this.stub = sinon.createStubInstance(ChaincodeStub);
+
+        this.stub.putState.callsFake((key, value) => {
+            if (!this.stub.states) {
+                this.stub.states = {};
             }
-            chaincodeStub.states[key] = value;
+            this.stub.states[key] = value;
         });
 
-        chaincodeStub.getState.callsFake(async (key) => {
+        this.stub.getState.callsFake(async (key) => {
             let ret;
-            if (chaincodeStub.states) {
-                ret = chaincodeStub.states[key];
+            if (this.stub.states) {
+                ret = this.stub.states[key];
             }
             return Promise.resolve(ret);
         });
+    }
 
-        chaincodeStub.getQueryResult.callsFake(async (query) => {
-            function* internalGetQueryResult() {
-                if (chaincodeStub.states) {
-                    const copied = Object.assign({}, chaincodeStub.states);
-                    for (let key in copied) {
-                        if (copied[key] == 'non-json-value') {
-                            yield {value: copied[key]};
-                            continue
-                        }
-                        const obJson = JSON.parse(copied[key].toString('utf8'));
-                        const objStr: string = obJson.docType;
-                        const queryJson = JSON.parse(query);
-                        const queryStr = queryJson.selector.docType
-                        if (queryStr == objStr) {
-                            yield {value: copied[key]};
-                        }
-                    }
-                }
-            }
-            return Promise.resolve(internalGetQueryResult());
-        });
+}
 
 
-        chaincodeStub.getMspID.callsFake(async () => {
-            return Promise.resolve(chaincodeStub.MspiID);
-        });
+
+describe('Star Tests SYSTEM OPERATORS', () => {
+    let transactionContext: any;
+    let mockHandler:any;
+    let star: Star;
+    let values: Values;
+    beforeEach(() => {
+        transactionContext = new TestContext();
+        star = new Star();
+        values = new Values();
+        mockHandler = sinon.createStubInstance(ChaincodeMessageHandler);
+
+        chai.should();
+        chai.use(chaiAsPromised);
+        chai.use(sinonChai);
     });
+
 
     describe('Test false statement', () => {
         it('should avoid else flag missing', async () => {
-            await chaincodeStub.getState("EolienFRvert28EIC");
-            await chaincodeStub.getQueryResult("EolienFRvert28EIC");
+            await transactionContext.stub.getState("EolienFRvert28EIC");
+            await transactionContext.stub.getQueryResult("EolienFRvert28EIC");
         });
     });
 
     // describe('Test InitLedger', () => {
     //     it('should return ERROR on InitLedger', async () => {
-    //         chaincodeStub.putState.rejects('failed inserting key');
+    //         transactionContext.stub.putState.rejects('failed inserting key');
     //         let star = new Star();
     //         try {
     //             await star.initLedger(transactionContext);
@@ -94,10 +90,10 @@ describe('Star Tests SYSTEM OPERATORS', () => {
 
     describe('Test createSystemOperator', () => {
         // it('should return ERROR on createSystemOperator', async () => {
-        //     chaincodeStub.putState.rejects('failed inserting key');
+        //     transactionContext.stub.putState.rejects('failed inserting key');
 
         //     let star = new Star();
-        //     chaincodeStub.MspiID = 'rte';
+        //     transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
         //     try {
         //         await star.CreateSystemOperator(transactionContext, '{\"RTE01EIC\",\"RTE\",\"A49\"}');
         //     } catch(err) {
@@ -107,18 +103,18 @@ describe('Star Tests SYSTEM OPERATORS', () => {
         // });
 
         it('should return ERROR wrong MSPID', async () => {
-            let star = new Star();
+            transactionContext.clientIdentity.getMSPID.returns(Values.FakeMSP);
             try {
-                await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+                await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMspID does not have write access to create a system operator');
+                const msg = 'Organisation, '.concat(Values.FakeMSP).concat(' does not have write access to create a system operator');
+                expect(err.message).to.equal(msg);
             }
         });
 
         it('should return ERROR NON-JSON value', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'rte';
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             try {
                 await star.CreateSystemOperator(transactionContext, 'toto');
             } catch(err) {
@@ -128,108 +124,90 @@ describe('Star Tests SYSTEM OPERATORS', () => {
         });
 
         it('should return ERROR right MSPID TSO -> DSO', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'rte';
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             try {
-                await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+                await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTA_systemoperator));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisation, rte does not have write access for ENEDIS');
+                const msg = 'Organisation, '.concat(OrganizationTypeMsp.RTE).concat(' does not have write access for ').concat(OrganizationTypeMsp.ENEDIS);
+                expect(err.message).to.equal(msg);
             }
         });
 
         it('should return ERROR right MSPID DSO -> TSO', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'enedis';
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             try {
-                await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+                await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisation, enedis does not have write access for RTE');
+                const msg = 'Organisation, '.concat(OrganizationTypeMsp.ENEDIS).concat(' does not have write access for ').concat(OrganizationTypeMsp.RTE);
+                expect(err.message).to.equal(msg);
             }
         });
 
         it('should return SUCCESS with RTE on createSystemOperator', async () => {
-            let star = new Star();
-            const systemOperator: SystemOperator = {
-                docType: 'systemOperator',
-                systemOperatorMarketParticipantMrid: 'RTE01EIC',
-                systemOperatorMarketParticipantName: 'RTE',
-                systemOperatorMarketParticipantRoleType: 'A49'
-            };
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, JSON.stringify(systemOperator));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
 
-            let ret = JSON.parse((await chaincodeStub.getState("RTE01EIC")).toString());
-            expect(ret).to.eql( systemOperator );
+            let ret = JSON.parse((await transactionContext.stub.getState(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid)).toString());
+            const expectedSystemoperator = JSON.parse(JSON.stringify(Values.HTB_systemoperator));
+            expectedSystemoperator.docType = "systemOperator"
+
+            expect(ret).to.eql( expectedSystemoperator );
         });
 
         it('should return SUCCESS with Enedis on createSystemOperator', async () => {
-            let star = new Star();
-            const systemOperator: SystemOperator = {
-                docType: 'systemOperator',
-                systemOperatorMarketParticipantMrid: 'ENEDIS02EIC',
-                systemOperatorMarketParticipantName: 'ENEDIS',
-                systemOperatorMarketParticipantRoleType: 'A50'
-            };
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTA_systemoperator));
 
-            chaincodeStub.MspiID = 'enedis';
-            await star.CreateSystemOperator(transactionContext, JSON.stringify(systemOperator));
+            let ret = JSON.parse((await transactionContext.stub.getState(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid)).toString());
+            const expectedSystemoperator = JSON.parse(JSON.stringify(Values.HTA_systemoperator));
+            expectedSystemoperator.docType = "systemOperator"
 
-            let ret = JSON.parse((await chaincodeStub.getState("ENEDIS02EIC")).toString());
-            expect(ret).to.eql( systemOperator );
+            expect(ret).to.eql( expectedSystemoperator );
         });
     });
 
     describe('Test QuerySystemOperator', () => {
         it('should return ERROR on QuerySystemOperator', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
             try {
                 await star.QuerySystemOperator(transactionContext, 'toto');
             } catch (err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('toto does not exist');
+                expect(err.message).to.equal('System Operator : toto does not exist');
             }
         });
 
         it('should return SUCCESS on QuerySystemOperator', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            const systemOperator: SystemOperator = {
-                docType: 'systemOperator',
-                systemOperatorMarketParticipantMrid: 'RTE01EIC',
-                systemOperatorMarketParticipantName: 'RTE',
-                systemOperatorMarketParticipantRoleType: 'A49'
-            };
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
-            let test = JSON.parse(await star.QuerySystemOperator(transactionContext, "RTE01EIC"));
-            expect(test).to.eql(systemOperator);
-            let ret = JSON.parse(await chaincodeStub.getState('RTE01EIC'));
-            expect(ret).to.eql(systemOperator);
+            let test = JSON.parse(await star.QuerySystemOperator(transactionContext, Values.HTB_systemoperator.systemOperatorMarketParticipantMrid));
+            expect(test).to.eql(Values.HTB_systemoperator);
         });
     });
 
     describe('Test UpdateSystemOperator', () => {
         it('should return ERROR on UpdateSystemOperator', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
+            const systemoperator = JSON.parse(JSON.stringify(Values.HTB_systemoperator));
+            systemoperator.systemOperatorMarketParticipantMrid = "XXX";
 
             try {
-                await star.UpdateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"XXX\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+                await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
             } catch (err) {
-                expect(err.message).to.equal('XXX does not exist');
+                expect(err.message).to.equal('System Operator : XXX does not exist');
             }
         });
 
         it('should return ERROR on UpdateSystemOperator', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
             try {
                 await star.UpdateSystemOperator(transactionContext, 'toto');
@@ -239,13 +217,12 @@ describe('Star Tests SYSTEM OPERATORS', () => {
         });
 
         it('should return ERROR wrong MSPID', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
             try {
-                chaincodeStub.MspiID = 'FakeMSP';
-                await star.UpdateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+                transactionContext.clientIdentity.getMSPID.returns(Values.FakeMSP);
+                await star.UpdateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
                 console.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access to update a system operator');
@@ -253,51 +230,54 @@ describe('Star Tests SYSTEM OPERATORS', () => {
         });
 
         it('should return ERROR right MSPID TSO -> DSO', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
+            const systemoperator = JSON.parse(JSON.stringify(Values.HTB_systemoperator));
+            systemoperator.systemOperatorMarketParticipantName = OrganizationTypeMsp.ENEDIS;
 
             try {
-                await star.UpdateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+                await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisation, rte does not have write access for ENEDIS');
+                const msg = 'Organisation, '.concat(OrganizationTypeMsp.RTE).concat(' does not have write access for ').concat(OrganizationTypeMsp.ENEDIS);
+                expect(err.message).to.equal(msg);
             }
         });
 
         it('should return ERROR right MSPID DSO -> TSO', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'enedis';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"ENEDIS02EIC\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+
+            const systemoperator = JSON.parse(JSON.stringify(Values.HTA_systemoperator));
+            systemoperator.systemOperatorMarketParticipantName = OrganizationTypeMsp.RTE;
 
             try {
-                await star.UpdateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"ENEDIS02EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+                await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('Organisation, enedis does not have write access for RTE');
+                const msg = 'Organisation, '.concat(OrganizationTypeMsp.ENEDIS).concat(' does not have write access for ').concat(OrganizationTypeMsp.RTE);
+                expect(err.message).to.equal(msg);
             }
         });
 
         it('should return SUCCESS on UpdateSystemOperator', async () => {
-            let star = new Star();
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            await star.UpdateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"toto\"}');
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
-            let ret = JSON.parse(await chaincodeStub.getState('RTE01EIC'));
-            let expected = {
-                docType: 'systemOperator',
-                systemOperatorMarketParticipantMrid: 'RTE01EIC',
-                systemOperatorMarketParticipantName: 'RTE',
-                systemOperatorMarketParticipantRoleType: 'toto'
-            };
-            expect(ret).to.eql(expected);
+            const systemoperator = JSON.parse(JSON.stringify(Values.HTB_systemoperator));
+            systemoperator.systemOperatorMarketParticipantRoleType = "XXX";
+
+            await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
+
+            systemoperator.docType = 'systemOperator';
+
+            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(systemoperator.systemOperatorMarketParticipantMrid, Buffer.from(JSON.stringify(systemoperator)));
         });
     });
 
     describe('Test GetAllSystemOperator', () => {
         it('should return SUCCESS on GetAllSystemOperator', async () => {
-            let star = new Star();
 
             let ret = await star.GetAllSystemOperator(transactionContext);
             ret = JSON.parse(ret);
@@ -307,54 +287,50 @@ describe('Star Tests SYSTEM OPERATORS', () => {
         });
 
         it('should return SUCCESS on GetAllSystemOperator', async () => {
-            let star = new Star();
 
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            chaincodeStub.MspiID = 'enedis';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"ENEDIS02EIC\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+            const query = `{"selector": {"docType": "systemOperator"}}`;
+            const iterator = Values.getSystemOperatorQueryMock2Values(Values.HTA_systemoperator, Values.HTB_systemoperator2, mockHandler);
+            transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
+
 
             let ret = await star.GetAllSystemOperator(transactionContext);
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
-            const expected: SystemOperator[] = [
-                { docType: 'systemOperator', systemOperatorMarketParticipantName: 'RTE', systemOperatorMarketParticipantRoleType: 'A49', systemOperatorMarketParticipantMrid: 'RTE01EIC'},
-                { docType: 'systemOperator', systemOperatorMarketParticipantName: 'ENEDIS', systemOperatorMarketParticipantRoleType: 'A50', systemOperatorMarketParticipantMrid: 'ENEDIS02EIC'}
-            ];
+            const expected: SystemOperator[] = [ Values.HTA_systemoperator, Values.HTB_systemoperator2 ];
 
             expect(ret).to.eql(expected);
         });
 
-        it('should return SUCCESS on GetAllAssets for non JSON value', async () => {
-            let star = new Star();
-            chaincodeStub.putState.onFirstCall().callsFake((key, value) => {
-                chaincodeStub.states = {};
-                chaincodeStub.states[key] = 'non-json-value';
-            });
+    //     it('should return SUCCESS on GetAllAssets for non JSON value', async () => {
+    //         transactionContext.stub.putState.onFirstCall().callsFake((key, value) => {
+    //             transactionContext.stub.states = {};
+    //             transactionContext.stub.states[key] = 'non-json-value';
+    //         });
 
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE02EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
-            chaincodeStub.MspiID = 'enedis';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"ENEDIS02EIC\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+    //         transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+    //         await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE02EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+    //         transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+    //         await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"RTE01EIC\",\"systemOperatorMarketParticipantName\": \"RTE\",\"systemOperatorMarketParticipantRoleType\": \"A49\"}');
+    //         transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+    //         await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"ENEDIS02EIC\",\"systemOperatorMarketParticipantName\": \"ENEDIS\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
 
-            let ret = await star.GetAllSystemOperator(transactionContext);
-            ret = JSON.parse(ret);
-            // console.log('ret=', ret)
-            expect(ret.length).to.equal(3);
+    //         let ret = await star.GetAllSystemOperator(transactionContext);
+    //         ret = JSON.parse(ret);
+    //         // console.log('ret=', ret)
+    //         expect(ret.length).to.equal(3);
 
-            const expected = [
-                'non-json-value',
-                { docType: 'systemOperator', systemOperatorMarketParticipantName: 'RTE', systemOperatorMarketParticipantRoleType: 'A49', systemOperatorMarketParticipantMrid: 'RTE01EIC'},
-                { docType: 'systemOperator', systemOperatorMarketParticipantName: 'ENEDIS', systemOperatorMarketParticipantRoleType: 'A50', systemOperatorMarketParticipantMrid: 'ENEDIS02EIC'}
-            ];
+    //         const expected = [
+    //             'non-json-value',
+    //             { docType: 'systemOperator', systemOperatorMarketParticipantName: 'RTE', systemOperatorMarketParticipantRoleType: 'A49', systemOperatorMarketParticipantMrid: 'RTE01EIC'},
+    //             { docType: 'systemOperator', systemOperatorMarketParticipantName: 'ENEDIS', systemOperatorMarketParticipantRoleType: 'A50', systemOperatorMarketParticipantMrid: 'ENEDIS02EIC'}
+    //         ];
 
-            expect(ret).to.eql(expected);
-        });
+    //         expect(ret).to.eql(expected);
+    //     });
     });
 });
+function ChaincodeMessageHandler(ChaincodeMessageHandler: any): any {
+    throw new Error('Function not implemented.');
+}

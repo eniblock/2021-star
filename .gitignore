@@ -34,6 +34,9 @@ target/
 # dependencies
 /node_modules
 
+#old-poc
+/old-poc
+
 # profiling files
 chrome-profiler-events*.json
 

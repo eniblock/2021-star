@@ -1,9 +1,13 @@
 import { Context } from 'fabric-contract-api';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { Site } from '../model/site';
+import { Iterators } from 'fabric-shim';
+import { SiteService } from './service/SiteService';
+import { HLFServices } from './service/HLFservice';
+import { SystemOperatorService } from './service/SystemOperatorService';
+import { ProducerService } from './service/ProducerService';
 
 export class SiteController {
-
     public static async createSite(
         ctx: Context,
         inputStr: string): Promise<void> {
@@ -14,10 +18,8 @@ export class SiteController {
         //     // console.error('error=', error);
         //     throw new Error(`ERROR createSite-> Input string NON-JSON value`);
         //   }
-        // console.info(
-        //     '============= START : Create %s Site ===========',
-        //     siteInput.meteringPointMrid,
-        // );
+        console.info('============= START : Create Site ===========');
+
         let siteObj: Site;
         try {
             siteObj = JSON.parse(inputStr);
@@ -30,7 +32,7 @@ export class SiteController {
             {strict: true, abortEarly: false},
         );
 
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (siteInput.marketEvaluationPointMrid && siteInput.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.RTE) {
                 throw new Error(`Organisation, ${identity} does not have write access for HTB(HV) sites`);
@@ -42,23 +44,30 @@ export class SiteController {
         } else {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
         }
-        const systemOperatorAsBytes = await ctx.stub.getState(siteInput.systemOperatorMarketParticipantMrid);
-        if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
-            throw new Error(`System Operator : ${siteInput.systemOperatorMarketParticipantMrid} does not exist for site creation`);
+        var systemOperatorAsBytes: Uint8Array;
+        try {
+            systemOperatorAsBytes = await SystemOperatorService.getRaw(ctx, siteInput.systemOperatorMarketParticipantMrid);
+        } catch(error) {
+            throw new Error(error.message.concat(' for site creation'));
         }
 
-        const producerAsBytes = await ctx.stub.getState(siteInput.producerMarketParticipantMrid);
-
-        if (!producerAsBytes || producerAsBytes.length === 0) {
-            throw new Error(`Producer : ${siteInput.producerMarketParticipantMrid} does not exist for site creation`);
+        var producerAsBytes: Uint8Array;
+        try {
+            producerAsBytes = await ProducerService.getRaw(ctx, siteInput.producerMarketParticipantMrid);
+        } catch(error) {
+            throw new Error(error.message.concat(' for site creation'));
         }
-        siteInput.docType = 'site';
-        await ctx.stub.putState(siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
+
+        await SiteService.write(ctx, siteInput);
         console.info(
             '============= END   : Create %s Site ===========',
             siteInput.meteringPointMrid,
         );
     }
+
+
+
+
 
     public static async updateSite(ctx: Context, inputStr: string): Promise<void> {
         let siteObj: Site;
@@ -71,7 +80,7 @@ export class SiteController {
             siteObj,
             {strict: true, abortEarly: false},
         );
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (siteInput.marketEvaluationPointMrid && siteInput.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.RTE) {
                 throw new Error(`Organisation, ${identity} does not have write access for HTB(HV) sites`);
@@ -83,17 +92,22 @@ export class SiteController {
         } else {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
         }
-        const siteAsBytes = await ctx.stub.getState(siteInput.meteringPointMrid);
+        const siteAsBytes = await SiteService.getRaw(ctx,siteInput.meteringPointMrid);
+        // const siteAsBytes = await ctx.stub.getState(siteInput.meteringPointMrid);
         if (!siteAsBytes || siteAsBytes.length === 0) {
             throw new Error(`${siteInput} does not exist. Can not be updated.`);
         }
-        const systemOperatorAsBytes = await ctx.stub.getState(siteInput.systemOperatorMarketParticipantMrid);
-        if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
-            throw new Error(`System Operator : ${siteInput.systemOperatorMarketParticipantMrid} does not exist for site update`);
+
+        try {
+            await SystemOperatorService.getRaw(ctx, siteInput.systemOperatorMarketParticipantMrid);
+        } catch(error) {
+            throw new Error(error.message.concat(' for site update'));
         }
-        const producerAsBytes = await ctx.stub.getState(siteInput.producerMarketParticipantMrid);
-        if (!producerAsBytes || producerAsBytes.length === 0) {
-            throw new Error(`Producer : ${siteInput.producerMarketParticipantMrid} does not exist for site update`);
+
+        try {
+            await ProducerService.getRaw(ctx, siteInput.producerMarketParticipantMrid);
+        } catch(error) {
+            throw new Error(error.message.concat(' for site update'));
         }
 
         siteInput.docType = 'site';
@@ -104,22 +118,28 @@ export class SiteController {
         );
     }
 
-    public static async querySite(ctx: Context, site: string): Promise<string> {
-        console.info('============= START : Query %s Site ===========', site);
-        const siteAsBytes = await ctx.stub.getState(site);
-        if (!siteAsBytes || siteAsBytes.length === 0) {
-            throw new Error(`${site} does not exist`);
-        }
-        console.info('============= END   : Query %s Site ===========');
-        console.info(site, siteAsBytes.toString());
+
+
+
+    public static async querySite(ctx: Context, siteId: string): Promise<string> {
+        console.info('============= START : Query %s Site ===========', siteId);
+        const siteAsBytes = await SiteService.getRaw(ctx, siteId)
+        console.debug(siteId, siteAsBytes.toString());
+        console.info('============= END   : Query %s Site ===========', siteId);
         return siteAsBytes.toString();
     }
 
-    public static async siteExists(ctx: Context, site: string): Promise<boolean> {
-        console.info('============= START : Query %s Site ===========', site);
-        const siteAsBytes = await ctx.stub.getState(site);
+
+
+
+    public static async siteExists(ctx: Context, siteId: string): Promise<boolean> {
+        console.info('============= START : Query %s Site ===========', siteId);
+        const siteAsBytes = await SiteService.getRaw(ctx, siteId)
         return siteAsBytes && siteAsBytes.length !== 0;
     }
+
+
+
 
     public static async getSitesBySystemOperator(
         ctx: Context,
@@ -127,56 +147,86 @@ export class SiteController {
 
         const allResults = [];
         const query = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${systemOperatorMarketParticipantMrid}"}}`;
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
+        const iterator = await SiteService.getQueryResult(ctx, query);
+        try {
+            let result = await iterator.next();
+            while (!result.done) {
+                const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+
+                let record: string;
+                try {
+                    record = JSON.parse(strValue);
+                } catch (err) {
+                    record = strValue;
+                }
+                allResults.push(record);
+                result = await iterator.next();
             }
-            allResults.push(record);
-            result = await iterator.next();
+        } catch (error) {
+            //do nothing just empty list returned
         }
         return JSON.stringify(allResults);
     }
+
+
+
 
     public static async getSitesByProducer(ctx: Context, producerMarketParticipantMrid: string): Promise<string> {
         const allResults = [];
         const query = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${producerMarketParticipantMrid}"}}`;
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
+        const iterator = await SiteService.getQueryResult(ctx, query);
+        try {
+            let result = await iterator.next();
+            while (!result.done) {
+                const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+                let record: string;
+                try {
+                    record = JSON.parse(strValue);
+                } catch (err) {
+                    record = strValue;
+                }
+                allResults.push(record);
+                result = await iterator.next();
             }
-            allResults.push(record);
-            result = await iterator.next();
+        } catch(error) {
+            //do nothing just empty list returned
         }
         return JSON.stringify(allResults);
     }
 
+
+
+
     public static async getSitesByQuery(
         ctx: Context,
         query: string, pageSize: number, bookmark: string): Promise<any> {
-        let response = await ctx.stub.getQueryResultWithPagination(query, pageSize, bookmark);
-        const {iterator, metadata} = response;
+        //getPrivateDataQueryResultWithPagination doesn't exist in 2022 May the 19th
+        // let response = await ctx.stub.getQueryResultWithPagination(query, pageSize, bookmark);
+        // const {iterator, metadata} = response;
+        // let results = await this.getAllResults(iterator);
+        // const res = {
+        //     records:             results,
+        //     fetchedRecordsCount: metadata.fetchedRecordsCount,
+        //     bookmark:            metadata.bookmark
+        // }
+
+        //Implementaition calling QueryResult (without Pagination)
+        const iterator = await SiteService.getQueryResult(ctx, query);
         let results = await this.getAllResults(iterator);
         const res = {
             records:             results,
-            fetchedRecordsCount: metadata.fetchedRecordsCount,
-            bookmark:            metadata.bookmark
+            fetchedRecordsCount: results.length,
+            bookmark:            bookmark
         }
+
         return res;
     }
 
-    static async getAllResults(iterator) {
+
+
+
+
+    static async getAllResults(iterator: Iterators.StateQueryIterator): Promise<any[]> {
         const allResults = [];
         let result = await iterator.next();
         while (!result.done) {

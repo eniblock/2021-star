@@ -1,9 +1,11 @@
 import { Context } from 'fabric-contract-api';
-import { date } from 'yup/lib/locale';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { EnergyAccount } from '../model/energyAccount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
+import { HLFServices } from './service/HLFservice';
+import { QueryStateService } from './service/QueryStateService';
+import { SiteService } from './service/SiteService';
 
 export class ReferenceEnergyAccountController {
 
@@ -12,7 +14,7 @@ export class ReferenceEnergyAccountController {
         inputStr: string) {
         console.info('============= START : Create ReferenceEnergyAccount ===========');
 
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE) {
             throw new Error(`Organisation, ${identity} does not have write access for Reference Energy Account.`);
         }
@@ -35,8 +37,10 @@ export class ReferenceEnergyAccountController {
             throw new Error(`ERROR createReferenceEnergyAccount, missing processType.`);
         }
 
-        const siteAsBytes = await ctx.stub.getState(energyAccountInput.meteringPointMrid);
-        if (!siteAsBytes || siteAsBytes.length === 0) {
+        let siteAsBytes : Uint8Array
+        try {
+            siteAsBytes = await SiteService.getRaw(ctx,energyAccountInput.meteringPointMrid);
+        } catch(error) {
             throw new Error(`Site : ${energyAccountInput.meteringPointMrid} does not exist for Reference Energy Account ${energyAccountInput.energyAccountMarketDocumentMrid} creation.`);
         }
 
@@ -87,8 +91,7 @@ export class ReferenceEnergyAccountController {
             meteringPointMrid: string,
             systemOperatorEicCode: string,
             startCreatedDateTime: string): Promise<string> {
-        const allResults = [];
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE) {
             throw new Error(`Organisation, ${identity} does not have read access for Reference Energy Account.`);
         }
@@ -141,20 +144,8 @@ export class ReferenceEnergyAccountController {
             }
         }`;
 
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        const allResults = QueryStateService.getQueryStringResult(ctx, query);
+        return allResults;
     }
 
     public static async getReferenceEnergyAccountByProducer(
@@ -162,8 +153,8 @@ export class ReferenceEnergyAccountController {
         meteringPointMrid: string,
         producerEicCode: string,
         startCreatedDateTime: string): Promise<string> {
-        const allResults = [];
-        const identity = await ctx.stub.getMspID();
+
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have read access for producer's Reference Energy Account.`);
         }
@@ -203,19 +194,7 @@ export class ReferenceEnergyAccountController {
                 }
             }`;
 
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        const allResults = QueryStateService.getQueryStringResult(ctx, query);
+        return allResults;
     }
 }

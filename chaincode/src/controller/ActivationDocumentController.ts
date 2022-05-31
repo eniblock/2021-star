@@ -1,9 +1,16 @@
-import {Context} from 'fabric-contract-api';
-import {MeasurementUnitType} from '../enums/MesurementUnitType';
-import {OrganizationTypeMsp} from '../enums/OrganizationMspType';
-import {ActivationDocument} from '../model/activationDocument';
-import {YellowPages} from '../model/yellowPages';
-import {isEmpty} from 'lodash';
+import { Context } from 'fabric-contract-api';
+import { MeasurementUnitType } from '../enums/MesurementUnitType';
+import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
+import { ActivationDocument } from '../model/activationDocument';
+import { YellowPages } from '../model/yellowPages';
+import { isEmpty } from 'lodash';
+import { SiteService } from './service/SiteService';
+import { HLFServices } from './service/HLFservice';
+import { SystemOperatorService } from './service/SystemOperatorService';
+import { ProducerService } from './service/ProducerService';
+import { QueryStateService } from './service/QueryStateService';
+import { SystemOperator } from '../model/systemOperator';
+import { Producer } from '../model/producer';
 
 export class ActivationDocumentController {
 
@@ -12,7 +19,7 @@ export class ActivationDocumentController {
         inputStr: string) {
         console.info('============= START : Create ActivationDocument ===========');
 
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
         }
@@ -20,10 +27,10 @@ export class ActivationDocumentController {
         let order: ActivationDocument;
         try {
             order = JSON.parse(inputStr);
-        } catch (error) {
+          } catch (error) {
             // console.error('error=', error);
             throw new Error(`ERROR createActivationDocument-> Input string NON-JSON value`);
-        }
+          }
 
         const activationDocumentInput = ActivationDocument.schema.validateSync(
             order,
@@ -39,21 +46,33 @@ export class ActivationDocumentController {
             throw new Error(`Organisation, ${identity} does not have write access for MW orders`);
         }
 
-        const siteAsBytes = await ctx.stub.getState(activationDocumentInput.registeredResourceMrid);
-        if (!siteAsBytes || siteAsBytes.length === 0) {
-            throw new Error(`Site : ${activationDocumentInput.registeredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
-        }
 
         if (activationDocumentInput.senderMarketParticipantMrid) {
-            const systemOperatorAsBytes = await ctx.stub.getState(activationDocumentInput.senderMarketParticipantMrid);
-            if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
+            try {
+                await SystemOperatorService.getRaw(ctx, activationDocumentInput.senderMarketParticipantMrid);
+            } catch(error) {
                 throw new Error(`System Operator : ${activationDocumentInput.senderMarketParticipantMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
             }
         }
+
+        var producerAsBytes: Uint8Array;
         if (activationDocumentInput.receiverMarketParticipantMrid) {
-            const producerAsBytes = await ctx.stub.getState(activationDocumentInput.receiverMarketParticipantMrid);
-            if (!producerAsBytes || producerAsBytes.length === 0) {
+            try {
+                producerAsBytes = await ProducerService.getRaw(ctx, activationDocumentInput.receiverMarketParticipantMrid);
+            } catch(error) {
                 throw new Error(`Producer : ${activationDocumentInput.receiverMarketParticipantMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
+            }
+        }
+
+        var producerSystemOperatorObj:SystemOperator;
+        if (producerAsBytes) {
+            producerSystemOperatorObj = JSON.parse(producerAsBytes.toString());
+        }
+        if (!producerSystemOperatorObj || producerSystemOperatorObj.systemOperatorMarketParticipantName !== OrganizationTypeMsp.ENEDIS) {
+            try {
+                await SiteService.getRaw(ctx,activationDocumentInput.registeredResourceMrid);
+            } catch(error) {
+                throw new Error(error.message.concat(` for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`));
             }
         }
 
@@ -66,17 +85,12 @@ export class ActivationDocumentController {
         if (activationDocumentInput.startCreatedDateTime &&
             activationDocumentInput.endCreatedDateTime
         ) {
-            let yellowPageCount = 0;
-            const query = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${activationDocumentInput.originAutomationRegisteredResourceMrid}"}}`;
-            const iterator = await ctx.stub.getQueryResult(query);
-            let result = await iterator.next();
-            while (!result.done) {
-                yellowPageCount++;
-                result = await iterator.next();
-            }
-            if (yellowPageCount === 0) {
+            const yellowAsBytes = await ctx.stub.getState(activationDocumentInput.originAutomationRegisteredResourceMrid);
+            if (!yellowAsBytes || yellowAsBytes.length === 0) {
                 throw new Error(`Yellow Page : ${activationDocumentInput.originAutomationRegisteredResourceMrid} does not exist for Activation Document ${activationDocumentInput.activationDocumentMrid} creation.`);
             }
+            // console.log('yellowAsBytes for BB reconciliation=', yellowAsBytes.toString());
+            const yellowObj: YellowPages = JSON.parse(yellowAsBytes.toString());
             activationDocumentInput.reconciliation = true;
             const ret = await ActivationDocumentController.checkForReconciliationBB(
                 ctx,
@@ -121,60 +135,21 @@ export class ActivationDocumentController {
     }
 
     public static async getActivationDocumentByProducer(ctx: Context, producerMrid: string): Promise<string> {
-        const allResults = [];
         const query = `{"selector": {"docType": "activationDocument", "receiverMarketParticipantMrid": "${producerMrid}"}}`;
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        const ret = await QueryStateService.getQueryStringResult(ctx, query)
+        return ret
     }
 
     public static async getActivationDocumentBySystemOperator(
-        ctx: Context, systemOperatorMrid: string): Promise<string> {
-        const allResults = [];
+            ctx: Context, systemOperatorMrid: string): Promise<string> {
         const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${systemOperatorMrid}"}}`;
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        const ret = await QueryStateService.getQueryStringResult(ctx, query)
+        return ret
     }
 
     public static async getActivationDocumentByQuery(ctx: Context, query: string): Promise<string> {
-        const allResults = [];
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        const ret = await QueryStateService.getQueryStringResult(ctx, query)
+        return ret
     }
 
     private static async checkForReconciliationBB(
@@ -201,7 +176,7 @@ export class ActivationDocumentController {
         const dateMinus5min = new Date(datetmp.getTime() - 300000);
         // console.log ('dateMinus5min=', dateMinus5min);
 
-        const allResults = [];
+        // const allResults = [];
         const query = `{
             "selector": {
                 "docType": "activationDocument",
@@ -226,29 +201,30 @@ export class ActivationDocumentController {
         //     }
         // }`;
 
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        // console.log('result=', result);
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            // console.log('strValue=', strValue);
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
+        // const iterator = await ctx.stub.getQueryResult(query);
+        // let result = await iterator.next();
+        // // console.log('result=', result);
+        // while (!result.done) {
+        //     const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+        //     // console.log('strValue=', strValue);
+        //     let record;
+        //     try {
+        //         record = JSON.parse(strValue);
+        //     } catch (err) {
+        //         record = strValue;
+        //     }
+        //     allResults.push(record);
+        //     result = await iterator.next();
+        // }
         // console.log('allResults=', JSON.stringify(allResults));
 
+        const allResults = await QueryStateService.getQueryArrayResult(ctx, query);
         try {
             const test = ActivationDocument.schema.validateSync(
                 allResults[0],
                 {strict: true, abortEarly: false},
             );
-        } catch (err) {
+            } catch (err) {
             return;
         }
 
@@ -301,7 +277,7 @@ export class ActivationDocumentController {
         // console.log ('dateYesterday=', dateYesterday);
         // console.log ('dateYesterday=', dateYesterday.toUTCString());
 
-        const allResults = [];
+        // const allResults = [];
         const query = `{
             "selector": {
                 "docType": "activationDocument",
@@ -324,21 +300,23 @@ export class ActivationDocumentController {
         //         "reconciliation": false
         //     }
         // }`;
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        // console.log('result=', result);
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            // console.log('strValue=', strValue);
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
+
+        const allResults = await QueryStateService.getQueryArrayResult(ctx, query);
+        // const iterator = await ctx.stub.getQueryResult(query);
+        // let result = await iterator.next();
+        // // console.log('result=', result);
+        // while (!result.done) {
+        //     const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+        //     // console.log('strValue=', strValue);
+        //     let record;
+        //     try {
+        //         record = JSON.parse(strValue);
+        //     } catch (err) {
+        //         record = strValue;
+        //     }
+        //     allResults.push(record);
+        //     result = await iterator.next();
+        // }
         // console.log('allResults=', JSON.stringify(allResults));
 
         try {
@@ -346,7 +324,7 @@ export class ActivationDocumentController {
                 allResults[0],
                 {strict: true, abortEarly: false},
             );
-        } catch (err) {
+            } catch (err) {
             return;
         }
 

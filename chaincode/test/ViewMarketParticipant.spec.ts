@@ -2,76 +2,72 @@
 'use strict';
 const sinon = require('sinon');
 const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 const sinonChai = require('sinon-chai');
 const expect = chai.expect;
 
-import { Context } from 'fabric-contract-api'
-import { ChaincodeStub } from 'fabric-shim'
+import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
 
-let assert = sinon.assert;
-chai.use(sinonChai);
+import { Values } from './Values';
 
-describe('Star Tests RESTITUTIONS', () => {
-    let transactionContext, chaincodeStub;
-    beforeEach(() => {
-        transactionContext = new Context();
+class TestContext {
+    clientIdentity: any;
+    stub: any;
 
-        chaincodeStub = sinon.createStubInstance(ChaincodeStub);
-        transactionContext.setChaincodeStub(chaincodeStub);
-        chaincodeStub.MspiID = 'FakeMspID'
+    constructor() {
+        this.clientIdentity = sinon.createStubInstance(ClientIdentity);
+        this.clientIdentity.getMSPID.returns('FakeMspID');
+        this.stub = sinon.createStubInstance(ChaincodeStub);
 
-        chaincodeStub.putState.callsFake((key, value) => {
-            if (!chaincodeStub.states) {
-                chaincodeStub.states = {};
+        this.stub.putState.callsFake((key, value) => {
+            if (!this.stub.states) {
+                this.stub.states = {};
             }
-            chaincodeStub.states[key] = value;
+            this.stub.states[key] = value;
         });
 
-        chaincodeStub.getState.callsFake(async (key) => {
+        this.stub.getState.callsFake(async (key) => {
             let ret;
-            if (chaincodeStub.states) {
-                ret = chaincodeStub.states[key];
+            if (this.stub.states) {
+                ret = this.stub.states[key];
             }
             return Promise.resolve(ret);
         });
+    }
+}
 
-        chaincodeStub.getQueryResult.callsFake(async (query) => {
-            function* internalGetQueryResult() {
-                if (chaincodeStub.states) {
-                    const copied = Object.assign({}, chaincodeStub.states);
-                    for (let key in copied) {
-                        const obJson = JSON.parse(copied[key].toString('utf8'));
-                        const objStr: string = obJson.docType;
-                        const queryJson = JSON.parse(query);
-                        const queryStr = queryJson.selector.docType
-                        if (queryStr == objStr) {
-                            yield {value: copied[key]};
-                        }
-                    }
-                }
-            }
-            return Promise.resolve(internalGetQueryResult());
-        });
+function ChaincodeMessageHandler(ChaincodeMessageHandler: any): any {
+    throw new Error('Function not implemented.');
+}
 
+describe('Star Tests RESTITUTIONS', () => {
+    let transactionContext: any;
+    let mockHandler:any;
+    let star: Star;
+    let values: Values;
+    beforeEach(() => {
+        transactionContext = new TestContext();
+        star = new Star();
+        values = new Values();
+        mockHandler = sinon.createStubInstance(ChaincodeMessageHandler);
 
-        chaincodeStub.getMspID.callsFake(async () => {
-            return Promise.resolve(chaincodeStub.MspiID);
-        });
+        chai.should();
+        chai.use(chaiAsPromised);
+        chai.use(sinonChai);
     });
+
 
     describe('Test false statement', () => {
         it('should avoid else flag missing', async () => {
-            await chaincodeStub.getState("EolienFRvert28EIC");
-            await chaincodeStub.getQueryResult("EolienFRvert28EIC");
+            await transactionContext.stub.getState("EolienFRvert28EIC");
+            await transactionContext.stub.getQueryResult("EolienFRvert28EIC");
         });
     });
 
     describe('Test ViewSystemOperaterMarketParticipant', () => {
         it('should return SUCCESS empty Participants', async () => {
-            let star = new Star();
-
             let ret = await star.ViewSystemOperaterMarketParticipant(transactionContext);
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
@@ -82,14 +78,13 @@ describe('Star Tests RESTITUTIONS', () => {
         });
 
         it('should return SUCCESS on System Operater view', async () => {
-            let star = new Star();
+            const query_SystemOperator = `{"selector": {"docType": "systemOperator"}}`;
+            const iterator_SystemOperator = Values.getSystemOperatorQueryMock2Values(Values.HTA_systemoperator, Values.HTB_systemoperator,mockHandler);
+            transactionContext.stub.getQueryResult.withArgs(query_SystemOperator).resolves(iterator_SystemOperator);
 
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            chaincodeStub.MspiID = 'enedis';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"ENEDIS02EIC\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A22\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
+            const query_Producer = `{"selector": {"docType": "producer"}}`;
+            const iterator_Producer = Values.getProducerQueryMock2Values(Values.HTA_Producer, Values.HTB_Producer,mockHandler);
+            transactionContext.stub.getQueryResult.withArgs(query_Producer).resolves(iterator_Producer);
 
             let ret = await star.ViewSystemOperaterMarketParticipant(transactionContext);
             ret = JSON.parse(ret);
@@ -97,34 +92,8 @@ describe('Star Tests RESTITUTIONS', () => {
             // expect(ret.length).to.equal(3);
 
             const expected = {
-                producers: [
-                  {
-                    docType: 'producer',
-                    producerMarketParticipantMrId: 'EolienFRvert28EIC',
-                    producerMarketParticipantName: 'EolienFR vert Cie',
-                    producerMarketParticipantRoleType: 'A21'
-                  },
-                  {
-                    docType: 'producer',
-                    producerMarketParticipantMrId: 'EolienFRvert29EIC',
-                    producerMarketParticipantName: 'EolienFR vert Cie',
-                    producerMarketParticipantRoleType: 'A22'
-                  }
-                ],
-                systemOperators: [
-                  {
-                    docType: 'systemOperator',
-                    marketParticipantName: 'RTE',
-                    marketParticipantRoleType: 'A49',
-                    systemOperatorMarketParticipantMrId: 'RTE01EIC'
-                  },
-                  {
-                    docType: 'systemOperator',
-                    marketParticipantName: 'ENEDIS',
-                    marketParticipantRoleType: 'A22',
-                    systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'
-                  }
-                ]
+                producers: [Values.HTA_Producer, Values.HTB_Producer],
+                systemOperators: [Values.HTA_systemoperator, Values.HTB_systemoperator]
               };
 
             expect(ret).to.eql(expected);
@@ -133,42 +102,22 @@ describe('Star Tests RESTITUTIONS', () => {
 
     describe('Test ViewProducerMarketParticipant', () => {
         it('should return SUCCESS on Producer view', async () => {
-            let star = new Star();
+            const query_SystemOperator = `{"selector": {"docType": "systemOperator"}}`;
+            const iterator_SystemOperator = Values.getSystemOperatorQueryMock2Values(Values.HTA_systemoperator, Values.HTB_systemoperator,mockHandler);
+            transactionContext.stub.getQueryResult.withArgs(query_SystemOperator).resolves(iterator_SystemOperator);
 
-            chaincodeStub.MspiID = 'rte';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"RTE01EIC\",\"marketParticipantName\": \"RTE\",\"marketParticipantRoleType\": \"A49\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert28EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-            chaincodeStub.MspiID = 'enedis';
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrId\": \"ENEDIS02EIC\",\"marketParticipantName\": \"ENEDIS\",\"marketParticipantRoleType\": \"A22\"}');
-            await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrId\": \"EolienFRvert29EIC\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A22\"}');
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+            transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
-            let ret = await star.ViewProducerMarketParticipant(transactionContext, 'EolienFRvert28EIC');
+            let ret = await star.ViewProducerMarketParticipant(transactionContext, Values.HTA_Producer.producerMarketParticipantMrid);
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
             // expect(ret.length).to.equal(3);
 
             const expected = {
-                producers: {
-                    docType: 'producer',
-                    producerMarketParticipantMrId: 'EolienFRvert28EIC',
-                    producerMarketParticipantName: 'EolienFR vert Cie',
-                    producerMarketParticipantRoleType: 'A21'
-                },
-                systemOperators: [
-                {
-                    docType: 'systemOperator',
-                    marketParticipantName: 'RTE',
-                    marketParticipantRoleType: 'A49',
-                    systemOperatorMarketParticipantMrId: 'RTE01EIC'
-                },
-                {
-                    docType: 'systemOperator',
-                    marketParticipantName: 'ENEDIS',
-                    marketParticipantRoleType: 'A22',
-                    systemOperatorMarketParticipantMrId: 'ENEDIS02EIC'
-                }
-                ]
-            };
+                producers: Values.HTA_Producer,
+                systemOperators: [Values.HTA_systemoperator, Values.HTB_systemoperator]
+              };
 
             expect(ret).to.eql(expected);
         });

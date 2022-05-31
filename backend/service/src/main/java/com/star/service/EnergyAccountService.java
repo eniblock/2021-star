@@ -4,7 +4,6 @@ import com.cloudant.client.api.query.Expression;
 import com.cloudant.client.api.query.Selector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
-import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.common.FichierImportation;
@@ -63,7 +62,7 @@ public class EnergyAccountService {
 
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
-    public ImportEnergyAccountResult createEnergyAccount(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
+    public ImportEnergyAccountResult createEnergyAccount(List<FichierImportation> fichiers) throws IOException, TechnicalException {
         var importEnergyAccountResult = checkFiles(fichiers, true);
         if (isEmpty(importEnergyAccountResult.getErrors()) && !isEmpty(importEnergyAccountResult.getDatas())) {
             importEnergyAccountResult.setDatas(energyAccountRepository.save(importEnergyAccountResult.getDatas()));
@@ -71,7 +70,7 @@ public class EnergyAccountService {
         return importEnergyAccountResult;
     }
 
-    public ImportEnergyAccountResult updateEnergyAccount(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
+    public ImportEnergyAccountResult updateEnergyAccount(List<FichierImportation> fichiers) throws IOException, TechnicalException {
         var importEnergyAccountResult = checkFiles(fichiers, false);
         if (isEmpty(importEnergyAccountResult.getErrors()) && !isEmpty(importEnergyAccountResult.getDatas())) {
             importEnergyAccountResult.setDatas(energyAccountRepository.update(importEnergyAccountResult.getDatas()));
@@ -99,11 +98,9 @@ public class EnergyAccountService {
                     messageSource.getMessage("import.error",
                             new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
             // En modification, il faut vérifier que le champ energyAccountMarketDocumentMrid est renseigné.
-            if (!creation) {
-                if (StringUtils.isBlank(energyAccount.getEnergyAccountMarketDocumentMrid())) {
-                    errors.add(messageSource.getMessage("import.error",
-                            new String[]{fichier.getFileName(), "energyAccountMarketDocumentMrid est obligatoire."}, null));
-                }
+            if (!creation && StringUtils.isBlank(energyAccount.getEnergyAccountMarketDocumentMrid())) {
+                errors.add(messageSource.getMessage("import.error",
+                        new String[]{fichier.getFileName(), "energyAccountMarketDocumentMrid est obligatoire."}, null));
             }
             if (isEmpty(errors)) {
                 energyAccounts.add(energyAccount);

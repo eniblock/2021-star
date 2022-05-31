@@ -1,6 +1,7 @@
 package com.star.service;
 
 import com.cloudant.client.api.query.Expression;
+import com.cloudant.client.api.query.Selector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
@@ -38,7 +39,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import com.cloudant.client.api.query.Selector;
 import static com.star.enums.DocTypeEnum.ENERGY_AMOUNT;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
@@ -83,7 +83,50 @@ public class EnergyAmountService {
 
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
-    public ImportEnergyAmountResult createEnergyAmount(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
+    /**
+     * Méthode pour enregistrer une liste d'energy amount contenus dans des fichiers
+     *
+     * @param fichiers Fichiers JSON contenant les données des energy amounts à enregistrer
+     * @param instance instance (TSO/DSO)
+     * @return la liste des energy amounts enregistrés dans la blockchain
+     * @throws IOException
+     * @throws TechnicalException
+     */
+    public ImportEnergyAmountResult createEnergyAmounts(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
+        var importEnergyAmountResult = checkFiles(fichiers, instance, true);
+        if (isEmpty(importEnergyAmountResult.getErrors()) && !isEmpty(importEnergyAmountResult.getDatas())) {
+            importEnergyAmountResult.setDatas(energyAmountRepository.save(importEnergyAmountResult.getDatas(), instance));
+        }
+        return importEnergyAmountResult;
+    }
+
+    /**
+     * Méthode pour modifier une liste d'energy amounts contenus dans des fichiers JSON
+     *
+     * @param fichiers Fichiers JSON contenant les données des energy amounts à modifier
+     * @param instance instance (TSO/DSO)
+     * @return la liste des energy amounts modifiés dans la blockchain
+     * @throws IOException
+     * @throws TechnicalException
+     */
+    public ImportEnergyAmountResult updateEnergyAmounts(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
+        var importEnergyAmountResult = checkFiles(fichiers, instance, false);
+        if (isEmpty(importEnergyAmountResult.getErrors()) && !isEmpty(importEnergyAmountResult.getDatas())) {
+            importEnergyAmountResult.setDatas(energyAmountRepository.update(importEnergyAmountResult.getDatas(), instance));
+        }
+        return importEnergyAmountResult;
+    }
+
+    /**
+     * Méthode vérifiant les formats et contenus des fichiers JSON
+     *
+     * @param fichiers
+     * @param instance
+     * @param creation
+     * @return
+     * @throws IOException
+     */
+    private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance, boolean creation) throws IOException {
         if (InstanceEnum.DSO.equals(instance) & fichiers == null || fichiers.size() == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }
@@ -103,6 +146,11 @@ public class EnergyAmountService {
             errors.addAll(validator.validate(energyAmount).stream().map(violation ->
                     messageSource.getMessage("import.error",
                             new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
+            // Vérifier que l'ID du document est fourni quand on est en modification
+            if (!creation && StringUtils.isBlank(energyAmount.getEnergyAmountMarketDocumentMrid())) {
+                errors.add(messageSource.getMessage("import.error",
+                        new String[]{fichier.getFileName(), "energyAmountMarketDocumentMrid est obligatoire."}, null));
+            }
             if (isEmpty(errors)) {
                 energyAmounts.add(energyAmount);
             }
@@ -114,13 +162,19 @@ public class EnergyAmountService {
             energyAmounts.forEach(energyAmount -> setAttributes(energyAmount));
             importEnergyAmountResult.setDatas(energyAmounts);
         }
-        if (isEmpty(importEnergyAmountResult.getErrors()) && !isEmpty(importEnergyAmountResult.getDatas())) {
-            importEnergyAmountResult.setDatas(energyAmountRepository.save(importEnergyAmountResult.getDatas(), instance));
-        }
         return importEnergyAmountResult;
     }
 
-    public ImportEnergyAmountResult createEnergyAmount(EnergyAmount energyAmount, InstanceEnum instance) throws TechnicalException {
+    /**
+     * Méthode permettant d'enregistrer ou de modifier un seul energy amount.
+     *
+     * @param energyAmount Energy amount à enregistrer ou modifier dans la blockchain
+     * @param instance
+     * @param creation     booléen inquant la nature de l'opération : création ou modification
+     * @return
+     * @throws TechnicalException
+     */
+    public ImportEnergyAmountResult saveEnergyAmount(EnergyAmount energyAmount, InstanceEnum instance, boolean creation) throws TechnicalException {
         if (InstanceEnum.TSO.equals(instance) && energyAmount == null) {
             throw new IllegalArgumentException("Object energyAmount must not be empty");
         }
@@ -128,13 +182,13 @@ public class EnergyAmountService {
         OrdreLimitationCriteria ordreLimitationCriteria = OrdreLimitationCriteria.builder().activationDocumentMrid(energyAmount.getActivationDocumentMrid()).build();
         List<OrdreLimitation> ordreLimitations = ordreLimitationService.findLimitationOrders(ordreLimitationCriteria);
         if (CollectionUtils.isEmpty(ordreLimitations)) {
-            throw new IllegalArgumentException("Erreur - ActivationDocumentMrid "+energyAmount.getActivationDocumentMrid()+" ne correspond à aucun ordre de limitation.");
+            throw new IllegalArgumentException("Erreur - ActivationDocumentMrid " + energyAmount.getActivationDocumentMrid() + " ne correspond à aucun ordre de limitation.");
         }
         OrdreLimitation ordreLimitation = ordreLimitations.get(0);
         Optional<SystemOperator> optionalSystemOperator =
-        marketParticipantService.getSystemOperators().stream().filter(systemOperator ->
-                StringUtils.equals(systemOperator.getSystemOperatorMarketParticipantMrid(),
-                        ordreLimitation.getSenderMarketParticipantMrid())).findFirst();
+                marketParticipantService.getSystemOperators().stream().filter(systemOperator ->
+                        StringUtils.equals(systemOperator.getSystemOperatorMarketParticipantMrid(),
+                                ordreLimitation.getSenderMarketParticipantMrid())).findFirst();
         if (optionalSystemOperator.isPresent()) {
             SystemOperator systemOperator = optionalSystemOperator.get();
             energyAmount.setSenderMarketParticipantMrid(systemOperator.getSystemOperatorMarketParticipantMrid());
@@ -147,18 +201,27 @@ public class EnergyAmountService {
         }
         energyAmount.setAreaDomain(ARE_DOMAIN_HTA);
         energyAmount.setRegisteredResourceMrid(ordreLimitation.getRegisteredResourceMrid());
-        energyAmount.setCreatedDateTime(DateUtils.toJson(LocalDateTime.now()));
+        if (creation) {
+            energyAmount.setCreatedDateTime(DateUtils.toJson(LocalDateTime.now()));
+        }
         var importEnergyAmountResult = new ImportEnergyAmountResult();
-        var validator = validatorFactory.getValidator();
         var errors = new LinkedList<String>();
-        errors.addAll(validator.validate(energyAmount).stream().map(violation ->
-                messageSource.getMessage("create.energyAmount.error",
+        errors.addAll(validatorFactory.getValidator().validate(energyAmount).stream().map(violation ->
+                messageSource.getMessage("energyAmount.error",
                         new String[]{violation.getMessage()}, null)).collect(toList()));
+        if (!creation && StringUtils.isBlank(energyAmount.getEnergyAmountMarketDocumentMrid())) {
+            errors.add(messageSource.getMessage("energyAmount.error",
+                    new String[]{"En modification, le champ energyAmountMarketDocumentMrid est obligatoire."}, null));
+        }
         if (isNotEmpty(errors)) {
             importEnergyAmountResult.setErrors(errors);
         } else {
             setAttributes(energyAmount);
-            importEnergyAmountResult.setDatas(energyAmountRepository.save(Arrays.asList(energyAmount), instance));
+            if (creation) {
+                importEnergyAmountResult.setDatas(energyAmountRepository.save(Arrays.asList(energyAmount), instance));
+            } else {
+                importEnergyAmountResult.setDatas(energyAmountRepository.update(Arrays.asList(energyAmount), instance));
+            }
         }
         return importEnergyAmountResult;
     }
@@ -182,6 +245,17 @@ public class EnergyAmountService {
             energyAmount.setClassificationType(EMPTY);
         }
     }
+
+    /**
+     * Méthode de recherche des energy amounts à partir des critères de recherche.
+     *
+     * @param energyAmountCriteria
+     * @param bookmark
+     * @param paginationDto
+     * @return
+     * @throws BusinessException
+     * @throws TechnicalException
+     */
     public PageHLF<EnergyAmount> findEnergyAmount(EnergyAmountCriteria energyAmountCriteria, String bookmark, PaginationDto paginationDto) throws BusinessException, TechnicalException {
         var selectors = new ArrayList<Selector>();
         selectors.add(Expression.eq("docType", ENERGY_AMOUNT.getDocType()));

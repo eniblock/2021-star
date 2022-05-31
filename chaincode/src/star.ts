@@ -428,6 +428,14 @@ export class Star extends Contract {
         }
     }
 
+    public async UpdateTSOEnergyAmount(ctx: Context, inputStr: string) {
+        try {
+            return (await EnergyAmountController.updateTSOEnergyAmount(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async CreateDSOEnergyAmount(ctx: Context, inputStr: string) {
         try {
             return (await EnergyAmountController.createDSOEnergyAmount(ctx, inputStr));

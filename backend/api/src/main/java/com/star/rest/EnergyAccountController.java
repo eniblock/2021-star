@@ -2,7 +2,6 @@ package com.star.rest;
 
 import com.star.dto.common.PageDTO;
 import com.star.dto.energyaccount.EnergyAccountDTO;
-import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.mapper.energyaccount.EnergyAccountPageMapper;
@@ -19,7 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,13 +43,18 @@ import java.util.List;
 public class EnergyAccountController {
     public static final String PATH = ApiRestVersion.VERSION + "/energyAccounts";
 
-    @Value("${instance}")
-    private InstanceEnum instance;
     @Autowired
     private EnergyAccountPageMapper energyAccountPageMapper;
     @Autowired
     private EnergyAccountService energyAccountService;
 
+    /**
+     * API de création des energy accounts.
+     *
+     * @param files
+     * @return
+     * @throws BusinessException
+     */
     @Operation(summary = "Post an Energy Account.")
     @ApiResponses(
             value = {
@@ -67,6 +70,13 @@ public class EnergyAccountController {
         return importEnergyAccount(files, true);
     }
 
+    /**
+     * API de modification des energy accounts contenus dans des fichiers JSON
+     *
+     * @param files fichiers JSON contenant les energy accounts.
+     * @return
+     * @throws BusinessException
+     */
     @Operation(summary = "Update an Energy Account.")
     @ApiResponses(
             value = {
@@ -83,7 +93,7 @@ public class EnergyAccountController {
     }
 
     /**
-     * Recherche multi-critère des courbes de comptage
+     * API de recherche multi-critère des courbes de comptage
      *
      * @param pageSize
      * @param bookmark
@@ -113,7 +123,6 @@ public class EnergyAccountController {
             @RequestParam(value = "startCreatedDateTime", required = false) String startCreatedDateTime,
             @Parameter(description = "endCreatedDateTime search criteria")
             @RequestParam(value = "endCreatedDateTime", required = false) String endCreatedDateTime) throws BusinessException, TechnicalException {
-
         PaginationDto paginationDto = PaginationDto.builder()
                 .pageSize(pageSize)
                 .build();
@@ -134,9 +143,9 @@ public class EnergyAccountController {
                 fichiers.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
             }
             if (create) {
-                importEnergyAccountResult = energyAccountService.createEnergyAccount(fichiers, instance);
+                importEnergyAccountResult = energyAccountService.createEnergyAccount(fichiers);
             } else {
-                importEnergyAccountResult = energyAccountService.updateEnergyAccount(fichiers, instance);
+                importEnergyAccountResult = energyAccountService.updateEnergyAccount(fichiers);
             }
         } catch (IOException | TechnicalException exception) {
             log.error("Echec de l'import  du fichier {}. Erreur : ", exception);

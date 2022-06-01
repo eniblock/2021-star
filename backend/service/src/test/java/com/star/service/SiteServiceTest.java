@@ -196,7 +196,7 @@ class SiteServiceTest extends AbstractTest {
         siteService.importSite(fileName, csvSiteTsoKo, TSO);
 
         // THEN
-        verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
+        verify(siteRepository, Mockito.times(0)).existSite(meteringPointMridCaptor.capture());
         verify(siteRepository, Mockito.times(0)).saveSites(siteArgumentCaptor.capture());
 
 
@@ -216,9 +216,8 @@ class SiteServiceTest extends AbstractTest {
         siteService.importSite(fileName, csvSiteTsoOk, TSO);
 
         // THEN
-        verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
+        verify(siteRepository, Mockito.times(0)).existSite(meteringPointMridCaptor.capture());
         verify(siteRepository, Mockito.times(1)).saveSites(siteArgumentCaptor.capture());
-        assertThat(meteringPointMridCaptor.getValue()).isEqualTo("PDL30001510803649");
         assertThat(siteArgumentCaptor.getValue()).hasSize(1);
         List<Site> sites = siteArgumentCaptor.getValue();
         assertThat(sites.get(0)).extracting("systemOperatorMarketParticipantMrid", "meteringPointMrid", "producerMarketParticipantMrid", "technologyType", "systemOperatorCustomerServiceName")

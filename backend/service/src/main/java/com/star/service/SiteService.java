@@ -187,8 +187,8 @@ public class SiteService {
         // Vérifier que les ids n'existent pas déjà
         List<String> meteringPointMrids = importSiteResult.getDatas().stream().map(Site::getMeteringPointMrid).collect(toList());
         for (String meteringPointMrId : meteringPointMrids) {
-            boolean existSite = siteRepository.existSite(meteringPointMrId);
-            // Traitmeent s'il s'agit d'une création de site.
+            boolean existSite = create ? false : siteRepository.existSite(meteringPointMrId);
+            // Traitement s'il s'agit d'une création de site.
             if (create && existSite) {
                 importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.exist.error",
                         new String[]{meteringPointMrId}, null));

@@ -1,0 +1,13 @@
+{
+   "index":{
+      "fields":[
+         "docType", "energyAmountMarketDocumentMrid","activationDocumentMrid", "registeredResourceMrid",
+         "quantity","measurementUnitName","revisionNumber", "businessType", "docStatus", "processType",
+         "classificationType","areaDomain","senderMarketParticipantMrid", "senderMarketParticipantRole",
+         "receiverMarketParticipantMrid", "receiverMarketParticipantRole", "timeInterval"
+      ]
+   },
+   "ddoc":"indexEnergyAmountDoc",
+   "name":"indexEnergyAmount",
+   "type":"json"
+}

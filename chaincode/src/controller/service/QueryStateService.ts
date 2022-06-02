@@ -14,6 +14,17 @@ export class QueryStateService {
     }
 
 
+    public static async getPrivateQueryResult(
+        ctx: Context,
+        query: string,
+        collection: string): Promise<Iterators.StateQueryIterator>  {
+        console.debug('============= START : getPrivateQueryResult %s : %s QueryStateService ===========', query, collection);
+
+        const iterator = await ctx.stub.getPrivateDataQueryResult(collection, query);
+
+        console.debug('============= END : getPrivateQueryResult QueryStateService ===========');
+        return iterator;
+    }
 
 
 
@@ -45,6 +56,20 @@ export class QueryStateService {
         return formated;
     }
 
+    public static async getPrivateQueryStringResult(
+        ctx: Context,
+        query: string,
+        collection: string): Promise<string>  {
+        console.debug('============= START : getPrivateQueryStringResult QueryStateService ===========');
+
+        const iterator = await this.getPrivateQueryResult(ctx, query, collection);
+        const allResults = await this.formatResultToArray(iterator);
+        const formated = JSON.stringify(allResults);
+
+        console.debug('============= END : getPrivateQueryStringResult QueryStateService ===========');
+        return formated;
+    }
+
 
 
 
@@ -57,6 +82,20 @@ export class QueryStateService {
         const allResults = await this.formatResultToArray(iterator);
 
         console.debug('============= END : getQueryStringResult QueryStateService ===========');
+        return allResults;
+    }
+
+
+    public static async getPrivateQueryArrayResult(
+        ctx: Context,
+        query: string,
+        collection: string): Promise<any[]>  {
+        console.debug('============= START : getPrivateQueryArrayResult QueryStateService ===========');
+
+        const iterator = await this.getPrivateQueryResult(ctx, query, collection);
+        const allResults = await this.formatResultToArray(iterator);
+
+        console.debug('============= END : getPrivateQueryArrayResult QueryStateService ===========');
         return allResults;
     }
 

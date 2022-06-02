@@ -145,53 +145,20 @@ export class SiteController {
         ctx: Context,
         systemOperatorMarketParticipantMrid: string): Promise<string> {
 
-        const allResults = [];
         const query = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${systemOperatorMarketParticipantMrid}"}}`;
-        const iterator = await SiteService.getQueryResult(ctx, query);
-        try {
-            let result = await iterator.next();
-            while (!result.done) {
-                const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+        const allResults = await SiteService.getQueryStringResult(ctx, query);
 
-                let record: string;
-                try {
-                    record = JSON.parse(strValue);
-                } catch (err) {
-                    record = strValue;
-                }
-                allResults.push(record);
-                result = await iterator.next();
-            }
-        } catch (error) {
-            //do nothing just empty list returned
-        }
-        return JSON.stringify(allResults);
+        return allResults;
     }
 
 
 
 
     public static async getSitesByProducer(ctx: Context, producerMarketParticipantMrid: string): Promise<string> {
-        const allResults = [];
         const query = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${producerMarketParticipantMrid}"}}`;
-        const iterator = await SiteService.getQueryResult(ctx, query);
-        try {
-            let result = await iterator.next();
-            while (!result.done) {
-                const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-                let record: string;
-                try {
-                    record = JSON.parse(strValue);
-                } catch (err) {
-                    record = strValue;
-                }
-                allResults.push(record);
-                result = await iterator.next();
-            }
-        } catch(error) {
-            //do nothing just empty list returned
-        }
-        return JSON.stringify(allResults);
+        const allResults = await SiteService.getQueryStringResult(ctx, query);
+
+        return allResults;
     }
 
 
@@ -211,8 +178,11 @@ export class SiteController {
         // }
 
         //Implementaition calling QueryResult (without Pagination)
-        const iterator = await SiteService.getQueryResult(ctx, query);
-        let results = await this.getAllResults(iterator);
+        // const iterator = await SiteService.getQueryResult(ctx, query);
+        // let results = await this.getAllResults(iterator);
+
+        let results = await SiteService.getPrivateQueryArrayResult(ctx, query);
+
         const res = {
             records:             results,
             fetchedRecordsCount: results.length,
@@ -223,23 +193,20 @@ export class SiteController {
     }
 
 
-
-
-
-    static async getAllResults(iterator: Iterators.StateQueryIterator): Promise<any[]> {
-        const allResults = [];
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return allResults;
-    }
+    // static async getAllResults(iterator: Iterators.StateQueryIterator): Promise<any[]> {
+    //     const allResults = [];
+    //     let result = await iterator.next();
+    //     while (!result.done) {
+    //         const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+    //         let record;
+    //         try {
+    //             record = JSON.parse(strValue);
+    //         } catch (err) {
+    //             record = strValue;
+    //         }
+    //         allResults.push(record);
+    //         result = await iterator.next();
+    //     }
+    //     return allResults;
+    // }
 }

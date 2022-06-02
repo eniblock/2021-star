@@ -4,10 +4,10 @@ import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { ParametersType } from '../enums/ParametersType';
 import { HLFServices } from './service/HLFservice';
 
-const enedis_producer = "enedis0producer";
-const enedis_rte = "enedis0rte";
-const producer_rte = "producer0rte";
-const enedis_producer_rte = "enedis0producer0rte";
+const enedis_producer = "enedis-producer";
+const enedis_rte = "enedis-rte";
+const producer_rte = "producer-rte";
+const enedis_producer_rte = "enedis-producer-rte";
 
 export class ParametersController {
     // public static async changeAllParameters(

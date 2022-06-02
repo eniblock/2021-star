@@ -1,0 +1,7 @@
+{
+    "index": {
+        "fields": ["producerMarketParticipantName"]
+    },
+    "name" : "indexProducerMarketParticipantName",
+    "type" : "json"
+}

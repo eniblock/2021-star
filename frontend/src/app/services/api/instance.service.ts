@@ -12,7 +12,7 @@ const MOCK: Instance | null = null; //Instance.TSO;
 })
 export class InstanceService {
   private readonly CACHE_KEY = 'instance';
-  private readonly CACHE_LIFETIME = 1 * 3600 * 1000; // In milliseconds
+  private readonly CACHE_LIFETIME = 24 * 3600 * 1000; // In milliseconds
 
   constructor(
     private httpClient: HttpClient,

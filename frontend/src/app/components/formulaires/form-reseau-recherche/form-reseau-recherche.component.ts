@@ -1,14 +1,18 @@
-import { Instance } from 'src/app/models/enum/Instance.enum';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
-import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
+import {Instance} from 'src/app/models/enum/Instance.enum';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {AbstractControl, FormBuilder, FormGroup} from '@angular/forms';
+import {TechnologyType} from 'src/app/models/enum/TechnologyType.enum';
 import {
   getTypesDeRechercheSimple,
   TypeDeRechercheSimple,
 } from 'src/app/models/enum/TypeDeRechercheSimple.enum';
-import { FormulaireRechercheReseau } from 'src/app/models/RechercheReseau';
-import { InstanceService } from 'src/app/services/api/instance.service';
-import { ReseauService } from 'src/app/services/api/reseau.service';
+import {FormulaireRechercheReseau} from 'src/app/models/RechercheReseau';
+import {InstanceService} from 'src/app/services/api/instance.service';
+import {ReseauService} from 'src/app/services/api/reseau.service';
+import {ProducerService} from "../../../services/api/producer.service";
+import {PosteSourceService} from "../../../services/api/poste-source.service";
+import {Observable} from "rxjs";
+import {map, startWith} from "rxjs/operators";
 
 @Component({
   selector: 'app-form-reseau-recherche',
@@ -21,6 +25,12 @@ export class FormReseauRechercheComponent implements OnInit {
   typesDeRechercheSimple: TypeDeRechercheSimple[] = [];
   TechnologyTypeEnum = TechnologyType;
   InstanceEnum = Instance;
+
+  producerNames: string[] = [];
+  filteredProducerNames?: Observable<string[]>;
+
+  posteSourceCodes: string[] = [];
+  filteredPosteSourceCodes?: Observable<string[]>;
 
   rechercheAvancee = false;
   typeInstance?: Instance;
@@ -42,8 +52,11 @@ export class FormReseauRechercheComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private reseauService: ReseauService,
-    private instanceService: InstanceService
-  ) {}
+    private instanceService: InstanceService,
+    private producerService: ProducerService,
+    private posteSourceService: PosteSourceService,
+  ) {
+  }
 
   ngOnInit() {
     // En fonction du type d'instance, on affiche/masque des parties du formulaire
@@ -65,6 +78,24 @@ export class FormReseauRechercheComponent implements OnInit {
       this.enableDisableFields();
       this.onSubmit();
     }
+
+    // Producer names
+    this.producerService.getProducerNames().subscribe(
+      producerNames => this.producerNames = producerNames
+    )
+    this.filteredProducerNames = this.form.get('valeursRecherchees')!.get('producerMarketParticipantName')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filter(value, this.producerNames)),
+    );
+
+    // Poste source codes
+    this.posteSourceService.getPosteSourceCodes().subscribe(
+      posteSourceCodes => this.posteSourceCodes = posteSourceCodes
+    )
+    this.filteredPosteSourceCodes = this.form.get('valeursRecherchees')!.get('substationMrid')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filter(value, this.posteSourceCodes)),
+    );
   }
 
   onSubmit() {
@@ -101,4 +132,10 @@ export class FormReseauRechercheComponent implements OnInit {
       });
     }
   }
+
+  private filter(value: string, options: string[]): string[] {
+    const filterValue = value.toLowerCase();
+    return options.filter(opt => opt.toLowerCase().includes(filterValue));
+  }
+
 }

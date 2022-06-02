@@ -1,7 +1,7 @@
 
 [
     {
-    "name": "enedis-producer",
+    "name": "enedis0producer",
     "policy": "OR('enedis.member','producer.member')",
     "requiredPeerCount": 0,
     "maxPeerCount": 0,
@@ -10,7 +10,7 @@
     "memberOnlyWrite": true
     },
     {
-    "name": "enedis-rte",
+    "name": "enedis0rte",
     "policy": "OR('enedis.member','rte.member')",
     "requiredPeerCount": 0,
     "maxPeerCount": 0,
@@ -19,7 +19,7 @@
     "memberOnlyWrite": true
     },
     {
-    "name": "producer-rte",
+    "name": "producer0rte",
     "policy": "OR('producer.member','rte.member')",
     "requiredPeerCount": 0,
     "maxPeerCount": 0,
@@ -28,7 +28,7 @@
     "memberOnlyWrite": true
     },
     {
-    "name": "enedis-producer-rte",
+    "name": "enedis0producer0rte",
     "policy": "OR('enedis.member','producer.member','rte.member')",
     "requiredPeerCount": 0,
     "maxPeerCount": 0,

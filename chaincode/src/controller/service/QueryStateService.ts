@@ -20,10 +20,18 @@ export class QueryStateService {
         collection: string): Promise<Iterators.StateQueryIterator>  {
         console.debug('============= START : getPrivateQueryResult %s : %s QueryStateService ===========', query, collection);
 
-        const iterator = await ctx.stub.getPrivateDataQueryResult(collection, query);
+        const iterator:any = await ctx.stub.getPrivateDataQueryResult(collection, query);
+        var returned_iterator;
 
+        //Sometimes iterator is StateQueryResponse object instead of StateQueryIterator object
+
+        if (iterator.iterator) {
+            returned_iterator = iterator.iterator;
+        } else {
+            returned_iterator = iterator;
+        }
         console.debug('============= END : getPrivateQueryResult QueryStateService ===========');
-        return iterator;
+        return returned_iterator;
     }
 
 
@@ -100,13 +108,12 @@ export class QueryStateService {
     }
 
 
-
     private static async formatResultToArray(iterator: Iterators.StateQueryIterator): Promise<any[]> {
         const allResults:any[] = [];
         try {
             let result = await iterator.next();
             while (!result.done) {
-                const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+                    const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
 
                 let record;
                 try {

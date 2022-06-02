@@ -26,7 +26,7 @@ PRODUCER_INPUT_STR='{\"producerMarketParticipantMrid\":\"'$PRODUCER_ID'\",\"prod
 
 SITE_NUM=$(tr -dc 0-9 </dev/urandom | head -c 6 ; echo '')
 SITE_ID="PDL00000000$SITE_NUM"
-SITE_INPUT_STR='{\"meteringPointMrid\":\"'$SITE_ID'\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\":\"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Genonville\",\"substationMrid\":\"GDOA4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"CodePPE\",\"schedulingEntityRegisteredResourceMrid\":\"CodeEDP\",\"siteAdminMrid\":\"489981029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ1\",\"systemOperatorCustomerServiceName\":\"DRNantesDeux-Sèvres\"}'
+SITE_INPUT_STR='{\"meteringPointMrid\":\"'$SITE_ID'\",\"systemOperatorMarketParticipantMrid\":\"'$SYSTEM_OPER_ID'\",\"producerMarketParticipantMrid\":\"'$PRODUCER_ID'\",\"technologyType\":\"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Genonville\",\"substationMrid\":\"GDOA4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"CodePPE\",\"schedulingEntityRegisteredResourceMrid\":\"CodeEDP\",\"siteAdminMrid\":\"489981029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ1\",\"systemOperatorCustomerServiceName\":\"DRNantesDeux-Sèvres\"}'
 
 echo "***************************************"
 echo "Start of invoke command"
@@ -37,30 +37,45 @@ kubectl exec -n rte -c peer $PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperle
         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls --peerAddresses $VALUE_CORE_PEER_ADDRESS --tlsRootCertFiles $VALUE_CORE_PEER_TLS_ROOTCERT_FILE \
         -c '{"Args":["CreateSystemOperator","'$SYSTEM_OPER_INPUT_STR'"]}'
 
+sleep 2s
+
 kubectl exec -n rte -c peer $PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
 	peer chaincode invoke \
         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls --peerAddresses $VALUE_CORE_PEER_ADDRESS --tlsRootCertFiles $VALUE_CORE_PEER_TLS_ROOTCERT_FILE \
         -c '{"Args":["QuerySystemOperator","'$SYSTEM_OPER_ID'"]}'
 
 
+sleep 2s
+
 kubectl exec -n rte -c peer $PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
 	peer chaincode invoke \
         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls --peerAddresses $VALUE_CORE_PEER_ADDRESS --tlsRootCertFiles $VALUE_CORE_PEER_TLS_ROOTCERT_FILE \
         -c '{"Args":["CreateProducer","'$PRODUCER_INPUT_STR'"]}'
 
-# sleep 2s
+sleep 2s
+
+
+# kubectl exec -n rte -c peer $PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+# 	peer chaincode invoke \
+#         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls --peerAddresses $VALUE_CORE_PEER_ADDRESS --tlsRootCertFiles $VALUE_CORE_PEER_TLS_ROOTCERT_FILE \
+#         -c '{"Args":["GetAllProducer"]}'
 
 kubectl exec -n rte -c peer $PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
 	peer chaincode invoke \
         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls --peerAddresses $VALUE_CORE_PEER_ADDRESS --tlsRootCertFiles $VALUE_CORE_PEER_TLS_ROOTCERT_FILE \
         -c '{"Args":["CreateSite","'$SITE_INPUT_STR'"]}'
 
-# sleep 2s
+sleep 2s
 
 kubectl exec -n rte -c peer $PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
 	peer chaincode invoke \
         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls --peerAddresses $VALUE_CORE_PEER_ADDRESS --tlsRootCertFiles $VALUE_CORE_PEER_TLS_ROOTCERT_FILE \
         -c '{"Args":["QuerySite","'$SITE_ID'"]}'
+
+kubectl exec -n rte -c peer $PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+	peer chaincode invoke \
+        -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls --peerAddresses $VALUE_CORE_PEER_ADDRESS --tlsRootCertFiles $VALUE_CORE_PEER_TLS_ROOTCERT_FILE \
+        -c '{"Args":["GetSiteWithPagination","{\"selector\": {\"docType\": \"site\"}}","0",""]}'
 
 echo ""
 echo "End of invoke command"

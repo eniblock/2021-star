@@ -4,6 +4,11 @@ import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { ParametersType } from '../enums/ParametersType';
 import { HLFServices } from './service/HLFservice';
 
+const enedis_producer = "enedis0producer";
+const enedis_rte = "enedis0rte";
+const producer_rte = "producer0rte";
+const enedis_producer_rte = "enedis0producer0rte";
+
 export class ParametersController {
     // public static async changeAllParameters(
     //     ctx: Context,
@@ -63,8 +68,8 @@ export class ParametersController {
     //     return returnedValues;
     // }
 
-    public static async getParameter(ctx: Context, paramName: string): Promise<string> {
-        console.debug('============= START : Get Parameter ===========');
+    public static async getParameter(ctx: Context, paramName: string, paraOpt= ''): Promise<string> {
+        console.debug('============= START : Get Parameter %s ===========', paramName);
 
     //     const paramValues: Map<string,string> = await this.getAllParameters(ctx);
 
@@ -75,13 +80,13 @@ export class ParametersController {
     //         value=paramValues[paramName];
     //     }
 
-        value = await this.getParameterStatic(ctx, paramName);
+        value = await this.getParameterStatic(ctx, paramName, paraOpt);
 
-        console.debug('============= END : Get Parameter ===========');
+        console.debug('============= END : Get Parameter %s : %s ===========', paramName, value);
         return value;
     }
 
-    private static async getParameterStatic(ctx: Context, paramName: string): Promise<string> {
+    private static async getParameterStatic(ctx: Context, paramName: string, paraOpt: string): Promise<string> {
         console.debug('============= START : Get Parameter Static ===========');
 
         const identity: string = await HLFServices.getMspID(ctx);
@@ -89,12 +94,24 @@ export class ParametersController {
         let value: string = "";
         if (identity === OrganizationTypeMsp.ENEDIS) {
             if (paramName === ParametersType.SITE) {
-                value = "enedis-producer"
+                value = enedis_producer
+            } else if (paramName === ParametersType.ACTIVATION_DOCUMENT) {
+                if (paraOpt !== '') {
+                    value = enedis_rte
+                } else {
+                    value = enedis_producer
+                }
             }
         } else if (identity === OrganizationTypeMsp.PRODUCER) {
         } else if (identity === OrganizationTypeMsp.RTE) {
             if (paramName === ParametersType.SITE) {
-                value = "producer-rte"
+                value = producer_rte
+            } else if (paramName === ParametersType.ACTIVATION_DOCUMENT) {
+                if (paraOpt !== '') {
+                    value = enedis_rte
+                } else {
+                    value = producer_rte
+                }
             }
         }
 

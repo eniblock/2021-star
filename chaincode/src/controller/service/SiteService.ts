@@ -35,17 +35,17 @@ export class SiteService {
         console.debug('============= END : Write %s SiteService ===========', siteInput.meteringPointMrid);
     }
 
-    public static async getQueryResult(
-        ctx: Context,
-        query: string): Promise<Iterators.StateQueryIterator>  {
-        console.debug('============= START : getQueryResult %s SiteService ===========', query);
+    // public static async getQueryResult(
+    //     ctx: Context,
+    //     query: string): Promise<Iterators.StateQueryIterator>  {
+    //     console.debug('============= START : getQueryResult %s SiteService ===========', query);
 
-        const collection: string = await ParametersController.getParameter(ctx, ParametersType.SITE);
-        const iterator = await ctx.stub.getPrivateDataQueryResult(collection, query);
+    //     const collection: string = await ParametersController.getParameter(ctx, ParametersType.SITE);
+    //     const iterator = await ctx.stub.getPrivateDataQueryResult(collection, query);
 
-        console.debug('============= END : getQueryResult %s SiteService ===========', query);
-        return iterator;
-    }
+    //     console.debug('============= END : getQueryResult %s SiteService ===========', query);
+    //     return iterator;
+    // }
 
 
     public static async getQueryStringResult(
@@ -62,7 +62,7 @@ export class SiteService {
 
     public static async getPrivateQueryArrayResult(
         ctx: Context,
-        query: string): Promise<any[]>  {
+        query: string): Promise<any>  {
         console.debug('============= START : getPrivateQueryArrayResult SiteService ===========');
 
         const collection: string = await ParametersController.getParameter(ctx, ParametersType.SITE);

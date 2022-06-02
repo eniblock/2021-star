@@ -1,6 +1,8 @@
 import { Context } from 'fabric-contract-api';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { YellowPages } from '../model/yellowPages';
+import { HLFServices } from './service/HLFservice';
+import { QueryStateService } from './service/QueryStateService';
 
 export class YellowPagesController {
 
@@ -9,7 +11,7 @@ export class YellowPagesController {
         inputStr: string) {
         console.info('============= START : Create YellowPages ===========');
 
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Yellow Pages.`);
         }
@@ -45,26 +47,6 @@ export class YellowPagesController {
     }
 
     public static async getAllYellowPages(ctx: Context): Promise<string> {
-        const allResults = [];
-        const query = `{"selector": {"docType": "yellowPages"}}`;
-        const identity = await ctx.stub.getMspID();
-        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have read access for Yellow Pages.`);
-        }
-
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        return await QueryStateService.getAllStates(ctx, "yellowPages");
     }
 }

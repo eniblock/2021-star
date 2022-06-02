@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -71,7 +72,7 @@ public class EnergyAmountController {
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAmountResult> createEnergyAmount(
-            @Parameter(description = "Energy amount object")
+            @Parameter(description = "Energy amount object to create")
             @RequestPart(name = "energyAmount", value = "energyAmount", required = false) @Valid EnergyAmountFormDTO energyAmount,
             @Parameter(description = "CSV file containing energy amount data")
             @RequestPart(name = "files", value = "files", required = false) MultipartFile[] files) throws BusinessException {
@@ -82,16 +83,49 @@ public class EnergyAmountController {
                 for (MultipartFile file : files) {
                     fichiers.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
                 }
-                importEnergyAmountResult = energyAmountService.createEnergyAmount(fichiers, instance);
+                importEnergyAmountResult = energyAmountService.createEnergyAmounts(fichiers, instance);
             }
             if (energyAmount != null) {
-                importEnergyAmountResult = energyAmountService.createEnergyAmount(energyAmountMapper.formDtoToBean(energyAmount), instance);
+                importEnergyAmountResult = energyAmountService.saveEnergyAmount(energyAmountMapper.formDtoToBean(energyAmount), instance, true);
             }
         } catch (IOException | TechnicalException exception) {
             log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.status(isEmpty(importEnergyAmountResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importEnergyAmountResult);
+    }
+
+    @Operation(summary = "Update an energy amount (file or energy amount object).")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Update successfully an energy Amount", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    @PutMapping
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
+    public ResponseEntity<ImportEnergyAmountResult> updateEnergyAmount(
+            @Parameter(description = "Energy amount object to update")
+            @RequestPart(name = "energyAmount", value = "energyAmount", required = false) @Valid EnergyAmountFormDTO energyAmount,
+            @Parameter(description = "CSV file containing energy amount data")
+            @RequestPart(name = "files", value = "files", required = false) MultipartFile[] files) throws BusinessException {
+        ImportEnergyAmountResult importEnergyAmountResult = new ImportEnergyAmountResult();
+        try {
+            if (files != null && files.length > 0) {
+                List<FichierImportation> fichiers = new ArrayList<>();
+                for (MultipartFile file : files) {
+                    fichiers.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
+                }
+                importEnergyAmountResult = energyAmountService.updateEnergyAmounts(fichiers, instance);
+            }
+            if (energyAmount != null) {
+                importEnergyAmountResult = energyAmountService.saveEnergyAmount(energyAmountMapper.formDtoToBean(energyAmount), instance, false);
+            }
+        } catch (IOException | TechnicalException exception) {
+            log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.status(isEmpty(importEnergyAmountResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.OK).body(importEnergyAmountResult);
     }
 
     /**

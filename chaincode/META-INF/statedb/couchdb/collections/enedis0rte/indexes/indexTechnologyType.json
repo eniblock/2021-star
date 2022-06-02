@@ -1,0 +1,7 @@
+{
+    "index": {
+        "fields": ["technologyType"]
+    },
+    "name" : "indexTechnologyType",
+    "type" : "json"
+}

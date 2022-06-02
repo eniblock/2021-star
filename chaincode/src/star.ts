@@ -6,6 +6,7 @@ import { Context, Contract } from 'fabric-contract-api';
 import { ActivationDocumentController } from './controller/ActivationDocumentController';
 import { EnergyAccountController } from './controller/EnergyAccountController';
 import { EnergyAmountController } from './controller/EnergyAmountController';
+// import { ParametersController } from './controller/ParametersController';
 import { ProducerController } from './controller/ProducerController';
 import { ReferenceEnergyAccountController } from './controller/ReferenceEnergyAccountController';
 import { SiteController } from './controller/SiteController';
@@ -13,6 +14,7 @@ import { SystemOperatorController } from './controller/SystemOperatorController'
 import { ViewMarketParticipantController } from './controller/ViewMarketParticipantController';
 import { YellowPagesController } from './controller/YellowPagesController';
 import {HistoriqueActivationController} from "./controller/HistoriqueActivationController";
+import { HLFServices } from './controller/service/HLFservice';
 
 export class Star extends Contract {
 
@@ -20,6 +22,39 @@ export class Star extends Contract {
     //     console.info('============= START : Initialize Ledger ===========');
     //     // console.debug('Nothing to do');
     //     console.info('============= END   : Initialize Ledger ===========');
+    // }
+
+    public async ping(ctx: Context) {
+        console.debug('============= Ping Call ===========');
+        const identity = await HLFServices.getMspID(ctx);
+        return identity;
+    }
+
+    // /*      Parameters          */
+    // public async changeAllParameters(ctx: Context, inputStr: string) {
+    //     try {
+    //         return (await ParametersController.changeAllParameters(ctx, inputStr));
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
+
+    // public async getAllParameters(
+    //     ctx: Context) {
+    //     try {
+    //         return (await ParametersController.getAllParameters(ctx));
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
+
+    // public async getParameter(
+    //     ctx: Context, paramname: string) {
+    //     try {
+    //         return (await ParametersController.getParameter(ctx,paramname));
+    //     } catch (error) {
+    //         throw error;
+    //     }
     // }
 
     /*      SystemOperator      */
@@ -388,6 +423,14 @@ export class Star extends Contract {
     public async CreateTSOEnergyAmount(ctx: Context, inputStr: string) {
         try {
             return (await EnergyAmountController.createTSOEnergyAmount(ctx, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async UpdateTSOEnergyAmount(ctx: Context, inputStr: string) {
+        try {
+            return (await EnergyAmountController.updateTSOEnergyAmount(ctx, inputStr));
         } catch (error) {
             throw error;
         }

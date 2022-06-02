@@ -49,6 +49,22 @@ public class HistoriqueLimitationController {
     @Autowired
     private SecurityComponent securityComponent;
 
+    /**
+     * API de recherche multi-critères des historiques de limitation
+     *
+     * @param pageSize
+     * @param order
+     * @param orderDirection
+     * @param bookmark
+     * @param originAutomationRegisteredResourceMrid
+     * @param producerMarketParticipantMrid
+     * @param siteName
+     * @param startCreatedDateTime
+     * @param endCreatedDateTime
+     * @param activationDocumentMrid
+     * @return
+     * @throws TechnicalException
+     */
     @Operation(summary = "Get limitation history.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limitation history", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),

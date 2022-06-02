@@ -4,6 +4,9 @@ import { ActivationDocument } from '../model/activationDocument';
 import { EnergyAmount } from '../model/energyAmount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
+import { HLFServices } from './service/HLFservice';
+import { QueryStateService } from './service/QueryStateService';
+import { SiteService } from './service/SiteService';
 
 export class EnergyAmountController {
 
@@ -12,7 +15,7 @@ export class EnergyAmountController {
         inputStr: string) {
         console.info('============= START : Create EnergyAmount ===========');
 
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE) {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
@@ -41,8 +44,10 @@ export class EnergyAmountController {
             throw new Error(`ERROR createTSOEnergyAmount getActivationDocument-> Input string NON-JSON value`);
         }
 
-        const siteAsBytes = await ctx.stub.getState(orderObj.registeredResourceMrid);
-        if (!siteAsBytes || siteAsBytes.length === 0) {
+        var siteAsBytes:Uint8Array;
+        try {
+            siteAsBytes = await SiteService.getRaw(ctx,orderObj.registeredResourceMrid);
+        } catch(error) {
             throw new Error(`Site : ${orderObj.registeredResourceMrid} does not exist in Activation Document : ${energyAmountInput.activationDocumentMrid} for Energy Amount : ${energyAmountInput.energyAmountMarketDocumentMrid} creation.`);
         }
 
@@ -105,12 +110,123 @@ export class EnergyAmountController {
         );
     }
 
+
+    public static async updateTSOEnergyAmount(
+        ctx: Context,
+        inputStr: string) {
+        console.info('============= START : Update EnergyAmount ===========');
+
+        const identity = await HLFServices.getMspID(ctx);
+        if (identity !== OrganizationTypeMsp.RTE) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        let energyObj: EnergyAmount;
+        try {
+            energyObj = JSON.parse(inputStr);
+        } catch (error) {
+            throw new Error(`ERROR createTSOEnergyAmount-> Input string NON-JSON value`);
+        }
+
+        const energyAmountInput = EnergyAmount.schema.validateSync(
+            energyObj,
+            {strict: true, abortEarly: false},
+        );
+
+        const orderAsBytes = await ctx.stub.getState(energyAmountInput.activationDocumentMrid);
+        if (!orderAsBytes || orderAsBytes.length === 0) {
+            throw new Error(`ActivationDocument : ${energyAmountInput.activationDocumentMrid} does not exist for Energy Amount ${energyAmountInput.energyAmountMarketDocumentMrid} update.`);
+        }
+
+        let orderObj: ActivationDocument;
+        try {
+            orderObj = JSON.parse(orderAsBytes.toString());
+        } catch (error) {
+            throw new Error(`ERROR createTSOEnergyAmount getActivationDocument-> Input string NON-JSON value`);
+        }
+
+        var siteAsBytes:Uint8Array;
+        try {
+            siteAsBytes = await SiteService.getRaw(ctx,orderObj.registeredResourceMrid);
+        } catch(error) {
+            throw new Error(`Site : ${orderObj.registeredResourceMrid} does not exist in Activation Document : ${energyAmountInput.activationDocumentMrid} for Energy Amount : ${energyAmountInput.energyAmountMarketDocumentMrid} update.`);
+        }
+
+        let siteObj: Site;
+        try {
+            siteObj = JSON.parse(siteAsBytes.toString());
+        } catch (error) {
+            throw new Error(`ERROR updateTSOEnergyAmount getSite-> Input string NON-JSON value`);
+        }
+
+        if (orderObj.registeredResourceMrid !== energyAmountInput.registeredResourceMrid) {
+            throw new Error(`ERROR updateTSOEnergyAmount mismatch beetween registeredResourceMrid in Activation Document : ${orderObj.registeredResourceMrid} and Energy Amount : ${energyAmountInput.registeredResourceMrid}.`);
+        }
+        // console.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
+        const strSplitted = energyAmountInput.timeInterval.split('/', 2);
+        const begin = strSplitted[0];
+        const end = strSplitted[1];
+        // console.log('strSplitted=', strSplitted);
+
+        const dateBegin = new Date(begin.trim());
+        // console.log('dateBegin=', dateBegin);
+        dateBegin.setUTCMilliseconds(0);
+        dateBegin.setUTCSeconds(0);
+        dateBegin.setUTCMinutes(0);
+        dateBegin.setUTCHours(0);
+
+        // console.log('dateBegin=', dateBegin);
+
+        const dateEnd = new Date(end.trim());
+        // console.log('dateEnd=', dateEnd);
+        dateEnd.setUTCMilliseconds(0);
+        dateEnd.setUTCSeconds(0);
+        dateEnd.setUTCMinutes(0);
+        dateEnd.setUTCHours(0);
+
+        // console.log('dateEnd=', dateEnd);
+
+        const orderDateStart = new Date(orderObj.startCreatedDateTime);
+        orderDateStart.setUTCMilliseconds(0);
+        orderDateStart.setUTCSeconds(0);
+        orderDateStart.setUTCMinutes(0);
+        orderDateStart.setUTCHours(0);
+        // console.log('orderDateStart=', orderDateStart);
+
+        // console.log(JSON.stringify(dateBegin));
+        // console.log(JSON.stringify(dateEnd));
+        if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
+            throw new Error(`ERROR updateTSOEnergyAmount mismatch between ENE : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
+        }
+
+        energyAmountInput.docType = 'energyAmount';
+
+        // === Vérifier l'existence de l'energy amount avant de vouloir effectuer une modification
+        const energyAmountAsBytes = await ctx.stub.getState(energyAmountInput.energyAmountMarketDocumentMrid);
+        if (!energyAmountAsBytes || energyAmountAsBytes.length === 0) {
+            throw new Error(`${energyAmountInput.energyAmountMarketDocumentMrid} does not exist. Can not be updated.`);
+        }
+
+        // Modification de l'energy amount
+        await ctx.stub.putState(
+            energyAmountInput.energyAmountMarketDocumentMrid,
+            Buffer.from(JSON.stringify(energyAmountInput)),
+        );
+        console.info(
+            '============= END   : Update %s EnergyAmount ===========',
+            energyAmountInput.energyAmountMarketDocumentMrid,
+        );
+    }
+
+
+
+
     public static async createDSOEnergyAmount(
         ctx: Context,
         inputStr: string) {
         console.info('============= START : Create EnergyAmount ===========');
 
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
@@ -141,28 +257,30 @@ export class EnergyAmountController {
             }
         }`;
         console.log(query);
-        const iterator = await ctx.stub.getQueryResult(query);
-        // if (Object.keys(iterator).length === 0) {
+        const allResults = await QueryStateService.getQueryArrayResult(ctx, query);
+
+        // const iterator = await ctx.stub.getQueryResult(query);
+        // // if (Object.keys(iterator).length === 0) {
+        // //     throw new Error(`ERROR createDSOEnergyAmount : no results for get activationDocument`);
+        // // }
+        // const allResults = [];
+        // let result = await iterator.next();
+        // while (!result.done) {
+        //     const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+        //     let record;
+        //     // try {
+        //     record = JSON.parse(strValue);
+        //     // } catch (err) {
+        //     //     // record = strValue;
+        //     //     continue;
+        //     // }
+        //     allResults.push(record);
+        //     result = await iterator.next();
+        // }
+        // if (allResults.length === 0) {
         //     throw new Error(`ERROR createDSOEnergyAmount : no results for get activationDocument`);
         // }
-        const allResults = [];
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            // try {
-            record = JSON.parse(strValue);
-            // } catch (err) {
-            //     // record = strValue;
-            //     continue;
-            // }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        if (allResults.length === 0) {
-            throw new Error(`ERROR createDSOEnergyAmount : no results for get activationDocument`);
-        }
-        console.log(allResults);
+        // console.log(allResults);
 
         let orderObj: ActivationDocument;
         orderObj = allResults[0];
@@ -255,13 +373,16 @@ export class EnergyAmountController {
         );
     }
 
+
+
+
     public static async getEnergyAmountForSystemOperator(
             ctx: Context,
             registeredResourceMrid: string,
             systemOperatorEicCode: string,
             startCreatedDateTime: string): Promise<string> {
         const allResults = [];
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Amount.`);
         }
@@ -308,21 +429,12 @@ export class EnergyAmountController {
             }
         }`;
 
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        const ret = await QueryStateService.getQueryStringResult(ctx, query)
+        return ret
     }
+
+
+
 
     public static async getEnergyAmountByProducer(
         ctx: Context,
@@ -330,7 +442,7 @@ export class EnergyAmountController {
         producerEicCode: string,
         startCreatedDateTime: string): Promise<string> {
         const allResults = [];
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have read access for producer's Energy Amount.`);
         }
@@ -358,26 +470,16 @@ export class EnergyAmountController {
                 }
             }`;
 
-        const iterator = await ctx.stub.getQueryResult(query);
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return JSON.stringify(allResults);
+        const ret = await QueryStateService.getQueryStringResult(ctx, query)
+        return ret
     }
+
+
 
     public static async getEnergyAmountByQuery(
         ctx: Context,
         query: string, pageSize: number, bookmark: string): Promise<any> {
-        const identity = await ctx.stub.getMspID();
+        const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Amount.`);
         }

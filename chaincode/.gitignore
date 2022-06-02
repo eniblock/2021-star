@@ -81,3 +81,6 @@ dist
 
 # Texte file
 *.txt
+
+#Temporary files
+*.tmp

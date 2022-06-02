@@ -26,7 +26,9 @@ import java.util.concurrent.TimeoutException;
 @Repository
 public class EnergyAmountRepository {
     public static final String CREATE_TSO_ENERGY_AMOUNT = "CreateTSOEnergyAmount";
+    public static final String UPDATE_TSO_ENERGY_AMOUNT = "UpdateTSOEnergyAmount";
     public static final String CREATE_DSO_ENERGY_AMOUNT = "CreateDSOEnergyAmount";
+    public static final String UPDATE_DSO_ENERGY_AMOUNT = "UpdateDSOEnergyAmount";
     public static final String GET_ENERGY_AMOUNT_WITH_PAGINATION = "GetEnergyAmountWithPagination";
 
     @Autowired
@@ -36,7 +38,7 @@ public class EnergyAmountRepository {
     private ObjectMapper objectMapper;
 
     /**
-     * Permet de stocker les energy accounts dans la blockchain
+     * Permet d'enregistrer les energy accounts dans la blockchain
      *
      * @param energyAmounts liste des energy accounts à enregistrer dans la blockchain
      * @return
@@ -52,6 +54,27 @@ public class EnergyAmountRepository {
             writeEnergyAmountToBc(energyAmounts, CREATE_DSO_ENERGY_AMOUNT);
         } else {
             writeEnergyAmountToBc(energyAmounts, CREATE_TSO_ENERGY_AMOUNT);
+        }
+        return energyAmounts;
+    }
+
+    /**
+     * Permet de modifier les energy accounts dans la blockchain
+     *
+     * @param energyAmounts liste des energy accounts à enregistrer dans la blockchain
+     * @return
+     * @throws BusinessException
+     * @throws TechnicalException
+     */
+    public List<EnergyAmount> update(List<EnergyAmount> energyAmounts, InstanceEnum instance) throws TechnicalException {
+        if (CollectionUtils.isEmpty(energyAmounts)) {
+            return Collections.emptyList();
+        }
+        log.info("Modification des energy amounts : {}", energyAmounts);
+        if (InstanceEnum.DSO.equals(instance)) {
+            writeEnergyAmountToBc(energyAmounts, UPDATE_DSO_ENERGY_AMOUNT);
+        } else {
+            writeEnergyAmountToBc(energyAmounts, UPDATE_TSO_ENERGY_AMOUNT);
         }
         return energyAmounts;
     }

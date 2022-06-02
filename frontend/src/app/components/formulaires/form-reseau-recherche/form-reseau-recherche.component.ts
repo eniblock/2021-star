@@ -26,12 +26,6 @@ export class FormReseauRechercheComponent implements OnInit {
   TechnologyTypeEnum = TechnologyType;
   InstanceEnum = Instance;
 
-  producerNames: string[] = [];
-  filteredProducerNames?: Observable<string[]>;
-
-  posteSourceCodes: string[] = [];
-  filteredPosteSourceCodes?: Observable<string[]>;
-
   rechercheAvancee = false;
   typeInstance?: Instance;
 
@@ -48,6 +42,11 @@ export class FormReseauRechercheComponent implements OnInit {
       meteringpointmrId: [''],
     }),
   });
+
+  optionsProducerNames: string[] = [];
+  filteredProducerNames?: Observable<string[]>;
+  optionsPosteSourceCodes: string[] = [];
+  filteredPosteSourceCodes?: Observable<string[]>;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -81,21 +80,25 @@ export class FormReseauRechercheComponent implements OnInit {
 
     // Producer names
     this.producerService.getProducerNames().subscribe(
-      producerNames => this.producerNames = producerNames
+      producerNames => {
+        this.optionsProducerNames = producerNames;
+        this.filteredProducerNames = this.form.get('valeursRecherchees')!.get('producerMarketParticipantName')!.valueChanges.pipe(
+          startWith(''),
+          map(value => this.filter(value, this.optionsProducerNames)),
+        );
+      }
     )
-    this.filteredProducerNames = this.form.get('valeursRecherchees')!.get('producerMarketParticipantName')!.valueChanges.pipe(
-      startWith(''),
-      map(value => this.filter(value, this.producerNames)),
-    );
 
     // Poste source codes
     this.posteSourceService.getPosteSourceCodes().subscribe(
-      posteSourceCodes => this.posteSourceCodes = posteSourceCodes
+      posteSourceCodes => {
+        this.optionsPosteSourceCodes = posteSourceCodes;
+        this.filteredPosteSourceCodes = this.form.get('valeursRecherchees')!.get('substationMrid')!.valueChanges.pipe(
+          startWith(''),
+          map(value => this.filter(value, this.optionsPosteSourceCodes)),
+        );
+      }
     )
-    this.filteredPosteSourceCodes = this.form.get('valeursRecherchees')!.get('substationMrid')!.valueChanges.pipe(
-      startWith(''),
-      map(value => this.filter(value, this.posteSourceCodes)),
-    );
   }
 
   onSubmit() {

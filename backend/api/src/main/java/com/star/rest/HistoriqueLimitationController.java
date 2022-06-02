@@ -68,6 +68,8 @@ public class HistoriqueLimitationController {
             @RequestParam(required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
             @Parameter(description = "producerMarketParticipantMrid search criteria")
             @RequestParam(required = false, defaultValue = "") String producerMarketParticipantMrid,
+            @Parameter(description = "producerMarketParticipantName search criteria")
+            @RequestParam(required = false, defaultValue = "") String producerMarketParticipantName,
             @Parameter(description = "siteName search criteria")
             @RequestParam(required = false, defaultValue = "") String siteName,
             @Parameter(description = "startCreatedDateTime search criteria")
@@ -84,6 +86,7 @@ public class HistoriqueLimitationController {
                 .build();
         var criteria = HistoriqueLimitationCriteria.builder()
                 .originAutomationRegisteredResourceMrid(originAutomationRegisteredResourceMrid)
+                .producerMarketParticipantName(producerMarketParticipantName)
                 .producerMarketParticipantMrid(producerMarketParticipantMrid)
                 .siteName(siteName)
                 .startCreatedDateTime(startCreatedDateTime)

@@ -21,6 +21,7 @@ import { FormCourbeComptageReferenceComponent } from './form-courbe-comptage-ref
 import { FormEneEniFichierComponent } from './form-ene-eni/form-ene-eni-fichier/form-ene-eni-fichier.component';
 import { FormEneEniFormComponent } from './form-ene-eni/form-ene-eni-form/form-ene-eni-form.component';
 import { FormEneEniComponent } from './form-ene-eni/form-ene-eni.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { FormEneEniComponent } from './form-ene-eni/form-ene-eni.component';
     MatRadioModule,
     MatStepperModule,
     MatDatepickerModule,
+    MatAutocompleteModule,
   ],
   declarations: [
     FormReseauRechercheComponent,

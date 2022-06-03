@@ -1,9 +1,13 @@
-import { Instance } from 'src/app/models/enum/Instance.enum';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { InstanceService } from 'src/app/services/api/instance.service';
-import { FormulaireRechercheHistoriqueLimitation } from 'src/app/models/RechercheHistoriqueLimitation';
-import { HistoriqueLimitationService } from 'src/app/services/api/historique-limitation.service';
+import {Instance} from 'src/app/models/enum/Instance.enum';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {InstanceService} from 'src/app/services/api/instance.service';
+import {FormulaireRechercheHistoriqueLimitation} from 'src/app/models/RechercheHistoriqueLimitation';
+import {HistoriqueLimitationService} from 'src/app/services/api/historique-limitation.service';
+import {Observable} from "rxjs";
+import {map, startWith} from "rxjs/operators";
+import {ProducerService} from "../../../services/api/producer.service";
+import {PosteSourceService} from "../../../services/api/poste-source.service";
 
 @Component({
   selector: 'app-form-activations-recherche',
@@ -19,22 +23,31 @@ export class FormActivationsRechercheComponent implements OnInit {
 
   form: FormGroup = this.formBuilder.group({
     originAutomationRegisteredResourceMrid: [''],
-    producerMarketParticipantMrid: [''],
+    producerMarketParticipantName: [''],
     siteName: [''],
     startCreatedDateTime: [''],
     endCreatedDateTime: [''],
   });
 
+  optionsProducerNames: string[] = [];
+  filteredProducerNames?: Observable<string[]>;
+  optionsPosteSourceCodes: string[] = [];
+  filteredPosteSourceCodes?: Observable<string[]>;
+
   constructor(
     private formBuilder: FormBuilder,
     private historiqueLimitationService: HistoriqueLimitationService,
-    private instanceService: InstanceService
-  ) {}
+    private instanceService: InstanceService,
+    private producerService: ProducerService,
+    private posteSourceService: PosteSourceService,
+  ) {
+  }
 
   ngOnInit() {
     this.instanceService.getTypeInstance().subscribe((typeInstance) => {
       this.typeInstance = typeInstance;
     });
+
     // On charge le formulaire en cache si y'en a un
     const formSauvegardeDansStorage: FormulaireRechercheHistoriqueLimitation =
       this.historiqueLimitationService.popFormulaireRecherche();
@@ -52,6 +65,28 @@ export class FormActivationsRechercheComponent implements OnInit {
       }
       this.onSubmit();
     }
+
+    // Producer names
+    this.producerService.getProducerNames().subscribe(
+      producerNames => {
+        this.optionsProducerNames = producerNames;
+        this.filteredProducerNames = this.form.get('producerMarketParticipantName')!.valueChanges.pipe(
+          startWith(''),
+          map(value => this.filter(value, this.optionsProducerNames)),
+        );
+      }
+    )
+
+    // Poste source codes
+    this.posteSourceService.getPosteSourceCodes().subscribe(
+      posteSourceCodes => {
+        this.optionsPosteSourceCodes = posteSourceCodes;
+        this.filteredPosteSourceCodes = this.form.get('originAutomationRegisteredResourceMrid')!.valueChanges.pipe(
+          startWith(''),
+          map(value => this.filter(value, this.optionsPosteSourceCodes)),
+        );
+      }
+    )
   }
 
   onSubmit() {
@@ -67,4 +102,10 @@ export class FormActivationsRechercheComponent implements OnInit {
     };
     this.formSubmit.emit(form);
   }
+
+  private filter(value: string, options: string[]): string[] {
+    const filterValue = value.toLowerCase();
+    return options.filter(opt => opt.toLowerCase().includes(filterValue));
+  }
+
 }

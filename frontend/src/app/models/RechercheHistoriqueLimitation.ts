@@ -6,7 +6,7 @@ import { Motif } from './Motifs';
 import { FormulairePagination } from './Pagination';
 
 export interface FormulaireRechercheHistoriqueLimitation {
-  originAutomationRegisteredResourceMrid: string;
+  originAutomationRegisteredResourceName: string;
   producerMarketParticipantMrid: string;
   siteName: string;
   startCreatedDateTime: string; // JSON

@@ -110,8 +110,7 @@ export class SiteController {
             throw new Error(error.message.concat(' for site update'));
         }
 
-        siteInput.docType = 'site';
-        await ctx.stub.putState(siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
+        await SiteService.write(ctx, siteInput);
         console.info(
             '============= END : Update %s Site ===========',
             siteInput.meteringPointMrid,

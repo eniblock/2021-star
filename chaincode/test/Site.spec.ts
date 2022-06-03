@@ -188,12 +188,12 @@ describe('Star Tests SITES', () => {
 
             await star.CreateSite(transactionContext, JSON.stringify(Values.HTB_site_valid));
 
-            const collectionName=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
 
             const siteInput = JSON.parse(JSON.stringify(Values.HTB_site_valid));
             siteInput.docType = 'site';
 
-            transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionName, siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
+            transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
         });
 
 
@@ -206,12 +206,12 @@ describe('Star Tests SITES', () => {
 
             await star.CreateSite(transactionContext, JSON.stringify(Values.HTA_site_valid));
 
-            const collectionName=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
 
             const siteInput = JSON.parse(JSON.stringify(Values.HTA_site_valid));
             siteInput.docType = 'site';
 
-            transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionName, siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
+            transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
         });
 
 
@@ -261,14 +261,14 @@ describe('Star Tests SITES', () => {
             siteOutput.docType = 'site';
 
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            const collectionName=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionName, siteOutput.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteOutput)));
+            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteOutput.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteOutput)));
 
             let test = JSON.parse(await star.QuerySite(transactionContext, siteOutput.meteringPointMrid));
             expect(test).to.eql(Object.assign({docType: 'site'}, siteOutput));
-            transactionContext.stub.getPrivateData.should.have.been.calledOnceWithExactly(collectionName, siteOutput.meteringPointMrid);
+            transactionContext.stub.getPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteOutput.meteringPointMrid);
 
-            let ret = JSON.parse(await transactionContext.stub.getPrivateData(collectionName, siteOutput.meteringPointMrid));
+            let ret = JSON.parse(await transactionContext.stub.getPrivateData(collectionNames[0], siteOutput.meteringPointMrid));
             expect(ret).to.eql(Object.assign({docType: 'site'}, siteOutput));
         });
     });
@@ -296,15 +296,15 @@ describe('Star Tests SITES', () => {
         it('should return success on getSiteBySystemOperator', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
-            const collectionName=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
 
-            const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionName, mockHandler)
+            const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionNames[0], mockHandler)
             const queryHTA = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${Values.HTA_site_valid.systemOperatorMarketParticipantMrid}"}}`;
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionName, queryHTA).resolves(iteratorHTA);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryHTA).resolves(iteratorHTA);
 
-            const iteratorHTB = Values.getSiteQueryMock(Values.HTB_site_valid, collectionName, mockHandler)
+            const iteratorHTB = Values.getSiteQueryMock(Values.HTB_site_valid, collectionNames[0], mockHandler)
             const queryHTB = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${Values.HTB_site_valid.systemOperatorMarketParticipantMrid}"}}`;
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionName, queryHTB).resolves(iteratorHTB);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryHTB).resolves(iteratorHTB);
 
             let retA = await star.GetSitesBySystemOperator(transactionContext, Values.HTA_site_valid.systemOperatorMarketParticipantMrid);
             // console.log('retA=', retA)
@@ -391,15 +391,15 @@ describe('Star Tests SITES', () => {
         it('should return success on getSiteByProducer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
-            const collectionName=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
 
-            const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionName, mockHandler)
+            const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionNames[0], mockHandler)
             const queryHTA = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${Values.HTA_site_valid.producerMarketParticipantMrid}"}}`;
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionName, queryHTA).resolves(iteratorHTA);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryHTA).resolves(iteratorHTA);
 
-            const iteratorHTB = Values.getSiteQueryMock(Values.HTB_site_valid, collectionName, mockHandler)
+            const iteratorHTB = Values.getSiteQueryMock(Values.HTB_site_valid, collectionNames[0], mockHandler)
             const queryHTB = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${Values.HTB_site_valid.producerMarketParticipantMrid}"}}`;
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionName, queryHTB).resolves(iteratorHTB);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryHTB).resolves(iteratorHTB);
 
 
             let retA = await star.GetSitesByProducer(transactionContext, Values.HTA_site_valid.producerMarketParticipantMrid);
@@ -466,13 +466,13 @@ describe('Star Tests SITES', () => {
 
         it('should return success on getSites for producer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-            const collectionName=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
 
             const producerMarketParticipantMrid = Values.HTA_site_valid_ProdA.producerMarketParticipantMrid;
 
-            const iterator = Values.getSiteQueryMock2Values(Values.HTA_site_valid_ProdA, Values.HTA_site_valid_ProdB,collectionName, mockHandler);
+            const iterator = Values.getSiteQueryMock2Values(Values.HTA_site_valid_ProdA, Values.HTA_site_valid_ProdB,collectionNames[0], mockHandler);
             const query = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${producerMarketParticipantMrid}"}}`;
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionName, query).resolves(iterator);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator);
 
             //same producerMarketParticipantMrid for HTB and HTA but only one should can be seen by ENEDIS
 

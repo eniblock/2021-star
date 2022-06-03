@@ -11,9 +11,9 @@ export class SiteService {
         id: string): Promise<Uint8Array> {
         console.debug('============= START : getRaw %s SiteService ===========', id);
 
-        const collection: string = await ParametersController.getParameter(ctx, ParametersType.SITE);
+        const collections: string[] = await ParametersController.getParameter(ctx, ParametersType.SITE);
 
-        const siteAsBytes = await ctx.stub.getPrivateData(collection, id);
+        const siteAsBytes = await ctx.stub.getPrivateData(collections[0], id);
 
         if (!siteAsBytes || siteAsBytes.length === 0) {
             throw new Error(`Site : ${id} does not exist`);
@@ -27,10 +27,10 @@ export class SiteService {
         siteInput: Site): Promise<void> {
         console.debug('============= START : Write %s SiteService ===========', siteInput.meteringPointMrid);
 
-        const collection: string = await ParametersController.getParameter(ctx, ParametersType.SITE);
+        const collections: string[] = await ParametersController.getParameter(ctx, ParametersType.SITE);
 
         siteInput.docType = 'site';
-        await ctx.stub.putPrivateData(collection, siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
+        await ctx.stub.putPrivateData(collections[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
 
         console.debug('============= END : Write %s SiteService ===========', siteInput.meteringPointMrid);
     }
@@ -53,8 +53,8 @@ export class SiteService {
         query: string): Promise<string>  {
         console.debug('============= START : getQueryStringResult SiteService ===========');
 
-        const collection: string = await ParametersController.getParameter(ctx, ParametersType.SITE);
-        const formated = QueryStateService.getPrivateQueryStringResult(ctx, query, collection);
+        const collections: string[] = await ParametersController.getParameter(ctx, ParametersType.SITE);
+        const formated = QueryStateService.getPrivateQueryStringResult(ctx, query, collections[0]);
 
         console.debug('============= END : getQueryStringResult SiteService ===========');
         return formated;
@@ -65,8 +65,8 @@ export class SiteService {
         query: string): Promise<any>  {
         console.debug('============= START : getPrivateQueryArrayResult SiteService ===========');
 
-        const collection: string = await ParametersController.getParameter(ctx, ParametersType.SITE);
-        const allResults = QueryStateService.getPrivateQueryArrayResult(ctx, query, collection);
+        const collections: string[] = await ParametersController.getParameter(ctx, ParametersType.SITE);
+        const allResults = QueryStateService.getPrivateQueryArrayResult(ctx, query, collections[0]);
 
         console.debug('============= END : getPrivateQueryArrayResult SiteService ===========');
         return allResults;

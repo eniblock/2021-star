@@ -68,14 +68,14 @@ export class ParametersController {
     //     return returnedValues;
     // }
 
-    public static async getParameter(ctx: Context, paramName: string, paraOpt= ''): Promise<string> {
+    public static async getParameter(ctx: Context, paramName: string, paraOpt= ''): Promise<string[]> {
         console.debug('============= START : Get Parameter %s ===========', paramName);
 
     //     const paramValues: Map<string,string> = await this.getAllParameters(ctx);
 
     //     console.debug(paramValues);
 
-        let value: string = "";
+        let value: string[] = [];
     //     if(paramValues[paramName]!==null && typeof(paramValues[paramName]) !== "undefined") {
     //         value=paramValues[paramName];
     //     }
@@ -86,31 +86,38 @@ export class ParametersController {
         return value;
     }
 
-    private static async getParameterStatic(ctx: Context, paramName: string, paraOpt: string): Promise<string> {
+    private static async getParameterStatic(ctx: Context, paramName: string, paraOpt: string): Promise<string[]> {
         console.debug('============= START : Get Parameter Static ===========');
 
         const identity: string = await HLFServices.getMspID(ctx);
 
-        let value: string = "";
+        let value: string[] = [];
         if (identity === OrganizationTypeMsp.ENEDIS) {
             if (paramName === ParametersType.SITE) {
-                value = enedis_producer
+                value.push(enedis_producer);
+                // value.push(enedis_producer_rte);
             } else if (paramName === ParametersType.ACTIVATION_DOCUMENT) {
                 if (paraOpt !== '') {
-                    value = enedis_rte
+                    value.push(enedis_rte);
                 } else {
-                    value = enedis_producer
+                    value.push(enedis_producer);
                 }
             }
         } else if (identity === OrganizationTypeMsp.PRODUCER) {
+            if (paramName === ParametersType.SITE) {
+                value.push(enedis_producer);
+                value.push(producer_rte);
+                // value.push(enedis_producer_rte);
+            }
         } else if (identity === OrganizationTypeMsp.RTE) {
             if (paramName === ParametersType.SITE) {
-                value = producer_rte
+                value.push(producer_rte);
+                // value.push(enedis_producer_rte);
             } else if (paramName === ParametersType.ACTIVATION_DOCUMENT) {
                 if (paraOpt !== '') {
-                    value = enedis_rte
+                    value.push(enedis_rte);
                 } else {
-                    value = producer_rte
+                    value.push(producer_rte);
                 }
             }
         }

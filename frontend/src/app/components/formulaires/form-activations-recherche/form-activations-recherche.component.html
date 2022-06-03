@@ -2,15 +2,25 @@
 
   <!-- Recherche DSO ET TSO -->
   <div class="row mt-3" *ngIf="typeInstance != InstanceEnum.PRODUCER" [formGroup]="form">
-    
+
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Poste Source</mat-label>
-      <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid">
+      <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid" [matAutocomplete]="substationMridAutocomplete">
+      <mat-autocomplete autoActiveFirstOption #substationMridAutocomplete="matAutocomplete">
+        <mat-option *ngFor="let option of filteredPosteSourceCodes | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
-    
+
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Producteur</mat-label>
-      <input matInput placeholder="Producteur" type="text" formControlName="producerMarketParticipantMrid">
+      <input matInput placeholder="Producteur" type="text" formControlName="producerMarketParticipantName" [matAutocomplete]="producerMarketParticipantNameAutocomplete">
+      <mat-autocomplete autoActiveFirstOption #producerMarketParticipantNameAutocomplete="matAutocomplete">
+        <mat-option *ngFor="let option of filteredProducerNames | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
 
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
@@ -36,12 +46,17 @@
 
   <!-- Recherche Producteur -->
   <div class="row mt-3" *ngIf="typeInstance == InstanceEnum.PRODUCER" [formGroup]="form">
-    
+
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Poste Source</mat-label>
-      <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid">
+      <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid" [matAutocomplete]="substationMridAutocomplete">
+      <mat-autocomplete autoActiveFirstOption #substationMridAutocomplete="matAutocomplete">
+        <mat-option *ngFor="let option of filteredPosteSourceCodes | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
-    
+
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Nom du site</mat-label>
       <input matInput placeholder="Nom du site" type="text" formControlName="siteName">

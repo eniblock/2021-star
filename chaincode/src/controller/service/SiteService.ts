@@ -13,7 +13,15 @@ export class SiteService {
 
         const collections: string[] = await ParametersController.getParameter(ctx, ParametersType.SITE);
 
-        const siteAsBytes = await ctx.stub.getPrivateData(collections[0], id);
+        var siteAsBytes: Uint8Array = new Uint8Array();
+        var i=0;
+
+        if (collections) {
+            while (i<collections.length && (!siteAsBytes || siteAsBytes.length === 0)) {
+                siteAsBytes = await ctx.stub.getPrivateData(collections[i], id);
+                i++;
+            }
+        }
 
         if (!siteAsBytes || siteAsBytes.length === 0) {
             throw new Error(`Site : ${id} does not exist`);
@@ -53,8 +61,8 @@ export class SiteService {
         query: string): Promise<string>  {
         console.debug('============= START : getQueryStringResult SiteService ===========');
 
-        const collections: string[] = await ParametersController.getParameter(ctx, ParametersType.SITE);
-        const formated = QueryStateService.getPrivateQueryStringResult(ctx, query, collections[0]);
+        const allResults = await SiteService.getPrivateQueryArrayResult(ctx, query);
+        const formated = JSON.stringify(allResults);
 
         console.debug('============= END : getQueryStringResult SiteService ===========');
         return formated;
@@ -66,7 +74,16 @@ export class SiteService {
         console.debug('============= START : getPrivateQueryArrayResult SiteService ===========');
 
         const collections: string[] = await ParametersController.getParameter(ctx, ParametersType.SITE);
-        const allResults = QueryStateService.getPrivateQueryArrayResult(ctx, query, collections[0]);
+        var allResults = [];
+
+        var i=0;
+        if (collections) {
+            while (i<collections.length) {
+                let results = await QueryStateService.getPrivateQueryArrayResult(ctx, query, collections[i]);
+                allResults = allResults.concat(results);
+                i++;
+            }
+        }
 
         console.debug('============= END : getPrivateQueryArrayResult SiteService ===========');
         return allResults;

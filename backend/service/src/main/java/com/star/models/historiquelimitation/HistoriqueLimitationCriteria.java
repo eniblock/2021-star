@@ -18,6 +18,7 @@ public class HistoriqueLimitationCriteria {
 
     private String originAutomationRegisteredResourceMrid;
     private String producerMarketParticipantMrid;
+    private String producerMarketParticipantName;
     private String siteName;
     private String startCreatedDateTime;
     private String endCreatedDateTime;

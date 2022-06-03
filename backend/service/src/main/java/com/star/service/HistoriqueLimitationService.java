@@ -61,6 +61,9 @@ public class HistoriqueLimitationService {
         if (isNotBlank(criteria.getProducerMarketParticipantMrid())) {
             selectors.add(Expression.eq("producerMarketParticipantMrid", criteria.getProducerMarketParticipantMrid()));
         }
+        if (isNotBlank(criteria.getProducerMarketParticipantName())) {
+            selectors.add(Expression.eq("producerMarketParticipantName", criteria.getProducerMarketParticipantName()));
+        }
         if (isNotBlank(criteria.getSiteName()) && !PRODUCER.equals(criteria.getInstance())) {
             selectors.add(Expression.eq("siteName", criteria.getSiteName()));
         }

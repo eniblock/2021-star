@@ -1,8 +1,11 @@
 import { Context } from 'fabric-contract-api';
+
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { EnergyAccount } from '../model/energyAccount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
+import { Parameters } from '../model/parameters';
+
 import { HLFServices } from './service/HLFservice';
 import { QueryStateService } from './service/QueryStateService';
 import { SiteService } from './service/SiteService';
@@ -11,6 +14,7 @@ export class ReferenceEnergyAccountController {
 
     public static async createReferenceEnergyAccount(
         ctx: Context,
+        params: Parameters,
         inputStr: string) {
         console.info('============= START : Create ReferenceEnergyAccount ===========');
 
@@ -39,7 +43,7 @@ export class ReferenceEnergyAccountController {
 
         let siteAsBytes : Uint8Array
         try {
-            siteAsBytes = await SiteService.getRaw(ctx,energyAccountInput.meteringPointMrid);
+            siteAsBytes = await SiteService.getRaw(ctx, params, energyAccountInput.meteringPointMrid);
         } catch(error) {
             throw new Error(`Site : ${energyAccountInput.meteringPointMrid} does not exist for Reference Energy Account ${energyAccountInput.energyAccountMarketDocumentMrid} creation.`);
         }

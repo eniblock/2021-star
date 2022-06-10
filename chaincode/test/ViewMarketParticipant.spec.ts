@@ -18,23 +18,8 @@ class TestContext {
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
-        this.clientIdentity.getMSPID.returns('FakeMspID');
+        this.clientIdentity.getMSPID.returns(Values.FakeMSP);
         this.stub = sinon.createStubInstance(ChaincodeStub);
-
-        this.stub.putState.callsFake((key, value) => {
-            if (!this.stub.states) {
-                this.stub.states = {};
-            }
-            this.stub.states[key] = value;
-        });
-
-        this.stub.getState.callsFake(async (key) => {
-            let ret;
-            if (this.stub.states) {
-                ret = this.stub.states[key];
-            }
-            return Promise.resolve(ret);
-        });
     }
 }
 

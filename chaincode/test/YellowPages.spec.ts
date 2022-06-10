@@ -24,23 +24,8 @@ class TestContext {
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
-        this.clientIdentity.getMSPID.returns('FakeMspID');
+        this.clientIdentity.getMSPID.returns(Values.FakeMSP);
         this.stub = sinon.createStubInstance(ChaincodeStub);
-
-        this.stub.putState.callsFake((key, value) => {
-            if (!this.stub.states) {
-                this.stub.states = {};
-            }
-            this.stub.states[key] = value;
-        });
-
-        this.stub.getState.callsFake(async (key) => {
-            let ret;
-            if (this.stub.states) {
-                ret = this.stub.states[key];
-            }
-            return Promise.resolve(ret);
-        });
     }
 }
 
@@ -113,7 +98,8 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             transactionContext.clientIdentity.getMSPID.returns(Values.FakeMSP);
@@ -129,7 +115,8 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const input = await Values.deleteJSONField(JSON.stringify(Values.HTA_yellowPage), 'originAutomationRegisteredResourceMrid');
@@ -146,7 +133,8 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const input = await Values.deleteJSONField(JSON.stringify(Values.HTA_yellowPage), 'registeredResourceMrid');
@@ -163,7 +151,8 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const input = await Values.deleteJSONField(JSON.stringify(Values.HTA_yellowPage), 'systemOperatorMarketParticipantMrid');
@@ -180,7 +169,8 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             try {
@@ -196,7 +186,8 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             await star.CreateYellowPages(transactionContext, JSON.stringify(Values.HTA_yellowPage));

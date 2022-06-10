@@ -1,8 +1,0 @@
-{
-   "index":{
-      "fields":["docType","yellowPageMrid","originAutomationRegisteredResourceMrid","registeredResourceMrid", "systemOperatorMarketParticipantMrid"]
-   },
-   "ddoc":"indexYellowPagesDoc",
-   "name":"indexYellowPages",
-   "type":"json"
-}

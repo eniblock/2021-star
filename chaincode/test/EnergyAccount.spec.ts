@@ -10,6 +10,7 @@ import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
 import { EnergyAccount } from '../src/model/energyAccount';
+import { Parameters } from '../src/model/parameters';
 
 import { ParametersController } from '../src/controller/ParametersController';
 import { ParametersType } from '../src/enums/ParametersType';
@@ -24,23 +25,8 @@ class TestContext {
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
-        this.clientIdentity.getMSPID.returns('FakeMspID');
+        this.clientIdentity.getMSPID.returns(Values.FakeMSP);
         this.stub = sinon.createStubInstance(ChaincodeStub);
-
-        this.stub.putState.callsFake((key, value) => {
-            if (!this.stub.states) {
-                this.stub.states = {};
-            }
-            this.stub.states[key] = value;
-        });
-
-        this.stub.getState.callsFake(async (key) => {
-            let ret;
-            if (this.stub.states) {
-                ret = this.stub.states[key];
-            }
-            return Promise.resolve(ret);
-        });
     }
 }
 
@@ -385,7 +371,8 @@ describe('Star Tests EnergyAccount', () => {
         it('should return SUCCESS CreateEnergyAccount HTA', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(Values.HTA_EnergyAccount_a3));
@@ -398,7 +385,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const energyaccount_str = JSON.stringify(energyaccount);
@@ -416,7 +404,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const energyaccount_str = JSON.stringify(energyaccount);
@@ -433,7 +422,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             try {
@@ -451,7 +441,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const energyaccount_str = await Values.deleteJSONField(JSON.stringify(energyaccount), "marketEvaluationPointMrid");
@@ -486,7 +477,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from("XXXX"));
 
             const energyaccount_str = JSON.stringify(energyaccount);
@@ -502,7 +494,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from("XXXXX"));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             const energyaccount_str = JSON.stringify(energyaccount);
@@ -543,7 +536,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             energyaccount.senderMarketParticipantMrid = "17V000000992746666"
@@ -562,7 +556,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             const energyaccount_str = JSON.stringify(energyaccount);
@@ -578,7 +573,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             const energyaccount_str = await Values.deleteJSONField(JSON.stringify(energyaccount), "marketEvaluationPointMrid");
@@ -595,7 +591,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
 
@@ -616,7 +613,8 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(energyaccount));

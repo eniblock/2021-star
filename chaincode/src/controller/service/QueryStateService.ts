@@ -20,15 +20,17 @@ export class QueryStateService {
         collection: string): Promise<Iterators.StateQueryIterator>  {
         console.debug('============= START : getPrivateQueryResult %s : %s QueryStateService ===========', query, collection);
 
-        const iterator:any = await ctx.stub.getPrivateDataQueryResult(collection, query);
-        var returned_iterator;
+        const iterator: any = await ctx.stub.getPrivateDataQueryResult(collection, query);
+        var returned_iterator: any;
 
         //Sometimes iterator is StateQueryResponse object instead of StateQueryIterator object
 
-        if (iterator.iterator) {
-            returned_iterator = iterator.iterator;
-        } else {
-            returned_iterator = iterator;
+        if (iterator) {
+            if (iterator.iterator) {
+                returned_iterator = iterator.iterator;
+            } else {
+                returned_iterator = iterator;
+            }
         }
         console.debug('============= END : getPrivateQueryResult QueryStateService ===========');
         return returned_iterator;

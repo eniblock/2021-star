@@ -24,16 +24,16 @@ export class ProducerController {
             throw new Error(`ERROR createProducer-> Input string NON-JSON value`);
         }
 
-        const producerInput = Producer.schema.validateSync(
+        Producer.schema.validateSync(
             producerObj,
             {strict: true, abortEarly: false},
         );
 
-        await ProducerService.write(ctx, producerInput);
+        await ProducerService.write(ctx, producerObj);
 
         console.info(
             '============= END   : Create %s Producer Market Participant ===========',
-            producerInput.producerMarketParticipantMrid,
+            producerObj.producerMarketParticipantMrid,
         );
     }
 

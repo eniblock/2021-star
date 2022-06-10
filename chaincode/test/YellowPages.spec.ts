@@ -10,6 +10,7 @@ import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
 import { YellowPages } from '../src/model/yellowPages';
+import { Parameters } from '../src/model/parameters';
 
 import { ParametersController } from '../src/controller/ParametersController';
 import { ParametersType } from '../src/enums/ParametersType';

@@ -629,7 +629,7 @@ describe('Star Tests ActivationDocument', () => {
             const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
 
-            let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid);
+            let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid as string);
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
             expect(ret.length).to.equal(1);
@@ -834,10 +834,10 @@ describe('Star Tests ActivationDocument', () => {
 
             const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustEndDate));
 
-            const senderMarketParticipantMrid: string = activationDocument_Reconciliation.senderMarketParticipantMrid;
+            const senderMarketParticipantMrid: string = activationDocument_Reconciliation.senderMarketParticipantMrid as string;
             const registeredResourceMrid: string = activationDocument_Reconciliation.registeredResourceMrid;
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime;
+            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
 
             const pcuetmt:number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
 
@@ -928,7 +928,7 @@ describe('Star Tests ActivationDocument', () => {
             activationDocumentStartOldest.docType="activationDocument";
             activationDocumentStartOldest.potentialParent= true;
             activationDocumentStartOldest.potentialChild= false;
-            var dateoldest = new Date(activationDocumentStartOldest.startCreatedDateTime);
+            var dateoldest = new Date(activationDocumentStartOldest.startCreatedDateTime as string);
             dateoldest = new Date(dateoldest.getTime() - 2);
             activationDocumentStartOldest.startCreatedDateTime = JSON.stringify(dateoldest);
 
@@ -939,10 +939,10 @@ describe('Star Tests ActivationDocument', () => {
 
             const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustEndDate));
 
-            const senderMarketParticipantMrid: string = activationDocument_Reconciliation.senderMarketParticipantMrid;
+            const senderMarketParticipantMrid: string = activationDocument_Reconciliation.senderMarketParticipantMrid as string;
             const registeredResourceMrid: string = activationDocument_Reconciliation.registeredResourceMrid;
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime;
+            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
 
             const pcuetmt:number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
 
@@ -1031,10 +1031,10 @@ describe('Star Tests ActivationDocument', () => {
 
             const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustEndDate));
 
-            const senderMarketParticipantMrid: string = activationDocument_Reconciliation.senderMarketParticipantMrid;
+            const senderMarketParticipantMrid: string = activationDocument_Reconciliation.senderMarketParticipantMrid as string;
             const registeredResourceMrid: string = activationDocument_Reconciliation.registeredResourceMrid;
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime;
+            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
 
             const pcuetmt:number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
 
@@ -1132,7 +1132,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime;
+            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
             const datetmp = new Date(queryDate);
             datetmp.setUTCMilliseconds(0);
             datetmp.setUTCSeconds(0);
@@ -1230,7 +1230,7 @@ describe('Star Tests ActivationDocument', () => {
             activationDocumentOldest.docType="activationDocument";
             activationDocumentOldest.potentialParent= true;
             activationDocumentOldest.potentialChild= false;
-            var dateoldest = new Date(activationDocumentOldest.startCreatedDateTime);
+            var dateoldest = new Date(activationDocumentOldest.startCreatedDateTime as string);
             dateoldest = new Date(dateoldest.getTime() - 2);
             activationDocumentOldest.startCreatedDateTime = JSON.stringify(dateoldest);
 
@@ -1251,7 +1251,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime;
+            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
             const datetmp = new Date(queryDate);
             datetmp.setUTCMilliseconds(0);
             datetmp.setUTCSeconds(0);
@@ -1351,7 +1351,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime;
+            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
             const datetmp = new Date(queryDate);
             datetmp.setUTCMilliseconds(0);
             datetmp.setUTCSeconds(0);
@@ -1471,7 +1471,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime;
+            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
             const datetmp = new Date(queryDate);
             datetmp.setUTCMilliseconds(0);
             datetmp.setUTCSeconds(0);
@@ -1595,7 +1595,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime;
+            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
             const datetmp = new Date(queryDate);
             datetmp.setUTCMilliseconds(0);
             datetmp.setUTCSeconds(0);
@@ -1638,7 +1638,7 @@ describe('Star Tests ActivationDocument', () => {
             const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
 
-            let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid);
+            let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid as string);
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
             expect(ret.length).to.equal(1);
@@ -1694,14 +1694,14 @@ describe('Star Tests ActivationDocument', () => {
 
             const activationDocument_Parent: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
             activationDocument_Parent.docType="activationDocument";
-            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime, 5*24*60*60*1000);
+            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime as string, 5*24*60*60*1000);
             activationDocument_Parent.potentialParent= true;
             activationDocument_Parent.potentialChild= false;
 
             const activationDocument_Child: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
             activationDocument_Child.docType="activationDocument";
-            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime, 5*24*60*60*1000);
-            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime, 5*24*60*60*1000);
+            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime as string, 5*24*60*60*1000);
+            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime as string, 5*24*60*60*1000);
             activationDocument_Child.potentialParent= false;
             activationDocument_Child.potentialChild= true;
 
@@ -1832,14 +1832,14 @@ describe('Star Tests ActivationDocument', () => {
 
             const activationDocument_Parent: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
             activationDocument_Parent.docType="activationDocument";
-            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime, ppcott+1);
+            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime as string, ppcott+1);
             activationDocument_Parent.potentialParent= true;
             activationDocument_Parent.potentialChild= false;
 
             const activationDocument_Child: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
             activationDocument_Child.docType="activationDocument";
-            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime, ppcott+1);
-            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime, ppcott+1);
+            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime as string, ppcott+1);
+            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime as string, ppcott+1);
             activationDocument_Child.potentialParent= false;
             activationDocument_Child.potentialChild= true;
 
@@ -1910,14 +1910,14 @@ describe('Star Tests ActivationDocument', () => {
 
             const activationDocument_Parent: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
             activationDocument_Parent.docType="activationDocument";
-            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime, ppcott+1);
+            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime as string, ppcott+1);
             activationDocument_Parent.potentialParent= true;
             activationDocument_Parent.potentialChild= false;
 
             const activationDocument_Child: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
             activationDocument_Child.docType="activationDocument";
-            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime, ppcott+1);
-            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime, ppcott+1);
+            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime as string, ppcott+1);
+            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime as string, ppcott+1);
             activationDocument_Child.potentialParent= false;
             activationDocument_Child.potentialChild= true;
 
@@ -1932,7 +1932,7 @@ describe('Star Tests ActivationDocument', () => {
             const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
 
-            let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid);
+            let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid as string);
             ret = JSON.parse(ret);
             // console.log('ret=', ret)
             expect(ret.length).to.equal(1);
@@ -1987,14 +1987,14 @@ describe('Star Tests ActivationDocument', () => {
 
             const activationDocument_Parent: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
             activationDocument_Parent.docType="activationDocument";
-            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime, ppcott+1);
+            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime as string, ppcott+1);
             activationDocument_Parent.potentialParent= true;
             activationDocument_Parent.potentialChild= false;
 
             const activationDocument_Child: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
             activationDocument_Child.docType="activationDocument";
-            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime, ppcott+1);
-            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime, ppcott+1);
+            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime as string, ppcott+1);
+            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime as string, ppcott+1);
             activationDocument_Child.potentialParent= false;
             activationDocument_Child.potentialChild= true;
 

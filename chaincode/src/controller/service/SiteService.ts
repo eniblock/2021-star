@@ -1,17 +1,17 @@
 import { Context } from "fabric-contract-api";
-import { Iterators } from "fabric-shim";
+import { Parameters } from '../../model/parameters';
 import { ParametersType } from "../../enums/ParametersType";
 import { Site } from "../../model/site";
-import { ParametersController } from "../ParametersController";
 import { QueryStateService } from "./QueryStateService";
 
 export class SiteService {
     public static async getRaw(
         ctx: Context,
+        params: Parameters,
         id: string): Promise<Uint8Array> {
         console.debug('============= START : getRaw %s SiteService ===========', id);
 
-        const collections: string[] = await ParametersController.getParameter(ctx, ParametersType.SITE);
+        const collections: string[] = params.values.get(ParametersType.SITE);
 
         var siteAsBytes: Uint8Array = new Uint8Array();
         var i=0;
@@ -32,10 +32,11 @@ export class SiteService {
 
     public static async write(
         ctx: Context,
+        params: Parameters,
         siteInput: Site): Promise<void> {
         console.debug('============= START : Write %s SiteService ===========', siteInput.meteringPointMrid);
 
-        const collections: string[] = await ParametersController.getParameter(ctx, ParametersType.SITE);
+        const collections: string[] = params.values.get(ParametersType.SITE);
 
         siteInput.docType = 'site';
         await ctx.stub.putPrivateData(collections[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
@@ -48,7 +49,7 @@ export class SiteService {
     //     query: string): Promise<Iterators.StateQueryIterator>  {
     //     console.debug('============= START : getQueryResult %s SiteService ===========', query);
 
-    //     const collection: string = await ParametersController.getParameter(ctx, ParametersType.SITE);
+    //     const collection: string = await ParametersController.getParameterValues(ctx, ParametersType.SITE);
     //     const iterator = await ctx.stub.getPrivateDataQueryResult(collection, query);
 
     //     console.debug('============= END : getQueryResult %s SiteService ===========', query);
@@ -58,10 +59,11 @@ export class SiteService {
 
     public static async getQueryStringResult(
         ctx: Context,
+        params: Parameters,
         query: string): Promise<string>  {
         console.debug('============= START : getQueryStringResult SiteService ===========');
 
-        const allResults = await SiteService.getPrivateQueryArrayResult(ctx, query);
+        const allResults = await SiteService.getPrivateQueryArrayResult(ctx, params, query);
         const formated = JSON.stringify(allResults);
 
         console.debug('============= END : getQueryStringResult SiteService ===========');
@@ -70,10 +72,11 @@ export class SiteService {
 
     public static async getPrivateQueryArrayResult(
         ctx: Context,
+        params: Parameters,
         query: string): Promise<any>  {
         console.debug('============= START : getPrivateQueryArrayResult SiteService ===========');
 
-        const collections: string[] = await ParametersController.getParameter(ctx, ParametersType.SITE);
+        const collections: string[] = params.values.get(ParametersType.SITE);
         var allResults = [];
 
         var i=0;
@@ -96,7 +99,7 @@ export class SiteService {
     //     query: string): Promise<Iterators.StateQueryIterator>  {
     //     console.debug('============= START : getQueryResult %s Site ===========', query);
 
-    //     const collection: string = await ParametersController.getParameter(ctx, ParametersType.SITE);
+    //     const collection: string = await ParametersController.getParameterValues(ctx, ParametersType.SITE);
 
     //     const siteAsBytes = await ctx.stub.getPrivateDataQueryResult(collection, query);
 

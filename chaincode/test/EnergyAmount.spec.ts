@@ -10,6 +10,7 @@ import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 import { Star } from '../src/star'
 import { EnergyAmount } from '../src/model/energyAmount';
 import { ActivationDocument } from '../src/model/activationDocument';
+import { Parameters } from '../src/model/parameters';
 
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
@@ -23,23 +24,8 @@ class TestContext {
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
-        this.clientIdentity.getMSPID.returns('FakeMspID');
+        this.clientIdentity.getMSPID.returns(Values.FakeMSP);
         this.stub = sinon.createStubInstance(ChaincodeStub);
-
-        this.stub.putState.callsFake((key, value) => {
-            if (!this.stub.states) {
-                this.stub.states = {};
-            }
-            this.stub.states[key] = value;
-        });
-
-        this.stub.getState.callsFake(async (key) => {
-            let ret;
-            if (this.stub.states) {
-                ret = this.stub.states[key];
-            }
-            return Promise.resolve(ret);
-        });
     }
 }
 
@@ -160,9 +146,10 @@ describe('Star Tests EnergyAmount', () => {
         it('should return SUCCESS CreateTSOEnergyAmount.', async () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate)));
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
 
@@ -190,11 +177,12 @@ describe('Star Tests EnergyAmount', () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
-            const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
+            const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
             activationDocument.registeredResourceMrid = 'toto';
             transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
@@ -207,9 +195,10 @@ describe('Star Tests EnergyAmount', () => {
         it('should return ERROR CreateTSOEnergyAmount Broken Site.', async () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from("XXX"));
+            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate)));
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).resolves(Buffer.from("XXX"));
 
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
@@ -222,16 +211,17 @@ describe('Star Tests EnergyAmount', () => {
         it('should return ERROR CreateTSOEnergyAmount mismatch registeredResourceMrid.', async () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate)));
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             try {
                 energyamount.registeredResourceMrid = "toto";
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createTSOEnergyAmount mismatch beetween registeredResourceMrid in Activation Document : '.concat(Values.HTB_ActivationDocument_Valid.registeredResourceMrid).concat(' and Energy Amount : toto.'));
+                expect(err.message).to.equal('ERROR createTSOEnergyAmount mismatch beetween registeredResourceMrid in Activation Document : '.concat(Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).concat(' and Energy Amount : toto.'));
             }
         });
 
@@ -275,9 +265,10 @@ describe('Star Tests EnergyAmount', () => {
         it('should return ERROR CreateTSOEnergyAmount mismatch date.', async () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate)));
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             try {
                 energyamount.timeInterval = "2021-10-30T01:01:01.001Z / 2021-10-23T30:59:59.999Z";

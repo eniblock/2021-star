@@ -11,5 +11,5 @@ export class Parameters {
     });
 
     public docType?: string;
-    public values: Map<string,string>;
+    public values: Map<string,any>;
 }

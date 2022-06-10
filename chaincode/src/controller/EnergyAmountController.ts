@@ -1,9 +1,13 @@
 import { Context } from 'fabric-contract-api';
+
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
+
 import { ActivationDocument } from '../model/activationDocument';
 import { EnergyAmount } from '../model/energyAmount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
+import { Parameters } from '../model/parameters';
+
 import { HLFServices } from './service/HLFservice';
 import { QueryStateService } from './service/QueryStateService';
 import { SiteService } from './service/SiteService';
@@ -12,6 +16,7 @@ export class EnergyAmountController {
 
     public static async createTSOEnergyAmount(
         ctx: Context,
+        params: Parameters,
         inputStr: string) {
         console.info('============= START : Create EnergyAmount ===========');
 
@@ -46,7 +51,7 @@ export class EnergyAmountController {
 
         var siteAsBytes:Uint8Array;
         try {
-            siteAsBytes = await SiteService.getRaw(ctx,orderObj.registeredResourceMrid);
+            siteAsBytes = await SiteService.getRaw(ctx, params, orderObj.registeredResourceMrid);
         } catch(error) {
             throw new Error(`Site : ${orderObj.registeredResourceMrid} does not exist in Activation Document : ${energyAmountInput.activationDocumentMrid} for Energy Amount : ${energyAmountInput.energyAmountMarketDocumentMrid} creation.`);
         }
@@ -113,6 +118,7 @@ export class EnergyAmountController {
 
     public static async updateTSOEnergyAmount(
         ctx: Context,
+        params: Parameters,
         inputStr: string) {
         console.info('============= START : Update EnergyAmount ===========');
 
@@ -147,7 +153,7 @@ export class EnergyAmountController {
 
         var siteAsBytes:Uint8Array;
         try {
-            siteAsBytes = await SiteService.getRaw(ctx,orderObj.registeredResourceMrid);
+            siteAsBytes = await SiteService.getRaw(ctx, params, orderObj.registeredResourceMrid);
         } catch(error) {
             throw new Error(`Site : ${orderObj.registeredResourceMrid} does not exist in Activation Document : ${energyAmountInput.activationDocumentMrid} for Energy Amount : ${energyAmountInput.energyAmountMarketDocumentMrid} update.`);
         }

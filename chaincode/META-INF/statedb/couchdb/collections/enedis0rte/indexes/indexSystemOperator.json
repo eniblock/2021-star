@@ -1,8 +1,0 @@
-{
-   "index":{
-      "fields":["docType","systemOperatorMarketParticipantMrid","systemOperatorMarketParticipantName", "systemOperatorMarketParticipantRoleType"]
-   },
-   "ddoc":"indexMarketParticipantDoc",
-   "name":"indexMarketParticipant",
-   "type":"json"
-}

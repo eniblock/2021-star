@@ -36,11 +36,13 @@ export class SystemOperatorService {
     public static async getQueryResult(
         ctx: Context,
         query: string): Promise<Iterators.StateQueryIterator>  {
-        console.debug('============= START : getQueryResult %s SystemOperatorService ===========', query);
+        console.debug('============= START : getQueryResult SystemOperatorService ===========', );
+
+        // console.debug(query);
 
         const iterator = await ctx.stub.getQueryResult(query);
 
-        console.debug('============= END : getQueryResult %s SystemOperatorService ===========', query);
+        console.debug('============= END : getQueryResult SystemOperatorService ===========');
         return iterator;
     }
 

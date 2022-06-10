@@ -12,6 +12,8 @@ import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
 import { Values } from './Values';
 import { EnergyAccount } from '../src/model/energyAccount';
+import { Parameters } from '../src/model/parameters';
+
 import { ParametersType } from '../src/enums/ParametersType';
 import { ParametersController } from '../src/controller/ParametersController';
 

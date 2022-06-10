@@ -692,8 +692,9 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             // let ret = await star.GetEnergyAccountForSystemOperator(transactionContext, nrj1.revisionNumber, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
+
             let ret = await star.GetEnergyAccountForSystemOperator(transactionContext,
-                Values.HTA_EnergyAccount_a1.revisionNumber,
+                Values.HTA_EnergyAccount_a1.revisionNumber as string,
                 Values.HTA_EnergyAccount_a1.senderMarketParticipantMrid,
                 Values.HTA_EnergyAccount_a1.createdDateTime);
             ret = JSON.parse(ret);

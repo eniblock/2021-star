@@ -10,6 +10,7 @@ import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
 import { Site } from "../src/model/site";
+import { Parameters } from '../src/model/parameters';
 
 import { ParametersController } from '../src/controller/ParametersController';
 import { ParametersType } from '../src/enums/ParametersType';
@@ -24,23 +25,8 @@ class TestContext {
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
-        this.clientIdentity.getMSPID.returns('FakeMspID');
+        this.clientIdentity.getMSPID.returns(Values.FakeMSP);
         this.stub = sinon.createStubInstance(ChaincodeStub);
-
-        this.stub.putState.callsFake((key, value) => {
-            if (!this.stub.states) {
-                this.stub.states = {};
-            }
-            this.stub.states[key] = value;
-        });
-
-        this.stub.getState.callsFake(async (key) => {
-            let ret;
-            if (this.stub.states) {
-                ret = this.stub.states[key];
-            }
-            return Promise.resolve(ret);
-        });
     }
 
 }
@@ -188,7 +174,8 @@ describe('Star Tests SITES', () => {
 
             await star.CreateSite(transactionContext, JSON.stringify(Values.HTB_site_valid));
 
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const siteInput = JSON.parse(JSON.stringify(Values.HTB_site_valid));
             siteInput.docType = 'site';
@@ -206,7 +193,8 @@ describe('Star Tests SITES', () => {
 
             await star.CreateSite(transactionContext, JSON.stringify(Values.HTA_site_valid));
 
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const siteInput = JSON.parse(JSON.stringify(Values.HTA_site_valid));
             siteInput.docType = 'site';
@@ -261,7 +249,8 @@ describe('Star Tests SITES', () => {
             siteOutput.docType = 'site';
 
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteOutput.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteOutput)));
 
             let test = JSON.parse(await star.QuerySite(transactionContext, siteOutput.meteringPointMrid));
@@ -296,7 +285,8 @@ describe('Star Tests SITES', () => {
         it('should return success on getSiteBySystemOperator', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionNames[0], mockHandler)
             const queryHTA = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${Values.HTA_site_valid.systemOperatorMarketParticipantMrid}"}}`;
@@ -391,7 +381,8 @@ describe('Star Tests SITES', () => {
         it('should return success on getSiteByProducer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionNames[0], mockHandler)
             const queryHTA = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${Values.HTA_site_valid.producerMarketParticipantMrid}"}}`;
@@ -466,7 +457,8 @@ describe('Star Tests SITES', () => {
 
         it('should return success on getSites for producer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-            const collectionNames:string[]=await ParametersController.getParameter(transactionContext, ParametersType.SITE);
+            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const producerMarketParticipantMrid = Values.HTA_site_valid_ProdA.producerMarketParticipantMrid;
 

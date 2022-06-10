@@ -1,9 +1,12 @@
 import { Context } from 'fabric-contract-api';
-import { date } from 'yup/lib/locale';
+
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
+
 import { EnergyAccount } from '../model/energyAccount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
+import { Parameters } from '../model/parameters';
+
 import { HLFServices } from './service/HLFservice';
 import { QueryStateService } from './service/QueryStateService';
 import { SiteService } from './service/SiteService';
@@ -12,9 +15,10 @@ export class EnergyAccountController {
 
     public static async createEnergyAccount(
         ctx: Context,
+        params: Parameters,
         inputStr: string) {
         console.info('============= START : Create EnergyAccount ===========');
-        const energyAccountInput = await EnergyAccountController.checkEnergyAccount(ctx, inputStr);
+        const energyAccountInput = await EnergyAccountController.checkEnergyAccount(ctx, params, inputStr);
         await ctx.stub.putState(
             energyAccountInput.energyAccountMarketDocumentMrid,
             Buffer.from(JSON.stringify(energyAccountInput)),
@@ -28,9 +32,10 @@ export class EnergyAccountController {
 
     public static async updateEnergyAccount(
         ctx: Context,
+        params: Parameters,
         inputStr: string) {
         console.info('============= START : Update EnergyAccount ===========');
-        const energyAccountInput = await EnergyAccountController.checkEnergyAccount(ctx, inputStr);
+        const energyAccountInput = await EnergyAccountController.checkEnergyAccount(ctx, params, inputStr);
         const energyAccountAsBytes = await ctx.stub.getState(energyAccountInput.energyAccountMarketDocumentMrid);
         if (!energyAccountAsBytes || energyAccountAsBytes.length === 0) {
             throw new Error(`${energyAccountInput.energyAccountMarketDocumentMrid} does not exist. Can not be updated.`);
@@ -45,8 +50,11 @@ export class EnergyAccountController {
         );
     }
 
-    private static async checkEnergyAccount(ctx: Context,
-                                            inputStr: string): Promise<any>{
+    private static async checkEnergyAccount(
+        ctx: Context,
+        params: Parameters,
+        inputStr: string): Promise<any>{
+
         const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Account.`);
@@ -66,7 +74,7 @@ export class EnergyAccountController {
 
         var siteAsBytes:Uint8Array;
         try {
-            siteAsBytes = await SiteService.getRaw(ctx,energyAccountInput.meteringPointMrid);
+            siteAsBytes = await SiteService.getRaw(ctx, params, energyAccountInput.meteringPointMrid);
         } catch(error) {
             throw new Error(`Site : ${energyAccountInput.meteringPointMrid} does not exist for Energy Account ${energyAccountInput.energyAccountMarketDocumentMrid} creation.`);
         }

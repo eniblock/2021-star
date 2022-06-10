@@ -11,6 +11,10 @@ import { EnergyAccount } from "../src/model/energyAccount";
 export class Values {
     public static FakeMSP = 'FakeMSP';
 
+    /*********************************************/
+    /*                 TOOLS                     */
+    /*********************************************/
+
 
     public static async deleteJSONField(jsonvalue: string, todelete: string): Promise<string> {
         let value:string = JSON.parse(JSON.stringify(jsonvalue));
@@ -23,6 +27,40 @@ export class Values {
         }
         return newvalue;
     }
+
+    private static getStartDate(): Date {
+        var dateStart = new Date();
+        dateStart.setUTCMilliseconds(1);
+        dateStart.setUTCSeconds(0);
+        dateStart.setMinutes(0);
+        dateStart.setHours(0);
+
+        //dateStart is yesterday at 00h00'00''001
+        dateStart = new Date(dateStart.getTime() - 86400000);
+
+        return dateStart;
+    }
+
+    private static getEndDate(): Date {
+        var dateEnd = Values.getStartDate();
+
+        //dateEnd is dateStart at 23h29'10''001
+        dateEnd.setHours(23);
+        dateEnd.setMinutes(29);
+        dateEnd.setSeconds(10);
+
+        return dateEnd;
+    }
+
+
+    public static reduceDateStr(dateref: string, reducing: number): string {
+        var reducedDate = new Date(Date.parse(dateref));
+
+        reducedDate = new Date(reducedDate.getTime() - reducing);
+
+        return JSON.parse(JSON.stringify(reducedDate));
+    }
+
 
     /*********************************************/
     /*               PRODUCER                    */
@@ -279,15 +317,15 @@ export class Values {
 
     public static HTB_yellowPage: YellowPages = {
         yellowPageMrid: 'ypId_HTB',
-        originAutomationRegisteredResourceMrid: 'CRIVA1_TSO_Y411',
-        registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
+        originAutomationRegisteredResourceMrid: Values.HTA_site_valid.meteringPointMrid,
+        registeredResourceMrid: 'CRIVA1_TSO_Y411',
         systemOperatorMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid
     };
 
     public static HTA_yellowPage: YellowPages = {
         yellowPageMrid: 'ypId_HTA',
         originAutomationRegisteredResourceMrid: 'CRIVA1_DSO_Y411',
-        registeredResourceMrid: Values.HTA_site_valid.meteringPointMrid,
+        registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
         systemOperatorMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid
     };
 
@@ -330,15 +368,13 @@ export class Values {
         orderEnd: false,
 
         orderValue: '1',
-        startCreatedDateTime: "2021-10-22T01:01:01.001Z",
+        startCreatedDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
         // testDateTime: 'Date', // Test DELETE ME //////////////////////
-        endCreatedDateTime: "2021-10-22T23:29:10.000Z",
+        endCreatedDateTime: JSON.parse(JSON.stringify(Values.getEndDate())),
         revisionNumber: '1',
         reasonCode: 'string', // optionnal in case of TVC modulation
         senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
-        // reconciliation: false,
-        // subOrderList: [],
     }
 
     public static HTA_ActivationDocument_Valid_Doc2: ActivationDocument = {
@@ -351,19 +387,17 @@ export class Values {
         orderEnd: false,
 
         orderValue: '1',
-        startCreatedDateTime: "2021-10-22T10:29:10.000Z",
+        startCreatedDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
         // testDateTime: 'Date', // Test DELETE ME //////////////////////
-        endCreatedDateTime: "2021-10-22T23:29:10.000Z",
+        endCreatedDateTime: JSON.parse(JSON.stringify(Values.getEndDate())),
         revisionNumber: '1',
         reasonCode: 'string', // optionnal in case of TVC modulation
         senderMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
-        // reconciliation: false,
-        // subOrderList: [],
     }
 
-    public static HTB_ActivationDocument_Valid: ActivationDocument = {
-        activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1",
+    public static HTB_ActivationDocument_JustStartDate: ActivationDocument = {
+        activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1-r1",
         originAutomationRegisteredResourceMrid: Values.HTB_yellowPage.originAutomationRegisteredResourceMrid,
         registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
         measurementUnitName: "MW",
@@ -372,35 +406,31 @@ export class Values {
 
         orderEnd: false,
         orderValue: "1",
-        startCreatedDateTime: "2021-10-22T01:01:01.001Z",
+        startCreatedDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
         revisionNumber: "1",
         reasonCode: "string",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid
     }
 
-    public static HTA_ActivationDocument_HTB: ActivationDocument = {
-        activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f11', // PK
-        originAutomationRegisteredResourceMrid: Values.HTA_yellowPage.originAutomationRegisteredResourceMrid, // FK1
+    public static HTB_ActivationDocument_JustEndDate: ActivationDocument = {
+        activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1-r2",
+        originAutomationRegisteredResourceMrid: Values.HTB_yellowPage.originAutomationRegisteredResourceMrid,
         registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
-        measurementUnitName: 'KW',
-        messageType: 'string',
-        businessType: 'string',
-        orderEnd: false,
+        measurementUnitName: "MW",
+        messageType: "string",
+        businessType: "string",
 
-        orderValue: '1',
-        startCreatedDateTime: "2021-10-22T01:01:01.001Z",
-        // testDateTime: 'Date', // Test DELETE ME //////////////////////
-        endCreatedDateTime: "2021-10-22T23:29:10.000Z",
-        revisionNumber: '1',
-        reasonCode: 'string', // optionnal in case of TVC modulation
+        orderEnd: false,
+        orderValue: "1",
+        endCreatedDateTime: JSON.parse(JSON.stringify(Values.getEndDate())),
+        revisionNumber: "1",
+        reasonCode: "string",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
-        receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
-        // reconciliation: false,
-        // subOrderList: [],
+        receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid
     }
 
-    public static HTB_ActivationDocument_HTA: ActivationDocument = {
+    public static HTB_ActivationDocument_HTA_JustStartDate: ActivationDocument = {
         activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f12",
         originAutomationRegisteredResourceMrid: Values.HTA_yellowPage.originAutomationRegisteredResourceMrid,
         registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
@@ -410,47 +440,13 @@ export class Values {
 
         orderEnd: false,
         orderValue: "1",
-        startCreatedDateTime: "2021-10-22T01:01:01.001Z",
+        startCreatedDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
         revisionNumber: "1",
         reasonCode: "string",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid
     }
 
-    public static HTB_ActivationDocument_HTA_EndDate: ActivationDocument = {
-        activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f12",
-        originAutomationRegisteredResourceMrid: Values.HTA_yellowPage.originAutomationRegisteredResourceMrid,
-        registeredResourceMrid: Values.HTA_site_valid.meteringPointMrid,
-        measurementUnitName: "MW",
-        messageType: "string",
-        businessType: "string",
-
-        orderEnd: false,
-        orderValue: "1",
-        startCreatedDateTime: "2021-10-22T01:01:01.001Z",
-        endCreatedDateTime: "2021-10-22T23:29:10.000Z",
-        revisionNumber: "1",
-        reasonCode: "string",
-        senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
-        receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid
-    }
-
-    public static HTB_ActivationDocument_HTA_EndTrue: ActivationDocument = {
-        activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f3",
-        originAutomationRegisteredResourceMrid: Values.HTA_yellowPage.originAutomationRegisteredResourceMrid,
-        registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
-        measurementUnitName: "MW",
-        messageType: "string",
-        businessType: "string",
-
-        orderEnd: true,
-        orderValue: "1",
-        startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-        revisionNumber: "1",
-        reasonCode: "string",
-        senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
-        receiverMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid
-    }
 
 
     /*********************************************/
@@ -469,7 +465,7 @@ export class Values {
     public static HTB_EnergyAmount : EnergyAmount = {
         energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
         activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1",
-        registeredResourceMrid: Values.HTB_ActivationDocument_Valid.registeredResourceMrid,
+        registeredResourceMrid: Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid,
         quantity: "number",
         measurementUnitName: "KW",
         revisionNumber: "1",

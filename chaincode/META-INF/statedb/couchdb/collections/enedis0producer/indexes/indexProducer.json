@@ -1,8 +1,0 @@
-{
-   "index":{
-      "fields":["docType","producerMarketParticipantMrid","producerMarketParticipantName", "producerMarketParticipantRoleType"]
-   },
-   "ddoc":"indexProducerMarketParticipantDoc",
-   "name":"indexProducerMarketParticipant",
-   "type":"json"
-}

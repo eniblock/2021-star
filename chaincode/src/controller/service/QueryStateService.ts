@@ -5,7 +5,9 @@ export class QueryStateService {
     public static async getQueryResult(
         ctx: Context,
         query: string): Promise<Iterators.StateQueryIterator>  {
-        console.debug('============= START : getQueryResult %s QueryStateService ===========', query);
+        console.debug('============= START : getQueryResult QueryStateService ===========');
+
+        // console.debug(query);
 
         const iterator = await ctx.stub.getQueryResult(query);
 
@@ -18,7 +20,10 @@ export class QueryStateService {
         ctx: Context,
         query: string,
         collection: string): Promise<Iterators.StateQueryIterator>  {
-        console.debug('============= START : getPrivateQueryResult %s : %s QueryStateService ===========', query, collection);
+        console.debug('============= START : getPrivateQueryResult QueryStateService ===========');
+
+        // console.debug(query);
+        // console.debug(collection);
 
         const iterator: any = await ctx.stub.getPrivateDataQueryResult(collection, query);
         var returned_iterator: any;
@@ -114,8 +119,9 @@ export class QueryStateService {
         const allResults:any[] = [];
         try {
             let result = await iterator.next();
+
             while (!result.done) {
-                    const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
+                const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
 
                 let record;
                 try {

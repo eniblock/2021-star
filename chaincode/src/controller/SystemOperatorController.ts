@@ -24,12 +24,12 @@ export class SystemOperatorController {
             throw new Error(`ERROR createSystemOperator-> Input string NON-JSON value`);
         }
 
-        const systemOperatorInput = SystemOperator.schema.validateSync(
+        SystemOperator.schema.validateSync(
             systemOperatorObj,
             {strict: true, abortEarly: false},
         );
 
-        if (!identity.toLowerCase().includes(systemOperatorInput.systemOperatorMarketParticipantName.toLowerCase())) {
+        if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
@@ -49,9 +49,9 @@ export class SystemOperatorController {
         console.info('============= START : Query %s System Operator Market Participant ===========', sompId);
 
         const sompAsBytes = await SystemOperatorService.getRaw(ctx, sompId);
+        // console.info(sompId, sompAsBytes.toString());
 
-        console.info('============= END   : Query %s System Operator Market Participant ===========');
-        console.info(sompId, sompAsBytes.toString());
+        console.info('============= END   : Query %s System Operator Market Participant ===========', sompId);
         return sompAsBytes.toString();
     }
 

@@ -3,6 +3,8 @@ import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { YellowPages } from '../model/yellowPages';
 import { HLFServices } from './service/HLFservice';
 import { QueryStateService } from './service/QueryStateService';
+import { SystemOperatorService } from './service/SystemOperatorService';
+import { YellowPagesService } from './service/YellowPagesService';
 
 export class YellowPagesController {
 
@@ -16,37 +18,43 @@ export class YellowPagesController {
             throw new Error(`Organisation, ${identity} does not have write access for Yellow Pages.`);
         }
 
-        let yellowObj: YellowPages;
+        let yellowPageObj: YellowPages;
         try {
-            yellowObj = JSON.parse(inputStr);
+            yellowPageObj = JSON.parse(inputStr);
         } catch (error) {
             // console.error('error=', error);
             throw new Error(`ERROR createYellowPages-> Input string NON-JSON value`);
         }
 
-        const yellowPagesInput = YellowPages.schema.validateSync(
-            yellowObj,
+        YellowPages.schema.validateSync(
+            yellowPageObj,
             {strict: true, abortEarly: false},
         );
 
-        const systemOperatorAsBytes = await ctx.stub.getState(yellowPagesInput.systemOperatorMarketParticipantMrid);
-        if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
-            throw new Error(`System Operator : ${yellowPagesInput.systemOperatorMarketParticipantMrid} does not exist in Yellow Pages ${yellowPagesInput.originAutomationRegisteredResourceMrid}.`);
+        try {
+            await SystemOperatorService.getRaw(ctx, yellowPageObj.systemOperatorMarketParticipantMrid);
+        } catch(error) {
+            throw new Error(error.message.concat(` in Yellow Pages ${yellowPageObj.originAutomationRegisteredResourceMrid}.`));
         }
 
-        yellowPagesInput.docType = 'yellowPages';
-
-        await ctx.stub.putState(
-            yellowPagesInput.yellowPageMrid,
-            Buffer.from(JSON.stringify(yellowPagesInput)),
-        );
+        await YellowPagesService.write(ctx, yellowPageObj);
         console.info(
             '============= END   : Create %s YellowPages ===========',
-            yellowPagesInput.yellowPageMrid,
+            yellowPageObj.yellowPageMrid,
         );
     }
 
     public static async getAllYellowPages(ctx: Context): Promise<string> {
         return await QueryStateService.getAllStates(ctx, "yellowPages");
     }
+
+    public static async getYellowPagesByOriginAutomationRegisteredResource(
+        ctx: Context,
+        originAutomationRegisteredResourceMrid: string): Promise<YellowPages[]> {
+
+        const query = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${originAutomationRegisteredResourceMrid}"}}`;
+        const allResults : YellowPages[] = await QueryStateService.getQueryArrayResult(ctx, query);
+        return allResults;
+    }
+
 }

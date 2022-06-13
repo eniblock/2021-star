@@ -55,6 +55,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 public class SiteService {
     private static final String REGEX = "(?i)(";
+    private static final String STRING_REGEX = "[^A-Za-z0-9.,;\\-\\_:!?%]";
     private static final String METERING_POINT_MRID = "meteringPointMrid";
 
     @Autowired
@@ -215,15 +216,16 @@ public class SiteService {
         Map<String, String> mapProducers = producerRepository.getProducers().stream()
                 .collect(Collectors.toMap(Producer::getProducerMarketParticipantMrid, Producer::getProducerMarketParticipantName));
         importSiteResult.getDatas().forEach(site -> {
+//            String value = site.getSiteName().replaceAll("[^A-Za-z0-9]", " ");
+            String value = site.getSiteName().replaceAll(STRING_REGEX, " ");
+            site.setSiteName(value);
             site.setProducerMarketParticipantName(mapProducers.get(site.getProducerMarketParticipantMrid()));
             if (site.getTechnologyType() != null) {
                 site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getLabel());
             }
         });
-
         return importSiteResult;
     }
-
 
     private ImportSiteResult checkFileContent(String fileName, Reader streamReader, InstanceEnum instance) throws IOException {
         importUtilsService.checkFile(fileName, streamReader, FileExtensionEnum.CSV.getValue());

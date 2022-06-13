@@ -3,22 +3,40 @@ import { Parameters } from '../../model/parameters';
 import { ParametersType } from "../../enums/ParametersType";
 import { ActivationDocument } from "../../model/activationDocument";
 import { QueryStateService } from "./QueryStateService";
+import { HLFServices } from "./HLFservice";
 
 export class ActivationDocumentService {
-    // public static async getRaw(
-    //     ctx: Context,
-    //     prodId: string): Promise<Uint8Array> {
-    //     console.debug('============= START : getRaw %s ActivationDocumentService ===========', prodId);
+    private static async getRaw(
+        ctx: Context,
+        collection: string,
+        id: string): Promise<Uint8Array> {
+        console.debug('============= START : getRaw %s ActivationDocumentService ===========');
 
-    //     const prodAsBytes = await ctx.stub.getState(prodId);
-    //     if (!prodAsBytes || prodAsBytes.length === 0) {
-    //         throw new Error(`ActivationDocument : ${prodId} does not exist`);
-    //     }
+        const prodAsBytes = await ctx.stub.getPrivateData(collection, id);
+        if (!prodAsBytes || prodAsBytes.length === 0) {
+            throw new Error(`ActivationDocument : ${id} does not exist`);
+        }
 
-    //     console.debug('============= END : getRaw %s ActivationDocumentService ===========', prodId);
-    //     return prodAsBytes;
-    // }
+        console.debug('============= END : getRaw %s ActivationDocumentService ===========');
+        return prodAsBytes;
+    }
 
+
+    public static async getObj(
+        ctx: Context,
+        params: Parameters,
+        id: string,
+        target: string = ''): Promise<ActivationDocument> {
+
+        const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
+
+        const activationDocumentAsBytes: Uint8Array = await ActivationDocumentService.getRaw(ctx, collection, id);
+        var activationDocumentObj:ActivationDocument = null;
+        if (activationDocumentAsBytes) {
+            activationDocumentObj = JSON.parse(activationDocumentAsBytes.toString());
+        }
+        return activationDocumentObj;
+    }
 
     public static async write(
         ctx: Context,
@@ -27,13 +45,7 @@ export class ActivationDocumentService {
         target: string = ''): Promise<void> {
         console.debug('============= START : Write %s ActivationDocumentService ===========', activationDocumentInput.activationDocumentMrid);
 
-        const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
-        var collection: string;
-        if (collectionMap.has(target)) {
-            collection = collectionMap.get(target)[0];
-        } else {
-            collection = collectionMap.get(ParametersType.DEFAULT)[0];
-        }
+        const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
 
         activationDocumentInput.docType = 'activationDocument';
 
@@ -48,20 +60,13 @@ export class ActivationDocumentService {
         ctx: Context,
         params: Parameters,
         query: string,
-        target: string = ''): Promise<any[]>  {
+        target: string[] = []): Promise<any[]>  {
         console.debug('============= START : getQueryResult ActivationDocumentService ===========');
 
-        const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
-        var collections: string[];
+        const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
         var allResults: any[] = [];
 
-        if (collectionMap) {
-            if (collectionMap.has(target)) {
-                collections = collectionMap.get(target);
-            } else {
-                collections = collectionMap.get(ParametersType.DEFAULT);
-            }
-
+        if (collections) {
             for (const collection of collections) {
                 const collectionResults = await QueryStateService.getPrivateQueryArrayResult(ctx, query, collection);
                 allResults = [].concat(allResults, collectionResults);

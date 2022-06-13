@@ -261,6 +261,24 @@ export class Star extends Contract {
         }
     }
 
+    public async GetConciliationState(ctx: Context) {
+        try {
+            const params: Parameters = await ParametersController.getParameterValues(ctx);
+            return (await ActivationDocumentController.getConciliationState(ctx, params));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async ManageConciliation(ctx: Context, inputStr: string) {
+        try {
+            const params: Parameters = await ParametersController.getParameterValues(ctx);
+            return (await ActivationDocumentController.manageConciliation(ctx, params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async GetActivationDocumentByProducer(
         ctx: Context,
         inputStr: string) {

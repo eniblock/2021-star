@@ -28,7 +28,7 @@ export class ActivationDocumentController {
         params: Parameters,
         producerMrid: string): Promise<string> {
 
-        await ActivationDocumentController.conciliationCrank(ctx, params)
+        // await ActivationDocumentController.conciliationCrank(ctx, params)
         const query = `{"selector": {"docType": "activationDocument", "receiverMarketParticipantMrid": "${producerMrid}"}}`;
 
         const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, RoleType.Role_Producer);
@@ -44,7 +44,7 @@ export class ActivationDocumentController {
         params: Parameters,
         systemOperatorMrid: string): Promise<string> {
 
-        await ActivationDocumentController.conciliationCrank(ctx, params)
+        // await ActivationDocumentController.conciliationCrank(ctx, params)
         const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${systemOperatorMrid}"}}`;
 
         const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, ParametersType.ALL);
@@ -60,7 +60,7 @@ export class ActivationDocumentController {
         params: Parameters,
         query: string): Promise<string> {
 
-        await ActivationDocumentController.conciliationCrank(ctx, params)
+        // await ActivationDocumentController.conciliationCrank(ctx, params)
         const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, ParametersType.ALL);
         const formated = JSON.stringify(allResults);
 
@@ -75,7 +75,7 @@ export class ActivationDocumentController {
         inputStr: string) {
         console.info('============= START : Create ActivationDocumentController ===========');
 
-        await ActivationDocumentController.conciliationCrank(ctx, params)
+        // await ActivationDocumentController.conciliationCrank(ctx, params)
 
         const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -178,7 +178,7 @@ export class ActivationDocumentController {
 
 
 
-    public static async conciliationCrank(
+    private static async conciliationCrank(
         ctx: Context,
         params: Parameters): Promise<void> {
 

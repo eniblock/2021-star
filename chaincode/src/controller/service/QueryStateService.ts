@@ -37,6 +37,7 @@ export class QueryStateService {
                 returned_iterator = iterator;
             }
         }
+
         console.debug('============= END : getPrivateQueryResult QueryStateService ===========');
         return returned_iterator;
     }

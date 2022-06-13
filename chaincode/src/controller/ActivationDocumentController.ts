@@ -13,7 +13,6 @@ import { SiteService } from './service/SiteService';
 import { HLFServices } from './service/HLFservice';
 import { SystemOperatorService } from './service/SystemOperatorService';
 import { ProducerService } from './service/ProducerService';
-import { QueryStateService } from './service/QueryStateService';
 import { ActivationDocumentService } from './service/ActivationDocumentService';
 
 import { YellowPagesController } from './YellowPagesController';
@@ -28,10 +27,11 @@ export class ActivationDocumentController {
         params: Parameters,
         producerMrid: string): Promise<string> {
 
-        await ActivationDocumentController.conciliationCrank(ctx, params)
         const query = `{"selector": {"docType": "activationDocument", "receiverMarketParticipantMrid": "${producerMrid}"}}`;
 
-        const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, RoleType.Role_Producer);
+        const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, RoleType.Role_Producer);
+
+        const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
         const formated = JSON.stringify(allResults);
 
         return formated;
@@ -44,10 +44,11 @@ export class ActivationDocumentController {
         params: Parameters,
         systemOperatorMrid: string): Promise<string> {
 
-        await ActivationDocumentController.conciliationCrank(ctx, params)
         const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${systemOperatorMrid}"}}`;
 
-        const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, ParametersType.ALL);
+        const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+
+        const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
         const formated = JSON.stringify(allResults);
 
         return formated;
@@ -60,8 +61,9 @@ export class ActivationDocumentController {
         params: Parameters,
         query: string): Promise<string> {
 
-        await ActivationDocumentController.conciliationCrank(ctx, params)
-        const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, ParametersType.ALL);
+        const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+
+        const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
         const formated = JSON.stringify(allResults);
 
         return formated;
@@ -74,8 +76,6 @@ export class ActivationDocumentController {
         params: Parameters,
         inputStr: string) {
         console.info('============= START : Create ActivationDocumentController ===========');
-
-        await ActivationDocumentController.conciliationCrank(ctx, params)
 
         const identity = await HLFServices.getMspID(ctx);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -162,7 +162,10 @@ export class ActivationDocumentController {
 
         var targetDocument: string;
         if (producerSystemOperatorObj && roleTable.has(producerSystemOperatorObj.systemOperatorMarketParticipantName)) {
-            targetDocument = producerSystemOperatorObj.systemOperatorMarketParticipantName;
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+
+            const target = producerSystemOperatorObj.systemOperatorMarketParticipantName;
+            targetDocument = collectionMap.get(target)[0];
         }
 
         activationDocumentObj.potentialParent =  (RoleType.Role_TSO === role_systemOperator && RoleType.Role_DSO == role_producer && activationDocumentObj.startCreatedDateTime !== "");
@@ -177,27 +180,62 @@ export class ActivationDocumentController {
     }
 
 
-
-    public static async conciliationCrank(
+    public static async getConciliationState(
         ctx: Context,
-        params: Parameters): Promise<void> {
+        params: Parameters): Promise<string> {
+
+        const conciliationState: Map<string, string[]> = new Map();
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity === OrganizationTypeMsp.RTE || identity === OrganizationTypeMsp.ENEDIS) {
             const query = `{"selector": {"docType": "activationDocument", "potentialParent": true, "potentialChild": true}}`;
 
-            var targetDocument: string = RoleType.Role_TSO;
-            const allResultsMix: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, targetDocument);
-            const remainingResultsMix: ActivationDocument[] = await ActivationDocumentController.garbageCleanage(ctx, params, allResultsMix, targetDocument);
-            for (const activationDocument of remainingResultsMix) {
-                await ActivationDocumentController.processActiveDocument(ctx, params, activationDocument, targetDocument, true);
+            for (var role of [ RoleType.Role_TSO, OrganizationTypeMsp.PRODUCER ]) {
+                const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, role);
+
+                if (collections) {
+                    for (var collection of collections) {
+                        var allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, [collection]);
+                        if (allResults.length > 0) {
+                            var allResultsId: string[] = [];
+                            for (var result of allResults) {
+                                allResultsId.push(result.activationDocumentMrid);
+                            }
+                            conciliationState[collection] = allResultsId;
+                        }
+                    }
+                }
             }
 
-            targetDocument = OrganizationTypeMsp.PRODUCER;
-            const allResultsPrivate: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, targetDocument);
-            const remainingResultsPrivate: ActivationDocument[] = await ActivationDocumentController.garbageCleanage(ctx, params, allResultsPrivate, targetDocument);
-            for (const activationDocument of remainingResultsPrivate) {
-                await ActivationDocumentController.processActiveDocument(ctx, params, activationDocument, targetDocument, true);
+        }
+        var sate_str = JSON.stringify(conciliationState);
+        return sate_str;
+    }
+
+
+
+    public static async manageConciliation(
+        ctx: Context,
+        params: Parameters,
+        conciliationState_str: string): Promise<void> {
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity === OrganizationTypeMsp.RTE || identity === OrganizationTypeMsp.ENEDIS) {
+            const conciliationState: Map<string, string[]> = JSON.parse(conciliationState_str);
+
+            if (conciliationState) {
+                for (const [targetDocument, allResultsId] of Object.entries(conciliationState)) {
+                    var allResults: ActivationDocument[] = [];
+                    for (var id of allResultsId) {
+                        allResults.push(await ActivationDocumentService.getObj(ctx, params, id, targetDocument));
+                    }
+
+                    const remainingResults: ActivationDocument[] = await ActivationDocumentController.garbageCleanage(ctx, params, allResults, targetDocument);
+                    for (const activationDocument of remainingResults) {
+                        await ActivationDocumentController.processActiveDocument(ctx, params, activationDocument, targetDocument, true);
+                    }
+
+                }
             }
         }
     }
@@ -342,8 +380,8 @@ export class ActivationDocumentController {
             }
         }`;
 
-        const targetQuery = RoleType.Role_TSO;
-        const memoryMatch = await ActivationDocumentController.processMatching(ctx, params, childActivationDocument, query, targetQuery);
+        const roleTargetQuery = RoleType.Role_TSO;
+        const memoryMatch = await ActivationDocumentController.processMatching(ctx, params, childActivationDocument, query, roleTargetQuery);
 
         console.debug('============= END : reconciliationMatchParentWithChild ActivationDocumentController ===========');
         return memoryMatch;
@@ -390,8 +428,8 @@ export class ActivationDocumentController {
             }
         }`;
 
-        const targetQuery = RoleType.Role_Producer;
-        const memoryEnd = await ActivationDocumentController.processMatching(ctx, params, endActivationDocument, query, targetQuery);
+        const roleTargetQuery = RoleType.Role_Producer;
+        const memoryEnd = await ActivationDocumentController.processMatching(ctx, params, endActivationDocument, query, roleTargetQuery);
 
         console.debug('============= END : reconciliationUpdateEndState ActivationDocumentController ===========');
         return memoryEnd;
@@ -404,32 +442,38 @@ export class ActivationDocumentController {
         params: Parameters,
         childEndDocument: ActivationDocument,
         query:string,
-        targetParent:string): Promise<ActivationDocument> {
+        roleTargetParent:string): Promise<ActivationDocument> {
 
-        const allParents: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, targetParent);
-        const index = await ActivationDocumentController.findIndexofClosestEndDate(childEndDocument, allParents);
+        const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, roleTargetParent);
 
-        // If a parent document is found
-        if ( index !== -1 ) {
-            try {
-                ActivationDocument.schema.validateSync(
-                    allParents[index],
-                    {strict: true, abortEarly: false},
-                );
-            } catch (err) {
-                return childEndDocument;
-            }
+        if (collections) {
+            for (var collection of collections) {
+                const allParents: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, [collection]);
+                const index = await ActivationDocumentController.findIndexofClosestEndDate(childEndDocument, allParents);
 
-            const parentStartDocument: ActivationDocument = allParents[index];
-            if (parentStartDocument) {
-                if (!parentStartDocument.endCreatedDateTime) {
-                    parentStartDocument.orderEnd = true;
+                // If a parent document is found
+                if ( index !== -1 ) {
+                    try {
+                        ActivationDocument.schema.validateSync(
+                            allParents[index],
+                            {strict: true, abortEarly: false},
+                        );
+                    } catch (err) {
+                        return childEndDocument;
+                    }
+
+                    const parentStartDocument: ActivationDocument = allParents[index];
+                    if (parentStartDocument) {
+                        if (!parentStartDocument.endCreatedDateTime) {
+                            parentStartDocument.orderEnd = true;
+                        }
+                        parentStartDocument.subOrderList = await ActivationDocumentController.fillList(parentStartDocument.subOrderList, childEndDocument.activationDocumentMrid);
+                        await ActivationDocumentService.write(ctx, params, parentStartDocument, collection);
+
+                        childEndDocument.subOrderList = await ActivationDocumentController.fillList(childEndDocument.subOrderList, parentStartDocument.activationDocumentMrid);
+                        childEndDocument.potentialChild = false;
+                    }
                 }
-                parentStartDocument.subOrderList = await ActivationDocumentController.fillList(parentStartDocument.subOrderList, childEndDocument.activationDocumentMrid);
-                await ActivationDocumentService.write(ctx, params, parentStartDocument, targetParent);
-
-                childEndDocument.subOrderList = await ActivationDocumentController.fillList(childEndDocument.subOrderList, parentStartDocument.activationDocumentMrid);
-                childEndDocument.potentialChild = false;
             }
         }
 

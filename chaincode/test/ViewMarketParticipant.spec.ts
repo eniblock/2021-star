@@ -31,11 +31,9 @@ describe('Star Tests RESTITUTIONS', () => {
     let transactionContext: any;
     let mockHandler:any;
     let star: Star;
-    let values: Values;
     beforeEach(() => {
         transactionContext = new TestContext();
         star = new Star();
-        values = new Values();
         mockHandler = sinon.createStubInstance(ChaincodeMessageHandler);
 
         chai.should();

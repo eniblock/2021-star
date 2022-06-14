@@ -1,6 +1,6 @@
 import { Context } from 'fabric-contract-api';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
-import { Parameters } from '../model/parameters';
+import { STARParameters } from '../model/starParameters';
 import { Site } from '../model/site';
 import { SiteService } from './service/SiteService';
 import { HLFServices } from './service/HLFservice';
@@ -10,7 +10,7 @@ import { ProducerService } from './service/ProducerService';
 export class SiteController {
     public static async createSite(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         inputStr: string): Promise<void> {
         // let site: Site;
         // try {
@@ -70,7 +70,7 @@ export class SiteController {
 
     public static async updateSite(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         inputStr: string): Promise<void> {
 
         let siteObj: Site;
@@ -125,7 +125,7 @@ export class SiteController {
 
     public static async querySite(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         siteId: string): Promise<string> {
 
         console.info('============= START : Query %s Site ===========', siteId);
@@ -140,7 +140,7 @@ export class SiteController {
 
     public static async siteExists(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         siteId: string): Promise<boolean> {
 
         console.info('============= START : Query %s Site ===========', siteId);
@@ -153,7 +153,7 @@ export class SiteController {
 
     public static async getSitesBySystemOperator(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         systemOperatorMarketParticipantMrid: string): Promise<string> {
 
         const query = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${systemOperatorMarketParticipantMrid}"}}`;
@@ -167,7 +167,7 @@ export class SiteController {
 
     public static async getSitesByProducer(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         producerMarketParticipantMrid: string): Promise<string> {
 
         const query = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${producerMarketParticipantMrid}"}}`;
@@ -181,7 +181,7 @@ export class SiteController {
 
     public static async getSitesByQuery(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         query: string,
         pageSize: number,
         bookmark: string): Promise<any> {

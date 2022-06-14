@@ -14,6 +14,7 @@ import { Producer } from '../src/model/producer';
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
 import { Values } from './Values';
+import { DocType } from '../src/enums/DocType';
 
 
 class TestContext {
@@ -32,11 +33,9 @@ describe('Star Tests PRODUCERS', () => {
     let transactionContext: any;
     let mockHandler:any;
     let star: Star;
-    let values: Values;
     beforeEach(() => {
         transactionContext = new TestContext();
         star = new Star();
-        values = new Values();
         mockHandler = sinon.createStubInstance(ChaincodeMessageHandler);
 
         chai.should();
@@ -89,20 +88,28 @@ describe('Star Tests PRODUCERS', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             await star.CreateProducer(transactionContext, JSON.stringify(Values.HTB_Producer));
 
-            let ret = JSON.parse((await transactionContext.stub.getState(Values.HTB_Producer.producerMarketParticipantMrid)).toString());
-            const expectedProducer = JSON.parse(JSON.stringify(Values.HTB_Producer));
-            expectedProducer.docType = "producer"
-            expect(ret).to.eql( expectedProducer );
+            const expected = JSON.parse(JSON.stringify(Values.HTB_Producer))
+            expected.docType = DocType.PRODUCER;
+            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+                Values.HTB_Producer.producerMarketParticipantMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putState.callCount).to.equal(1);
         });
 
         it('should return SUCCESS with Enedis on createProducer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             await star.CreateProducer(transactionContext, JSON.stringify(Values.HTA_Producer));
 
-            let ret = JSON.parse((await transactionContext.stub.getState(Values.HTA_Producer.producerMarketParticipantMrid)).toString());
-            const expectedProducer = JSON.parse(JSON.stringify(Values.HTA_Producer));
-            expectedProducer.docType = "producer"
-            expect(ret).to.eql( expectedProducer );
+            const expected = JSON.parse(JSON.stringify(Values.HTA_Producer))
+            expected.docType = DocType.PRODUCER;
+            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+                Values.HTA_Producer.producerMarketParticipantMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putState.callCount).to.equal(1);
         });
     });
 

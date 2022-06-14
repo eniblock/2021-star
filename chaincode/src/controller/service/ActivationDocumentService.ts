@@ -1,5 +1,5 @@
 import { Context } from "fabric-contract-api";
-import { Parameters } from '../../model/parameters';
+import { STARParameters } from '../../model/starParameters';
 import { ParametersType } from "../../enums/ParametersType";
 import { ActivationDocument } from "../../model/activationDocument";
 import { QueryStateService } from "./QueryStateService";
@@ -10,7 +10,7 @@ export class ActivationDocumentService {
         ctx: Context,
         collection: string,
         id: string): Promise<Uint8Array> {
-        console.debug('============= START : getRaw %s ActivationDocumentService ===========');
+        console.debug('============= START : getRaw %s / %s ActivationDocumentService ===========', collection, id);
 
         const prodAsBytes = await ctx.stub.getPrivateData(collection, id);
         if (!prodAsBytes || prodAsBytes.length === 0) {
@@ -24,7 +24,7 @@ export class ActivationDocumentService {
 
     public static async getObj(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         id: string,
         target: string = ''): Promise<ActivationDocument> {
 
@@ -40,7 +40,7 @@ export class ActivationDocumentService {
 
     public static async write(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         activationDocumentInput: ActivationDocument,
         target: string = ''): Promise<void> {
         console.debug('============= START : Write %s ActivationDocumentService ===========', activationDocumentInput.activationDocumentMrid);
@@ -58,7 +58,7 @@ export class ActivationDocumentService {
 
     public static async getQueryArrayResult(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         query: string,
         target: string[] = []): Promise<any[]>  {
         console.debug('============= START : getQueryResult ActivationDocumentService ===========');

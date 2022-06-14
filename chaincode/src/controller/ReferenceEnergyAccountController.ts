@@ -4,7 +4,7 @@ import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { EnergyAccount } from '../model/energyAccount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
-import { Parameters } from '../model/parameters';
+import { STARParameters } from '../model/starParameters';
 
 import { HLFServices } from './service/HLFservice';
 import { QueryStateService } from './service/QueryStateService';
@@ -14,7 +14,7 @@ export class ReferenceEnergyAccountController {
 
     public static async createReferenceEnergyAccount(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         inputStr: string) {
         console.info('============= START : Create ReferenceEnergyAccount ===========');
 

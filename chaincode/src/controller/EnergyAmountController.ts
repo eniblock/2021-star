@@ -6,17 +6,18 @@ import { ActivationDocument } from '../model/activationDocument';
 import { EnergyAmount } from '../model/energyAmount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
-import { Parameters } from '../model/parameters';
+import { STARParameters } from '../model/starParameters';
 
 import { HLFServices } from './service/HLFservice';
 import { QueryStateService } from './service/QueryStateService';
 import { SiteService } from './service/SiteService';
+import { DocType } from '../enums/DocType';
 
 export class EnergyAmountController {
 
     public static async createTSOEnergyAmount(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         inputStr: string) {
         console.info('============= START : Create EnergyAmount ===========');
 
@@ -118,7 +119,7 @@ export class EnergyAmountController {
 
     public static async updateTSOEnergyAmount(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         inputStr: string) {
         console.info('============= START : Update EnergyAmount ===========');
 
@@ -244,18 +245,18 @@ export class EnergyAmountController {
             throw new Error(`ERROR createDSOEnergyAmount-> Input string NON-JSON value`);
         }
 
-        const energyAmountInput = EnergyAmount.schema.validateSync(
+        EnergyAmount.schema.validateSync(
             energyObj,
             {strict: true, abortEarly: false},
         );
 
-        const keySplitted = energyAmountInput.activationDocumentMrid.split('/', 4);
+        const keySplitted = energyObj.activationDocumentMrid.split('/', 4);
         console.log(keySplitted);
 
         const query = `{
             "selector":
             {
-                "docType": "activationDocument",
+                "docType": "${DocType.ACTIVATION_DOCUMENT}",
                 "originAutomationRegisteredResourceMrid": "${keySplitted[0]}",
                 "registeredResourceMrid": "${keySplitted[1]}",
                 "startCreatedDateTime": "${keySplitted[2]}",
@@ -331,7 +332,7 @@ export class EnergyAmountController {
         // }
   */
         // console.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
-        const strSplitted = energyAmountInput.timeInterval.split('/', 2);
+        const strSplitted = energyObj.timeInterval.split('/', 2);
         const begin = strSplitted[0];
         const end = strSplitted[1];
         // console.log('strSplitted=', strSplitted);
@@ -367,15 +368,15 @@ export class EnergyAmountController {
             throw new Error(`ERROR createDSOEnergyAmount mismatch between ENI : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
         }
 
-        energyAmountInput.docType = 'energyAmount';
+        energyObj.docType = DocType.ENERGY_AMOUNT;
 
         await ctx.stub.putState(
-            energyAmountInput.energyAmountMarketDocumentMrid,
-            Buffer.from(JSON.stringify(energyAmountInput)),
+            energyObj.energyAmountMarketDocumentMrid,
+            Buffer.from(JSON.stringify(energyObj)),
         );
         console.info(
             '============= END   : Create %s EnergyAmount ===========',
-            energyAmountInput.energyAmountMarketDocumentMrid,
+            energyObj.energyAmountMarketDocumentMrid,
         );
     }
 

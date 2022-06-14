@@ -1,11 +1,11 @@
 import { Context } from "fabric-contract-api";
 
-import { Parameters } from '../../model/parameters';
+import { STARParameters } from '../../model/starParameters';
 import { ParametersType } from "../../enums/ParametersType";
 
 export class HLFServices {
     public static async getCollectionOrDefault(
-        params: Parameters,
+        params: STARParameters,
         docType: string,
         target: string = ''): Promise<string> {
 
@@ -23,7 +23,7 @@ export class HLFServices {
     }
 
     public static async getCollectionFromParameters(
-        params: Parameters,
+        params: STARParameters,
         docType: string,
         target: string): Promise<string> {
 
@@ -42,7 +42,7 @@ export class HLFServices {
 
 
     public static async getCollectionsOrDefault(
-        params: Parameters,
+        params: STARParameters,
         docType: string,
         target: string[] = []): Promise<string[]> {
 
@@ -60,7 +60,7 @@ export class HLFServices {
     }
 
     public static async getCollectionsFromParameters(
-        params: Parameters,
+        params: STARParameters,
         docType: string,
         target: string): Promise<string[]> {
 

@@ -10,13 +10,14 @@ import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 import { Star } from '../src/star'
 import { EnergyAmount } from '../src/model/energyAmount';
 import { ActivationDocument } from '../src/model/activationDocument';
-import { Parameters } from '../src/model/parameters';
+import { STARParameters } from '../src/model/starParameters';
 
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
 import { Values } from './Values';
 import { ParametersType } from '../src/enums/ParametersType';
 import { ParametersController } from '../src/controller/ParametersController';
+import { DocType } from '../src/enums/DocType';
 
 class TestContext {
     clientIdentity: any;
@@ -37,11 +38,9 @@ describe('Star Tests EnergyAmount', () => {
     let transactionContext: any;
     let mockHandler:any;
     let star: Star;
-    let values: Values;
     beforeEach(() => {
         transactionContext = new TestContext();
         star = new Star();
-        values = new Values();
         mockHandler = sinon.createStubInstance(ChaincodeMessageHandler);
 
         chai.should();
@@ -128,7 +127,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(Values.HTB_EnergyAmount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMspID does not have write access for Energy Amount.');
+                expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have write access for Energy Amount.`);
             }
         });
 
@@ -146,15 +145,21 @@ describe('Star Tests EnergyAmount', () => {
         it('should return SUCCESS CreateTSOEnergyAmount.', async () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate)));
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
 
-            let ret = JSON.parse((await transactionContext.stub.getState(energyamount.energyAmountMarketDocumentMrid)).toString());
-            expect(ret).to.eql( Object.assign({docType: 'energyAmount'}, energyamount ));
+            const expected = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount))
+            expected.docType = DocType.ENERGY_AMOUNT;
+            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+                Values.HTB_EnergyAmount.energyAmountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putState.callCount).to.equal(1);
         });
 
 
@@ -177,12 +182,12 @@ describe('Star Tests EnergyAmount', () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
-            const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
             activationDocument.registeredResourceMrid = 'toto';
             transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
@@ -195,10 +200,10 @@ describe('Star Tests EnergyAmount', () => {
         it('should return ERROR CreateTSOEnergyAmount Broken Site.', async () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate)));
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).resolves(Buffer.from("XXX"));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from("XXX"));
 
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
@@ -211,17 +216,17 @@ describe('Star Tests EnergyAmount', () => {
         it('should return ERROR CreateTSOEnergyAmount mismatch registeredResourceMrid.', async () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate)));
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             try {
                 energyamount.registeredResourceMrid = "toto";
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createTSOEnergyAmount mismatch beetween registeredResourceMrid in Activation Document : '.concat(Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).concat(' and Energy Amount : toto.'));
+                expect(err.message).to.equal('ERROR createTSOEnergyAmount mismatch beetween registeredResourceMrid in Activation Document : '.concat(Values.HTB_ActivationDocument_Valid.registeredResourceMrid).concat(' and Energy Amount : toto.'));
             }
         });
 
@@ -265,17 +270,23 @@ describe('Star Tests EnergyAmount', () => {
         it('should return ERROR CreateTSOEnergyAmount mismatch date.', async () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate)));
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            transactionContext.stub.getState.withArgs(energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
+            const dateStart = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
+            const dateEnd = Values.reduceDateTimeStr(dateStart, -23*60*60*1000);
             try {
-                energyamount.timeInterval = "2021-10-30T01:01:01.001Z / 2021-10-23T30:59:59.999Z";
+                energyamount.timeInterval = `${dateStart}/${dateEnd}`;
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createTSOEnergyAmount mismatch between ENE : "2021-10-30T00:00:00.000Z" and Activation Document : "2021-10-22T00:00:00.000Z" dates.');
+                expect(err.message).to.equal('ERROR createTSOEnergyAmount mismatch between ENE : "'
+                .concat(Values.reduceDateTimeStr(dateStart,1))
+                .concat('" and Activation Document : "')
+                .concat(Values.reduceDateTimeStr(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string,1))
+                .concat('" dates.'));
             }
         });
     });
@@ -288,7 +299,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(Values.HTA_EnergyAmount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMspID does not have write access for Energy Amount.');
+                expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have write access for Energy Amount.`);
             }
         });
 
@@ -418,26 +429,34 @@ describe('Star Tests EnergyAmount', () => {
 
         it('should return ERROR CreateDSOEnergyAmount error date ENI / ActivationDocument.', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
             const iterator = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid,mockHandler);
             const query = `{
             "selector":
             {
-                "docType": "activationDocument",
+                "docType": "${DocType.ACTIVATION_DOCUMENT}",
                 "originAutomationRegisteredResourceMrid": "CIVRA",
                 "registeredResourceMrid": "PRM50012536123467",
-                "startCreatedDateTime": "2021-10-22T11:29:10.000Z",
-                "endCreatedDateTime": "2021-10-22T22:29:10.000Z"
+                "startCreatedDateTime": "${Values.HTA_ActivationDocument_Valid.startCreatedDateTime}",
+                "endCreatedDateTime": "${Values.HTA_ActivationDocument_Valid.endCreatedDateTime}"
             }
         }`;
+            console.info("query : ", query);
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
 
+            const dateStart = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
+            const dateEnd = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid.endCreatedDateTime))  as string, 30);
             try {
                 const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount));
-                energyamount.timeInterval = "2021-10-23T01:01:01.001Z / 2021-10-23T23:59:59.999Z";
+                energyamount.timeInterval = `${dateStart}/${dateEnd}`;
                 await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createDSOEnergyAmount mismatch between ENI : "2021-10-23T00:00:00.000Z" and Activation Document : "2021-10-22T00:00:00.000Z" dates.');
+                expect(err.message).to.equal('ERROR createDSOEnergyAmount mismatch between ENI : "'
+                .concat(Values.reduceDateTimeStr(dateStart,1))
+                .concat('" and Activation Document : "')
+                .concat(Values.reduceDateTimeStr(Values.HTA_ActivationDocument_Valid.startCreatedDateTime as string,1))
+                .concat('" dates.'));
             }
         });
 
@@ -447,11 +466,11 @@ describe('Star Tests EnergyAmount', () => {
             const query = `{
             "selector":
             {
-                "docType": "activationDocument",
+                "docType": "${DocType.ACTIVATION_DOCUMENT}",
                 "originAutomationRegisteredResourceMrid": "CIVRA",
                 "registeredResourceMrid": "PRM50012536123467",
-                "startCreatedDateTime": "2021-10-22T11:29:10.000Z",
-                "endCreatedDateTime": "2021-10-22T22:29:10.000Z"
+                "startCreatedDateTime": "${Values.HTA_ActivationDocument_Valid.startCreatedDateTime}",
+                "endCreatedDateTime": "${Values.HTA_ActivationDocument_Valid.endCreatedDateTime}"
             }
         }`;
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
@@ -459,8 +478,14 @@ describe('Star Tests EnergyAmount', () => {
 
             await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(Values.HTA_EnergyAmount));
 
-            let ret = JSON.parse((await transactionContext.stub.getState(Values.HTA_EnergyAmount.energyAmountMarketDocumentMrid)).toString());
-            expect(ret).to.eql( Object.assign({docType: 'energyAmount'}, Values.HTA_EnergyAmount ));
+            const expected = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount))
+            expected.docType = DocType.ENERGY_AMOUNT;
+            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+                Values.HTA_EnergyAmount.energyAmountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putState.callCount).to.equal(1);
         });
     });
 
@@ -481,9 +506,11 @@ describe('Star Tests EnergyAmount', () => {
 
         it('should return SUCCESS on GetEnergyAmountForSystemOperator. empty', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-            await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V0000009927454\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+
             const producer = 'toto';
-            let ret = await star.GetEnergyAmountForSystemOperator(transactionContext, producer, '17V0000009927454', "date");
+            let ret = await star.GetEnergyAmountForSystemOperator(transactionContext, producer, Values.HTA_systemoperator.systemOperatorMarketParticipantMrid, "date");
             ret = JSON.parse(ret);
             // console.log('retADproducer=', ret)
             expect(ret.length).to.equal(0);
@@ -680,7 +707,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.GetEnergyAmountByProducer(transactionContext, 'titi', 'toto', 'tata');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMspID does not have read access for producer\'s Energy Amount.');
+                expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have read access for producer\'s Energy Amount.`);
             }
         });
 

@@ -19,7 +19,7 @@
 <a [routerLink]="['/',PATH_ROUTE.RESEAU]" routerLinkActive="menu-active" class="text-center text-xl-start my-1 py-3">
   <img src="assets/img/menu-bar/reseau.svg" class="iconeLienMenu pb-1 mx-3"/>
   <img src="assets/img/menu-bar/reseau-active.svg" class="iconeLienMenuActive d-none pb-1 mx-3"/>
-  <span class="d-none d-xl-inline">Réseau</span>
+  <span class="d-none d-xl-inline">Sites de production</span>
 </a>
 
 <a [routerLink]="['/',PATH_ROUTE.ACTIVATIONS]" routerLinkActive="menu-active" class="text-center text-xl-start my-1 py-3">
@@ -35,7 +35,7 @@
 </a>
 
 <div class="mt-auto mb-2 mx-3">
-  <div class="typeOrganisation mb-2">{{ typeOrganisation }}</div>
+  <div class="participantName mb-2">{{ participantName }}</div>
   <mat-divider class="mb-4"></mat-divider>
   <a class="deconnexion" (click)="deconnexion()">
     <div class="text-center">

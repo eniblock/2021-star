@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { PATH_ROUTE } from 'src/app/app-routing.module';
-import { toTypeOrganisationFr } from 'src/app/models/enum/Instance.enum';
-import { InstanceService } from 'src/app/services/api/instance.service';
+import {Component, OnInit} from '@angular/core';
+import {PATH_ROUTE} from 'src/app/app-routing.module';
+import {InstanceService} from 'src/app/services/api/instance.service';
 import {KeycloakService} from "../../../services/common/keycloak.service";
 
 @Component({
@@ -12,19 +11,17 @@ import {KeycloakService} from "../../../services/common/keycloak.service";
 export class MenuComponent implements OnInit {
   PATH_ROUTE = PATH_ROUTE;
 
-  typeOrganisation?: string;
+  participantName: string = "";
 
   constructor(
     private keycloakService: KeycloakService,
     private instanceService: InstanceService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
-    this.instanceService
-      .getTypeInstance()
-      .subscribe(
-        (instance) => (this.typeOrganisation = toTypeOrganisationFr(instance))
-      );
+    this.instanceService.getParticipantName()
+      .subscribe(participantName => this.participantName = participantName);
   }
 
   deconnexion() {

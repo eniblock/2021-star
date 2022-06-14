@@ -5,7 +5,7 @@
   <div class="row">
 
     <mat-form-field class="col-6 col-lg-2 pe-lg-0" appearance="outline">
-      <mat-label>Type de recherche</mat-label>
+      <mat-label>Critères de recherche du site</mat-label>
       <mat-select formControlName="typeDeRechercheSimple">
         <mat-option *ngFor="let t of typesDeRechercheSimple" [value]="t">{{ t | TypeDeRechercheSimple }}</mat-option>
       </mat-select>

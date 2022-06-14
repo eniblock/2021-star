@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import Keycloak, {KeycloakConfig} from "keycloak-js";
+import Keycloak, {KeycloakConfig, KeycloakProfile} from "keycloak-js";
 import {environment} from "../../../environments/environment";
 import {from, Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
@@ -38,6 +38,10 @@ export class KeycloakService {
     } else {
       return of(this.keycloak.token || null);
     }
+  }
+
+  getUsername(): Observable<KeycloakProfile | void> {
+    return from(this.keycloak.loadUserProfile());
   }
 
 }

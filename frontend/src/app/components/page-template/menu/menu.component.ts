@@ -12,6 +12,7 @@ export class MenuComponent implements OnInit {
   PATH_ROUTE = PATH_ROUTE;
 
   participantName: string = "";
+  username?: string;
 
   constructor(
     private keycloakService: KeycloakService,
@@ -22,6 +23,8 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.instanceService.getParticipantName()
       .subscribe(participantName => this.participantName = participantName);
+    this.keycloakService.getUsername()
+      .subscribe(userProfile => this.username = userProfile != null ? userProfile.username : "");
   }
 
   deconnexion() {

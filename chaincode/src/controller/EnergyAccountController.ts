@@ -5,7 +5,7 @@ import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { EnergyAccount } from '../model/energyAccount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
-import { Parameters } from '../model/parameters';
+import { STARParameters } from '../model/starParameters';
 
 import { HLFServices } from './service/HLFservice';
 import { QueryStateService } from './service/QueryStateService';
@@ -15,7 +15,7 @@ export class EnergyAccountController {
 
     public static async createEnergyAccount(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         inputStr: string) {
         console.info('============= START : Create EnergyAccount ===========');
         const energyAccountInput = await EnergyAccountController.checkEnergyAccount(ctx, params, inputStr);
@@ -32,7 +32,7 @@ export class EnergyAccountController {
 
     public static async updateEnergyAccount(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         inputStr: string) {
         console.info('============= START : Update EnergyAccount ===========');
         const energyAccountInput = await EnergyAccountController.checkEnergyAccount(ctx, params, inputStr);
@@ -52,7 +52,7 @@ export class EnergyAccountController {
 
     private static async checkEnergyAccount(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         inputStr: string): Promise<any>{
 
         const identity = await HLFServices.getMspID(ctx);

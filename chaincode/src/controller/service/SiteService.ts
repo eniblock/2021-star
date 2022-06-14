@@ -1,13 +1,14 @@
 import { Context } from "fabric-contract-api";
-import { Parameters } from '../../model/parameters';
+import { STARParameters } from '../../model/starParameters';
 import { ParametersType } from "../../enums/ParametersType";
 import { Site } from "../../model/site";
 import { QueryStateService } from "./QueryStateService";
+import { DocType } from "../../enums/DocType";
 
 export class SiteService {
     public static async getRaw(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         id: string): Promise<Uint8Array> {
         console.debug('============= START : getRaw %s SiteService ===========', id);
 
@@ -32,13 +33,13 @@ export class SiteService {
 
     public static async write(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         siteInput: Site): Promise<void> {
         console.debug('============= START : Write %s SiteService ===========', siteInput.meteringPointMrid);
 
         const collections: string[] = params.values.get(ParametersType.SITE);
 
-        siteInput.docType = 'site';
+        siteInput.docType = DocType.SITE;
         await ctx.stub.putPrivateData(collections[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
 
         console.debug('============= END : Write %s SiteService ===========', siteInput.meteringPointMrid);
@@ -59,7 +60,7 @@ export class SiteService {
 
     public static async getQueryStringResult(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         query: string): Promise<string>  {
         console.debug('============= START : getQueryStringResult SiteService ===========');
 
@@ -72,7 +73,7 @@ export class SiteService {
 
     public static async getPrivateQueryArrayResult(
         ctx: Context,
-        params: Parameters,
+        params: STARParameters,
         query: string): Promise<any>  {
         console.debug('============= START : getPrivateQueryArrayResult SiteService ===========');
 
@@ -91,7 +92,6 @@ export class SiteService {
         console.debug('============= END : getPrivateQueryArrayResult SiteService ===========');
         return allResults;
     }
-
 
     //getPrivateDataQueryResultWithPagination doesn't exist in 2022 May the 19th
     // public static async getQueryResultWithPagination(

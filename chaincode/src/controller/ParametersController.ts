@@ -1,6 +1,6 @@
 import { Context } from 'fabric-contract-api';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
-import { Parameters } from '../model/parameters';
+import { STARParameters } from '../model/starParameters';
 import { ParametersType } from '../enums/ParametersType';
 import { RoleType } from '../enums/RoleType';
 import { HLFServices } from './service/HLFservice';
@@ -77,14 +77,14 @@ export class ParametersController {
     //     return returnedValues;
     // }
 
-    public static async getParameterValues(ctx: Context): Promise<Parameters> {
+    public static async getParameterValues(ctx: Context): Promise<STARParameters> {
         console.debug('============= START : Get Parameter ===========');
 
     //     const paramValues: Map<string,string> = await this.getAllParameters(ctx);
 
     //     console.debug(paramValues);
 
-        var parameters: Parameters;
+        var parameters: STARParameters;
     //     if(paramValues[paramName]!==null && typeof(paramValues[paramName]) !== "undefined") {
     //         value=paramValues[paramName];
     //     }
@@ -95,10 +95,10 @@ export class ParametersController {
         return parameters;
     }
 
-    private static async getParameterStatic(ctx: Context): Promise<Parameters> {
+    private static async getParameterStatic(ctx: Context): Promise<STARParameters> {
         console.debug('============= START : Get Parameter Static ===========');
 
-        const parameters: Parameters = new Parameters();
+        const parameters: STARParameters = new STARParameters();
         parameters.values = new Map();
 
         const identity: string = await HLFServices.getMspID(ctx);

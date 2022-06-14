@@ -10,8 +10,9 @@ import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
 import { Site } from "../src/model/site";
-import { Parameters } from '../src/model/parameters';
+import { STARParameters } from '../src/model/starParameters';
 
+import { DocType } from "../src/enums/DocType";
 import { ParametersController } from '../src/controller/ParametersController';
 import { ParametersType } from '../src/enums/ParametersType';
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
@@ -35,11 +36,9 @@ describe('Star Tests SITES', () => {
     let transactionContext: any;
     let mockHandler:any;
     let star: Star;
-    let values: Values;
     beforeEach(() => {
         transactionContext = new TestContext();
         star = new Star();
-        values = new Values();
         mockHandler = sinon.createStubInstance(ChaincodeMessageHandler);
 
         chai.should();
@@ -174,11 +173,11 @@ describe('Star Tests SITES', () => {
 
             await star.CreateSite(transactionContext, JSON.stringify(Values.HTB_site_valid));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const siteInput = JSON.parse(JSON.stringify(Values.HTB_site_valid));
-            siteInput.docType = 'site';
+            siteInput.docType = DocType.SITE;
 
             transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
         });
@@ -193,11 +192,11 @@ describe('Star Tests SITES', () => {
 
             await star.CreateSite(transactionContext, JSON.stringify(Values.HTA_site_valid));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const siteInput = JSON.parse(JSON.stringify(Values.HTA_site_valid));
-            siteInput.docType = 'site';
+            siteInput.docType = DocType.SITE;
 
             transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
         });
@@ -246,19 +245,19 @@ describe('Star Tests SITES', () => {
 
         it('should return SUCCESS on QuerySite', async () => {
             let siteOutput = Values.HTB_site_valid;
-            siteOutput.docType = 'site';
+            siteOutput.docType = DocType.SITE;
 
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteOutput.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteOutput)));
 
             let test = JSON.parse(await star.QuerySite(transactionContext, siteOutput.meteringPointMrid));
-            expect(test).to.eql(Object.assign({docType: 'site'}, siteOutput));
+            expect(test).to.eql(Object.assign({docType: DocType.SITE}, siteOutput));
             transactionContext.stub.getPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteOutput.meteringPointMrid);
 
             let ret = JSON.parse(await transactionContext.stub.getPrivateData(collectionNames[0], siteOutput.meteringPointMrid));
-            expect(ret).to.eql(Object.assign({docType: 'site'}, siteOutput));
+            expect(ret).to.eql(Object.assign({docType: DocType.SITE}, siteOutput));
         });
     });
 
@@ -285,7 +284,7 @@ describe('Star Tests SITES', () => {
         it('should return success on getSiteBySystemOperator', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionNames[0], mockHandler)
@@ -381,7 +380,7 @@ describe('Star Tests SITES', () => {
         it('should return success on getSiteByProducer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionNames[0], mockHandler)
@@ -457,7 +456,7 @@ describe('Star Tests SITES', () => {
 
         it('should return success on getSites for producer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const producerMarketParticipantMrid = Values.HTA_site_valid_ProdA.producerMarketParticipantMrid;

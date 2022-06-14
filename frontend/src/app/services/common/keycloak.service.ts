@@ -40,7 +40,7 @@ export class KeycloakService {
     }
   }
 
-  getUsername(): Observable<KeycloakProfile | void> {
+  getUserProfile(): Observable<KeycloakProfile | void> {
     return from(this.keycloak.loadUserProfile());
   }
 

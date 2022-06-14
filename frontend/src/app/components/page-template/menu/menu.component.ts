@@ -23,7 +23,7 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.instanceService.getParticipantName()
       .subscribe(participantName => this.participantName = participantName);
-    this.keycloakService.getUsername()
+    this.keycloakService.getUserProfile()
       .subscribe(userProfile => this.username = userProfile != null ? userProfile.username : "");
   }
 

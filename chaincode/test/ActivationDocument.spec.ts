@@ -797,7 +797,7 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument02_garbage.potentialParent= false;
             activationDocument02_garbage.potentialChild= true;
 
-            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "potentialParent": true, "potentialChild": true}}`;
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
             const iteratorMix = Values.getActivationDocumentQueryMock(activationDocument01_garbage,mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorMix);
             const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument02_garbage,mockHandler);
@@ -850,7 +850,7 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument02_garbage.potentialParent= false;
             activationDocument02_garbage.potentialChild= true;
 
-            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "potentialParent": true, "potentialChild": true}}`;
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
             const iteratorMix = Values.getActivationDocumentQueryMock2Values(activationDocument_valid, activationDocument01_garbage,mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorMix);
             const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument02_garbage,mockHandler);
@@ -926,17 +926,14 @@ describe('Star Tests ActivationDocument', () => {
                 "startCreatedDateTime": {
                     "$gte": ${JSON.stringify(dateYesterday)},
                     "$lte": ${JSON.stringify(queryDate)}
-                },
-                "sort": [{
-                    "startCreatedDateTime": "desc"
-                }]
+                }
             }
         }`;
 
             const iterator = Values.getActivationDocumentQueryMock(parentStartDocument, mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, query).resolves(iterator);
 
-            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "potentialParent": true, "potentialChild": true}}`;
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
             const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentStartDocument, childEndDocument, mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
 
@@ -1024,17 +1021,14 @@ describe('Star Tests ActivationDocument', () => {
                 "startCreatedDateTime": {
                     "$gte": ${JSON.stringify(dateYesterday)},
                     "$lte": ${JSON.stringify(queryDate)}
-                },
-                "sort": [{
-                    "startCreatedDateTime": "desc"
-                }]
+                }
             }
         }`;
 
             const iterator = Values.getActivationDocumentQueryMock2Values(parentStartDocumentOldest, parentStartDocument, mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, query).resolves(iterator);
 
-            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "potentialParent": true, "potentialChild": true}}`;
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
             const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentStartDocument, childEndDocument, mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
 
@@ -1121,10 +1115,7 @@ describe('Star Tests ActivationDocument', () => {
                             "$lte": ${JSON.stringify(queryDate)}
                         }
                     }
-                ],
-                "sort": [{
-                    "startCreatedDateTime" : "desc"
-                }]
+                ]
             }
         }`;
 
@@ -1135,7 +1126,7 @@ describe('Star Tests ActivationDocument', () => {
             const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
             transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
 
-            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "potentialParent": true, "potentialChild": true}}`;
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
             const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentDocument, childDocument_Reconciliation, mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
 
@@ -1230,10 +1221,7 @@ describe('Star Tests ActivationDocument', () => {
                             "$lte": ${JSON.stringify(queryDate)}
                         }
                     }
-                ],
-                "sort": [{
-                    "startCreatedDateTime" : "desc"
-                }]
+                ]
             }
         }`;
 
@@ -1244,7 +1232,7 @@ describe('Star Tests ActivationDocument', () => {
             const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
             transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
 
-            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "potentialParent": true, "potentialChild": true}}`;
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
             const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentDocument, childDocument_Reconciliation, mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
 

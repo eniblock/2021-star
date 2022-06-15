@@ -171,14 +171,16 @@ export class ActivationDocumentController {
             targetDocument = collectionMap.get(target)[0];
         }
 
-        activationDocumentObj.potentialParent =  (RoleType.Role_TSO === role_systemOperator && RoleType.Role_DSO == role_producer && activationDocumentObj.startCreatedDateTime !== "");
-        activationDocumentObj.potentialChild = (RoleType.Role_DSO === role_systemOperator && activationDocumentObj.startCreatedDateTime !== "");
-
         if (activationDocumentObj.endCreatedDateTime) {
             activationDocumentObj.orderEnd = true;
         } else {
             activationDocumentObj.orderEnd = false;
         }
+
+        activationDocumentObj.potentialParent =  (RoleType.Role_TSO === role_systemOperator && RoleType.Role_DSO == role_producer && activationDocumentObj.startCreatedDateTime !== "");
+        const dsoChild : boolean = (RoleType.Role_DSO === role_systemOperator && activationDocumentObj.startCreatedDateTime !== "");
+        const tsoChild : boolean = (RoleType.Role_TSO === role_systemOperator && activationDocumentObj.orderEnd === true);
+        activationDocumentObj.potentialChild = dsoChild || tsoChild;
 
         await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
 
@@ -260,7 +262,7 @@ export class ActivationDocumentController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity === OrganizationTypeMsp.RTE || identity === OrganizationTypeMsp.ENEDIS) {
-            const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "potentialParent": true, "potentialChild": true}}`;
+            const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
 
             for (var role of [ RoleType.Role_DSO, RoleType.Role_TSO, OrganizationTypeMsp.PRODUCER ]) {
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, role);
@@ -268,6 +270,7 @@ export class ActivationDocumentController {
                 if (collections) {
                     for (var collection of collections) {
                         var allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, [collection]);
+
                         if (allResults.length > 0) {
                             for (var result of allResults) {
                                 conciliationState.remaining.push({docType:DocType.ACTIVATION_DOCUMENT, collection:collection, data:result});
@@ -282,7 +285,6 @@ export class ActivationDocumentController {
             if (conciliationState && conciliationState.remaining && conciliationState.remaining.length >0 ) {
                 conciliationState = await ActivationDocumentController.searchReconciliation(ctx, params, conciliationState);
             }
-
         }
         var sate_str = JSON.stringify(conciliationState.updateOrders);
         return sate_str;
@@ -429,10 +431,7 @@ export class ActivationDocumentController {
                             "$lte": ${JSON.stringify(queryDate)}
                         }
                     }
-                ],
-                "sort": [{
-                    "startCreatedDateTime" : "desc"
-                }]
+                ]
             }
         }`;
 
@@ -475,12 +474,10 @@ export class ActivationDocumentController {
                 "startCreatedDateTime": {
                     "$gte": ${JSON.stringify(dateYesterday)},
                     "$lte": ${JSON.stringify(queryDate)}
-                },
-                "sort": [{
-                    "startCreatedDateTime": "desc"
-                }]
+                }
             }
         }`;
+        // console.info("query :", query);
 
         const roleTargetQuery = RoleType.Role_Producer;
         const searchResult = await ActivationDocumentController.searchMatching(ctx, params, childReference, query, roleTargetQuery);

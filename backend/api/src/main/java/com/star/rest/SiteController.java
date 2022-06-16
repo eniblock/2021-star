@@ -137,7 +137,7 @@ public class SiteController {
             @Parameter(description = "Number of responses per page")
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @Parameter(description = "order search criteria.")
-            @RequestParam(value = "order") String order,
+            @RequestParam(value = "order", required = false) String order,
             @Parameter(description = "bookmark search criteria")
             @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
             @Parameter(description = "technologyType search criteria")
@@ -156,8 +156,7 @@ public class SiteController {
             @RequestParam(value = "siteIecCode", required = false) String siteIecCode,
             @Parameter(description = "meteringPointMrId search criteria")
             @RequestParam(value = "meteringPointMrId", required = false) String meteringPointMrId) throws BusinessException, TechnicalException {
-        Assert.notNull(order, "Order must not be null");
-        Sort sort = Sort.by(order);
+        Sort sort = order == null ? Sort.unsorted() : Sort.by(order);
         PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
         SiteCrteria criteria = SiteCrteria.builder().meteringPointMrId(meteringPointMrId).producerMarketParticipantMrid(producerMarketParticipantMrid)
                 .producerMarketParticipantName(producerMarketParticipantName).siteIecCode(siteIecCode).substationMrid(substationMrid)

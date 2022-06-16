@@ -9,14 +9,16 @@ import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
 import { ActivationDocument } from '../src/model/activationDocument';
-import { Parameters } from '../src/model/parameters';
+import { STARParameters } from '../src/model/starParameters';
 
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
 import { Values } from './Values';
 import { ParametersController } from '../src/controller/ParametersController';
 import { ParametersType } from '../src/enums/ParametersType';
-import { Console } from 'console';
+import { DocType } from '../src/enums/DocType';
+import { RoleType } from '../src/enums/RoleType';
+import { DataReference } from '../src/model/dataReference';
 
 class TestContext {
     clientIdentity: any;
@@ -38,11 +40,9 @@ describe('Star Tests ActivationDocument', () => {
     let transactionContext: any;
     let mockHandler:any;
     let star: Star;
-    let values: Values;
     beforeEach(() => {
         transactionContext = new TestContext();
         star = new Star();
-        values = new Values();
         mockHandler = sinon.createStubInstance(ChaincodeMessageHandler);
 
         chai.should();
@@ -72,7 +72,7 @@ describe('Star Tests ActivationDocument', () => {
                 transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
                 transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
-                const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+                const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
                 transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
@@ -101,7 +101,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
@@ -218,7 +218,7 @@ describe('Star Tests ActivationDocument', () => {
             // transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
@@ -240,7 +240,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             // transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
@@ -262,7 +262,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
@@ -284,7 +284,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
@@ -313,6 +313,8 @@ describe('Star Tests ActivationDocument', () => {
                 expected.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
         });
     });
 ////////////////////////////////////////////////////////////////////////////
@@ -387,7 +389,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
@@ -405,7 +407,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
-            // const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             // const collectionNames: string[] = params.values.get(ParametersType.SITE);
             // transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
@@ -427,7 +429,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             // transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
-            // const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             // const collectionNames: string[] = params.values.get(ParametersType.SITE);
             // transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
@@ -449,7 +451,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
@@ -474,6 +476,8 @@ describe('Star Tests ActivationDocument', () => {
                 expected.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
         });
 
     });
@@ -493,10 +497,11 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return SUCCESS on GetActivationDocumentByProducer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
-            const iterator = Values.getActivationDocumentQueryMock2Values(Values.HTA_ActivationDocument_Valid, Values.HTA_ActivationDocument_Valid_Doc2,mockHandler);
-            const query = `{"selector": {"docType": "activationDocument", "receiverMarketParticipantMrid": "${Values.HTA_Producer.producerMarketParticipantMrid}"}}`;
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
-
+            const iterator1 = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid, mockHandler);
+            const iterator2 = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid_Doc2,mockHandler);
+            const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "receiverMarketParticipantMrid": "${Values.HTA_Producer.producerMarketParticipantMrid}"}}`;
+            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator1);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs("producer-rte", query).resolves(iterator2);
 
             let ret = await star.GetActivationDocumentByProducer(transactionContext, Values.HTA_Producer.producerMarketParticipantMrid);
             ret = JSON.parse(ret);
@@ -589,7 +594,7 @@ describe('Star Tests ActivationDocument', () => {
         //         {
         //             activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
         //             businessType: "string",
-        //             docType: "activationDocument",
+        //             docType: "${DocType.ACTIVATION_DOCUMENT}",
         //             endCreatedDateTime: "2021-10-22T23:29:10.000Z",
         //             measurementUnitName: "MW",
         //             messageType: "string",
@@ -626,8 +631,10 @@ describe('Star Tests ActivationDocument', () => {
         it('should return SUCCESS on GetActivationDocumentBySystemOperator', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const iterator = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid,mockHandler);
-            const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid}"}}`;
+            const iterator2 = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid_Doc2,mockHandler);
+            const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "senderMarketParticipantMrid": "${Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs("producer-rte", query).resolves(iterator);
 
             let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid as string);
             ret = JSON.parse(ret);
@@ -721,7 +728,7 @@ describe('Star Tests ActivationDocument', () => {
         //         {
         //             activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1",
         //             businessType: "string",
-        //             docType: "activationDocument",
+        //             docType: "${DocType.ACTIVATION_DOCUMENT}",
         //             endCreatedDateTime: "2021-10-22T23:29:10.000Z",
         //             measurementUnitName: "MW",
         //             messageType: "string",
@@ -741,7 +748,7 @@ describe('Star Tests ActivationDocument', () => {
 
         //             activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f2",
         //             businessType: "string",
-        //             docType: "activationDocument",
+        //             docType: "${DocType.ACTIVATION_DOCUMENT}",
         //             endCreatedDateTime: "2021-10-22T23:29:10.000Z",
         //             measurementUnitName: "MW",
         //             messageType: "string",
@@ -763,81 +770,142 @@ describe('Star Tests ActivationDocument', () => {
         // });
     });
 ////////////////////////////////////////////////////////////////////////////
-///////////////////////////////    RECONCILIATION     //////////////////////
+/////////////////////////    RECONCILIATION STATE     //////////////////////
 ////////////////////////////////////////////////////////////////////////////
-    describe('Test OrderEnd RTE', () => {
-    //     it('should return SUCCESS CreateActivationDocument end order HTB RTE for NON-JSON value', async () => {
+    describe('Test Reconciliation State', () => {
+        it('should return SUCCESS on getReconciliationState / Garbage : 2 old', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
-    //         transactionContext.stub.putState.onFirstCall().callsFake((key, value) => {
-    //             transactionContext.stub.states = {};
-    //             transactionContext.stub.states[key] = 'non-json-value';
-    //         });
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
+            const collectionTSO: string = collectionsTSO[0];
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+            const ppcott:number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
 
-    //         transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-    //         await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"1\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-    //         await star.CreateSystemOperator(transactionContext, '{\"systemOperatorMarketParticipantMrid\": \"17V000000992746D\",\"systemOperatorMarketParticipantName\": \"Enedis\",\"systemOperatorMarketParticipantRoleType\": \"A50\"}');
-    //         await star.CreateProducer(transactionContext, '{\"producerMarketParticipantMrid\": \"17X000001309745X\",\"producerMarketParticipantName\": \"EolienFR vert Cie\",\"producerMarketParticipantRoleType\": \"A21\"}');
-    //         // await star.CreateSystemOperator(transactionContext, '17V000000992746D', 'RTE', 'A49');
-    //         // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
-    //         const site: Site = {meteringPointMrid: 'PDL00000000289766',systemOperatorMarketParticipantMrid: '17V000000992746D',producerMarketParticipantMrid: '17X000001309745X',technologyType: 'Eolien',siteType: 'Injection',siteName: 'Ferme éolienne de Genonville',substationMrid: 'GDO A4RTD',substationName: 'CIVRAY',siteAdminMrid: '489 981 029', siteLocation: 'Biscarosse', siteIecCode: 'S7X0000013077478', systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', systemOperatorEntityFlexibilityDomainName: 'Départ 1', systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'};
-    //         await star.CreateSite(transactionContext, JSON.stringify(site));
-    //         transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            const activationDocument01_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            activationDocument01_garbage.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument01_garbage.startCreatedDateTime = Values.reduceDateTimeStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument01_garbage.potentialParent= true;
+            activationDocument01_garbage.potentialChild= false;
 
-    //         // await star.CreateActivationDocument(transactionContext, JSON.stringify(order));
+            const activationDocument02_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            activationDocument02_garbage.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument02_garbage.startCreatedDateTime = Values.reduceDateTimeStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.endCreatedDateTime = Values.reduceDateTimeStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.potentialParent= false;
+            activationDocument02_garbage.potentialChild= true;
 
-    //         const orderEnd: ActivationDocument = {
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorMix = Values.getActivationDocumentQueryMock(activationDocument01_garbage,mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorMix);
+            const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument02_garbage,mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorProd);
 
-    //             activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
-    //             originAutomationRegisteredResourceMrid: 'CRIVA1_ENEDIS_Y411', // FK1
-    //             registeredResourceMrid: 'PDL00000000289766', // FK2
-    //             measurementUnitName: 'MW',
-    //             messageType: 'string',
-    //             businessType: 'string',
-    //             orderEnd: true,
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // console.log('ret=', ret)
 
-    //             orderValue: '1',
-    //             startCreatedDateTime: "2021-10-22T10:29:10.000Z",
-    //             // testDateTime: 'Date', // Test DELETE ME //////////////////////
-    //             // endCreatedDateTime: new Date().toString(),
-    //             revisionNumber: '1',
-    //             reasonCode: 'string', // optionnal in case of TVC modulation
-    //             senderMarketParticipantMrid: '17V000000992746D', // FK?
-    //             receiverMarketParticipantMrid: '17X000001309745X', // FK?
-    //             // reconciliation: false,
-    //             subOrderList: [''],
-    //         }
-    //         await star.CreateActivationDocument(transactionContext, JSON.stringify(orderEnd));
+            activationDocument01_garbage.orderEnd = true;
+            activationDocument01_garbage.potentialParent = false;
+            activationDocument02_garbage.orderEnd = true;
+            activationDocument02_garbage.potentialChild = false;
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
+
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // console.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+        });
+
+        it('should return SUCCESS on getReconciliationState / Garbage : 2 old - 1 current', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
+            const collectionTSO: string = collectionsTSO[0];
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+            const ppcott:number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
+
+            const activationDocument_valid: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            activationDocument_valid.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument_valid.potentialParent= true;
+            activationDocument_valid.potentialChild= false;
+
+            const activationDocument01_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            activationDocument01_garbage.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument01_garbage.startCreatedDateTime = Values.reduceDateTimeStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument01_garbage.potentialParent= true;
+            activationDocument01_garbage.potentialChild= false;
+
+            const activationDocument02_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            activationDocument02_garbage.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument02_garbage.startCreatedDateTime = Values.reduceDateTimeStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.endCreatedDateTime = Values.reduceDateTimeStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.potentialParent= false;
+            activationDocument02_garbage.potentialChild= true;
+
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorMix = Values.getActivationDocumentQueryMock2Values(activationDocument_valid, activationDocument01_garbage,mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorMix);
+            const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument02_garbage,mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorProd);
+
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // console.log('ret=', ret)
+
+            activationDocument01_garbage.orderEnd = true;
+            activationDocument01_garbage.potentialParent = false;
+            activationDocument02_garbage.orderEnd = true;
+            activationDocument02_garbage.potentialChild = false;
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
+
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // console.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+        });
 
 
-    //         // let ret = JSON.parse((await transactionContext.stub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f1")).toString());
-    //         // expect(ret).to.eql( Object.assign({docType: 'activationDocument', reconciliation: true, subOrderList: ['8c56459a-794a-4ed1-a7f6-33b0064508f2']}, order ));
-    //         let retEnd = JSON.parse((await transactionContext.stub.getState("8c56459a-794a-4ed1-a7f6-33b0064508f2")).toString());
-    //         expect(retEnd).to.eql( Object.assign({docType: 'activationDocument', reconciliation: false}, orderEnd ));
-    //     });
 
-        it('should return SUCCESS CreateActivationDocument end order HTB RTE', async () => {
+        it('should return SUCCESS on getReconciliationState / Matching end order HTB RTE', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
 
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
 
-            const activationDocumentStart:ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
-            activationDocumentStart.orderEnd = false;
-            activationDocumentStart.potentialParent = false;
-            activationDocumentStart.potentialChild = false;
-            activationDocumentStart.docType = 'activationDocument';
+            const parentStartDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            parentStartDocument.potentialParent = true;
+            parentStartDocument.potentialChild = false;
+            parentStartDocument.docType = DocType.ACTIVATION_DOCUMENT;
 
-            const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustEndDate));
+            const childEndDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustEndDate));
+            childEndDocument.potentialParent = false;
+            childEndDocument.potentialChild = true;
+            childEndDocument.docType=DocType.ACTIVATION_DOCUMENT;
 
-            const senderMarketParticipantMrid: string = activationDocument_Reconciliation.senderMarketParticipantMrid as string;
-            const registeredResourceMrid: string = activationDocument_Reconciliation.registeredResourceMrid;
+            const senderMarketParticipantMrid: string = childEndDocument.senderMarketParticipantMrid as string;
+            const registeredResourceMrid: string = childEndDocument.registeredResourceMrid;
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
+            const queryDate: string = childEndDocument.endCreatedDateTime as string;
 
             const pcuetmt:number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
 
@@ -850,7 +918,7 @@ describe('Star Tests ActivationDocument', () => {
 
         const query = `{
             "selector": {
-                "docType": "activationDocument",
+                "docType": "${DocType.ACTIVATION_DOCUMENT}",
                 "orderEnd": false,
                 "senderMarketParticipantMrid": "${senderMarketParticipantMrid}",
                 "registeredResourceMrid": "${registeredResourceMrid}",
@@ -858,183 +926,81 @@ describe('Star Tests ActivationDocument', () => {
                 "startCreatedDateTime": {
                     "$gte": ${JSON.stringify(dateYesterday)},
                     "$lte": ${JSON.stringify(queryDate)}
-                },
-                "sort": [{
-                    "startCreatedDateTime": "desc"
-                }]
+                }
             }
         }`;
 
-            const iterator = Values.getActivationDocumentQueryMock(activationDocumentStart, mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("producer-rte", query).resolves(iterator);
+            const iterator = Values.getActivationDocumentQueryMock(parentStartDocument, mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, query).resolves(iterator);
 
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument_Reconciliation));
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentStartDocument, childEndDocument, mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
 
-            activationDocumentStart.orderEnd = true;
-            activationDocumentStart.subOrderList = [activationDocument_Reconciliation.activationDocumentMrid];
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // console.log('ret=', ret)
 
-            const expectedEnd: ActivationDocument = activationDocument_Reconciliation;
-            expectedEnd.orderEnd = true;
-            expectedEnd.potentialParent = false;
-            expectedEnd.potentialChild = false;
-            expectedEnd.subOrderList = [activationDocumentStart.activationDocumentMrid];
-            expectedEnd.docType="activationDocument";
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocumentStart))
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expectedEnd))
-            // console.info("-----------")
+            parentStartDocument.orderEnd = true;
+            parentStartDocument.subOrderList = [childEndDocument.activationDocumentMrid];
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "producer-rte",
-                activationDocumentStart.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocumentStart))
-            );
+            childEndDocument.potentialChild = false;
+            childEndDocument.subOrderList = [parentStartDocument.activationDocumentMrid];
+            childEndDocument.docType=DocType.ACTIVATION_DOCUMENT;
 
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "producer-rte",
-                expectedEnd.activationDocumentMrid,
-                Buffer.from(JSON.stringify(expectedEnd))
-            );
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: parentStartDocument});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childEndDocument});
+
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // console.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
         });
 
 
-        it('should return SUCCESS CreateActivationDocument end order HTB (2 parents, choice on closest date ) RTE', async () => {
+
+        it('should return SUCCESS on getReconciliationState / Matching end order HTB RTE (2 parents, choice on closest date )', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
 
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
 
-            const activationDocumentStart:ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
-            activationDocumentStart.orderEnd = false;
-            activationDocumentStart.potentialParent = false;
-            activationDocumentStart.potentialChild = false;
-            activationDocumentStart.docType = 'activationDocument';
+            const parentStartDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            parentStartDocument.potentialParent = true;
+            parentStartDocument.potentialChild = false;
+            parentStartDocument.docType = DocType.ACTIVATION_DOCUMENT;
 
-            const activationDocumentStartOldest: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
-            activationDocumentStartOldest.activationDocumentMrid = activationDocumentStartOldest.activationDocumentMrid + "_Old";
-            activationDocumentStartOldest.docType="activationDocument";
-            activationDocumentStartOldest.potentialParent= true;
-            activationDocumentStartOldest.potentialChild= false;
-            var dateoldest = new Date(activationDocumentStartOldest.startCreatedDateTime as string);
+            const parentStartDocumentOldest: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            parentStartDocumentOldest.activationDocumentMrid = parentStartDocumentOldest.activationDocumentMrid + "_Old";
+            parentStartDocumentOldest.potentialParent= true;
+            parentStartDocumentOldest.potentialChild= false;
+            parentStartDocumentOldest.docType=DocType.ACTIVATION_DOCUMENT;
+            var dateoldest = new Date(parentStartDocumentOldest.startCreatedDateTime as string);
             dateoldest = new Date(dateoldest.getTime() - 2);
-            activationDocumentStartOldest.startCreatedDateTime = JSON.stringify(dateoldest);
-
-            // console.info("##############")
-            // console.info(activationDocumentStart)
-            // console.info(activationDocumentStartOldest)
-            // console.info("##############")
-
-            const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustEndDate));
-
-            const senderMarketParticipantMrid: string = activationDocument_Reconciliation.senderMarketParticipantMrid as string;
-            const registeredResourceMrid: string = activationDocument_Reconciliation.registeredResourceMrid;
-
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
-
-            const pcuetmt:number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
-
-            const datetmp = new Date(queryDate);
-            datetmp.setUTCMilliseconds(0);
-            datetmp.setUTCSeconds(0);
-            datetmp.setUTCMinutes(0);
-            datetmp.setUTCHours(0);
-            const dateYesterday = new Date(datetmp.getTime() - pcuetmt);
-
-        const query = `{
-            "selector": {
-                "docType": "activationDocument",
-                "orderEnd": false,
-                "senderMarketParticipantMrid": "${senderMarketParticipantMrid}",
-                "registeredResourceMrid": "${registeredResourceMrid}",
-                "messageType": { "$in" : ["A54","A98"] },
-                "startCreatedDateTime": {
-                    "$gte": ${JSON.stringify(dateYesterday)},
-                    "$lte": ${JSON.stringify(queryDate)}
-                },
-                "sort": [{
-                    "startCreatedDateTime": "desc"
-                }]
-            }
-        }`;
-
-            const iterator = Values.getActivationDocumentQueryMock2Values(activationDocumentStart, activationDocumentStartOldest, mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("producer-rte", query).resolves(iterator);
-
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument_Reconciliation));
-
-            activationDocumentStart.orderEnd = true;
-            activationDocumentStart.subOrderList = [activationDocument_Reconciliation.activationDocumentMrid];
-
-            const expectedEnd: ActivationDocument = activationDocument_Reconciliation;
-            expectedEnd.orderEnd = true;
-            expectedEnd.potentialParent = false;
-            expectedEnd.potentialChild = false;
-            expectedEnd.subOrderList = [activationDocumentStart.activationDocumentMrid];
-            expectedEnd.docType="activationDocument";
-
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocumentStart))
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expectedEnd))
-            // console.info("-----------")
-
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "producer-rte",
-                activationDocumentStart.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocumentStart))
-            );
-
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "producer-rte",
-                expectedEnd.activationDocumentMrid,
-                Buffer.from(JSON.stringify(expectedEnd))
-            );
-        });
+            parentStartDocumentOldest.startCreatedDateTime = JSON.stringify(dateoldest);
 
 
-        it('should return SUCCESS CreateActivationDocument end order HTB RTE for coverage', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            const childEndDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustEndDate));
+            childEndDocument.potentialParent = false;
+            childEndDocument.potentialChild = true;
+            childEndDocument.docType=DocType.ACTIVATION_DOCUMENT;
 
-            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
-            transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
+            const senderMarketParticipantMrid: string = childEndDocument.senderMarketParticipantMrid as string;
+            const registeredResourceMrid: string = childEndDocument.registeredResourceMrid;
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
-
-
-            const activationDocumentStart:ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
-            activationDocumentStart.orderEnd = false;
-            activationDocumentStart.potentialParent = false;
-            activationDocumentStart.potentialChild = false;
-            activationDocumentStart.docType = 'activationDocument';
-            activationDocumentStart.subOrderList = [];
-
-            const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustEndDate));
-
-            const senderMarketParticipantMrid: string = activationDocument_Reconciliation.senderMarketParticipantMrid as string;
-            const registeredResourceMrid: string = activationDocument_Reconciliation.registeredResourceMrid;
-
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
+            const queryDate: string = childEndDocument.endCreatedDateTime as string;
 
             const pcuetmt:number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
 
@@ -1047,7 +1013,7 @@ describe('Star Tests ActivationDocument', () => {
 
         const query = `{
             "selector": {
-                "docType": "activationDocument",
+                "docType": "${DocType.ACTIVATION_DOCUMENT}",
                 "orderEnd": false,
                 "senderMarketParticipantMrid": "${senderMarketParticipantMrid}",
                 "registeredResourceMrid": "${registeredResourceMrid}",
@@ -1055,84 +1021,76 @@ describe('Star Tests ActivationDocument', () => {
                 "startCreatedDateTime": {
                     "$gte": ${JSON.stringify(dateYesterday)},
                     "$lte": ${JSON.stringify(queryDate)}
-                },
-                "sort": [{
-                    "startCreatedDateTime": "desc"
-                }]
+                }
             }
         }`;
 
-            const iterator = Values.getActivationDocumentQueryMock(activationDocumentStart, mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("producer-rte", query).resolves(iterator);
+            const iterator = Values.getActivationDocumentQueryMock2Values(parentStartDocumentOldest, parentStartDocument, mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, query).resolves(iterator);
 
-            activationDocument_Reconciliation.subOrderList = [];
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument_Reconciliation));
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentStartDocument, childEndDocument, mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
 
-            activationDocumentStart.orderEnd = true;
-            activationDocumentStart.subOrderList = [activationDocument_Reconciliation.activationDocumentMrid];
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // console.log('ret=', ret)
 
-            const expectedEnd: ActivationDocument = activationDocument_Reconciliation;
-            expectedEnd.orderEnd = true;
-            expectedEnd.potentialParent = false;
-            expectedEnd.potentialChild = false;
-            expectedEnd.subOrderList = [activationDocumentStart.activationDocumentMrid];
-            expectedEnd.docType="activationDocument";
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocumentStart))
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expectedEnd))
-            // console.info("-----------")
+            parentStartDocument.orderEnd = true;
+            parentStartDocument.subOrderList = [childEndDocument.activationDocumentMrid];
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "producer-rte",
-                activationDocumentStart.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocumentStart))
-            );
+            childEndDocument.potentialChild = false;
+            childEndDocument.subOrderList = [parentStartDocument.activationDocumentMrid];
+            childEndDocument.docType=DocType.ACTIVATION_DOCUMENT;
 
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "producer-rte",
-                expectedEnd.activationDocumentMrid,
-                Buffer.from(JSON.stringify(expectedEnd))
-            );
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: parentStartDocument});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childEndDocument});
+
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // console.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
         });
-    });
 
 
-
-
-
-
-
-
-    describe('Test Match Parent with Child (MPWC) reconciliations', () => {
 
         it('should return SUCCESS CreateActivationDocument couple HTA after HTB with MPWC reconciliation', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
+            const collectionTSO: string = collectionsTSO[0];
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator2)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
-            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
-            const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            const parentDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            parentDocument.docType=DocType.ACTIVATION_DOCUMENT;
+            parentDocument.potentialParent= true;
+            parentDocument.potentialChild= false;
+            parentDocument.orderEnd = true;
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const childDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            childDocument_Reconciliation.docType=DocType.ACTIVATION_DOCUMENT;
+            childDocument_Reconciliation.potentialParent= false;
+            childDocument_Reconciliation.potentialChild= true;
+            childDocument_Reconciliation.orderEnd = false;
+
             const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0],
-                activationDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+                childDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
 
-            const orderType = activationDocument_Reconciliation.businessType;
+            const orderType = childDocument_Reconciliation.businessType;
 
             const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
+            const queryDate: string = childDocument_Reconciliation.endCreatedDateTime as string;
             const datetmp = new Date(queryDate);
             datetmp.setUTCMilliseconds(0);
             datetmp.setUTCSeconds(0);
@@ -1141,7 +1099,7 @@ describe('Star Tests ActivationDocument', () => {
 
         const query = `{
             "selector": {
-                "docType": "activationDocument",
+                "docType": "${DocType.ACTIVATION_DOCUMENT}",
                 "potentialParent": true,
                 "registeredResourceMrid": { "$in" : ["PDL00000000289766"] },
                 "businessType": "${orderType}",
@@ -1157,101 +1115,88 @@ describe('Star Tests ActivationDocument', () => {
                             "$lte": ${JSON.stringify(queryDate)}
                         }
                     }
-                ],
-                "sort": [{
-                    "startCreatedDateTime" : "desc"
-                }]
+                ]
             }
         }`;
 
-            activationDocument.docType="activationDocument";
-            activationDocument.potentialParent= true;
-            activationDocument.potentialChild= false;
-            const iterator = Values.getActivationDocumentQueryMock(activationDocument,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", query).resolves(iterator);
+            const iterator = Values.getActivationDocumentQueryMock(parentDocument,mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, query).resolves(iterator);
 
-            const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${activationDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
+            const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${childDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
             const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
             transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
 
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentDocument, childDocument_Reconciliation, mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
 
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument_Reconciliation));
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // console.log('ret=', ret)
 
-            activationDocument.orderEnd = true;
-            activationDocument.subOrderList = [Values.HTA_ActivationDocument_Valid_Doc2.activationDocumentMrid];
-            activationDocument.docType="activationDocument";
 
-            const expectedEnd: ActivationDocument = activationDocument_Reconciliation;
-            expectedEnd.orderEnd = true;
-            expectedEnd.potentialParent = false;
-            expectedEnd.potentialChild = false;
-            expectedEnd.subOrderList = [activationDocument.activationDocumentMrid];
-            expectedEnd.docType="activationDocument";
+            parentDocument.orderEnd = true;
+            parentDocument.subOrderList = [childDocument_Reconciliation.activationDocumentMrid];
 
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument));
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expectedEnd));
-            // console.info("-----------");
+            childDocument_Reconciliation.potentialChild = false;
+            childDocument_Reconciliation.subOrderList = [parentDocument.activationDocumentMrid];
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "enedis-rte",
-                activationDocument.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument))
-            );
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: parentDocument});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childDocument_Reconciliation});
 
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedEnd.activationDocumentMrid,
-                Buffer.from(JSON.stringify(expectedEnd))
-            );
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // console.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
         });
 
 
-        it('should return SUCCESS CreateActivationDocument couple HTA after 2 HTB (choice on closest date) with MPWC reconciliation', async () => {
+
+        it('should return SUCCESS CreateActivationDocument couple HTA after HTB (2 parents, choice on closest date ) with MPWC reconciliation', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
+            const collectionTSO: string = collectionsTSO[0];
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
 
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator2)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
-            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
-            activationDocument.docType="activationDocument";
-            activationDocument.potentialParent= true;
-            activationDocument.potentialChild= false;
-
-            const activationDocumentOldest: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
-            activationDocumentOldest.activationDocumentMrid = activationDocumentOldest.activationDocumentMrid + "_Old";
-            activationDocumentOldest.docType="activationDocument";
-            activationDocumentOldest.potentialParent= true;
-            activationDocumentOldest.potentialChild= false;
-            var dateoldest = new Date(activationDocumentOldest.startCreatedDateTime as string);
+            const parentDocumentOldest: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            parentDocumentOldest.docType=DocType.ACTIVATION_DOCUMENT;
+            parentDocumentOldest.potentialParent= true;
+            parentDocumentOldest.potentialChild= false;
+            parentDocumentOldest.orderEnd = true;
+            var dateoldest = new Date(parentDocumentOldest.startCreatedDateTime as string);
             dateoldest = new Date(dateoldest.getTime() - 2);
-            activationDocumentOldest.startCreatedDateTime = JSON.stringify(dateoldest);
+            parentDocumentOldest.startCreatedDateTime = JSON.stringify(dateoldest);
 
-            // console.info("##############")
-            // console.info(activationDocument)
-            // console.info(activationDocumentOldest)
-            // console.info("##############")
+            const parentDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            parentDocument.docType=DocType.ACTIVATION_DOCUMENT;
+            parentDocument.potentialParent= true;
+            parentDocument.potentialChild= false;
+            parentDocument.orderEnd = true;
 
-            const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            const childDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            childDocument_Reconciliation.docType=DocType.ACTIVATION_DOCUMENT;
+            childDocument_Reconciliation.potentialParent= false;
+            childDocument_Reconciliation.potentialChild= true;
+            childDocument_Reconciliation.orderEnd = false;
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0],
-                activationDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+                childDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
 
-            const orderType = activationDocument_Reconciliation.businessType;
+            const orderType = childDocument_Reconciliation.businessType;
 
             const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
+            const queryDate: string = childDocument_Reconciliation.endCreatedDateTime as string;
             const datetmp = new Date(queryDate);
             datetmp.setUTCMilliseconds(0);
             datetmp.setUTCSeconds(0);
@@ -1260,7 +1205,7 @@ describe('Star Tests ActivationDocument', () => {
 
         const query = `{
             "selector": {
-                "docType": "activationDocument",
+                "docType": "${DocType.ACTIVATION_DOCUMENT}",
                 "potentialParent": true,
                 "registeredResourceMrid": { "$in" : ["PDL00000000289766"] },
                 "businessType": "${orderType}",
@@ -1276,795 +1221,242 @@ describe('Star Tests ActivationDocument', () => {
                             "$lte": ${JSON.stringify(queryDate)}
                         }
                     }
-                ],
-                "sort": [{
-                    "startCreatedDateTime" : "desc"
-                }]
+                ]
             }
         }`;
 
-            const iterator = Values.getActivationDocumentQueryMock2Values(activationDocument,activationDocumentOldest,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", query).resolves(iterator);
+            const iterator = Values.getActivationDocumentQueryMock2Values(parentDocumentOldest, parentDocument,mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, query).resolves(iterator);
 
-            const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${activationDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
+            const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${childDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
             const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
             transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
 
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentDocument, childDocument_Reconciliation, mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
 
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument_Reconciliation));
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // console.log('ret=', ret)
 
-            activationDocument.orderEnd = true;
-            activationDocument.subOrderList = [Values.HTA_ActivationDocument_Valid_Doc2.activationDocumentMrid];
-            activationDocument.docType="activationDocument";
 
-            const expectedEnd: ActivationDocument = activationDocument_Reconciliation;
-            expectedEnd.orderEnd = true;
-            expectedEnd.potentialParent = false;
-            expectedEnd.potentialChild = false;
-            expectedEnd.subOrderList = [activationDocument.activationDocumentMrid];
-            expectedEnd.docType="activationDocument";
+            parentDocument.orderEnd = true;
+            parentDocument.subOrderList = [childDocument_Reconciliation.activationDocumentMrid];
 
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument));
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expectedEnd));
-            // console.info("-----------");
+            childDocument_Reconciliation.potentialChild = false;
+            childDocument_Reconciliation.subOrderList = [parentDocument.activationDocumentMrid];
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "enedis-rte",
-                activationDocument.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument))
-            );
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: parentDocument});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childDocument_Reconciliation});
 
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedEnd.activationDocumentMrid,
-                Buffer.from(JSON.stringify(expectedEnd))
-            );
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // console.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
         });
 
 
-
-
-        it('should return SUCCESS CreateActivationDocument couple HTA after HTB with MPWC reconciliation for coverage', async () => {
+    });
+////////////////////////////////////////////////////////////////////////////
+/////////////////////////    UPDATE BY ORDERS     //////////////////////////
+////////////////////////////////////////////////////////////////////////////
+    describe('Test Update Activation Document by Orders', () => {
+        it('should return ERROR UpdateActivationDocumentByOrders on unknown collection', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
-            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator2)));
-            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
 
-            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
-            const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
-
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0],
-                activationDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+            const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            activationDocument_Producer.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument_Producer.potentialParent= true;
+            activationDocument_Producer.potentialChild= false;
 
 
-            const orderType = activationDocument_Reconciliation.businessType;
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                activationDocument_Producer.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_Producer)));
 
-            const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
+            activationDocument_Producer.potentialParent= false;
+            activationDocument_Producer.orderEnd = true;
+            activationDocument_Producer.subOrderList = ["AAA", "BBB"];
 
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
-            const datetmp = new Date(queryDate);
-            datetmp.setUTCMilliseconds(0);
-            datetmp.setUTCSeconds(0);
-            const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
-            const datePlusPCTMT = new Date(datetmp.getTime() - pctmt);
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: "XXX", data: activationDocument_Producer});
+            const updateOrders_str = JSON.stringify(updateOrders);
 
-        const query = `{
-            "selector": {
-                "docType": "activationDocument",
-                "potentialParent": true,
-                "registeredResourceMrid": { "$in" : ["PDL00000000289766"] },
-                "businessType": "${orderType}",
-                "$or" : [
-                    {
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(queryDate)},
-                            "$lte": ${JSON.stringify(datePlusPCTMT)}
-                        }
-                    },{
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(dateMinusPCTMT)},
-                            "$lte": ${JSON.stringify(queryDate)}
-                        }
-                    }
-                ],
-                "sort": [{
-                    "startCreatedDateTime" : "desc"
-                }]
+            try {
+                await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal(`ActivationDocument : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
             }
-        }`;
-
-            activationDocument.docType="activationDocument";
-            activationDocument.potentialParent= true;
-            activationDocument.potentialChild= false;
-            activationDocument.subOrderList = [];
-            const iterator = Values.getActivationDocumentQueryMock(activationDocument,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", query).resolves(iterator);
-
-            const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${activationDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
-            const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
-            transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
+        });
 
 
-            activationDocument_Reconciliation.subOrderList = [];
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument_Reconciliation));
 
-            activationDocument.orderEnd = true;
-            activationDocument.subOrderList = [Values.HTA_ActivationDocument_Valid_Doc2.activationDocumentMrid];
-            activationDocument.docType="activationDocument";
+        it('should return ERROR UpdateActivationDocumentByOrders on authorozed changes', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
-            const expectedEnd: ActivationDocument = activationDocument_Reconciliation;
-            expectedEnd.orderEnd = true;
-            expectedEnd.potentialParent = false;
-            expectedEnd.potentialChild = false;
-            expectedEnd.subOrderList = [activationDocument.activationDocumentMrid];
-            expectedEnd.docType="activationDocument";
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
 
-            // console.info("-----------");
+            const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument_Producer});
+            const updateOrders_str = JSON.stringify(updateOrders);
+
+            try {
+                await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal(`ActivationDocument : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
+            }
+        });
+
+
+
+        it('should return ERROR UpdateActivationDocumentByOrders on authorozed changes', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
+            const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            activationDocument_Producer.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument_Producer.potentialParent= true;
+            activationDocument_Producer.potentialChild= false;
+
+
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                activationDocument_Producer.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_Producer)));
+
+            activationDocument_Producer.businessType = "new businessType";
+
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument_Producer});
+            const updateOrders_str = JSON.stringify(updateOrders);
+
+            try {
+                await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal(`Error on document ${activationDocument_Producer.activationDocumentMrid} only orderEnd, potentialChild, potentialParent and subOrderList can be updated by orders.`);
+            }
+        });
+
+
+
+        it('should return ERROR UpdateActivationDocumentByOrders on subOrderList', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
+            const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            activationDocument_Producer.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument_Producer.potentialParent= true;
+            activationDocument_Producer.potentialChild= false;
+            activationDocument_Producer.subOrderList = ["CCC"];
+
+
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                activationDocument_Producer.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_Producer)));
+
+            activationDocument_Producer.potentialParent= false;
+            activationDocument_Producer.orderEnd = true;
+            activationDocument_Producer.subOrderList = ["AAA", "BBB"];
+
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument_Producer});
+            const updateOrders_str = JSON.stringify(updateOrders);
+
+            try {
+                await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal(`Error on document ${activationDocument_Producer.activationDocumentMrid} ids can only be added to subOrderList.`);
+            }
+        });
+
+
+
+        it('should return SUCCESS UpdateActivationDocumentByOrders', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
+            const collectionTSO: string = collectionsTSO[0];
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
+            const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            activationDocument_Producer.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument_Producer.potentialParent= true;
+            activationDocument_Producer.potentialChild= false;
+
+            const activationDocument_TSO: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            activationDocument_TSO.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument_TSO.potentialParent= true;
+            activationDocument_TSO.potentialChild= false;
+
+
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                activationDocument_Producer.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_Producer)));
+            transactionContext.stub.getPrivateData.withArgs(collectionTSO,
+                activationDocument_TSO.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_TSO)));
+
+            activationDocument_Producer.potentialParent= false;
+            activationDocument_Producer.orderEnd = true;
+            activationDocument_Producer.subOrderList = ["AAA", "BBB"];
+            activationDocument_TSO.potentialParent= false;
+            activationDocument_TSO.subOrderList = ["111", "222"];
+
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument_Producer});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument_TSO});
+            const updateOrders_str = JSON.stringify(updateOrders);
+
+            await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
+
+            // console.info("-----------")
             // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo");
+            // console.info("ooooooooo")
             // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument));
-            // console.info("-----------");
+            // console.info(JSON.stringify(activationDocument_garbageProducer))
+            // console.info("-----------")
             // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo");
+            // console.info("ooooooooo")
             // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expectedEnd));
-            // console.info("-----------");
+            // console.info(JSON.stringify(activationDocument_garbageTSO))
+            // console.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "enedis-rte",
-                activationDocument.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument))
+                collectionProducer,
+                activationDocument_Producer.activationDocumentMrid,
+                Buffer.from(JSON.stringify(activationDocument_Producer))
+            );
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                collectionTSO,
+                activationDocument_TSO.activationDocumentMrid,
+                Buffer.from(JSON.stringify(activationDocument_TSO))
             );
 
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedEnd.activationDocumentMrid,
-                Buffer.from(JSON.stringify(expectedEnd))
-            );
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
         });
+
     });
 
 
-
-
-    describe('Test Conciliation Crank', () => {
-        it('should return SUCCESS on GetActivationDocumentByProducer with MPWC reconciliation', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-
-            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator2)));
-            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-
-            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
-            activationDocument.docType="activationDocument";
-            activationDocument.potentialParent= true;
-            activationDocument.potentialChild= false;
-
-            const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
-            activationDocument_Reconciliation.docType="activationDocument";
-            activationDocument_Reconciliation.potentialParent= false;
-            activationDocument_Reconciliation.potentialChild= true;
-
-            const queryCrank = `{"selector": {"docType": "activationDocument", "potentialParent": true, "potentialChild": true}}`;
-            const iteratorMix = Values.getActivationDocumentQueryMock(activationDocument,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", queryCrank).resolves(iteratorMix);
-            const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument_Reconciliation,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", queryCrank).resolves(iteratorProd);
-
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0],
-                activationDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
-
-
-            const orderType = activationDocument_Reconciliation.businessType;
-
-            const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
-
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
-            const datetmp = new Date(queryDate);
-            datetmp.setUTCMilliseconds(0);
-            datetmp.setUTCSeconds(0);
-            const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
-            const datePlusPCTMT = new Date(datetmp.getTime() - pctmt);
-
-        const queryReconciliation = `{
-            "selector": {
-                "docType": "activationDocument",
-                "potentialParent": true,
-                "registeredResourceMrid": { "$in" : ["PDL00000000289766"] },
-                "businessType": "${orderType}",
-                "$or" : [
-                    {
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(queryDate)},
-                            "$lte": ${JSON.stringify(datePlusPCTMT)}
-                        }
-                    },{
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(dateMinusPCTMT)},
-                            "$lte": ${JSON.stringify(queryDate)}
-                        }
-                    }
-                ],
-                "sort": [{
-                    "startCreatedDateTime" : "desc"
-                }]
-            }
-        }`;
-
-            const iteratorReconciliation = Values.getActivationDocumentQueryMock(activationDocument,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", queryReconciliation).resolves(iteratorReconciliation);
-
-            const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${activationDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
-            const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
-            transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
-
-            const iterator = Values.getActivationDocumentQueryMock2Values(Values.HTA_ActivationDocument_Valid, Values.HTA_ActivationDocument_Valid_Doc2,mockHandler);
-            const query = `{"selector": {"docType": "activationDocument", "receiverMarketParticipantMrid": "${Values.HTA_Producer.producerMarketParticipantMrid}"}}`;
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
-
-
-            let ret = await star.GetActivationDocumentByProducer(transactionContext, Values.HTA_Producer.producerMarketParticipantMrid);
-            ret = JSON.parse(ret);
-            // console.log('ret=', ret)
-            expect(ret.length).to.equal(2);
-
-            const expected: ActivationDocument[] = [Values.HTA_ActivationDocument_Valid, Values.HTA_ActivationDocument_Valid_Doc2];
-
-            expect(ret).to.eql(expected);
-
-
-            activationDocument.orderEnd = true;
-            activationDocument.subOrderList = [Values.HTA_ActivationDocument_Valid_Doc2.activationDocumentMrid];
-            activationDocument.docType="activationDocument";
-
-            const expectedEnd: ActivationDocument = activationDocument_Reconciliation;
-            expectedEnd.orderEnd = true;
-            expectedEnd.potentialParent = false;
-            expectedEnd.potentialChild = false;
-            expectedEnd.subOrderList = [activationDocument.activationDocumentMrid];
-            expectedEnd.docType="activationDocument";
-
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument));
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expectedEnd));
-            // console.info("-----------");
-
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "enedis-rte",
-                activationDocument.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument))
-            );
-
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedEnd.activationDocumentMrid,
-                Buffer.from(JSON.stringify(expectedEnd))
-            );
-        });
-
-
-
-        it('should return SUCCESS on GetActivationDocumentBySystemOperator with MPWC reconciliation', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-
-            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator2)));
-            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-
-            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
-            activationDocument.docType="activationDocument";
-            activationDocument.potentialParent= true;
-            activationDocument.potentialChild= false;
-
-            const activationDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
-            activationDocument_Reconciliation.docType="activationDocument";
-            activationDocument_Reconciliation.potentialParent= false;
-            activationDocument_Reconciliation.potentialChild= true;
-
-            const queryCrank = `{"selector": {"docType": "activationDocument", "potentialParent": true, "potentialChild": true}}`;
-            const iteratorMix = Values.getActivationDocumentQueryMock(activationDocument,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", queryCrank).resolves(iteratorMix);
-            const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument_Reconciliation,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", queryCrank).resolves(iteratorProd);
-
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0],
-                activationDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
-
-
-            const orderType = activationDocument_Reconciliation.businessType;
-
-            const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
-
-            const queryDate: string = activationDocument_Reconciliation.endCreatedDateTime as string;
-            const datetmp = new Date(queryDate);
-            datetmp.setUTCMilliseconds(0);
-            datetmp.setUTCSeconds(0);
-            const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
-            const datePlusPCTMT = new Date(datetmp.getTime() - pctmt);
-
-        const queryReconciliation = `{
-            "selector": {
-                "docType": "activationDocument",
-                "potentialParent": true,
-                "registeredResourceMrid": { "$in" : ["PDL00000000289766"] },
-                "businessType": "${orderType}",
-                "$or" : [
-                    {
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(queryDate)},
-                            "$lte": ${JSON.stringify(datePlusPCTMT)}
-                        }
-                    },{
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(dateMinusPCTMT)},
-                            "$lte": ${JSON.stringify(queryDate)}
-                        }
-                    }
-                ],
-                "sort": [{
-                    "startCreatedDateTime" : "desc"
-                }]
-            }
-        }`;
-
-            const iteratorReconciliation = Values.getActivationDocumentQueryMock(activationDocument,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", queryReconciliation).resolves(iteratorReconciliation);
-
-            const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${activationDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
-            const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
-            transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
-
-            const iterator = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid,mockHandler);
-            const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid}"}}`;
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
-
-            let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid as string);
-            ret = JSON.parse(ret);
-            // console.log('ret=', ret)
-            expect(ret.length).to.equal(1);
-
-            const expected: ActivationDocument[] = [Values.HTA_ActivationDocument_Valid];
-
-            expect(ret).to.eql(expected);
-
-
-            activationDocument.orderEnd = true;
-            activationDocument.subOrderList = [Values.HTA_ActivationDocument_Valid_Doc2.activationDocumentMrid];
-            activationDocument.docType="activationDocument";
-
-            const expectedEnd: ActivationDocument = activationDocument_Reconciliation;
-            expectedEnd.orderEnd = true;
-            expectedEnd.potentialParent = false;
-            expectedEnd.potentialChild = false;
-            expectedEnd.subOrderList = [activationDocument.activationDocumentMrid];
-            expectedEnd.docType="activationDocument";
-
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument));
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expectedEnd));
-            // console.info("-----------");
-
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "enedis-rte",
-                activationDocument.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument))
-            );
-
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedEnd.activationDocumentMrid,
-                Buffer.from(JSON.stringify(expectedEnd))
-            );
-        });
-
-        it('should return SUCCESS CreateActivationDocument couple HTA', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-
-            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
-            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-
-            const activationDocumentToCreate:ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
-
-            const activationDocument_Parent: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
-            activationDocument_Parent.docType="activationDocument";
-            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime as string, 5*24*60*60*1000);
-            activationDocument_Parent.potentialParent= true;
-            activationDocument_Parent.potentialChild= false;
-
-            const activationDocument_Child: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
-            activationDocument_Child.docType="activationDocument";
-            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime as string, 5*24*60*60*1000);
-            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime as string, 5*24*60*60*1000);
-            activationDocument_Child.potentialParent= false;
-            activationDocument_Child.potentialChild= true;
-
-            const queryCrank = `{"selector": {"docType": "activationDocument", "potentialParent": true, "potentialChild": true}}`;
-            const iteratorMix = Values.getActivationDocumentQueryMock(activationDocument_Parent,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", queryCrank).resolves(iteratorMix);
-            const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument_Child,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", queryCrank).resolves(iteratorProd);
-
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
-
-            const orderType = activationDocument_Child.businessType;
-
-            const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
-
-            const queryDate: string = activationDocument_Child.endCreatedDateTime;
-            const datetmp = new Date(queryDate);
-            datetmp.setUTCMilliseconds(0);
-            datetmp.setUTCSeconds(0);
-            const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
-            const datePlusPCTMT = new Date(datetmp.getTime() - pctmt);
-
-        const queryReconciliation = `{
-            "selector": {
-                "docType": "activationDocument",
-                "potentialParent": true,
-                "registeredResourceMrid": { "$in" : ["PDL00000000289766"] },
-                "businessType": "${orderType}",
-                "$or" : [
-                    {
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(queryDate)},
-                            "$lte": ${JSON.stringify(datePlusPCTMT)}
-                        }
-                    },{
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(dateMinusPCTMT)},
-                            "$lte": ${JSON.stringify(queryDate)}
-                        }
-                    }
-                ],
-                "sort": [{
-                    "startCreatedDateTime" : "desc"
-                }]
-            }
-        }`;
-
-            const iteratorReconciliation = Values.getActivationDocumentQueryMock(activationDocument_Parent,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", queryReconciliation).resolves(iteratorReconciliation);
-
-            const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${activationDocument_Child.originAutomationRegisteredResourceMrid}"}}`;
-            const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
-            transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
-
-            const iterator = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid,mockHandler);
-            const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid}"}}`;
-            transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
-
-
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocumentToCreate));
-
-            activationDocument_Parent.orderEnd = true;
-            activationDocument_Parent.subOrderList = [activationDocument_Child.activationDocumentMrid];
-
-            activationDocument_Child.orderEnd = true;
-            activationDocument_Child.potentialChild = false;
-            activationDocument_Child.subOrderList = [activationDocument_Parent.activationDocumentMrid];
-
-
-            const expectedCreation: ActivationDocument = activationDocumentToCreate;
-            expectedCreation.orderEnd = true;
-            expectedCreation.potentialParent = false;
-            expectedCreation.potentialChild = true;
-            expectedCreation.docType = 'activationDocument';
-
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_Parent));
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_Child));
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.thirdCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.thirdCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expectedCreation));
-            // console.info("-----------");
-
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "enedis-rte",
-                activationDocument_Parent.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument_Parent))
-            );
-
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                activationDocument_Child.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument_Child))
-            );
-
-            transactionContext.stub.putPrivateData.thirdCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedCreation.activationDocumentMrid,
-                Buffer.from(JSON.stringify(expectedCreation))
-            );
-        });
-    });
-
-
-
-
-
-    describe('Test Garbage', () => {
-        it('should return SUCCESS on GetActivationDocumentByProducer with MPWC reconciliation', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-
-            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator2)));
-            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
-            const ppcott:number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
-
-            const activationDocument_Parent: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
-            activationDocument_Parent.docType="activationDocument";
-            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime as string, ppcott+1);
-            activationDocument_Parent.potentialParent= true;
-            activationDocument_Parent.potentialChild= false;
-
-            const activationDocument_Child: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
-            activationDocument_Child.docType="activationDocument";
-            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime as string, ppcott+1);
-            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime as string, ppcott+1);
-            activationDocument_Child.potentialParent= false;
-            activationDocument_Child.potentialChild= true;
-
-
-            const queryCrank = `{"selector": {"docType": "activationDocument", "potentialParent": true, "potentialChild": true}}`;
-            const iteratorMix = Values.getActivationDocumentQueryMock(activationDocument_Parent,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", queryCrank).resolves(iteratorMix);
-            const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument_Child,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", queryCrank).resolves(iteratorProd);
-
-            /* Start : GetActivationDocumentByProducer Test */
-            const iterator = Values.getActivationDocumentQueryMock2Values(Values.HTA_ActivationDocument_Valid, Values.HTA_ActivationDocument_Valid_Doc2,mockHandler);
-            const query = `{"selector": {"docType": "activationDocument", "receiverMarketParticipantMrid": "${Values.HTA_Producer.producerMarketParticipantMrid}"}}`;
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
-
-            let ret = await star.GetActivationDocumentByProducer(transactionContext, Values.HTA_Producer.producerMarketParticipantMrid);
-            ret = JSON.parse(ret);
-            // console.log('ret=', ret)
-            expect(ret.length).to.equal(2);
-
-            const expected: ActivationDocument[] = [Values.HTA_ActivationDocument_Valid, Values.HTA_ActivationDocument_Valid_Doc2];
-
-            expect(ret).to.eql(expected);
-            /* End : GetActivationDocumentByProducer Test */
-
-
-            //Reconciliation opportunities are closed
-            activationDocument_Parent.orderEnd = true;
-            activationDocument_Parent.potentialParent = false;
-
-            activationDocument_Child.orderEnd = true;
-            activationDocument_Child.potentialChild = false;
-
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_Parent));
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_Child));
-            // console.info("-----------");
-
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "enedis-rte",
-                activationDocument_Parent.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument_Parent))
-            );
-
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                activationDocument_Child.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument_Child))
-            );
-        });
-
-
-        it('should return SUCCESS on GetActivationDocumentBySystemOperator with MPWC reconciliation', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-
-            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator2)));
-            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
-            const ppcott:number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
-
-            const activationDocument_Parent: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
-            activationDocument_Parent.docType="activationDocument";
-            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime as string, ppcott+1);
-            activationDocument_Parent.potentialParent= true;
-            activationDocument_Parent.potentialChild= false;
-
-            const activationDocument_Child: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
-            activationDocument_Child.docType="activationDocument";
-            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime as string, ppcott+1);
-            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime as string, ppcott+1);
-            activationDocument_Child.potentialParent= false;
-            activationDocument_Child.potentialChild= true;
-
-            const queryCrank = `{"selector": {"docType": "activationDocument", "potentialParent": true, "potentialChild": true}}`;
-            const iteratorMix = Values.getActivationDocumentQueryMock(activationDocument_Parent,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", queryCrank).resolves(iteratorMix);
-            const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument_Child,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", queryCrank).resolves(iteratorProd);
-
-            /* Start : GetActivationDocumentBySystemOperator Test */
-            const iterator = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid,mockHandler);
-            const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid}"}}`;
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
-
-            let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid as string);
-            ret = JSON.parse(ret);
-            // console.log('ret=', ret)
-            expect(ret.length).to.equal(1);
-
-            const expected: ActivationDocument[] = [Values.HTA_ActivationDocument_Valid];
-
-            expect(ret).to.eql(expected);
-            /* End : GetActivationDocumentByProducer Test */
-
-
-            //Reconciliation opportunities are closed
-            activationDocument_Parent.orderEnd = true;
-            activationDocument_Parent.potentialParent = false;
-
-            activationDocument_Child.orderEnd = true;
-            activationDocument_Child.potentialChild = false;
-
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_Parent));
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_Child));
-            // console.info("-----------");
-
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "enedis-rte",
-                activationDocument_Parent.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument_Parent))
-            );
-
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                activationDocument_Child.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument_Child))
-            );
-        });
-
-
-        it('should return SUCCESS CreateActivationDocument couple HTA', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-
-            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
-            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
-            const ppcott:number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
-
-            const activationDocument_Parent: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
-            activationDocument_Parent.docType="activationDocument";
-            activationDocument_Parent.startCreatedDateTime = Values.reduceDateStr(activationDocument_Parent.startCreatedDateTime as string, ppcott+1);
-            activationDocument_Parent.potentialParent= true;
-            activationDocument_Parent.potentialChild= false;
-
-            const activationDocument_Child: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
-            activationDocument_Child.docType="activationDocument";
-            activationDocument_Child.startCreatedDateTime = Values.reduceDateStr(activationDocument_Child.startCreatedDateTime as string, ppcott+1);
-            activationDocument_Child.endCreatedDateTime = Values.reduceDateStr(activationDocument_Child.endCreatedDateTime as string, ppcott+1);
-            activationDocument_Child.potentialParent= false;
-            activationDocument_Child.potentialChild= true;
-
-            const queryCrank = `{"selector": {"docType": "activationDocument", "potentialParent": true, "potentialChild": true}}`;
-            const iteratorMix = Values.getActivationDocumentQueryMock(activationDocument_Parent,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-rte", queryCrank).resolves(iteratorMix);
-            const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument_Child,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", queryCrank).resolves(iteratorProd);
-
-            /* START : CreateActivationDocument Test */
-            const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
-            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
-            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
-
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
-
-            await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
-
-            const expectedCreation: ActivationDocument = activationDocument;
-            expectedCreation.orderEnd = true;
-            expectedCreation.potentialParent = false;
-            expectedCreation.potentialChild = true;
-            expectedCreation.docType = 'activationDocument';
-
-            /* End : CreateActivationDocument Test */
-
-
-            //Reconciliation opportunities are closed
-            activationDocument_Parent.orderEnd = true;
-            activationDocument_Parent.potentialParent = false;
-
-            activationDocument_Child.orderEnd = true;
-            activationDocument_Child.potentialChild = false;
-
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_Parent));
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_Child));
-            // console.info("-----------");
-            // console.info(transactionContext.stub.putPrivateData.thirdCall.args);
-            // console.info("ooooooooo");
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.thirdCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expectedCreation));
-            // console.info("-----------");
-
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                "enedis-rte",
-                activationDocument_Parent.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument_Parent))
-            );
-
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                activationDocument_Child.activationDocumentMrid,
-                Buffer.from(JSON.stringify(activationDocument_Child))
-            );
-
-            transactionContext.stub.putPrivateData.thirdCall.should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedCreation.activationDocumentMrid,
-                Buffer.from(JSON.stringify(expectedCreation))
-            );
-
-        });
-    });
 });

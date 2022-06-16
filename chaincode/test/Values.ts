@@ -29,14 +29,14 @@ export class Values {
     }
 
     private static getStartDate(): Date {
-        var dateStart = new Date();
-        dateStart.setUTCMilliseconds(1);
-        dateStart.setUTCSeconds(0);
-        dateStart.setMinutes(0);
-        dateStart.setHours(0);
+        var dateStart: Date = new Date();
+        var offset:number = 0 - new Date().getTimezoneOffset();
+        dateStart.setHours(0,0 + offset,0,1);
+
+        console.info(dateStart);
 
         //dateStart is yesterday at 00h00'00''001
-        dateStart = new Date(dateStart.getTime() - 86400000);
+        dateStart.setDate(dateStart.getDate() - 1);
 
         return dateStart;
     }
@@ -45,20 +45,36 @@ export class Values {
         var dateEnd = Values.getStartDate();
 
         //dateEnd is dateStart at 23h29'10''001
-        dateEnd.setHours(23);
-        dateEnd.setMinutes(29);
-        dateEnd.setSeconds(10);
+        dateEnd.setHours(23,29,10);
 
         return dateEnd;
     }
 
 
-    public static reduceDateStr(dateref: string, reducing: number): string {
+    public static reduceDateTimeStr(dateref: string, reducing: number): string {
         var reducedDate = new Date(Date.parse(dateref));
 
         reducedDate = new Date(reducedDate.getTime() - reducing);
 
         return JSON.parse(JSON.stringify(reducedDate));
+    }
+
+    public static reduceDateDaysStr(dateref: string, reducing: number): string {
+        var reducedDate = new Date(Date.parse(dateref));
+
+        reducedDate.setDate(reducedDate.getDate() - reducing);
+
+        return JSON.parse(JSON.stringify(reducedDate));
+    }
+
+    public static midnightDateStr(dateref: string): string {
+        console.info("dateref : ", dateref);
+        var newDate = new Date(Date.parse(dateref));
+
+        newDate.setHours(1,0,0,0);
+        console.info("newDate : ", newDate);
+
+        return JSON.parse(JSON.stringify(newDate));
     }
 
 
@@ -396,6 +412,24 @@ export class Values {
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
     }
 
+    public static HTB_ActivationDocument_Valid: ActivationDocument = {
+        activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1-r1",
+        originAutomationRegisteredResourceMrid: Values.HTB_yellowPage.originAutomationRegisteredResourceMrid,
+        registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
+        measurementUnitName: "MW",
+        messageType: "string",
+        businessType: "string",
+
+        orderEnd: false,
+        orderValue: "1",
+        startCreatedDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
+        endCreatedDateTime: JSON.parse(JSON.stringify(Values.getEndDate())),
+        revisionNumber: "1",
+        reasonCode: "string",
+        senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
+        receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid
+    }
+
     public static HTB_ActivationDocument_JustStartDate: ActivationDocument = {
         activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1-r1",
         originAutomationRegisteredResourceMrid: Values.HTB_yellowPage.originAutomationRegisteredResourceMrid,
@@ -465,7 +499,7 @@ export class Values {
     public static HTB_EnergyAmount : EnergyAmount = {
         energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
         activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1",
-        registeredResourceMrid: Values.HTB_ActivationDocument_JustStartDate.registeredResourceMrid,
+        registeredResourceMrid: Values.HTB_ActivationDocument_Valid.registeredResourceMrid,
         quantity: "number",
         measurementUnitName: "KW",
         revisionNumber: "1",
@@ -479,12 +513,12 @@ export class Values {
         receiverMarketParticipantMrid: "Producteur1",
         receiverMarketParticipantRole: "A32",
         createdDateTime: "2021-10-22T10:29:10.000Z",
-        timeInterval: "2021-10-22T01:01:01.001Z / 2021-10-22T23:59:59.999Z",
+        timeInterval: `${Values.HTB_ActivationDocument_Valid.startCreatedDateTime}/${Values.HTB_ActivationDocument_Valid.endCreatedDateTime}`,
     };
 
     public static HTA_EnergyAmount : EnergyAmount = {
         energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-        activationDocumentMrid: "CIVRA/PRM50012536123467/2021-10-22T11:29:10.000Z/2021-10-22T22:29:10.000Z",
+        activationDocumentMrid: `CIVRA/PRM50012536123467/${Values.HTA_ActivationDocument_Valid.startCreatedDateTime}/${Values.HTA_ActivationDocument_Valid.endCreatedDateTime}`,
         registeredResourceMrid: "PRM50012536123467",
         quantity: "number",
         measurementUnitName: "KW",
@@ -499,7 +533,7 @@ export class Values {
         receiverMarketParticipantMrid: "Producteur1",
         receiverMarketParticipantRole: "A32",
         createdDateTime: "2021-10-22T10:29:10.000Z",
-        timeInterval: "2021-10-22T01:01:01.001Z / 2021-10-22T23:59:59.999Z",
+        timeInterval: `${Values.HTA_ActivationDocument_Valid.startCreatedDateTime}/${Values.HTA_ActivationDocument_Valid.endCreatedDateTime}`,
     };
 
 

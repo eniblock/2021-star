@@ -56,6 +56,9 @@ export class FormReseauRechercheComponent implements OnInit {
   optionsMeteringPointMrIds: string[] = [];
   filteredMeteringPointMrIds?: Observable<string[]>;
 
+  optionsSiteNames: string[] = [];
+  filteredRechercheSimple?: Observable<string[]>;
+
   constructor(
     private formBuilder: FormBuilder,
     private reseauService: ReseauService,
@@ -179,9 +182,34 @@ export class FormReseauRechercheComponent implements OnInit {
           startWith(''),
           map(value => this.filter(value, this.optionsMeteringPointMrIds)),
         );
+        // siteNames
+        this.optionsSiteNames = sites.map(s => s.siteName).filter(iec => iec != undefined).filter((item, pos, self) => self.indexOf(item) == pos).sort() as string[];
+        // recherche simpte
+        this.initRechercheSimple();
       }
     )
+  }
 
+  private initRechercheSimple() {
+    if (this.form.get('typeDeRechercheSimple')!.value) {
+      this.filteredRechercheSimple = this.form.get('champDeRechercheSimple')!.valueChanges.pipe(
+        startWith(''),
+        map(value => {
+          switch (this.form.get('typeDeRechercheSimple')!.value as TypeDeRechercheSimple) {
+            case TypeDeRechercheSimple.siteName:
+              return this.filter(value, this.optionsSiteNames)
+            case TypeDeRechercheSimple.substationName:
+              return this.filter(value, this.optionsSubstationNames)
+            case TypeDeRechercheSimple.producerMarketParticipantName:
+              return this.filter(value, this.optionsProducerNames)
+          }
+        }),
+      );
+    }
+  }
+
+  public typeRechercheSimpleChange() {
+    this.initRechercheSimple();
   }
 
   private filter(value: string, options: string[]): string[] {

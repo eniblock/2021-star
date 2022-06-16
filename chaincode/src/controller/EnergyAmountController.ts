@@ -250,47 +250,39 @@ export class EnergyAmountController {
             {strict: true, abortEarly: false},
         );
 
-        const keySplitted = energyObj.activationDocumentMrid.split('/', 4);
-        console.log(keySplitted);
-
-        const query = `{
-            "selector":
-            {
-                "docType": "${DocType.ACTIVATION_DOCUMENT}",
-                "originAutomationRegisteredResourceMrid": "${keySplitted[0]}",
-                "registeredResourceMrid": "${keySplitted[1]}",
-                "startCreatedDateTime": "${keySplitted[2]}",
-                "endCreatedDateTime": "${keySplitted[3]}"
-            }
-        }`;
-        console.log(query);
-        const allResults = await QueryStateService.getQueryArrayResult(ctx, query);
-
-        // const iterator = await ctx.stub.getQueryResult(query);
-        // // if (Object.keys(iterator).length === 0) {
-        // //     throw new Error(`ERROR createDSOEnergyAmount : no results for get activationDocument`);
-        // // }
-        // const allResults = [];
-        // let result = await iterator.next();
-        // while (!result.done) {
-        //     const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-        //     let record;
-        //     // try {
-        //     record = JSON.parse(strValue);
-        //     // } catch (err) {
-        //     //     // record = strValue;
-        //     //     continue;
-        //     // }
-        //     allResults.push(record);
-        //     result = await iterator.next();
-        // }
-        // if (allResults.length === 0) {
-        //     throw new Error(`ERROR createDSOEnergyAmount : no results for get activationDocument`);
-        // }
-        // console.log(allResults);
+        const orderAsBytes = await ctx.stub.getState(energyObj.activationDocumentMrid);
+        if (!orderAsBytes || orderAsBytes.length === 0) {
+            throw new Error(`ActivationDocument : ${energyObj.activationDocumentMrid} does not exist for Energy Amount ${orderAsBytes.energyAmountMarketDocumentMrid} creation.`);
+        }
 
         let orderObj: ActivationDocument;
-        orderObj = allResults[0];
+        try {
+            orderObj = JSON.parse(orderAsBytes.toString());
+        } catch (error) {
+            throw new Error(`ERROR createDSOEnergyAmount getActivationDocument-> Input string NON-JSON value`);
+        }
+
+//      ================STAR-425 : Partie du code en commentaire car on utilise pas les clés composites===========================
+
+//         const keySplitted = energyObj.activationDocumentMrid.split('/', 4);
+//         console.log(keySplitted);
+//
+//         const query = `{
+//             "selector":
+//             {
+//                 "docType": "${DocType.ACTIVATION_DOCUMENT}",
+//                 "originAutomationRegisteredResourceMrid": "${keySplitted[0]}",
+//                 "registeredResourceMrid": "${keySplitted[1]}",
+//                 "startCreatedDateTime": "${keySplitted[2]}",
+//                 "endCreatedDateTime": "${keySplitted[3]}"
+//             }
+//         }`;
+//         console.log(query);
+//         const allResults = await QueryStateService.getQueryArrayResult(ctx, query);
+//         let orderObj: ActivationDocument;
+//         orderObj = allResults[0];
+
+//      =========================================================================================================================
 /*
         // const orderAsBytes = await ctx.stub.getState(energyAmountInput.activationDocumentMrid);
         // if (!orderAsBytes || orderAsBytes.length === 0) {

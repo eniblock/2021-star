@@ -252,7 +252,7 @@ export class EnergyAmountController {
 
         const orderAsBytes = await ctx.stub.getState(energyObj.activationDocumentMrid);
         if (!orderAsBytes || orderAsBytes.length === 0) {
-            throw new Error(`ActivationDocument : ${energyObj.activationDocumentMrid} does not exist for Energy Amount ${orderAsBytes.energyAmountMarketDocumentMrid} creation.`);
+            throw new Error(`ActivationDocument : ${energyObj.activationDocumentMrid} does not exist for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`);
         }
 
         let orderObj: ActivationDocument;

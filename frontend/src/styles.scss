@@ -94,11 +94,16 @@ h3 {
     display: inline !important;
   }
 
-  .typeOrganisation {
+  .participantName {
     text-align: center;
     font-weight: 500;
     color: $mat-primary;
     font-size: 0.9em;
+  }
+
+  .username {
+    text-align: center;
+    font-size: 0.8em;
   }
 }
 

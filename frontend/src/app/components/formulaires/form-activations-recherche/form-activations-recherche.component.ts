@@ -7,7 +7,7 @@ import {HistoriqueLimitationService} from 'src/app/services/api/historique-limit
 import {Observable} from "rxjs";
 import {map, startWith} from "rxjs/operators";
 import {ProducerService} from "../../../services/api/producer.service";
-import {PosteSourceService} from "../../../services/api/poste-source.service";
+import {SiteService} from "../../../services/api/site.service";
 
 @Component({
   selector: 'app-form-activations-recherche',
@@ -39,7 +39,7 @@ export class FormActivationsRechercheComponent implements OnInit {
     private historiqueLimitationService: HistoriqueLimitationService,
     private instanceService: InstanceService,
     private producerService: ProducerService,
-    private posteSourceService: PosteSourceService,
+    private siteService: SiteService,
   ) {
   }
 
@@ -78,9 +78,9 @@ export class FormActivationsRechercheComponent implements OnInit {
     )
 
     // Poste source codes
-    this.posteSourceService.getPosteSourceCodes().subscribe(
-      posteSourceCodes => {
-        this.optionsPosteSourceCodes = posteSourceCodes;
+    this.siteService.getSites().subscribe(
+      sites => {
+        this.optionsPosteSourceCodes = sites.map(s => s.substationMrid).filter((item, pos, self) => self.indexOf(item) == pos).sort();
         this.filteredPosteSourceCodes = this.form.get('originAutomationRegisteredResourceMrid')!.valueChanges.pipe(
           startWith(''),
           map(value => this.filter(value, this.optionsPosteSourceCodes)),

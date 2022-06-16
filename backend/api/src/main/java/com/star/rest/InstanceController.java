@@ -1,11 +1,16 @@
 package com.star.rest;
 
 import com.star.enums.InstanceEnum;
+import com.star.exception.TechnicalException;
+import com.star.security.SecurityComponent;
+import com.star.service.MarketParticipantService;
+import com.star.service.ProducerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +30,15 @@ public class InstanceController {
     @Value("${instance}")
     private InstanceEnum instance;
 
+    @Autowired
+    private ProducerService producerService;
+
+    @Autowired
+    private MarketParticipantService marketParticipantService;
+
+    @Autowired
+    private SecurityComponent securityComponent;
+
     /**
      * API indiquant l'instance (TSO ou DSO) du backend
      *
@@ -37,4 +51,41 @@ public class InstanceController {
     public ResponseEntity<InstanceEnum> getCurrentInstance() {
         return ResponseEntity.ok(instance);
     }
+
+    /**
+     * API indiquant l'instance (TSO ou DSO) du backend
+     *
+     * @return
+     */
+    @Operation(summary = "Get the participant name")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get the participant name",
+            content = {@Content(mediaType = "application/json")})})
+    @GetMapping("/participantName")
+    public ResponseEntity<String> getParticipantName() throws TechnicalException {
+        if (instance == InstanceEnum.PRODUCER) {
+            return ResponseEntity.ok(producerService
+                    .getProducer(securityComponent.getProducerMarketParticipantMrid(true))
+                    .getProducerMarketParticipantName());
+        } else {
+            var systemOperatorMarketParticipantMrid = getSystemOperatorMrid();
+            return ResponseEntity.ok(marketParticipantService
+                    .getSystemOperators().stream()
+                    .filter(so -> so.getSystemOperatorMarketParticipantMrid().equals(systemOperatorMarketParticipantMrid))
+                    .findFirst()
+                    .get()
+                    .getSystemOperatorMarketParticipantName()
+            );
+        }
+    }
+
+    private String getSystemOperatorMrid() {
+        switch (instance) {
+            case TSO:
+                return "17V0000008957464";
+            case DSO:
+                return "17V0000009927464";
+        }
+        return null;
+    }
+
 }

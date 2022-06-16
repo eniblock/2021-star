@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "498d28aa-266c-4e3f-82a5-a902ebaf3165",
+		"_postman_id": "caeba71a-4123-4035-a8bf-092ca85172ab",
 		"name": "Instance",
 		"description": "Instance Collection to get information about instance of the service",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -35,6 +35,60 @@
 					],
 					"path": [
 						"instance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Get participant name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_rte}}/instance/participantName",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"instance",
+						"participantName"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Get participant name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_enedis}}/instance/participantName",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"instance",
+						"participantName"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PRODUCER - Get participant name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_producer}}/instance/participantName",
+					"host": [
+						"{{base_url_producer}}"
+					],
+					"path": [
+						"instance",
+						"participantName"
 					]
 				}
 			},

@@ -18,7 +18,7 @@ export interface RechercheReseauRequete
   producerMarketParticipantName?: string;
   producerMarketParticipantMrid?: string;
   siteIecCode?: string;
-  meteringpointmrId?: string;
+  meteringPointMrId?: string;
 }
 
 export interface RechercheReseauEntite {

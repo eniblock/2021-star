@@ -5,6 +5,7 @@ import {environment} from 'src/environments/environment';
 import {CacheService} from '../common/cache.service';
 import {map} from "rxjs/operators";
 import {Producer} from "../../models/Producer";
+import {SortHelper} from "../../helpers/sort.helper";
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +26,7 @@ export class ProducerService {
         map(producers => producers
           .map(p => p.producerMarketParticipantName)
           .filter((item, pos, self) => self.indexOf(item) == pos)
-          .sort()
+          .sort(SortHelper.caseInsensitive)
         )
       );
     if (environment.production) {

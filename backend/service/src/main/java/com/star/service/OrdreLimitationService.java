@@ -139,6 +139,11 @@ public class OrdreLimitationService {
                 errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichierOrdreLimitation.getFileName()}, null));
                 break;
             }
+            // le champ endCreatedDateTime est obligatoire lorsqu'il s'agit d'un ordre de début-fin ou un ordre de fin seul
+            if (isBlank(ordreLimitation.getEndCreatedDateTime())) {
+                errors.add(messageSource.getMessage("import.ordreLimitation.couple.endCreatedDateTime.error",
+                        new String[]{fichierOrdreLimitation.getFileName()}, null));
+            }
             // le champ "orderEnd" doit être à false
             if (ordreLimitation.isOrderEnd()) {
                 errors.add(messageSource.getMessage("import.ordreLimitation.couple.orderEnd.error",
@@ -183,7 +188,6 @@ public class OrdreLimitationService {
         selectors.add(Expression.eq("instance", instance.getValue()));
         selectors.add(Expression.eq("endCreatedDateTime", EMPTY));
         selectors.add(Expression.eq("orderEnd", false));
-        selectors.add(Expression.eq("reconciliation", false));
         QueryBuilder queryBuilder = new QueryBuilder(Operation.and(selectors.toArray(new Selector[]{})));
         String query = queryBuilder.build();
         log.debug("Transaction query: " + query);

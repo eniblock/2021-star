@@ -13,6 +13,7 @@ import {ProducerService} from "../../../services/api/producer.service";
 import {SiteService} from "../../../services/api/site.service";
 import {Observable} from "rxjs";
 import {map, startWith} from "rxjs/operators";
+import {SortHelper} from "../../../helpers/sort.helper";
 
 @Component({
   selector: 'app-form-reseau-recherche',
@@ -153,37 +154,39 @@ export class FormReseauRechercheComponent implements OnInit {
     this.siteService.getSites().subscribe(
       sites => {
         // substationName
-        this.optionsSubstationNames = sites.map(s => s.substationName).filter((item, pos, self) => self.indexOf(item) == pos).sort();
+        this.optionsSubstationNames = sites.map(s => s.substationName).filter((item, pos, self) => self.indexOf(item) == pos).sort(SortHelper.caseInsensitive);
         this.filteredSubstationNames = this.form.get('valeursRecherchees')!.get('substationName')!.valueChanges.pipe(
           startWith(''),
           map(value => this.filter(value, this.optionsSubstationNames)),
         );
         // substationMrid
-        this.optionsSubstationMrids = sites.map(s => s.substationMrid).filter((item, pos, self) => self.indexOf(item) == pos).sort();
+        this.optionsSubstationMrids = sites.map(s => s.substationMrid).filter((item, pos, self) => self.indexOf(item) == pos).sort(SortHelper.caseInsensitive);
         this.filteredSubstationMrids = this.form.get('valeursRecherchees')!.get('substationMrid')!.valueChanges.pipe(
           startWith(''),
           map(value => this.filter(value, this.optionsSubstationMrids)),
         );
         // producerMarketParticipantMrid
-        this.optionsProducerMarketParticipantMrids = sites.map(s => s.producerMarketParticipantMrid).filter((item, pos, self) => self.indexOf(item) == pos).sort();
+        this.optionsProducerMarketParticipantMrids = sites.map(s => s.producerMarketParticipantMrid).filter((item, pos, self) => self.indexOf(item) == pos).sort(SortHelper.caseInsensitive);
         this.filteredProducerMarketParticipantMrids = this.form.get('valeursRecherchees')!.get('producerMarketParticipantMrid')!.valueChanges.pipe(
           startWith(''),
           map(value => this.filter(value, this.optionsProducerMarketParticipantMrids)),
         );
         // siteIecCode
-        this.optionsSiteIecCodes = sites.map(s => s.siteIecCode).filter(iec => iec != undefined).filter((item, pos, self) => self.indexOf(item) == pos).sort() as string[];
+        this.optionsSiteIecCodes = (sites.map(s => s.siteIecCode).filter(iec => iec != undefined) as string[])
+          .filter((item, pos, self) => self.indexOf(item) == pos)
+          .sort(SortHelper.caseInsensitive) as string[];
         this.filteredSiteIecCodes = this.form.get('valeursRecherchees')!.get('siteIecCode')!.valueChanges.pipe(
           startWith(''),
           map(value => this.filter(value, this.optionsSiteIecCodes)),
         );
         // meteringPointMrId
-        this.optionsMeteringPointMrIds = sites.map(s => s.meteringPointMrid).filter(iec => iec != undefined).filter((item, pos, self) => self.indexOf(item) == pos).sort() as string[];
+        this.optionsMeteringPointMrIds = sites.map(s => s.meteringPointMrid).filter(iec => iec != undefined).filter((item, pos, self) => self.indexOf(item) == pos).sort(SortHelper.caseInsensitive) as string[];
         this.filteredMeteringPointMrIds = this.form.get('valeursRecherchees')!.get('meteringPointMrId')!.valueChanges.pipe(
           startWith(''),
           map(value => this.filter(value, this.optionsMeteringPointMrIds)),
         );
         // siteNames
-        this.optionsSiteNames = sites.map(s => s.siteName).filter(iec => iec != undefined).filter((item, pos, self) => self.indexOf(item) == pos).sort() as string[];
+        this.optionsSiteNames = sites.map(s => s.siteName).filter(iec => iec != undefined).filter((item, pos, self) => self.indexOf(item) == pos).sort(SortHelper.caseInsensitive) as string[];
         // recherche simpte
         this.initRechercheSimple();
       }

@@ -8,6 +8,7 @@ import {Observable} from "rxjs";
 import {map, startWith} from "rxjs/operators";
 import {ProducerService} from "../../../services/api/producer.service";
 import {SiteService} from "../../../services/api/site.service";
+import {SortHelper} from "../../../helpers/sort.helper";
 
 @Component({
   selector: 'app-form-activations-recherche',
@@ -80,7 +81,7 @@ export class FormActivationsRechercheComponent implements OnInit {
     // Poste source codes
     this.siteService.getSites().subscribe(
       sites => {
-        this.optionsPosteSourceCodes = sites.map(s => s.substationMrid).filter((item, pos, self) => self.indexOf(item) == pos).sort();
+        this.optionsPosteSourceCodes = sites.map(s => s.substationMrid).filter((item, pos, self) => self.indexOf(item) == pos).sort(SortHelper.caseInsensitive);
         this.filteredPosteSourceCodes = this.form.get('originAutomationRegisteredResourceMrid')!.valueChanges.pipe(
           startWith(''),
           map(value => this.filter(value, this.optionsPosteSourceCodes)),

@@ -157,6 +157,8 @@ export class ActivationDocumentController {
         var role_systemOperator: string = '';
         if (producerObj && roleTable.has(producerObj.producerMarketParticipantName)) {
             role_producer = roleTable.get(producerObj.producerMarketParticipantName);
+        } else if (producerObj && roleTable.has(producerSystemOperatorObj.systemOperatorMarketParticipantName)) {
+            role_producer = roleTable.get(producerSystemOperatorObj.systemOperatorMarketParticipantName);
         }
 
         if (systemOperatorObj && roleTable.has(systemOperatorObj.systemOperatorMarketParticipantName)) {
@@ -405,7 +407,7 @@ export class ActivationDocumentController {
 
         const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-        const queryDate: string = childReference.data.endCreatedDateTime;
+        const queryDate: string = childReference.data.startCreatedDateTime;
         const datetmp = new Date(queryDate);
 
         datetmp.setUTCMilliseconds(0);
@@ -421,12 +423,12 @@ export class ActivationDocumentController {
                 "businessType": "${orderType}",
                 "$or" : [
                     {
-                        "endCreatedDateTime": {
+                        "startCreatedDateTime": {
                             "$gte": ${JSON.stringify(queryDate)},
                             "$lte": ${JSON.stringify(datePlusPCTMT)}
                         }
                     },{
-                        "endCreatedDateTime": {
+                        "startCreatedDateTime": {
                             "$gte": ${JSON.stringify(dateMinusPCTMT)},
                             "$lte": ${JSON.stringify(queryDate)}
                         }
@@ -434,6 +436,7 @@ export class ActivationDocumentController {
                 ]
             }
         }`;
+        // console.info("query : ", query);
 
         const roleTargetQuery = RoleType.Role_TSO;
         const searchResult = await ActivationDocumentController.searchMatching(ctx, params, childReference, query, roleTargetQuery);

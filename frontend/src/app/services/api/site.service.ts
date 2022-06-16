@@ -7,12 +7,15 @@ import {CacheService} from '../common/cache.service';
 import {map} from "rxjs/operators";
 import {Producer} from "../../models/Producer";
 import {YellowPage} from "../../models/YellowPage";
+import {Site} from "../../models/Site";
+import {PaginationReponse} from "../../models/Pagination";
+import {RechercheReseauEntite} from "../../models/RechercheReseau";
 
 @Injectable({
   providedIn: 'root',
 })
-export class PosteSourceService {
-  private readonly CACHE_KEY = 'posteSourceCodes';
+export class SiteService {
+  private readonly CACHE_KEY = 'sites';
   private readonly CACHE_LIFETIME = 24 * 3600 * 1000; // In milliseconds
 
   constructor(
@@ -21,18 +24,13 @@ export class PosteSourceService {
   ) {
   }
 
-  getPosteSourceCodes(): Observable<string[]> {
-    let req = this.httpClient.get<YellowPage[]>(`${environment.serverUrl}/yellow-pages`)
-      .pipe(
-        map(yellowPages => yellowPages
-          .map(p => p.originAutomationRegisteredResourceMrid)
-          .filter((item, pos, self) => self.indexOf(item) == pos)
-          .sort()
-        )
-      );
+  getSites(): Observable<Site[]> {
+    let req = this.httpClient.get<PaginationReponse<RechercheReseauEntite>>(`${environment.serverUrl}/site`).pipe(
+      map(p => p.content)
+    );
     if (environment.production) {
       // We use a cache in Production
-      return this.cacheService.getValueInCacheOrLoadIt<string[]>(
+      return this.cacheService.getValueInCacheOrLoadIt<Site[]>(
         this.CACHE_KEY,
         this.CACHE_LIFETIME,
         req

@@ -54,7 +54,9 @@ public class OrdreLimitation implements ImportCSV {
     private String instance;
     private List<String> subOrderList;
     @JsonIgnore
-    private Boolean reconciliation;
+    private boolean potentialParent;
+    @JsonIgnore
+    private boolean potentialChild;
 
     @JsonIgnore
     @Override

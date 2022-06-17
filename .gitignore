@@ -77,3 +77,6 @@ secrets-*.yaml
 
 #Temporary files
 *.tmp
+
+#scripts-test-chaincode
+/scripts-test-chaincode

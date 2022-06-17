@@ -14,6 +14,7 @@ import { SystemOperator } from '../src/model/systemOperator';
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
 import { Values } from './Values';
+import { DocType } from '../src/enums/DocType';
 
 
 class TestContext {
@@ -34,11 +35,9 @@ describe('Star Tests SYSTEM OPERATORS', () => {
     let transactionContext: any;
     let mockHandler:any;
     let star: Star;
-    let values: Values;
     beforeEach(() => {
         transactionContext = new TestContext();
         star = new Star();
-        values = new Values();
         mockHandler = sinon.createStubInstance(ChaincodeMessageHandler);
 
         chai.should();
@@ -134,22 +133,28 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
 
-            let ret = JSON.parse((await transactionContext.stub.getState(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid)).toString());
-            const expectedSystemoperator = JSON.parse(JSON.stringify(Values.HTB_systemoperator));
-            expectedSystemoperator.docType = "systemOperator"
+            const expected = JSON.parse(JSON.stringify(Values.HTB_systemoperator))
+            expected.docType = DocType.SYSTEM_OPERATOR;
+            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+                Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
 
-            expect(ret).to.eql( expectedSystemoperator );
+            expect(transactionContext.stub.putState.callCount).to.equal(1);
         });
 
         it('should return SUCCESS with Enedis on createSystemOperator', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTA_systemoperator));
 
-            let ret = JSON.parse((await transactionContext.stub.getState(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid)).toString());
-            const expectedSystemoperator = JSON.parse(JSON.stringify(Values.HTA_systemoperator));
-            expectedSystemoperator.docType = "systemOperator"
+            const expected = JSON.parse(JSON.stringify(Values.HTA_systemoperator))
+            expected.docType = DocType.SYSTEM_OPERATOR;
+            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+                Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
 
-            expect(ret).to.eql( expectedSystemoperator );
+            expect(transactionContext.stub.putState.callCount).to.equal(1);
         });
     });
 

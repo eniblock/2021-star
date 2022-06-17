@@ -46,7 +46,7 @@ class OrdreLimitationRepositoryTest extends AbstractTest {
     }
 
     @Test
-    void testSaveOrdreLimitations() throws TechnicalException, InterruptedException, TimeoutException, ContractException, JsonProcessingException {
+    void testSaveOrdreLimitations() throws TechnicalException, InterruptedException, TimeoutException, ContractException {
         // GIVEN
         OrdreLimitation ordreLimitation = OrdreLimitation.builder().activationDocumentMrid("activation_id")
                 .originAutomationRegisteredResourceMrid("origin_mrid").registeredResourceMrid("register_id")

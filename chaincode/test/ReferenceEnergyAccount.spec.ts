@@ -12,10 +12,11 @@ import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
 import { Values } from './Values';
 import { EnergyAccount } from '../src/model/energyAccount';
-import { Parameters } from '../src/model/parameters';
+import { STARParameters } from '../src/model/starParameters';
 
 import { ParametersType } from '../src/enums/ParametersType';
 import { ParametersController } from '../src/controller/ParametersController';
+import { DocType } from '../src/enums/DocType';
 
 class TestContext {
     clientIdentity: any;
@@ -36,11 +37,9 @@ describe('Star Tests ReferenceEnergyAccount', () => {
     let transactionContext: any;
     let mockHandler:any;
     let star: Star;
-    let values: Values;
     beforeEach(() => {
         transactionContext = new TestContext();
         star = new Star();
-        values = new Values();
         mockHandler = sinon.createStubInstance(ChaincodeMessageHandler);
 
         chai.should();
@@ -76,7 +75,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
         it('should return ERROR CreateReferenceEnergyAccount Site non-JSON value', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from("XXX"));
 
@@ -93,7 +92,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
         it('should return ERROR CreateReferenceEnergyAccount Producer non-JSON value', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
@@ -141,7 +140,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
         it('should return ERROR CreateReferenceEnergyAccount missing System Operator', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
@@ -161,7 +160,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator3.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator3)));
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
@@ -212,7 +211,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.siteHTBProdA.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.siteHTBProdA)));
 
@@ -234,7 +233,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
-            const params: Parameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
@@ -242,10 +241,13 @@ describe('Star Tests ReferenceEnergyAccount', () => {
 
             await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(energy_account));
 
-            let ret = JSON.parse((await transactionContext.stub.getState(energy_account.energyAccountMarketDocumentMrid)).toString());
-            // console.info("ret=%s", ret)
-            energy_account.docType = 'referenceEnergyAccount';
-            expect(ret).to.eql(energy_account);
+            energy_account.docType = DocType.REFERENCE_ENERGY_ACCOUNT;
+            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+                energy_account.energyAccountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(energy_account))
+            );
+
+            expect(transactionContext.stub.putState.callCount).to.equal(1);
         });
     });
 

@@ -74,6 +74,7 @@ public class InstanceController {
                     .filter(so -> so.getSystemOperatorMarketParticipantMrid().equals(systemOperatorMarketParticipantMrid))
                     .findFirst()
                     .orElse(new SystemOperator())
+                    .get()
                     .getSystemOperatorMarketParticipantName()
             );
         }

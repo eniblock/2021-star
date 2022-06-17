@@ -2,6 +2,19 @@ import { Context } from "fabric-contract-api";
 import { Iterators } from "fabric-shim";
 
 export class QueryStateService {
+    public static async buildQuery(documentType: string, args: string[]): Promise<string> {
+        var query = `{"selector": {"docType":"${documentType}"`;
+        for (var arg of args) {
+            if (arg) {
+                query = query.concat(`,${arg}`);
+            }
+        }
+
+        query = query.concat(`}}`);
+        return query;
+
+    }
+
     public static async getQueryResult(
         ctx: Context,
         query: string): Promise<Iterators.StateQueryIterator>  {
@@ -26,6 +39,7 @@ export class QueryStateService {
         // console.debug(collection);
 
         const iterator: any = await ctx.stub.getPrivateDataQueryResult(collection, query);
+
         var returned_iterator: any;
 
         //Sometimes iterator is StateQueryResponse object instead of StateQueryIterator object

@@ -4,6 +4,7 @@ import { ParametersType } from "../../enums/ParametersType";
 import { Site } from "../../model/site";
 import { QueryStateService } from "./QueryStateService";
 import { DocType } from "../../enums/DocType";
+import { HLFServices } from "./HLFservice";
 
 export class SiteService {
     public static async getRaw(
@@ -30,6 +31,25 @@ export class SiteService {
         console.debug('============= END : getRaw %s SiteService ===========', id);
         return siteAsBytes;
     }
+
+
+    public static async getObj(
+        ctx: Context,
+        params: STARParameters,
+        id: string): Promise<Site> {
+
+        const siteAsBytes: Uint8Array = await SiteService.getRaw(ctx, params, id);
+        var siteObj:Site = null;
+        if (siteAsBytes) {
+            try {
+                siteObj = JSON.parse(siteAsBytes.toString());
+            } catch (error) {
+                throw new Error(`ERROR Site-> Input string NON-JSON value`);
+            }
+        }
+        return siteObj;
+    }
+
 
     public static async write(
         ctx: Context,

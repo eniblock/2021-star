@@ -12,237 +12,25 @@ import { HLFServices } from './service/HLFservice';
 import { QueryStateService } from './service/QueryStateService';
 import { SiteService } from './service/SiteService';
 import { DocType } from '../enums/DocType';
+import { EnergyAmountService } from './service/EnergyAmount';
+import { ActivationDocumentController } from './ActivationDocumentController';
+import { ParametersType } from '../enums/ParametersType';
+import { EnergyType } from '../enums/EnergyType';
 
 export class EnergyAmountController {
 
-    public static async createTSOEnergyAmount(
+    private static async checkEnergyAmout(
         ctx: Context,
         params: STARParameters,
-        inputStr: string) {
-        console.info('============= START : Create EnergyAmount ===========');
-
-        const identity = await HLFServices.getMspID(ctx);
-        if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
-        }
+        inputStr: string,
+        energyType: EnergyType,
+        checkSite: boolean = false) : Promise<EnergyAmount> {
 
         let energyObj: EnergyAmount;
         try {
             energyObj = JSON.parse(inputStr);
         } catch (error) {
-            throw new Error(`ERROR createTSOEnergyAmount-> Input string NON-JSON value`);
-        }
-
-        const energyAmountInput = EnergyAmount.schema.validateSync(
-            energyObj,
-            {strict: true, abortEarly: false},
-        );
-
-        const orderAsBytes = await ctx.stub.getState(energyAmountInput.activationDocumentMrid);
-        if (!orderAsBytes || orderAsBytes.length === 0) {
-            throw new Error(`ActivationDocument : ${energyAmountInput.activationDocumentMrid} does not exist for Energy Amount ${energyAmountInput.energyAmountMarketDocumentMrid} creation.`);
-        }
-
-        let orderObj: ActivationDocument;
-        try {
-            orderObj = JSON.parse(orderAsBytes.toString());
-        } catch (error) {
-            throw new Error(`ERROR createTSOEnergyAmount getActivationDocument-> Input string NON-JSON value`);
-        }
-
-        var siteAsBytes:Uint8Array;
-        try {
-            siteAsBytes = await SiteService.getRaw(ctx, params, orderObj.registeredResourceMrid);
-        } catch(error) {
-            throw new Error(`Site : ${orderObj.registeredResourceMrid} does not exist in Activation Document : ${energyAmountInput.activationDocumentMrid} for Energy Amount : ${energyAmountInput.energyAmountMarketDocumentMrid} creation.`);
-        }
-
-        let siteObj: Site;
-        try {
-            siteObj = JSON.parse(siteAsBytes.toString());
-        } catch (error) {
-            throw new Error(`ERROR createTSOEnergyAmount getSite-> Input string NON-JSON value`);
-        }
-
-        if (orderObj.registeredResourceMrid !== energyAmountInput.registeredResourceMrid) {
-            throw new Error(`ERROR createTSOEnergyAmount mismatch beetween registeredResourceMrid in Activation Document : ${orderObj.registeredResourceMrid} and Energy Amount : ${energyAmountInput.registeredResourceMrid}.`);
-        }
-        // console.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
-        const strSplitted = energyAmountInput.timeInterval.split('/', 2);
-        const begin = strSplitted[0];
-        const end = strSplitted[1];
-        // console.log('strSplitted=', strSplitted);
-
-        const dateBegin = new Date(begin.trim());
-        // console.log('dateBegin=', dateBegin);
-        dateBegin.setUTCMilliseconds(0);
-        dateBegin.setUTCSeconds(0);
-        dateBegin.setUTCMinutes(0);
-        dateBegin.setUTCHours(0);
-
-        // console.log('dateBegin=', dateBegin);
-
-        const dateEnd = new Date(end.trim());
-        // console.log('dateEnd=', dateEnd);
-        dateEnd.setUTCMilliseconds(0);
-        dateEnd.setUTCSeconds(0);
-        dateEnd.setUTCMinutes(0);
-        dateEnd.setUTCHours(0);
-
-        // console.log('dateEnd=', dateEnd);
-
-        const orderDateStart = new Date(orderObj.startCreatedDateTime);
-        orderDateStart.setUTCMilliseconds(0);
-        orderDateStart.setUTCSeconds(0);
-        orderDateStart.setUTCMinutes(0);
-        orderDateStart.setUTCHours(0);
-        // console.log('orderDateStart=', orderDateStart);
-
-        // console.log(JSON.stringify(dateBegin));
-        // console.log(JSON.stringify(dateEnd));
-        if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
-            throw new Error(`ERROR createTSOEnergyAmount mismatch between ENE : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
-        }
-
-        energyAmountInput.docType = 'energyAmount';
-
-        await ctx.stub.putState(
-            energyAmountInput.energyAmountMarketDocumentMrid,
-            Buffer.from(JSON.stringify(energyAmountInput)),
-        );
-        console.info(
-            '============= END   : Create %s EnergyAmount ===========',
-            energyAmountInput.energyAmountMarketDocumentMrid,
-        );
-    }
-
-
-    public static async updateTSOEnergyAmount(
-        ctx: Context,
-        params: STARParameters,
-        inputStr: string) {
-        console.info('============= START : Update EnergyAmount ===========');
-
-        const identity = await HLFServices.getMspID(ctx);
-        if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
-        }
-
-        let energyObj: EnergyAmount;
-        try {
-            energyObj = JSON.parse(inputStr);
-        } catch (error) {
-            throw new Error(`ERROR createTSOEnergyAmount-> Input string NON-JSON value`);
-        }
-
-        const energyAmountInput = EnergyAmount.schema.validateSync(
-            energyObj,
-            {strict: true, abortEarly: false},
-        );
-
-        const orderAsBytes = await ctx.stub.getState(energyAmountInput.activationDocumentMrid);
-        if (!orderAsBytes || orderAsBytes.length === 0) {
-            throw new Error(`ActivationDocument : ${energyAmountInput.activationDocumentMrid} does not exist for Energy Amount ${energyAmountInput.energyAmountMarketDocumentMrid} update.`);
-        }
-
-        let orderObj: ActivationDocument;
-        try {
-            orderObj = JSON.parse(orderAsBytes.toString());
-        } catch (error) {
-            throw new Error(`ERROR createTSOEnergyAmount getActivationDocument-> Input string NON-JSON value`);
-        }
-
-        var siteAsBytes:Uint8Array;
-        try {
-            siteAsBytes = await SiteService.getRaw(ctx, params, orderObj.registeredResourceMrid);
-        } catch(error) {
-            throw new Error(`Site : ${orderObj.registeredResourceMrid} does not exist in Activation Document : ${energyAmountInput.activationDocumentMrid} for Energy Amount : ${energyAmountInput.energyAmountMarketDocumentMrid} update.`);
-        }
-
-        let siteObj: Site;
-        try {
-            siteObj = JSON.parse(siteAsBytes.toString());
-        } catch (error) {
-            throw new Error(`ERROR updateTSOEnergyAmount getSite-> Input string NON-JSON value`);
-        }
-
-        if (orderObj.registeredResourceMrid !== energyAmountInput.registeredResourceMrid) {
-            throw new Error(`ERROR updateTSOEnergyAmount mismatch beetween registeredResourceMrid in Activation Document : ${orderObj.registeredResourceMrid} and Energy Amount : ${energyAmountInput.registeredResourceMrid}.`);
-        }
-        // console.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
-        const strSplitted = energyAmountInput.timeInterval.split('/', 2);
-        const begin = strSplitted[0];
-        const end = strSplitted[1];
-        // console.log('strSplitted=', strSplitted);
-
-        const dateBegin = new Date(begin.trim());
-        // console.log('dateBegin=', dateBegin);
-        dateBegin.setUTCMilliseconds(0);
-        dateBegin.setUTCSeconds(0);
-        dateBegin.setUTCMinutes(0);
-        dateBegin.setUTCHours(0);
-
-        // console.log('dateBegin=', dateBegin);
-
-        const dateEnd = new Date(end.trim());
-        // console.log('dateEnd=', dateEnd);
-        dateEnd.setUTCMilliseconds(0);
-        dateEnd.setUTCSeconds(0);
-        dateEnd.setUTCMinutes(0);
-        dateEnd.setUTCHours(0);
-
-        // console.log('dateEnd=', dateEnd);
-
-        const orderDateStart = new Date(orderObj.startCreatedDateTime);
-        orderDateStart.setUTCMilliseconds(0);
-        orderDateStart.setUTCSeconds(0);
-        orderDateStart.setUTCMinutes(0);
-        orderDateStart.setUTCHours(0);
-        // console.log('orderDateStart=', orderDateStart);
-
-        // console.log(JSON.stringify(dateBegin));
-        // console.log(JSON.stringify(dateEnd));
-        if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
-            throw new Error(`ERROR updateTSOEnergyAmount mismatch between ENE : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
-        }
-
-        energyAmountInput.docType = 'energyAmount';
-
-        // === Vérifier l'existence de l'energy amount avant de vouloir effectuer une modification
-        const energyAmountAsBytes = await ctx.stub.getState(energyAmountInput.energyAmountMarketDocumentMrid);
-        if (!energyAmountAsBytes || energyAmountAsBytes.length === 0) {
-            throw new Error(`${energyAmountInput.energyAmountMarketDocumentMrid} does not exist. Can not be updated.`);
-        }
-
-        // Modification de l'energy amount
-        await ctx.stub.putState(
-            energyAmountInput.energyAmountMarketDocumentMrid,
-            Buffer.from(JSON.stringify(energyAmountInput)),
-        );
-        console.info(
-            '============= END   : Update %s EnergyAmount ===========',
-            energyAmountInput.energyAmountMarketDocumentMrid,
-        );
-    }
-
-
-
-
-    public static async createDSOEnergyAmount(
-        ctx: Context,
-        inputStr: string) {
-        console.info('============= START : Create EnergyAmount ===========');
-
-        const identity = await HLFServices.getMspID(ctx);
-        if (identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
-        }
-
-        let energyObj: EnergyAmount;
-        try {
-            energyObj = JSON.parse(inputStr);
-        } catch (error) {
-            throw new Error(`ERROR createDSOEnergyAmount-> Input string NON-JSON value`);
+            throw new Error(`ERROR manage EnergyAmount-> Input string NON-JSON value`);
         }
 
         EnergyAmount.schema.validateSync(
@@ -250,18 +38,55 @@ export class EnergyAmountController {
             {strict: true, abortEarly: false},
         );
 
-        const orderAsBytes = await ctx.stub.getState(energyObj.activationDocumentMrid);
-        if (!orderAsBytes || orderAsBytes.length === 0) {
-            throw new Error(`ActivationDocument : ${energyObj.activationDocumentMrid} does not exist for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`);
-        }
-
         let orderObj: ActivationDocument;
         try {
-            orderObj = JSON.parse(orderAsBytes.toString());
-        } catch (error) {
-            throw new Error(`ERROR createDSOEnergyAmount getActivationDocument-> Input string NON-JSON value`);
+            orderObj = await ActivationDocumentController.getActivationDocumentById(ctx, params, energyObj.activationDocumentMrid);
+        } catch(error) {
+            throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
         }
 
+        if (checkSite) {
+            try {
+                await SiteService.getObj(ctx, params, energyObj.registeredResourceMrid);
+            } catch(error) {
+                throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
+            }
+
+            if (orderObj.registeredResourceMrid !== energyObj.registeredResourceMrid) {
+                throw new Error(`ERROR manage EnergyAmount mismatch beetween registeredResourceMrid in Activation Document : ${orderObj.registeredResourceMrid} and Energy Amount : ${energyObj.registeredResourceMrid}.`);
+            }
+        }
+
+        // console.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
+        const strSplitted = energyObj.timeInterval.split('/', 2);
+        const begin = strSplitted[0];
+        const end = strSplitted[1];
+        // console.log('strSplitted=', strSplitted);
+
+        const dateBegin = new Date(begin.trim());
+        // console.log('dateBegin=', dateBegin);
+        dateBegin.setUTCHours(0,0,0,0);
+
+        // console.log('dateBegin=', dateBegin);
+
+        // const dateEnd = new Date(end.trim());
+        // // console.log('dateEnd=', dateEnd);
+        // dateEnd.setUTCHours(0,0,0,0);
+
+        // console.log('dateEnd=', dateEnd);
+
+        const orderDateStart = new Date(orderObj.startCreatedDateTime);
+        orderDateStart.setUTCHours(0,0,0,0);
+        // console.log('orderDateStart=', orderDateStart);
+
+        // console.log(JSON.stringify(dateBegin));
+        // console.log(JSON.stringify(dateEnd));
+        if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
+            throw new Error(`ERROR manage EnergyAmount mismatch between ${energyType} : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
+        }
+
+        return energyObj;
+    }
 //      ================STAR-425 : Partie du code en commentaire car on utilise pas les clés composites===========================
 
 //         const keySplitted = energyObj.activationDocumentMrid.split('/', 4);
@@ -323,51 +148,114 @@ export class EnergyAmountController {
             ${energyAmountInput.registeredResourceMrid}.`);
         // }
   */
-        // console.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
-        const strSplitted = energyObj.timeInterval.split('/', 2);
-        const begin = strSplitted[0];
-        const end = strSplitted[1];
-        // console.log('strSplitted=', strSplitted);
 
-        const dateBegin = new Date(begin.trim());
-        // console.log('dateBegin=', dateBegin);
-        dateBegin.setUTCMilliseconds(0);
-        dateBegin.setUTCSeconds(0);
-        dateBegin.setUTCMinutes(0);
-        dateBegin.setUTCHours(0);
 
-        // console.log('dateBegin=', dateBegin);
 
-        const dateEnd = new Date(end.trim());
-        // console.log('dateEnd=', dateEnd);
-        dateEnd.setUTCMilliseconds(0);
-        dateEnd.setUTCSeconds(0);
-        dateEnd.setUTCMinutes(0);
-        dateEnd.setUTCHours(0);
 
-        // console.log('dateEnd=', dateEnd);
 
-        const orderDateStart = new Date(orderObj.startCreatedDateTime);
-        orderDateStart.setUTCMilliseconds(0);
-        orderDateStart.setUTCSeconds(0);
-        orderDateStart.setUTCMinutes(0);
-        orderDateStart.setUTCHours(0);
-        console.log('orderDateStart=', orderDateStart);
 
-        console.log(JSON.stringify(dateBegin));
-        console.log(JSON.stringify(dateEnd));
-        if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
-            throw new Error(`ERROR createDSOEnergyAmount mismatch between ENI : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
+
+
+
+    public static async createTSOEnergyAmount(
+        ctx: Context,
+        params: STARParameters,
+        inputStr: string) {
+        console.info('============= START : createTSOEnergyAmount EnergyAmountController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        energyObj.docType = DocType.ENERGY_AMOUNT;
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE,  true);
 
-        await ctx.stub.putState(
-            energyObj.energyAmountMarketDocumentMrid,
-            Buffer.from(JSON.stringify(energyObj)),
-        );
+        await EnergyAmountService.write(ctx, energyObj);
+
         console.info(
-            '============= END   : Create %s EnergyAmount ===========',
+            '============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
+            energyObj.energyAmountMarketDocumentMrid,
+        );
+    }
+
+
+    public static async updateTSOEnergyAmount(
+        ctx: Context,
+        params: STARParameters,
+        inputStr: string) {
+        console.info('============= START : updateTSOEnergyAmount EnergyAmountController ===========');
+
+        const identity = await HLFServices.getMspID(ctx);
+        if (identity !== OrganizationTypeMsp.RTE) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE, true);
+
+        //Check existence
+        try {
+            await EnergyAmountService.getRaw(ctx, energyObj.energyAmountMarketDocumentMrid);
+        } catch(error) {
+            throw new Error(error.message.concat(` Can not be updated.`));
+        }
+
+        await EnergyAmountService.write(ctx, energyObj);
+
+        console.info(
+            '============= END   : updateTSOEnergyAmount %s EnergyAmountController ===========',
+            energyObj.energyAmountMarketDocumentMrid,
+        );
+    }
+
+
+
+
+    public static async createDSOEnergyAmount(
+        ctx: Context,
+        params: STARParameters,
+        inputStr: string) {
+        console.info('============= START : createDSOEnergyAmount EnergyAmountController ===========');
+
+        const identity = await HLFServices.getMspID(ctx);
+        if (identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI);
+
+        await EnergyAmountService.write(ctx, energyObj);
+
+        console.info(
+            '============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
+            energyObj.energyAmountMarketDocumentMrid,
+        );
+    }
+
+
+    public static async updateDSOEnergyAmount(
+        ctx: Context,
+        params: STARParameters,
+        inputStr: string) {
+        console.info('============= START : updateDSOEnergyAmount EnergyAmountController ===========');
+
+        const identity = await HLFServices.getMspID(ctx);
+        if (identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI);
+
+        //Check existence
+        try {
+            await EnergyAmountService.getRaw(ctx, energyObj.energyAmountMarketDocumentMrid);
+        } catch(error) {
+            throw new Error(error.message.concat(` Can not be updated.`));
+        }
+
+        await EnergyAmountService.write(ctx, energyObj);
+
+        console.info(
+            '============= END   : updateDSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
     }

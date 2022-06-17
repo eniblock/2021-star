@@ -74,7 +74,7 @@ public class EnergyAmountController {
     public ResponseEntity<ImportEnergyAmountResult> createEnergyAmount(
             @Parameter(description = "Energy amount object to create")
             @RequestPart(name = "energyAmount", value = "energyAmount", required = false) @Valid EnergyAmountFormDTO energyAmount,
-            @Parameter(description = "CSV file containing energy amount data")
+            @Parameter(description = "JSON file containing energy amount data")
             @RequestPart(name = "files", value = "files", required = false) MultipartFile[] files) throws BusinessException {
         ImportEnergyAmountResult importEnergyAmountResult = new ImportEnergyAmountResult();
         try {

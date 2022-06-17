@@ -2,6 +2,7 @@ package com.star.rest;
 
 import com.star.enums.InstanceEnum;
 import com.star.exception.TechnicalException;
+import com.star.models.participant.SystemOperator;
 import com.star.security.SecurityComponent;
 import com.star.service.MarketParticipantService;
 import com.star.service.ProducerService;
@@ -72,7 +73,7 @@ public class InstanceController {
                     .getSystemOperators().stream()
                     .filter(so -> so.getSystemOperatorMarketParticipantMrid().equals(systemOperatorMarketParticipantMrid))
                     .findFirst()
-                    .get()
+                    .orElse(new SystemOperator())
                     .getSystemOperatorMarketParticipantName()
             );
         }

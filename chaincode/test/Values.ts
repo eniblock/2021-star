@@ -32,6 +32,7 @@ export class Values {
         var dateStart: Date = new Date();
         var offset:number = 0 - new Date().getTimezoneOffset();
         dateStart.setHours(0,0 + offset,0,1);
+        // dateStart.setHours(0,0,0,1);
 
         console.info(dateStart);
 
@@ -43,9 +44,10 @@ export class Values {
 
     private static getEndDate(): Date {
         var dateEnd = Values.getStartDate();
+        var offset:number = 0 - new Date().getTimezoneOffset();
 
         //dateEnd is dateStart at 23h29'10''001
-        dateEnd.setHours(23,29,10);
+        dateEnd.setHours(23,29 + offset,10);
 
         return dateEnd;
     }
@@ -498,7 +500,7 @@ export class Values {
 
     public static HTB_EnergyAmount : EnergyAmount = {
         energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
-        activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f1",
+        activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
         registeredResourceMrid: Values.HTB_ActivationDocument_Valid.registeredResourceMrid,
         quantity: "number",
         measurementUnitName: "KW",
@@ -518,7 +520,7 @@ export class Values {
 
     public static HTA_EnergyAmount : EnergyAmount = {
         energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-        activationDocumentMrid: `CIVRA/PRM50012536123467/${Values.HTA_ActivationDocument_Valid.startCreatedDateTime}/${Values.HTA_ActivationDocument_Valid.endCreatedDateTime}`,
+        activationDocumentMrid: Values.HTA_ActivationDocument_Valid.activationDocumentMrid,
         registeredResourceMrid: "PRM50012536123467",
         quantity: "number",
         measurementUnitName: "KW",

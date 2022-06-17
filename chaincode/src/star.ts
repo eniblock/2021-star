@@ -492,8 +492,17 @@ export class Star extends Contract {
 
     public async CreateDSOEnergyAmount(ctx: Context, inputStr: string) {
         try {
-            // const params: Parameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.createDSOEnergyAmount(ctx, inputStr));
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await EnergyAmountController.createDSOEnergyAmount(ctx, params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async UpdateDSOEnergyAmount(ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await EnergyAmountController.updateDSOEnergyAmount(ctx, params, inputStr));
         } catch (error) {
             throw error;
         }

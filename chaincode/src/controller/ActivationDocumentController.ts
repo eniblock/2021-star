@@ -22,6 +22,7 @@ import { RoleType } from '../enums/RoleType';
 import { DocType } from '../enums/DocType';
 import { ConciliationState } from '../model/conciliationState';
 import { DataReference } from '../model/dataReference';
+import { QueryStateService } from './service/QueryStateService';
 
 export class ActivationDocumentController {
 
@@ -58,6 +59,17 @@ export class ActivationDocumentController {
     }
 
 
+    public static async getActivationDocumentById(
+        ctx: Context,
+        params: STARParameters,
+        activationDocumentMrid: string): Promise<ActivationDocument> {
+
+        const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+        const result:ActivationDocument = await ActivationDocumentService.getObjbyId(ctx, params, activationDocumentMrid, collections);
+
+        return result;
+    }
+
 
     public static async getActivationDocumentByQuery(
         ctx: Context,
@@ -80,7 +92,7 @@ export class ActivationDocumentController {
         inputStr: string) {
         console.info('============= START : Create ActivationDocumentController ===========');
 
-        const identity = await HLFServices.getMspID(ctx);
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
         }
@@ -415,28 +427,17 @@ export class ActivationDocumentController {
         const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
         const datePlusPCTMT = new Date(datetmp.getTime() - pctmt);
 
-        const query = `{
-            "selector": {
-                "docType": "${DocType.ACTIVATION_DOCUMENT}",
-                "potentialParent": true,
-                "registeredResourceMrid": { "$in" : ${registeredResourceMridList_str} },
-                "businessType": "${orderType}",
-                "$or" : [
-                    {
-                        "startCreatedDateTime": {
-                            "$gte": ${JSON.stringify(queryDate)},
-                            "$lte": ${JSON.stringify(datePlusPCTMT)}
-                        }
-                    },{
-                        "startCreatedDateTime": {
-                            "$gte": ${JSON.stringify(dateMinusPCTMT)},
-                            "$lte": ${JSON.stringify(queryDate)}
-                        }
-                    }
-                ]
-            }
-        }`;
-        // console.info("query : ", query);
+        var args: string[] = [];
+        args.push(`"potentialParent":true`);
+        args.push(`"registeredResourceMrid":{"$in":${registeredResourceMridList_str}}`);
+        args.push(`"businessType":"${orderType}"`);
+        const date_criteria: string = `"$or":[`
+        .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(queryDate)},"$lte":${JSON.stringify(datePlusPCTMT)}}},`)
+        .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(queryDate)}}}`)
+        .concat(`]`);
+        args.push(date_criteria);
+
+        const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
 
         const roleTargetQuery = RoleType.Role_TSO;
         const searchResult = await ActivationDocumentController.searchMatching(ctx, params, childReference, query, roleTargetQuery);

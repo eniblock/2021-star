@@ -17,7 +17,7 @@ export class ActivationDocumentService {
             throw new Error(`ActivationDocument : ${id} does not exist`);
         }
 
-        console.debug('============= END : getRaw %s ActivationDocumentService ===========');
+        console.debug('============= END : getRaw ActivationDocumentService ===========');
         return prodAsBytes;
     }
 
@@ -33,8 +33,44 @@ export class ActivationDocumentService {
         const activationDocumentAsBytes: Uint8Array = await ActivationDocumentService.getRaw(ctx, collection, id);
         var activationDocumentObj:ActivationDocument = null;
         if (activationDocumentAsBytes) {
-            activationDocumentObj = JSON.parse(activationDocumentAsBytes.toString());
+            try {
+                activationDocumentObj = JSON.parse(activationDocumentAsBytes.toString());
+            } catch (error) {
+                throw new Error(`ERROR ActivationDocument-> Input string NON-JSON value`);
+            }
         }
+        return activationDocumentObj;
+    }
+
+    public static async getObjbyId(
+        ctx: Context,
+        params: STARParameters,
+        id: string,
+        target: string[] = []): Promise<ActivationDocument> {
+
+        const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
+        var allResults: any[] = [];
+
+        var activationDocumentObj:ActivationDocument = null;
+        if (collections) {
+            for (const collection of collections) {
+                try {
+                    const collectionResult = await ActivationDocumentService.getObj(ctx, params, id, collection);
+                    if (collectionResult && collectionResult.activationDocumentMrid == id) {
+                        return collectionResult;
+                    }
+                } catch(error) {
+                    if (error.message === `ERROR ActivationDocument-> Input string NON-JSON value`) {
+                        throw (error)
+                    }
+                    //do nothing just empty list returned
+                }
+            }
+        }
+        if (!activationDocumentObj || activationDocumentObj.activationDocumentMrid === "") {
+            throw new Error(`ActivationDocument : ${id} does not exist`);
+        }
+
         return activationDocumentObj;
     }
 

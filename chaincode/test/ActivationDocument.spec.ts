@@ -19,6 +19,7 @@ import { ParametersType } from '../src/enums/ParametersType';
 import { DocType } from '../src/enums/DocType';
 import { RoleType } from '../src/enums/RoleType';
 import { DataReference } from '../src/model/dataReference';
+import { QueryStateService } from '../src/controller/service/QueryStateService';
 
 class TestContext {
     clientIdentity: any;
@@ -1090,34 +1091,24 @@ describe('Star Tests ActivationDocument', () => {
 
             const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-            const queryDate: string = childDocument_Reconciliation.endCreatedDateTime as string;
+            const queryDate: string = JSON.parse(JSON.stringify(childDocument_Reconciliation.startCreatedDateTime));
             const datetmp = new Date(queryDate);
-            datetmp.setUTCMilliseconds(0);
-            datetmp.setUTCSeconds(0);
+            datetmp.setUTCSeconds(0,0);
             const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
             const datePlusPCTMT = new Date(datetmp.getTime() - pctmt);
 
-        const query = `{
-            "selector": {
-                "docType": "${DocType.ACTIVATION_DOCUMENT}",
-                "potentialParent": true,
-                "registeredResourceMrid": { "$in" : ["PDL00000000289766"] },
-                "businessType": "${orderType}",
-                "$or" : [
-                    {
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(queryDate)},
-                            "$lte": ${JSON.stringify(datePlusPCTMT)}
-                        }
-                    },{
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(dateMinusPCTMT)},
-                            "$lte": ${JSON.stringify(queryDate)}
-                        }
-                    }
-                ]
-            }
-        }`;
+            const registeredResourceMridList_str = JSON.stringify([Values.HTA_yellowPage.registeredResourceMrid]);
+            var args: string[] = [];
+            args.push(`"potentialParent":true`);
+            args.push(`"registeredResourceMrid":{"$in":${registeredResourceMridList_str}}`);
+            args.push(`"businessType":"${orderType}"`);
+            const date_criteria: string = `"$or":[`
+            .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(queryDate)},"$lte":${JSON.stringify(datePlusPCTMT)}}},`)
+            .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(queryDate)}}}`)
+            .concat(`]`);
+            args.push(date_criteria);
+
+            const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
 
             const iterator = Values.getActivationDocumentQueryMock(parentDocument,mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, query).resolves(iterator);
@@ -1196,34 +1187,25 @@ describe('Star Tests ActivationDocument', () => {
 
             const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-            const queryDate: string = childDocument_Reconciliation.endCreatedDateTime as string;
+            const queryDate: string = childDocument_Reconciliation.startCreatedDateTime as string;
             const datetmp = new Date(queryDate);
             datetmp.setUTCMilliseconds(0);
             datetmp.setUTCSeconds(0);
             const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
             const datePlusPCTMT = new Date(datetmp.getTime() - pctmt);
 
-        const query = `{
-            "selector": {
-                "docType": "${DocType.ACTIVATION_DOCUMENT}",
-                "potentialParent": true,
-                "registeredResourceMrid": { "$in" : ["PDL00000000289766"] },
-                "businessType": "${orderType}",
-                "$or" : [
-                    {
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(queryDate)},
-                            "$lte": ${JSON.stringify(datePlusPCTMT)}
-                        }
-                    },{
-                        "endCreatedDateTime": {
-                            "$gte": ${JSON.stringify(dateMinusPCTMT)},
-                            "$lte": ${JSON.stringify(queryDate)}
-                        }
-                    }
-                ]
-            }
-        }`;
+            const registeredResourceMridList_str = JSON.stringify([Values.HTA_yellowPage.registeredResourceMrid]);
+            var args: string[] = [];
+            args.push(`"potentialParent":true`);
+            args.push(`"registeredResourceMrid":{"$in":${registeredResourceMridList_str}}`);
+            args.push(`"businessType":"${orderType}"`);
+            const date_criteria: string = `"$or":[`
+            .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(queryDate)},"$lte":${JSON.stringify(datePlusPCTMT)}}},`)
+            .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(queryDate)}}}`)
+            .concat(`]`);
+            args.push(date_criteria);
+
+            const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
 
             const iterator = Values.getActivationDocumentQueryMock2Values(parentDocumentOldest, parentDocument,mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, query).resolves(iterator);

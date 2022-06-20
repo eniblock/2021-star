@@ -100,10 +100,10 @@ public class SiteService {
         return importSiteResult;
     }
 
-    public PageHLF<Site> findSite(SiteCrteria criteria, String bookmark, Pageable pageable) throws BusinessException, TechnicalException {
+    public Site[] findSite(SiteCrteria criteria, Sort sort) throws BusinessException, TechnicalException {
         boolean useIndex = false;
-        Sort.Order producerMarketParticipantNameOrder = pageable.getSort().getOrderFor("producerMarketParticipantName");
-        Sort.Order technologyTypeOrder = pageable.getSort().getOrderFor("technologyType");
+        Sort.Order producerMarketParticipantNameOrder = sort.getOrderFor("producerMarketParticipantName");
+        Sort.Order technologyTypeOrder = sort.getOrderFor("technologyType");
         var selectors = new ArrayList<Selector>();
         selectors.add(Expression.eq("docType", SITE.getDocType()));
         addCriteria(selectors, criteria);
@@ -122,7 +122,7 @@ public class SiteService {
         }
         String query = queryBuilder.build();
         log.debug("Transaction query: " + query);
-        return siteRepository.findSiteByQuery(query, String.valueOf(pageable.getPageSize()), bookmark);
+        return siteRepository.findSiteByQuery(query);
     }
 
 

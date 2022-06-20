@@ -27,6 +27,8 @@ public interface SiteMapper {
 
     List<SiteDTO> beanToDtos(List<Site> sites);
 
+    SiteDTO[] beanToDtos(Site[] sites);
+
     @Named("mapTypeSiteForSite")
     default TypeSiteEnum mapTypeSiteForSite(Site site) {
         return Site.isSiteHTA(site.getMeteringPointMrid()) ? TypeSiteEnum.HTA : TypeSiteEnum.HTB;

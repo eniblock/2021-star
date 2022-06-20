@@ -201,18 +201,15 @@ class SiteControllerTest extends AbstractIntTest {
     void findSiteTest() throws Exception {
         // GIVEN
         Site site = Site.builder().technologyType(TechnologyTypeEnum.EOLIEN.name()).build();
-        var siteResponse = PageHLF.builder().bookmark("bookmark").fetchedRecordsCount(1).records(Arrays.asList(site)).build();
-        byte[] result = objectMapper.writeValueAsBytes(siteResponse);
-        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
+        byte[] result = objectMapper.writeValueAsBytes(Arrays.asList(site));
+        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(result);
 
         // WHEN
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.get(URL_SEARCH + "?order=technologyType"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bookmark").value(siteResponse.getBookmark()))
-                .andExpect(jsonPath("$.totalElements").value(siteResponse.getFetchedRecordsCount()))
-                .andExpect(jsonPath("$.content[0].technologyType").value(site.getTechnologyType()));
+                .andExpect(jsonPath("$[0].technologyType").value(site.getTechnologyType()));
     }
 
 }

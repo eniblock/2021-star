@@ -72,12 +72,6 @@ class SiteServiceTest extends AbstractTest {
     @Captor
     private ArgumentCaptor<String> queryCaptor;
 
-    @Captor
-    private ArgumentCaptor<String> pageSizeCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> bookmarkCaptor;
-
     @MockBean
     private SiteRepository siteRepository;
 
@@ -274,10 +268,9 @@ class SiteServiceTest extends AbstractTest {
                 .technologyType(Arrays.asList(TechnologyTypeEnum.EOLIEN)).build();
         var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
-        PageRequest pageRequest = PageRequest.of(0, 10, sort);
 
         // WHEN
-        Assertions.assertThrows(BusinessException.class, () -> siteService.findSite(siteCrteria, bookmark, pageRequest));
+        Assertions.assertThrows(BusinessException.class, () -> siteService.findSite(siteCrteria, sort));
 
 
         // THEN
@@ -293,16 +286,13 @@ class SiteServiceTest extends AbstractTest {
                 .technologyType(Arrays.asList(TechnologyTypeEnum.EOLIEN)).build();
         var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
-        PageRequest pageRequest = PageRequest.of(0, 10, sort);
 
         // WHEN
-        var siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
+        var siteResponseResult = siteService.findSite(siteCrteria, sort);
 
         // THEN
-        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());
+        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture());
 
-        assertThat(pageSizeCaptor.getValue()).isEqualTo(String.valueOf(pageRequest.getPageSize()));
-        assertThat(bookmarkCaptor.getValue()).isEqualTo(bookmark);
         String queryValue = queryCaptor.getValue();
         assertThat(queryValue).contains("docType", "siteName", "substationName", "substationMrid",
                 "producerMarketParticipantName", "producerMarketParticipantMrid", "siteIecCode", "meteringPointMrid", "technologyType");
@@ -318,16 +308,13 @@ class SiteServiceTest extends AbstractTest {
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
         var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("technologyType");
-        PageRequest pageRequest = PageRequest.of(0, 10, sort);
 
         // WHEN
-        var siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
+        var siteResponseResult = siteService.findSite(siteCrteria, sort);
 
         // THEN
-        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());
+        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture());
 
-        assertThat(pageSizeCaptor.getValue()).isEqualTo(String.valueOf(pageRequest.getPageSize()));
-        assertThat(bookmarkCaptor.getValue()).isEqualTo(bookmark);
         String queryValue = queryCaptor.getValue();
         assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
     }
@@ -341,16 +328,13 @@ class SiteServiceTest extends AbstractTest {
                 .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
         var siteResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new Site())).build();
         Sort sort = Sort.by("producerMarketParticipantName");
-        PageRequest pageRequest = PageRequest.of(0, 10, sort);
 
         // WHEN
-        var siteResponseResult = siteService.findSite(siteCrteria, bookmark, pageRequest);
+        var siteResponseResult = siteService.findSite(siteCrteria, sort);
 
         // THEN
-        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());
+        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture());
 
-        assertThat(pageSizeCaptor.getValue()).isEqualTo(String.valueOf(pageRequest.getPageSize()));
-        assertThat(bookmarkCaptor.getValue()).isEqualTo(bookmark);
         String queryValue = queryCaptor.getValue();
         assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTA);
         assertThat(queryValue).doesNotContain(Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);

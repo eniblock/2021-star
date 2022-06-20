@@ -8,7 +8,7 @@ import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
 import {
   FormulairePagination,
   PaginationReponse,
-} from 'src/app/models/Pagination';
+} from 'src/app/models/RequestForm';
 import {
   FormulaireRechercheHistoriqueLimitation,
   RechercheHistoriqueLimitationEntite,

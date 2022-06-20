@@ -1,13 +1,12 @@
 package com.star.rest;
 
 
-import com.star.dto.common.PageDTO;
 import com.star.dto.site.SiteDTO;
 import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.mapper.site.SitePageMapper;
+import com.star.mapper.site.SiteMapper;
 import com.star.models.site.ImportSiteResult;
 import com.star.models.site.SiteCrteria;
 import com.star.security.SecurityComponent;
@@ -20,12 +19,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,7 +55,7 @@ public class SiteController {
     @Autowired
     private SiteService siteService;
     @Autowired
-    private SitePageMapper sitePageMapper;
+    private SiteMapper siteMapper;
     @Autowired
     private SecurityComponent securityComponent;
 
@@ -108,10 +105,7 @@ public class SiteController {
     /**
      * Recherche multi-critère de site
      *
-     * @param page
-     * @param pageSize
      * @param order
-     * @param bookmark
      * @param technologyType
      * @param producerMarketParticipantMrid
      * @param producerMarketParticipantName
@@ -131,16 +125,10 @@ public class SiteController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
-    public ResponseEntity<PageDTO<SiteDTO>> findSite(
+    public ResponseEntity<SiteDTO[]> findSite(
             @Parameter(description = "Number of page per response")
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @Parameter(description = "Number of responses per page")
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @Parameter(description = "order search criteria.")
             @RequestParam(value = "order", required = false) String order,
             @Parameter(description = "bookmark search criteria")
-            @RequestParam(value = "bookmark", required = false, defaultValue = "") String bookmark,
-            @Parameter(description = "technologyType search criteria")
             @RequestParam(value = "technologyType", required = false) List<TechnologyTypeEnum> technologyType,
             @Parameter(description = "producerMarketParticipantMrid search criteria")
             @RequestParam(value = "producerMarketParticipantMrid", required = false) String producerMarketParticipantMrid,
@@ -157,13 +145,12 @@ public class SiteController {
             @Parameter(description = "meteringPointMrId search criteria")
             @RequestParam(value = "meteringPointMrId", required = false) String meteringPointMrId) throws BusinessException, TechnicalException {
         Sort sort = order == null ? Sort.unsorted() : Sort.by(order);
-        PageRequest pageRequest = PageRequest.of(page, pageSize, sort);
         SiteCrteria criteria = SiteCrteria.builder().meteringPointMrId(meteringPointMrId).producerMarketParticipantMrid(producerMarketParticipantMrid)
                 .producerMarketParticipantName(producerMarketParticipantName).siteIecCode(siteIecCode).substationMrid(substationMrid)
                 .substationName(substationName).siteName(siteName).technologyType(technologyType).instance(instance).build();
         if (PRODUCER.equals(instance)) {
             criteria.setProducerMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(sitePageMapper.beanToDto(siteService.findSite(criteria, bookmark, pageRequest)));
+        return ResponseEntity.status(HttpStatus.OK).body(siteMapper.beanToDtos(siteService.findSite(criteria, sort)));
     }
 }

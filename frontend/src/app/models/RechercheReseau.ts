@@ -2,7 +2,7 @@ import { OrdreRechercheReseau } from './enum/OrdreRechercheReseau.enum';
 import { TechnologyType } from './enum/TechnologyType.enum';
 import { TypeDeRechercheSimple } from './enum/TypeDeRechercheSimple.enum';
 import { TypeSite } from './enum/TypeSite.enum';
-import { FormulairePagination } from './Pagination';
+import { FormulairePagination } from './RequestForm';
 
 export interface FormulaireRechercheReseau {
   typeDeRechercheSimple?: TypeDeRechercheSimple;

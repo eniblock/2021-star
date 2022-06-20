@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Instance } from 'src/app/models/enum/Instance.enum';
 import { InstanceService } from 'src/app/services/api/instance.service';
-import { FormulairePagination } from 'src/app/models/Pagination';
+import { FormulairePagination } from 'src/app/models/RequestForm';
 import { OrderDirection } from 'src/app/models/enum/OrderDirection.enum';
 import { environment } from 'src/environments/environment';
 import { PageSizeAndVisibilityFieldsEvent } from './activations-pagination/activations-pagination.component';

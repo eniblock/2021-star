@@ -29,7 +29,7 @@ public class SiteRepository {
     public static final String CREATE_SITE = "CreateSite";
     public static final String UPDATE_SITE = "UpdateSite";
     public static final String SITE_EXISTS = "SiteExists";
-    public static final String GET_SITE_WITH_PAGINATION = "GetSiteWithPagination";
+    public static final String GET_SITE_BY_QUERY = "GetSitesByQuery";
 
     @Autowired
     private Contract contract;
@@ -85,10 +85,10 @@ public class SiteRepository {
         }
     }
 
-    public PageHLF<Site> findSiteByQuery(String query, String pageSize, String bookmark) throws BusinessException, TechnicalException {
+    public Site[] findSiteByQuery(String query) throws BusinessException, TechnicalException {
         try {
-            byte[] response = contract.evaluateTransaction(GET_SITE_WITH_PAGINATION, query, pageSize, bookmark);
-            return response != null ? objectMapper.readValue(new String(response), new TypeReference<PageHLF<Site>>() {
+            byte[] response = contract.evaluateTransaction(GET_SITE_BY_QUERY, query);
+            return response != null ? objectMapper.readValue(new String(response), new TypeReference<Site[]>() {
             }) : null;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des sites", exception);

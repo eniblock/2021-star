@@ -2,7 +2,7 @@ import {OrderDirection} from '../../models/enum/OrderDirection.enum';
 import {Component, OnInit} from '@angular/core';
 import {Instance} from 'src/app/models/enum/Instance.enum';
 import {OrdreRechercheReseau} from 'src/app/models/enum/OrdreRechercheReseau.enum';
-import {FormulairePagination} from 'src/app/models/Pagination';
+import {FormulairePagination, RequestForm} from 'src/app/models/RequestForm';
 import {
   FormulaireRechercheReseau,
   RechercheReseauEntite,
@@ -39,15 +39,13 @@ export class ReseauComponent implements OnInit {
 
   private lancerRecherche() {
     if (this.formRecherche != undefined) {
-      const paginationAvecBookmark: FormulairePagination<OrdreRechercheReseau> =
+      const requestForm: RequestForm<OrdreRechercheReseau> =
         {
-          pageSize: 42,
-          bookmark: "",
           order: this.order,
           orderDirection: OrderDirection.asc,
         };
-      this.reseauService.rechercher(this.formRecherche, paginationAvecBookmark)
-        .subscribe(resultat => this.resultatsRecherche = resultat.content);
+      this.reseauService.rechercher(this.formRecherche, requestForm)
+        .subscribe(resultat => this.resultatsRecherche = resultat);
     }
   }
 

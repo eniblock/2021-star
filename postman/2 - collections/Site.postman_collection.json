@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e7904d6b-de2b-49c6-85c6-d596edd6faf0",
+		"_postman_id": "262d81b7-b33d-4ebf-88ce-c93397b77d08",
 		"name": "Site",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -74,7 +74,7 @@
 					"formdata": []
 				},
 				"url": {
-					"raw": "{{base_url_rte}}/site?page&pageSize&order=&bookmark&technologyType&producerMarketParticipantMrid&producerMarketParticipantName&siteName&substationName&substationMrid&siteIecCode&meteringPointMrId",
+					"raw": "{{base_url_rte}}/site?order=&technologyType&producerMarketParticipantMrid&producerMarketParticipantName&siteName&substationName&substationMrid&siteIecCode&meteringPointMrId",
 					"host": [
 						"{{base_url_rte}}"
 					],
@@ -83,21 +83,9 @@
 					],
 					"query": [
 						{
-							"key": "page",
-							"value": null
-						},
-						{
-							"key": "pageSize",
-							"value": null
-						},
-						{
 							"key": "order",
 							"value": "",
 							"description": "producerMarketParticipantName ou technologyType"
-						},
-						{
-							"key": "bookmark",
-							"value": null
 						},
 						{
 							"key": "technologyType",
@@ -206,7 +194,7 @@
 					"formdata": []
 				},
 				"url": {
-					"raw": "{{base_url_enedis}}/site?page&pageSize&order=&bookmark&technologyType&producerMarketParticipantMrid&producerMarketParticipantName&siteName&substationName&substationMrid&siteIecCode&meteringPointMrId",
+					"raw": "{{base_url_enedis}}/site?order=&technologyType&producerMarketParticipantMrid&producerMarketParticipantName&siteName&substationName&substationMrid&siteIecCode&meteringPointMrId",
 					"host": [
 						"{{base_url_enedis}}"
 					],
@@ -215,21 +203,9 @@
 					],
 					"query": [
 						{
-							"key": "page",
-							"value": null
-						},
-						{
-							"key": "pageSize",
-							"value": null
-						},
-						{
 							"key": "order",
 							"value": "",
 							"description": "producerMarketParticipantName ou technologyType"
-						},
-						{
-							"key": "bookmark",
-							"value": null
 						},
 						{
 							"key": "technologyType",

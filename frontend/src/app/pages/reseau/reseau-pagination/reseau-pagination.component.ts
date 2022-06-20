@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { OrdreRechercheReseau } from 'src/app/models/enum/OrdreRechercheReseau.enum';
-import { FormulairePagination } from 'src/app/models/Pagination';
+import { FormulairePagination } from 'src/app/models/RequestForm';
 import { environment } from 'src/environments/environment';
 
 @Component({

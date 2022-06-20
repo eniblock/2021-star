@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.star.enums.DocTypeEnum.ENERGY_AMOUNT;
+import static com.star.enums.InstanceEnum.DSO;
+import static com.star.enums.InstanceEnum.TSO;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
@@ -77,6 +79,9 @@ public class EnergyAmountService {
 
     @Autowired
     private EnergyAmountRepository energyAmountRepository;
+
+    @Autowired
+    private SiteService siteService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -126,7 +131,7 @@ public class EnergyAmountService {
      * @return
      * @throws IOException
      */
-    private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance, boolean creation) throws IOException {
+    private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance, boolean creation) throws IOException, TechnicalException {
         if (InstanceEnum.DSO.equals(instance) & fichiers == null || fichiers.size() == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }
@@ -151,6 +156,26 @@ public class EnergyAmountService {
                 errors.add(messageSource.getMessage("import.error",
                         new String[]{fichier.getFileName(), "energyAmountMarketDocumentMrid est obligatoire."}, null));
             }
+            String registeredResourceMrid = energyAmount.getRegisteredResourceMrid();
+            if (isNotBlank(registeredResourceMrid)) {
+                if (!siteService.isValideSiteMeteringPoint(instance, registeredResourceMrid)) {
+                    errors.add(messageSource.getMessage("import.file.energy.amount.meteringpointmrid.error",
+                            new String[]{registeredResourceMrid}, null));
+                } else {
+                    if (!siteService.existSite(registeredResourceMrid)) {
+                        errors.add(messageSource.getMessage("import.file.energy.amount.unknown.site",
+                                new String[]{registeredResourceMrid}, null));
+                    }
+                }
+            }
+//            Vérification du champ senderMarketParticipantMrid
+            String senderMarketParticipantMrid = energyAmount.getSenderMarketParticipantMrid();
+            if (TSO.equals(instance) && !StringUtils.equalsIgnoreCase(TSO.getSystemOperatorMrid(), senderMarketParticipantMrid) ||
+            DSO.equals(instance) && !StringUtils.equalsIgnoreCase(DSO.getSystemOperatorMrid(), senderMarketParticipantMrid)) {
+                errors.add(messageSource.getMessage("import.file.energy.amount.senderMarketParticipantMrid.error",
+                        new String[]{senderMarketParticipantMrid}, null));
+            }
+
             if (isEmpty(errors)) {
                 energyAmounts.add(energyAmount);
             }
@@ -159,7 +184,7 @@ public class EnergyAmountService {
         if (isNotEmpty(errors)) {
             importEnergyAmountResult.setErrors(errors);
         } else {
-            energyAmounts.forEach(energyAmount -> setAttributes(energyAmount));
+            energyAmounts.forEach(energyAmount -> setAttributes(energyAmount, creation));
             importEnergyAmountResult.setDatas(energyAmounts);
         }
         return importEnergyAmountResult;
@@ -175,7 +200,7 @@ public class EnergyAmountService {
      * @throws TechnicalException
      */
     public ImportEnergyAmountResult saveEnergyAmount(EnergyAmount energyAmount, InstanceEnum instance, boolean creation) throws TechnicalException {
-        if (InstanceEnum.TSO.equals(instance) && energyAmount == null) {
+        if (TSO.equals(instance) && energyAmount == null) {
             throw new IllegalArgumentException("Object energyAmount must not be empty");
         }
         // Rechercher l'ordre de limitation à partir du champ activationDocumentMrid
@@ -216,7 +241,7 @@ public class EnergyAmountService {
         if (isNotEmpty(errors)) {
             importEnergyAmountResult.setErrors(errors);
         } else {
-            setAttributes(energyAmount);
+            setAttributes(energyAmount, creation);
             if (creation) {
                 importEnergyAmountResult.setDatas(energyAmountRepository.save(Arrays.asList(energyAmount), instance));
             } else {
@@ -226,11 +251,13 @@ public class EnergyAmountService {
         return importEnergyAmountResult;
     }
 
-    private void setAttributes(EnergyAmount energyAmount) {
+    private void setAttributes(EnergyAmount energyAmount, boolean creation) {
         if (energyAmount == null) {
             return;
         }
-        energyAmount.setEnergyAmountMarketDocumentMrid(randomUUID().toString());
+        if (creation) {
+            energyAmount.setEnergyAmountMarketDocumentMrid(randomUUID().toString());
+        }
         energyAmount.setDocType(ENERGY_AMOUNT.getDocType());
         if (energyAmount.getRevisionNumber() == null) {
             energyAmount.setRevisionNumber(REVISION_NUMBER);

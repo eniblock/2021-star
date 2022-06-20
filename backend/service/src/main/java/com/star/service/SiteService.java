@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -180,7 +181,7 @@ public class SiteService {
         // Vérifier que les ids n'existent pas déjà
         List<String> meteringPointMrids = importSiteResult.getDatas().stream().map(Site::getMeteringPointMrid).collect(toList());
         for (String meteringPointMrId : meteringPointMrids) {
-            boolean existSite = create ? false : siteRepository.existSite(meteringPointMrId);
+            boolean existSite = create ? false : this.existSite(meteringPointMrId);
             // Traitement s'il s'agit d'une création de site.
             if (create && existSite) {
                 importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.exist.error",
@@ -192,8 +193,7 @@ public class SiteService {
                         new String[]{meteringPointMrId}, null));
             }
 
-            if ((DSO.equals(instance) && isSiteHTB(meteringPointMrId)) ||
-                    TSO.equals(instance) && isSiteHTA(meteringPointMrId)) {
+            if (!isValideSiteMeteringPoint(instance, meteringPointMrId)) {
                 importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.import.error",
                         new String[]{meteringPointMrId, instance.getValue()}, null));
             }
@@ -215,6 +215,14 @@ public class SiteService {
         return importSiteResult;
     }
 
+    public boolean isValideSiteMeteringPoint(InstanceEnum instance, String meteringPointMrId) {
+        return (DSO.equals(instance) && isSiteHTA(meteringPointMrId)) || (TSO.equals(instance) && isSiteHTB(meteringPointMrId));
+    }
+
+    public boolean existSite(String meteringPointMrId) throws TechnicalException {
+        Assert.notNull(meteringPointMrId, "Le meteringPointMrId est obligatoire et doit etre non null");
+        return siteRepository.existSite(meteringPointMrId);
+    }
     private ImportSiteResult checkFileContent(String fileName, Reader streamReader, InstanceEnum instance) throws IOException {
         importUtilsService.checkFile(fileName, streamReader, FileExtensionEnum.CSV.getValue());
         ImportSiteResult importSiteResult = new ImportSiteResult();

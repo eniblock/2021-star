@@ -6,15 +6,19 @@
     DEFAULT = "default",
     ALL = "all",
 
-    IDENTITY = 'Identity',
+    IDENTITY = 'identity',
 
-    ROLE = 'Role',
-    ROLE_TABLE = 'RoleTable',
+    ROLE = 'role',
+    ROLE_TABLE = 'roleTable',
 
-    SITE = 'Site',
+    SITE = 'site',
 
-    ACTIVATION_DOCUMENT = 'ActivationDocument',
-    PPCO_TIME_THRESHOLD = 'PPCOTimeThershold',
-    PC_TIME_MATCH_THRESHOLD = 'PCTimeMatchThreshold',
-    PC_TIME_UPDATEEND_MATCH_THRESHOLD = 'PCTimeUpdateEndMatchThreshold',
+    ACTIVATION_DOCUMENT = 'activationDocument',
+    PPCO_TIME_THRESHOLD = 'pPCOTimeThershold',
+    PC_TIME_MATCH_THRESHOLD = 'pCTimeMatchThreshold',
+    PC_TIME_UPDATEEND_MATCH_THRESHOLD = 'pCTimeUpdateEndMatchThreshold',
+
+    ENERGY_AMOUNT = 'energyAmount',
+    ENERGY_ACCOUNT = 'energyAccount',
+    REFERENCE_ENERGY_ACCOUNT = 'referenceEnergyAccount',
   }

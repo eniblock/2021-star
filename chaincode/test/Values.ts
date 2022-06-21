@@ -34,8 +34,6 @@ export class Values {
         dateStart.setHours(0,0 + offset,0,1);
         // dateStart.setHours(0,0,0,1);
 
-        console.info(dateStart);
-
         //dateStart is yesterday at 00h00'00''001
         dateStart.setDate(dateStart.getDate() - 1);
 
@@ -85,6 +83,18 @@ export class Values {
     /*********************************************/
     public static HTB_Producer: Producer = {
         producerMarketParticipantMrid: "17X0000013097450",
+        producerMarketParticipantName: "EolienFR vert Cie",
+        producerMarketParticipantRoleType: "A21"
+    };
+
+    public static HTB_Producer_2: Producer = {
+        producerMarketParticipantMrid: "17X0000023097450",
+        producerMarketParticipantName: "EolienFR vert Cie",
+        producerMarketParticipantRoleType: "A21"
+    };
+
+    public static HTB_Producer_3: Producer = {
+        producerMarketParticipantMrid: "17X0000033097450",
         producerMarketParticipantName: "EolienFR vert Cie",
         producerMarketParticipantRoleType: "A21"
     };

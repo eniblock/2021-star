@@ -4,7 +4,6 @@ import { ParametersType } from "../../enums/ParametersType";
 import { Site } from "../../model/site";
 import { QueryStateService } from "./QueryStateService";
 import { DocType } from "../../enums/DocType";
-import { HLFServices } from "./HLFservice";
 
 export class SiteService {
     public static async getRaw(
@@ -62,7 +61,7 @@ export class SiteService {
         siteInput.docType = DocType.SITE;
         await ctx.stub.putPrivateData(collections[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
 
-        console.debug('============= END : Write %s SiteService ===========', siteInput.meteringPointMrid);
+        console.debug('============= END : Write %s (%s) SiteService ===========', siteInput.meteringPointMrid, collections[0]);
     }
 
     // public static async getQueryResult(
@@ -84,14 +83,14 @@ export class SiteService {
         query: string): Promise<string>  {
         console.debug('============= START : getQueryStringResult SiteService ===========');
 
-        const allResults = await SiteService.getPrivateQueryArrayResult(ctx, params, query);
+        const allResults = await SiteService.getQueryArrayResult(ctx, params, query);
         const formated = JSON.stringify(allResults);
 
         console.debug('============= END : getQueryStringResult SiteService ===========');
         return formated;
     }
 
-    public static async getPrivateQueryArrayResult(
+    public static async getQueryArrayResult(
         ctx: Context,
         params: STARParameters,
         query: string): Promise<any>  {

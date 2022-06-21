@@ -4,18 +4,17 @@ import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 
 import { ActivationDocument } from '../model/activationDocument';
 import { EnergyAmount } from '../model/energyAmount';
-import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
 import { STARParameters } from '../model/starParameters';
 
-import { HLFServices } from './service/HLFservice';
 import { QueryStateService } from './service/QueryStateService';
 import { SiteService } from './service/SiteService';
 import { DocType } from '../enums/DocType';
-import { EnergyAmountService } from './service/EnergyAmount';
+import { EnergyAmountService } from './service/EnergyAmountService';
 import { ActivationDocumentController } from './ActivationDocumentController';
 import { ParametersType } from '../enums/ParametersType';
 import { EnergyType } from '../enums/EnergyType';
+import { SystemOperatorService } from './service/SystemOperatorService';
 
 export class EnergyAmountController {
 
@@ -170,7 +169,7 @@ export class EnergyAmountController {
 
         const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE,  true);
 
-        await EnergyAmountService.write(ctx, energyObj);
+        await EnergyAmountService.write(ctx, params, energyObj);
 
         console.info(
             '============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
@@ -179,13 +178,14 @@ export class EnergyAmountController {
     }
 
 
+
     public static async updateTSOEnergyAmount(
         ctx: Context,
         params: STARParameters,
         inputStr: string) {
         console.info('============= START : updateTSOEnergyAmount EnergyAmountController ===========');
 
-        const identity = await HLFServices.getMspID(ctx);
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
@@ -194,12 +194,12 @@ export class EnergyAmountController {
 
         //Check existence
         try {
-            await EnergyAmountService.getRaw(ctx, energyObj.energyAmountMarketDocumentMrid);
+            await EnergyAmountService.getRaw(ctx, params, energyObj.energyAmountMarketDocumentMrid);
         } catch(error) {
             throw new Error(error.message.concat(` Can not be updated.`));
         }
 
-        await EnergyAmountService.write(ctx, energyObj);
+        await EnergyAmountService.write(ctx, params, energyObj);
 
         console.info(
             '============= END   : updateTSOEnergyAmount %s EnergyAmountController ===========',
@@ -210,20 +210,21 @@ export class EnergyAmountController {
 
 
 
+
     public static async createDSOEnergyAmount(
         ctx: Context,
         params: STARParameters,
         inputStr: string) {
         console.info('============= START : createDSOEnergyAmount EnergyAmountController ===========');
 
-        const identity = await HLFServices.getMspID(ctx);
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
         const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI);
 
-        await EnergyAmountService.write(ctx, energyObj);
+        await EnergyAmountService.write(ctx, params, energyObj);
 
         console.info(
             '============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
@@ -232,13 +233,16 @@ export class EnergyAmountController {
     }
 
 
+
+
+
     public static async updateDSOEnergyAmount(
         ctx: Context,
         params: STARParameters,
         inputStr: string) {
         console.info('============= START : updateDSOEnergyAmount EnergyAmountController ===========');
 
-        const identity = await HLFServices.getMspID(ctx);
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
@@ -247,12 +251,12 @@ export class EnergyAmountController {
 
         //Check existence
         try {
-            await EnergyAmountService.getRaw(ctx, energyObj.energyAmountMarketDocumentMrid);
+            await EnergyAmountService.getRaw(ctx, params, energyObj.energyAmountMarketDocumentMrid);
         } catch(error) {
             throw new Error(error.message.concat(` Can not be updated.`));
         }
 
-        await EnergyAmountService.write(ctx, energyObj);
+        await EnergyAmountService.write(ctx, params, energyObj);
 
         console.info(
             '============= END   : updateDSOEnergyAmount %s EnergyAmountController ===========',
@@ -265,56 +269,55 @@ export class EnergyAmountController {
 
     public static async getEnergyAmountForSystemOperator(
             ctx: Context,
+            params: STARParameters,
             registeredResourceMrid: string,
             systemOperatorEicCode: string,
             startCreatedDateTime: string): Promise<string> {
-        const allResults = [];
-        const identity = await HLFServices.getMspID(ctx);
+
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Amount.`);
         }
 
         const dateUp = new Date(startCreatedDateTime);
 
-        dateUp.setUTCMilliseconds(0);
-        dateUp.setUTCSeconds(0);
-        dateUp.setUTCMinutes(0);
-        dateUp.setUTCHours(0);
+        dateUp.setUTCHours(0,0,0,0);
         const dateDown = new Date(dateUp.getTime() + 86399999);
-
-        const systemOperatorAsBytes = await ctx.stub.getState(systemOperatorEicCode);
-        if (!systemOperatorAsBytes || systemOperatorAsBytes.length === 0) {
-            throw new Error(
-                `System Operator : ${systemOperatorEicCode} does not exist for Energy Amount read.`,
-            );
-        }
 
         let systemOperatorObj: SystemOperator;
         try {
-            systemOperatorObj = JSON.parse(systemOperatorAsBytes.toString());
+            systemOperatorObj = await SystemOperatorService.getObj(ctx, systemOperatorEicCode);
         } catch (error) {
-            throw new Error(`ERROR createTSOEnergyAmount getSystemOperator-> Input string NON-JSON value`);
+            throw new Error('ERROR getEnergyAmountForSystemOperator : '.concat(error.message).concat(` for Energy Amount read.`));
         }
+
         if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(
                 `Energy Amount, sender: ${identity} does not provide his own systemOperatorEicCode therefore he does not have read access.`,
             );
         }
-        const query = `{
-            "selector":
-            {
-                "docType": "energyAmount",
-                "registeredResourceMrid": "${registeredResourceMrid}",
-                "senderMarketParticipantMrid": "${systemOperatorEicCode}",
-                "createdDateTime": {
-                    "$gte": ${JSON.stringify(dateUp)},
-                    "$lte": ${JSON.stringify(dateDown)}
-                },
-                "sort": [{
-                    "createdDateTime" : "desc"
-                }]
-            }
-        }`;
+
+        var args: string[] = [];
+        args.push(`"registeredResourceMrid":"${registeredResourceMrid}"`);
+        args.push(`"senderMarketParticipantMrid":"${systemOperatorEicCode}"`);
+        args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
+        const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+
+        // const query = `{
+        //     "selector":
+        //     {
+        //         "docType": "energyAmount",
+        //         "registeredResourceMrid": "${registeredResourceMrid}",
+        //         "senderMarketParticipantMrid": "${systemOperatorEicCode}",
+        //         "createdDateTime": {
+        //             "$gte": ${JSON.stringify(dateUp)},
+        //             "$lte": ${JSON.stringify(dateDown)}
+        //         },
+        //         "sort": [{
+        //             "createdDateTime" : "desc"
+        //         }]
+        //     }
+        // }`;
 
         const ret = await QueryStateService.getQueryStringResult(ctx, query)
         return ret
@@ -325,37 +328,41 @@ export class EnergyAmountController {
 
     public static async getEnergyAmountByProducer(
         ctx: Context,
+        params: STARParameters,
         registeredResourceMrid: string,
         producerEicCode: string,
         startCreatedDateTime: string): Promise<string> {
-        const allResults = [];
-        const identity = await HLFServices.getMspID(ctx);
+
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have read access for producer's Energy Amount.`);
         }
         const dateUp = new Date(startCreatedDateTime);
-        dateUp.setUTCMilliseconds(0);
-        dateUp.setUTCSeconds(0);
-        dateUp.setUTCMinutes(0);
-        dateUp.setUTCHours(0);
+        dateUp.setUTCHours(0,0,0,0);
 
         const dateDown = new Date(dateUp.getTime() + 86399999);
 
-        const query = `{
-                "selector":
-                {
-                    "docType": "energyAmount",
-                    "registeredResourceMrid": "${registeredResourceMrid}",
-                    "receiverMarketParticipantMrid": "${producerEicCode}",
-                    "createdDateTime": {
-                        "$gte": ${JSON.stringify(dateUp)},
-                        "$lte": ${JSON.stringify(dateDown)}
-                    },
-                    "sort": [{
-                        "createdDateTime" : "desc"
-                    }]
-                }
-            }`;
+        var args: string[] = [];
+        args.push(`"registeredResourceMrid":"${registeredResourceMrid}"`);
+        args.push(`"receiverMarketParticipantMrid":"${producerEicCode}"`);
+        args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
+        const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+
+        // const query = `{
+        //         "selector":
+        //         {
+        //             "docType": "energyAmount",
+        //             "registeredResourceMrid": "${registeredResourceMrid}",
+        //             "receiverMarketParticipantMrid": "${producerEicCode}",
+        //             "createdDateTime": {
+        //                 "$gte": ${JSON.stringify(dateUp)},
+        //                 "$lte": ${JSON.stringify(dateDown)}
+        //             },
+        //             "sort": [{
+        //                 "createdDateTime" : "desc"
+        //             }]
+        //         }
+        //     }`;
 
         const ret = await QueryStateService.getQueryStringResult(ctx, query)
         return ret
@@ -365,36 +372,15 @@ export class EnergyAmountController {
 
     public static async getEnergyAmountByQuery(
         ctx: Context,
-        query: string, pageSize: number, bookmark: string): Promise<any> {
-        const identity = await HLFServices.getMspID(ctx);
+        params: STARParameters,
+        query: string): Promise<any> {
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Amount.`);
         }
-        let response = await ctx.stub.getQueryResultWithPagination(query, pageSize, bookmark);
-        const {iterator, metadata} = response;
-        let results = await this.getAllResults(iterator);
-        const res = {
-            records:             results,
-            fetchedRecordsCount: metadata.fetchedRecordsCount,
-            bookmark:            metadata.bookmark
-        }
-        return res;
-    }
 
-    static async getAllResults(iterator) {
-        const allResults = [];
-        let result = await iterator.next();
-        while (!result.done) {
-            const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-            let record;
-            try {
-                record = JSON.parse(strValue);
-            } catch (err) {
-                record = strValue;
-            }
-            allResults.push(record);
-            result = await iterator.next();
-        }
-        return allResults;
+        let results = await EnergyAmountService.getQueryArrayResult(ctx, params, query);
+
+        return results;
     }
 }

@@ -2,17 +2,29 @@ import { Context } from "fabric-contract-api";
 import { Iterators } from "fabric-shim";
 
 export class QueryStateService {
-    public static async buildQuery(documentType: string, args: string[]): Promise<string> {
-        var query = `{"selector": {"docType":"${documentType}"`;
+    public static async buildQuery(documentType: string, args: string[], sort: string[] = []): Promise<string> {
+        var query = `{"selector": { "$and": [ {"docType":"${documentType}"}`;
         for (var arg of args) {
             if (arg) {
-                query = query.concat(`,${arg}`);
+                query = query.concat(`,{${arg}}`);
             }
+        }
+        query = query.concat(`]`);
+        if (sort && sort.length > 0) {
+            query = query.concat(`,"sort":[`);
+            for (var i =0; i < sort.length; i++) {
+                if (i>0) {
+                    query = query.concat(`,`);
+                }
+                query = query.concat(`{${sort[i]}}`);
+            }
+            query = query.concat(`]`);
         }
 
         query = query.concat(`}}`);
-        return query;
 
+        // console.info("built query :", query)
+        return query;
     }
 
     public static async getQueryResult(
@@ -62,10 +74,7 @@ export class QueryStateService {
         console.debug('============= START : getAllStates %s QueryStateService ===========', dataType);
 
         const query = `{"selector": {"docType": "${dataType}"}}`;
-        const iterator = await this.getQueryResult(ctx, query);
-
-        const allResults = await this.formatResultToArray(iterator);
-        const formated = JSON.stringify(allResults);
+        const formated = await QueryStateService.getQueryStringResult(ctx, query);
 
         console.debug('============= END : getAllStates %s QueryStateService ===========', dataType);
         return formated;
@@ -78,27 +87,26 @@ export class QueryStateService {
         query: string): Promise<string>  {
         console.debug('============= START : getQueryStringResult QueryStateService ===========');
 
-        const iterator = await this.getQueryResult(ctx, query);
-        const allResults = await this.formatResultToArray(iterator);
+        const allResults = await QueryStateService.getQueryArrayResult(ctx, query);
         const formated = JSON.stringify(allResults);
 
         console.debug('============= END : getQueryStringResult QueryStateService ===========');
         return formated;
     }
 
-    public static async getPrivateQueryStringResult(
-        ctx: Context,
-        query: string,
-        collection: string): Promise<string>  {
-        console.debug('============= START : getPrivateQueryStringResult QueryStateService ===========');
+    // public static async getPrivateQueryStringResult(
+    //     ctx: Context,
+    //     query: string,
+    //     collection: string): Promise<string>  {
+    //     console.debug('============= START : getPrivateQueryStringResult QueryStateService ===========');
 
-        const iterator = await this.getPrivateQueryResult(ctx, query, collection);
-        const allResults = await this.formatResultToArray(iterator);
-        const formated = JSON.stringify(allResults);
+    //     const iterator = await this.getPrivateQueryResult(ctx, query, collection);
+    //     const allResults = await this.formatResultToArray(iterator);
+    //     const formated = JSON.stringify(allResults);
 
-        console.debug('============= END : getPrivateQueryStringResult QueryStateService ===========');
-        return formated;
-    }
+    //     console.debug('============= END : getPrivateQueryStringResult QueryStateService ===========');
+    //     return formated;
+    // }
 
 
 

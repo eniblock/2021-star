@@ -80,7 +80,7 @@ describe('Star Tests PRODUCERS', () => {
                 await star.CreateProducer(transactionContext, 'toto');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('ERROR createProducer-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR producer-> Input string NON-JSON value');
             }
         });
 
@@ -110,6 +110,52 @@ describe('Star Tests PRODUCERS', () => {
             );
 
             expect(transactionContext.stub.putState.callCount).to.equal(1);
+        });
+
+        it('should return SUCCESS wit RTE on createProducerList', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            const producerList = [Values.HTB_Producer, Values.HTB_Producer_2, Values.HTB_Producer_3];
+
+            await star.CreateProducerList(transactionContext, JSON.stringify(producerList));
+
+            const expected = JSON.parse(JSON.stringify(Values.HTB_Producer))
+            expected.docType = DocType.PRODUCER;
+            const expected2 = JSON.parse(JSON.stringify(Values.HTB_Producer_2))
+            expected2.docType = DocType.PRODUCER;
+            const expected3 = JSON.parse(JSON.stringify(Values.HTB_Producer_3))
+            expected3.docType = DocType.PRODUCER;
+
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putState.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putState.firstCall.args[1].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected))
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putState.secondCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putState.secondCall.args[1].toString()).toString('utf8'));
+            // console.info(JSON.stringify(Values.HTB_Producer_2))
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putState.thirdCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putState.thirdCall.args[1].toString()).toString('utf8'));
+            // console.info(JSON.stringify(Values.HTB_Producer_2))
+            // console.info("-----------")
+
+            transactionContext.stub.putState.firstCall.should.have.been.calledWithExactly(
+                expected.producerMarketParticipantMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+            transactionContext.stub.putState.secondCall.should.have.been.calledWithExactly(
+                expected2.producerMarketParticipantMrid,
+                Buffer.from(JSON.stringify(expected2))
+            );
+            transactionContext.stub.putState.thirdCall.should.have.been.calledWithExactly(
+                expected3.producerMarketParticipantMrid,
+                Buffer.from(JSON.stringify(expected3))
+            );
+
+            expect(transactionContext.stub.putState.callCount).to.equal(3);
         });
     });
 
@@ -154,7 +200,7 @@ describe('Star Tests PRODUCERS', () => {
                 await star.UpdateProducer(transactionContext, 'toto');
             } catch(err) {
                 console.info(err.message)
-                expect(err.message).to.equal('ERROR updateProducer-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR producer-> Input string NON-JSON value');
             }
         });
 

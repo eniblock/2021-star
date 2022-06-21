@@ -1,9 +1,12 @@
 import { Context } from 'fabric-contract-api';
+
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
+import { ParametersType } from '../enums/ParametersType';
+
 import { STARParameters } from '../model/starParameters';
 import { Site } from '../model/site';
+
 import { SiteService } from './service/SiteService';
-import { HLFServices } from './service/HLFservice';
 import { SystemOperatorService } from './service/SystemOperatorService';
 import { ProducerService } from './service/ProducerService';
 
@@ -28,17 +31,17 @@ export class SiteController {
             throw new Error(`ERROR createSite-> Input string NON-JSON value`);
         }
 
-        const siteInput = Site.schema.validateSync(
+        Site.schema.validateSync(
             siteObj,
             {strict: true, abortEarly: false},
         );
 
-        const identity = await HLFServices.getMspID(ctx);
-        if (siteInput.marketEvaluationPointMrid && siteInput.schedulingEntityRegisteredResourceMrid) {
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (siteObj.marketEvaluationPointMrid && siteObj.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.RTE) {
                 throw new Error(`Organisation, ${identity} does not have write access for HTB(HV) sites`);
             }
-        } else if (!siteInput.marketEvaluationPointMrid && !siteInput.schedulingEntityRegisteredResourceMrid) {
+        } else if (!siteObj.marketEvaluationPointMrid && !siteObj.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.ENEDIS) {
                 throw new Error(`Organisation, ${identity} does not have write access for HTA(MV) sites`);
             }
@@ -46,21 +49,21 @@ export class SiteController {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
         }
         try {
-            await SystemOperatorService.getRaw(ctx, siteInput.systemOperatorMarketParticipantMrid);
+            await SystemOperatorService.getRaw(ctx, siteObj.systemOperatorMarketParticipantMrid);
         } catch(error) {
             throw new Error(error.message.concat(' for site creation'));
         }
 
         try {
-            ProducerService.getRaw(ctx, siteInput.producerMarketParticipantMrid);
+            ProducerService.getRaw(ctx, siteObj.producerMarketParticipantMrid);
         } catch(error) {
             throw new Error(error.message.concat(' for site creation'));
         }
 
-        await SiteService.write(ctx, params, siteInput);
+        await SiteService.write(ctx, params, siteObj);
         console.info(
             '============= END   : Create %s Site ===========',
-            siteInput.meteringPointMrid,
+            siteObj.meteringPointMrid,
         );
     }
 
@@ -79,44 +82,43 @@ export class SiteController {
         } catch (error) {
             throw new Error(`ERROR updateSite-> Input string NON-JSON value`);
         }
-        const siteInput = Site.schema.validateSync(
+        Site.schema.validateSync(
             siteObj,
             {strict: true, abortEarly: false},
         );
-        const identity = await HLFServices.getMspID(ctx);
-        if (siteInput.marketEvaluationPointMrid && siteInput.schedulingEntityRegisteredResourceMrid) {
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (siteObj.marketEvaluationPointMrid && siteObj.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.RTE) {
                 throw new Error(`Organisation, ${identity} does not have write access for HTB(HV) sites`);
             }
-        } else if (!siteInput.marketEvaluationPointMrid && !siteInput.schedulingEntityRegisteredResourceMrid) {
+        } else if (!siteObj.marketEvaluationPointMrid && !siteObj.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.ENEDIS) {
                 throw new Error(`Organisation, ${identity} does not have write access for HTA(MV) sites`);
             }
         } else {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
         }
-        const siteAsBytes = await SiteService.getRaw(ctx, params, siteInput.meteringPointMrid);
-        // const siteAsBytes = await ctx.stub.getState(siteInput.meteringPointMrid);
+        const siteAsBytes = await SiteService.getRaw(ctx, params, siteObj.meteringPointMrid);
         if (!siteAsBytes || siteAsBytes.length === 0) {
-            throw new Error(`${siteInput} does not exist. Can not be updated.`);
+            throw new Error(`${siteObj} does not exist. Can not be updated.`);
         }
 
         try {
-            await SystemOperatorService.getRaw(ctx, siteInput.systemOperatorMarketParticipantMrid);
+            await SystemOperatorService.getRaw(ctx, siteObj.systemOperatorMarketParticipantMrid);
         } catch(error) {
             throw new Error(error.message.concat(' for site update'));
         }
 
         try {
-            await ProducerService.getRaw(ctx, siteInput.producerMarketParticipantMrid);
+            await ProducerService.getRaw(ctx, siteObj.producerMarketParticipantMrid);
         } catch(error) {
             throw new Error(error.message.concat(' for site update'));
         }
 
-        await SiteService.write(ctx, params, siteInput);
+        await SiteService.write(ctx, params, siteObj);
         console.info(
             '============= END : Update %s Site ===========',
-            siteInput.meteringPointMrid,
+            siteObj.meteringPointMrid,
         );
     }
 
@@ -183,21 +185,12 @@ export class SiteController {
         ctx: Context,
         params: STARParameters,
         query: string): Promise<any> {
-        //getPrivateDataQueryResultWithPagination doesn't exist in 2022 May the 19th
-        // let response = await ctx.stub.getQueryResultWithPagination(query, pageSize, bookmark);
-        // const {iterator, metadata} = response;
-        // let results = await this.getAllResults(iterator);
-        // const res = {
-        //     records:             results,
-        //     fetchedRecordsCount: metadata.fetchedRecordsCount,
-        //     bookmark:            metadata.bookmark
-        // }
 
         //Implementaition calling QueryResult (without Pagination)
         // const iterator = await SiteService.getQueryResult(ctx, query);
         // let results = await this.getAllResults(iterator);
 
-        let results = await SiteService.getPrivateQueryArrayResult(ctx, params, query);
+        let results = await SiteService.getQueryArrayResult(ctx, params, query);
 
         return results;
     }

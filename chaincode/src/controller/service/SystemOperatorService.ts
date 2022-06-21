@@ -18,6 +18,24 @@ export class SystemOperatorService {
         return sompAsBytes;
     }
 
+
+    public static async getObj(
+        ctx: Context,
+        id: string): Promise<SystemOperator> {
+
+        const dataAsBytes: Uint8Array = await SystemOperatorService.getRaw(ctx, id);
+        var dataObj:SystemOperator = null;
+        if (dataAsBytes) {
+            try {
+                dataObj = JSON.parse(dataAsBytes.toString());
+            } catch (error) {
+                throw new Error(`ERROR SystemOperator -> Input string NON-JSON value`);
+            }
+        }
+        return dataObj;
+    }
+
+
     public static async write(
         ctx: Context,
         systemOperatorObj: SystemOperator): Promise<void> {

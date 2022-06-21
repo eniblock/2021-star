@@ -45,17 +45,15 @@ class HistoriqueLimitationControllerTest extends AbstractIntTest {
     void findLimitationHistory() throws Exception {
         // GIVEN
         var historiqueLimitation = HistoriqueLimitation.builder().technologyType(TechnologyTypeEnum.EOLIEN.name()).build();
-        var historiqueLimitationResponse = PageHLF.builder().bookmark("bookmark").fetchedRecordsCount(1).records(Arrays.asList(historiqueLimitation)).build();
+        var historiqueLimitationResponse = Arrays.asList(historiqueLimitation);
         byte[] result = objectMapper.writeValueAsBytes(historiqueLimitationResponse);
-        Mockito.when(contract.evaluateTransaction(any(), any(), any(), any())).thenReturn(result);
+        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(result);
 
         // WHEN
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.get(URL_SEARCH))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bookmark").value(historiqueLimitationResponse.getBookmark()))
-                .andExpect(jsonPath("$.totalElements").value(historiqueLimitationResponse.getFetchedRecordsCount()))
-                .andExpect(jsonPath("$.content[0].technologyType").value(historiqueLimitation.getTechnologyType()));
+                .andExpect(jsonPath("$[0].technologyType").value(historiqueLimitation.getTechnologyType()));
     }
 }

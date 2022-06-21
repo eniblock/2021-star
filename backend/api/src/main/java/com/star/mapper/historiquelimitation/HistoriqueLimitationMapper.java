@@ -27,6 +27,8 @@ public interface HistoriqueLimitationMapper {
 
     List<HistoriqueLimitationDTO> beanToDtos(List<HistoriqueLimitation> historiqueLimitations);
 
+    HistoriqueLimitationDTO[] beanToDtos(HistoriqueLimitation[] historiqueLimitations);
+
     @Named("mapTypeSite")
     default TypeSiteEnum mapTypeSiteForSite(HistoriqueLimitation historiqueLimitation) {
         return Site.isSiteHTA(historiqueLimitation.getMeteringPointMrid()) ? TypeSiteEnum.HTA : TypeSiteEnum.HTB;

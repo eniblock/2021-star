@@ -4,6 +4,7 @@ import com.cloudant.client.api.query.Expression;
 import com.cloudant.client.api.query.Selector;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
+import com.star.models.common.OrderDirection;
 import com.star.models.common.PageHLF;
 import com.star.models.common.PaginationDto;
 import com.star.models.historiquelimitation.HistoriqueLimitation;
@@ -33,7 +34,7 @@ public class HistoriqueLimitationService {
     @Autowired
     private HistoriqueLimitationRepository historiqueLimitationRepository;
 
-    public PageHLF<HistoriqueLimitation> findHistorique(HistoriqueLimitationCriteria criteria, String bookmark, PaginationDto pagination) throws TechnicalException {
+    public HistoriqueLimitation[] findHistorique(HistoriqueLimitationCriteria criteria, String order, OrderDirection orderDirection) throws TechnicalException {
         var selectors = new ArrayList<Selector>();
         var DOC_TYPE = ACTIVATION_DOCUMENT.getDocType();
         var INDEX_NAME = ACTIVATION_DOCUMENT.getIndexName();
@@ -42,8 +43,8 @@ public class HistoriqueLimitationService {
         var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
 
         // Index and order
-        if ("originAutomationRegisteredResourceMrid".equals(pagination.getOrder())) {
-            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(pagination.getOrder()));
+        if ("originAutomationRegisteredResourceMrid".equals(order)) {
+            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(order));
             queryBuilder.useIndex(INDEX_NAME, "indexOriginAutomationRegisteredResourceMrid");
         } else {
             queryBuilder.useIndex(INDEX_NAME);
@@ -51,7 +52,7 @@ public class HistoriqueLimitationService {
 
         String query = queryBuilder.build();
         log.debug("Transaction query: " + query);
-        return historiqueLimitationRepository.findHistoriqueByQuery(query, String.valueOf(pagination.getPageSize()), bookmark);
+        return historiqueLimitationRepository.findHistoriqueByQuery(query);
     }
 
     private void addCriteria(List<Selector> selectors, HistoriqueLimitationCriteria criteria) throws BusinessException {

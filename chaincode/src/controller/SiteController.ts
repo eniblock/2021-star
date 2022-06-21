@@ -182,9 +182,7 @@ export class SiteController {
     public static async getSitesByQuery(
         ctx: Context,
         params: STARParameters,
-        query: string,
-        pageSize: number,
-        bookmark: string): Promise<any> {
+        query: string): Promise<any> {
         //getPrivateDataQueryResultWithPagination doesn't exist in 2022 May the 19th
         // let response = await ctx.stub.getQueryResultWithPagination(query, pageSize, bookmark);
         // const {iterator, metadata} = response;
@@ -201,13 +199,7 @@ export class SiteController {
 
         let results = await SiteService.getPrivateQueryArrayResult(ctx, params, query);
 
-        const res = {
-            records:             results,
-            fetchedRecordsCount: results.length,
-            bookmark:            bookmark
-        }
-
-        return res;
+        return results;
     }
 
 

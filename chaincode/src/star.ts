@@ -192,12 +192,12 @@ export class Star extends Contract {
         }
     }
 
-    public async GetSiteWithPagination(
+    public async GetSitesByQuery(
         ctx: Context,
-        query: string, pageSize: number, bookmark: string) {
+        query: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SiteController.getSitesByQuery(ctx, params, query, pageSize, bookmark));
+            return (await SiteController.getSitesByQuery(ctx, params, query));
         } catch (error) {
             throw error;
         }

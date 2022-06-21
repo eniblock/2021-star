@@ -1,4 +1,4 @@
-import { PaginationReponse } from './../../models/Pagination';
+import {PaginationReponse, RequestForm} from '../../models/RequestForm';
 import { UrlService } from './../common/url.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -9,7 +9,6 @@ import {
   RechercheReseauRequete,
 } from 'src/app/models/RechercheReseau';
 import { environment } from 'src/environments/environment';
-import { FormulairePagination } from 'src/app/models/Pagination';
 import { OrdreRechercheReseau } from 'src/app/models/enum/OrdreRechercheReseau.enum';
 
 @Injectable({
@@ -22,18 +21,18 @@ export class ReseauService {
 
   rechercher(
     form: FormulaireRechercheReseau,
-    pagination: FormulairePagination<OrdreRechercheReseau>
-  ): Observable<PaginationReponse<RechercheReseauEntite>> {
+    requestForm: RequestForm<OrdreRechercheReseau>
+  ): Observable<RechercheReseauEntite[]> {
     const formToSend: RechercheReseauRequete = {
       ...form.valeursRecherchees,
-      ...pagination,
+      ...requestForm,
     };
     if (form.typeDeRechercheSimple) {
       // Recherche simple => on place la valeur de recherche dans le bon champs
       formToSend[form.typeDeRechercheSimple] = form.champDeRechercheSimple;
     }
     let urlParams = this.urlService.toUrlParams(formToSend);
-    return this.httpClient.get<PaginationReponse<RechercheReseauEntite>>(
+    return this.httpClient.get<RechercheReseauEntite[]>(
       `${environment.serverUrl}/site?${urlParams}`
     );
   }

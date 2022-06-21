@@ -8,7 +8,7 @@ import {map} from "rxjs/operators";
 import {Producer} from "../../models/Producer";
 import {YellowPage} from "../../models/YellowPage";
 import {Site} from "../../models/Site";
-import {PaginationReponse} from "../../models/Pagination";
+import {PaginationReponse} from "../../models/RequestForm";
 import {RechercheReseauEntite} from "../../models/RechercheReseau";
 
 @Injectable({
@@ -25,9 +25,7 @@ export class SiteService {
   }
 
   getSites(): Observable<Site[]> {
-    let req = this.httpClient.get<PaginationReponse<RechercheReseauEntite>>(`${environment.serverUrl}/site`).pipe(
-      map(p => p.content)
-    );
+    let req = this.httpClient.get<Site[]>(`${environment.serverUrl}/site`);
     if (environment.production) {
       // We use a cache in Production
       return this.cacheService.getValueInCacheOrLoadIt<Site[]>(

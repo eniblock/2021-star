@@ -1,7 +1,12 @@
 import { Context } from 'fabric-contract-api';
+import { DocType } from '../enums/DocType';
+
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
+import { ParametersType } from '../enums/ParametersType';
+
+import { STARParameters } from '../model/starParameters';
 import { YellowPages } from '../model/yellowPages';
-import { HLFServices } from './service/HLFservice';
+
 import { QueryStateService } from './service/QueryStateService';
 import { SystemOperatorService } from './service/SystemOperatorService';
 import { YellowPagesService } from './service/YellowPagesService';
@@ -10,10 +15,11 @@ export class YellowPagesController {
 
     public static async createYellowPages(
         ctx: Context,
+        params: STARParameters,
         inputStr: string) {
         console.info('============= START : Create YellowPages ===========');
 
-        const identity = await HLFServices.getMspID(ctx);
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Yellow Pages.`);
         }
@@ -45,14 +51,14 @@ export class YellowPagesController {
     }
 
     public static async getAllYellowPages(ctx: Context): Promise<string> {
-        return await QueryStateService.getAllStates(ctx, "yellowPages");
+        return await QueryStateService.getAllStates(ctx, DocType.YELLOW_PAGES);
     }
 
     public static async getYellowPagesByOriginAutomationRegisteredResource(
         ctx: Context,
         originAutomationRegisteredResourceMrid: string): Promise<YellowPages[]> {
 
-        const query = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${originAutomationRegisteredResourceMrid}"}}`;
+        const query = `{"selector": {"docType": "${DocType.YELLOW_PAGES}", "originAutomationRegisteredResourceMrid": "${originAutomationRegisteredResourceMrid}"}}`;
         const allResults : YellowPages[] = await QueryStateService.getQueryArrayResult(ctx, query);
         return allResults;
     }

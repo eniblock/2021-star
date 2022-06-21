@@ -19,6 +19,7 @@ import { ParametersType } from '../src/enums/ParametersType';
 import { ParametersController } from '../src/controller/ParametersController';
 import { DocType } from '../src/enums/DocType';
 import { HLFServices } from '../src/controller/service/HLFservice';
+import { QueryStateService } from '../src/controller/service/QueryStateService';
 
 class TestContext {
     clientIdentity: any;
@@ -149,8 +150,8 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
-            transactionContext.stub.getPrivateData.withArgs(collections[0],
+            const collectionsActivationDocument: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+            transactionContext.stub.getPrivateData.withArgs(collectionsActivationDocument[0],
                 Values.HTB_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
 
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
@@ -158,14 +159,17 @@ describe('Star Tests EnergyAmount', () => {
 
             await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
 
+            const collections: string[] = params.values.get(ParametersType.ENERGY_AMOUNT);
+
             const expected = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount))
             expected.docType = DocType.ENERGY_AMOUNT;
-            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+            transactionContext.stub.putPrivateData.should.have.been.calledWithExactly(
+                collections[0],
                 Values.HTB_EnergyAmount.energyAmountMarketDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            expect(transactionContext.stub.putState.callCount).to.equal(1);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
         });
 
 
@@ -487,20 +491,23 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
-            transactionContext.stub.getPrivateData.withArgs(collections[0],
+            const collectionsActivationDocument: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+            transactionContext.stub.getPrivateData.withArgs(collectionsActivationDocument[0],
                 Values.HTA_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_ActivationDocument_Valid)));
 
             await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(Values.HTA_EnergyAmount));
 
+            const collections: string[] = params.values.get(ParametersType.ENERGY_AMOUNT);
+
             const expected = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount))
             expected.docType = DocType.ENERGY_AMOUNT;
-            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+            transactionContext.stub.putPrivateData.should.have.been.calledWithExactly(
+                collections[0],
                 Values.HTA_EnergyAmount.energyAmountMarketDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            expect(transactionContext.stub.putState.callCount).to.equal(1);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
         });
     });
 
@@ -515,7 +522,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.GetEnergyAmountForSystemOperator(transactionContext, producer, producer, producer);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('System Operator : toto does not exist for Energy Amount read.');
+                expect(err.message).to.equal('ERROR getEnergyAmountForSystemOperator : System Operator : toto does not exist for Energy Amount read.');
             }
         });
 
@@ -568,7 +575,7 @@ describe('Star Tests EnergyAmount', () => {
                     Values.HTB_EnergyAmount.createdDateTime);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createTSOEnergyAmount getSystemOperator-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR getEnergyAmountForSystemOperator : ERROR SystemOperator -> Input string NON-JSON value for Energy Amount read.');
             }
         });
 
@@ -577,26 +584,30 @@ describe('Star Tests EnergyAmount', () => {
             const iterator = Values.getEnergyAmountQueryMock(Values.HTB_EnergyAmount,mockHandler);
 
             const dateUp = new Date(Values.HTB_EnergyAmount.createdDateTime);
-            dateUp.setUTCMilliseconds(0);
-            dateUp.setUTCSeconds(0);
-            dateUp.setUTCMinutes(0);
-            dateUp.setUTCHours(0);
+            dateUp.setUTCHours(0,0,0,0);
             const dateDown = new Date(dateUp.getTime() + 86399999);
-            const query = `{
-            "selector":
-            {
-                "docType": "energyAmount",
-                "registeredResourceMrid": "${Values.HTB_EnergyAmount.registeredResourceMrid}",
-                "senderMarketParticipantMrid": "${Values.HTB_EnergyAmount.senderMarketParticipantMrid}",
-                "createdDateTime": {
-                    "$gte": ${JSON.stringify(dateUp)},
-                    "$lte": ${JSON.stringify(dateDown)}
-                },
-                "sort": [{
-                    "createdDateTime" : "desc"
-                }]
-            }
-        }`;
+
+            var args: string[] = [];
+            args.push(`"registeredResourceMrid":"${Values.HTB_EnergyAmount.registeredResourceMrid}"`);
+            args.push(`"senderMarketParticipantMrid":"${Values.HTB_EnergyAmount.senderMarketParticipantMrid}"`);
+            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+
+        //     const query = `{
+        //     "selector":
+        //     {
+        //         "docType": "energyAmount",
+        //         "registeredResourceMrid": "${Values.HTB_EnergyAmount.registeredResourceMrid}",
+        //         "senderMarketParticipantMrid": "${Values.HTB_EnergyAmount.senderMarketParticipantMrid}",
+        //         "createdDateTime": {
+        //             "$gte": ${JSON.stringify(dateUp)},
+        //             "$lte": ${JSON.stringify(dateDown)}
+        //         },
+        //         "sort": [{
+        //             "createdDateTime" : "desc"
+        //         }]
+        //     }
+        // }`;
 
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
@@ -740,26 +751,30 @@ describe('Star Tests EnergyAmount', () => {
             const iterator = Values.getEnergyAmountQueryMock(Values.HTB_EnergyAmount,mockHandler);
 
             const dateUp = new Date(Values.HTB_EnergyAmount.createdDateTime);
-            dateUp.setUTCMilliseconds(0);
-            dateUp.setUTCSeconds(0);
-            dateUp.setUTCMinutes(0);
-            dateUp.setUTCHours(0);
+            dateUp.setUTCHours(0,0,0,0);
             const dateDown = new Date(dateUp.getTime() + 86399999);
-            const query = `{
-                "selector":
-                {
-                    "docType": "energyAmount",
-                    "registeredResourceMrid": "${Values.HTB_EnergyAmount.registeredResourceMrid}",
-                    "receiverMarketParticipantMrid": "${Values.HTB_EnergyAmount.receiverMarketParticipantMrid}",
-                    "createdDateTime": {
-                        "$gte": ${JSON.stringify(dateUp)},
-                        "$lte": ${JSON.stringify(dateDown)}
-                    },
-                    "sort": [{
-                        "createdDateTime" : "desc"
-                    }]
-                }
-            }`;
+
+            var args: string[] = [];
+            args.push(`"registeredResourceMrid":"${Values.HTB_EnergyAmount.registeredResourceMrid}"`);
+            args.push(`"receiverMarketParticipantMrid":"${Values.HTB_EnergyAmount.receiverMarketParticipantMrid}"`);
+            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+
+            // const query = `{
+            //     "selector":
+            //     {
+            //         "docType": "energyAmount",
+            //         "registeredResourceMrid": "${Values.HTB_EnergyAmount.registeredResourceMrid}",
+            //         "receiverMarketParticipantMrid": "${Values.HTB_EnergyAmount.receiverMarketParticipantMrid}",
+            //         "createdDateTime": {
+            //             "$gte": ${JSON.stringify(dateUp)},
+            //             "$lte": ${JSON.stringify(dateDown)}
+            //         },
+            //         "sort": [{
+            //             "createdDateTime" : "desc"
+            //         }]
+            //     }
+            // }`;
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
 
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
@@ -883,26 +898,30 @@ describe('Star Tests EnergyAmount', () => {
             const iterator = Values.getEnergyAmountQueryMock(Values.HTA_EnergyAmount,mockHandler);
 
             const dateUp = new Date(Values.HTA_EnergyAmount.createdDateTime);
-            dateUp.setUTCMilliseconds(0);
-            dateUp.setUTCSeconds(0);
-            dateUp.setUTCMinutes(0);
-            dateUp.setUTCHours(0);
+            dateUp.setUTCHours(0,0,0,0);
             const dateDown = new Date(dateUp.getTime() + 86399999);
-            const query = `{
-            "selector":
-            {
-                "docType": "energyAmount",
-                "registeredResourceMrid": "${Values.HTA_EnergyAmount.registeredResourceMrid}",
-                "senderMarketParticipantMrid": "${Values.HTA_EnergyAmount.senderMarketParticipantMrid}",
-                "createdDateTime": {
-                    "$gte": ${JSON.stringify(dateUp)},
-                    "$lte": ${JSON.stringify(dateDown)}
-                },
-                "sort": [{
-                    "createdDateTime" : "desc"
-                }]
-            }
-        }`;
+
+            var args: string[] = [];
+            args.push(`"registeredResourceMrid":"${Values.HTA_EnergyAmount.registeredResourceMrid}"`);
+            args.push(`"senderMarketParticipantMrid":"${Values.HTA_EnergyAmount.senderMarketParticipantMrid}"`);
+            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+
+        //     const query = `{
+        //     "selector":
+        //     {
+        //         "docType": "energyAmount",
+        //         "registeredResourceMrid": "${Values.HTA_EnergyAmount.registeredResourceMrid}",
+        //         "senderMarketParticipantMrid": "${Values.HTA_EnergyAmount.senderMarketParticipantMrid}",
+        //         "createdDateTime": {
+        //             "$gte": ${JSON.stringify(dateUp)},
+        //             "$lte": ${JSON.stringify(dateDown)}
+        //         },
+        //         "sort": [{
+        //             "createdDateTime" : "desc"
+        //         }]
+        //     }
+        // }`;
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
@@ -930,26 +949,30 @@ describe('Star Tests EnergyAmount', () => {
             const iterator = Values.getEnergyAmountQueryMock(Values.HTA_EnergyAmount,mockHandler);
 
             const dateUp = new Date(Values.HTA_EnergyAmount.createdDateTime);
-            dateUp.setUTCMilliseconds(0);
-            dateUp.setUTCSeconds(0);
-            dateUp.setUTCMinutes(0);
-            dateUp.setUTCHours(0);
+            dateUp.setUTCHours(0,0,0,0);
             const dateDown = new Date(dateUp.getTime() + 86399999);
-            const query = `{
-                "selector":
-                {
-                    "docType": "energyAmount",
-                    "registeredResourceMrid": "${Values.HTA_EnergyAmount.registeredResourceMrid}",
-                    "receiverMarketParticipantMrid": "${Values.HTA_EnergyAmount.receiverMarketParticipantMrid}",
-                    "createdDateTime": {
-                        "$gte": ${JSON.stringify(dateUp)},
-                        "$lte": ${JSON.stringify(dateDown)}
-                    },
-                    "sort": [{
-                        "createdDateTime" : "desc"
-                    }]
-                }
-            }`;
+
+            var args: string[] = [];
+            args.push(`"registeredResourceMrid":"${Values.HTA_EnergyAmount.registeredResourceMrid}"`);
+            args.push(`"receiverMarketParticipantMrid":"${Values.HTA_EnergyAmount.receiverMarketParticipantMrid}"`);
+            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+
+            // const query = `{
+            //     "selector":
+            //     {
+            //         "docType": "energyAmount",
+            //         "registeredResourceMrid": "${Values.HTA_EnergyAmount.registeredResourceMrid}",
+            //         "receiverMarketParticipantMrid": "${Values.HTA_EnergyAmount.receiverMarketParticipantMrid}",
+            //         "createdDateTime": {
+            //             "$gte": ${JSON.stringify(dateUp)},
+            //             "$lte": ${JSON.stringify(dateDown)}
+            //         },
+            //         "sort": [{
+            //             "createdDateTime" : "desc"
+            //         }]
+            //     }
+            // }`;
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
 
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);

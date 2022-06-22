@@ -1,7 +1,12 @@
 import { Context } from 'fabric-contract-api';
+import { DocType } from '../enums/DocType';
+
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
+import { ParametersType } from '../enums/ParametersType';
+
+import { STARParameters } from '../model/starParameters';
 import { SystemOperator } from '../model/systemOperator';
-import { HLFServices } from './service/HLFservice';
+
 import { QueryStateService } from './service/QueryStateService';
 import { SystemOperatorService } from './service/SystemOperatorService';
 
@@ -9,10 +14,11 @@ export class SystemOperatorController {
 
     public static async createSystemOperator(
         ctx: Context,
+        params: STARParameters,
         inputStr: string) {
         console.info('============= START : Create System Operator Market Participant ===========');
 
-        const identity = await HLFServices.getMspID(ctx);
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access to create a system operator`);
         }
@@ -61,12 +67,13 @@ export class SystemOperatorController {
 
     public static async updateSystemOperator(
         ctx: Context,
+        params: STARParameters,
         inputStr: string) {
 
         console.info(
             '============= START : Update System Operator Market Participant ===========');
 
-            const identity = await HLFServices.getMspID(ctx);
+            const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access to update a system operator`);
         }
@@ -78,25 +85,25 @@ export class SystemOperatorController {
             throw new Error(`ERROR createSystemOperator-> Input string NON-JSON value`);
         }
 
-        const systemOperatorInput = SystemOperator.schema.validateSync(
+        SystemOperator.schema.validateSync(
             systemOperatorObj,
             {strict: true, abortEarly: false},
         );
 
         if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
-            throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorInput.systemOperatorMarketParticipantName}`);
+            throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
-        const sompAsBytes = await this.querySystemOperator(ctx, systemOperatorInput.systemOperatorMarketParticipantMrid);
+        const sompAsBytes = await this.querySystemOperator(ctx, systemOperatorObj.systemOperatorMarketParticipantMrid);
         if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`${systemOperatorInput.systemOperatorMarketParticipantMrid} does not exist`);
+            throw new Error(`${systemOperatorObj.systemOperatorMarketParticipantMrid} does not exist`);
         }
 
-        await SystemOperatorService.write(ctx, systemOperatorInput);
+        await SystemOperatorService.write(ctx, systemOperatorObj);
 
         console.info(
             '============= END : Update %s System Operator Market Participant ===========',
-            systemOperatorInput.systemOperatorMarketParticipantMrid,
+            systemOperatorObj.systemOperatorMarketParticipantMrid,
         );
     }
 
@@ -105,7 +112,7 @@ export class SystemOperatorController {
 
 
     public static async getAllSystemOperator(ctx: Context): Promise<string> {
-        return await QueryStateService.getAllStates(ctx, "systemOperator");
+        return await QueryStateService.getAllStates(ctx, DocType.SYSTEM_OPERATOR);
     }
 
 

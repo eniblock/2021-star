@@ -18,6 +18,7 @@ import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
 import { Values } from './Values';
 import { DocType } from '../src/enums/DocType';
+import { QueryStateService } from '../src/controller/service/QueryStateService';
 
 
 class TestContext {
@@ -363,7 +364,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('Site : PRM50012536123456 does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
+                expect(err.message).to.equal('ERROR createEnergyAccount : Site : PRM50012536123456 does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
             }
         });
 
@@ -376,15 +377,17 @@ describe('Star Tests EnergyAccount', () => {
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(Values.HTA_EnergyAccount_a3));
 
+            const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
 
             const expected = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3))
             expected.docType = DocType.ENERGY_ACCOUNT;
-            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+            transactionContext.stub.putPrivateData.should.have.been.calledWithExactly(
+                collections[0],
                 Values.HTA_EnergyAccount_a3.energyAccountMarketDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            expect(transactionContext.stub.putState.callCount).to.equal(1);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
         });
 
         it('should return ERROR CreateEnergyAccount HTA missing System Operator', async () => {
@@ -492,7 +495,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount getSite-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR createEnergyAccount : ERROR Site-> Input string NON-JSON value for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
             }
         });
 
@@ -509,7 +512,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR createEnergyAccount : ERROR SystemOperator -> Input string NON-JSON value for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
             }
         });
 
@@ -534,7 +537,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('Site : '.concat(energyaccount.meteringPointMrid).concat(' does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
+                expect(err.message).to.equal('ERROR createEnergyAccount : Site : '.concat(energyaccount.meteringPointMrid).concat(' does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
 
@@ -552,7 +555,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('System Operator : 17V000000992746666 does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3.');
+                expect(err.message).to.equal('ERROR createEnergyAccount : System Operator : 17V000000992746666 does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
             }
         });
 
@@ -625,14 +628,17 @@ describe('Star Tests EnergyAccount', () => {
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(energyaccount));
 
+            const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
+
             const expected = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3))
             expected.docType = DocType.ENERGY_ACCOUNT;
-            transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
+            transactionContext.stub.putPrivateData.should.have.been.calledWithExactly(
+                collections[0],
                 Values.HTB_EnergyAccount_a3.energyAccountMarketDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            expect(transactionContext.stub.putState.callCount).to.equal(1);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
         });
     });
 
@@ -648,7 +654,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.GetEnergyAccountForSystemOperator(transactionContext, producer, producer, producer);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('System Operator : toto does not exist for Energy Account read.');
+                expect(err.message).to.equal('ERROR getEnergyAccountForSystemOperator : System Operator : toto does not exist for Energy Account read.');
             }
         });
 
@@ -679,10 +685,7 @@ describe('Star Tests EnergyAccount', () => {
             const iterator = Values.getEnergyAccountQueryMock(Values.HTA_EnergyAccount_a1,mockHandler);
 
             const dateUp = new Date(Values.HTA_EnergyAccount_a1.createdDateTime);
-            dateUp.setUTCMilliseconds(0);
-            dateUp.setUTCSeconds(0);
-            dateUp.setUTCMinutes(0);
-            dateUp.setUTCHours(0);
+            dateUp.setUTCHours(0,0,0,0);
             const dateDown = new Date(dateUp.getTime() + 86399999);
 
             const query = `{
@@ -721,10 +724,7 @@ describe('Star Tests EnergyAccount', () => {
             const iterator = Values.getEnergyAccountQueryMock(Values.HTB_EnergyAccount_a3,mockHandler);
 
             const dateUp = new Date(Values.HTB_EnergyAccount_a3.createdDateTime);
-            dateUp.setUTCMilliseconds(0);
-            dateUp.setUTCSeconds(0);
-            dateUp.setUTCMinutes(0);
-            dateUp.setUTCHours(0);
+            dateUp.setUTCHours(0,0,0,0);
             const dateDown = new Date(dateUp.getTime() + 86399999);
 
             const query = `{
@@ -756,35 +756,24 @@ describe('Star Tests EnergyAccount', () => {
         });
 
         it('should return SUCCESS on GetEnergyAccountForSystemOperator HTA', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
             const iterator = Values.getEnergyAccountQueryMock(Values.HTA_EnergyAccount_a1,mockHandler);
 
             const dateUp = new Date(Values.HTA_EnergyAccount_a1.createdDateTime);
-            dateUp.setUTCMilliseconds(0);
-            dateUp.setUTCSeconds(0);
-            dateUp.setUTCMinutes(0);
-            dateUp.setUTCHours(0);
+            dateUp.setUTCHours(0,0,0,0);
             const dateDown = new Date(dateUp.getTime() + 86399999);
 
-            const query = `{
-                "selector":
-                {
-                    "docType": "energyAccount",
-                    "meteringPointMrid": "${Values.HTA_EnergyAccount_a1.meteringPointMrid}",
-                    "senderMarketParticipantMrid": "${Values.HTA_EnergyAccount_a1.senderMarketParticipantMrid}",
-                    "createdDateTime": {
-                        "$gte": ${JSON.stringify(dateUp)},
-                        "$lte": ${JSON.stringify(dateDown)}
-                    },
-                    "sort": [{
-                        "createdDateTime" : "desc"
-                    }]
-                }
-            }`;
-            transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            var args: string[] = [];
+            args.push(`"meteringPointMrid": "${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
+            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
+            args.push(`"senderMarketParticipantMrid": "${Values.HTA_EnergyAccount_a1.senderMarketParticipantMrid}"`);
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
 
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collections[0], query).resolves(iterator);
 
             let ret = await star.GetEnergyAccountForSystemOperator(transactionContext,
                 Values.HTA_EnergyAccount_a1.meteringPointMrid,
@@ -910,26 +899,32 @@ describe('Star Tests EnergyAccount', () => {
             const iterator = Values.getEnergyAccountQueryMock2Values(Values.HTB_EnergyAccount_a3,Values.HTB_EnergyAccount_a4,mockHandler);
 
             const dateUp = new Date(Values.HTB_EnergyAccount_a3.createdDateTime);
-            dateUp.setUTCMilliseconds(0);
-            dateUp.setUTCSeconds(0);
-            dateUp.setUTCMinutes(0);
-            dateUp.setUTCHours(0);
+            dateUp.setUTCHours(0,0,0,0);
             const dateDown = new Date(dateUp.getTime() + 86399999);
 
-            const query = `{
-                "selector":
-                {
-                    "docType": "energyAccount",
-                    "meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}",
-                    "createdDateTime": {
-                        "$gte": ${JSON.stringify(dateUp)},
-                        "$lte": ${JSON.stringify(dateDown)}
-                    },
-                    "sort": [{
-                        "createdDateTime" : "desc"
-                    }]
-                }
-            }`;
+            var args: string[] = [];
+            args.push(`"meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}"`);
+            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
+
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+
+            // console.info("query : ", query);
+
+
+            // const query = `{
+            //     "selector":
+            //     {
+            //         "docType": "energyAccount",
+            //         "meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}",
+            //         "createdDateTime": {
+            //             "$gte": ${JSON.stringify(dateUp)},
+            //             "$lte": ${JSON.stringify(dateDown)}
+            //         },
+            //         "sort": [{
+            //             "createdDateTime" : "desc"
+            //         }]
+            //     }
+            // }`;
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
@@ -940,39 +935,43 @@ describe('Star Tests EnergyAccount', () => {
                     Values.HTB_EnergyAccount_a3.createdDateTime);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount getSystemOperator-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR getEnergyAccountForSystemOperator : ERROR SystemOperator -> Input string NON-JSON value for Energy Account read.');
             }
         });
 
         it('should return SUCCESS on GetEnergyAccountForSystemOperator HTB', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
             const iterator = Values.getEnergyAccountQueryMock2Values(Values.HTB_EnergyAccount_a3,Values.HTB_EnergyAccount_a4,mockHandler);
 
             const dateUp = new Date(Values.HTB_EnergyAccount_a3.createdDateTime);
-            dateUp.setUTCMilliseconds(0);
-            dateUp.setUTCSeconds(0);
-            dateUp.setUTCMinutes(0);
-            dateUp.setUTCHours(0);
+            dateUp.setUTCHours(0,0,0,0);
             const dateDown = new Date(dateUp.getTime() + 86399999);
 
-            const query = `{
-                "selector":
-                {
-                    "docType": "energyAccount",
-                    "meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}",
-                    "createdDateTime": {
-                        "$gte": ${JSON.stringify(dateUp)},
-                        "$lte": ${JSON.stringify(dateDown)}
-                    },
-                    "sort": [{
-                        "createdDateTime" : "desc"
-                    }]
-                }
-            }`;
-            transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            var args: string[] = [];
+            args.push(`"meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}"`);
+            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
 
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+
+            // const query = `{
+            //     "selector":
+            //     {
+            //         "docType": "energyAccount",
+            //         "meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}",
+            //         "createdDateTime": {
+            //             "$gte": ${JSON.stringify(dateUp)},
+            //             "$lte": ${JSON.stringify(dateDown)}
+            //         },
+            //         "sort": [{
+            //             "createdDateTime" : "desc"
+            //         }]
+            //     }
+            // }`;
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collections[0], query).resolves(iterator);
 
             let ret = await star.GetEnergyAccountForSystemOperator(transactionContext,
                 Values.HTB_EnergyAccount_a3.meteringPointMrid,
@@ -1009,31 +1008,24 @@ describe('Star Tests EnergyAccount', () => {
         });
 
         it('should return SUCCESS on GetEnergyAccountByProducer', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
+
             const iterator = Values.getEnergyAccountQueryMock(Values.HTA_EnergyAccount_a1,mockHandler);
 
             const dateUp = new Date(Values.HTA_EnergyAccount_a1.createdDateTime);
-            dateUp.setUTCMilliseconds(0);
-            dateUp.setUTCSeconds(0);
-            dateUp.setUTCMinutes(0);
-            dateUp.setUTCHours(0);
+            dateUp.setUTCHours(0,0,0,0);
             const dateDown = new Date(dateUp.getTime() + 86399999);
 
-            const query = `{
-                "selector":
-                {
-                    "docType": "energyAccount",
-                    "meteringPointMrid": "${Values.HTA_EnergyAccount_a1.meteringPointMrid}",
-                    "receiverMarketParticipantMrid": "${Values.HTA_EnergyAccount_a1.receiverMarketParticipantMrid}",
-                    "createdDateTime": {
-                        "$gte": ${JSON.stringify(dateUp)},
-                        "$lte": ${JSON.stringify(dateDown)}
-                    },
-                    "sort": [{
-                        "createdDateTime" : "desc"
-                    }]
-                }
-            }`;
-            transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
+            var args: string[] = [];
+            args.push(`"meteringPointMrid":"${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
+            args.push(`"receiverMarketParticipantMrid":"${Values.HTA_EnergyAccount_a1.receiverMarketParticipantMrid}"`);
+            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collections[0], query).resolves(iterator);
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
 
             let ret = await star.GetEnergyAccountByProducer(transactionContext,

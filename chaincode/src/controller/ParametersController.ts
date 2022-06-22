@@ -24,7 +24,7 @@ export class ParametersController {
     //     inputStr: string) {
     //     console.debug('============= START : Change All Parameters ===========');
 
-    //     const identity = await HLFServices.getMspID(ctx);
+    //     const identity = params.values.get(ParametersType.IDENTITY);
 
     //     let paramValues: Map<string,string>;
     //     try {
@@ -56,7 +56,7 @@ export class ParametersController {
     // public static async getAllParameters(ctx: Context): Promise<Map<string,string>> {
     //     console.debug('============= START : Get All Parameters ===========');
 
-    //     const identity = await HLFServices.getMspID(ctx);
+    //     const identity = params.values.get(ParametersType.IDENTITY);
 
     //     const parametersAsBytes = await ctx.stub.getState(identity);
 
@@ -137,6 +137,12 @@ export class ParametersController {
             valueActivationDocument.set(ParametersType.ALL, [enedis_producer, enedis_rte]);
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
 
+            const valueEnergy: string[] = [];
+            valueEnergy.push(enedis_producer);
+            parameters.values.set(ParametersType.ENERGY_AMOUNT, valueEnergy);
+            parameters.values.set(ParametersType.ENERGY_ACCOUNT, valueEnergy);
+            parameters.values.set(ParametersType.REFERENCE_ENERGY_ACCOUNT, valueEnergy);
+
             /*
             *
             */
@@ -160,6 +166,13 @@ export class ParametersController {
             valueActivationDocument.set(ParametersType.ALL, [enedis_producer, producer_rte]);
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
 
+            const valueEnergy: string[] = [];
+            valueEnergy.push(enedis_producer);
+            valueEnergy.push(producer_rte);
+            parameters.values.set(ParametersType.ENERGY_AMOUNT, valueEnergy);
+            parameters.values.set(ParametersType.ENERGY_ACCOUNT, valueEnergy);
+            parameters.values.set(ParametersType.REFERENCE_ENERGY_ACCOUNT, valueEnergy);
+
             /*
             *
             */
@@ -182,6 +195,12 @@ export class ParametersController {
             valueActivationDocument.set(ParametersType.DEFAULT, [producer_rte]);
             valueActivationDocument.set(ParametersType.ALL, [enedis_rte, producer_rte]);
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
+
+            const valueEnergy: string[] = [];
+            valueEnergy.push(producer_rte);
+            parameters.values.set(ParametersType.ENERGY_AMOUNT, valueEnergy);
+            parameters.values.set(ParametersType.ENERGY_ACCOUNT, valueEnergy);
+            parameters.values.set(ParametersType.REFERENCE_ENERGY_ACCOUNT, valueEnergy);
 
             /*
             *

@@ -84,8 +84,6 @@ export class ActivationDocumentController {
         return formated;
     }
 
-
-
     public static async createActivationDocument(
         ctx: Context,
         params: STARParameters,
@@ -110,6 +108,55 @@ export class ActivationDocumentController {
             {strict: true, abortEarly: false},
         );
 
+        await ActivationDocumentController.createActivationDocumentObj(ctx, params, activationDocumentObj);
+
+        console.info('============= END : Create ActivationDocumentController ===========');
+    }
+
+    public static async createActivationDocumentList(
+        ctx: Context,
+        params: STARParameters,
+        inputStr: string) {
+        console.info('============= START : Create List ActivationDocumentController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
+        }
+
+        let activationDocumentList: ActivationDocument[] = [];
+        try {
+            activationDocumentList = JSON.parse(inputStr);
+        } catch (error) {
+            throw new Error(`ERROR createActivationDocument by list-> Input string NON-JSON value`);
+        }
+
+        if (activationDocumentList && activationDocumentList.length > 0) {
+            for (var activationDocumentObj of activationDocumentList) {
+                ActivationDocument.schema.validateSync(
+                    activationDocumentObj,
+                    {strict: true, abortEarly: false},
+                );
+            }
+        }
+
+        if (activationDocumentList) {
+            for (var activationDocumentObj of activationDocumentList) {
+                await ActivationDocumentController.createActivationDocumentObj(ctx, params, activationDocumentObj);
+            }
+        }
+
+        console.info('============= END : Create List ActivationDocumentController ===========');
+    }
+
+    private static async createActivationDocumentObj(
+        ctx: Context,
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument) {
+        console.info('============= START : Create createActivationDocumentObj ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+
         // if (identity === OrganizationTypeMsp.RTE &&
         //     activationDocumentObj.measurementUnitName !== MeasurementUnitType.MW) {
         //     throw new Error(`Organisation, ${identity} does not have write access for KW orders`);
@@ -119,18 +166,15 @@ export class ActivationDocumentController {
         //     throw new Error(`Organisation, ${identity} does not have write access for MW orders`);
         // }
 
-
-        var sytemOperatorAsBytes: Uint8Array;
-        if (activationDocumentObj.senderMarketParticipantMrid) {
-            try {
-                sytemOperatorAsBytes = await SystemOperatorService.getRaw(ctx, activationDocumentObj.senderMarketParticipantMrid);
-            } catch(error) {
-                throw new Error(`System Operator : ${activationDocumentObj.senderMarketParticipantMrid} does not exist for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
-            }
+        let systemOperatorObj: SystemOperator;
+        try {
+            systemOperatorObj = await SystemOperatorService.getObj(ctx, activationDocumentObj.senderMarketParticipantMrid);
+        } catch (error) {
+            throw new Error('ERROR createActivationDocument : '.concat(error.message).concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
         }
-        var systemOperatorObj:SystemOperator;
-        if (sytemOperatorAsBytes) {
-            systemOperatorObj = JSON.parse(sytemOperatorAsBytes.toString());
+
+        if (systemOperatorObj.systemOperatorMarketParticipantName !== identity ) {
+            throw new Error(`Organisation, ${identity} cannot send Activation Document for sender ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
         var producerAsBytes: Uint8Array;
@@ -199,7 +243,7 @@ export class ActivationDocumentController {
         await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
 
         console.info(
-            '============= END   : Create %s ActivationDocumentController ===========',
+            '============= END   : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,
         );
     }
@@ -460,27 +504,33 @@ export class ActivationDocumentController {
         const pcuetmt:number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
 
         const datetmp = new Date(queryDate);
-        datetmp.setUTCMilliseconds(0);
-        datetmp.setUTCSeconds(0);
-        datetmp.setUTCMinutes(0);
-        datetmp.setUTCHours(0);
+        datetmp.setUTCHours(0,0,0,0);
         const dateYesterday = new Date(datetmp.getTime() - pcuetmt);
         // console.log ('dateYesterday=', dateYesterday);
         // console.log ('dateYesterday=', dateYesterday.toUTCString());
 
-        const query = `{
-            "selector": {
-                "docType": "${DocType.ACTIVATION_DOCUMENT}",
-                "orderEnd": false,
-                "senderMarketParticipantMrid": "${senderMarketParticipantMrid}",
-                "registeredResourceMrid": "${registeredResourceMrid}",
-                "messageType": { "$in" : ["A54","A98"] },
-                "startCreatedDateTime": {
-                    "$gte": ${JSON.stringify(dateYesterday)},
-                    "$lte": ${JSON.stringify(queryDate)}
-                }
-            }
-        }`;
+        var args: string[] = [];
+        args.push(`"orderEnd":false`);
+        args.push(`"senderMarketParticipantMrid":"${senderMarketParticipantMrid}"`);
+        args.push(`"registeredResourceMrid":"${registeredResourceMrid}"`);
+        args.push(`"messageType":{"$in":["A54","A98"]}`);
+        args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateYesterday)},"$lte":${JSON.stringify(queryDate)}}`);
+
+        const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
+
+        // const query = `{
+        //     "selector": {
+        //         "docType": "${DocType.ACTIVATION_DOCUMENT}",
+        //         "orderEnd": false,
+        //         "senderMarketParticipantMrid": "${senderMarketParticipantMrid}",
+        //         "registeredResourceMrid": "${registeredResourceMrid}",
+        //         "messageType": { "$in" : ["A54","A98"] },
+        //         "startCreatedDateTime": {
+        //             "$gte": ${JSON.stringify(dateYesterday)},
+        //             "$lte": ${JSON.stringify(queryDate)}
+        //         }
+        //     }
+        // }`;
         // console.info("query :", query);
 
         const roleTargetQuery = RoleType.Role_Producer;

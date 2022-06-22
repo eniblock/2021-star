@@ -1,7 +1,12 @@
 import { Context } from 'fabric-contract-api';
+import { DocType } from '../enums/DocType';
+
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
+import { ParametersType } from '../enums/ParametersType';
+
 import { Producer } from '../model/producer';
-import { HLFServices } from './service/HLFservice';
+import { STARParameters } from '../model/starParameters';
+
 import { ProducerService } from './service/ProducerService';
 import { QueryStateService } from './service/QueryStateService';
 
@@ -12,22 +17,12 @@ export class ProducerController {
         inputStr: string) {
         console.info('============= START : Create Producer Market Participant ===========');
 
-        // const identity = await HLFServices.getMspID(ctx);
+        // const identity = params.values.get(ParametersType.IDENTITY);
         // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
         //     throw new Error(`Organisation, ${identity} does not have write access to create a producer`);
         // }
 
-        let producerObj: Producer;
-        try {
-            producerObj = JSON.parse(inputStr);
-        } catch (error) {
-            throw new Error(`ERROR createProducer-> Input string NON-JSON value`);
-        }
-
-        Producer.schema.validateSync(
-            producerObj,
-            {strict: true, abortEarly: false},
-        );
+        const producerObj = await ProducerController.getProducerFromString(inputStr);
 
         await ProducerService.write(ctx, producerObj);
 
@@ -37,6 +32,118 @@ export class ProducerController {
         );
     }
 
+
+    public static async createProducerList(
+        ctx: Context,
+        inputStr: string) {
+        console.info('============= START : Create List Producer Market Participant ===========');
+
+        // const identity = params.values.get(ParametersType.IDENTITY);
+        // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+        //     throw new Error(`Organisation, ${identity} does not have write access to create a producer`);
+        // }
+
+        const producerList: Producer[] = await ProducerController.getProducerListFromString(inputStr);
+
+        if (producerList) {
+            for (var producerObj of producerList) {
+                await ProducerService.write(ctx, producerObj);
+            }
+        }
+
+        console.info(
+            '============= END   : Create List Producer Market Participant ==========='
+        );
+    }
+
+
+    public static async updateProducer(
+        ctx: Context,
+        params: STARParameters,
+        inputStr: string) {
+
+        console.info(
+            '============= START : Update Producer Market Participant ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access to update a producer`);
+        }
+
+        const producerObj = await ProducerController.getProducerFromString(inputStr);
+
+        await ProducerService.getRaw(ctx, producerObj.producerMarketParticipantMrid);
+
+        await ProducerService.write(ctx, producerObj);
+
+        console.info(
+            '============= END : Update %s Producer Market Participant ===========',
+            producerObj.producerMarketParticipantMrid,
+        );
+    }
+
+
+    public static async updateProducerList(
+        ctx: Context,
+        params: STARParameters,
+        inputStr: string) {
+
+        console.info('============= START : Update List Producer Market Participant ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access to update a producer`);
+        }
+
+        const producerList: Producer[] = await ProducerController.getProducerListFromString(inputStr);
+
+        if (producerList) {
+            for (var producerObj of producerList) {
+                await ProducerService.getRaw(ctx, producerObj.producerMarketParticipantMrid);
+                await ProducerService.write(ctx, producerObj);
+            }
+        }
+
+        console.info('============= END : Update List Producer Market Participant ===========');
+    }
+
+
+    private static async getProducerFromString(inputStr: string): Promise<Producer> {
+        let producerObj: Producer;
+        try {
+            producerObj = JSON.parse(inputStr);
+        } catch (error) {
+            throw new Error(`ERROR producer-> Input string NON-JSON value`);
+        }
+
+        Producer.schema.validateSync(
+            producerObj,
+            {strict: true, abortEarly: false},
+        );
+
+        return producerObj;
+    }
+
+
+    private static async getProducerListFromString(inputStr: string): Promise<Producer[]> {
+        let producerList: Producer[] = [];
+        try {
+            producerList = JSON.parse(inputStr);
+        } catch (error) {
+            throw new Error(`ERROR producer by list-> Input string NON-JSON value`);
+        }
+
+        if (producerList && producerList.length > 0) {
+            for (var producerObj of producerList) {
+                Producer.schema.validateSync(
+                    producerObj,
+                    {strict: true, abortEarly: false},
+                );
+            }
+        }
+
+        return producerList;
+    }
 
 
 
@@ -51,48 +158,7 @@ export class ProducerController {
     }
 
 
-
-
-
-    public static async updateProducer(
-        ctx: Context,
-        inputStr: string) {
-
-        console.info(
-            '============= START : Update Producer Market Participant ===========');
-
-            const identity = await HLFServices.getMspID(ctx);
-        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access to update a producer`);
-        }
-
-        let producerObj: Producer;
-        try {
-            producerObj = JSON.parse(inputStr);
-        } catch (error) {
-            throw new Error(`ERROR updateProducer-> Input string NON-JSON value`);
-        }
-
-        const producerInput = Producer.schema.validateSync(
-            producerObj,
-            {strict: true, abortEarly: false},
-        );
-
-        const prodAsBytes = await ProducerService.getRaw(ctx, producerInput.producerMarketParticipantMrid);
-
-        await ProducerService.write(ctx, producerInput);
-
-        console.info(
-            '============= END : Update %s Producer Market Participant ===========',
-            producerInput.producerMarketParticipantMrid,
-        );
-    }
-
-
-
-
-
     public static async getAllProducer(ctx: Context): Promise<string> {
-        return await QueryStateService.getAllStates(ctx, "producer");
+        return await QueryStateService.getAllStates(ctx, DocType.PRODUCER);
     }
 }

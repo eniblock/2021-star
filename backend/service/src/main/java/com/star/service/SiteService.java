@@ -8,13 +8,10 @@ import com.star.enums.InstanceEnum;
 import com.star.enums.TechnologyTypeEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.common.PageHLF;
 import com.star.models.imports.ImportResult;
-import com.star.models.producer.Producer;
 import com.star.models.site.ImportSiteResult;
 import com.star.models.site.Site;
 import com.star.models.site.SiteCrteria;
-import com.star.repository.ProducerRepository;
 import com.star.repository.SiteRepository;
 import com.star.service.helpers.QueryBuilderHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +21,6 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +28,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.star.enums.DocTypeEnum.SITE;
 import static com.star.enums.InstanceEnum.DSO;
@@ -64,8 +58,6 @@ public class SiteService {
     private ImportUtilsService importUtilsService;
     @Autowired
     private SiteRepository siteRepository;
-    @Autowired
-    private ProducerRepository producerRepository;
 
     /**
      * Permet d'importer les sites selon les informations contenues dans le fichier CSV passé en paramètre.
@@ -213,13 +205,9 @@ public class SiteService {
         if (CollectionUtils.isEmpty(importSiteResult.getErrors()) && CollectionUtils.isEmpty(importSiteResult.getDatas())) {
             throw new IllegalArgumentException(messageSource.getMessage("import.file.data.not.empty", null, null));
         }
-        Map<String, String> mapProducers = producerRepository.getProducers().stream()
-                .collect(Collectors.toMap(Producer::getProducerMarketParticipantMrid, Producer::getProducerMarketParticipantName));
         importSiteResult.getDatas().forEach(site -> {
-//            String value = site.getSiteName().replaceAll("[^A-Za-z0-9]", " ");
             String value = site.getSiteName().replaceAll(STRING_REGEX, " ");
             site.setSiteName(value);
-            site.setProducerMarketParticipantName(mapProducers.get(site.getProducerMarketParticipantMrid()));
             if (site.getTechnologyType() != null) {
                 site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getLabel());
             }

@@ -1,8 +1,8 @@
-import { OrdreRechercheReseau } from './enum/OrdreRechercheReseau.enum';
-import { TechnologyType } from './enum/TechnologyType.enum';
-import { TypeDeRechercheSimple } from './enum/TypeDeRechercheSimple.enum';
-import { TypeSite } from './enum/TypeSite.enum';
-import { FormulairePagination } from './RequestForm';
+import {OrdreRechercheReseau} from './enum/OrdreRechercheReseau.enum';
+import {TechnologyType} from './enum/TechnologyType.enum';
+import {TypeDeRechercheSimple} from './enum/TypeDeRechercheSimple.enum';
+import {TypeSite} from './enum/TypeSite.enum';
+import {RequestForm} from "./RequestForm";
 
 export interface FormulaireRechercheReseau {
   typeDeRechercheSimple?: TypeDeRechercheSimple;
@@ -11,7 +11,7 @@ export interface FormulaireRechercheReseau {
 }
 
 export interface RechercheReseauRequete
-  extends FormulairePagination<OrdreRechercheReseau> {
+  extends RequestForm<OrdreRechercheReseau> {
   siteName?: string;
   substationName?: string;
   substationMrid?: string;

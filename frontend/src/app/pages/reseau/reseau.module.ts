@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReseauComponent } from './reseau.component';
 import { ReseauRoutes } from './reseau.routing';
-import { ReseauPaginationComponent } from './reseau-pagination/reseau-pagination.component';
 import { ReseauResultatComponent } from './reseau-resultats/reseau-resultat.component';
 import { FormulairesModule } from 'src/app/components/formulaires/formulaires.module';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -26,7 +25,6 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
   ],
   declarations: [
     ReseauComponent,
-    ReseauPaginationComponent,
     ReseauResultatComponent,
   ],
 })

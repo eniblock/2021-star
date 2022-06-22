@@ -1,12 +1,10 @@
 package com.star.rest;
 
-import com.star.dto.common.PageDTO;
 import com.star.dto.energyaccount.EnergyAccountDTO;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.mapper.energyaccount.EnergyAccountPageMapper;
+import com.star.mapper.energyaccount.EnergyAccountMapper;
 import com.star.models.common.FichierImportation;
-import com.star.models.common.PaginationDto;
 import com.star.models.energyaccount.EnergyAccountCriteria;
 import com.star.models.energyaccount.ImportEnergyAccountResult;
 import com.star.service.EnergyAccountService;
@@ -44,7 +42,7 @@ public class EnergyAccountController {
     public static final String PATH = ApiRestVersion.VERSION + "/energyAccounts";
 
     @Autowired
-    private EnergyAccountPageMapper energyAccountPageMapper;
+    private EnergyAccountMapper energyAccountMapper;
     @Autowired
     private EnergyAccountService energyAccountService;
 
@@ -53,7 +51,6 @@ public class EnergyAccountController {
      *
      * @param files
      * @return
-     * @throws BusinessException
      */
     @Operation(summary = "Post an Energy Account.")
     @ApiResponses(
@@ -95,8 +92,6 @@ public class EnergyAccountController {
     /**
      * API de recherche multi-critère des courbes de comptage
      *
-     * @param pageSize
-     * @param bookmark
      * @param meteringPointMrid
      * @param startCreatedDateTime
      * @param endCreatedDateTime
@@ -112,24 +107,17 @@ public class EnergyAccountController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<PageDTO<EnergyAccountDTO>> findEnergyAccount(
-            @Parameter(description = "Number of responses per page")
-            @RequestParam(required = false, defaultValue = "10") int pageSize,
-            @Parameter(description = "bookmark search criteria")
-            @RequestParam(required = false, defaultValue = "") String bookmark,
+    public ResponseEntity<EnergyAccountDTO[]> findEnergyAccount(
             @Parameter(description = "meteringPointMrid search criteria")
             @RequestParam(value = "meteringPointMrid", required = false) String meteringPointMrid,
             @Parameter(description = "startCreatedDateTime search criteria")
             @RequestParam(value = "startCreatedDateTime", required = false) String startCreatedDateTime,
             @Parameter(description = "endCreatedDateTime search criteria")
             @RequestParam(value = "endCreatedDateTime", required = false) String endCreatedDateTime) throws BusinessException, TechnicalException {
-        PaginationDto paginationDto = PaginationDto.builder()
-                .pageSize(pageSize)
-                .build();
         EnergyAccountCriteria energyAccountCriteria = EnergyAccountCriteria.builder().meteringPointMrid(meteringPointMrid)
                 .startCreatedDateTime(startCreatedDateTime).endCreatedDateTime(endCreatedDateTime).build();
 
-        return ResponseEntity.status(HttpStatus.OK).body(energyAccountPageMapper.beanToDto(energyAccountService.findEnergyAccount(energyAccountCriteria, bookmark, paginationDto)));
+        return ResponseEntity.status(HttpStatus.OK).body(energyAccountMapper.beanToDtos(energyAccountService.findEnergyAccount(energyAccountCriteria)));
     }
 
     private ResponseEntity<ImportEnergyAccountResult> importEnergyAccount(MultipartFile[] files, boolean create) throws BusinessException {

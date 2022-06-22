@@ -1,15 +1,15 @@
-import {PaginationReponse, RequestForm} from '../../models/RequestForm';
-import { UrlService } from './../common/url.service';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {RequestForm} from '../../models/RequestForm';
+import {UrlService} from './../common/url.service';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
 import {
   FormulaireRechercheReseau,
   RechercheReseauEntite,
   RechercheReseauRequete,
 } from 'src/app/models/RechercheReseau';
-import { environment } from 'src/environments/environment';
-import { OrdreRechercheReseau } from 'src/app/models/enum/OrdreRechercheReseau.enum';
+import {environment} from 'src/environments/environment';
+import {OrdreRechercheReseau} from 'src/app/models/enum/OrdreRechercheReseau.enum';
 
 @Injectable({
   providedIn: 'root',

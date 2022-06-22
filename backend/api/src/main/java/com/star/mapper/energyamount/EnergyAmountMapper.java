@@ -31,5 +31,7 @@ public interface EnergyAmountMapper {
     EnergyAmount formDtoToBean(EnergyAmountFormDTO energyAmountFormDTO);
 
     List<EnergyAmountDTO> beanToDtos(List<EnergyAmount> energyAmounts);
+
+    EnergyAmountDTO[] beanToDtos(EnergyAmount[] energyAmounts);
 }
 

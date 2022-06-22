@@ -250,13 +250,11 @@ public class EnergyAmountService {
      * Méthode de recherche des energy amounts à partir des critères de recherche.
      *
      * @param energyAmountCriteria
-     * @param bookmark
-     * @param paginationDto
      * @return
      * @throws BusinessException
      * @throws TechnicalException
      */
-    public PageHLF<EnergyAmount> findEnergyAmount(EnergyAmountCriteria energyAmountCriteria, String bookmark, PaginationDto paginationDto) throws BusinessException, TechnicalException {
+    public EnergyAmount[] findEnergyAmount(EnergyAmountCriteria energyAmountCriteria) throws BusinessException, TechnicalException {
         var selectors = new ArrayList<Selector>();
         selectors.add(Expression.eq("docType", ENERGY_AMOUNT.getDocType()));
 
@@ -266,6 +264,6 @@ public class EnergyAmountService {
         var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
         String query = queryBuilder.build();
         log.debug("Transaction query: " + query);
-        return energyAmountRepository.findEnergyAmountByQuery(query, String.valueOf(paginationDto.getPageSize()), bookmark);
+        return energyAmountRepository.findEnergyAmountByQuery(query);
     }
 }

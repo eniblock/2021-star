@@ -77,10 +77,10 @@ public class EnergyAccountRepository {
         return energyAccounts;
     }
 
-    public PageHLF<EnergyAccount> findEnergyAccountByQuery(String query, String pageSize, String bookmark) throws BusinessException, TechnicalException {
+    public EnergyAccount[] findEnergyAccountByQuery(String query) throws BusinessException, TechnicalException {
         try {
-            byte[] response = contract.evaluateTransaction(GET_ENERGY_ACCOUNT_WITH_PAGINATION, query, pageSize, bookmark);
-            return response != null ? objectMapper.readValue(new String(response), new TypeReference<PageHLF<EnergyAccount>>() {
+            byte[] response = contract.evaluateTransaction(GET_ENERGY_ACCOUNT_WITH_PAGINATION, query);
+            return response != null ? objectMapper.readValue(new String(response), new TypeReference<EnergyAccount[]>() {
             }) : null;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des courbes de comptage", exception);

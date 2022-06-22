@@ -1,15 +1,12 @@
 package com.star.rest;
 
-import com.star.dto.common.PageDTO;
 import com.star.dto.energyamount.EnergyAmountDTO;
 import com.star.dto.energyamount.EnergyAmountFormDTO;
 import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.mapper.energyamount.EnergyAmountMapper;
-import com.star.mapper.energyamount.EnergyAmountPageMapper;
 import com.star.models.common.FichierImportation;
-import com.star.models.common.PaginationDto;
 import com.star.models.energyamount.EnergyAmountCriteria;
 import com.star.models.energyamount.ImportEnergyAmountResult;
 import com.star.service.EnergyAmountService;
@@ -55,9 +52,6 @@ public class EnergyAmountController {
 
     @Autowired
     private EnergyAmountMapper energyAmountMapper;
-
-    @Autowired
-    private EnergyAmountPageMapper energyAmountPageMapper;
 
     @Autowired
     private EnergyAmountService energyAmountService;
@@ -131,8 +125,6 @@ public class EnergyAmountController {
     /**
      * Recherche multi-critère des energy amount
      *
-     * @param pageSize
-     * @param bookmark
      * @param energyAmountMarketDocumentMrid
      * @return
      * @throws BusinessException
@@ -146,16 +138,10 @@ public class EnergyAmountController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<PageDTO<EnergyAmountDTO>> findEnergyAmount(
-            @Parameter(description = "Number of responses per page")
-            @RequestParam(required = false, defaultValue = "10") int pageSize,
-            @Parameter(description = "bookmark search criteria")
-            @RequestParam(required = false, defaultValue = "") String bookmark,
+    public ResponseEntity<EnergyAmountDTO[]> findEnergyAmount(
             @Parameter(description = "energyAmountMarketDocumentMrid search criteria")
             @RequestParam(value = "energyAmountMarketDocumentMrid", required = false) String energyAmountMarketDocumentMrid) throws BusinessException, TechnicalException {
-        PaginationDto paginationDto = PaginationDto.builder().pageSize(pageSize).build();
         EnergyAmountCriteria energyAmountCriteria = EnergyAmountCriteria.builder().energyAmountMarketDocumentMrid(energyAmountMarketDocumentMrid).build();
-        return ResponseEntity.status(HttpStatus.OK).body(energyAmountPageMapper.beanToDto(energyAmountService.findEnergyAmount(
-                energyAmountCriteria, bookmark, paginationDto)));
+        return ResponseEntity.status(HttpStatus.OK).body(energyAmountMapper.beanToDtos(energyAmountService.findEnergyAmount(energyAmountCriteria)));
     }
 }

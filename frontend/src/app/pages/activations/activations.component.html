@@ -11,11 +11,9 @@
 
 <div class="row mt-4" *ngIf="resultatsRecherche.length > 0">
   <div class="col">
-    <div class="mb-3">{{ totalElements }} {{ totalElements>1 ? 'résultats' : 'résultat' }}</div>
+    <div class="mb-3">{{ resultatsRecherche.length }} {{ resultatsRecherche.length>1 ? 'résultats' : 'résultat' }}</div>
     <div class="row">
-      <div class="col-6">
-        <app-activations-pagination (paginationModifiee)="paginationModifiee($event)" [pageSize]="pageSize"></app-activations-pagination>
-      </div>
+      <div class="col-6"></div>
       <div class="col-6">
         <app-activations-column-selector (columnsToDisplayChange)="updateColumnsToDisplay($event)"></app-activations-column-selector>
       </div>
@@ -26,11 +24,5 @@
 <div class="row my-3" *ngIf="resultatsRecherche.length > 0">
   <div class="col">
     <app-activations-resultats [data]="resultatsRecherche" [columnsToDisplay]="columnsToDisplay" (sortChange)="sortChange($event)"></app-activations-resultats>
-  </div>
-</div>
-
-<div class="row my-3 text-center" *ngIf="afficherBoutonSuite">
-  <div class="col">
-    <button class="h5" mat-button color="primary" (click)="afficherLaSuite()">Voir la suite</button>
   </div>
 </div>

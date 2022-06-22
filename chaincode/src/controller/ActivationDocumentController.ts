@@ -113,6 +113,42 @@ export class ActivationDocumentController {
         console.info('============= END : Create ActivationDocumentController ===========');
     }
 
+    public static async createActivationDocumentList(
+        ctx: Context,
+        params: STARParameters,
+        inputStr: string) {
+        console.info('============= START : Create List ActivationDocumentController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
+        }
+
+        let activationDocumentList: ActivationDocument[] = [];
+        try {
+            activationDocumentList = JSON.parse(inputStr);
+        } catch (error) {
+            throw new Error(`ERROR createActivationDocument by list-> Input string NON-JSON value`);
+        }
+
+        if (activationDocumentList && activationDocumentList.length > 0) {
+            for (var activationDocumentObj of activationDocumentList) {
+                ActivationDocument.schema.validateSync(
+                    activationDocumentObj,
+                    {strict: true, abortEarly: false},
+                );
+            }
+        }
+
+        if (activationDocumentList) {
+            for (var activationDocumentObj of activationDocumentList) {
+                await ActivationDocumentController.createActivationDocumentObj(ctx, params, activationDocumentObj);
+            }
+        }
+
+        console.info('============= END : Create List ActivationDocumentController ===========');
+    }
+
     private static async createActivationDocumentObj(
         ctx: Context,
         params: STARParameters,

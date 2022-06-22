@@ -317,6 +317,69 @@ describe('Star Tests ActivationDocument', () => {
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
         });
+
+        it('should return SUCCESS CreateActivationDocumentListe 2 docs HTA', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            const activationDocument2:ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+
+            transactionContext.stub.getState.withArgs(activationDocument.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(activationDocument.receiverMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+            transactionContext.stub.getState.withArgs(activationDocument2.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(activationDocument2.receiverMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocument.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocument2.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            // const iterator = Values.getYellowPageQueryMock(Values.HTA_yellowPage, mockHandler);
+            // const query = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${activationDocument.originAutomationRegisteredResourceMrid}"}}`;
+            // transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
+
+
+            const listActivationDocuments = [activationDocument, activationDocument2];
+            await star.CreateActivationDocumentList(transactionContext, JSON.stringify(listActivationDocuments));
+
+            const expected: ActivationDocument = activationDocument;
+            expected.orderEnd = true;
+            expected.potentialParent = false;
+            expected.potentialChild = true;
+            expected.docType = 'activationDocument';
+            const expected2: ActivationDocument = activationDocument2;
+            expected2.orderEnd = true;
+            expected2.potentialParent = false;
+            expected2.potentialChild = true;
+            expected2.docType = 'activationDocument';
+
+            console.info("-----------")
+            console.info(transactionContext.stub.putPrivateData.firstCall.args);
+            console.info("ooooooooo")
+            console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            console.info(JSON.stringify(expected))
+            console.info("-----------")
+            console.info(transactionContext.stub.putPrivateData.secondCall.args);
+            console.info("ooooooooo")
+            console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            console.info(JSON.stringify(expected))
+            console.info("-----------")
+
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                "enedis-producer",
+                expected.activationDocumentMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                "enedis-producer",
+                expected2.activationDocumentMrid,
+                Buffer.from(JSON.stringify(expected2))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+        });
+
     });
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////    BEGIN     ////////////////////////////

@@ -1,15 +1,9 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
-import {Instance} from '../../models/enum/Instance.enum';
 import {CacheService} from '../common/cache.service';
-import {map} from "rxjs/operators";
-import {Producer} from "../../models/Producer";
-import {YellowPage} from "../../models/YellowPage";
 import {Site} from "../../models/Site";
-import {PaginationReponse} from "../../models/RequestForm";
-import {RechercheReseauEntite} from "../../models/RechercheReseau";
 
 @Injectable({
   providedIn: 'root',

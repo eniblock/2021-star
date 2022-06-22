@@ -1,12 +1,10 @@
 package com.star.rest;
 
-import com.star.dto.common.PageDTO;
 import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.enums.InstanceEnum;
 import com.star.exception.TechnicalException;
-import com.star.mapper.historiquelimitation.HistoriqueLimitationPageMapper;
+import com.star.mapper.historiquelimitation.HistoriqueLimitationMapper;
 import com.star.models.common.OrderDirection;
-import com.star.models.common.PaginationDto;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.security.SecurityComponent;
 import com.star.service.HistoriqueLimitationService;
@@ -44,7 +42,7 @@ public class HistoriqueLimitationController {
     private HistoriqueLimitationService historiqueLimitationService;
 
     @Autowired
-    private HistoriqueLimitationPageMapper historiqueLimitationPageMapper;
+    private HistoriqueLimitationMapper historiqueLimitationMapper;
 
     @Autowired
     private SecurityComponent securityComponent;
@@ -52,10 +50,8 @@ public class HistoriqueLimitationController {
     /**
      * API de recherche multi-critères des historiques de limitation
      *
-     * @param pageSize
      * @param order
      * @param orderDirection
-     * @param bookmark
      * @param originAutomationRegisteredResourceMrid
      * @param producerMarketParticipantMrid
      * @param siteName
@@ -71,15 +67,11 @@ public class HistoriqueLimitationController {
             @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)
     })
     @GetMapping()
-    public ResponseEntity<PageDTO<HistoriqueLimitationDTO>> findLimitationHistory(
-            @Parameter(description = "Number of responses per page")
-            @RequestParam(required = false, defaultValue = "10") int pageSize,
+    public ResponseEntity<HistoriqueLimitationDTO[]> findLimitationHistory(
             @Parameter(description = "order search criteria")
             @RequestParam(required = false) String order,
             @Parameter(description = "orderDirection (asc or desc) search criteria")
             @RequestParam(required = false, defaultValue = "asc") OrderDirection orderDirection,
-            @Parameter(description = "bookmark search criteria")
-            @RequestParam(required = false, defaultValue = "") String bookmark,
             @Parameter(description = "originAutomationRegisteredResourceMrid search criteria")
             @RequestParam(required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
             @Parameter(description = "producerMarketParticipantMrid search criteria")
@@ -95,11 +87,6 @@ public class HistoriqueLimitationController {
             @Parameter(description = "activationDocumentMrid search criteria")
             @RequestParam(required = false, defaultValue = "") String activationDocumentMrid
     ) throws TechnicalException {
-        var pagination = PaginationDto.builder()
-                .pageSize(pageSize)
-                .order(order)
-                .orderDirection(orderDirection)
-                .build();
         var criteria = HistoriqueLimitationCriteria.builder()
                 .originAutomationRegisteredResourceMrid(originAutomationRegisteredResourceMrid)
                 .producerMarketParticipantName(producerMarketParticipantName)
@@ -114,6 +101,6 @@ public class HistoriqueLimitationController {
             // A producer can get only his own site data
             criteria.setProducerMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(historiqueLimitationPageMapper.beanToDto(historiqueLimitationService.findHistorique(criteria, bookmark, pagination)));
+        return ResponseEntity.status(HttpStatus.OK).body(historiqueLimitationMapper.beanToDtos(historiqueLimitationService.findHistorique(criteria, order, orderDirection)));
     }
 }

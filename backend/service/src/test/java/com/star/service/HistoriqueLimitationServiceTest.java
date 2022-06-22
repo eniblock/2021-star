@@ -29,12 +29,6 @@ class HistoriqueLimitationServiceTest extends AbstractTest {
     @Captor
     private ArgumentCaptor<String> queryCaptor;
 
-    @Captor
-    private ArgumentCaptor<String> pageSizeCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> bookmarkCaptor;
-
     @MockBean
     private HistoriqueLimitationRepository historiqueLimitationRepository;
 
@@ -44,7 +38,6 @@ class HistoriqueLimitationServiceTest extends AbstractTest {
     @Test
     void findHistorique() throws JsonProcessingException, ContractException, TechnicalException {
         // GIVEN
-        String bookmark = "kBHIYBiy198";
         var historiqueLimitationCriteria = HistoriqueLimitationCriteria.builder()
                 .originAutomationRegisteredResourceMrid("originAutomationRegisteredResourceMrid")
                 .producerMarketParticipantMrid("producerMarketParticipantMrid")
@@ -54,21 +47,13 @@ class HistoriqueLimitationServiceTest extends AbstractTest {
                 .activationDocumentMrid("activationDocumentMrid")
                 .instance(TSO)
                 .build();
-        var historiqueLimitationResponse = PageHLF.builder().bookmark(bookmark).fetchedRecordsCount(1).records(Arrays.asList(new HistoriqueLimitation())).build();
-        var paginationDto = PaginationDto.builder()
-                .order("siteName")
-                .pageSize(10)
-                .orderDirection(OrderDirection.asc)
-                .build();
 
         // WHEN
-        var siteResponseResult = historiqueLimitationService.findHistorique(historiqueLimitationCriteria, bookmark, paginationDto);
+        var siteResponseResult = historiqueLimitationService.findHistorique(historiqueLimitationCriteria, "10", OrderDirection.asc);
 
         // THEN
-        verify(historiqueLimitationRepository, Mockito.times(1)).findHistoriqueByQuery(queryCaptor.capture(), pageSizeCaptor.capture(), bookmarkCaptor.capture());
+        verify(historiqueLimitationRepository, Mockito.times(1)).findHistoriqueByQuery(queryCaptor.capture());
 
-        assertThat(pageSizeCaptor.getValue()).isEqualTo(String.valueOf(paginationDto.getPageSize()));
-        assertThat(bookmarkCaptor.getValue()).isEqualTo(bookmark);
         String queryValue = queryCaptor.getValue();
         assertThat(queryValue).contains("docType", "originAutomationRegisteredResourceMrid", "producerMarketParticipantMrid", "siteName",
                 "startCreatedDateTime", "endCreatedDateTime", "activationDocumentMrid");

@@ -1,17 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { Instance } from 'src/app/models/enum/Instance.enum';
-import { InstanceService } from 'src/app/services/api/instance.service';
-import { FormulairePagination } from 'src/app/models/RequestForm';
-import { OrderDirection } from 'src/app/models/enum/OrderDirection.enum';
-import { environment } from 'src/environments/environment';
-import { PageSizeAndVisibilityFieldsEvent } from './activations-pagination/activations-pagination.component';
-import { Sort } from '@angular/material/sort';
+import {Component, OnInit} from '@angular/core';
+import {Instance} from 'src/app/models/enum/Instance.enum';
+import {InstanceService} from 'src/app/services/api/instance.service';
+import {OrderDirection} from 'src/app/models/enum/OrderDirection.enum';
+import {Sort} from '@angular/material/sort';
 import {
   FormulaireRechercheHistoriqueLimitation,
   RechercheHistoriqueLimitationEntite,
 } from 'src/app/models/RechercheHistoriqueLimitation';
-import { OrdreRechercheHistoriqueLimitation } from 'src/app/models/enum/OrdreRechercheHistoriqueLimitation.enum';
-import { HistoriqueLimitationService } from 'src/app/services/api/historique-limitation.service';
+import {OrdreRechercheHistoriqueLimitation} from 'src/app/models/enum/OrdreRechercheHistoriqueLimitation.enum';
+import {HistoriqueLimitationService} from 'src/app/services/api/historique-limitation.service';
+import {RequestForm} from "../../models/RequestForm";
 
 @Component({
   selector: 'app-activations',
@@ -21,14 +19,10 @@ import { HistoriqueLimitationService } from 'src/app/services/api/historique-lim
 export class ActivationsComponent implements OnInit {
   formRecherche?: FormulaireRechercheHistoriqueLimitation;
 
-  pageSize = environment.pageSizes[0];
-  lastBookmark: string | null = null;
   order = OrdreRechercheHistoriqueLimitation.siteName;
   orderDirection = OrderDirection.asc;
 
-  totalElements: number = -1;
   resultatsRecherche: RechercheHistoriqueLimitationEntite[] = [];
-  afficherBoutonSuite = false;
 
   typeInstance?: Instance;
 
@@ -37,7 +31,8 @@ export class ActivationsComponent implements OnInit {
   constructor(
     private instanceService: InstanceService,
     private historiqueLimitationService: HistoriqueLimitationService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.instanceService.getTypeInstance().subscribe((instance) => {
@@ -51,44 +46,21 @@ export class ActivationsComponent implements OnInit {
     this.lancerRecherche();
   }
 
-  paginationModifiee(form: PageSizeAndVisibilityFieldsEvent) {
-    this.resetResultats();
-    this.pageSize = form.pageSize;
-    this.lastBookmark = null; // Retour à la premiere page
-    this.lancerRecherche();
-  }
-
-  afficherLaSuite() {
-    this.lancerRecherche();
-  }
-
   private lancerRecherche() {
     if (this.formRecherche != undefined) {
-      const paginationAvecBookmark: FormulairePagination<OrdreRechercheHistoriqueLimitation> =
+      const paginationAvecBookmark: RequestForm<OrdreRechercheHistoriqueLimitation> =
         {
-          pageSize: this.pageSize,
-          bookmark: this.lastBookmark,
           order: this.order,
           orderDirection: this.orderDirection,
         };
       this.historiqueLimitationService
         .rechercher(this.formRecherche, paginationAvecBookmark)
-        .subscribe((resultat) => {
-          this.lastBookmark = resultat.bookmark ? resultat.bookmark : null;
-          this.totalElements = resultat.totalElements;
-          this.resultatsRecherche = this.resultatsRecherche.concat(
-            resultat.content
-          );
-          this.afficherBoutonSuite = resultat.content.length >= this.pageSize;
-        });
+        .subscribe(resultat => this.resultatsRecherche = resultat);
     }
   }
 
   private resetResultats() {
-    this.lastBookmark = null;
-    this.totalElements = -1;
     this.resultatsRecherche = [];
-    this.afficherBoutonSuite = false;
   }
 
   updateColumnsToDisplay(columnsToDisplay: string[]) {

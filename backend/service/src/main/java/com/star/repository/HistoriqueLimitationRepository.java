@@ -29,10 +29,10 @@ public class HistoriqueLimitationRepository {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public PageHLF<HistoriqueLimitation> findHistoriqueByQuery(String query, String pageSize, String bookmark) throws BusinessException, TechnicalException {
+    public HistoriqueLimitation[] findHistoriqueByQuery(String query) throws BusinessException, TechnicalException {
         try {
-            byte[] response = contract.evaluateTransaction(GET_HISTORIQUE_WITH_PAGINATION, query, pageSize, bookmark);
-            return response != null ? objectMapper.readValue(new String(response), new TypeReference<PageHLF<HistoriqueLimitation>>() {
+            byte[] response = contract.evaluateTransaction(GET_HISTORIQUE_WITH_PAGINATION, query);
+            return response != null ? objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
             }) : null;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des historiques de limitation", exception);

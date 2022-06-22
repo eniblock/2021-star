@@ -94,10 +94,10 @@ public class EnergyAmountRepository {
         return energyAmounts;
     }
 
-    public PageHLF<EnergyAmount> findEnergyAmountByQuery(String query, String pageSize, String bookmark) throws BusinessException, TechnicalException {
+    public EnergyAmount[] findEnergyAmountByQuery(String query) throws BusinessException, TechnicalException {
         try {
-            byte[] response = contract.evaluateTransaction(GET_ENERGY_AMOUNT_WITH_PAGINATION, query, pageSize, bookmark);
-            return response != null ? objectMapper.readValue(new String(response), new TypeReference<PageHLF<EnergyAmount>>() {
+            byte[] response = contract.evaluateTransaction(GET_ENERGY_AMOUNT_WITH_PAGINATION, query);
+            return response != null ? objectMapper.readValue(new String(response), new TypeReference<EnergyAmount[]>() {
             }) : null;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des energy amounts", exception);

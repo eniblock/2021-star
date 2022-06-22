@@ -1,9 +1,9 @@
-import { MeasurementUnitName } from './enum/MeasurementUnitName.enum';
-import { OrdreRechercheHistoriqueLimitation } from './enum/OrdreRechercheHistoriqueLimitation.enum';
-import { TechnologyType } from './enum/TechnologyType.enum';
-import { TypeSite } from './enum/TypeSite.enum';
-import { Motif } from './Motifs';
-import { FormulairePagination } from './RequestForm';
+import {MeasurementUnitName} from './enum/MeasurementUnitName.enum';
+import {OrdreRechercheHistoriqueLimitation} from './enum/OrdreRechercheHistoriqueLimitation.enum';
+import {TechnologyType} from './enum/TechnologyType.enum';
+import {TypeSite} from './enum/TypeSite.enum';
+import {Motif} from './Motifs';
+import {RequestForm} from "./RequestForm";
 
 export interface FormulaireRechercheHistoriqueLimitation {
   originAutomationRegisteredResourceName: string;
@@ -14,7 +14,7 @@ export interface FormulaireRechercheHistoriqueLimitation {
 }
 
 export interface RechercheHistoriqueLimitationRequete
-  extends FormulairePagination<OrdreRechercheHistoriqueLimitation>,
+  extends RequestForm<OrdreRechercheHistoriqueLimitation>,
     FormulaireRechercheHistoriqueLimitation {}
 
 export interface SystemOperatorData {

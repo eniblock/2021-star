@@ -212,7 +212,7 @@ export class Star extends Contract {
         }
     }
 
-    public async GetSiteWithPagination(
+    public async GetSitesByQuery(
         ctx: Context,
         query: string) {
         try {

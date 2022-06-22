@@ -45,9 +45,6 @@ class SiteServiceTest extends AbstractTest {
     @Value("classpath:/site/site-tso-ok.csv")
     private Reader csvSiteTsoOk;
 
-    @Value("classpath:/site/site-tso-ko.csv")
-    private Reader csvSiteTsoKo;
-
     @Value("classpath:/site/site-technology-type-ko.csv")
     private Reader csvSiteTechnologieTypeKo;
 
@@ -176,26 +173,6 @@ class SiteServiceTest extends AbstractTest {
         // THEN
         verifyNoInteractions(contract);
     }
-
-    @Test
-    void testImportSiteDsoOnTsoInstance() throws IOException, TechnicalException, ContractException {
-        // GIVEN
-        String fileName = "site-tso-ko.csv";
-        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
-                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
-        Mockito.when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
-        Mockito.when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
-
-        // WHEN
-        siteService.importSite(fileName, csvSiteTsoKo, TSO);
-
-        // THEN
-        verify(siteRepository, Mockito.times(0)).existSite(meteringPointMridCaptor.capture());
-        verify(siteRepository, Mockito.times(0)).saveSites(siteArgumentCaptor.capture());
-
-
-    }
-
 
     @Test
     void testImportSiteOk() throws IOException, TechnicalException, ContractException {

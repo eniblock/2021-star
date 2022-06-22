@@ -157,16 +157,9 @@ public class EnergyAmountService {
                         new String[]{fichier.getFileName(), "energyAmountMarketDocumentMrid est obligatoire."}, null));
             }
             String registeredResourceMrid = energyAmount.getRegisteredResourceMrid();
-            if (isNotBlank(registeredResourceMrid)) {
-                if (!siteService.isValideSiteMeteringPoint(instance, registeredResourceMrid)) {
-                    errors.add(messageSource.getMessage("import.file.energy.amount.meteringpointmrid.error",
-                            new String[]{registeredResourceMrid}, null));
-                } else {
-                    if (!siteService.existSite(registeredResourceMrid)) {
-                        errors.add(messageSource.getMessage("import.file.energy.amount.unknown.site",
+            if (isNotBlank(registeredResourceMrid) && !siteService.existSite(registeredResourceMrid)) {
+                errors.add(messageSource.getMessage("import.file.energy.amount.unknown.site",
                                 new String[]{registeredResourceMrid}, null));
-                    }
-                }
             }
 //            Vérification du champ senderMarketParticipantMrid
             String senderMarketParticipantMrid = energyAmount.getSenderMarketParticipantMrid();

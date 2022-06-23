@@ -2,7 +2,6 @@ package com.star.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.TechnologyTypeEnum;
-import com.star.models.common.PageHLF;
 import com.star.models.producer.Producer;
 import com.star.models.site.Site;
 import com.star.repository.ProducerRepository;
@@ -29,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
+@WithMockUser("spring")
 class SiteControllerTest extends AbstractIntTest {
 
     private static final String URL_SEARCH = SiteController.PATH;
@@ -41,9 +41,6 @@ class SiteControllerTest extends AbstractIntTest {
     @Value("classpath:/site/site-ko.csv")
     private Resource siteKo;
 
-    @Value("classpath:/site/site-tso-ko.csv")
-    private Resource siteTsoKo;
-
     @Value("classpath:/site/site-tso-ok.csv")
     private Resource siteTsoOk;
 
@@ -55,7 +52,6 @@ class SiteControllerTest extends AbstractIntTest {
 
 
     @Test
-    @WithMockUser("spring")
     void importSiteFileExtensionKo() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-without-extension",
@@ -70,7 +66,6 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
-    @WithMockUser("spring")
     void importSiteFileKoTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-ko.csv",
@@ -85,27 +80,6 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
-    @WithMockUser("spring")
-    void importSiteDsoOnTsoInstanceTest() throws Exception {
-        // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ko.csv",
-                "text/plain", toByteArray(siteTsoKo.getURL()));
-        when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
-        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PRM30001510803649")).thenReturn("false".getBytes());
-        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
-                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
-        when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
-
-        // WHEN
-
-        // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_CREATE)
-                .file(file))
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    @WithMockUser("spring")
     void importSiteTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
@@ -125,47 +99,6 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
-    @WithMockUser("spring")
-    void updateSiteTestKo() throws Exception {
-        // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "site-ok.csv",
-                "text/plain", toByteArray(siteTsoKo.getURL()));
-        when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
-        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PRM30001510803649")).thenReturn("false".getBytes());
-        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
-                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
-        when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
-
-        // WHEN
-
-        // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_UPDATE)
-                .file(file))
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    @WithMockUser("spring")
-    void updateSiteDsoOnTsoInstanceTest() throws Exception {
-        // GIVEN
-        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ko.csv",
-                "text/plain", toByteArray(siteTsoKo.getURL()));
-        when(contract.evaluateTransaction(any())).thenReturn("false".getBytes());
-        when(contract.evaluateTransaction(SiteRepository.SITE_EXISTS, "PRM30001510803649")).thenReturn("true".getBytes());
-        Producer producer = Producer.builder().producerMarketParticipantMrid("17Y100A101R0629X").
-                producerMarketParticipantName("producer_test").producerMarketParticipantRoleType("roleType").build();
-        when(producerRepository.getProducers()).thenReturn(Arrays.asList(producer));
-
-        // WHEN
-
-        // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_UPDATE)
-                .file(file))
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    @WithMockUser("spring")
     void updateSiteTest() throws Exception {
         // GIVEN
         MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
@@ -185,7 +118,6 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
-    @WithMockUser("spring")
     void findSiteWithoutOrderTest() throws Exception {
         // GIVEN
 
@@ -197,7 +129,6 @@ class SiteControllerTest extends AbstractIntTest {
     }
 
     @Test
-    @WithMockUser("spring")
     void findSiteTest() throws Exception {
         // GIVEN
         Site site = Site.builder().technologyType(TechnologyTypeEnum.EOLIEN.name()).build();

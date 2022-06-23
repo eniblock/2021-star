@@ -22,7 +22,7 @@ export class ActivationsComponent implements OnInit {
   order = OrdreRechercheHistoriqueLimitation.siteName;
   orderDirection = OrderDirection.asc;
 
-  resultatsRecherche: RechercheHistoriqueLimitationEntite[] = [];
+  resultatsRecherche?: RechercheHistoriqueLimitationEntite[];
 
   typeInstance?: Instance;
 
@@ -60,7 +60,7 @@ export class ActivationsComponent implements OnInit {
   }
 
   private resetResultats() {
-    this.resultatsRecherche = [];
+    this.resultatsRecherche = undefined;
   }
 
   updateColumnsToDisplay(columnsToDisplay: string[]) {

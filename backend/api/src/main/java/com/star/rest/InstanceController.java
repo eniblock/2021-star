@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.star.enums.InstanceEnum.DSO;
+import static com.star.enums.InstanceEnum.TSO;
+
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
@@ -82,9 +85,9 @@ public class InstanceController {
     private String getSystemOperatorMrid() {
         switch (instance) {
             case TSO:
-                return "17V0000008957464";
+                return TSO.getSystemOperatorMrid();
             case DSO:
-                return "17V0000009927464";
+                return DSO.getSystemOperatorMrid();
         }
         return null;
     }

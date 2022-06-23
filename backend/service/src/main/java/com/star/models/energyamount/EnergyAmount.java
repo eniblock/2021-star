@@ -1,12 +1,14 @@
 package com.star.models.energyamount;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.star.models.common.ValidationRegex;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -59,7 +61,7 @@ public class EnergyAmount {
     @NotBlank(message = "Le champ receiverMarketParticipantRole est obligatoire")
     private String receiverMarketParticipantRole;
 
-    @NotBlank(message = "Le champ createdDateTime est obligatoire")
+    @Pattern(regexp = ValidationRegex.DATETIME_OR_EMPTY_REGEX, message = "Le champ createdDateTime doit être au format : " + ValidationRegex.DATETIME_REGEX_STR)
     private String createdDateTime;
 
     @NotBlank(message = "Le champ timeInterval est obligatoire")

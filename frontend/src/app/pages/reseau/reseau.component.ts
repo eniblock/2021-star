@@ -31,8 +31,9 @@ export class ReseauComponent implements OnInit {
     this.formRecherche = form;
     this.lancerRecherche();
   }
+
   private resetResultats() {
-    this.resultatsRecherche = [];
+    this.resultatsRecherche = undefined;
   }
 
   private lancerRecherche() {

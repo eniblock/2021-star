@@ -22,7 +22,7 @@ export class HistoryActivationController {
     public static async getHistoryByQuery(
         ctx: Context,
         params: STARParameters,
-        inputStr: string): Promise<any> {
+        inputStr: string): Promise<HistoryInformation[]> {
 
         let criteriaObj: HistoryCriteria;
         try {
@@ -41,7 +41,7 @@ export class HistoryActivationController {
         criteriaObj = await HistoryActivationController.consolidateCriteria(ctx, params, criteriaObj, role);
 
 
-        var result : any;
+        var result : HistoryInformation[];
         if (criteriaObj) {
             const query = await HistoryActivationController.buildActivationDocumentQuery(criteriaObj);
 

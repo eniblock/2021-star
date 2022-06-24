@@ -58,7 +58,6 @@ public class Site implements ImportCSV {
     private String systemOperatorEntityFlexibilityDomainName;
     private String systemOperatorCustomerServiceName;
     private String systemOperatorMarketParticipantName;
-    private String producerMarketParticipantName;
 
 
     @JsonIgnore

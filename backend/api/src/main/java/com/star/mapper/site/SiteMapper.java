@@ -22,6 +22,7 @@ public interface SiteMapper {
     @Mapping(target = "typeSite", source = "site", qualifiedByName = "mapTypeSiteForSite")
     @Mapping(target = "siteIecCode", source = "site", qualifiedByName = "mapIecCodeForSite")
     @Mapping(target = "systemOperatorMarketParticipantName", ignore = true)
+    @Mapping(target = "producerMarketParticipantName", ignore = true)
     @Mapping(target = "technologyType", expression = "java(com.star.enums.TechnologyTypeEnum.fromValue(site.getTechnologyType()))")
     SiteDTO beanToDto(Site site);
 

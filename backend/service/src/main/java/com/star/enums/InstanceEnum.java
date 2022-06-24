@@ -5,8 +5,8 @@ package com.star.enums;
  * SPDX-License-Identifier: Apache-2.0
  */
 public enum InstanceEnum {
-    TSO("tso", "17V0000008957464"),
-    DSO("dso", "17V0000009927464"),
+    TSO("tso", "10XFR-RTE------Q"),
+    DSO("dso", "17X100A100A0001A"),
     PRODUCER("producer", "");
 
     private String value;

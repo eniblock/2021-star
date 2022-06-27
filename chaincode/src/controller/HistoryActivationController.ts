@@ -9,6 +9,7 @@ import { HistoryCriteria } from "../model/historyCriteria";
 import { HistoryInformation } from "../model/historyInformation";
 import { Site } from "../model/site";
 import { STARParameters } from "../model/starParameters";
+import { ActivationDocumentController } from "./ActivationDocumentController";
 
 import { ActivationDocumentService } from "./service/ActivationDocumentService";
 import { EnergyAmountService } from "./service/EnergyAmountService";
@@ -157,6 +158,14 @@ export class HistoryActivationController {
         for (const activationDocument of allActivationDocument) {
             const information: HistoryInformation = new HistoryInformation();
             information.activationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            information.subOrderList = [];
+            if (activationDocument.subOrderList) {
+                for(const activationDocumentMrid of activationDocument.subOrderList) {
+                    const subOrder = await ActivationDocumentController.getActivationDocumentById(ctx, params, activationDocumentMrid);
+                    information.subOrderList.push(subOrder);
+                }
+            }
             //Manage Yello Page to get Site Information
             var siteRegistered: Site;
             try {

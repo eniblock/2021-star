@@ -5,6 +5,7 @@ import { Site } from "./site";
 
 export class HistoryInformation {
     public activationDocument: ActivationDocument;
+    public subOrderList: ActivationDocument[];
     public site: Site;
     public producer: Producer;
     public energyAmount: EnergyAmount;

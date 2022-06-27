@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.common.PageHLF;
 import com.star.models.historiquelimitation.HistoriqueLimitation;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Contract;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class HistoriqueLimitationRepository {
 
-    public static final String GET_HISTORIQUE_WITH_PAGINATION = "GetHistoriqueWithPagination";
+    public static final String GET_ACTIVATION_DOCUMENT_HISTORY = "GetActivationDocumentHistory";
 
     @Autowired
     private Contract contract;
@@ -31,7 +30,7 @@ public class HistoriqueLimitationRepository {
 
     public HistoriqueLimitation[] findHistoriqueByQuery(String query) throws BusinessException, TechnicalException {
         try {
-            byte[] response = contract.evaluateTransaction(GET_HISTORIQUE_WITH_PAGINATION, query);
+            byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_HISTORY, query);
             return response != null ? objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
             }) : null;
         } catch (JsonProcessingException exception) {

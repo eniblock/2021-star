@@ -1,15 +1,10 @@
 package com.star.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
 import com.star.models.common.OrderDirection;
-import com.star.models.common.PageHLF;
-import com.star.models.common.PaginationDto;
-import com.star.models.historiquelimitation.HistoriqueLimitation;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.repository.HistoriqueLimitationRepository;
-import org.hyperledger.fabric.gateway.ContractException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -17,11 +12,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.Arrays;
-
 import static com.star.enums.InstanceEnum.TSO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 class HistoriqueLimitationServiceTest extends AbstractTest {
@@ -36,7 +28,7 @@ class HistoriqueLimitationServiceTest extends AbstractTest {
     private HistoriqueLimitationService historiqueLimitationService;
 
     @Test
-    void findHistorique() throws JsonProcessingException, ContractException, TechnicalException {
+    void findHistorique() throws TechnicalException {
         // GIVEN
         var historiqueLimitationCriteria = HistoriqueLimitationCriteria.builder()
                 .originAutomationRegisteredResourceMrid("originAutomationRegisteredResourceMrid")

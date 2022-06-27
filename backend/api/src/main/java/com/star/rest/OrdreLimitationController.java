@@ -60,7 +60,7 @@ public class OrdreLimitationController {
     @PostMapping(DEBUT)
     @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreDebutLimitation(
-            @Parameter(description = "CSV file containing start limitation order data.")
+            @Parameter(description = "JSON file containing start limitation order data.")
             @RequestParam MultipartFile[] files) throws BusinessException {
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("Files must not be empty");
@@ -100,7 +100,7 @@ public class OrdreLimitationController {
     @PostMapping(COUPLE)
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(
-            @Parameter(description = "CSV file containing couple Start/End limit order data.")
+            @Parameter(description = "JSON file containing couple Start/End limit order data.")
             @RequestParam MultipartFile[] files) throws BusinessException {
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("Files must not be empty");

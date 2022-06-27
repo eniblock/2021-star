@@ -72,7 +72,7 @@ describe('Star Tests EnergyAmount', () => {
                 'quantity is a compulsory string',
                 'receiverMarketParticipantMrid is a compulsory string',
                 'receiverMarketParticipantRole is a compulsory string',
-                'registeredResourceMrid is a compulsory string',
+                // 'registeredResourceMrid is a compulsory string',
                 'senderMarketParticipantMrid is a compulsory string',
                 'senderMarketParticipantRole is a compulsory string',
                 'timeInterval is a compulsory string'
@@ -109,8 +109,9 @@ describe('Star Tests EnergyAmount', () => {
                 expect(err.errors[8]).to.equal(errors[8]);
                 expect(err.errors[9]).to.equal(errors[9]);
                 expect(err.errors[10]).to.equal(errors[10]);
-                expect(err.errors[11]).to.equal(errors[11]);
-                expect(err.message).to.equal('12 errors occurred');
+                // expect(err.errors[11]).to.equal(errors[11]);
+                // expect(err.message).to.equal('12 errors occurred');
+                expect(err.message).to.equal('11 errors occurred');
             }
         });
 
@@ -555,7 +556,7 @@ describe('Star Tests EnergyAmount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             try {
                 await star.GetEnergyAmountForSystemOperator(transactionContext,
-                    Values.HTB_EnergyAmount.registeredResourceMrid,
+                    Values.HTB_EnergyAmount.registeredResourceMrid as string,
                     Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
                     Values.HTB_EnergyAmount.createdDateTime);
             } catch(err) {
@@ -570,7 +571,7 @@ describe('Star Tests EnergyAmount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             try {
                 await star.GetEnergyAmountForSystemOperator(transactionContext,
-                    Values.HTB_EnergyAmount.registeredResourceMrid,
+                    Values.HTB_EnergyAmount.registeredResourceMrid as string,
                     Values.HTB_EnergyAmount.senderMarketParticipantMrid,
                     Values.HTB_EnergyAmount.createdDateTime);
             } catch(err) {
@@ -615,7 +616,7 @@ describe('Star Tests EnergyAmount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             let ret = await star.GetEnergyAmountForSystemOperator(transactionContext,
-                                                                    Values.HTB_EnergyAmount.registeredResourceMrid,
+                                                                    Values.HTB_EnergyAmount.registeredResourceMrid as string,
                                                                     Values.HTB_EnergyAmount.senderMarketParticipantMrid,
                                                                     Values.HTB_EnergyAmount.createdDateTime);
             ret = JSON.parse(ret);
@@ -780,7 +781,7 @@ describe('Star Tests EnergyAmount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
 
             let ret = await star.GetEnergyAmountByProducer(transactionContext,
-                                                            Values.HTB_EnergyAmount.registeredResourceMrid,
+                                                            Values.HTB_EnergyAmount.registeredResourceMrid as string,
                                                             Values.HTB_EnergyAmount.receiverMarketParticipantMrid,
                                                             Values.HTB_EnergyAmount.createdDateTime);
             ret = JSON.parse(ret);
@@ -928,7 +929,7 @@ describe('Star Tests EnergyAmount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             let ret = await star.GetEnergyAmountForSystemOperator(transactionContext,
-                                                                    Values.HTA_EnergyAmount.registeredResourceMrid,
+                                                                    Values.HTA_EnergyAmount.registeredResourceMrid as string,
                                                                     Values.HTA_EnergyAmount.senderMarketParticipantMrid,
                                                                     Values.HTA_EnergyAmount.createdDateTime);
             ret = JSON.parse(ret);
@@ -978,7 +979,7 @@ describe('Star Tests EnergyAmount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
 
             let ret = await star.GetEnergyAmountByProducer(transactionContext,
-                                                            Values.HTA_EnergyAmount.registeredResourceMrid,
+                                                            Values.HTA_EnergyAmount.registeredResourceMrid as string,
                                                             Values.HTA_EnergyAmount.receiverMarketParticipantMrid,
                                                             Values.HTA_EnergyAmount.createdDateTime);
             ret = JSON.parse(ret);

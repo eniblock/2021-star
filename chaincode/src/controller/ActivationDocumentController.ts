@@ -99,14 +99,19 @@ export class ActivationDocumentController {
         try {
             activationDocumentObj = JSON.parse(inputStr);
         } catch (error) {
-        // console.error('error=', error);
-        throw new Error(`ERROR createActivationDocument-> Input string NON-JSON value`);
+            // console.error('error=', error);
+            throw new Error(`ERROR createActivationDocument-> Input string NON-JSON value`);
         }
 
-        ActivationDocument.schema.validateSync(
-            activationDocumentObj,
-            {strict: true, abortEarly: false},
-        );
+        try {
+            ActivationDocument.schema.validateSync(
+                activationDocumentObj,
+                {strict: true, abortEarly: false},
+            );
+        } catch (error) {
+            console.error('error=', error);
+            throw error;
+        }
 
         await ActivationDocumentController.createActivationDocumentObj(ctx, params, activationDocumentObj);
 
@@ -133,10 +138,15 @@ export class ActivationDocumentController {
 
         if (activationDocumentList && activationDocumentList.length > 0) {
             for (var activationDocumentObj of activationDocumentList) {
-                ActivationDocument.schema.validateSync(
-                    activationDocumentObj,
-                    {strict: true, abortEarly: false},
-                );
+                try {
+                    ActivationDocument.schema.validateSync(
+                        activationDocumentObj,
+                        {strict: true, abortEarly: false},
+                    );
+                } catch (error) {
+                    console.error('error=', error);
+                    throw error;
+                }
             }
         }
 
@@ -173,7 +183,7 @@ export class ActivationDocumentController {
             throw new Error('ERROR createActivationDocument : '.concat(error.message).concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
         }
 
-        if (systemOperatorObj.systemOperatorMarketParticipantName !== identity ) {
+        if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase !== identity.toLowerCase ) {
             throw new Error(`Organisation, ${identity} cannot send Activation Document for sender ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 

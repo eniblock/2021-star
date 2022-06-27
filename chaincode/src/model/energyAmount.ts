@@ -29,7 +29,7 @@ export class EnergyAmount {
         receiverMarketParticipantRole: Yup.string().required(
             'receiverMarketParticipantRole is a compulsory string').typeError('receiverMarketParticipantRole must be a string',
         ),
-        registeredResourceMrid: Yup.string().required('registeredResourceMrid is a compulsory string').typeError('registeredResourceMrid is a compulsory string'),
+        registeredResourceMrid: Yup.string().notRequired(),
         revisionNumber: Yup.string().notRequired(),
         senderMarketParticipantMrid: Yup.string().required(
             'senderMarketParticipantMrid is a compulsory string').typeError('senderMarketParticipantMrid must be a string',
@@ -43,7 +43,7 @@ export class EnergyAmount {
     public docType?: string;
     public energyAmountMarketDocumentMrid: string; // PK
     public activationDocumentMrid: string; // FK1
-    public registeredResourceMrid: string;
+    public registeredResourceMrid?: string;
     public quantity: string;
     public measurementUnitName: string;
     public revisionNumber?: string;

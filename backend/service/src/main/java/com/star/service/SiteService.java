@@ -201,8 +201,8 @@ public class SiteService {
             throw new IllegalArgumentException(messageSource.getMessage("import.file.data.not.empty", null, null));
         }
         importSiteResult.getDatas().forEach(site -> {
-            String value = site.getSiteName().replaceAll(STRING_REGEX, " ");
-            site.setSiteName(value);
+            site.setSiteName(site.getSiteName().replaceAll(STRING_REGEX, " "));
+            site.setProducerMarketParticipantName(StringUtils.EMPTY);
             if (site.getTechnologyType() != null) {
                 site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getLabel());
             }

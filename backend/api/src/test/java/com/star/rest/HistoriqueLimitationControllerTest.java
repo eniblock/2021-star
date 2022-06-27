@@ -25,9 +25,6 @@ class HistoriqueLimitationControllerTest extends AbstractIntTest {
 
     private static final String URL_SEARCH = HistoriqueLimitationController.PATH;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     @WithMockUser("spring")
     void findLimitationOrder() throws Exception {
@@ -38,22 +35,5 @@ class HistoriqueLimitationControllerTest extends AbstractIntTest {
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.get(URL_SEARCH + "?order=producerMarketParticipantMrid&orderDirection=asc"))
                 .andExpect(status().is2xxSuccessful());
-    }
-
-    @Test
-    @WithMockUser("spring")
-    void findLimitationHistory() throws Exception {
-        // GIVEN
-        var historiqueLimitation = HistoriqueLimitation.builder().technologyType(TechnologyTypeEnum.EOLIEN.name()).build();
-        var historiqueLimitationResponse = Arrays.asList(historiqueLimitation);
-        byte[] result = objectMapper.writeValueAsBytes(historiqueLimitationResponse);
-        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(result);
-
-        // WHEN
-
-        // THEN
-        this.mockMvc.perform(MockMvcRequestBuilders.get(URL_SEARCH))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].technologyType").value(historiqueLimitation.getTechnologyType()));
     }
 }

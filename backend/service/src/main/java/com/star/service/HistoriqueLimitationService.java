@@ -5,8 +5,6 @@ import com.cloudant.client.api.query.Selector;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.common.OrderDirection;
-import com.star.models.common.PageHLF;
-import com.star.models.common.PaginationDto;
 import com.star.models.historiquelimitation.HistoriqueLimitation;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.repository.HistoriqueLimitationRepository;

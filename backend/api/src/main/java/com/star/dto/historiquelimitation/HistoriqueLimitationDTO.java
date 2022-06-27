@@ -1,7 +1,9 @@
 package com.star.dto.historiquelimitation;
 
-import com.star.enums.TechnologyTypeEnum;
-import com.star.rest.enums.TypeSiteEnum;
+import com.star.dto.energyamount.EnergyAmountDTO;
+import com.star.dto.site.SiteDTO;
+import com.star.models.limitation.OrdreLimitation;
+import com.star.models.producer.Producer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,14 +14,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class HistoriqueLimitationDTO {
-
-    private String meteringPointMrid;
-    private TechnologyTypeEnum technologyType;
-    private String producerMarketParticipantMrid;
-    private String producerMarketParticipantName;
-    private String siteName;
-    private TypeSiteEnum typeSite;
-    private HistoriqueLimitationOrdreDTO rte;
-    private HistoriqueLimitationOrdreDTO enedis;
-
+    private SiteDTO site;
+    private Producer producer;
+    private EnergyAmountDTO energyAmount;
+    private OrdreLimitation ordreLimitation;
 }

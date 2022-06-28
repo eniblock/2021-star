@@ -174,7 +174,10 @@
 
       <div class="col-12 text-center mt-4">
         <button mat-raised-button class="me-3 text-primary" matStepperPrevious>Modifier</button>
-        <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit(stepperRef)">Charger l'ordre</button>
+        <button mat-raised-button color="primary" [disabled]="form.invalid || loading" (click)="onSubmit(stepperRef)">
+          Charger l'ordre
+          <i class="fa-solid fa-hourglass ms-2" *ngIf="loading"></i>
+        </button>
       </div>
 
     </div>

@@ -14,6 +14,8 @@ import {EnergyAccountService} from "../../../services/api/energy-account.service
 export class FormCourbeComptageReferenceComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({});
 
+  loading = false;
+
   tailleMaxUploadFichiers = environment.tailleMaxUploadFichiers;
   tailleMaxUploadFichiersStr = '...';
 
@@ -36,14 +38,17 @@ export class FormCourbeComptageReferenceComponent implements OnInit {
   }
 
   onSubmit() {
+    this.loading = true;
     const form: FormulaireOrdreDebutEtFinLimitationFichier = {
       files: this.listeFichiers.map((f) => f.file),
     };
     this.energyAccountService.creer(form).subscribe(
       (ok) => {
+        this.loading = false;
         this.uploadEffectue = true;
       },
       (error) => {
+        this.loading = false;
         this.errors = error.error.errors;
       }
     );

@@ -39,6 +39,8 @@ export class FormEneEniFormComponent implements OnInit {
     ],
   });
 
+  loading = false;
+
   startDatetimeLimitation: Date = new Date();
   endDatetimeLimitation: Date = new Date();
 
@@ -64,6 +66,7 @@ export class FormEneEniFormComponent implements OnInit {
   }
 
   onSubmit(stepperRef: MatStepper) {
+    this.loading = true;
     const startDatetime = this.startDatetimeLimitation.toJSON().split('.')[0] + 'Z';
     const endDatetime = this.endDatetimeLimitation.toJSON().split('.')[0] + 'Z';
     const form = {
@@ -76,9 +79,15 @@ export class FormEneEniFormComponent implements OnInit {
     delete form.timestampDateEnd;
     delete form.timestampTimeEnd;
 
-    this.energyAmountService.createWithForm(form).subscribe((ok) => {
-      stepperRef.next(); // Next step if it's ok
-    });
+    this.energyAmountService.createWithForm(form).subscribe(
+      (ok) => {
+        this.loading = false;
+        stepperRef.next(); // Next step if it's ok
+      },
+      (error) => {
+        this.loading = false;
+      }
+    );
   }
 
   reset(stepperRef: MatStepper) {

@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatStepper } from '@angular/material/stepper';
-import { DateHelper } from 'src/app/helpers/date.helper';
-import { MotifCode } from 'src/app/models/Motifs';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatStepper} from '@angular/material/stepper';
+import {DateHelper} from 'src/app/helpers/date.helper';
+import {MotifCode} from 'src/app/models/Motifs';
 import {
   getAllBusinessTypesByMessageTypeCode,
   getAllReasonCodeByBusinessTypeCode,
   MessageTypes,
 } from 'src/app/rules/motif-rules';
-import { OrdreLimitationService } from 'src/app/services/api/ordre-limitation.service';
+import {OrdreLimitationService} from 'src/app/services/api/ordre-limitation.service';
 
 @Component({
   selector: 'app-form-ordre-fin-limitation-saisie-manuelle',
@@ -32,9 +32,11 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
       ],
     ],
     messageType: ['', Validators.required],
-    businessType: [{ value: '', disabled: true }, Validators.required],
-    reasonCode: [{ value: '', disabled: true }, Validators.required],
+    businessType: [{value: '', disabled: true}, Validators.required],
+    reasonCode: [{value: '', disabled: true}, Validators.required],
   });
+
+  loading = false;
 
   endCreatedDateTime: Date = new Date();
 
@@ -45,9 +47,11 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private ordreLimitationService: OrdreLimitationService
-  ) {}
+  ) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   toResume(stepperRef: MatStepper) {
     this.endCreatedDateTime = DateHelper.toDatetime(
@@ -58,6 +62,7 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
   }
 
   onSubmit(stepperRef: MatStepper) {
+    this.loading = true;
     const form = {
       ...this.form.value,
       endCreatedDateTime: this.endCreatedDateTime.toJSON().split('.')[0] + 'Z',
@@ -69,9 +74,14 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
     delete form.timestampDate;
     delete form.timestampTime;
 
-    this.ordreLimitationService.creerOrdreFin(form).subscribe((ok) => {
-      stepperRef.next(); // Next step if it's ok
-    });
+    this.ordreLimitationService.creerOrdreFin(form).subscribe(
+      (ok) => {
+        this.loading = false;
+        stepperRef.next(); // Next step if it's ok
+      },
+      (error) => {
+        this.loading = false;
+      });
   }
 
   reset(stepperRef: MatStepper) {

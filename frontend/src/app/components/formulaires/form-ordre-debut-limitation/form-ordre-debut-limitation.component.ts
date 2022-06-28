@@ -17,6 +17,8 @@ import { OrdreLimitationService } from './../../../services/api/ordre-limitation
 export class FormOrdreDebutLimitationComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({});
 
+  loading = false;
+
   tailleMaxUploadFichiers = environment.tailleMaxUploadFichiers;
   tailleMaxUploadFichiersStr = '...';
 
@@ -39,14 +41,17 @@ export class FormOrdreDebutLimitationComponent implements OnInit {
   }
 
   onSubmit() {
+    this.loading = true;
     const form: FormulaireOrdreDebutLimitationFichier = {
       files: this.listeFichiers.map((f) => f.file),
     };
     this.ordreLimitationService.creerOrdreDebutAvecFichiers(form).subscribe(
       (ok) => {
+        this.loading = false;
         this.uploadEffectue = true;
       },
       (error) => {
+        this.loading = false;
         this.errors = error.error.errors;
       }
     );

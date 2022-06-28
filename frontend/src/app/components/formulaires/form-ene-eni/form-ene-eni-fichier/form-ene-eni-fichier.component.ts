@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {environment} from "../../../../../environments/environment";
 import {Fichier, ListeFichiersEtEtat} from "../../../micro-components/uploader-fichier/uploader-fichier.component";
 import {tailleFichierToStr} from "../../../micro-components/uploader-fichier/uploader-fichier-tools";
-import {PATH_ROUTE} from 'src/app/app-routing.module';
 import {EnergyAmountService} from "../../../../services/api/energy-amount.service";
 import {FormulaireEnergyAmountFile} from "../../../../models/EnergyAmount";
 
@@ -16,7 +15,7 @@ export class FormEneEniFichierComponent implements OnInit {
 
   form: FormGroup = this.formBuilder.group({});
 
-  PATH_ROUTE = PATH_ROUTE;
+  loading = false;
 
   tailleMaxUploadFichiers = environment.tailleMaxUploadFichiers;
   tailleMaxUploadFichiersStr = '...';
@@ -41,14 +40,17 @@ export class FormEneEniFichierComponent implements OnInit {
   }
 
   onSubmit() {
+    this.loading = true;
     const form: FormulaireEnergyAmountFile = {
       files: this.listeFichiers.map((f) => f.file),
     };
     this.energyAmountService.createWithFile(form).subscribe(
       (ok) => {
+        this.loading = false;
         this.uploadEffectue = true;
       },
       (error) => {
+        this.loading = false;
         this.errors = error.error.errors;
       }
     );

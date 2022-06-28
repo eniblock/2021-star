@@ -1,7 +1,6 @@
 import { environment } from 'src/environments/environment';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { PATH_ROUTE } from 'src/app/app-routing.module';
 import {
   Fichier,
   ListeFichiersEtEtat,
@@ -18,7 +17,7 @@ import { FormulaireOrdreFinLimitationFichier } from 'src/app/models/OrdreLimitat
 export class FormOrdreFinLimitationFichierComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({});
 
-  PATH_ROUTE = PATH_ROUTE;
+  loading = false;
 
   tailleMaxUploadFichiers = environment.tailleMaxUploadFichiers;
   tailleMaxUploadFichiersStr = '...';
@@ -42,14 +41,17 @@ export class FormOrdreFinLimitationFichierComponent implements OnInit {
   }
 
   onSubmit() {
+    this.loading = true;
     const form: FormulaireOrdreFinLimitationFichier = {
       files: this.listeFichiers.map((f) => f.file),
     };
     this.ordreLimitationService.creerOrdreFinAvecFichiers(form).subscribe(
       (ok) => {
+        this.loading = false;
         this.uploadEffectue = true;
       },
       (error) => {
+        this.loading = false;
         this.errors = error.error.errors;
       }
     );

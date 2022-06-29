@@ -3,6 +3,7 @@
 secret_settings(disable_scrub=True)
 
 config.define_bool("dev-frontend")
+config.define_bool("dev-hlf-k8s")
 config.define_bool("no-volumes")
 config.define_string("env")
 config.define_string_list('orgs', args=True)
@@ -109,6 +110,11 @@ image_build(
     'chaincode',
 )
 
+if cfg.get('dev-hlf-k8s'):
+    image_build('registry.gitlab.com/xdev-tech/xdev-enterprise-business-network/hlf-k8s/helper', '../hlf-k8s/helper')
+    image_build('registry.gitlab.com/xdev-tech/xdev-enterprise-business-network/hlf-k8s/ccid', '../hlf-k8s/ccid')
+
+
 load('ext://namespace', 'namespace_create')
 load('ext://helm_remote', 'helm_remote')
 
@@ -126,6 +132,10 @@ if not os.path.exists('./hlf/' + env + '/generated/genesis.block'):
     local(dk_run + 'env FABRIC_CFG_PATH=/hlf/' + env + ' configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock /hlf/' + env + '/generated/genesis.block')
 if not os.path.exists('./hlf/' + env + '/generated/star.tx'):
     local(dk_run + 'env FABRIC_CFG_PATH=/hlf/' + env + ' configtxgen -profile TwoOrgsChannel -outputCreateChannelTx /hlf/' + env + '/generated/star.tx -channelID star')
+
+for org in ['enedis', 'producer', 'rte']:
+    if not os.path.exists('./hlf/' + env + '/generated/anchor-star' + org + '.tx'):
+        local(dk_run + 'env FABRIC_CFG_PATH=/hlf/' + env + ' configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate /hlf/' + env + '/generated/anchor-star-' + org + '.tx -channelID star -asOrg ' + org)
 
 secret_path = './hlf/' + env + '/generated/secrets.yaml'
 if not os.path.exists(secret_path):
@@ -147,7 +157,7 @@ if not os.path.exists(secret_path):
         local('./hlf/dev/user-generate.sh ' + org)
         generate_secret('-n ' + org + ' generic star-peer-connection --from-file=connection.yaml=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/connection-' + org + '.yaml')
         generate_secret('-n ' + org + ' generic star-user-id --from-file=User1.id=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/User1.id')
-        generate_secret('-n ' + org + ' generic starchannel --from-file=./hlf/' + env + '/generated/star.tx')
+        generate_secret('-n ' + org + ' generic starchannel --from-file=./hlf/' + env + '/generated/star.tx --from-file=./hlf/' + env + '/generated/anchor-star-' + org + '.tx')
         generate_secret('-n ' + org + ' generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/' + env + '/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt')
         for peer in ['peer1']:
             generate_secret('-n ' + org + ' generic hlf--' + peer + '-idcert --from-file=./hlf/' + env + '/generated/crypto-config/peerOrganizations/' + org + '/peers/' + peer + '.' + org + '/msp/signcerts/' + peer + '.' + org + '-cert.pem')
@@ -170,7 +180,7 @@ k8s_yaml(read_file(secret_path))
 for orderer in ['orderer1', 'orderer2', 'orderer3']:
     helm_remote('hlf-ord',
         repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-        version="0.1.0-develop.38",
+        version="0.1.0-develop.41",
         namespace='orderer',
         release_name=orderer,
         values=['helm/hlf-ord/values-orderer-' + env + '-' + orderer + '.yaml'],
@@ -187,13 +197,23 @@ for orderer in ['orderer1', 'orderer2', 'orderer3']:
 
 for org in ['enedis', 'rte', 'producer']:
     for peer in ['peer1']:
-        helm_remote('hlf-peer',
-            repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-            version="0.1.0-develop.38",
-            namespace=org,
-            release_name=peer,
-            values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],
-        )
+        if cfg.get('dev-hlf-k8s'):
+            k8s_yaml(
+                helm(
+                    '../hlf-k8s/hlf-peer',
+                    namespace=org,
+                    name=peer,
+                    values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],
+                )
+            )
+        else:
+            helm_remote('hlf-peer',
+                repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
+                version="0.1.0-develop.41",
+                namespace=org,
+                release_name=peer,
+                values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],
+            )
 
         k8s_resource(peer + '-hlf-peer:statefulset:' + org, labels=[org])
         k8s_resource(peer + '-hlf-peer-couchdb:statefulset:' + org, labels=[org])

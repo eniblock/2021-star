@@ -66,6 +66,7 @@ secrets:
     - name: star
       secretName: starchannel
       orderer_address: orderer1.orderer.testing.star.eniblock.fr:443
+      anchorKey: anchor-star-producer
 
   ## This should contain the Certificate of the Peer Organisation admin
   ## This is necessary to successfully run the peer

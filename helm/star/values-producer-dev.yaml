@@ -12,6 +12,14 @@ backend:
 keycloak:
   ingress:
     host: "producer.localhost"
+  configurator:
+    secrets:
+      users:
+        - username: userproducer
+          first_name: user
+          last_name: producer
+          email: userproducer@star.com
+          initial_password: kcuserproducer
 
 mail:
   dev: true

@@ -12,6 +12,14 @@ backend:
 keycloak:
   ingress:
     host: "enedis.localhost"
+  configurator:
+    secrets:
+      users:
+        - username: userenedis
+          first_name: user
+          last_name: enedis
+          email: userenedis@star.com
+          initial_password: kcuserenedis
 
 mail:
   dev: true

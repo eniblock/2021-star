@@ -134,7 +134,7 @@ if not os.path.exists('./hlf/' + env + '/generated/star.tx'):
     local(dk_run + 'env FABRIC_CFG_PATH=/hlf/' + env + ' configtxgen -profile TwoOrgsChannel -outputCreateChannelTx /hlf/' + env + '/generated/star.tx -channelID star')
 
 for org in ['enedis', 'producer', 'rte']:
-    if not os.path.exists('./hlf/' + env + '/generated/anchor-star' + org + '.tx'):
+    if not os.path.exists('./hlf/' + env + '/generated/anchor-star-' + org + '.tx'):
         local(dk_run + 'env FABRIC_CFG_PATH=/hlf/' + env + ' configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate /hlf/' + env + '/generated/anchor-star-' + org + '.tx -channelID star -asOrg ' + org)
 
 secret_path = './hlf/' + env + '/generated/secrets.yaml'

@@ -5,6 +5,9 @@ set -ex
 docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/testing:/hlf/testing hyperledger/fabric-tools:2.3  cryptogen generate --config=/hlf/testing/crypto-config.yaml --output=/hlf/testing/generated/crypto-config
 docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/testing:/hlf/testing hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/testing configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock /hlf/testing/generated/genesis.block
 docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/testing:/hlf/testing hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/testing configtxgen -profile TwoOrgsChannel -outputCreateChannelTx /hlf/testing/generated/star.tx -channelID star
+docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/testing:/hlf/testing hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/testing configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate /hlf/testing/generated/anchor-star-enedis.tx -channelID star -asOrg enedis
+docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/testing:/hlf/testing hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/testing configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate /hlf/testing/generated/anchor-star-producer.tx -channelID star -asOrg producer
+docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/testing:/hlf/testing hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/testing configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate /hlf/testing/generated/anchor-star-rte.tx -channelID star -asOrg rte
 
 ./hlf/testing/ccp-generate.sh enedis
 ./hlf/testing/ccp-generate.sh producer
@@ -57,7 +60,7 @@ function generate_secrets {
     echo ---
     kubectl create  --dry-run=client -o yaml namespace enedis-testing
     echo ---
-    kubectl create secret --dry-run=client -o yaml -n enedis-testing generic starchannel --from-file=./hlf/testing/generated/star.tx
+    kubectl create secret --dry-run=client -o yaml -n enedis-testing generic starchannel --from-file=./hlf/testing/generated/star.tx --from-file=./hlf/testing/generated/anchor-star-enedis.tx
     echo ---
     kubectl create secret --dry-run=client -o yaml -n enedis-testing generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/testing/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt
     echo ---
@@ -107,7 +110,7 @@ function generate_secrets {
     echo ---
     kubectl create  --dry-run=client -o yaml namespace rte-testing
     echo ---
-    kubectl create secret --dry-run=client -o yaml -n rte-testing generic starchannel --from-file=./hlf/testing/generated/star.tx
+    kubectl create secret --dry-run=client -o yaml -n rte-testing generic starchannel --from-file=./hlf/testing/generated/star.tx --from-file=./hlf/testing/generated/anchor-star-rte.tx
     echo ---
     kubectl create secret --dry-run=client -o yaml -n rte-testing generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/testing/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt
     echo ---
@@ -158,7 +161,7 @@ function generate_secrets {
     echo ---
     kubectl create  --dry-run=client -o yaml namespace producer-testing
     echo ---
-    kubectl create secret --dry-run=client -o yaml -n producer-testing generic starchannel --from-file=./hlf/testing/generated/star.tx
+    kubectl create secret --dry-run=client -o yaml -n producer-testing generic starchannel --from-file=./hlf/testing/generated/star.tx --from-file=./hlf/testing/generated/anchor-star-producer.tx
     echo ---
     kubectl create secret --dry-run=client -o yaml -n producer-testing generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/testing/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt
     echo ---

@@ -1,8 +1,10 @@
-{
-    "measurementUnitName" : "MNHIZIU89787",
-    "startCreatedDateTime" : "2020-01-01T14:30:00Z",
-    "messageType" : "message type",
-    "businessType" : "business Type",
-    "reasonCode" : "reason code",
-    "orderEnd" : false
-}
+[
+  {
+    "measurementUnitName": "MNHIZIU89787",
+    "startCreatedDateTime": "2020-01-01T14:30:00Z",
+    "messageType": "message type",
+    "businessType": "business Type",
+    "reasonCode": "reason code",
+    "orderEnd": false
+  }
+]

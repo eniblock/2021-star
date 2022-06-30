@@ -18,9 +18,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoriqueLimitation {
-
     private Site site;
     private Producer producer;
     private EnergyAmount energyAmount;
     private OrdreLimitation ordreLimitation;
+    private OrdreLimitation[] subOrderList;
 }

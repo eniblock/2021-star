@@ -25,7 +25,7 @@ import static java.util.Collections.emptyList;
 @Slf4j
 @Repository
 public class OrdreLimitationRepository {
-    public static final String CREATE = "CreateActivationDocument";
+    public static final String CREATE_LIST = "CreateActivationDocumentList";
     public static final String GET_ORDER_BY_QUERY = "GetActivationDocumentByQuery";
     public static final String GET_BY_QUERY = "GetActivationDocumentByQuery";
     public static final String GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE = "GetActivationDocumentReconciliationState";
@@ -53,7 +53,7 @@ public class OrdreLimitationRepository {
         for (OrdreLimitation ordreLimitation : ordreLimitations) {
             if (ordreLimitation != null) {
                 try {
-                    contract.submitTransaction(CREATE, objectMapper.writeValueAsString(ordreLimitation));
+                    contract.submitTransaction(CREATE_LIST, objectMapper.writeValueAsString(ordreLimitation));
                     // Appeler la fonction GetActivationDocumentReconciliationState
                     byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
                     // Appeler la fonction UpdateActivationDocumentByOrders

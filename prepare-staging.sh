@@ -5,6 +5,9 @@ set -ex
 docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/staging:/hlf/staging hyperledger/fabric-tools:2.3  cryptogen generate --config=/hlf/staging/crypto-config.yaml --output=/hlf/staging/generated/crypto-config
 docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/staging:/hlf/staging hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/staging configtxgen -profile TwoOrgsOrdererGenesis -channelID system-channel -outputBlock /hlf/staging/generated/genesis.block
 docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/staging:/hlf/staging hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/staging configtxgen -profile TwoOrgsChannel -outputCreateChannelTx /hlf/staging/generated/star.tx -channelID star
+docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/staging:/hlf/staging hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/staging configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate /hlf/staging/generated/anchor-star-enedis.tx -channelID star -asOrg enedis
+docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/staging:/hlf/staging hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/staging configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate /hlf/staging/generated/anchor-star-producer.tx -channelID star -asOrg producer
+docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/staging:/hlf/staging hyperledger/fabric-tools:2.3 env FABRIC_CFG_PATH=/hlf/staging configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate /hlf/staging/generated/anchor-star-rte.tx -channelID star -asOrg rte
 
 ./hlf/staging/ccp-generate.sh enedis
 ./hlf/staging/ccp-generate.sh producer
@@ -57,7 +60,7 @@ function generate_secrets {
     echo ---
     kubectl create  --dry-run=client -o yaml namespace enedis-staging
     echo ---
-    kubectl create secret --dry-run=client -o yaml -n enedis-staging generic starchannel --from-file=./hlf/staging/generated/star.tx
+    kubectl create secret --dry-run=client -o yaml -n enedis-staging generic starchannel --from-file=./hlf/staging/generated/star.tx --from-file=./hlf/staging/generated/anchor-star-enedis.tx
     echo ---
     kubectl create secret --dry-run=client -o yaml -n enedis-staging generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/staging/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt
     echo ---
@@ -107,7 +110,7 @@ function generate_secrets {
     echo ---
     kubectl create  --dry-run=client -o yaml namespace rte-staging
     echo ---
-    kubectl create secret --dry-run=client -o yaml -n rte-staging generic starchannel --from-file=./hlf/staging/generated/star.tx
+    kubectl create secret --dry-run=client -o yaml -n rte-staging generic starchannel --from-file=./hlf/staging/generated/star.tx --from-file=./hlf/staging/generated/anchor-star-rte.tx
     echo ---
     kubectl create secret --dry-run=client -o yaml -n rte-staging generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/staging/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt
     echo ---
@@ -158,7 +161,7 @@ function generate_secrets {
     echo ---
     kubectl create  --dry-run=client -o yaml namespace producer-staging
     echo ---
-    kubectl create secret --dry-run=client -o yaml -n producer-staging generic starchannel --from-file=./hlf/staging/generated/star.tx
+    kubectl create secret --dry-run=client -o yaml -n producer-staging generic starchannel --from-file=./hlf/staging/generated/star.tx --from-file=./hlf/staging/generated/anchor-star-producer.tx
     echo ---
     kubectl create secret --dry-run=client -o yaml -n producer-staging generic hlf--ord-tlsrootcert --from-file=cacert.pem=./hlf/staging/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt
     echo ---

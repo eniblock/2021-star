@@ -44,7 +44,7 @@ export class EnergyAmountController {
             throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
         }
 
-        if (checkSite) {
+        if (checkSite && energyObj.registeredResourceMrid && energyObj.registeredResourceMrid !== "") {
             try {
                 await SiteService.getObj(ctx, params, energyObj.registeredResourceMrid);
             } catch(error) {

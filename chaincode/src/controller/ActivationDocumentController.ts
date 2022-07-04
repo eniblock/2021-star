@@ -469,7 +469,7 @@ export class ActivationDocumentController {
         }
 
         const registeredResourceMridList_str = JSON.stringify(registeredResourceMridList);
-        const orderType = childReference.data.businessType;
+        // const orderType = childReference.data.businessType;
 
         const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
@@ -484,7 +484,7 @@ export class ActivationDocumentController {
         var args: string[] = [];
         args.push(`"potentialParent":true`);
         args.push(`"registeredResourceMrid":{"$in":${registeredResourceMridList_str}}`);
-        args.push(`"businessType":"${orderType}"`);
+        // args.push(`"businessType":"${orderType}"`);
         const date_criteria: string = `"$or":[`
         .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(queryDate)},"$lte":${JSON.stringify(datePlusPCTMT)}}},`)
         .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(queryDate)}}}`)

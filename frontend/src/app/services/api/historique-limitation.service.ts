@@ -14,7 +14,7 @@ import {environment} from 'src/environments/environment';
 import {UrlService} from '../common/url.service';
 import {RequestForm} from "../../models/RequestForm";
 
-const MOCK = false;
+const MOCK = true;
 
 @Injectable({
   providedIn: 'root',
@@ -64,140 +64,43 @@ const getMocks = (
 ): Observable<RechercheHistoriqueLimitationEntite[]> => {
   return of([
     {
-      meteringPointMrid: 'mpmrid1',
-      technologyType: TechnologyType.EOLIEN,
-      producerMarketParticipantName: 'Prod2',
-      producerMarketParticipantMrid: '17Y100A102R0629X',
-      siteName: 'sites 5 /dpt',
-      typeSite: TypeSite.HTA,
-      rte: {
+      site: {
+        typeSite: TypeSite.HTA,
+        producerMarketParticipantMrid: '---',
+        producerMarketParticipantName: '---',
+        siteName: 'sites 5 /dpt',
+        technologyType: TechnologyType.EOLIEN,
+        meteringPointMrid: 'mpmrid1',
+        siteAdminMRID: '',
+        siteLocation: '',
+        siteType: '',
+        substationName: '',
+        substationMrid: '',
+        systemOperatorEntityFlexibilityDomainMrid: '',
+        systemOperatorEntityFlexibilityDomainName: '',
+        systemOperatorCustomerServiceName: '',
+        systemOperatorMarketParticipantName: '',
+        siteIecCode: '',
+      },
+      producer: {
+        producerMarketParticipantMrid: '17Y100A102R0629X',
+        producerMarketParticipantName: 'Prod2',
+        producerMarketParticipantRoleType: '',
+      },
+      energyAmount: {
+        quantity: '9'
+      },
+      ordreLimitation: {
         originAutomationRegisteredResourceMrid: 'CONFOLENS',
         startCreatedDateTime: '2020-01-01T00:00:00Z',
         endCreatedDateTime: '2020-01-02T23:59:59Z',
-        quantity: 9,
-        motif: {
-          messageType: 'A98',
-          businessType: 'C55',
-          reasonCode: 'Z71',
-        },
-        orderValue: 13,
+        messageType: 'A98',
+        businessType: 'C55',
+        reasonCode: 'Z71',
+        orderValue: '13',
         measurementUnitName: MeasurementUnitName.MW,
       },
-      enedis: {
-        originAutomationRegisteredResourceMrid: 'CONFOLENS',
-        startCreatedDateTime: '2020-01-01T00:00:00Z',
-        endCreatedDateTime: '2020-01-02T23:59:59Z',
-        quantity: 9,
-        motif: {
-          messageType: '',
-          businessType: '',
-          reasonCode: '',
-        },
-        orderValue: 13,
-        measurementUnitName: MeasurementUnitName.MW,
-      },
-    },
-    {
-      meteringPointMrid: 'mpmrid2',
-      technologyType: TechnologyType.EOLIEN,
-      producerMarketParticipantName: 'Prodtest',
-      producerMarketParticipantMrid: '17Y100A101R0629X',
-      siteName: 'sites 7',
-      typeSite: TypeSite.HTA,
-      rte: {
-        originAutomationRegisteredResourceMrid: 'MANSLE',
-        startCreatedDateTime: '2020-01-01T00:00:00Z',
-        endCreatedDateTime: '2020-01-02T23:59:59Z',
-        quantity: 23,
-        motif: {
-          messageType: 'A54',
-          businessType: 'C55',
-          reasonCode: 'A70',
-        },
-        orderValue: 13,
-        measurementUnitName: MeasurementUnitName.MW,
-      },
-      enedis: {
-        originAutomationRegisteredResourceMrid: 'MANSLE',
-        startCreatedDateTime: '2020-01-01T00:00:00Z',
-        endCreatedDateTime: '2020-01-02T23:59:59Z',
-        quantity: 23,
-        motif: {
-          messageType: '',
-          businessType: '',
-          reasonCode: '',
-        },
-        orderValue: 13,
-        measurementUnitName: MeasurementUnitName.MW,
-      },
-    },
-    {
-      meteringPointMrid: 'mpmrid3',
-      technologyType: TechnologyType.EOLIEN,
-      producerMarketParticipantName: 'Prod3',
-      producerMarketParticipantMrid: '17Y100A103R0629X',
-      siteName: 'sites 13',
-      typeSite: TypeSite.HTA,
-      rte: {
-        originAutomationRegisteredResourceMrid: 'MANSLE',
-        startCreatedDateTime: '2020-01-01T00:00:00Z',
-        endCreatedDateTime: '2020-01-02T23:59:59Z',
-        quantity: 17,
-        motif: {
-          messageType: 'A54',
-          businessType: 'C55',
-          reasonCode: 'A70',
-        },
-        orderValue: 13,
-        measurementUnitName: MeasurementUnitName.MW,
-      },
-      enedis: {
-        originAutomationRegisteredResourceMrid: 'MANSLE',
-        startCreatedDateTime: '2020-01-01T00:00:00Z',
-        endCreatedDateTime: '2020-01-02T23:59:59Z',
-        quantity: 17,
-        motif: {
-          messageType: 'D01',
-          businessType: 'Z01',
-          reasonCode: 'A70',
-        },
-        orderValue: 13,
-        measurementUnitName: MeasurementUnitName.MW,
-      },
-    },
-    {
-      meteringPointMrid: 'mpmrid4',
-      technologyType: TechnologyType.EOLIEN,
-      producerMarketParticipantName: 'Prod2',
-      producerMarketParticipantMrid: '17Y100A102R0629X',
-      siteName: 'sites 23',
-      typeSite: TypeSite.HTA,
-      rte: {
-        originAutomationRegisteredResourceMrid: 'LONGCHAMPS',
-        startCreatedDateTime: '2020-01-01T00:00:00Z',
-        endCreatedDateTime: '2020-01-02T23:59:59Z',
-        quantity: 23,
-        motif: {
-          messageType: 'A98',
-          businessType: 'C55',
-          reasonCode: 'A70',
-        },
-        orderValue: 13,
-        measurementUnitName: MeasurementUnitName.MW,
-      },
-      enedis: {
-        originAutomationRegisteredResourceMrid: 'LONGCHAMPS',
-        startCreatedDateTime: '2020-01-01T00:00:00Z',
-        endCreatedDateTime: '2020-01-02T23:59:59Z',
-        quantity: 23,
-        motif: {
-          messageType: 'D01',
-          businessType: 'Z01',
-          reasonCode: 'A70',
-        },
-        orderValue: 13,
-        measurementUnitName: MeasurementUnitName.MW,
-      },
+      subOrderList: []
     },
   ]);
 };

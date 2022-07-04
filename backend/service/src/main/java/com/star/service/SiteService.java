@@ -192,6 +192,11 @@ public class SiteService {
                 importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.unknown.error",
                         new String[]{meteringPointMrId}, null));
             }
+
+            if (!isValideSiteMeteringPoint(instance, meteringPointMrId)) {
+                importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.import.error",
+                        new String[]{meteringPointMrId, instance.getValue()}, null));
+            }
         }
         if (isNotEmpty(importSiteResult.getErrors())) {
             importSiteResult.setDatas(emptyList());
@@ -208,6 +213,10 @@ public class SiteService {
             }
         });
         return importSiteResult;
+    }
+
+    public boolean isValideSiteMeteringPoint(InstanceEnum instance, String meteringPointMrId) {
+        return (DSO.equals(instance) && isSiteHTA(meteringPointMrId)) || (TSO.equals(instance) && isSiteHTB(meteringPointMrId));
     }
 
     public boolean existSite(String meteringPointMrId) throws TechnicalException {

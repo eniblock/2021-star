@@ -1,3 +1,4 @@
+[
 {
     "originAutomationRegisteredResourceMrid" : "ORIGIN_LNKINS_LKNZ",
     "registeredResourceMrid": "PRM30001510803649",
@@ -8,3 +9,4 @@
     "reasonCode" : "reason code",
     "orderEnd" : "false"
 }
+]

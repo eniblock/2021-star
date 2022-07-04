@@ -207,8 +207,9 @@ public class EnergyAmountService {
             throw new IllegalArgumentException("Erreur - ActivationDocumentMrid " + energyAmount.getActivationDocumentMrid() + " ne correspond à aucun ordre de limitation.");
         }
         OrdreLimitation ordreLimitation = ordreLimitations.get(0);
+        List<SystemOperator> systemOperators = marketParticipantService.getSystemOperators();
         Optional<SystemOperator> optionalSystemOperator =
-                marketParticipantService.getSystemOperators().stream().filter(systemOperator ->
+                systemOperators.stream().filter(systemOperator ->
                         StringUtils.equals(systemOperator.getSystemOperatorMarketParticipantMrid(),
                                 ordreLimitation.getSenderMarketParticipantMrid())).findFirst();
         if (optionalSystemOperator.isPresent()) {
@@ -216,11 +217,27 @@ public class EnergyAmountService {
             energyAmount.setSenderMarketParticipantMrid(systemOperator.getSystemOperatorMarketParticipantMrid());
             energyAmount.setSenderMarketParticipantRole(systemOperator.getSystemOperatorMarketParticipantRoleType());
         }
-        Producer producer = producerService.getProducer(ordreLimitation.getReceiverMarketParticipantMrid());
-        if (producer != null) {
-            energyAmount.setReceiverMarketParticipantMrid(producer.getProducerMarketParticipantMrid());
-            energyAmount.setReceiverMarketParticipantRole(producer.getProducerMarketParticipantRoleType());
+        String receiverMarketParticipantMrid = ordreLimitation.getReceiverMarketParticipantMrid();
+        try {
+            Producer producer = producerService.getProducer(receiverMarketParticipantMrid);
+            if (producer != null) {
+                energyAmount.setReceiverMarketParticipantMrid(producer.getProducerMarketParticipantMrid());
+                energyAmount.setReceiverMarketParticipantRole(producer.getProducerMarketParticipantRoleType());
+            }
+        } catch (TechnicalException tecnicalException) {
+            // STAR-495 - le receiver n'est pas un producer mais un systemOperator.
+            Optional<SystemOperator> optional =
+                    systemOperators.stream().filter(systemOperator ->
+                            StringUtils.equals(systemOperator.getSystemOperatorMarketParticipantMrid(),
+                                    receiverMarketParticipantMrid)).findFirst();
+            if (optional.isPresent()) {
+                SystemOperator systemOperatorReceiverMarketParticipantMrid = optionalSystemOperator.get();
+                energyAmount.setReceiverMarketParticipantMrid(systemOperatorReceiverMarketParticipantMrid.getSystemOperatorMarketParticipantMrid());
+                energyAmount.setReceiverMarketParticipantRole(systemOperatorReceiverMarketParticipantMrid.getSystemOperatorMarketParticipantRoleType());
+            }
+            log.debug("Traitement terminé dans le catch exception ");
         }
+        log.debug("Traitement après l'éventuelle exception");
         energyAmount.setAreaDomain(ARE_DOMAIN_HTA);
         energyAmount.setRegisteredResourceMrid(ordreLimitation.getRegisteredResourceMrid());
         if (creation) {

@@ -18,4 +18,5 @@ public class HistoriqueLimitationDTO {
     private Producer producer;
     private EnergyAmountDTO energyAmount;
     private OrdreLimitation ordreLimitation;
+    private OrdreLimitation[] subOrderList;
 }

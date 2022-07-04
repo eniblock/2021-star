@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoriqueLimitationCriteria {
-
     private String originAutomationRegisteredResourceMrid;
     private String producerMarketParticipantMrid;
     private String producerMarketParticipantName;
@@ -23,7 +22,5 @@ public class HistoriqueLimitationCriteria {
     private String startCreatedDateTime;
     private String endCreatedDateTime;
     private String activationDocumentMrid;
-
     private InstanceEnum instance;
-
 }

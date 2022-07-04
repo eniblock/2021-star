@@ -57,7 +57,7 @@ class OrdreLimitationRepositoryTest extends AbstractTest {
 
         // THEN
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());
-        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.CREATE);
+        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.CREATE_LIST);
         assertThat(objectArgumentCaptor.getValue()).isNotNull();
     }
 

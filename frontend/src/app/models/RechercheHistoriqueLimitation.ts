@@ -22,6 +22,6 @@ export interface RechercheHistoriqueLimitationEntite {
   site: Site,
   producer: Producer,
   energyAmount: EnergyAmount,
-  ordreLimitation: OrdreLimitation,
+  activationDocument: OrdreLimitation,
   subOrderList: OrdreLimitation[],
 }

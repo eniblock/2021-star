@@ -103,7 +103,7 @@ const getMocks = (
       energyAmount: {
         quantity: '9'
       },
-      ordreLimitation: {
+      activationDocument: {
         originAutomationRegisteredResourceMrid: 'CONFOLENS',
         startCreatedDateTime: '2020-01-01T00:00:00Z',
         endCreatedDateTime: '2020-01-02T23:59:59Z',
@@ -144,7 +144,7 @@ const getMocks = (
       energyAmount: {
         quantity: '23'
       },
-      ordreLimitation: {
+      activationDocument: {
         originAutomationRegisteredResourceMrid: 'MANSLE',
         startCreatedDateTime: '2020-01-01T00:00:00Z',
         endCreatedDateTime: '2020-01-02T23:59:59Z',

@@ -40,7 +40,7 @@ export class ActivationsResultatsComponent implements OnChanges {
   private computeData() {
     this.dataComputed = this.data.map((rhl) => {
       const limitationType = getLimitationType(rhl);
-      const motif = motifToString(rhl.ordreLimitation);
+      const motif = motifToString(rhl.activationDocument);
       return {
         ...rhl,
         motif: motif,
@@ -54,10 +54,10 @@ export class ActivationsResultatsComponent implements OnChanges {
       panelClass: 'graph-bottom-sheet',
       data: {
         meteringPointMrid: activation.site.meteringPointMrid,
-        startCreatedDateTime: activation.ordreLimitation.startCreatedDateTime,
-        endCreatedDateTime: activation.ordreLimitation.endCreatedDateTime,
-        orderValueConsign: activation.ordreLimitation.orderValue,
-        measurementUnitNameConsign: activation.ordreLimitation.measurementUnitName,
+        startCreatedDateTime: activation.activationDocument.startCreatedDateTime,
+        endCreatedDateTime: activation.activationDocument.endCreatedDateTime,
+        orderValueConsign: activation.activationDocument.orderValue,
+        measurementUnitNameConsign: activation.activationDocument.measurementUnitName,
       },
     });
   }

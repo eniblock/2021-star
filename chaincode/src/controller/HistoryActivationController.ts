@@ -9,10 +9,11 @@ import { HistoryCriteria } from "../model/historyCriteria";
 import { HistoryInformation } from "../model/historyInformation";
 import { Site } from "../model/site";
 import { STARParameters } from "../model/starParameters";
+
 import { ActivationDocumentController } from "./ActivationDocumentController";
+import { EnergyAmountController } from "./EnergyAmountController";
 
 import { ActivationDocumentService } from "./service/ActivationDocumentService";
-import { EnergyAmountService } from "./service/EnergyAmountService";
 import { HLFServices } from "./service/HLFservice";
 import { ProducerService } from "./service/ProducerService";
 import { QueryStateService } from "./service/QueryStateService";
@@ -191,7 +192,7 @@ export class HistoryActivationController {
                 //DO nothing
             }
             try {
-                information.energyAmount = await EnergyAmountService.getObj(ctx, params, information.activationDocument.activationDocumentMrid);
+                information.energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(ctx, params, information.activationDocument.activationDocumentMrid);
             } catch (error) {
                 //DO nothing
             }

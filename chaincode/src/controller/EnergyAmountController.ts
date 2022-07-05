@@ -167,7 +167,7 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE,  true);
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE);
 
         await EnergyAmountService.write(ctx, params, energyObj);
 
@@ -190,7 +190,7 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE, true);
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE);
 
         //Check existence
         try {
@@ -222,7 +222,7 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI);
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI, true);
 
         await EnergyAmountService.write(ctx, params, energyObj);
 
@@ -247,7 +247,7 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI);
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI, true);
 
         //Check existence
         try {

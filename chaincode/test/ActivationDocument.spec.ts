@@ -1150,7 +1150,7 @@ describe('Star Tests ActivationDocument', () => {
             var args: string[] = [];
             args.push(`"potentialParent":true`);
             args.push(`"registeredResourceMrid":{"$in":${registeredResourceMridList_str}}`);
-            args.push(`"businessType":"${orderType}"`);
+            // args.push(`"businessType":"${orderType}"`);
             const date_criteria: string = `"$or":[`
             .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(queryDate)},"$lte":${JSON.stringify(datePlusPCTMT)}}},`)
             .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(queryDate)}}}`)
@@ -1247,7 +1247,7 @@ describe('Star Tests ActivationDocument', () => {
             var args: string[] = [];
             args.push(`"potentialParent":true`);
             args.push(`"registeredResourceMrid":{"$in":${registeredResourceMridList_str}}`);
-            args.push(`"businessType":"${orderType}"`);
+            // args.push(`"businessType":"${orderType}"`);
             const date_criteria: string = `"$or":[`
             .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(queryDate)},"$lte":${JSON.stringify(datePlusPCTMT)}}},`)
             .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(queryDate)}}}`)

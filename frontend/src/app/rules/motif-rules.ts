@@ -1,4 +1,6 @@
-import { Motif, MotifCode, motifIsEqualTo } from '../models/Motifs';
+import {Motif, MotifCode, motifIsEqualTo} from '../models/Motifs';
+import {OrdreLimitation} from "../models/OrdreLimitation";
+import {isEnedis, isRte} from "./marketParticipantMrid-rules";
 
 /////////////////////////////////////////
 ////////////// MOTIF CODES //////////////
@@ -113,7 +115,7 @@ export const getBusinessTypeByCode = (code: string): MotifCode => {
   return t[0];
 };
 
-export const getreasonCodeByCode = (code: string): MotifCode => {
+export const getReasonCodeByCode = (code: string): MotifCode => {
   const t = ReasonCodes.filter((mt) => mt.code == code);
   return t[0];
 };
@@ -140,7 +142,17 @@ export const getAllReasonCodeByBusinessTypeCode = (
 ////////////// MOTIF NAMES //////////////
 /////////////////////////////////////////
 
-export const motifRteToString = (motif?: Motif): string => {
+export const motifToString = (ordreLimitation: OrdreLimitation): string => {
+  if (isRte(ordreLimitation.senderMarketParticipantMrid)) {
+    return motifRteToString(ordreLimitation);
+  } else if (isEnedis(ordreLimitation.senderMarketParticipantMrid)) {
+    return motifEnedisToString(ordreLimitation);
+  } else {
+    return "ERROR !";
+  }
+}
+
+const motifRteToString = (motif?: Motif | OrdreLimitation): string => {
   if (
     motif == null ||
     motif.messageType == null ||
@@ -208,7 +220,7 @@ export const motifRteToString = (motif?: Motif): string => {
   return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;
 };
 
-export const motifEnedisToString = (motif?: Motif): string => {
+const motifEnedisToString = (motif?: Motif | OrdreLimitation): string => {
   if (
     motif == null ||
     motif.messageType == null ||

@@ -1,3 +1,5 @@
+import {OrdreLimitation} from "./OrdreLimitation";
+
 export interface MotifCode {
   code: string;
   label: string;
@@ -11,7 +13,7 @@ export interface Motif {
 }
 
 export const motifIsEqualTo = (
-  motif1: Motif,
+  motif1: Motif | OrdreLimitation,
   messageType: string,
   businessType: string,
   reasonCode: string

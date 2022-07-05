@@ -4,12 +4,12 @@ import {RechercheHistoriqueLimitationEntite} from "../models/RechercheHistorique
 import {isEnedis} from "./marketParticipantMrid-rules";
 
 export const getLimitationType = (rhl: RechercheHistoriqueLimitationEntite): TypeLimitation => {
-  const enedis = isEnedis(rhl.ordreLimitation.senderMarketParticipantMrid);
+  const enedis = isEnedis(rhl.activationDocument.senderMarketParticipantMrid);
   if (
     enedis &&
-    (motifIsEqualTo(rhl.ordreLimitation, 'D01', 'Z02', 'A70') ||
-      motifIsEqualTo(rhl.ordreLimitation, 'D01', 'Z03', 'Y98') ||
-      motifIsEqualTo(rhl.ordreLimitation, 'D01', 'Z04', 'Y99'))
+    (motifIsEqualTo(rhl.activationDocument, 'D01', 'Z02', 'A70') ||
+      motifIsEqualTo(rhl.activationDocument, 'D01', 'Z03', 'Y98') ||
+      motifIsEqualTo(rhl.activationDocument, 'D01', 'Z04', 'Y99'))
   ) {
     return TypeLimitation.MANUELLE;
   }

@@ -58,10 +58,7 @@ export class ActivationsComponent implements OnInit {
         };
       this.historiqueLimitationService
         .rechercher(this.formRecherche, paginationAvecBookmark)
-        .subscribe(resultat => {
-          this.resultatsRechercheWithOnlyOneSubOrderByOrder = flatHistoriqueLimitation(resultat)
-          console.log(this.resultatsRechercheWithOnlyOneSubOrderByOrder)
-        });
+        .subscribe(resultat => this.resultatsRechercheWithOnlyOneSubOrderByOrder = flatHistoriqueLimitation(resultat));
     }
   }
 

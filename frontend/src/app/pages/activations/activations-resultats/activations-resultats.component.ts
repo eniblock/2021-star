@@ -8,6 +8,7 @@ import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {ActivationGraphComponent} from '../activation-graph/activation-graph.component';
 import {motifEnedisToString, motifRteToString,} from 'src/app/rules/motif-rules';
 import {RechercheHistoriqueLimitationEntite} from 'src/app/models/RechercheHistoriqueLimitation';
+import {getLimitationType} from "../../../rules/limitation-type-rules";
 
 @Component({
   selector: 'app-activations-resultats',
@@ -38,11 +39,8 @@ export class ActivationsResultatsComponent implements OnChanges {
 
   private computeData() {
     this.dataComputed = this.data.map((rhl) => {
+      const limitationType = getLimitationType(rhl);
       /*
-      const limitationType = getLimitationType(
-        rhl.rte?.motif,
-        rhl.enedis?.motif
-      );
       const motif = this.getMotif(        => mettre cette fonction dans "motif-rules.ts"
         rhl.rte?.motif,
         rhl.enedis?.motif,
@@ -54,7 +52,7 @@ export class ActivationsResultatsComponent implements OnChanges {
       return {
         ...rhl,
         motif: 'TODO !!!',
-        limitationType: 'TODO !!!',
+        limitationType: limitationType,
       };
     });
   }

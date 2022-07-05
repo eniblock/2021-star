@@ -1,15 +1,15 @@
-import { TypeLimitation } from '../models/enum/TypeLimitation.enum';
-import { Motif, motifIsEqualTo } from '../models/Motifs';
+import {TypeLimitation} from '../models/enum/TypeLimitation.enum';
+import {Motif, motifIsEqualTo} from '../models/Motifs';
+import {RechercheHistoriqueLimitationEntite} from "../models/RechercheHistoriqueLimitation";
+import {isEnedis} from "./marketParticipantMrid-rules";
 
-export const getLimitationType = (
-  motifRte: Motif | undefined,
-  motifEnedis: Motif | undefined
-): TypeLimitation => {
+export const getLimitationType = (rhl: RechercheHistoriqueLimitationEntite): TypeLimitation => {
+  const enedis = isEnedis(rhl.ordreLimitation.senderMarketParticipantMrid);
   if (
-    motifEnedis != null &&
-    (motifIsEqualTo(motifEnedis, 'D01', 'Z02', 'A70') ||
-      motifIsEqualTo(motifEnedis, 'D01', 'Z03', 'Y98') ||
-      motifIsEqualTo(motifEnedis, 'D01', 'Z04', 'Y99'))
+    enedis &&
+    (motifIsEqualTo(rhl.ordreLimitation, 'D01', 'Z02', 'A70') ||
+      motifIsEqualTo(rhl.ordreLimitation, 'D01', 'Z03', 'Y98') ||
+      motifIsEqualTo(rhl.ordreLimitation, 'D01', 'Z04', 'Y99'))
   ) {
     return TypeLimitation.MANUELLE;
   }

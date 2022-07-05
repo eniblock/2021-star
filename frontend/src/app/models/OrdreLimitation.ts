@@ -32,4 +32,5 @@ export interface OrdreLimitation {
   reasonCode: string;
   orderValue: string;
   measurementUnitName: string;
+  senderMarketParticipantMrid: string;
 }

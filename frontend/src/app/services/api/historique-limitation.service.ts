@@ -114,6 +114,7 @@ const getMocks = (
         reasonCode: 'Z71',
         orderValue: '13',
         measurementUnitName: MeasurementUnitName.MW,
+        senderMarketParticipantMrid: '10XFR-RTE------Q', // 10XFR-RTE------Q    17X100A100A0001A
       },
       subOrderList: []
     },
@@ -149,11 +150,12 @@ const getMocks = (
         originAutomationRegisteredResourceMrid: 'MANSLE',
         startCreatedDateTime: '2020-01-01T00:00:00Z',
         endCreatedDateTime: '2020-01-02T23:59:59Z',
-        messageType: 'A54',
-        businessType: 'C55',
+        messageType: 'D01',
+        businessType: 'Z02',
         reasonCode: 'A70',
         orderValue: '13',
         measurementUnitName: MeasurementUnitName.MW,
+        senderMarketParticipantMrid: '17X100A100A0001A', // 10XFR-RTE------Q    17X100A100A0001A
       },
       subOrderList: [
         {
@@ -165,6 +167,7 @@ const getMocks = (
           reasonCode: 'A70',
           orderValue: '12',
           measurementUnitName: MeasurementUnitName.MW,
+          senderMarketParticipantMrid: '',
         }, {
           originAutomationRegisteredResourceMrid: 'MANSLE3',
           startCreatedDateTime: '2020-01-01T02:00:00Z',
@@ -174,6 +177,7 @@ const getMocks = (
           reasonCode: 'A70',
           orderValue: '11',
           measurementUnitName: MeasurementUnitName.MW,
+          senderMarketParticipantMrid: '',
         }
       ]
     },

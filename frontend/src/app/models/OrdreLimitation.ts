@@ -22,3 +22,15 @@ export interface FormulaireOrdreFinLimitation {
   reasonCode: string;
   endCreatedDateTime: string;
 }
+
+export interface OrdreLimitation {
+  originAutomationRegisteredResourceMrid: string;
+  startCreatedDateTime: string;
+  endCreatedDateTime: string;
+  messageType: string;
+  businessType: string;
+  reasonCode: string;
+  orderValue: string;
+  measurementUnitName: string;
+  senderMarketParticipantMrid: string;
+}

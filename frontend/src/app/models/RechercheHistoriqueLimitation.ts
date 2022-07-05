@@ -25,27 +25,3 @@ export interface RechercheHistoriqueLimitationEntite {
   ordreLimitation: OrdreLimitation,
   subOrderList: OrdreLimitation[],
 }
-
-
-/*
-export interface SystemOperatorData {
-  originAutomationRegisteredResourceMrid?: string;
-  startCreatedDateTime?: string; // JSON
-  endCreatedDateTime?: string; // JSON
-  quantity?: number;                           // => dans energyAmount
-  motif?: Motif;
-  orderValue?: number; // Consigne graph
-  measurementUnitName?: MeasurementUnitName; // Consigne graph
-}
-
-export interface RechercheHistoriqueLimitationEntite {
-  meteringPointMrid: string;
-  technologyType?: TechnologyType;
-  producerMarketParticipantMrid?: string;
-  producerMarketParticipantName?: string;
-  siteName?: string;
-  typeSite: TypeSite;
-  rte?: SystemOperatorData;
-  enedis?: SystemOperatorData;
-}
- */

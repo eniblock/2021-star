@@ -383,4 +383,21 @@ export class EnergyAmountController {
 
         return results;
     }
+
+
+    public static async getEnergyAmountByActivationDocument(
+        ctx: Context,
+        params: STARParameters,
+        activationDocumentMrid: string): Promise<EnergyAmount> {
+
+        const query = `{"selector": {"docType": "${DocType.ENERGY_AMOUNT}", "activationDocumentMrid": "${activationDocumentMrid}"}}`;
+        const allResults = await EnergyAmountService.getQueryArrayResult(ctx, params, query);
+
+        var energyAmout:EnergyAmount;
+        if (allResults && allResults.length >0) {
+            energyAmout = allResults[0];
+        }
+        return energyAmout;
+    }
+
 }

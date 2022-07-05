@@ -17,6 +17,6 @@ public class HistoriqueLimitationDTO {
     private SiteDTO site;
     private Producer producer;
     private EnergyAmountDTO energyAmount;
-    private OrdreLimitation ordreLimitation;
+    private OrdreLimitation activationDocument;
     private OrdreLimitation[] subOrderList;
 }

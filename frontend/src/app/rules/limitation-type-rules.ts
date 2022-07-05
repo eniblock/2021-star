@@ -1,5 +1,5 @@
 import {TypeLimitation} from '../models/enum/TypeLimitation.enum';
-import {Motif, motifIsEqualTo} from '../models/Motifs';
+import {motifIsEqualTo} from '../models/Motifs';
 import {RechercheHistoriqueLimitationEntite} from "../models/RechercheHistoriqueLimitation";
 import {isEnedis} from "./marketParticipantMrid-rules";
 

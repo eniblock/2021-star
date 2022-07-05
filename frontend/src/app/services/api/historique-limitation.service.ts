@@ -167,7 +167,7 @@ const getMocks = (
           reasonCode: 'A70',
           orderValue: '12',
           measurementUnitName: MeasurementUnitName.MW,
-          senderMarketParticipantMrid: '',
+          senderMarketParticipantMrid: '10XFR-RTE------Q',
         }, {
           originAutomationRegisteredResourceMrid: 'MANSLE3',
           startCreatedDateTime: '2020-01-01T02:00:00Z',
@@ -177,7 +177,7 @@ const getMocks = (
           reasonCode: 'A70',
           orderValue: '11',
           measurementUnitName: MeasurementUnitName.MW,
-          senderMarketParticipantMrid: '',
+          senderMarketParticipantMrid: '10XFR-RTE------Q',
         }
       ]
     },

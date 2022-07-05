@@ -7,6 +7,7 @@ import {ActivationGraphComponent} from '../activation-graph/activation-graph.com
 import {motifToString,} from 'src/app/rules/motif-rules';
 import {RechercheHistoriqueLimitationEntite} from 'src/app/models/RechercheHistoriqueLimitation';
 import {getLimitationType} from "../../../rules/limitation-type-rules";
+import {SystemOperator} from "../../../models/SystemOperator";
 
 @Component({
   selector: 'app-activations-resultats',
@@ -15,6 +16,7 @@ import {getLimitationType} from "../../../rules/limitation-type-rules";
 })
 export class ActivationsResultatsComponent implements OnChanges {
   @Input() data: RechercheHistoriqueLimitationEntite[] = [];
+  @Input() systemOperators: SystemOperator[] = [];
   @Input() columnsToDisplay: string[] = [];
   @Output() sortChange = new EventEmitter<Sort>();
 
@@ -24,7 +26,7 @@ export class ActivationsResultatsComponent implements OnChanges {
 
   constructor(
     private instanceService: InstanceService,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
   ) {
   }
 
@@ -39,9 +41,6 @@ export class ActivationsResultatsComponent implements OnChanges {
     this.dataComputed = this.data.map((rhl) => {
       const limitationType = getLimitationType(rhl);
       const motif = motifToString(rhl.ordreLimitation);
-      /*
-      const showDate = whichDateMustBeShown(rhl.typeSite, rhl.enedis?.motif);
-       */
       return {
         ...rhl,
         motif: motif,
@@ -62,4 +61,14 @@ export class ActivationsResultatsComponent implements OnChanges {
       },
     });
   }
+
+  public getSystemOperatorName(mrid: string): string {
+    for (const op of this.systemOperators) {
+      if (op.systemOperatorMarketParticipantMrid == mrid) {
+        return op.systemOperatorMarketParticipantName;
+      }
+    }
+    return "----";
+  }
+
 }

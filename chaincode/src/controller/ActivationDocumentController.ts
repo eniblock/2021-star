@@ -620,7 +620,12 @@ export class ActivationDocumentController {
 
         for (var i = 0; i < comparedDocument.length; i++) {
             const dateParent = new Date(comparedDocument[i].startCreatedDateTime);
-            const dateChild = new Date(referenceDocument.endCreatedDateTime);
+            var dateChild: Date;
+            if (referenceDocument.startCreatedDateTime) {
+                dateChild = new Date(referenceDocument.startCreatedDateTime);
+            } else {
+                dateChild = new Date(referenceDocument.endCreatedDateTime);
+            }
             const delta_loc = Math.abs(dateParent.getTime() - dateChild.getTime());
             if (delta_loc < delta) {
                 delta = delta_loc;

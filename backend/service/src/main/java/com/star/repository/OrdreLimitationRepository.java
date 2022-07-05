@@ -53,7 +53,9 @@ public class OrdreLimitationRepository {
         for (OrdreLimitation ordreLimitation : ordreLimitations) {
             if (ordreLimitation != null) {
                 try {
-                    contract.submitTransaction(CREATE_LIST, objectMapper.writeValueAsString(ordreLimitation));
+                    String json = objectMapper.writeValueAsString(ordreLimitation);
+                    log.debug("Element JSON envoyé à la blockchain : ", json);
+                    contract.submitTransaction(CREATE_LIST, objectMapper.writeValueAsString(json));
                     // Appeler la fonction GetActivationDocumentReconciliationState
                     byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
                     // Appeler la fonction UpdateActivationDocumentByOrders

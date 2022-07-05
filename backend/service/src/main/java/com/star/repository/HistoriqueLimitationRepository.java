@@ -30,12 +30,15 @@ public class HistoriqueLimitationRepository {
 
     public HistoriqueLimitation[] findHistoriqueByQuery(String query) throws BusinessException, TechnicalException {
         try {
+            log.debug("Query envoyé vers la blockchain pour rechercher les historiques de limitation: " + query);
+
             byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_HISTORY, query);
             return response != null ? objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
             }) : null;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des historiques de limitation", exception);
         } catch (ContractException contractException) {
+            log.error("Erreur retournée par la blockachain : ", contractException);
             throw new BusinessException(contractException.getMessage());
         }
     }

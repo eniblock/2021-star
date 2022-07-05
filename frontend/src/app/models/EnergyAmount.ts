@@ -12,3 +12,7 @@ export interface FormulaireEnergyAmount {
   measurementUnitName: string;
   timeInterval: string;
 }
+
+export interface EnergyAmount {
+  quantity: string;
+}

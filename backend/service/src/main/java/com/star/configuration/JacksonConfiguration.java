@@ -13,7 +13,6 @@ public class JacksonConfiguration {
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
         //objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.enable(JsonReadFeature.ALLOW_TRAILING_COMMA.mappedFeature());

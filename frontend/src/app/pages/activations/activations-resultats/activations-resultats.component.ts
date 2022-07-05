@@ -19,8 +19,6 @@ export class ActivationsResultatsComponent implements OnChanges {
   @Input() columnsToDisplay: string[] = [];
   @Output() sortChange = new EventEmitter<Sort>();
 
-  TypeSite = TypeSite;
-
   dataComputed: any = [];
 
   instance?: Instance;
@@ -45,7 +43,7 @@ export class ActivationsResultatsComponent implements OnChanges {
         rhl.rte?.motif,
         rhl.enedis?.motif
       );
-      const motif = this.getMotif(
+      const motif = this.getMotif(        => mettre cette fonction dans "motif-rules.ts"
         rhl.rte?.motif,
         rhl.enedis?.motif,
         rhl.typeSite,

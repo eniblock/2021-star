@@ -8,7 +8,10 @@ import {
   RechercheHistoriqueLimitationEntite,
 } from 'src/app/models/RechercheHistoriqueLimitation';
 import {OrdreRechercheHistoriqueLimitation} from 'src/app/models/enum/OrdreRechercheHistoriqueLimitation.enum';
-import {HistoriqueLimitationService} from 'src/app/services/api/historique-limitation.service';
+import {
+  flatHistoriqueLimitation,
+  HistoriqueLimitationService
+} from 'src/app/services/api/historique-limitation.service';
 import {RequestForm} from "../../models/RequestForm";
 
 @Component({
@@ -22,7 +25,7 @@ export class ActivationsComponent implements OnInit {
   order = OrdreRechercheHistoriqueLimitation.siteName;
   orderDirection = OrderDirection.asc;
 
-  resultatsRecherche?: RechercheHistoriqueLimitationEntite[];
+  resultatsRechercheWithOnlyOneSubOrderByOrder?: RechercheHistoriqueLimitationEntite[]; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder
 
   typeInstance?: Instance;
 
@@ -55,12 +58,15 @@ export class ActivationsComponent implements OnInit {
         };
       this.historiqueLimitationService
         .rechercher(this.formRecherche, paginationAvecBookmark)
-        .subscribe(resultat => this.resultatsRecherche = resultat);
+        .subscribe(resultat => {
+          this.resultatsRechercheWithOnlyOneSubOrderByOrder = flatHistoriqueLimitation(resultat)
+          console.log(this.resultatsRechercheWithOnlyOneSubOrderByOrder)
+        });
     }
   }
 
   private resetResultats() {
-    this.resultatsRecherche = undefined;
+    this.resultatsRechercheWithOnlyOneSubOrderByOrder = undefined;
   }
 
   updateColumnsToDisplay(columnsToDisplay: string[]) {

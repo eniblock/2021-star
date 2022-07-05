@@ -13,6 +13,8 @@ import {
 import {environment} from 'src/environments/environment';
 import {UrlService} from '../common/url.service';
 import {RequestForm} from "../../models/RequestForm";
+import {Motif, motifIsEqualTo} from "../../models/Motifs";
+import {TypeLimitation} from "../../models/enum/TypeLimitation.enum";
 
 const MOCK = true;
 
@@ -53,6 +55,19 @@ export class HistoriqueLimitationService {
     return form == null ? null : JSON.parse(form);
   }
 }
+
+/**
+ * Transforme un historique de limitation en en historique où chaque ordre ayant plusieurs suborders
+ * sont splités en des ordres ayant 1 suborder
+ */
+export const flatHistoriqueLimitation = (histo: RechercheHistoriqueLimitationEntite[]): RechercheHistoriqueLimitationEntite[] => {
+  const h = histo
+    .map(r => r.subOrderList.length == 0
+      ? r
+      : r.subOrderList.map(subOrder => ({...r, subOrderList: [subOrder]}))
+    );
+  return (h as any).flat();
+};
 
 /* *********************************************************
                                MOCKS
@@ -102,5 +117,67 @@ const getMocks = (
       },
       subOrderList: []
     },
+
+    {
+      site: {
+        typeSite: TypeSite.HTA,
+        producerMarketParticipantMrid: '---',
+        producerMarketParticipantName: '---',
+        siteName: 'sites 7',
+        technologyType: TechnologyType.PHOTOVOLTAIQUE,
+        meteringPointMrid: 'mpmrid2',
+        siteAdminMRID: '',
+        siteLocation: '',
+        siteType: '',
+        substationName: '',
+        substationMrid: '',
+        systemOperatorEntityFlexibilityDomainMrid: '',
+        systemOperatorEntityFlexibilityDomainName: '',
+        systemOperatorCustomerServiceName: '',
+        systemOperatorMarketParticipantName: '',
+        siteIecCode: '',
+      },
+      producer: {
+        producerMarketParticipantMrid: '17Y100A101R0629X',
+        producerMarketParticipantName: 'Prodtest',
+        producerMarketParticipantRoleType: '',
+      },
+      energyAmount: {
+        quantity: '23'
+      },
+      ordreLimitation: {
+        originAutomationRegisteredResourceMrid: 'MANSLE',
+        startCreatedDateTime: '2020-01-01T00:00:00Z',
+        endCreatedDateTime: '2020-01-02T23:59:59Z',
+        messageType: 'A54',
+        businessType: 'C55',
+        reasonCode: 'A70',
+        orderValue: '13',
+        measurementUnitName: MeasurementUnitName.MW,
+      },
+      subOrderList: [
+        {
+          originAutomationRegisteredResourceMrid: 'MANSLE2',
+          startCreatedDateTime: '2020-01-01T01:00:00Z',
+          endCreatedDateTime: '2020-01-02T20:59:59Z',
+          messageType: 'D01',
+          businessType: 'Z01',
+          reasonCode: 'A70',
+          orderValue: '12',
+          measurementUnitName: MeasurementUnitName.MW,
+        }, {
+          originAutomationRegisteredResourceMrid: 'MANSLE3',
+          startCreatedDateTime: '2020-01-01T02:00:00Z',
+          endCreatedDateTime: '2020-01-02T22:59:59Z',
+          messageType: 'D01',
+          businessType: 'Z01',
+          reasonCode: 'A70',
+          orderValue: '11',
+          measurementUnitName: MeasurementUnitName.MW,
+        }
+      ]
+    },
+
+
   ]);
 };

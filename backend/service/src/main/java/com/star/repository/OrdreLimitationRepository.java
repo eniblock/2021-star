@@ -50,24 +50,21 @@ public class OrdreLimitationRepository {
             return emptyList();
         }
         log.info("Sauvegarde des ordres de limitation : {}", ordreLimitations);
-        for (OrdreLimitation ordreLimitation : ordreLimitations) {
-            if (ordreLimitation != null) {
-                try {
-                    String json = objectMapper.writeValueAsString(ordreLimitation);
-                    log.debug("Element JSON envoyé à la blockchain : ", json);
-                    contract.submitTransaction(CREATE_LIST, objectMapper.writeValueAsString(json));
-                    // Appeler la fonction GetActivationDocumentReconciliationState
-                    byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
-                    // Appeler la fonction UpdateActivationDocumentByOrders
-                    if (evaluateTransaction != null) {
-                        contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS, new String(evaluateTransaction));
-                    }
-                } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur technique lors de création de l'ordre de limitation ", exception);
-                } catch (ContractException contractException) {
-                    throw new BusinessException(contractException.getMessage());
-                }
+        try {
+            String json = objectMapper.writeValueAsString(ordreLimitations);
+            contract.submitTransaction(CREATE_LIST, objectMapper.writeValueAsString(json));
+            log.debug("Element JSON envoyé à la blockchain : ", json);
+            contract.submitTransaction(CREATE_LIST, objectMapper.writeValueAsString(json));
+            // Appeler la fonction GetActivationDocumentReconciliationState
+            byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
+            // Appeler la fonction UpdateActivationDocumentByOrders
+            if (evaluateTransaction != null) {
+                contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS, new String(evaluateTransaction));
             }
+        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
+            throw new TechnicalException("Erreur technique lors de création de l'ordre de limitation ", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
         }
         return ordreLimitations;
     }

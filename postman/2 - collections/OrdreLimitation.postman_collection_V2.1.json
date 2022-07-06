@@ -1,0 +1,201 @@
+{
+	"info": {
+		"_postman_id": "b8a725ea-d51e-4f83-9982-ba79f216f431",
+		"name": "OrdreLimitation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19736127"
+	},
+	"item": [
+		{
+			"name": "RTE - Post ordre Debut limitation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/ordreLimitations/debut",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"ordreLimitations",
+						"debut"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Post ordre couple",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/ordreLimitations/couple",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"ordreLimitations",
+						"couple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE -  Liste des ordres de début de limitation",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/ordreLimitations/debut",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"ordreLimitations",
+						"debut"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE -  Liste des ordres",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_rte}}/ordreLimitations?activationDocumentMrid=",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"ordreLimitations"
+					],
+					"query": [
+						{
+							"key": "activationDocumentMrid",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Post couple ordre début/fin limitation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/ordreLimitations/couple",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"ordreLimitations",
+						"couple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS -  Liste des ordres",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_enedis}}/ordreLimitations?activationDocumentMrid=",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"ordreLimitations"
+					],
+					"query": [
+						{
+							"key": "activationDocumentMrid",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

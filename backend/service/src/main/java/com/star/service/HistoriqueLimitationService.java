@@ -11,6 +11,8 @@ import com.star.repository.HistoriqueLimitationRepository;
 // import com.star.service.helpers.QueryBuilderHelper;
 import com.star.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,17 @@ public class HistoriqueLimitationService {
     private HistoriqueLimitationRepository historiqueLimitationRepository;
 
     public HistoriqueLimitation[] findHistorique(HistoriqueLimitationCriteria criteria, String order, OrderDirection orderDirection) throws TechnicalException {
-        return historiqueLimitationRepository.findHistoriqueByQuery(criteria);
+        HistoriqueLimitation[] returnedArray = {};
+
+        if (StringUtils.isNotBlank(criteria.getOriginAutomationRegisteredResourceMrid())
+            || StringUtils.isNotBlank(criteria.getProducerMarketParticipantMrid())
+            || StringUtils.isNotBlank(criteria.getSiteName())
+            || StringUtils.isNotBlank(criteria.getStartCreatedDateTime())
+            || StringUtils.isNotBlank(criteria.getEndCreatedDateTime())) {
+                returnedArray = historiqueLimitationRepository.findHistoriqueByQuery(criteria);
+            }
+
+        return returnedArray;
     }
 
     // public HistoriqueLimitation[] findHistorique(HistoriqueLimitationCriteria criteria, String order, OrderDirection orderDirection) throws TechnicalException {

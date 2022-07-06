@@ -244,11 +244,11 @@ export class HistoryActivationController {
                 }
 
                 const information: HistoryInformation = {
-                    activationDocument: JSON.parse(JSON.stringify(activationDocument)),
-                    subOrderList: JSON.parse(JSON.stringify(subOrderList)),
-                    site: JSON.parse(JSON.stringify(siteRegistered)),
-                    producer: JSON.parse(JSON.stringify(producer)),
-                    energyAmount: JSON.parse(JSON.stringify(energyAmount))
+                    activationDocument: activationDocument,
+                    subOrderList: subOrderList,
+                    site: siteRegistered,
+                    producer: producer,
+                    energyAmount: energyAmount
                 };
 
                 informationList.push(information);

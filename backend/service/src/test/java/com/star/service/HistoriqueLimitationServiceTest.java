@@ -43,15 +43,15 @@ class HistoriqueLimitationServiceTest extends AbstractTest {
                 .build();
 
         // WHEN
-        var siteResponseResult = historiqueLimitationService.findHistorique(historiqueLimitationCriteria, "10", OrderDirection.asc);
+        // var siteResponseResult =
+        historiqueLimitationService.findHistorique(historiqueLimitationCriteria, "10", OrderDirection.asc);
 
         // THEN
         verify(historiqueLimitationRepository, Mockito.times(1)).findHistoriqueByQuery(criteriaCaptor.capture());
 
         HistoriqueLimitationCriteria criteriaValue = criteriaCaptor.getValue();
-        assertTrue(true);
-        // assertThat(criteriaValue).contains("docType", "originAutomationRegisteredResourceMrid", "producerMarketParticipantMrid", "siteName",
-        //         "startCreatedDateTime", "endCreatedDateTime", "activationDocumentMrid");
+        assertThat(criteriaValue).extracting("originAutomationRegisteredResourceMrid", "producerMarketParticipantMrid", "siteName", "startCreatedDateTime", "endCreatedDateTime", "activationDocumentMrid")
+                .containsExactly("originAutomationRegisteredResourceMrid", "producerMarketParticipantMrid", "site_test", "2022-08-12T00:00:00Z", "2022-08-12T00:00:00Z", "activationDocumentMrid");
     }
 
     // @Test

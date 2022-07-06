@@ -43,6 +43,8 @@ public class HistoriqueLimitationRepository {
 
             returnedArray = response != null ? objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
             }) : returnedArray;
+
+            log.debug("Valeur parsée suite à une recherche d'historique de limitation: " + objectMapper.writeValueAsString(returnedArray));
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des historiques de limitation", exception);
         } catch (ContractException contractException) {

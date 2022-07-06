@@ -27,30 +27,32 @@ export class HistoryActivationController {
         inputStr: string): Promise<HistoryInformation[]> {
 
         let criteriaObj: HistoryCriteria;
-        try {
-            criteriaObj = JSON.parse(inputStr);
-        } catch (error) {
-        // console.error('error=', error);
-            throw new Error(`ERROR HistoriqueActivationDocumentCriteria-> Input string NON-JSON value`);
-        }
-
-        HistoryCriteria.schema.validateSync(
-            criteriaObj,
-            {strict: true, abortEarly: false},
-        );
-
-        const role: string = params.values.get(ParametersType.ROLE);
-        criteriaObj = await HistoryActivationController.consolidateCriteria(ctx, params, criteriaObj, role);
-
-
         var result : HistoryInformation[];
-        if (criteriaObj) {
-            const query = await HistoryActivationController.buildActivationDocumentQuery(criteriaObj);
 
-            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+        if (inputStr && inputStr !=="") {
+            try {
+                criteriaObj = JSON.parse(inputStr);
+            } catch (error) {
+            // console.error('error=', error);
+                throw new Error(`ERROR HistoriqueActivationDocumentCriteria-> Input string NON-JSON value`);
+            }
 
-            const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
-            result = await HistoryActivationController.consolidate(ctx, params, allActivationDocument);
+            HistoryCriteria.schema.validateSync(
+                criteriaObj,
+                {strict: true, abortEarly: false},
+            );
+
+            const role: string = params.values.get(ParametersType.ROLE);
+            criteriaObj = await HistoryActivationController.consolidateCriteria(ctx, params, criteriaObj, role);
+
+            if (criteriaObj) {
+                const query = await HistoryActivationController.buildActivationDocumentQuery(criteriaObj);
+
+                const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+
+                const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
+                result = await HistoryActivationController.consolidate(ctx, params, allActivationDocument);
+            }
         }
 
         return result;

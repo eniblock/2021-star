@@ -8,16 +8,16 @@ import com.star.models.common.OrderDirection;
 import com.star.models.historiquelimitation.HistoriqueLimitation;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.repository.HistoriqueLimitationRepository;
-import com.star.service.helpers.QueryBuilderHelper;
+// import com.star.service.helpers.QueryBuilderHelper;
 import com.star.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+// import java.util.ArrayList;
 import java.util.List;
 
-import static com.star.enums.DocTypeEnum.ACTIVATION_DOCUMENT;
+// import static com.star.enums.DocTypeEnum.ACTIVATION_DOCUMENT;
 import static com.star.enums.InstanceEnum.PRODUCER;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -26,32 +26,36 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * SPDX-License-Identifier: Apache-2.0
  */
 @Service
-@Slf4j
+// @Slf4j
 public class HistoriqueLimitationService {
 
     @Autowired
     private HistoriqueLimitationRepository historiqueLimitationRepository;
 
     public HistoriqueLimitation[] findHistorique(HistoriqueLimitationCriteria criteria, String order, OrderDirection orderDirection) throws TechnicalException {
-        var selectors = new ArrayList<Selector>();
-        var DOC_TYPE = ACTIVATION_DOCUMENT.getDocType();
-        var INDEX_NAME = ACTIVATION_DOCUMENT.getIndexName();
-        selectors.add(Expression.eq("docType", DOC_TYPE));
-        addCriteria(selectors, criteria);
-        var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
-
-        // Index and order
-        if ("originAutomationRegisteredResourceMrid".equals(order)) {
-            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(order));
-            queryBuilder.useIndex(INDEX_NAME, "indexOriginAutomationRegisteredResourceMrid");
-        } else {
-            queryBuilder.useIndex(INDEX_NAME);
-        }
-
-        String query = queryBuilder.build();
-        log.debug("Transaction query: " + query);
-        return historiqueLimitationRepository.findHistoriqueByQuery(query);
+        return historiqueLimitationRepository.findHistoriqueByQuery(criteria);
     }
+
+    // public HistoriqueLimitation[] findHistorique(HistoriqueLimitationCriteria criteria, String order, OrderDirection orderDirection) throws TechnicalException {
+    //     var selectors = new ArrayList<Selector>();
+    //     var DOC_TYPE = ACTIVATION_DOCUMENT.getDocType();
+    //     var INDEX_NAME = ACTIVATION_DOCUMENT.getIndexName();
+    //     selectors.add(Expression.eq("docType", DOC_TYPE));
+    //     addCriteria(selectors, criteria);
+    //     var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
+
+    //     // Index and order
+    //     if ("originAutomationRegisteredResourceMrid".equals(order)) {
+    //         queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(order));
+    //         queryBuilder.useIndex(INDEX_NAME, "indexOriginAutomationRegisteredResourceMrid");
+    //     } else {
+    //         queryBuilder.useIndex(INDEX_NAME);
+    //     }
+
+    //     String query = queryBuilder.build();
+    //     log.debug("Transaction query: " + query);
+    //     return historiqueLimitationRepository.findHistoriqueByQuery(query);
+    // }
 
     private void addCriteria(List<Selector> selectors, HistoriqueLimitationCriteria criteria) throws BusinessException {
         if (isNotBlank(criteria.getOriginAutomationRegisteredResourceMrid())) {

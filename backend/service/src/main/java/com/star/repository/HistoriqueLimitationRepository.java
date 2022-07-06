@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.historiquelimitation.HistoriqueLimitation;
+import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
+
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
@@ -28,11 +30,11 @@ public class HistoriqueLimitationRepository {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public HistoriqueLimitation[] findHistoriqueByQuery(String query) throws BusinessException, TechnicalException {
+    public HistoriqueLimitation[] findHistoriqueByQuery(HistoriqueLimitationCriteria criteria) throws BusinessException, TechnicalException {
         try {
-            log.debug("Query envoyé vers la blockchain pour rechercher les historiques de limitation: " + query);
+            log.debug("Query envoyé vers la blockchain pour rechercher les historiques de limitation: ", criteria);
 
-            byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_HISTORY, query);
+            byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_HISTORY, objectMapper.writeValueAsString(criteria));
             return response != null ? objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
             }) : null;
         } catch (JsonProcessingException exception) {
@@ -42,4 +44,19 @@ public class HistoriqueLimitationRepository {
             throw new BusinessException(contractException.getMessage());
         }
     }
+
+    // public HistoriqueLimitation[] findHistoriqueByQuery(String query) throws BusinessException, TechnicalException {
+    //     try {
+    //         log.debug("Query envoyé vers la blockchain pour rechercher les historiques de limitation: " + query);
+
+    //         byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_HISTORY, query);
+    //         return response != null ? objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
+    //         }) : null;
+    //     } catch (JsonProcessingException exception) {
+    //         throw new TechnicalException("Erreur technique lors de la recherche des historiques de limitation", exception);
+    //     } catch (ContractException contractException) {
+    //         log.error("Erreur retournée par la blockachain : ", contractException);
+    //         throw new BusinessException(contractException.getMessage());
+    //     }
+    // }
 }

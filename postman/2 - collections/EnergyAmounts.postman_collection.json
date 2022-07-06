@@ -1,0 +1,78 @@
+{
+	"info": {
+		"_postman_id": "b622f24e-da11-429b-9869-aa0e660bde62",
+		"name": "EnergyAmounts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19736127"
+	},
+	"item": [
+		{
+			"name": "RTE - Post energy Amounts",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_rte}}/energyAmounts",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"energyAmounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Get energy Amounts Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_rte}}/energyAmounts",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"energyAmounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Post energy Amounts",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_enedis}}/energyAmounts",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"energyAmounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Get energy Amounts Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_enedis}}/energyAmounts",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"energyAmounts"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

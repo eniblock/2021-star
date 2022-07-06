@@ -70,8 +70,7 @@ export class ReferenceEnergyAccountController {
 
         await ReferenceEnergyAccountService.write(ctx, params, energyObj);
 
-        console.info(
-            '============= END   : Create %s ReferenceEnergyAccount ===========',
+        console.info('============= END   : Create %s ReferenceEnergyAccount ===========',
             energyObj.energyAccountMarketDocumentMrid,
         );
     }

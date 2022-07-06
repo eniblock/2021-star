@@ -713,7 +713,7 @@ describe('Star Tests EnergyAccount', () => {
                 Values.HTA_EnergyAccount_a1.senderMarketParticipantMrid,
                 Values.HTA_EnergyAccount_a1.createdDateTime);
             ret = JSON.parse(ret);
-            console.log('retEmpty=', ret)
+            // console.log('retEmpty=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });

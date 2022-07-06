@@ -65,8 +65,7 @@ export class SiteController {
         siteObj.producerMarketParticipantName = producerObj.producerMarketParticipantName;
 
         await SiteService.write(ctx, params, siteObj);
-        console.info(
-            '============= END   : Create %s Site ===========',
+        console.info('============= END   : Create %s Site ===========',
             siteObj.meteringPointMrid,
         );
     }
@@ -120,8 +119,7 @@ export class SiteController {
         }
 
         await SiteService.write(ctx, params, siteObj);
-        console.info(
-            '============= END : Update %s Site ===========',
+        console.info('============= END : Update %s Site ===========',
             siteObj.meteringPointMrid,
         );
     }

@@ -41,8 +41,7 @@ export class SystemOperatorController {
 
         await SystemOperatorService.write(ctx, systemOperatorObj);
 
-        console.info(
-            '============= END   : Create %s System Operator Market Participant ===========',
+        console.info('============= END   : Create %s System Operator Market Participant ===========',
             systemOperatorObj.systemOperatorMarketParticipantMrid,
         );
     }
@@ -70,8 +69,7 @@ export class SystemOperatorController {
         params: STARParameters,
         inputStr: string) {
 
-        console.info(
-            '============= START : Update System Operator Market Participant ===========');
+        console.info('============= START : Update System Operator Market Participant ===========');
 
             const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -101,8 +99,7 @@ export class SystemOperatorController {
 
         await SystemOperatorService.write(ctx, systemOperatorObj);
 
-        console.info(
-            '============= END : Update %s System Operator Market Participant ===========',
+        console.info('============= END : Update %s System Operator Market Participant ===========',
             systemOperatorObj.systemOperatorMarketParticipantMrid,
         );
     }

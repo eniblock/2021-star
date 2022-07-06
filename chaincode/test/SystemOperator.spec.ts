@@ -91,7 +91,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 const msg = 'Organisation, '.concat(Values.FakeMSP).concat(' does not have write access to create a system operator');
                 expect(err.message).to.equal(msg);
             }
@@ -102,7 +102,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.CreateSystemOperator(transactionContext, 'toto');
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('ERROR createSystemOperator-> Input string NON-JSON value');
             }
         });
@@ -112,7 +112,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTA_systemoperator));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 const msg = 'Organisation, '.concat(OrganizationTypeMsp.RTE).concat(' does not have write access for ').concat(OrganizationTypeMsp.ENEDIS);
                 expect(err.message).to.equal(msg);
             }
@@ -123,7 +123,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 const msg = 'Organisation, '.concat(OrganizationTypeMsp.ENEDIS).concat(' does not have write access for ').concat(OrganizationTypeMsp.RTE);
                 expect(err.message).to.equal(msg);
             }
@@ -214,7 +214,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 transactionContext.clientIdentity.getMSPID.returns(Values.FakeMSP);
                 await star.UpdateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access to update a system operator');
             }
         });
@@ -229,7 +229,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 const msg = 'Organisation, '.concat(OrganizationTypeMsp.RTE).concat(' does not have write access for ').concat(OrganizationTypeMsp.ENEDIS);
                 expect(err.message).to.equal(msg);
             }
@@ -245,7 +245,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 const msg = 'Organisation, '.concat(OrganizationTypeMsp.ENEDIS).concat(' does not have write access for ').concat(OrganizationTypeMsp.RTE);
                 expect(err.message).to.equal(msg);
             }

@@ -69,7 +69,7 @@ describe('Star Tests PRODUCERS', () => {
             try {
                 await star.CreateProducer(transactionContext, JSON.stringify(Values.HTB_Producer));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMspID does not have write access to create a producer');
             }
         });
@@ -79,7 +79,7 @@ describe('Star Tests PRODUCERS', () => {
             try {
                 await star.CreateProducer(transactionContext, 'toto');
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('ERROR producer-> Input string NON-JSON value');
             }
         });
@@ -189,7 +189,7 @@ describe('Star Tests PRODUCERS', () => {
                 transactionContext.clientIdentity.getMSPID.returns(Values.FakeMSP);
                 await star.UpdateProducer(transactionContext, JSON.stringify(Values.HTB_Producer));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access to update a producer');
             }
         });
@@ -199,7 +199,7 @@ describe('Star Tests PRODUCERS', () => {
             try {
                 await star.UpdateProducer(transactionContext, 'toto');
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('ERROR producer-> Input string NON-JSON value');
             }
         });

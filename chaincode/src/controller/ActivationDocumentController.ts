@@ -252,8 +252,7 @@ export class ActivationDocumentController {
 
         await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
 
-        console.info(
-            '============= END   : Create %s createActivationDocumentObj ===========',
+        console.info('============= END   : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,
         );
     }

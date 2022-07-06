@@ -26,8 +26,7 @@ export class EnergyAccountController {
 
         await EnergyAccountService.write(ctx, params, energyAccount);
 
-        console.info(
-            '============= END   : Create %s EnergyAccount ===========',
+        console.info('============= END   : Create %s EnergyAccount ===========',
             energyAccount.energyAccountMarketDocumentMrid,
         );
     }
@@ -50,8 +49,7 @@ export class EnergyAccountController {
 
         await EnergyAccountService.write(ctx, params, energyAccount);
 
-        console.info(
-            '============= END   : Update %s EnergyAccount ===========',
+        console.info('============= END   : Update %s EnergyAccount ===========',
             energyAccount.energyAccountMarketDocumentMrid,
         );
     }

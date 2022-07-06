@@ -18,13 +18,13 @@ export class ActivationDocument {
         originAutomationRegisteredResourceMrid: Yup.string().required(
             'originAutomationRegisteredResourceMrid is required').typeError('originAutomationRegisteredResourceMrid must be a string'),
         reasonCode: Yup.string().notRequired(),
-        receiverMarketParticipantMrid: Yup.string().notRequired(),
         potentialParent: Yup.bool().notRequired(),
         potentialChild: Yup.bool().notRequired(),
         registeredResourceMrid: Yup.string().required(
             'registeredResourceMrid is required').typeError('registeredResourceMrid must be a string'),
         revisionNumber: Yup.string().notRequired().matches(/^[0-9]*$/),
-        senderMarketParticipantMrid: Yup.string().notRequired(),
+        senderMarketParticipantMrid: Yup.string().required('senderMarketParticipantMrid is required').typeError('messageType must be a string'),
+        receiverMarketParticipantMrid: Yup.string().required('receiverMarketParticipantMrid is required').typeError('messageType must be a string'),
         startCreatedDateTime: Yup.string().notRequired(),
         instance: Yup.string().notRequired(),
         subOrderList: Yup.array().notRequired(),
@@ -44,8 +44,8 @@ export class ActivationDocument {
     public endCreatedDateTime?: string;
     public revisionNumber?: string;
     public reasonCode?: string; // optionnal in case of TVC modulation
-    public senderMarketParticipantMrid?: string; // FK?
-    public receiverMarketParticipantMrid?: string; // FK?
+    public senderMarketParticipantMrid: string; // FK?
+    public receiverMarketParticipantMrid: string; // FK?
     public potentialParent?: boolean;
     public potentialChild?: boolean;
     public instance?: boolean;

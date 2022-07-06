@@ -26,8 +26,7 @@ export class ProducerController {
 
         await ProducerService.write(ctx, producerObj);
 
-        console.info(
-            '============= END   : Create %s Producer Market Participant ===========',
+        console.info('============= END   : Create %s Producer Market Participant ===========',
             producerObj.producerMarketParticipantMrid,
         );
     }
@@ -51,8 +50,7 @@ export class ProducerController {
             }
         }
 
-        console.info(
-            '============= END   : Create List Producer Market Participant ==========='
+        console.info('============= END   : Create List Producer Market Participant ==========='
         );
     }
 
@@ -62,8 +60,7 @@ export class ProducerController {
         params: STARParameters,
         inputStr: string) {
 
-        console.info(
-            '============= START : Update Producer Market Participant ===========');
+        console.info('============= START : Update Producer Market Participant ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -76,8 +73,7 @@ export class ProducerController {
 
         await ProducerService.write(ctx, producerObj);
 
-        console.info(
-            '============= END : Update %s Producer Market Participant ===========',
+        console.info('============= END : Update %s Producer Market Participant ===========',
             producerObj.producerMarketParticipantMrid,
         );
     }

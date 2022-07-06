@@ -79,7 +79,7 @@ describe('Star Tests ActivationDocument', () => {
 
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('failed inserting key');
             }
         });
@@ -89,7 +89,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, 'XXXXXX');
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('ERROR createActivationDocument-> Input string NON-JSON value');
             }
         });
@@ -125,7 +125,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('registeredResourceMrid is required');
             }
         });
@@ -139,7 +139,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('measurementUnitName is required');
             }
         });
@@ -153,7 +153,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('messageType is required');
             }
         });
@@ -167,7 +167,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('businessType is required');
             }
         });
@@ -181,8 +181,36 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('orderEnd is required');
+            }
+        });
+
+        it('should return ERROR CreateActivationDocument missing senderMarketParticipantMrid', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            var input = JSON.stringify(Values.HTA_ActivationDocument_Valid);
+            input = await Values.deleteJSONField(input, "senderMarketParticipantMrid");
+
+            try {
+                await star.CreateActivationDocument(transactionContext, input);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('senderMarketParticipantMrid is required');
+            }
+        });
+
+        it('should return ERROR CreateActivationDocument missing receiverMarketParticipantMrid', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            var input = JSON.stringify(Values.HTA_ActivationDocument_Valid);
+            input = await Values.deleteJSONField(input, "receiverMarketParticipantMrid");
+
+            try {
+                await star.CreateActivationDocument(transactionContext, input);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('receiverMarketParticipantMrid is required');
             }
         });
 
@@ -193,7 +221,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Organisation, '
                     .concat(Values.FakeMSP)
                     .concat(' does not have write access for Activation Document'));
@@ -226,7 +254,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('ERROR createActivationDocument : System Operator : '
                     .concat(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid)
                     .concat(' does not exist for Activation Document ')
@@ -274,7 +302,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Order must have a limitation value');
             }
         });
@@ -352,17 +380,17 @@ describe('Star Tests ActivationDocument', () => {
             expected2.potentialChild = true;
             expected2.docType = 'activationDocument';
 
-            console.info("-----------")
-            console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            console.info("ooooooooo")
-            console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            console.info(JSON.stringify(expected))
-            console.info("-----------")
-            console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            console.info("ooooooooo")
-            console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            console.info(JSON.stringify(expected))
-            console.info("-----------")
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected))
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected))
+            // console.info("-----------")
 
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
@@ -442,7 +470,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('activationDocumentMrid is a compulsory string');
             }
         });
@@ -460,7 +488,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} cannot send Activation Document for sender ${OrganizationTypeMsp.ENEDIS}`);
             }
         });
@@ -478,7 +506,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Site : '
                     .concat(Values.HTB_site_valid.meteringPointMrid)
                     .concat(' does not exist for Activation Document ')
@@ -500,7 +528,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Producer : '
                     .concat(Values.HTB_Producer.producerMarketParticipantMrid)
                     .concat(' does not exist for Activation Document ')

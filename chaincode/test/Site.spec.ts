@@ -81,7 +81,7 @@ describe('Star Tests SITES', () => {
             try {
                 await star.CreateSite(transactionContext, 'RTE01EIC');
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('ERROR createSite-> Input string NON-JSON value');
             }
         });
@@ -126,7 +126,7 @@ describe('Star Tests SITES', () => {
             try {
                 await star.CreateSite(transactionContext, JSON.stringify(Values.HTB_site_valid));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access for HTB(HV) sites');
             }
         });
@@ -142,7 +142,7 @@ describe('Star Tests SITES', () => {
                 const site = await Values.deleteJSONField(JSON.stringify(Values.HTB_site_valid), 'marketEvaluationPointMrid')
                 await star.CreateSite(transactionContext, site);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.');
             }
         });
@@ -158,7 +158,7 @@ describe('Star Tests SITES', () => {
                 const site = await Values.deleteJSONField(JSON.stringify(Values.HTB_site_valid), 'technologyType')
                 await star.CreateSite(transactionContext, site);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('technologyType is a compulsory field (string)');
             }
         });
@@ -177,6 +177,7 @@ describe('Star Tests SITES', () => {
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
             const siteInput = JSON.parse(JSON.stringify(Values.HTB_site_valid));
+            siteInput.producerMarketParticipantName = Values.HTB_Producer.producerMarketParticipantName;
             siteInput.docType = DocType.SITE;
 
             transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
@@ -195,7 +196,8 @@ describe('Star Tests SITES', () => {
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = params.values.get(ParametersType.SITE);
 
-            const siteInput = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            const siteInput: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            siteInput.producerMarketParticipantName = Values.HTA_Producer.producerMarketParticipantName;
             siteInput.docType = DocType.SITE;
 
             transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
@@ -214,7 +216,7 @@ describe('Star Tests SITES', () => {
             try {
                 await star.CreateSite(transactionContext, JSON.stringify(Values.HTA_site_valid));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access for HTA(MV) sites');
             }
         });

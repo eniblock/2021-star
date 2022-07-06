@@ -44,8 +44,7 @@ export class YellowPagesController {
         }
 
         await YellowPagesService.write(ctx, yellowPageObj);
-        console.info(
-            '============= END   : Create %s YellowPages ===========',
+        console.info('============= END   : Create %s YellowPages ===========',
             yellowPageObj.yellowPageMrid,
         );
     }

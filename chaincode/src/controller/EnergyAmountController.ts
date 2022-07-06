@@ -171,8 +171,7 @@ export class EnergyAmountController {
 
         await EnergyAmountService.write(ctx, params, energyObj);
 
-        console.info(
-            '============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
+        console.info('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
     }
@@ -201,8 +200,7 @@ export class EnergyAmountController {
 
         await EnergyAmountService.write(ctx, params, energyObj);
 
-        console.info(
-            '============= END   : updateTSOEnergyAmount %s EnergyAmountController ===========',
+        console.info('============= END   : updateTSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
     }
@@ -226,8 +224,7 @@ export class EnergyAmountController {
 
         await EnergyAmountService.write(ctx, params, energyObj);
 
-        console.info(
-            '============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
+        console.info('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
     }
@@ -258,8 +255,7 @@ export class EnergyAmountController {
 
         await EnergyAmountService.write(ctx, params, energyObj);
 
-        console.info(
-            '============= END   : updateDSOEnergyAmount %s EnergyAmountController ===========',
+        console.info('============= END   : updateDSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
     }

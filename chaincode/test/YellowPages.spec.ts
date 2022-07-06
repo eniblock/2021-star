@@ -66,7 +66,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, 'RTE01EIC');
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('ERROR createYellowPages-> Input string NON-JSON value');
             }
         });
@@ -89,7 +89,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, JSON.stringify(Values.HTB_yellowPage));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Site : '.concat(Values.HTB_yellowPage.registeredResourceMrid).concat(' does not exist in Yellow Pages ').concat(Values.HTB_yellowPage.originAutomationRegisteredResourceMrid).concat('.'));
             }
         });
@@ -106,7 +106,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, JSON.stringify(Values.HTA_yellowPage));
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access for Yellow Pages.');
             }
         });
@@ -124,7 +124,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, input);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('originAutomationRegisteredResourceMrid is a compulsory string.');
             }
         });
@@ -142,7 +142,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, input);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('registeredResourceMrid is a compulsory string.');
             }
         });
@@ -160,7 +160,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, input);
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('systemOperatorMarketParticipantMrid is a compulsory string.');
             }
         });
@@ -176,7 +176,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, '{}');
             } catch(err) {
-                console.info(err.message)
+                // console.info(err.message)
                 expect(err.message).to.equal('4 errors occurred');
             }
         });

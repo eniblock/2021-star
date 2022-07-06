@@ -163,7 +163,23 @@ export class HistoryActivationController {
             information.subOrderList = [];
             if (activationDocument.subOrderList) {
                 for(const activationDocumentMrid of activationDocument.subOrderList) {
-                    const subOrder = await ActivationDocumentController.getActivationDocumentById(ctx, params, activationDocumentMrid);
+                    var subOrder: ActivationDocument;
+                    try {
+                        subOrder = await ActivationDocumentController.getActivationDocumentById(ctx, params, activationDocumentMrid);
+                    } catch(error) {
+                        //do nothing, but empty document : suborder information is not in accessible collection
+                        subOrder = {
+                            activationDocumentMrid: activationDocumentMrid,
+                            originAutomationRegisteredResourceMrid: 'Not accessible information',
+                            registeredResourceMrid: 'Not accessible information',
+                            measurementUnitName: 'Not accessible information',
+                            messageType: 'Not accessible information',
+                            businessType: 'Not accessible information',
+                            orderEnd: false,
+                            senderMarketParticipantMrid: 'Not accessible information',
+                            receiverMarketParticipantMrid: 'Not accessible information'
+                        }
+                    }
                     information.subOrderList.push(subOrder);
                 }
             }

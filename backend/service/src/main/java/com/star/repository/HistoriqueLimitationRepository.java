@@ -31,6 +31,7 @@ public class HistoriqueLimitationRepository {
     private ObjectMapper objectMapper;
 
     public HistoriqueLimitation[] findHistoriqueByQuery(HistoriqueLimitationCriteria criteria) throws BusinessException, TechnicalException {
+        HistoriqueLimitation[] returnedArray = {};
         try {
             String jsonCriteria = objectMapper.writeValueAsString(criteria);
 
@@ -40,14 +41,15 @@ public class HistoriqueLimitationRepository {
 
             log.debug("Valeur retournée par  la blockchain suite à une recherche d'historique de limitation: ", new String(response));
 
-            return response != null ? objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
-            }) : null;
+            returnedArray = response != null ? objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
+            }) : returnedArray;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des historiques de limitation", exception);
         } catch (ContractException contractException) {
             log.error("Erreur retournée par la blockachain : ", contractException);
             throw new BusinessException(contractException.getMessage());
         }
+        return returnedArray;
     }
 
     // public HistoriqueLimitation[] findHistoriqueByQuery(String query) throws BusinessException, TechnicalException {

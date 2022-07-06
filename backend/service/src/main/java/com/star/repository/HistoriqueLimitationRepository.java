@@ -35,11 +35,11 @@ public class HistoriqueLimitationRepository {
         try {
             String jsonCriteria = objectMapper.writeValueAsString(criteria);
 
-            log.debug("Query envoyé vers la blockchain pour rechercher les historiques de limitation: ", jsonCriteria);
+            log.debug("Query envoyé vers la blockchain pour rechercher les historiques de limitation: " + jsonCriteria);
 
             byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_HISTORY, jsonCriteria);
 
-            log.debug("Valeur retournée par  la blockchain suite à une recherche d'historique de limitation: ", new String(response));
+            log.debug("Valeur retournée par  la blockchain suite à une recherche d'historique de limitation: " + new String(response));
 
             returnedArray = response != null ? objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
             }) : returnedArray;

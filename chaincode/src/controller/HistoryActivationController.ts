@@ -5,8 +5,10 @@ import { ParametersType } from "../enums/ParametersType";
 import { RoleType } from "../enums/RoleType";
 
 import { ActivationDocument } from "../model/activationDocument";
+import { EnergyAmount } from "../model/energyAmount";
 import { HistoryCriteria } from "../model/historyCriteria";
 import { HistoryInformation } from "../model/historyInformation";
+import { Producer } from "../model/producer";
 import { Site } from "../model/site";
 import { STARParameters } from "../model/starParameters";
 
@@ -159,62 +161,97 @@ export class HistoryActivationController {
         const informationList: HistoryInformation[] = [];
 
         for (const activationDocument of allActivationDocument) {
-            const information: HistoryInformation = new HistoryInformation();
-            information.activationDocument = JSON.parse(JSON.stringify(activationDocument));
 
-            information.subOrderList = [];
-            if (activationDocument.subOrderList) {
-                for(const activationDocumentMrid of activationDocument.subOrderList) {
-                    var subOrder: ActivationDocument;
-                    try {
-                        subOrder = await ActivationDocumentController.getActivationDocumentById(ctx, params, activationDocumentMrid);
-                    } catch(error) {
-                        //do nothing, but empty document : suborder information is not in accessible collection
-                        subOrder = {
-                            activationDocumentMrid: activationDocumentMrid,
-                            originAutomationRegisteredResourceMrid: 'Not accessible information',
-                            registeredResourceMrid: 'Not accessible information',
-                            measurementUnitName: 'Not accessible information',
-                            messageType: 'Not accessible information',
-                            businessType: 'Not accessible information',
-                            orderEnd: false,
-                            senderMarketParticipantMrid: 'Not accessible information',
-                            receiverMarketParticipantMrid: 'Not accessible information'
+            if (activationDocument && activationDocument.activationDocumentMrid) {
+
+                var subOrderList: ActivationDocument[];
+                if (activationDocument && activationDocument.subOrderList) {
+                    for(const activationDocumentMrid of activationDocument.subOrderList) {
+                        var subOrder: ActivationDocument;
+                        try {
+                            subOrder = await ActivationDocumentController.getActivationDocumentById(ctx, params, activationDocumentMrid);
+                        } catch(error) {
+                            //do nothing, but empty document : suborder information is not in accessible collection
+                            subOrder = {
+                                activationDocumentMrid: activationDocumentMrid,
+                                originAutomationRegisteredResourceMrid: 'Not accessible information',
+                                registeredResourceMrid: 'Not accessible information',
+                                measurementUnitName: 'Not accessible information',
+                                messageType: 'Not accessible information',
+                                businessType: 'Not accessible information',
+                                orderEnd: false,
+                                senderMarketParticipantMrid: 'Not accessible information',
+                                receiverMarketParticipantMrid: 'Not accessible information'
+                            }
                         }
+                        subOrderList.push(subOrder);
                     }
-                    information.subOrderList.push(subOrder);
                 }
-            }
-            //Manage Yello Page to get Site Information
-            var siteRegistered: Site;
-            try {
-                siteRegistered = await SiteService.getObj(ctx, params, activationDocument.registeredResourceMrid);
-            } catch (error) {
-                //DO nothing
-            }
-            // var siteAutomation: Site;
-            // try {
-            //     siteAutomation = await SiteService.getObj(ctx, params, activationDocument.originAutomationRegisteredResourceMrid);
-            // } catch (error) {
-            //     //DO nothing
-            // }
-            // if (siteRegistered && siteRegistered.meteringPointMrid) {
-                information.site = JSON.parse(JSON.stringify(siteRegistered));
-            // } else if (siteAutomation && siteAutomation.meteringPointMrid) {
-            //     information.site = JSON.parse(JSON.stringify(siteAutomation));
-            // }
+                //Manage Yello Page to get Site Information
+                var siteRegistered: Site;
+                try {
+                    siteRegistered = await SiteService.getObj(ctx, params, activationDocument.registeredResourceMrid);
+                } catch (error) {
+                    //DO nothing except "Not accessible information"
+                    siteRegistered = {
+                        meteringPointMrid: activationDocument.registeredResourceMrid,
+                        systemOperatorMarketParticipantMrid: 'Not accessible information',
+                        producerMarketParticipantMrid: 'Not accessible information',
+                        technologyType: 'Not accessible information',
+                        siteType: 'Not accessible information',
+                        siteName: 'Not accessible information',
+                        substationMrid: 'Not accessible information',
+                        substationName: 'Not accessible information'
+                    }
+                }
 
-            try {
-                information.producer = await ProducerService.getObj(ctx, information.site.producerMarketParticipantMrid);
-            } catch (error) {
-                //DO nothing
+                var producer: Producer;
+                try {
+                    if (siteRegistered && siteRegistered.producerMarketParticipantMrid) {
+                        producer = await ProducerService.getObj(ctx, siteRegistered.producerMarketParticipantMrid);
+                    }
+                } catch (error) {
+                    //DO nothing except "Not accessible information"
+                    producer = {
+                        producerMarketParticipantMrid: 'Not accessible information',
+                        producerMarketParticipantName: 'Not accessible information',
+                        producerMarketParticipantRoleType: 'Not accessible information'
+                    }
+                }
+                var energyAmount: EnergyAmount;
+                try {
+                    if (activationDocument && activationDocument.activationDocumentMrid) {
+                        energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(ctx, params, activationDocument.activationDocumentMrid);
+                    }
+
+                } catch (error) {
+                    //DO nothing except "Not accessible information"
+                    energyAmount = {
+                        energyAmountMarketDocumentMrid: 'Not accessible information',
+                        activationDocumentMrid: 'Not accessible information',
+                        quantity: 'Not accessible information',
+                        measurementUnitName: 'Not accessible information',
+                        areaDomain: 'Not accessible information',
+                        senderMarketParticipantMrid: 'Not accessible information',
+                        senderMarketParticipantRole: 'Not accessible information',
+                        receiverMarketParticipantMrid: 'Not accessible information',
+                        receiverMarketParticipantRole: 'Not accessible information',
+                        createdDateTime: 'Not accessible information',
+                        timeInterval: 'Not accessible information'
+                    }
+                }
+
+                const information: HistoryInformation = {
+                    activationDocument: JSON.parse(JSON.stringify(activationDocument)),
+                    subOrderList: JSON.parse(JSON.stringify(subOrderList)),
+                    site: JSON.parse(JSON.stringify(siteRegistered)),
+                    producer: JSON.parse(JSON.stringify(producer)),
+                    energyAmount: JSON.parse(JSON.stringify(energyAmount))
+                };
+
+                informationList.push(information);
             }
-            try {
-                information.energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(ctx, params, information.activationDocument.activationDocumentMrid);
-            } catch (error) {
-                //DO nothing
-            }
-            informationList.push(information);
+
         }
 
         return informationList;

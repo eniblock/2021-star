@@ -53,7 +53,9 @@ export class HistoryActivationController {
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
 
                 const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
-                result = await HistoryActivationController.consolidate(ctx, params, allActivationDocument);
+                if (allActivationDocument && allActivationDocument.length > 0) {
+                    result = await HistoryActivationController.consolidate(ctx, params, allActivationDocument);
+                }
             }
         }
 
@@ -164,7 +166,7 @@ export class HistoryActivationController {
 
             if (activationDocument && activationDocument.activationDocumentMrid) {
 
-                var subOrderList: ActivationDocument[];
+                var subOrderList: ActivationDocument[] = [];
                 if (activationDocument && activationDocument.subOrderList) {
                     for(const activationDocumentMrid of activationDocument.subOrderList) {
                         var subOrder: ActivationDocument;

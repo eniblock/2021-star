@@ -39,12 +39,9 @@ public class HistoriqueLimitationRepository {
 
             byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_HISTORY, jsonCriteria);
 
-            log.debug("Valeur retournée par  la blockchain suite à une recherche d'historique de limitation: " + new String(response));
-
-            returnedArray = response != null ? objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
-            }) : returnedArray;
-
-            log.debug("Valeur parsée suite à une recherche d'historique de limitation: " + objectMapper.writeValueAsString(returnedArray));
+            returnedArray = (response != null && response.length != 0) ?
+                objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {})
+                : returnedArray;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des historiques de limitation", exception);
         } catch (ContractException contractException) {

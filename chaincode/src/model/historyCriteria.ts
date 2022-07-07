@@ -5,6 +5,9 @@ export class HistoryCriteria {
     public static readonly schema = Yup.object().shape({
         originAutomationRegisteredResourceMrid: Yup.string()
             .notRequired().typeError('originAutomationRegisteredResourceMrid must be a string'),
+        producerMarketParticipantMrid: Yup.string().notRequired().typeError('producerMarketParticipantMrid must be a string'),
+        producerMarketParticipantName: Yup.string().notRequired().typeError('producerMarketParticipantName must be a string'),
+        siteName: Yup.string().notRequired().typeError('siteName must be a string'),
         registeredResourceMrid: Yup.string().notRequired().typeError('registeredResourceMrid must be a string'),
         startCreatedDateTime: Yup.string().notRequired().typeError('startCreatedDateTime must be a string'),
         endCreatedDateTime: Yup.string().notRequired().typeError('endCreatedDateTime must be a string'),
@@ -12,7 +15,9 @@ export class HistoryCriteria {
 
     public originAutomationRegisteredResourceMrid?: string;
     public originAutomationRegisteredResourceList?: string[];
+    public producerMarketParticipantList?: string[];
     public producerMarketParticipantMrid?: string;
+    public producerMarketParticipantName?: string;
     public siteName?: string;
     public registeredResourceMrid?: string;
     public registeredResourceList?: string[];

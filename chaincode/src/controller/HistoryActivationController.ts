@@ -14,6 +14,7 @@ import { STARParameters } from "../model/starParameters";
 
 import { ActivationDocumentController } from "./ActivationDocumentController";
 import { EnergyAmountController } from "./EnergyAmountController";
+import { ProducerController } from "./ProducerController";
 
 import { ActivationDocumentService } from "./service/ActivationDocumentService";
 import { HLFServices } from "./service/HLFservice";
@@ -53,6 +54,7 @@ export class HistoryActivationController {
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
 
                 const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
+
                 if (allActivationDocument && allActivationDocument.length > 0) {
                     result = await HistoryActivationController.consolidate(ctx, params, allActivationDocument);
                 }
@@ -68,6 +70,23 @@ export class HistoryActivationController {
         criteriaObj: HistoryCriteria,
         role: string): Promise<HistoryCriteria> {
 
+
+        const prodIdList: string[] = [];
+        if (criteriaObj.producerMarketParticipantMrid) {
+            prodIdList.push(criteriaObj.producerMarketParticipantMrid);
+        }
+        if (criteriaObj.producerMarketParticipantName) {
+            const allProdId = await ProducerController.getProducerByName(ctx, criteriaObj.producerMarketParticipantName);
+            if (allProdId) {
+                for (var prodId of allProdId) {
+                    if (prodId && prodId.producerMarketParticipantMrid) {
+                        prodIdList.push(prodId.producerMarketParticipantMrid);
+                    }
+                }
+            }
+        }
+        criteriaObj.producerMarketParticipantList = prodIdList;
+
         var args: string[] = [];
 
         if (criteriaObj) {
@@ -77,9 +96,10 @@ export class HistoryActivationController {
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 args.push(`"substationMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
             }
-            if (criteriaObj.producerMarketParticipantMrid
+            if (criteriaObj.producerMarketParticipantList && criteriaObj.producerMarketParticipantList.length > 0
                 && (role === RoleType.Role_DSO || role === RoleType.Role_TSO) ) {
-                args.push(`"producerMarketParticipantMrid":"${criteriaObj.producerMarketParticipantMrid}"`);
+                const producerMarketParticipantList_str = JSON.stringify(criteriaObj.producerMarketParticipantList);
+                args.push(`"producerMarketParticipantMrid": { "$in" : ${producerMarketParticipantList_str} }`);
             }
             if (criteriaObj.siteName
                 && (role === RoleType.Role_Producer) ) {
@@ -144,10 +164,10 @@ export class HistoryActivationController {
                 criteriaPlace_str = criteriaPlace_str.concat(`]`);
                 args.push(criteriaPlace_str);
             }
-            if (criteriaObj.startCreatedDateTime) {
+            if (criteriaObj.endCreatedDateTime) {
                 args.push(`"$or":[{"startCreatedDateTime":{"$lte": ${JSON.stringify(criteriaObj.endCreatedDateTime)}}},{"startCreatedDateTime":""},{"startCreatedDateTime":{"$exists": false}}]`);
             }
-            if (criteriaObj.endCreatedDateTime) {
+            if (criteriaObj.startCreatedDateTime) {
                 args.push(`"$or":[{"endCreatedDateTime":{"$gte": ${JSON.stringify(criteriaObj.startCreatedDateTime)}}},{"endCreatedDateTime":""},{"endCreatedDateTime":{"$exists": false}}]`);
             }
         }

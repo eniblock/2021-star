@@ -157,4 +157,23 @@ export class ProducerController {
     public static async getAllProducer(ctx: Context): Promise<string> {
         return await QueryStateService.getAllStates(ctx, DocType.PRODUCER);
     }
+
+
+    public static async getProducerByName(
+        ctx: Context,
+        producerMarketParticipantName: string): Promise<Producer[]> {
+
+        console.info('============= START : getProducerByName %s ===========', producerMarketParticipantName);
+        var args: string[] = [];
+        args.push(`"producerMarketParticipantName":"${producerMarketParticipantName}"`);
+
+        const query = await QueryStateService.buildQuery(DocType.PRODUCER, args);
+
+        const allResults = await QueryStateService.getQueryArrayResult(ctx, query);
+
+        console.info('============= END : getProducerByName %s ===========', producerMarketParticipantName);
+
+        return allResults;
+    }
+
 }

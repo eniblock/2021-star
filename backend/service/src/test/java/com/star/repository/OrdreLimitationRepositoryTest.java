@@ -61,18 +61,18 @@ class OrdreLimitationRepositoryTest extends AbstractTest {
         assertThat(objectArgumentCaptor.getValue()).isNotNull();
     }
 
-    @Test
-    void findLimitationOrders() throws ContractException, TechnicalException {
-        // GIVEN
-        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
-        var anyArguments = "myArgs...";
+    // @Test
+    // void findLimitationOrders() throws ContractException, TechnicalException {
+    //     // GIVEN
+    //     Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
+    //     var anyArguments = "myArgs...";
 
-        // WHEN
-        ordreLimitationRepository.findLimitationOrders(anyArguments);
+    //     // WHEN
+    //     ordreLimitationRepository.findLimitationOrders(anyArguments);
 
-        // THEN
-        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), eq(anyArguments));
-        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(OrdreLimitationRepository.GET_BY_QUERY);
-    }
+    //     // THEN
+    //     Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), eq(anyArguments));
+    //     assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(OrdreLimitationRepository.GET_BY_QUERY);
+    // }
 
 }

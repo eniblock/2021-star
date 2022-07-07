@@ -8,6 +8,8 @@ import {motifToString,} from 'src/app/rules/motif-rules';
 import {RechercheHistoriqueLimitationEntite} from 'src/app/models/RechercheHistoriqueLimitation';
 import {getLimitationType} from "../../../rules/limitation-type-rules";
 import {SystemOperator} from "../../../models/SystemOperator";
+import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
+import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
 
 @Component({
   selector: 'app-activations-resultats',
@@ -38,7 +40,39 @@ export class ActivationsResultatsComponent implements OnChanges {
   }
 
   private computeData() {
-    this.dataComputed = this.data.map((rhl) => {
+    var dataForComputation: RechercheHistoriqueLimitationEntite[] = [];
+    for (var d of this.data) {
+      if (d) {
+        if (!d.site) {
+          d.site = {
+            typeSite: TypeSite.HTB,
+            producerMarketParticipantMrid: '---',
+            producerMarketParticipantName: '---',
+            siteName: '---',
+            technologyType: TechnologyType.PHOTOVOLTAIQUE,
+            meteringPointMrid: '---',
+            siteAdminMRID: '---',
+            siteLocation: '---',
+            siteType: '---',
+            substationName: '---',
+            substationMrid: '---',
+            systemOperatorEntityFlexibilityDomainMrid: '---',
+            systemOperatorEntityFlexibilityDomainName: '---',
+            systemOperatorCustomerServiceName: '---'
+          }
+        }
+        if (!d.producer) {
+          d.producer = {
+            producerMarketParticipantMrid: '---',
+            producerMarketParticipantName: '---',
+            producerMarketParticipantRoleType: '---'
+          }
+        }
+      }
+      dataForComputation.push(d);
+    }
+
+    this.dataComputed = dataForComputation.map((rhl) => {
       const limitationType = getLimitationType(rhl);
       const motif = motifToString(rhl.activationDocument);
       return {
@@ -50,15 +84,22 @@ export class ActivationsResultatsComponent implements OnChanges {
   }
 
   showGraph(activation: RechercheHistoriqueLimitationEntite) {
+    var meteringPointMrid: string = "----";
+    if(activation.site) {
+      meteringPointMrid = activation.site.meteringPointMrid;
+    }
+
+    var dataValue = {
+      meteringPointMrid: meteringPointMrid,
+      startCreatedDateTime: activation.activationDocument.startCreatedDateTime,
+      endCreatedDateTime: activation.activationDocument.endCreatedDateTime,
+      orderValueConsign: activation.activationDocument.orderValue,
+      measurementUnitNameConsign: activation.activationDocument.measurementUnitName,
+    }
+
     this.bottomSheet.open(ActivationGraphComponent, {
       panelClass: 'graph-bottom-sheet',
-      data: {
-        meteringPointMrid: activation.site.meteringPointMrid,
-        startCreatedDateTime: activation.activationDocument.startCreatedDateTime,
-        endCreatedDateTime: activation.activationDocument.endCreatedDateTime,
-        orderValueConsign: activation.activationDocument.orderValue,
-        measurementUnitNameConsign: activation.activationDocument.measurementUnitName,
-      },
+      data: dataValue,
     });
   }
 

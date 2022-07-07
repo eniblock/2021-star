@@ -40,7 +40,9 @@ export class HistoriqueLimitationService {
       ...requestForm,
     };
     let urlParams = this.urlService.toUrlParams(formToSend);
-    return this.httpClient.get<RechercheHistoriqueLimitationEntite[]>(`${environment.serverUrl}/historiqueLimitations?${urlParams}`);
+    var callResult = this.httpClient.get<RechercheHistoriqueLimitationEntite[]>(`${environment.serverUrl}/historiqueLimitations?${urlParams}`);
+
+    return callResult;
   }
 
   pushFormulaireRecherche(form: FormulaireRechercheHistoriqueLimitation) {

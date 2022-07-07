@@ -1,10 +1,13 @@
 package com.star.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.enums.InstanceEnum;
 import com.star.exception.TechnicalException;
 import com.star.mapper.historiquelimitation.HistoriqueLimitationMapper;
 import com.star.models.common.OrderDirection;
+import com.star.models.historiquelimitation.HistoriqueLimitation;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.security.SecurityComponent;
 import com.star.service.HistoriqueLimitationService;
@@ -46,6 +49,9 @@ public class HistoriqueLimitationController {
 
     @Autowired
     private SecurityComponent securityComponent;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * API de recherche multi-critères des historiques de limitation
@@ -101,6 +107,22 @@ public class HistoriqueLimitationController {
             // A producer can get only his own site data
             criteria.setProducerMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(historiqueLimitationMapper.beanToDtos(historiqueLimitationService.findHistorique(criteria, order, orderDirection)));
+        HistoriqueLimitation[] returnedArray = historiqueLimitationService.findHistorique(criteria, order, orderDirection);
+
+        // try {
+        //     log.debug("Controller received array:\n" + objectMapper.writeValueAsString(returnedArray));
+        // } catch (JsonProcessingException e) {
+        //     e.printStackTrace();
+        // }
+
+        HistoriqueLimitationDTO[] returnedDtos = historiqueLimitationMapper.beanToDtos(returnedArray);
+
+        // try {
+        //     log.debug("Controller transformed dto array:\n" + objectMapper.writeValueAsString(returnedArray));
+        // } catch (JsonProcessingException e) {
+        //     e.printStackTrace();
+        // }
+
+        return ResponseEntity.status(HttpStatus.OK).body(returnedDtos);
     }
 }

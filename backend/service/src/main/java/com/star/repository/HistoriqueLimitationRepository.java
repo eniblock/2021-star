@@ -9,6 +9,9 @@ import com.star.models.historiquelimitation.HistoriqueLimitation;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.TimeoutException;
+
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +33,14 @@ public class HistoriqueLimitationRepository {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private OrdreLimitationRepository ordreLimitationRepository;
+
     public HistoriqueLimitation[] findHistoriqueByQuery(HistoriqueLimitationCriteria criteria) throws BusinessException, TechnicalException {
         HistoriqueLimitation[] returnedArray = {};
         try {
+            ordreLimitationRepository.reconciliate();
+
             String jsonCriteria = objectMapper.writeValueAsString(criteria);
 
             log.debug("Query envoyé vers la blockchain pour rechercher les historiques de limitation: " + jsonCriteria);
@@ -42,7 +50,7 @@ public class HistoriqueLimitationRepository {
             returnedArray = (response != null && response.length != 0) ?
                 objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {})
                 : returnedArray;
-        } catch (JsonProcessingException exception) {
+        } catch (JsonProcessingException | TimeoutException | InterruptedException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des historiques de limitation", exception);
         } catch (ContractException contractException) {
             log.error("Erreur retournée par la blockachain : ", contractException);

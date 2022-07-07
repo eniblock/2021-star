@@ -21,6 +21,7 @@ import { HLFServices } from "./service/HLFservice";
 import { ProducerService } from "./service/ProducerService";
 import { QueryStateService } from "./service/QueryStateService";
 import { SiteService } from "./service/SiteService";
+import { SystemOperatorService } from "./service/SystemOperatorService";
 
 export class HistoryActivationController {
 
@@ -194,17 +195,6 @@ export class HistoryActivationController {
                             subOrder = await ActivationDocumentController.getActivationDocumentById(ctx, params, activationDocumentMrid);
                         } catch(error) {
                             //do nothing, but empty document : suborder information is not in accessible collection
-                            // subOrder = {
-                            //     activationDocumentMrid: activationDocumentMrid,
-                            //     originAutomationRegisteredResourceMrid: 'Not accessible information',
-                            //     registeredResourceMrid: 'Not accessible information',
-                            //     measurementUnitName: 'Not accessible information',
-                            //     messageType: 'Not accessible information',
-                            //     businessType: 'Not accessible information',
-                            //     orderEnd: false,
-                            //     senderMarketParticipantMrid: 'Not accessible information',
-                            //     receiverMarketParticipantMrid: 'Not accessible information'
-                            // }
                         }
                         subOrderList.push(subOrder);
                     }
@@ -215,16 +205,6 @@ export class HistoryActivationController {
                     siteRegistered = await SiteService.getObj(ctx, params, activationDocument.registeredResourceMrid);
                 } catch (error) {
                     //DO nothing except "Not accessible information"
-                    // siteRegistered = {
-                    //     meteringPointMrid: activationDocument.registeredResourceMrid,
-                    //     systemOperatorMarketParticipantMrid: 'Not accessible information',
-                    //     producerMarketParticipantMrid: 'Not accessible information',
-                    //     technologyType: 'Not accessible information',
-                    //     siteType: 'Not accessible information',
-                    //     siteName: 'Not accessible information',
-                    //     substationMrid: 'Not accessible information',
-                    //     substationName: 'Not accessible information'
-                    // }
                 }
 
                 var producer: Producer;
@@ -234,12 +214,32 @@ export class HistoryActivationController {
                     }
                 } catch (error) {
                     //DO nothing except "Not accessible information"
-                    // producer = {
-                    //     producerMarketParticipantMrid: 'Not accessible information',
-                    //     producerMarketParticipantName: 'Not accessible information',
-                    //     producerMarketParticipantRoleType: 'Not accessible information'
-                    // }
                 }
+                if (!producer) {
+                    try {
+                        if (activationDocument.receiverMarketParticipantMrid) {
+                            producer = await ProducerService.getObj(ctx, activationDocument.receiverMarketParticipantMrid);
+                        }
+                    } catch (error) {
+                        //DO nothing except "Not accessible information"
+                    }
+                }
+                if (!producer) {
+                    try {
+                        if (activationDocument.receiverMarketParticipantMrid) {
+                            var so = await SystemOperatorService.getObj(ctx, activationDocument.receiverMarketParticipantMrid);
+                            producer = {
+                                producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
+                                producerMarketParticipantName: so.systemOperatorMarketParticipantName,
+                                producerMarketParticipantRoleType: so.systemOperatorMarketParticipantRoleType
+                            }
+                        }
+                    } catch (error) {
+                        //DO nothing except "Not accessible information"
+                    }
+                }
+
+
                 var energyAmount: EnergyAmount;
                 try {
                     if (activationDocument && activationDocument.activationDocumentMrid) {
@@ -248,19 +248,6 @@ export class HistoryActivationController {
 
                 } catch (error) {
                     //DO nothing except "Not accessible information"
-                    // energyAmount = {
-                    //     energyAmountMarketDocumentMrid: 'Not accessible information',
-                    //     activationDocumentMrid: 'Not accessible information',
-                    //     quantity: 'Not accessible information',
-                    //     measurementUnitName: 'Not accessible information',
-                    //     areaDomain: 'Not accessible information',
-                    //     senderMarketParticipantMrid: 'Not accessible information',
-                    //     senderMarketParticipantRole: 'Not accessible information',
-                    //     receiverMarketParticipantMrid: 'Not accessible information',
-                    //     receiverMarketParticipantRole: 'Not accessible information',
-                    //     createdDateTime: 'Not accessible information',
-                    //     timeInterval: 'Not accessible information'
-                    // }
                 }
 
                 const information: HistoryInformation = {

@@ -84,9 +84,16 @@ public class OrdreLimitationRepository {
 
     public List<OrdreLimitation> findLimitationOrders(String query) throws TechnicalException {
         try {
+            byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
+
+            log.info("Issu de la recherche de réconciliation :\n" + new String(evaluateTransaction));
+            // Appeler la fonction UpdateActivationDocumentByOrders
+            if (evaluateTransaction != null && evaluateTransaction.length > 0 ) {
+                contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS, new String(evaluateTransaction));
+            }
             byte[] response = contract.evaluateTransaction(GET_BY_QUERY, query);
             return response != null ? Arrays.asList(objectMapper.readValue(new String(response), OrdreLimitation[].class)) : emptyList();
-        } catch (JsonProcessingException exception) {
+        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des sites", exception);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());

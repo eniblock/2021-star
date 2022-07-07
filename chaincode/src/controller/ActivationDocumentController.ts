@@ -202,7 +202,7 @@ export class ActivationDocumentController {
             producerSystemOperatorObj = JSON.parse(producerAsBytes.toString());
         }
 
-        /* Test Site existence if order comes from TSO and goes to DSO */
+        /* Test Site existence if order does not come from TSO and goes to DSO */
         if (!producerSystemOperatorObj
             || !producerSystemOperatorObj.systemOperatorMarketParticipantName
             || producerSystemOperatorObj.systemOperatorMarketParticipantName === "") {
@@ -322,6 +322,7 @@ export class ActivationDocumentController {
     public static async getReconciliationState(
         ctx: Context,
         params: STARParameters): Promise<string> {
+        console.info('============= START : getReconciliationState ActivationDocumentController ===========');
 
         var conciliationState: ConciliationState = new ConciliationState();
         conciliationState.remaining = [];
@@ -346,6 +347,7 @@ export class ActivationDocumentController {
                     }
                 }
             }
+
             if (conciliationState && conciliationState.remaining && conciliationState.remaining.length >0 ) {
                 conciliationState = await ActivationDocumentController.garbageCleanage(params, conciliationState);
             }
@@ -354,6 +356,9 @@ export class ActivationDocumentController {
             }
         }
         var sate_str = JSON.stringify(conciliationState.updateOrders);
+
+        console.info('============= END : getReconciliationState ActivationDocumentController ===========');
+
         return sate_str;
     }
 

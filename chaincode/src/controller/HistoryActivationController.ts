@@ -231,12 +231,12 @@ export class HistoryActivationController {
                                         producerMarketParticipantName: prod.producerMarketParticipantName,
                                         producerMarketParticipantRoleType: prod.producerMarketParticipantRoleType
                                     }
-                                } else if (untypedValue && untypedValue.systemOperatorMarketParticipantMrid) {
-                                    producer = {
-                                        producerMarketParticipantMrid: untypedValue.systemOperatorMarketParticipantMrid,
-                                        producerMarketParticipantName: untypedValue.systemOperatorMarketParticipantName,
-                                        producerMarketParticipantRoleType: untypedValue.systemOperatorMarketParticipantRoleType
-                                    }
+                                // } else if (untypedValue && untypedValue.systemOperatorMarketParticipantMrid) {
+                                //     producer = {
+                                //         producerMarketParticipantMrid: untypedValue.systemOperatorMarketParticipantMrid,
+                                //         producerMarketParticipantName: untypedValue.systemOperatorMarketParticipantName,
+                                //         producerMarketParticipantRoleType: untypedValue.systemOperatorMarketParticipantRoleType
+                                //     }
                                 }
                             }
 
@@ -245,22 +245,22 @@ export class HistoryActivationController {
                         //DO nothing except "Not accessible information"
                     }
                 }
-                if (!producer) {
-                    try {
-                        if (activationDocument.receiverMarketParticipantMrid) {
-                            var so = await SystemOperatorService.getObj(ctx, activationDocument.receiverMarketParticipantMrid);
-                            if (so) {
-                                producer = {
-                                    producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
-                                    producerMarketParticipantName: so.systemOperatorMarketParticipantName,
-                                    producerMarketParticipantRoleType: so.systemOperatorMarketParticipantRoleType
-                                }
-                            }
-                        }
-                    } catch (error) {
-                        //DO nothing except "Not accessible information"
-                    }
-                }
+                // if (!producer) {
+                //     try {
+                //         if (activationDocument.receiverMarketParticipantMrid) {
+                //             var so = await SystemOperatorService.getObj(ctx, activationDocument.receiverMarketParticipantMrid);
+                //             if (so) {
+                //                 producer = {
+                //                     producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
+                //                     producerMarketParticipantName: so.systemOperatorMarketParticipantName,
+                //                     producerMarketParticipantRoleType: so.systemOperatorMarketParticipantRoleType
+                //                 }
+                //             }
+                //         }
+                //     } catch (error) {
+                //         //DO nothing except "Not accessible information"
+                //     }
+                // }
 
 
                 var energyAmount: EnergyAmount;

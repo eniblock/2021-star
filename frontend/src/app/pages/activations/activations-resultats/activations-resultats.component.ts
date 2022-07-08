@@ -85,7 +85,7 @@ export class ActivationsResultatsComponent implements OnChanges {
   }
 
   showGraph(activation: RechercheHistoriqueLimitationEntite) {
-    var meteringPointMrid: string = "----";
+    var meteringPointMrid: string = "";
     if(activation.site) {
       meteringPointMrid = activation.site.meteringPointMrid;
     }
@@ -110,7 +110,7 @@ export class ActivationsResultatsComponent implements OnChanges {
         return op.systemOperatorMarketParticipantName;
       }
     }
-    return "----";
+    return "";
   }
 
 }

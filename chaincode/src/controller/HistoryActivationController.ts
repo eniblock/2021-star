@@ -123,7 +123,7 @@ export class HistoryActivationController {
                 if (site.meteringPointMrid === criteriaObj.originAutomationRegisteredResourceMrid
                     || criteriaObj.producerMarketParticipantList.includes(site.producerMarketParticipantMrid)
                     || site.siteName == criteriaObj.siteName) {
-                        criteriaObj.originAutomationRegisteredResourceList.push(site.meteringPointMrid);
+                        criteriaObj.originAutomationRegisteredResourceList.push(site.substationMrid);
                         criteriaObj.registeredResourceList.push(site.meteringPointMrid);
                 }
             }

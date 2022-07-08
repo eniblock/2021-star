@@ -144,31 +144,33 @@ export class HistoryActivationController {
         var args: string[] = [];
 
         if (criteriaObj) {
-            const criteriaPlace: string[] = [];
+            // const criteriaPlace: string[] = [];
             if (criteriaObj.originAutomationRegisteredResourceList
                 && criteriaObj.originAutomationRegisteredResourceList.length > 0) {
 
                 const originAutomationRegisteredResourceList_str = JSON.stringify(criteriaObj.originAutomationRegisteredResourceList);
-                criteriaPlace.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
+                // criteriaPlace.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
+                args.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
             }
             if (criteriaObj.registeredResourceList
                 && criteriaObj.registeredResourceList.length > 0) {
                 const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);
-                criteriaPlace.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
+                // criteriaPlace.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
+                args.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
             }
-            if (criteriaPlace.length == 1) {
-                args.push(criteriaPlace[0]);
-            } else if (criteriaPlace.length > 1) {
-                var criteriaPlace_str: string = `"$or":[`;
-                for (var i=0; i<criteriaPlace.length; i++) {
-                    if (i>0) {
-                        criteriaPlace_str = criteriaPlace_str.concat(`,`);
-                    }
-                    criteriaPlace_str = criteriaPlace_str.concat(`{`).concat(criteriaPlace[i]).concat(`}`);
-                }
-                criteriaPlace_str = criteriaPlace_str.concat(`]`);
-                args.push(criteriaPlace_str);
-            }
+            // if (criteriaPlace.length == 1) {
+            //     args.push(criteriaPlace[0]);
+            // } else if (criteriaPlace.length > 1) {
+            //     var criteriaPlace_str: string = `"$or":[`;
+            //     for (var i=0; i<criteriaPlace.length; i++) {
+            //         if (i>0) {
+            //             criteriaPlace_str = criteriaPlace_str.concat(`,`);
+            //         }
+            //         criteriaPlace_str = criteriaPlace_str.concat(`{`).concat(criteriaPlace[i]).concat(`}`);
+            //     }
+            //     criteriaPlace_str = criteriaPlace_str.concat(`]`);
+            //     args.push(criteriaPlace_str);
+            // }
             if (criteriaObj.endCreatedDateTime) {
                 args.push(`"$or":[{"startCreatedDateTime":{"$lte": ${JSON.stringify(criteriaObj.endCreatedDateTime)}}},{"startCreatedDateTime":""},{"startCreatedDateTime":{"$exists": false}}]`);
             }

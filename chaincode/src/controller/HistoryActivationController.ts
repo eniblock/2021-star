@@ -54,12 +54,6 @@ export class HistoryActivationController {
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
 
-                console.info("**********************************")
-                console.info("**********************************")
-                console.info(query)
-                console.info(collections)
-                console.info("**********************************")
-                console.info("**********************************")
                 const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
 
                 if (allActivationDocument && allActivationDocument.length > 0) {
@@ -105,8 +99,7 @@ export class HistoryActivationController {
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 args.push(`"substationMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
             }
-            if (criteriaObj.producerMarketParticipantList && criteriaObj.producerMarketParticipantList.length > 0
-                && (role === RoleType.Role_DSO || role === RoleType.Role_TSO) ) {
+            if (criteriaObj.producerMarketParticipantList && criteriaObj.producerMarketParticipantList.length > 0) {
                 const producerMarketParticipantList_str = JSON.stringify(criteriaObj.producerMarketParticipantList);
                 args.push(`"producerMarketParticipantMrid": { "$in" : ${producerMarketParticipantList_str} }`);
             }

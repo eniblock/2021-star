@@ -37,14 +37,14 @@ public class HistoriqueLimitationService {
     public HistoriqueLimitation[] findHistorique(HistoriqueLimitationCriteria criteria, String order, OrderDirection orderDirection) throws TechnicalException {
         HistoriqueLimitation[] returnedArray = {};
 
-        if (StringUtils.isNotBlank(criteria.getOriginAutomationRegisteredResourceMrid())
-            || StringUtils.isNotBlank(criteria.getProducerMarketParticipantMrid())
-            || StringUtils.isNotBlank(criteria.getProducerMarketParticipantName())
-            || StringUtils.isNotBlank(criteria.getSiteName())
-            || StringUtils.isNotBlank(criteria.getStartCreatedDateTime())
-            || StringUtils.isNotBlank(criteria.getEndCreatedDateTime())) {
+        // if (StringUtils.isNotBlank(criteria.getOriginAutomationRegisteredResourceMrid())
+        //     || StringUtils.isNotBlank(criteria.getProducerMarketParticipantMrid())
+        //     || StringUtils.isNotBlank(criteria.getProducerMarketParticipantName())
+        //     || StringUtils.isNotBlank(criteria.getSiteName())
+        //     || StringUtils.isNotBlank(criteria.getStartCreatedDateTime())
+        //     || StringUtils.isNotBlank(criteria.getEndCreatedDateTime())) {
                 returnedArray = historiqueLimitationRepository.findHistoriqueByQuery(criteria);
-            }
+            // }
 
         return returnedArray;
     }

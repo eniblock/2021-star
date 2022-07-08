@@ -54,6 +54,12 @@ export class HistoryActivationController {
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
 
+                console.info("**********************************")
+                console.info("**********************************")
+                console.info(query)
+                console.info(collections)
+                console.info("**********************************")
+                console.info("**********************************")
                 const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
 
                 if (allActivationDocument && allActivationDocument.length > 0) {
@@ -71,12 +77,14 @@ export class HistoryActivationController {
         criteriaObj: HistoryCriteria,
         role: string): Promise<HistoryCriteria> {
 
+        criteriaObj.producerMarketParticipantName = criteriaObj.producerMarketParticipantName.trim();
 
         const prodIdList: string[] = [];
         if (criteriaObj.producerMarketParticipantMrid) {
             prodIdList.push(criteriaObj.producerMarketParticipantMrid);
         }
         if (criteriaObj.producerMarketParticipantName) {
+            prodIdList.push(criteriaObj.producerMarketParticipantName);
             const allProdId = await ProducerController.getProducerByName(ctx, criteriaObj.producerMarketParticipantName);
             if (allProdId) {
                 for (var prodId of allProdId) {
@@ -107,6 +115,8 @@ export class HistoryActivationController {
                 args.push(`"siteName":"${criteriaObj.siteName}"`);
             }
         }
+
+
         criteriaObj.originAutomationRegisteredResourceList = [];
         criteriaObj.registeredResourceList = [];
         if (args.length > 0) {
@@ -118,7 +128,7 @@ export class HistoryActivationController {
             }
             for (var site of siteList) {
                 if (site.meteringPointMrid === criteriaObj.originAutomationRegisteredResourceMrid
-                    || site.producerMarketParticipantMrid === criteriaObj.producerMarketParticipantMrid
+                    || criteriaObj.producerMarketParticipantList.includes(site.producerMarketParticipantMrid)
                     || site.siteName == criteriaObj.siteName) {
                         criteriaObj.originAutomationRegisteredResourceList.push(site.meteringPointMrid);
                         criteriaObj.registeredResourceList.push(site.meteringPointMrid);
@@ -133,7 +143,8 @@ export class HistoryActivationController {
             criteriaObj.registeredResourceList.push(criteriaObj.registeredResourceMrid);
             criteriaObj.registeredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
         }
-    return criteriaObj;
+
+        return criteriaObj;
     }
 
     public static async buildActivationDocumentQuery(criteriaObj: HistoryCriteria) : Promise<string> {
@@ -218,7 +229,24 @@ export class HistoryActivationController {
                 if (!producer) {
                     try {
                         if (activationDocument.receiverMarketParticipantMrid) {
-                            producer = await ProducerService.getObj(ctx, activationDocument.receiverMarketParticipantMrid);
+                            const prod = await ProducerService.getObj(ctx, activationDocument.receiverMarketParticipantMrid);
+                            if (prod) {
+                                const untypedValue = JSON.parse(JSON.stringify(prod))
+                                if (untypedValue && untypedValue.producerMarketParticipantMrid) {
+                                    producer = {
+                                        producerMarketParticipantMrid: prod.producerMarketParticipantMrid,
+                                        producerMarketParticipantName: prod.producerMarketParticipantName,
+                                        producerMarketParticipantRoleType: prod.producerMarketParticipantRoleType
+                                    }
+                                } else if (untypedValue && untypedValue.systemOperatorMarketParticipantMrid) {
+                                    producer = {
+                                        producerMarketParticipantMrid: untypedValue.systemOperatorMarketParticipantMrid,
+                                        producerMarketParticipantName: untypedValue.systemOperatorMarketParticipantName,
+                                        producerMarketParticipantRoleType: untypedValue.systemOperatorMarketParticipantRoleType
+                                    }
+                                }
+                            }
+
                         }
                     } catch (error) {
                         //DO nothing except "Not accessible information"
@@ -228,10 +256,12 @@ export class HistoryActivationController {
                     try {
                         if (activationDocument.receiverMarketParticipantMrid) {
                             var so = await SystemOperatorService.getObj(ctx, activationDocument.receiverMarketParticipantMrid);
-                            producer = {
-                                producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
-                                producerMarketParticipantName: so.systemOperatorMarketParticipantName,
-                                producerMarketParticipantRoleType: so.systemOperatorMarketParticipantRoleType
+                            if (so) {
+                                producer = {
+                                    producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
+                                    producerMarketParticipantName: so.systemOperatorMarketParticipantName,
+                                    producerMarketParticipantRoleType: so.systemOperatorMarketParticipantRoleType
+                                }
                             }
                         }
                     } catch (error) {

@@ -167,6 +167,7 @@ keycloak:
     - name: gitlab-registry
   ingress:
     enabled: true
+    secretName: "{{ .Release.Name }}-tls"
   metrics:
     enabled: true
   configurator:

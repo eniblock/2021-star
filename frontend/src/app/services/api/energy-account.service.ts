@@ -8,7 +8,7 @@ import {ProcessType} from 'src/app/models/enum/ProcessType.enum';
 import {environment} from 'src/environments/environment';
 import {FormDataHelper} from "./helpers/formData-helper";
 
-const MOCK = true;
+const MOCK = false;
 
 @Injectable({
   providedIn: 'root',

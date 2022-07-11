@@ -14,6 +14,7 @@
     SITE = 'site',
 
     ACTIVATION_DOCUMENT = 'activationDocument',
+    ACTIVATION_DOCUMENT_RULES = 'activationDocumentRules',
     PPCO_TIME_THRESHOLD = 'pPCOTimeThershold',
     PC_TIME_MATCH_THRESHOLD = 'pCTimeMatchThreshold',
     PC_TIME_UPDATEEND_MATCH_THRESHOLD = 'pCTimeUpdateEndMatchThreshold',

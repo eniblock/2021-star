@@ -136,6 +136,15 @@ export class ParametersController {
             valueActivationDocument.set(ParametersType.ALL, [enedis_producer, enedis_rte]);
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
 
+            const activationDocumentRules: string[] = [];
+            //messageType + "-" + businessType + "-" + reasonCode
+            activationDocumentRules.push("D01-Z01-A70");
+
+            activationDocumentRules.push("D01-Z02-A70");
+            activationDocumentRules.push("D01-Z03-Y98");
+            activationDocumentRules.push("D01-Z04-Y99");
+            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_RULES, activationDocumentRules);
+
             const valueEnergy: string[] = [];
             valueEnergy.push(enedis_producer);
             parameters.values.set(ParametersType.ENERGY_AMOUNT, valueEnergy);
@@ -164,6 +173,44 @@ export class ParametersController {
             valueActivationDocument.set(OrganizationTypeMsp.RTE, [producer_rte]);
             valueActivationDocument.set(ParametersType.ALL, [enedis_producer, producer_rte]);
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
+
+            const activationDocumentRules: string[] = [];
+            //messageType + "-" + businessType + "-" + reasonCode
+            activationDocumentRules.push("A98-C55-A70");
+            activationDocumentRules.push("A98-C55-A98");
+            activationDocumentRules.push("A54-C55-A70");
+            activationDocumentRules.push("A54-C55-A98");
+
+            activationDocumentRules.push("A98-C55-Z71");
+            activationDocumentRules.push("A98-C55-Z72");
+            activationDocumentRules.push("A98-C55-Z73");
+            activationDocumentRules.push("A98-C55-Z74");
+
+            activationDocumentRules.push("A98-A53-ZB1");
+            activationDocumentRules.push("A98-A53-ZB2");
+            activationDocumentRules.push("A98-A53-ZB3");
+            activationDocumentRules.push("A98-A53-ZB4");
+            activationDocumentRules.push("A98-A53-ZB5");
+            activationDocumentRules.push("A98-A53-ZB6");
+
+            activationDocumentRules.push("A98-C55-Z91");
+            activationDocumentRules.push("A98-C55-Z92");
+
+            activationDocumentRules.push("A54-C55-Z71");
+            activationDocumentRules.push("A54-C55-Z72");
+            activationDocumentRules.push("A54-C55-Z73");
+            activationDocumentRules.push("A54-C55-Z74");
+
+            activationDocumentRules.push("A98-A53-ZB1");
+            activationDocumentRules.push("A98-A53-ZB2");
+            activationDocumentRules.push("A98-A53-ZB3");
+            activationDocumentRules.push("A98-A53-ZB4");
+            activationDocumentRules.push("A98-A53-ZB5");
+            activationDocumentRules.push("A98-A53-ZB6");
+
+            activationDocumentRules.push("A54-C55-Z91");
+            activationDocumentRules.push("A54-C55-Z92");
+            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_RULES, activationDocumentRules);
 
             const valueEnergy: string[] = [];
             valueEnergy.push(enedis_producer);

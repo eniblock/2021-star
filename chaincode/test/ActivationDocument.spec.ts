@@ -307,6 +307,26 @@ describe('Star Tests ActivationDocument', () => {
             }
         });
 
+        it('should return ERROR CreateActivationDocument couple HTA incoherency between messageType, businessType and reason code', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            activationDocument.reasonCode = '';
+            try {
+                await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal(`Incoherency between messageType, businessType and reason code for Activation Document ${activationDocument.activationDocumentMrid} creation.`);
+            }
+
+        });
+
         it('should return SUCCESS CreateActivationDocument couple HTA', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));

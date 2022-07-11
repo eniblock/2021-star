@@ -217,7 +217,13 @@ export class ActivationDocumentController {
             throw new Error(`Order must have a limitation value`);
         }
 
-        /* Mix Collection is true if order doesn't directly to producer */
+        const activationDocumentRules: string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_RULES);
+        const pattern = activationDocumentObj.messageType + "-" + activationDocumentObj.businessType + "-" + activationDocumentObj.reasonCode;
+        if (activationDocumentRules && !activationDocumentRules.includes(pattern)) {
+            throw new Error(`Incoherency between messageType, businessType and reason code for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
+        }
+
+        /* Mix Collection is true if order doesn't directly go to producer */
         const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
         var role_producer: string = '';
         var role_systemOperator: string = '';

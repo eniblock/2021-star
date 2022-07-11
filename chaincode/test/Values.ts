@@ -391,8 +391,8 @@ export class Values {
         originAutomationRegisteredResourceMrid: Values.HTA_yellowPage.originAutomationRegisteredResourceMrid, // FK1
         registeredResourceMrid: Values.HTA_site_valid.meteringPointMrid,
         measurementUnitName: 'KW',
-        messageType: 'string',
-        businessType: 'string',
+        messageType: 'D01',
+        businessType: 'Z01',
         orderEnd: false,
 
         orderValue: '1',
@@ -400,7 +400,7 @@ export class Values {
         // testDateTime: 'Date', // Test DELETE ME //////////////////////
         endCreatedDateTime: JSON.parse(JSON.stringify(Values.getEndDate())),
         revisionNumber: '1',
-        reasonCode: 'string', // optionnal in case of TVC modulation
+        reasonCode: 'A70', // optionnal in case of TVC modulation
         senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
     }
@@ -410,8 +410,8 @@ export class Values {
         originAutomationRegisteredResourceMrid: Values.HTA_yellowPage.originAutomationRegisteredResourceMrid, // FK1
         registeredResourceMrid: Values.HTA_site_valid.meteringPointMrid,
         measurementUnitName: 'KW',
-        messageType: 'string',
-        businessType: 'string',
+        messageType: 'D01',
+        businessType: 'Z03',
         orderEnd: false,
 
         orderValue: '1',
@@ -419,7 +419,7 @@ export class Values {
         // testDateTime: 'Date', // Test DELETE ME //////////////////////
         endCreatedDateTime: JSON.parse(JSON.stringify(Values.getEndDate())),
         revisionNumber: '1',
-        reasonCode: 'string', // optionnal in case of TVC modulation
+        reasonCode: 'Y98', // optionnal in case of TVC modulation
         senderMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
     }

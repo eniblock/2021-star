@@ -8,8 +8,8 @@ loki:
         cache_ttl: 24h
         shared_store: s3
       aws:
-        s3: s3://${s3_key}:${s3_secret}@storage.sbg.cloud.ovh.net/loki
-        region: sbg
+        s3: s3://${s3_key}:${s3_secret}@storage.${container_region}.cloud.ovh.net/loki
+        region: ${container_region}
         s3forcepathstyle: true
     schema_config:
       configs:

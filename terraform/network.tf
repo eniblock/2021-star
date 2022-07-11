@@ -1,12 +1,19 @@
-resource "google_dns_record_set" "domains" {
-  for_each     = toset([
-      "*.testing.${var.name}.eniblock.fr",
-      "obs.${var.name}.eniblock.fr",
-  ])
-  project      = "xdevit"
-  name         = "${each.value}."
-  type         = "A"
-  ttl          = 300
-  managed_zone = "eniblockfr"
-  rrdatas      = [var.ip_address]
+resource "cloudflare_record" "domains" {
+  for_each     = setunion(
+      "${local.project_fqdn_testing}",
+      "${local.project_fqdn_staging}",
+      ["${local.monitoring_domain}"],
+  )
+  zone_id  = data.cloudflare_zone.eniblock_fr.id
+  name     = replace(each.value, "/\\.eniblock\\.fr$/", "")
+  value    = "141.95.163.210"
+  type     = "A"
+  ttl      = 300
+  depends_on  = [
+    null_resource.lb_ingress_ip_address,
+  ]
+}
+
+data "cloudflare_zone" "eniblock_fr" {
+  name = "eniblock.fr"
 }

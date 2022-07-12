@@ -13,6 +13,7 @@ import {
 import {environment} from 'src/environments/environment';
 import {UrlService} from '../common/url.service';
 import {RequestForm} from "../../models/RequestForm";
+import {map} from "rxjs/operators";
 
 const MOCK = false;
 
@@ -32,7 +33,10 @@ export class HistoriqueLimitationService {
     if (MOCK) {
       console.log(form);
       console.log(requestForm);
-      return getMocks(form, requestForm);
+      return getMocks(form, requestForm)
+        .pipe(
+          map(result => result.map(histo => ({...histo, subOrderList: histo.subOrderList.filter(e => e != null)}))) // We remove null elements
+        );
     }
 
     const formToSend: RechercheHistoriqueLimitationRequete = {
@@ -40,8 +44,10 @@ export class HistoriqueLimitationService {
       ...requestForm,
     };
     let urlParams = this.urlService.toUrlParams(formToSend);
-    var callResult = this.httpClient.get<RechercheHistoriqueLimitationEntite[]>(`${environment.serverUrl}/historiqueLimitations?${urlParams}`);
-
+    let callResult = this.httpClient.get<RechercheHistoriqueLimitationEntite[]>(`${environment.serverUrl}/historiqueLimitations?${urlParams}`)
+      .pipe(
+        map(result => result.map(histo => ({...histo, subOrderList: histo.subOrderList.filter(e => e != null)}))) // We remove null elements
+      );
     return callResult;
   }
 

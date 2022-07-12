@@ -439,7 +439,7 @@ export class ActivationDocumentController {
                     } else if (!remainingDocument.data.startCreatedDateTime
                             && remainingDocument.data.endCreatedDateTime) {
 
-                                const senderMarketParticipant: SystemOperator = JSON.parse(await SystemOperatorController.querySystemOperator(ctx, remainingDocument.data.senderMarketParticipantMrid));
+                        const senderMarketParticipant: SystemOperator = JSON.parse(await SystemOperatorController.querySystemOperator(ctx, remainingDocument.data.senderMarketParticipantMrid));
                         if (senderMarketParticipant.systemOperatorMarketParticipantName === OrganizationTypeMsp.RTE) {
                             matchResult = await ActivationDocumentController.searchUpdateEndState(ctx, params, remainingDocument);
                         }

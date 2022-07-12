@@ -172,10 +172,16 @@ export class HistoryActivationController {
             //     args.push(criteriaPlace_str);
             // }
             if (criteriaObj.endCreatedDateTime) {
-                args.push(`"$or":[{"startCreatedDateTime":{"$lte": ${JSON.stringify(criteriaObj.endCreatedDateTime)}}},{"startCreatedDateTime":""},{"startCreatedDateTime":{"$exists": false}}]`);
+                const endCreatedDateTime = new Date(criteriaObj.endCreatedDateTime);
+                endCreatedDateTime.setUTCHours(23,59,59,999);
+
+                args.push(`"$or":[{"startCreatedDateTime":{"$lte": ${JSON.stringify(endCreatedDateTime)}}},{"startCreatedDateTime":""},{"startCreatedDateTime":{"$exists": false}}]`);
             }
             if (criteriaObj.startCreatedDateTime) {
-                args.push(`"$or":[{"endCreatedDateTime":{"$gte": ${JSON.stringify(criteriaObj.startCreatedDateTime)}}},{"endCreatedDateTime":""},{"endCreatedDateTime":{"$exists": false}}]`);
+                const startCreatedDateTime = new Date(criteriaObj.startCreatedDateTime);
+                startCreatedDateTime.setUTCHours(0,0,0,0);
+
+                args.push(`"$or":[{"endCreatedDateTime":{"$gte": ${JSON.stringify(startCreatedDateTime)}}},{"endCreatedDateTime":""},{"endCreatedDateTime":{"$exists": false}}]`);
             }
         }
 
@@ -208,14 +214,14 @@ export class HistoryActivationController {
                     }
                 }
                 //Manage Yello Page to get Site Information
-                var siteRegistered: Site;
+                var siteRegistered: Site = null;
                 try {
                     siteRegistered = await SiteService.getObj(ctx, params, activationDocument.registeredResourceMrid);
                 } catch (error) {
                     //DO nothing except "Not accessible information"
                 }
 
-                var producer: Producer;
+                var producer: Producer = null;
                 try {
                     if (siteRegistered && siteRegistered.producerMarketParticipantMrid) {
                         producer = await ProducerService.getObj(ctx, siteRegistered.producerMarketParticipantMrid);
@@ -267,7 +273,7 @@ export class HistoryActivationController {
                 // }
 
 
-                var energyAmount: EnergyAmount;
+                var energyAmount: EnergyAmount = null;
                 try {
                     if (activationDocument && activationDocument.activationDocumentMrid) {
                         energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(ctx, params, activationDocument.activationDocumentMrid);
@@ -278,12 +284,16 @@ export class HistoryActivationController {
                 }
 
                 const information: HistoryInformation = {
-                    activationDocument: activationDocument,
-                    subOrderList: subOrderList,
-                    site: siteRegistered,
-                    producer: producer,
-                    energyAmount: energyAmount
+                    activationDocument: JSON.parse(JSON.stringify(activationDocument)),
+                    subOrderList: JSON.parse(JSON.stringify(subOrderList)),
+                    site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
+                    producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
+                    energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null
                 };
+
+                siteRegistered = null;
+                producer = null;
+                energyAmount = null;
 
                 informationList.push(information);
             }

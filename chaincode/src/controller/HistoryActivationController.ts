@@ -202,7 +202,9 @@ export class HistoryActivationController {
                         } catch(error) {
                             //do nothing, but empty document : suborder information is not in accessible collection
                         }
-                        subOrderList.push(subOrder);
+                        if (subOrder) {
+                            subOrderList.push(subOrder);
+                        }
                     }
                 }
                 //Manage Yello Page to get Site Information

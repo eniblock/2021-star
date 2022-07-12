@@ -1,0 +1,84 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# ---------------------------------------------------------------------------
+# "OrdererOrgs" - Definition of organizations managing orderer nodes
+# ---------------------------------------------------------------------------
+OrdererOrgs:
+  - Name: Orderer
+    Domain: orderer
+    EnableNodeOUs: true
+
+    Specs:
+      - Hostname: orderer1
+        SANS:
+          - 0.0.0.0
+          - orderer1.orderer.prod.star.eniblock.fr
+          - orderer1-hlf-ord.orderer-prod
+      - Hostname: orderer2
+        SANS:
+          - 0.0.0.0
+          - orderer2.orderer.prod.star.eniblock.fr
+          - orderer2-hlf-ord.orderer-prod
+      - Hostname: orderer3
+        SANS:
+          - 0.0.0.0
+          - orderer3.orderer.prod.star.eniblock.fr
+          - orderer3-hlf-ord.orderer-prod
+
+# ---------------------------------------------------------------------------
+# "PeerOrgs" - Definition of organizations managing peer nodes
+# ---------------------------------------------------------------------------
+PeerOrgs:
+  - Name: enedis
+    Domain: enedis
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer1
+        SANS:
+          - 0.0.0.0
+          - peer1.enedis.prod.star.eniblock.fr
+          - peer1-hlf-peer.enedis-prod
+      - Hostname: peer2
+        SANS:
+          - 0.0.0.0
+          - peer2.enedis.prod.star.eniblock.fr
+          - peer2-hlf-peer.enedis-prod
+    Users:
+      Count: 1
+
+  - Name: rte
+    Domain: rte
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer1
+        SANS:
+          - 0.0.0.0
+          - peer1.star.cloud-rte-france.com
+          - peer1-hlf-peer.rte-prod
+      - Hostname: peer2
+        SANS:
+          - 0.0.0.0
+          - peer2.star.cloud-rte-france.com
+          - peer2-hlf-peer.rte-prod
+    Users:
+      Count: 1
+
+  - Name: producer
+    Domain: producer
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer1
+        SANS:
+          - 0.0.0.0
+          - peer1.producer.prod.star.eniblock.fr
+          - peer1-hlf-peer.producer-prod
+      - Hostname: peer2
+        SANS:
+          - 0.0.0.0
+          - peer2.producer.prod.star.eniblock.fr
+          - peer2-hlf-peer.producer-prod
+    Users:
+      Count: 1

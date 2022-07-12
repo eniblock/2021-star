@@ -9,7 +9,7 @@ resource "keycloak_realm" "main" {
     from = var.smtp_from
     ssl  = var.smtp_ssl
     dynamic "auth" {
-      for_each = var.smtp_username == ""? []: [1]
+      for_each = var.smtp_username == "" ? [] : [1]
       content {
         username = var.smtp_username
         password = var.smtp_password
@@ -21,7 +21,7 @@ resource "keycloak_realm" "main" {
 
   internationalization {
     supported_locales = var.locales
-    default_locale = var.locales[0]
+    default_locale    = var.locales[0]
   }
 
   security_defenses {
@@ -30,7 +30,8 @@ resource "keycloak_realm" "main" {
     }
   }
 
-  reset_password_allowed = true
+  reset_password_allowed   = true
+  login_with_email_allowed = true
   #   password_policy = "upperCase(1) and length(8) and forceExpiredPasswordChange(365) and notUsername"
 }
 

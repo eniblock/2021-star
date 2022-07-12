@@ -18,7 +18,7 @@ resource "keycloak_user" "init" {
 }
 
 variable "users" {
-  type = list(map(any))
+  type        = list(map(any))
   description = "a list of users as a dict with username, email, first_name, last_name, initial_password and optionally producerMarketParticipantMrid"
-  default = []
+  default     = []
 }

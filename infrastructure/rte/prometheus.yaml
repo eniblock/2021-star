@@ -1,0 +1,125 @@
+grafana:
+  additionalDataSources:
+  - access: proxy
+    editable: false
+    name: loki
+    orgId: 1
+    type: loki
+    url: http://loki.logging:3100
+    version: 1
+  # adminPassword: passme on the command line
+  deploymentStrategy:
+    type: Recreate
+  grafana.ini:
+    server:
+      enable_gzip: true
+      root_url: https://obs.star.cloud-rte-france.com/grafana
+      serve_from_sub_path: true
+  ingress:
+    annotations:
+      kubernetes.io/tls-acme: "true"
+    enabled: true
+    hosts:
+    - obs.star.cloud-rte-france.com
+    pathType: ImplementationSpecific
+    tls:
+    - hosts:
+      - obs.star.cloud-rte-france.com
+      secretName: star-cluster-grafana-cert
+  persistence:
+    accessModes:
+    - ReadWriteOnce
+    enabled: true
+    size: 1Gi
+  podAnnotations:
+    cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+  service:
+    type: NodePort
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+kubeControllerManager:
+  enabled: false
+kubeDns:
+  enabled: true
+kubeScheduler:
+  enabled: false
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+    - job_name: kubernetes-pods
+      kubernetes_sd_configs:
+      - role: pod
+      relabel_configs:
+      - action: keep
+        regex: true
+        source_labels:
+        - __meta_kubernetes_pod_annotation_prometheus_io_scrape
+      - action: replace
+        regex: (https?)
+        source_labels:
+        - __meta_kubernetes_pod_annotation_prometheus_io_scheme
+        target_label: __scheme__
+      - action: replace
+        regex: (.+)
+        source_labels:
+        - __meta_kubernetes_pod_annotation_prometheus_io_path
+        target_label: __metrics_path__
+      - action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+        source_labels:
+        - __address__
+        - __meta_kubernetes_pod_annotation_prometheus_io_port
+        target_label: __address__
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)
+      - action: replace
+        source_labels:
+        - __meta_kubernetes_namespace
+        target_label: kubernetes_namespace
+      - action: replace
+        source_labels:
+        - __meta_kubernetes_pod_name
+        target_label: kubernetes_pod_name
+      - action: drop
+        regex: Pending|Succeeded|Failed|Completed
+        source_labels:
+        - __meta_kubernetes_pod_phase
+    externalLabels:
+      app: star
+      env: cluster
+    podMetadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+    resources:
+      requests:
+        cpu: 200m
+        memory: 1Gi
+    retention: 30d
+    serviceMonitorSelectorNilUsesHelmValues: false
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 30Gi
+          storageClassName: managed-csi-premium
+prometheus-node-exporter:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 25Mi
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 75Mi

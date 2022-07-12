@@ -1,0 +1,36 @@
+controller:
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/instance: ingress
+            app.kubernetes.io/name: ingress-nginx
+        topologyKey: kubernetes.io/hostname
+  autoscaling:
+    enabled: true
+    maxReplicas: 5
+    minReplicas: 2
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 175
+  config:
+    gzip-level: 6
+    gzip-min-length: 1024
+    gzip-types: application/javascript application/json application/x-javascript application/xml
+      application/xml+rss text/css text/html text/javascript text/plain text/xml
+    proxy-body-size: 100m
+    server-tokens: "false"
+    use-gzip: "true"
+  service:
+    loadBalancerIP: 137.117.227.182
+  extraArgs:
+    enable-ssl-passthrough: ""
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 150Mi
+  setAsDefaultIngress: true

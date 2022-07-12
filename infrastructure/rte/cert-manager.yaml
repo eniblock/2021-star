@@ -1,0 +1,18 @@
+cainjector:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+ingressShim:
+  defaultIssuerKind: ClusterIssuer
+  defaultIssuerName: letsencrypt-prod
+installCRDs: true
+resources:
+  requests:
+    cpu: 25m
+    memory: 64Mi
+webhook:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi

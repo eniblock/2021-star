@@ -51,6 +51,12 @@ export class HistoryActivationController {
 
             if (criteriaObj) {
                 const query = await HistoryActivationController.buildActivationDocumentQuery(criteriaObj);
+                console.log("*********************************")
+                console.log("*********************************")
+                console.log(query)
+                console.log("*********************************")
+                console.log("*********************************")
+
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
 
@@ -173,13 +179,13 @@ export class HistoryActivationController {
             // }
             if (criteriaObj.endCreatedDateTime) {
                 const endCreatedDateTime = new Date(criteriaObj.endCreatedDateTime);
+
                 endCreatedDateTime.setUTCHours(23,59,59,999);
 
                 args.push(`"$or":[{"startCreatedDateTime":{"$lte": ${JSON.stringify(endCreatedDateTime)}}},{"startCreatedDateTime":""},{"startCreatedDateTime":{"$exists": false}}]`);
             }
             if (criteriaObj.startCreatedDateTime) {
                 const startCreatedDateTime = new Date(criteriaObj.startCreatedDateTime);
-                startCreatedDateTime.setUTCHours(0,0,0,0);
 
                 args.push(`"$or":[{"endCreatedDateTime":{"$gte": ${JSON.stringify(startCreatedDateTime)}}},{"endCreatedDateTime":""},{"endCreatedDateTime":{"$exists": false}}]`);
             }

@@ -153,7 +153,6 @@ deploy-enedis-testing:
     name: enedis-testing
   only:
     - develop
-    - GLE-STAR-182-testing-env
 
 deploy-rte-testing:
   extends: .deploy_star
@@ -161,7 +160,6 @@ deploy-rte-testing:
     name: rte-testing
   only:
     - develop
-    - GLE-STAR-182-testing-env
 
 deploy-producer-testing:
   extends: .deploy_star
@@ -169,7 +167,6 @@ deploy-producer-testing:
     name: producer-testing
   only:
     - develop
-    - GLE-STAR-182-testing-env
 
 deploy-orderer-testing:
   extends: .deploy_orderer
@@ -177,7 +174,6 @@ deploy-orderer-testing:
     name: orderer-testing
   only:
     - develop
-    - GLE-STAR-182-testing-env
 
 # staging
 
@@ -187,7 +183,6 @@ deploy-enedis-staging:
     name: enedis-staging
   only:
     - staging
-    - GLE-STAR-183-staging-env
 
 deploy-rte-staging:
   extends: .deploy_star
@@ -195,7 +190,6 @@ deploy-rte-staging:
     name: rte-staging
   only:
     - staging
-    - GLE-STAR-183-staging-env
 
 deploy-producer-staging:
   extends: .deploy_star
@@ -203,7 +197,6 @@ deploy-producer-staging:
     name: producer-staging
   only:
     - staging
-    - GLE-STAR-183-staging-env
 
 deploy-orderer-staging:
   extends: .deploy_orderer
@@ -211,4 +204,33 @@ deploy-orderer-staging:
     name: orderer-staging
   only:
     - staging
-    - GLE-STAR-183-staging-env
+
+# prod
+
+deploy-enedis-prod:
+  extends: .deploy_star
+  environment:
+    name: enedis-prod
+  only:
+    - prod
+
+deploy-producer-prod:
+  extends: .deploy_star
+  environment:
+    name: producer-prod
+  only:
+    - prod
+
+deploy-orderer-prod:
+  extends: .deploy_orderer
+  environment:
+    name: orderer-prod
+  only:
+    - prod
+
+deploy-rte-prod:
+  extends: .deploy_star
+  environment:
+    name: rte-prod
+  only:
+    - prod

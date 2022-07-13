@@ -1,0 +1,9 @@
+ingress:
+  enabled: true
+  host: "star.cloud-rte-france.com"
+backend:
+  peerConnectionOrganization: rte
+  instance: tso
+keycloak:
+  ingress:
+    host: "star.cloud-rte-france.com"

@@ -1,0 +1,80 @@
+ingress:
+  enabled: true
+  host: peer2.star.cloud-rte-france.com
+  secretName: hlf--peer2-tls
+
+##################################
+## Peer configuration options    #
+##################################
+peer:
+  tls:
+    server:
+      enabled: true
+  mspID: rte
+  gossip:
+    bootstrap: peer1-hlf-peer.rte-prod:7051
+    endpoint: peer2-hlf-peer.rte-prod:7051
+    externalEndpoint: peer2.star.cloud-rte-france.com:443
+  chaincodes:
+    - name: star
+      label: star
+      orderer_address: orderer1.orderer.prod.star.eniblock.fr:443
+      channel: star
+      image:
+        repository: registry.gitlab.com/xdev-tech/star/chaincode
+      command:
+        - sh
+        - -c
+        - '/app/node_modules/.bin/fabric-chaincode-node server --chaincode-address $CHAINCODE_ADDRESS --chaincode-id $CHAINCODE_ID'
+      metaInf: true
+
+# Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
+secrets:
+  ## These secrets should contain the Orderer crypto materials and credentials
+  # peer: {}
+  peer:
+    ## Credentials, saved under keys 'CA_USERNAME' and 'CA_PASSWORD'
+    # cred: hlf--peer2-cred
+
+    ## Certificate, saved under key 'cert.pem'
+    cert: hlf--peer2-idcert
+
+    ## Key, saved under 'key.pem'
+    key: hlf--peer2-idkey
+
+    ## CA Cert, saved under 'cacert.pem'
+    caCert: hlf--peer2-cacert
+
+    ## Intermediate CA Cert (optional), saved under 'intermediatecacert.pem'
+    # intCaCert: hlf--peer2-caintcert
+
+    ## TLS secret, saved under keys 'tls.crt' and 'tls.key' (to conform with K8S nomenclature)
+    tls: hlf--peer2-tls
+
+    ## TLS root CA certificate saved under key 'cert.pem'
+    tlsRootCert: hlf--peer2-tlsrootcert
+
+    # ## TLS secret, saved under keys 'tls.crt' and 'tls.key' (to conform with K8S nomenclature)
+    # tlsClient: hlf--peer2-tls-client
+
+    # ## TLS client root CA certificates saved under any names (as there may be multiple)
+    # tlsClientRootCert: hlf--peer2-client-tlsrootcert
+
+    ## This should contain "channel" transaction derived from a configtx.yaml
+    ## configtxgen -profile ComposerChannel -channelID composerchannel -outputCreateChannelTx composerchannel.tx
+  channels:
+    - name: star
+      secretName: starchannel
+      orderer_address: orderer1.orderer.prod.star.eniblock.fr:443
+      anchorKey: anchor-star-rte
+
+  ## This should contain the Certificate of the Peer Organisation admin
+  ## This is necessary to successfully run the peer
+  adminCert: hlf--peer2-admincert
+
+  ## This should contain the Private Key of the Peer Organisation admin
+  ## This is necessary to successfully join a channel
+  adminKey: hlf--peer2-adminkey
+
+  ## This should include the Orderer TLS 'cacert.pem'
+  ordTlsRootCert: hlf--ord-tlsrootcert

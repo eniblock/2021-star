@@ -1,0 +1,9 @@
+ingress:
+  enabled: true
+  host: "producer.star.eniblock.fr"
+backend:
+  peerConnectionOrganization: producer
+  instance: producer
+keycloak:
+  ingress:
+    host: "producer.star.eniblock.fr"

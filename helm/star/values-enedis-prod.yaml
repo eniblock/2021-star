@@ -1,0 +1,9 @@
+ingress:
+  enabled: true
+  host: "enedis.star.eniblock.fr"
+backend:
+  peerConnectionOrganization: enedis
+  instance: dso
+keycloak:
+  ingress:
+    host: "enedis.star.eniblock.fr"

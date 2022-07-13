@@ -2,6 +2,7 @@ resource "cloudflare_record" "domains" {
   for_each     = setunion(
       "${local.project_fqdn_testing}",
       "${local.project_fqdn_staging}",
+      "${local.project_fqdn_prod}",
       ["${local.monitoring_domain}"],
   )
   zone_id  = data.cloudflare_zone.eniblock_fr.id

@@ -30,6 +30,19 @@ locals {
             "peer2.producer.staging.star.eniblock.fr", 
             "peer2.rte.staging.star.eniblock.fr"
         ]
+        project_fqdn_prod      = [
+            "enedis.star.eniblock.fr",
+            "producer.star.eniblock.fr",
+            "orderer1.orderer.prod.star.eniblock.fr", 
+            "orderer2.orderer.prod.star.eniblock.fr", 
+            "orderer3.orderer.prod.star.eniblock.fr",
+            "peer1.enedis.prod.star.eniblock.fr", 
+            "peer1.producer.prod.star.eniblock.fr", 
+            "peer1.rte.prod.star.eniblock.fr",
+            "peer2.enedis.prod.star.eniblock.fr", 
+            "peer2.producer.prod.star.eniblock.fr", 
+            "peer2.rte.prod.star.eniblock.fr"
+        ]
         s3_container_region    = "sbg"
       }
 

@@ -67,5 +67,6 @@ locals {
   monitoring_domain      = "${local.workspace_config[terraform.workspace]["monitoring_domain"]}"
   project_fqdn_testing   = "${local.workspace_config[terraform.workspace]["project_fqdn_testing"]}"
   project_fqdn_staging   = "${local.workspace_config[terraform.workspace]["project_fqdn_staging"]}"
+  project_fqdn_prod      = "${local.workspace_config[terraform.workspace]["project_fqdn_prod"]}"
   s3_container_region = "${local.workspace_config[terraform.workspace]["s3_container_region"]}"
 }

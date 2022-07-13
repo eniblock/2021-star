@@ -1,4 +1,4 @@
-import { parse } from 'tinyduration';
+import {parse} from 'tinyduration';
 
 export class DateHelper {
   public static makeDate(day: number, month: number, year: number): Date {
@@ -44,4 +44,10 @@ export class DateHelper {
       (obj.years ? obj.years : 0) * 31536000;
     return seconds * 1000;
   }
+
+  public static addOneDayMinusOnemillisecond(jsonDate: string): string {
+    let t = new Date((new Date(jsonDate)).getTime() + 24 * 3600000 - 1).toJSON();
+    return t.substring(0, t.indexOf('.')) + 'Z';
+  }
+
 }

@@ -15,6 +15,7 @@ import {
 import {RequestForm} from "../../models/RequestForm";
 import {SystemOperatorService} from "../../services/api/system-operator.service";
 import {SystemOperator} from "../../models/SystemOperator";
+import {DateHelper} from "../../helpers/date.helper";
 
 @Component({
   selector: 'app-activations',
@@ -52,7 +53,10 @@ export class ActivationsComponent implements OnInit {
 
   rechercher(form: FormulaireRechercheHistoriqueLimitation) {
     this.resetResultats();
-    this.formRecherche = form;
+    this.formRecherche = {
+      ...form,
+      endCreatedDateTime: DateHelper.addOneDayMinusOnemillisecond(form.endCreatedDateTime),
+    };
     this.lancerRecherche();
   }
 

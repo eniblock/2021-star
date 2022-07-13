@@ -1,20 +1,9 @@
 package com.star.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.star.enums.TechnologyTypeEnum;
-import com.star.models.common.PageHLF;
-import com.star.models.historiquelimitation.HistoriqueLimitation;
-import com.star.models.site.Site;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Arrays;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**

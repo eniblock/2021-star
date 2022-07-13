@@ -1,6 +1,5 @@
 package com.star.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
 import com.star.models.limitation.OrdreLimitation;
@@ -16,8 +15,6 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**

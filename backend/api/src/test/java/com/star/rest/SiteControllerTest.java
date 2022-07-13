@@ -32,8 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class SiteControllerTest extends AbstractIntTest {
 
     private static final String URL_SEARCH = SiteController.PATH;
-    private static final String URL_CREATE = SiteController.PATH+"/create";
-    private static final String URL_UPDATE = SiteController.PATH+"/update";
+    private static final String URL_CREATE = SiteController.PATH + "/create";
+    private static final String URL_UPDATE = SiteController.PATH + "/update";
 
     @Value("classpath:/site/site-without-extension")
     private Resource siteWithoutExtension;

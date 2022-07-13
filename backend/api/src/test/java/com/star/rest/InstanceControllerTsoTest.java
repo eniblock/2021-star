@@ -1,6 +1,5 @@
 package com.star.rest;
 
-import com.star.enums.InstanceEnum;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.test.context.support.WithMockUser;

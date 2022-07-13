@@ -51,12 +51,6 @@ export class HistoryActivationController {
 
             if (criteriaObj) {
                 const query = await HistoryActivationController.buildActivationDocumentQuery(criteriaObj);
-                console.log("*********************************")
-                console.log("*********************************")
-                console.log(query)
-                console.log("*********************************")
-                console.log("*********************************")
-
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
 
@@ -178,16 +172,10 @@ export class HistoryActivationController {
             //     args.push(criteriaPlace_str);
             // }
             if (criteriaObj.endCreatedDateTime) {
-                const endCreatedDateTime = new Date(criteriaObj.endCreatedDateTime);
-
-                endCreatedDateTime.setUTCHours(23,59,59,999);
-
-                args.push(`"$or":[{"startCreatedDateTime":{"$lte": ${JSON.stringify(endCreatedDateTime)}}},{"startCreatedDateTime":""},{"startCreatedDateTime":{"$exists": false}}]`);
+                args.push(`"$or":[{"startCreatedDateTime":{"$lte": ${JSON.stringify(criteriaObj.endCreatedDateTime)}}},{"startCreatedDateTime":""},{"startCreatedDateTime":{"$exists": false}}]`);
             }
             if (criteriaObj.startCreatedDateTime) {
-                const startCreatedDateTime = new Date(criteriaObj.startCreatedDateTime);
-
-                args.push(`"$or":[{"endCreatedDateTime":{"$gte": ${JSON.stringify(startCreatedDateTime)}}},{"endCreatedDateTime":""},{"endCreatedDateTime":{"$exists": false}}]`);
+                args.push(`"$or":[{"endCreatedDateTime":{"$gte": ${JSON.stringify(criteriaObj.startCreatedDateTime)}}},{"endCreatedDateTime":""},{"endCreatedDateTime":{"$exists": false}}]`);
             }
         }
 
@@ -200,6 +188,7 @@ export class HistoryActivationController {
         allActivationDocument: ActivationDocument[]): Promise<HistoryInformation[]> {
 
         const informationList: HistoryInformation[] = [];
+        const filledList: string[] = [];
 
         for (const activationDocument of allActivationDocument) {
 
@@ -297,6 +286,10 @@ export class HistoryActivationController {
                     energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null
                 };
 
+                if (information.site && information.producer) {
+                    filledList.push(activationDocument.activationDocumentMrid);
+                }
+
                 siteRegistered = null;
                 producer = null;
                 energyAmount = null;
@@ -306,7 +299,28 @@ export class HistoryActivationController {
 
         }
 
-        return informationList;
+        const finalinformation = HistoryActivationController.cleanFilled(informationList, filledList);
+        return finalinformation;
+    }
+
+    private static async cleanFilled(initialInformation : HistoryInformation[], filledList: string[]): Promise<HistoryInformation[]> {
+        const finalinformation: HistoryInformation[] = [];
+
+        for (var information of initialInformation) {
+            if (information.site && information.producer) {
+                finalinformation.push(information);
+            } else {
+                var subOrderExists = false;
+                for (var subOrderId of information.activationDocument.subOrderList) {
+                    subOrderExists = subOrderExists || filledList.includes(subOrderId);
+                }
+                if (!subOrderExists) {
+                    finalinformation.push(information);
+                }
+            }
+        }
+
+        return finalinformation;
     }
 
 }

@@ -46,6 +46,9 @@ export class DateHelper {
   }
 
   public static addOneDayMinusOnemillisecond(jsonDate: string): string {
+    if (jsonDate == undefined || jsonDate == null || jsonDate == '') {
+      return jsonDate
+    }
     let t = new Date((new Date(jsonDate)).getTime() + 24 * 3600000 - 1).toJSON();
     return t.substring(0, t.indexOf('.')) + 'Z';
   }

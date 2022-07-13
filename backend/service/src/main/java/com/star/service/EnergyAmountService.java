@@ -8,8 +8,6 @@ import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.common.FichierImportation;
-import com.star.models.common.PageHLF;
-import com.star.models.common.PaginationDto;
 import com.star.models.energyamount.EnergyAmount;
 import com.star.models.energyamount.EnergyAmountCriteria;
 import com.star.models.energyamount.ImportEnergyAmountResult;
@@ -168,7 +166,7 @@ public class EnergyAmountService {
 //            Vérification du champ senderMarketParticipantMrid
             String senderMarketParticipantMrid = energyAmount.getSenderMarketParticipantMrid();
             if (TSO.equals(instance) && !StringUtils.equalsIgnoreCase(TSO.getSystemOperatorMrid(), senderMarketParticipantMrid) ||
-            DSO.equals(instance) && !StringUtils.equalsIgnoreCase(DSO.getSystemOperatorMrid(), senderMarketParticipantMrid)) {
+                    DSO.equals(instance) && !StringUtils.equalsIgnoreCase(DSO.getSystemOperatorMrid(), senderMarketParticipantMrid)) {
                 errors.add(messageSource.getMessage("import.file.energy.amount.senderMarketParticipantMrid.error",
                         new String[]{senderMarketParticipantMrid}, null));
             }
@@ -235,9 +233,7 @@ public class EnergyAmountService {
                 energyAmount.setReceiverMarketParticipantMrid(systemOperatorReceiverMarketParticipantMrid.getSystemOperatorMarketParticipantMrid());
                 energyAmount.setReceiverMarketParticipantRole(systemOperatorReceiverMarketParticipantMrid.getSystemOperatorMarketParticipantRoleType());
             }
-            log.debug("Traitement terminé dans le catch exception ");
         }
-        log.debug("Traitement après l'éventuelle exception");
         energyAmount.setAreaDomain(ARE_DOMAIN_HTA);
         energyAmount.setRegisteredResourceMrid(ordreLimitation.getRegisteredResourceMrid());
         if (creation) {

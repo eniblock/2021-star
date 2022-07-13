@@ -128,7 +128,6 @@ public class SiteController {
     public ResponseEntity<SiteDTO[]> findSite(
             @Parameter(description = "Number of page per response")
             @RequestParam(value = "order", required = false) String order,
-            @Parameter(description = "bookmark search criteria")
             @RequestParam(value = "technologyType", required = false) List<TechnologyTypeEnum> technologyType,
             @Parameter(description = "producerMarketParticipantMrid search criteria")
             @RequestParam(value = "producerMarketParticipantMrid", required = false) String producerMarketParticipantMrid,

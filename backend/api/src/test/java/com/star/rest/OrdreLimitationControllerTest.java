@@ -63,7 +63,7 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
-                        .file(file))
+                .file(file))
                 .andExpect(status().isConflict());
     }
 
@@ -78,7 +78,7 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
-                        .file(file))
+                .file(file))
                 .andExpect(status().isConflict());
     }
 
@@ -93,7 +93,7 @@ class OrdreLimitationControllerTest extends AbstractIntTest {
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
-                        .file(file))
+                .file(file))
                 .andExpect(status().isCreated());
     }
 

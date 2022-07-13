@@ -1,13 +1,10 @@
 package com.star.rest;
 
-// import com.fasterxml.jackson.core.JsonProcessingException;
-// import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.enums.InstanceEnum;
 import com.star.exception.TechnicalException;
 import com.star.mapper.historiquelimitation.HistoriqueLimitationMapper;
-import com.star.models.common.OrderDirection;
-import com.star.models.historiquelimitation.HistoriqueLimitation;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.security.SecurityComponent;
 import com.star.service.HistoriqueLimitationService;
@@ -16,7 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-// import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -32,7 +29,7 @@ import static com.star.enums.InstanceEnum.PRODUCER;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-// @Slf4j
+@Slf4j
 @RestController
 @RequestMapping(HistoriqueLimitationController.PATH)
 public class HistoriqueLimitationController {
@@ -50,14 +47,9 @@ public class HistoriqueLimitationController {
     @Autowired
     private SecurityComponent securityComponent;
 
-    // @Autowired
-    // private ObjectMapper objectMapper;
-
     /**
      * API de recherche multi-critères des historiques de limitation
      *
-     * @param order
-     * @param orderDirection
      * @param originAutomationRegisteredResourceMrid
      * @param producerMarketParticipantMrid
      * @param siteName
@@ -74,10 +66,6 @@ public class HistoriqueLimitationController {
     })
     @GetMapping()
     public ResponseEntity<HistoriqueLimitationDTO[]> findLimitationHistory(
-            @Parameter(description = "order search criteria")
-            @RequestParam(required = false) String order,
-            @Parameter(description = "orderDirection (asc or desc) search criteria")
-            @RequestParam(required = false, defaultValue = "asc") OrderDirection orderDirection,
             @Parameter(description = "originAutomationRegisteredResourceMrid search criteria")
             @RequestParam(required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
             @Parameter(description = "producerMarketParticipantMrid search criteria")
@@ -107,22 +95,7 @@ public class HistoriqueLimitationController {
             // A producer can get only his own site data
             criteria.setProducerMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));
         }
-        HistoriqueLimitation[] returnedArray = historiqueLimitationService.findHistorique(criteria, order, orderDirection);
-
-        // try {
-        //     log.debug("Controller received array:\n" + objectMapper.writeValueAsString(returnedArray));
-        // } catch (JsonProcessingException e) {
-        //     e.printStackTrace();
-        // }
-
-        HistoriqueLimitationDTO[] returnedDtos = historiqueLimitationMapper.beanToDtos(returnedArray);
-
-        // try {
-        //     log.debug("Controller transformed dto array:\n" + objectMapper.writeValueAsString(returnedArray));
-        // } catch (JsonProcessingException e) {
-        //     e.printStackTrace();
-        // }
-
+        HistoriqueLimitationDTO[] returnedDtos = historiqueLimitationMapper.beanToDtos(historiqueLimitationService.findHistorique(criteria));
         return ResponseEntity.status(HttpStatus.OK).body(returnedDtos);
     }
 }

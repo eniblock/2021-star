@@ -14,7 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static com.star.enums.InstanceEnum.TSO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 
 class HistoriqueLimitationServiceTest extends AbstractTest {
@@ -44,7 +43,7 @@ class HistoriqueLimitationServiceTest extends AbstractTest {
 
         // WHEN
         // var siteResponseResult =
-        historiqueLimitationService.findHistorique(historiqueLimitationCriteria, "10", OrderDirection.asc);
+        historiqueLimitationService.findHistorique(historiqueLimitationCriteria);
 
         // THEN
         verify(historiqueLimitationRepository, Mockito.times(1)).findHistoriqueByQuery(criteriaCaptor.capture());

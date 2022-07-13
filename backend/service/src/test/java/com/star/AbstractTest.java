@@ -1,6 +1,5 @@
 package com.star;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.configuration.TestConfiguration;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.Gateway;

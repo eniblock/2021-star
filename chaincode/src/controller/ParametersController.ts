@@ -174,6 +174,36 @@ export class ParametersController {
             valueActivationDocument.set(ParametersType.ALL, [enedis_producer, producer_rte]);
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
 
+            const valueEnergy: string[] = [];
+            valueEnergy.push(enedis_producer);
+            valueEnergy.push(producer_rte);
+            parameters.values.set(ParametersType.ENERGY_AMOUNT, valueEnergy);
+            parameters.values.set(ParametersType.ENERGY_ACCOUNT, valueEnergy);
+            parameters.values.set(ParametersType.REFERENCE_ENERGY_ACCOUNT, valueEnergy);
+
+            /*
+            *
+            */
+        } else if (identity === OrganizationTypeMsp.RTE) {
+            /*
+            * RTE
+            */
+
+            parameters.values.set(ParametersType.ROLE, role_rte);
+
+            const valueSite: string[] = [];
+            valueSite.push(producer_rte);
+            parameters.values.set(ParametersType.SITE, valueSite);
+
+            const valueActivationDocument = new Map<string, string[]>();
+            valueActivationDocument.set(OrganizationTypeMsp.ENEDIS, [enedis_rte]);
+            valueActivationDocument.set(RoleType.Role_DSO, [enedis_rte]);
+            valueActivationDocument.set(OrganizationTypeMsp.PRODUCER, [producer_rte]);
+            valueActivationDocument.set(RoleType.Role_Producer, [producer_rte]);
+            valueActivationDocument.set(ParametersType.DEFAULT, [producer_rte]);
+            valueActivationDocument.set(ParametersType.ALL, [enedis_rte, producer_rte]);
+            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
+
             const activationDocumentRules: string[] = [];
             //messageType + "-" + businessType + "-" + reasonCode
             activationDocumentRules.push("A98-C55-A70");
@@ -211,36 +241,6 @@ export class ParametersController {
             activationDocumentRules.push("A54-C55-Z91");
             activationDocumentRules.push("A54-C55-Z92");
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_RULES, activationDocumentRules);
-
-            const valueEnergy: string[] = [];
-            valueEnergy.push(enedis_producer);
-            valueEnergy.push(producer_rte);
-            parameters.values.set(ParametersType.ENERGY_AMOUNT, valueEnergy);
-            parameters.values.set(ParametersType.ENERGY_ACCOUNT, valueEnergy);
-            parameters.values.set(ParametersType.REFERENCE_ENERGY_ACCOUNT, valueEnergy);
-
-            /*
-            *
-            */
-        } else if (identity === OrganizationTypeMsp.RTE) {
-            /*
-            * RTE
-            */
-
-            parameters.values.set(ParametersType.ROLE, role_rte);
-
-            const valueSite: string[] = [];
-            valueSite.push(producer_rte);
-            parameters.values.set(ParametersType.SITE, valueSite);
-
-            const valueActivationDocument = new Map<string, string[]>();
-            valueActivationDocument.set(OrganizationTypeMsp.ENEDIS, [enedis_rte]);
-            valueActivationDocument.set(RoleType.Role_DSO, [enedis_rte]);
-            valueActivationDocument.set(OrganizationTypeMsp.PRODUCER, [producer_rte]);
-            valueActivationDocument.set(RoleType.Role_Producer, [producer_rte]);
-            valueActivationDocument.set(ParametersType.DEFAULT, [producer_rte]);
-            valueActivationDocument.set(ParametersType.ALL, [enedis_rte, producer_rte]);
-            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
 
             const valueEnergy: string[] = [];
             valueEnergy.push(producer_rte);

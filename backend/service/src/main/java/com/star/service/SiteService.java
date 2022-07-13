@@ -223,6 +223,7 @@ public class SiteService {
         Assert.notNull(meteringPointMrId, "Le meteringPointMrId est obligatoire et doit etre non null");
         return siteRepository.existSite(meteringPointMrId);
     }
+
     private ImportSiteResult checkFileContent(String fileName, Reader streamReader, InstanceEnum instance) throws IOException {
         importUtilsService.checkFile(fileName, streamReader, FileExtensionEnum.CSV.getValue());
         ImportSiteResult importSiteResult = new ImportSiteResult();

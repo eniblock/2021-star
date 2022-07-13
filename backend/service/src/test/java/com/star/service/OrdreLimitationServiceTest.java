@@ -26,7 +26,6 @@ import java.util.List;
 import static com.star.enums.InstanceEnum.DSO;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -150,7 +149,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         assertThat(ordreDebutLimitationArgumentCaptor.getValue()).hasSize(1);
         OrdreLimitation ordreLimitation = ordreDebutLimitationArgumentCaptor.getValue().get(0);
         assertThat(ordreLimitation).extracting("originAutomationRegisteredResourceMrid", "registeredResourceMrid",
-                        "measurementUnitName", "startCreatedDateTime", "messageType", "businessType", "reasonCode", "orderEnd")
+                "measurementUnitName", "startCreatedDateTime", "messageType", "businessType", "reasonCode", "orderEnd")
                 .containsExactly("ORIGIN_LNKINS_LKNZ", "PRM30001510803649", "MW", "2020-01-01T14:30:00Z", "message type", "business Type", "reason code", false);
 
     }
@@ -248,7 +247,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
                 .build();
 
         // WHEN
-        var ordreLimitationResulte = ordreLimitationService.findLimitationOrders(ordreLimitationCriteria);
+        ordreLimitationService.findLimitationOrders(ordreLimitationCriteria);
 
         // THEN
         verify(ordreLimitationRepository, Mockito.times(1)).findLimitationOrders(queryCaptor.capture());

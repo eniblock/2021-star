@@ -1,7 +1,6 @@
 package com.star.rest;
 
 
-import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.participant.ImportMarketParticipantResult;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,9 +40,6 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @RequestMapping(MarketParticipantController.PATH)
 public class MarketParticipantController {
     public static final String PATH = ApiRestVersion.VERSION + "/participant";
-
-    @Value("${instance}")
-    private InstanceEnum instance;
 
     @Autowired
     private MarketParticipantService marketParticipantService;

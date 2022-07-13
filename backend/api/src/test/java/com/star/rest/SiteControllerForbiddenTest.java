@@ -40,7 +40,7 @@ class SiteControllerForbiddenTest extends AbstractIntTest {
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_CREATE)
-                        .file(file))
+                .file(file))
                 .andExpect(status().isForbidden());
     }
 
@@ -54,7 +54,7 @@ class SiteControllerForbiddenTest extends AbstractIntTest {
 
         // THEN
         this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_UPDATE)
-                        .file(file))
+                .file(file))
                 .andExpect(status().isForbidden());
     }
 

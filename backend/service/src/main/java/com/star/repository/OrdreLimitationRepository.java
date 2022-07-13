@@ -52,7 +52,6 @@ public class OrdreLimitationRepository {
         log.info("Sauvegarde des ordres de limitation : {}", ordreLimitations);
         try {
             contract.submitTransaction(CREATE_LIST, objectMapper.writeValueAsString(ordreLimitations));
-
             this.reconciliate();
         } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de création de l'ordre de limitation ", exception);
@@ -65,7 +64,6 @@ public class OrdreLimitationRepository {
     public List<OrdreLimitation> findOrderByQuery(String query) throws TechnicalException {
         try {
             this.reconciliate();
-
             byte[] response = contract.evaluateTransaction(GET_ORDER_BY_QUERY, query);
             return response != null ? Arrays.asList(objectMapper.readValue(new String(response), OrdreLimitation[].class)) : emptyList();
         } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
@@ -78,7 +76,6 @@ public class OrdreLimitationRepository {
     public List<OrdreLimitation> findLimitationOrders(String query) throws TechnicalException {
         try {
             this.reconciliate();
-
             byte[] response = contract.evaluateTransaction(GET_BY_QUERY, query);
             return response != null ? Arrays.asList(objectMapper.readValue(new String(response), OrdreLimitation[].class)) : emptyList();
         } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
@@ -90,15 +87,9 @@ public class OrdreLimitationRepository {
 
 
     public void reconciliate() throws ContractException, TimeoutException, InterruptedException {
-        //get the reconciliatio State of Activation Documents
         byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
-
-        // UpdateActivationDocumentByOrders if needed
-        // at least evaluateTransaction contains [] then comparison with length > 2
-        if (evaluateTransaction != null && evaluateTransaction.length > 2 ) {
+        if (evaluateTransaction != null && evaluateTransaction.length > 2) {
             contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS, new String(evaluateTransaction));
         }
     }
-
-
 }

@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,7 @@ public class OrdreLimitationController {
     public static final String PATH = ApiRestVersion.VERSION + "/ordreLimitations";
     public static final String DEBUT = "/debut";
     public static final String COUPLE = "/couple";
+    public static final String FIN = "/fin";
 
     @Value("${instance}")
     private InstanceEnum instance;
@@ -62,21 +64,19 @@ public class OrdreLimitationController {
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreDebutLimitation(
             @Parameter(description = "JSON file containing start limitation order data.")
             @RequestParam MultipartFile[] files) throws BusinessException {
-        if (files == null || files.length == 0) {
-            throw new IllegalArgumentException("Files must not be empty");
-        }
-        ImportOrdreLimitationResult importMarketParticipantResult;
+        Assert.notEmpty(files,"Files must not be empty");
+        ImportOrdreLimitationResult importOrdreLimitationResult;
         try {
             List<FichierImportation> fichierOrdreLimitations = new ArrayList<>();
             for (MultipartFile file : files) {
                 fichierOrdreLimitations.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
             }
-            importMarketParticipantResult = ordreLimitationService.importOrdreDebutLimitation(fichierOrdreLimitations, instance);
+            importOrdreLimitationResult = ordreLimitationService.importOrdreDebutLimitation(fichierOrdreLimitations, instance);
         } catch (IOException | TechnicalException exception) {
             log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.status(isEmpty(importMarketParticipantResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantResult);
+        return ResponseEntity.status(isEmpty(importOrdreLimitationResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importOrdreLimitationResult);
     }
 
     @Operation(summary = "List of start limitation orders.")
@@ -102,9 +102,7 @@ public class OrdreLimitationController {
     public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(
             @Parameter(description = "JSON file containing couple Start/End limit order data.")
             @RequestParam MultipartFile[] files) throws BusinessException {
-        if (files == null || files.length == 0) {
-            throw new IllegalArgumentException("Files must not be empty");
-        }
+        Assert.notEmpty(files,"Files must not be empty");
         ImportOrdreLimitationResult importMarketParticipantResult;
         try {
             List<FichierImportation> fichierCoupleOrdreLimitations = new ArrayList<>();
@@ -118,6 +116,35 @@ public class OrdreLimitationController {
         }
         return ResponseEntity.status(isEmpty(importMarketParticipantResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantResult);
     }
+
+
+    @Operation(summary = "Post end limitation order.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "201", description = "Post successfully end limitation order", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    @PostMapping(FIN)
+    @PreAuthorize("@securityComponent.isInstance('TSO')")
+    public ResponseEntity<ImportOrdreLimitationResult> importOrdreFinLimitation(
+            @Parameter(description = "JSON file containing end limitation order data.")
+            @RequestParam MultipartFile[] files) throws BusinessException {
+        Assert.notEmpty(files,"Files must not be empty");
+        ImportOrdreLimitationResult importOrdreLimitationResult;
+        try {
+            List<FichierImportation> fichierOrdreLimitations = new ArrayList<>();
+            for (MultipartFile file : files) {
+                fichierOrdreLimitations.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
+            }
+            importOrdreLimitationResult = ordreLimitationService.importOrdreFinLimitation(fichierOrdreLimitations, instance);
+        } catch (IOException | TechnicalException exception) {
+            log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.status(isEmpty(importOrdreLimitationResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importOrdreLimitationResult);
+    }
+
 
     @Operation(summary = "Get limit orders.")
     @ApiResponses(value = {

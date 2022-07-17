@@ -7,3 +7,5 @@ backend:
 keycloak:
   ingress:
     host: "producer.star.eniblock.fr"
+  credentials:
+    secret:

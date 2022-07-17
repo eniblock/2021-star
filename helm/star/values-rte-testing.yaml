@@ -7,3 +7,5 @@ backend:
 keycloak:
   ingress:
     host: "rte.testing.star.eniblock.fr"
+  credentials:
+    secret:

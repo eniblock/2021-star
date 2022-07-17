@@ -7,3 +7,5 @@ backend:
 keycloak:
   ingress:
     host: "star.cloud-rte-france.com"
+  credentials:
+    secret:

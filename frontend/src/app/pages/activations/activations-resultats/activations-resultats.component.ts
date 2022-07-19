@@ -67,7 +67,7 @@ export class ActivationsResultatsComponent implements OnChanges {
             producerMarketParticipantName: '---',
             producerMarketParticipantRoleType: '---'
           }
-          d.activationDocument.originAutomationRegisteredResourceMrid = '---';
+          //d.activationDocument.originAutomationRegisteredResourceMrid = '---';
         }
       }
       dataForComputation.push(d);

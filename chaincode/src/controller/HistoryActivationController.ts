@@ -11,6 +11,7 @@ import { HistoryInformation } from "../model/historyInformation";
 import { Producer } from "../model/producer";
 import { Site } from "../model/site";
 import { STARParameters } from "../model/starParameters";
+import { YellowPages } from "../model/yellowPages";
 
 import { ActivationDocumentController } from "./ActivationDocumentController";
 import { EnergyAmountController } from "./EnergyAmountController";
@@ -22,6 +23,7 @@ import { ProducerService } from "./service/ProducerService";
 import { QueryStateService } from "./service/QueryStateService";
 import { SiteService } from "./service/SiteService";
 import { SystemOperatorService } from "./service/SystemOperatorService";
+import { YellowPagesController } from "./YellowPagesController";
 
 export class HistoryActivationController {
 
@@ -299,11 +301,15 @@ export class HistoryActivationController {
 
         }
 
-        const finalinformation = HistoryActivationController.cleanFilled(informationList, filledList);
+        const finalinformation = HistoryActivationController.cleanFilled(ctx, informationList, filledList);
         return finalinformation;
     }
 
-    private static async cleanFilled(initialInformation : HistoryInformation[], filledList: string[]): Promise<HistoryInformation[]> {
+    private static async cleanFilled(
+        ctx: Context,
+        initialInformation : HistoryInformation[],
+        filledList: string[]): Promise<HistoryInformation[]> {
+
         const finalinformation: HistoryInformation[] = [];
 
         for (var information of initialInformation) {
@@ -315,12 +321,32 @@ export class HistoryActivationController {
                     subOrderExists = subOrderExists || filledList.includes(subOrderId);
                 }
                 if (!subOrderExists) {
-                    finalinformation.push(information);
+                    const finalInfo = await HistoryActivationController.fillDegradedInformation(ctx, information);
+                    finalinformation.push(finalInfo);
                 }
             }
         }
 
         return finalinformation;
+    }
+
+    private static async fillDegradedInformation(
+        ctx: Context,
+        initialInformation : HistoryInformation): Promise<HistoryInformation> {
+        var filledInformation: HistoryInformation= JSON.parse(JSON.stringify(initialInformation));
+
+        if (filledInformation && filledInformation.activationDocument) {
+            if (filledInformation.activationDocument.originAutomationRegisteredResourceMrid) {
+                const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(ctx, filledInformation.activationDocument.originAutomationRegisteredResourceMrid);
+                if (yellowPages && yellowPages.length >0) {
+                    filledInformation.activationDocument.originAutomationRegisteredResourceMrid = yellowPages[0].registeredResourceMrid;
+                }
+            } else {
+                filledInformation.activationDocument.originAutomationRegisteredResourceMrid = '---';
+            }
+        }
+
+        return filledInformation;
     }
 
 }

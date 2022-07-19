@@ -28,12 +28,14 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static com.star.enums.DocTypeEnum.ACTIVATION_DOCUMENT;
+import static com.star.utils.DateUtils.toLocalDateTime;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -77,11 +79,11 @@ public class OrdreLimitationService {
             ordreDebutLimitations.forEach(ordreLimitation -> {
                 List<String> currentErrors = new ArrayList<>();
                 try {
-                    if (DateUtils.toLocalDateTime(ordreLimitation.getStartCreatedDateTime()) == null) {
+                    if (toLocalDateTime(ordreLimitation.getStartCreatedDateTime()) == null) {
                         currentErrors.add(messageSource.getMessage("import.ordreLimitation.debut.startCreatedDateTime.error",
                                 new String[]{fichierOrdreLimitation.getFileName()}, null));
                     }
-                    if (DateUtils.toLocalDateTime(ordreLimitation.getEndCreatedDateTime()) != null) {
+                    if (toLocalDateTime(ordreLimitation.getEndCreatedDateTime()) != null) {
                         currentErrors.add(messageSource.getMessage("import.ordreLimitation.debut.endCreatedDateTime.error",
                                 new String[]{fichierOrdreLimitation.getFileName()}, null));
                     }
@@ -147,6 +149,21 @@ public class OrdreLimitationService {
                 if (isBlank(ordreLimitation.getEndCreatedDateTime())) {
                     currentErrors.add(messageSource.getMessage("import.ordreLimitation.couple.endCreatedDateTime.error",
                             new String[]{fichierOrdreLimitation.getFileName()}, null));
+                } else {
+                    if (isNotBlank(ordreLimitation.getStartCreatedDateTime())) {
+                        // STAR-498 : contrôle de cohérence des dates.
+                        try {
+                            LocalDateTime startDate = toLocalDateTime(ordreLimitation.getStartCreatedDateTime());
+                            LocalDateTime endDate = toLocalDateTime(ordreLimitation.getEndCreatedDateTime());
+                            if (!startDate.isBefore(endDate)) {
+                                currentErrors.add(messageSource.getMessage("import.ordreLimitation.startDate.endDate.error",
+                                        new String[]{fichierOrdreLimitation.getFileName()}, null));
+                            }
+                        } catch (DateTimeParseException dateTimeParseException) {
+                            throw new BusinessException(messageSource.getMessage("import.date.format.error",
+                                    new String[]{fichierOrdreLimitation.getFileName()}, null));
+                        }
+                    }
                 }
                 // le champ "orderEnd" doit être à false
                 if (ordreLimitation.isOrderEnd()) {

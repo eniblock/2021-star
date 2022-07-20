@@ -62,4 +62,13 @@ export class YellowPagesController {
         return allResults;
     }
 
+    public static async getYellowPagesByRegisteredResourceMrid(
+        ctx: Context,
+        registeredResourceMrid: string): Promise<YellowPages[]> {
+
+        const query = `{"selector": {"docType": "${DocType.YELLOW_PAGES}", "registeredResourceMrid": "${registeredResourceMrid}"}}`;
+        const allResults : YellowPages[] = await QueryStateService.getQueryArrayResult(ctx, query);
+        return allResults;
+    }
+
 }

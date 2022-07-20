@@ -336,10 +336,10 @@ export class HistoryActivationController {
         var filledInformation: HistoryInformation= JSON.parse(JSON.stringify(initialInformation));
 
         if (filledInformation && filledInformation.activationDocument) {
-            if (filledInformation.activationDocument.originAutomationRegisteredResourceMrid) {
-                const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(ctx, filledInformation.activationDocument.originAutomationRegisteredResourceMrid);
+            if (filledInformation.activationDocument.registeredResourceMrid) {
+                const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByRegisteredResourceMrid(ctx, filledInformation.activationDocument.registeredResourceMrid);
                 if (yellowPages && yellowPages.length >0) {
-                    filledInformation.activationDocument.originAutomationRegisteredResourceMrid = yellowPages[0].registeredResourceMrid;
+                    filledInformation.activationDocument.originAutomationRegisteredResourceMrid = yellowPages[0].originAutomationRegisteredResourceMrid;
                 }
             } else {
                 filledInformation.activationDocument.originAutomationRegisteredResourceMrid = '---';

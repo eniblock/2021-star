@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Instance} from 'src/app/models/enum/Instance.enum';
 import {InstanceService} from 'src/app/services/api/instance.service';
-import {Sort} from '@angular/material/sort';
 import {
   FormulaireRechercheHistoriqueLimitation,
   RechercheHistoriqueLimitationEntite,
@@ -70,7 +69,4 @@ export class ActivationsComponent implements OnInit {
     this.columnsToDisplay = [...columnsToDisplay, 'actions'];
   }
 
-  sortChange(sort: Sort) {
-    console.log(sort);
-  }
 }

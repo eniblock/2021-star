@@ -2,17 +2,14 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {MeasurementUnitName} from 'src/app/models/enum/MeasurementUnitName.enum';
-import {OrdreRechercheHistoriqueLimitation} from 'src/app/models/enum/OrdreRechercheHistoriqueLimitation.enum';
 import {TechnologyType} from 'src/app/models/enum/TechnologyType.enum';
 import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
 import {
   FormulaireRechercheHistoriqueLimitation,
   RechercheHistoriqueLimitationEntite,
-  RechercheHistoriqueLimitationRequete,
 } from 'src/app/models/RechercheHistoriqueLimitation';
 import {environment} from 'src/environments/environment';
 import {UrlService} from '../common/url.service';
-import {RequestForm} from "../../models/RequestForm";
 import {map} from "rxjs/operators";
 
 const MOCK = false;
@@ -26,24 +23,16 @@ export class HistoriqueLimitationService {
   constructor(private httpClient: HttpClient, private urlService: UrlService) {
   }
 
-  rechercher(
-    form: FormulaireRechercheHistoriqueLimitation,
-    requestForm: RequestForm<OrdreRechercheHistoriqueLimitation>
-  ): Observable<RechercheHistoriqueLimitationEntite[]> {
+  rechercher(form: FormulaireRechercheHistoriqueLimitation): Observable<RechercheHistoriqueLimitationEntite[]> {
     if (MOCK) {
       console.log(form);
-      console.log(requestForm);
-      return getMocks(form, requestForm)
+      return getMocks(form)
         .pipe(
           map(result => result.map(histo => ({...histo, subOrderList: histo.subOrderList.filter(e => e != null)}))) // We remove null elements
         );
     }
 
-    const formToSend: RechercheHistoriqueLimitationRequete = {
-      ...form,
-      ...requestForm,
-    };
-    let urlParams = this.urlService.toUrlParams(formToSend);
+    let urlParams = this.urlService.toUrlParams(form);
     let callResult = this.httpClient.get<RechercheHistoriqueLimitationEntite[]>(`${environment.serverUrl}/historiqueLimitations?${urlParams}`)
       .pipe(
         map(result => result.map(histo => ({...histo, subOrderList: histo.subOrderList.filter(e => e != null)}))) // We remove null elements
@@ -79,10 +68,7 @@ export const flatHistoriqueLimitation = (histo: RechercheHistoriqueLimitationEnt
                                MOCKS
    ********************************************************* */
 
-const getMocks = (
-  form: FormulaireRechercheHistoriqueLimitation,
-  requestForm: RequestForm<OrdreRechercheHistoriqueLimitation>
-): Observable<RechercheHistoriqueLimitationEntite[]> => {
+const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<RechercheHistoriqueLimitationEntite[]> => {
   return of([
     {
       site: {

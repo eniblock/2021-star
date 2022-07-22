@@ -15,6 +15,15 @@ export class DateHelper {
     return DateHelper.makeDate(day, month, year);
   }
 
+  public static toDatetime(date: Date, time: string): Date {
+    const t = DateHelper.stringToTime(time);
+    let d = new Date(date.getTime());
+    d.setHours(t[0]);
+    d.setMinutes(t[1]);
+    d.setSeconds(t[2]);
+    return d;
+  }
+
   private static stringToTime(dateStr: string): number[] {
     const timeParts = dateStr.split(':');
     return [
@@ -24,13 +33,8 @@ export class DateHelper {
     ];
   }
 
-  public static toDatetime(date: Date, time: string): Date {
-    const t = DateHelper.stringToTime(time);
-    let d = new Date(date.getTime());
-    d.setHours(t[0]);
-    d.setMinutes(t[1]);
-    d.setSeconds(t[2]);
-    return d;
+  public static stringToTimestamp(dateStr: string): number {
+    return new Date(dateStr).getTime();
   }
 
   public static durationToMilliseconds(resolution: string): number {

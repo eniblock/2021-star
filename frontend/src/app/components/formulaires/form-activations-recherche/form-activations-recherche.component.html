@@ -5,7 +5,8 @@
 
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Poste Source</mat-label>
-      <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid" [matAutocomplete]="substationMridAutocomplete">
+      <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid"
+             [matAutocomplete]="substationMridAutocomplete">
       <mat-autocomplete autoActiveFirstOption #substationMridAutocomplete="matAutocomplete">
         <mat-option *ngFor="let option of filteredPosteSourceCodes | async" [value]="option">
           {{option}}
@@ -15,7 +16,8 @@
 
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Producteur</mat-label>
-      <input matInput placeholder="Producteur" type="text" formControlName="producerMarketParticipantName" [matAutocomplete]="producerMarketParticipantNameAutocomplete">
+      <input matInput placeholder="Producteur" type="text" formControlName="producerMarketParticipantName"
+             [matAutocomplete]="producerMarketParticipantNameAutocomplete">
       <mat-autocomplete autoActiveFirstOption #producerMarketParticipantNameAutocomplete="matAutocomplete">
         <mat-option *ngFor="let option of filteredProducerNames | async" [value]="option">
           {{option}}
@@ -25,7 +27,8 @@
 
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Date de début</mat-label>
-      <input matInput placeholder="Date de début" [matDatepicker]="pickerDateDebut" formControlName="startCreatedDateTime">
+      <input matInput placeholder="Date de début" [matDatepicker]="pickerDateDebut"
+             formControlName="startCreatedDateTime">
       <mat-datepicker-toggle matSuffix [for]="pickerDateDebut"></mat-datepicker-toggle>
       <mat-datepicker #pickerDateDebut></mat-datepicker>
     </mat-form-field>
@@ -37,11 +40,19 @@
       <mat-datepicker #pickerDateFin></mat-datepicker>
     </mat-form-field>
 
+    <div class="mt-4">
+      <p class="text-center text-danger" *ngIf="form.errors?.ERROR_FORM_DATE_INTERVAL_TOO_LARGE">
+        Erreur : vous ne pouvez pas effectuer une recherche sur plus de {{ intervalDateMaxRechercheHistoriqueLimitation }} jours.
+      </p>
+      <p class="text-center text-danger" *ngIf="form.errors?.ERROR_FORM_DATE_INTERVAL_NEGATIVE">
+        Erreur : la date de fin ne peut pas être avant la date de début.
+      </p>
+    </div>
+
     <div class="col-12 text-center mt-3">
       <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Rechercher</button>
     </div>
   </div>
-
 
 
   <!-- Recherche Producteur -->
@@ -49,7 +60,8 @@
 
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Poste Source</mat-label>
-      <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid" [matAutocomplete]="substationMridAutocomplete">
+      <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid"
+             [matAutocomplete]="substationMridAutocomplete">
       <mat-autocomplete autoActiveFirstOption #substationMridAutocomplete="matAutocomplete">
         <mat-option *ngFor="let option of filteredPosteSourceCodes | async" [value]="option">
           {{option}}
@@ -64,7 +76,8 @@
 
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Date de début</mat-label>
-      <input matInput placeholder="Date de début" [matDatepicker]="pickerDateDebut" formControlName="startCreatedDateTime">
+      <input matInput placeholder="Date de début" [matDatepicker]="pickerDateDebut"
+             formControlName="startCreatedDateTime">
       <mat-datepicker-toggle matSuffix [for]="pickerDateDebut"></mat-datepicker-toggle>
       <mat-datepicker #pickerDateDebut></mat-datepicker>
     </mat-form-field>
@@ -75,6 +88,15 @@
       <mat-datepicker-toggle matSuffix [for]="pickerDateFin"></mat-datepicker-toggle>
       <mat-datepicker #pickerDateFin></mat-datepicker>
     </mat-form-field>
+
+    <div class="mt-4">
+      <p class="text-center text-danger" *ngIf="form.errors?.ERROR_FORM_DATE_INTERVAL_TOO_LARGE">
+        Erreur : vous ne pouvez pas effectuer une recherche sur plus de {{ intervalDateMaxRechercheHistoriqueLimitation }} jours...
+      </p>
+      <p class="text-center text-danger" *ngIf="form.errors?.ERROR_FORM_DATE_INTERVAL_NEGATIVE">
+        Erreur : la date de fin ne peut pas être avant la date de début...
+      </p>
+    </div>
 
     <div class="col-12 text-center mt-3">
       <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Rechercher</button>

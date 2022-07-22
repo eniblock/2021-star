@@ -1,6 +1,6 @@
 import {Instance} from 'src/app/models/enum/Instance.enum';
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms';
 import {InstanceService} from 'src/app/services/api/instance.service';
 import {FormulaireRechercheHistoriqueLimitation} from 'src/app/models/RechercheHistoriqueLimitation';
 import {HistoriqueLimitationService} from 'src/app/services/api/historique-limitation.service';
@@ -9,6 +9,7 @@ import {map, startWith} from "rxjs/operators";
 import {ProducerService} from "../../../services/api/producer.service";
 import {SiteService} from "../../../services/api/site.service";
 import {SortHelper} from "../../../helpers/sort.helper";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-form-activations-recherche',
@@ -26,9 +27,11 @@ export class FormActivationsRechercheComponent implements OnInit {
     originAutomationRegisteredResourceMrid: [''],
     producerMarketParticipantName: [''],
     siteName: [''],
-    startCreatedDateTime: [''],
-    endCreatedDateTime: [''],
-  });
+    startCreatedDateTime: ['', Validators.required],
+    endCreatedDateTime: ['', Validators.required],
+  }, {validator: this.validateDates})
+
+  intervalDateMaxRechercheHistoriqueLimitation = environment.intervalDateMaxRechercheHistoriqueLimitation;
 
   optionsProducerNames: string[] = [];
   filteredProducerNames?: Observable<string[]>;
@@ -107,6 +110,18 @@ export class FormActivationsRechercheComponent implements OnInit {
   private filter(value: string, options: string[]): string[] {
     const filterValue = value.toLowerCase();
     return options.filter(opt => opt.toLowerCase().includes(filterValue));
+  }
+
+  private validateDates(control: AbstractControl): ValidationErrors | null {
+    const startCreatedDateTime = new Date(control.get("startCreatedDateTime")!.value);
+    const endCreatedDateTime = new Date(control.get("endCreatedDateTime")!.value);
+    const interval = endCreatedDateTime.getTime() - startCreatedDateTime.getTime();
+    if (interval > environment.intervalDateMaxRechercheHistoriqueLimitation * 24 * 3600 * 1000) {
+      return {ERROR_FORM_DATE_INTERVAL_TOO_LARGE: true}
+    } else if (interval < 0) {
+      return {ERROR_FORM_DATE_INTERVAL_NEGATIVE: true}
+    }
+    return null
   }
 
 }

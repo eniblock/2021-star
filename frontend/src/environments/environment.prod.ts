@@ -13,4 +13,6 @@ export const environment = {
   pageSizes: [5, 10, 20],
   // Upload des fichiers
   tailleMaxUploadFichiers: 5000000, // En octets
+  // Interval de dates max recherche historique de limitation (en jours)
+  intervalDateMaxRechercheHistoriqueLimitation : 7,
 };

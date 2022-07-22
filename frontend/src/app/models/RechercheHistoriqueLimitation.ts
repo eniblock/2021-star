@@ -1,5 +1,3 @@
-import {OrdreRechercheHistoriqueLimitation} from './enum/OrdreRechercheHistoriqueLimitation.enum';
-import {RequestForm} from "./RequestForm";
 import {Site} from "./Site";
 import {Producer} from "./Producer";
 import {EnergyAmount} from "./EnergyAmount";
@@ -11,11 +9,6 @@ export interface FormulaireRechercheHistoriqueLimitation {
   siteName: string;
   startCreatedDateTime: string; // JSON
   endCreatedDateTime: string; // JSON
-}
-
-export interface RechercheHistoriqueLimitationRequete
-  extends RequestForm<OrdreRechercheHistoriqueLimitation>,
-    FormulaireRechercheHistoriqueLimitation {
 }
 
 export interface RechercheHistoriqueLimitationEntite {

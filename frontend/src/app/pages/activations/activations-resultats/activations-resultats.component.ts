@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges,} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges,} from '@angular/core';
 import {Sort} from '@angular/material/sort';
 import {InstanceService} from 'src/app/services/api/instance.service';
 import {Instance} from 'src/app/models/enum/Instance.enum';
@@ -8,8 +8,9 @@ import {motifToString,} from 'src/app/rules/motif-rules';
 import {RechercheHistoriqueLimitationEntite} from 'src/app/models/RechercheHistoriqueLimitation';
 import {getLimitationType} from "../../../rules/limitation-type-rules";
 import {SystemOperator} from "../../../models/SystemOperator";
-import { TypeSite } from 'src/app/models/enum/TypeSite.enum';
-import { TechnologyType } from 'src/app/models/enum/TechnologyType.enum';
+import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
+import {TechnologyType} from 'src/app/models/enum/TechnologyType.enum';
+import {DateHelper} from "../../../helpers/date.helper";
 
 @Component({
   selector: 'app-activations-resultats',
@@ -20,9 +21,9 @@ export class ActivationsResultatsComponent implements OnChanges {
   @Input() data: RechercheHistoriqueLimitationEntite[] = [];
   @Input() systemOperators: SystemOperator[] = [];
   @Input() columnsToDisplay: string[] = [];
-  @Output() sortChange = new EventEmitter<Sort>();
 
   dataComputed: any = [];
+  dataComputedSorted: any = [];
 
   instance?: Instance;
 
@@ -40,8 +41,26 @@ export class ActivationsResultatsComponent implements OnChanges {
   }
 
   private computeData() {
-    var dataForComputation: RechercheHistoriqueLimitationEntite[] = [];
-    for (var d of this.data) {
+    // 1) Fill missing data
+    let dataForComputation: RechercheHistoriqueLimitationEntite[] = this.fillMissingData(this.data);
+
+    // 2) Compute data
+    this.dataComputed = dataForComputation.map((rhl) => {
+      const limitationType = getLimitationType(rhl);
+      const motif = motifToString(rhl.activationDocument);
+      return {
+        ...rhl,
+        motif: motif,
+        limitationType: limitationType,
+      };
+    });
+
+    this.dataComputedSorted = [...this.dataComputed];
+  }
+
+  private fillMissingData(data: RechercheHistoriqueLimitationEntite[]) {
+    let dataForComputation = [];
+    for (let d of data) {
       if (d) {
         if (!d.site) {
           d.site = {
@@ -72,21 +91,12 @@ export class ActivationsResultatsComponent implements OnChanges {
       }
       dataForComputation.push(d);
     }
-
-    this.dataComputed = dataForComputation.map((rhl) => {
-      const limitationType = getLimitationType(rhl);
-      const motif = motifToString(rhl.activationDocument);
-      return {
-        ...rhl,
-        motif: motif,
-        limitationType: limitationType,
-      };
-    });
+    return dataForComputation;
   }
 
   showGraph(activation: RechercheHistoriqueLimitationEntite) {
     var meteringPointMrid: string = "";
-    if(activation.site) {
+    if (activation.site) {
       meteringPointMrid = activation.site.meteringPointMrid;
     }
 
@@ -113,4 +123,35 @@ export class ActivationsResultatsComponent implements OnChanges {
     return "";
   }
 
+  public sortChange(sort: Sort) {
+    // 1) No sort case
+    if (sort.direction == "") {
+      this.dataComputedSorted = [...this.dataComputed];
+      return;
+    }
+
+    // 2) Find the sorting method
+    let sortFunction: any = null;
+    switch (sort.active) {
+      case "debutLimitation":
+        sortFunction = (d1: any, d2: any): number => {
+          let ts1 = DateHelper.stringToTimestamp(d1.activationDocument.startCreatedDateTime);
+          let ts2 = DateHelper.stringToTimestamp(d2.activationDocument.startCreatedDateTime);
+          return sort.direction == "asc" ? ts1 - ts2 : ts2 - ts1;
+        };
+        break;
+      case "finLimitation":
+        sortFunction = (d1: any, d2: any): number => {
+          let ts1 = DateHelper.stringToTimestamp(d1.activationDocument.endCreatedDateTime);
+          let ts2 = DateHelper.stringToTimestamp(d2.activationDocument.endCreatedDateTime);
+          return sort.direction == "asc" ? ts1 - ts2 : ts2 - ts1;
+        };
+        break;
+    }
+
+    // 3) Sort data
+    if (sortFunction != null) {
+      this.dataComputedSorted = [...this.dataComputed].sort((d1: any, d2: any) => sortFunction(d1, d2));
+    }
+  }
 }

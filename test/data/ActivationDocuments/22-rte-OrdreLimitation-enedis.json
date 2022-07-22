@@ -1,0 +1,44 @@
+[
+  {
+    "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_3",
+    "registeredResourceMrid": "PDL_SITE_RTE_AD_3",
+    "orderValue": "0",
+    "measurementUnitName": "MW",
+    "startCreatedDateTime": "2025-03-03T03:03:03Z",
+    "revisionNumber": "",
+    "messageType": "A54",
+    "businessType" : "C55",
+    "reasonCode": "A70",
+    "orderEnd": false,
+    "senderMarketParticipantMrid": "SYSOP_RTE_AD_3",
+    "receiverMarketParticipantMrid": "SYSOP_ENEDIS_AD_3"
+  },
+  {
+    "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_4",
+    "registeredResourceMrid": "PDL_SITE_RTE_AD_3",
+    "orderValue": "0",
+    "measurementUnitName": "MW",
+    "startCreatedDateTime": "2025-04-04T04:04:04Z",
+    "revisionNumber": "",
+    "messageType": "A54",
+    "businessType" : "C55",
+    "reasonCode": "A70",
+    "orderEnd": false,
+    "senderMarketParticipantMrid": "SYSOP_RTE_AD_3",
+    "receiverMarketParticipantMrid": "SYSOP_ENEDIS_AD_4"
+  },
+  {
+    "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_5",
+    "registeredResourceMrid": "PDL_SITE_RTE_AD_3",
+    "orderValue": "0",
+    "measurementUnitName": "MW",
+    "startCreatedDateTime": "2025-05-05T05:05:05Z",
+    "revisionNumber": "",
+    "messageType": "A54",
+    "businessType" : "C55",
+    "reasonCode": "A70",
+    "orderEnd": false,
+    "senderMarketParticipantMrid": "SYSOP_RTE_AD_3",
+    "receiverMarketParticipantMrid": "SYSOP_ENEDIS_AD_5"
+  }
+]

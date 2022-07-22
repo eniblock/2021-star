@@ -1,0 +1,72 @@
+[
+  {
+    "originAutomationRegisteredResourceMrid": "SUBSTATION_ENEDIS_AD_1",
+    "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_1",
+    "orderValue": "0",
+    "measurementUnitName": "MW",
+    "startCreatedDateTime": "2020-01-01T01:01:01Z",
+    "revisionNumber": "",
+    "messageType": "D01",
+    "businessType" : "Z01",
+    "reasonCode": "A70",
+    "orderEnd": false,
+    "senderMarketParticipantMrid": "SYSOP_ENEDIS_AD_1",
+    "receiverMarketParticipantMrid": "PROD_ENEDIS_AD_1"
+  },
+  {
+    "originAutomationRegisteredResourceMrid": "SUBSTATION_ENEDIS_AD_1",
+    "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_1",
+    "orderValue": "0",
+    "measurementUnitName": "MW",
+    "startCreatedDateTime": "2025-01-01T01:01:01Z",
+    "revisionNumber": "",
+    "messageType": "D01",
+    "businessType" : "Z01",
+    "reasonCode": "A70",
+    "orderEnd": false,
+    "senderMarketParticipantMrid": "SYSOP_ENEDIS_AD_1",
+    "receiverMarketParticipantMrid": "PROD_ENEDIS_AD_1"
+  },
+  {
+    "originAutomationRegisteredResourceMrid": "SUBSTATION_ENEDIS_AD_2",
+    "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_2",
+    "orderValue": "0",
+    "measurementUnitName": "MW",
+    "startCreatedDateTime": "2025-02-02T02:02:02Z",
+    "revisionNumber": "",
+    "messageType": "D01",
+    "businessType" : "Z01",
+    "reasonCode": "A70",
+    "orderEnd": false,
+    "senderMarketParticipantMrid": "SYSOP_ENEDIS_AD_2",
+    "receiverMarketParticipantMrid": "PROD_ENEDIS_AD_2"
+  },
+  {
+    "originAutomationRegisteredResourceMrid": "SUBSTATION_ENEDIS_AD_2",
+    "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_2",
+    "orderValue": "0",
+    "measurementUnitName": "MW",
+    "endCreatedDateTime": "2025-02-02T02:02:22Z",
+    "revisionNumber": "",
+    "messageType": "D01",
+    "businessType" : "Z01",
+    "reasonCode": "A70",
+    "orderEnd": false,
+    "senderMarketParticipantMrid": "SYSOP_ENEDIS_AD_2",
+    "receiverMarketParticipantMrid": "PROD_ENEDIS_AD_2"
+  },
+  {
+    "originAutomationRegisteredResourceMrid": "SUBSTATION_ENEDIS_AD_3",
+    "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_3",
+    "orderValue": "0",
+    "measurementUnitName": "MW",
+    "startCreatedDateTime": "2025-03-03T03:03:03Z",
+    "revisionNumber": "",
+    "messageType": "D01",
+    "businessType" : "Z01",
+    "reasonCode": "A70",
+    "orderEnd": false,
+    "senderMarketParticipantMrid": "SYSOP_ENEDIS_AD_3",
+    "receiverMarketParticipantMrid": "PROD_ENEDIS_AD_3"
+  }
+]

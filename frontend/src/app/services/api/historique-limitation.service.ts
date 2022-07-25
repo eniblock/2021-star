@@ -140,8 +140,8 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
       },
       activationDocument: {
         originAutomationRegisteredResourceMrid: 'MANSLE',
-        startCreatedDateTime: '2020-01-01T00:00:00Z',
-        endCreatedDateTime: '2020-01-02T23:59:59Z',
+        startCreatedDateTime: '2020-01-01T01:00:00Z',
+        endCreatedDateTime: '2020-01-02T23:59:58Z',
         messageType: 'D01',
         businessType: 'Z02',
         reasonCode: 'A70',
@@ -153,7 +153,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         {
           originAutomationRegisteredResourceMrid: 'MANSLE2',
           startCreatedDateTime: '2020-01-01T01:00:00Z',
-          endCreatedDateTime: '2020-01-02T20:59:59Z',
+          endCreatedDateTime: '2020-01-02T23:59:59Z',
           messageType: 'D01',
           businessType: 'Z01',
           reasonCode: 'A70',

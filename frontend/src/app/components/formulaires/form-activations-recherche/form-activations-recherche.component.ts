@@ -24,12 +24,14 @@ export class FormActivationsRechercheComponent implements OnInit {
   typeInstance?: Instance;
 
   form: FormGroup = this.formBuilder.group({
-    originAutomationRegisteredResourceMrid: [''],
-    producerMarketParticipantName: [''],
-    siteName: [''],
-    startCreatedDateTime: ['', Validators.required],
-    endCreatedDateTime: ['', Validators.required],
-  }, {validator: this.validateDates})
+      originAutomationRegisteredResourceMrid: [''],
+      producerMarketParticipantName: [''],
+      siteName: [''],
+      startCreatedDateTime: ['', Validators.required],
+      endCreatedDateTime: ['', Validators.required],
+    },
+    {validator: this.validateDates}
+  )
 
   intervalDateMaxRechercheHistoriqueLimitation = environment.intervalDateMaxRechercheHistoriqueLimitation;
 

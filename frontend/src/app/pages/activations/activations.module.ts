@@ -16,6 +16,7 @@ import { MicroComponentsModule } from 'src/app/components/micro-components/micro
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { GraphModule } from 'src/app/components/graph/graph.module';
 import { ActivationGraphComponent } from './activation-graph/activation-graph.component';
+import { ActivationHorodatesComponent } from './activation-horodates/activation-horodates.component';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { ActivationGraphComponent } from './activation-graph/activation-graph.co
     ActivationsResultatsComponent,
     ActivationsColumnSelectorComponent,
     ActivationGraphComponent,
+    ActivationHorodatesComponent,
   ],
 })
 export class ActivationsModule {}

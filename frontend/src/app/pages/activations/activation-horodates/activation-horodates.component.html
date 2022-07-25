@@ -1,0 +1,39 @@
+<ng-container *ngIf="loaded && showStartDates">
+  <div class="text-emph">Début {{ getSystemOperatorName(ordreLimitation1!.senderMarketParticipantMrid) }}</div>
+  <span *ngIf="ordreLimitation1!.startCreatedDateTime">
+    {{ ordreLimitation1!.startCreatedDateTime | date:'shortDate' }}
+    <br/>
+    <strong>{{ ordreLimitation1!.startCreatedDateTime | date:'mediumTime' }}</strong>
+  </span>
+  <span *ngIf="!ordreLimitation1!.startCreatedDateTime">-</span>
+  <div *ngIf="ordreLimitation2 != undefined" class="pt-3"></div>
+  <div *ngIf="ordreLimitation2 != undefined">
+    <div class="text-emph">Début {{ getSystemOperatorName(ordreLimitation2!.senderMarketParticipantMrid) }}</div>
+    <span *ngIf="ordreLimitation2!.startCreatedDateTime">
+      {{ ordreLimitation2!.startCreatedDateTime | date:'shortDate' }}
+      <br/>
+      <strong>{{ ordreLimitation2!.startCreatedDateTime | date:'mediumTime' }}</strong>
+    </span>
+    <span *ngIf="!ordreLimitation2!.startCreatedDateTime">-</span>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="loaded && showEndDates">
+  <div class="text-emph">Fin {{ getSystemOperatorName(ordreLimitation1!.senderMarketParticipantMrid) }}</div>
+  <span *ngIf="ordreLimitation1!.endCreatedDateTime">
+    {{ ordreLimitation1!.endCreatedDateTime | date:'shortDate' }}
+    <br/>
+    <strong>{{ ordreLimitation1!.endCreatedDateTime | date:'mediumTime' }}</strong>
+  </span>
+  <span *ngIf="!ordreLimitation1!.endCreatedDateTime">-</span>
+  <div *ngIf="ordreLimitation2 != undefined" class="pt-3"></div>
+  <div *ngIf="ordreLimitation2 != undefined">
+    <div class="text-emph">Fin {{ getSystemOperatorName(ordreLimitation2!.senderMarketParticipantMrid) }}</div>
+    <span *ngIf="ordreLimitation2!.endCreatedDateTime">
+      {{ ordreLimitation2!.endCreatedDateTime | date:'shortDate' }}
+      <br/>
+      <strong>{{ ordreLimitation2!.endCreatedDateTime | date:'mediumTime' }}</strong>
+    </span>
+    <span *ngIf="!ordreLimitation2!.endCreatedDateTime">-</span>
+  </div>
+</ng-container>

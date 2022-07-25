@@ -114,15 +114,6 @@ export class ActivationsResultatsComponent implements OnChanges {
     });
   }
 
-  public getSystemOperatorName(mrid: string): string {
-    for (const op of this.systemOperators) {
-      if (op.systemOperatorMarketParticipantMrid == mrid) {
-        return op.systemOperatorMarketParticipantName;
-      }
-    }
-    return "";
-  }
-
   public sortChange(sort: Sort) {
     // 1) No sort case
     if (sort.direction == "") {

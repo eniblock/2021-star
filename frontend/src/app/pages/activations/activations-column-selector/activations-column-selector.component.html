@@ -1,7 +1,7 @@
 <form class="row" [formGroup]="form">
 
   <mat-form-field class="col-12" appearance="outline">
-    <mat-label>Champs</mat-label>
+    <mat-label>Champs à afficher dans le tableau</mat-label>
     <mat-select formControlName="columns" multiple (selectionChange)="formChange()">
       <mat-select-trigger>
         {{ form.value.columns?.length>0 ? (form.value.columns[0] | ActivationTableField) : ''}}

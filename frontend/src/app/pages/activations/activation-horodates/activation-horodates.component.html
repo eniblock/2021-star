@@ -1,0 +1,27 @@
+<ng-container *ngIf="loaded && showStartDates">
+  <div class="text-emph">Début {{ getSystemOperatorName(element.activationDocument.senderMarketParticipantMrid) }}</div>
+  <span
+    *ngIf="element.activationDocument.startCreatedDateTime">{{ element.activationDocument.startCreatedDateTime | date:'shortDate' }}
+    <br/><strong>{{ element.activationDocument.startCreatedDateTime | date:'mediumTime' }}</strong></span>
+  <span *ngIf="!element.activationDocument.startCreatedDateTime">-</span>
+  <div *ngIf="element.subOrderList.length > 0" class="pt-3"></div>
+  <div *ngIf="element.subOrderList.length > 0">
+    <div class="text-emph">Début {{ getSystemOperatorName(element.subOrderList[0].senderMarketParticipantMrid) }}</div>
+    <span
+      *ngIf="element.subOrderList[0].startCreatedDateTime">{{ element.subOrderList[0].startCreatedDateTime | date:'shortDate' }}
+      <br/><strong>{{ element.subOrderList[0].startCreatedDateTime | date:'mediumTime' }}</strong></span>
+    <span *ngIf="!element.subOrderList[0].startCreatedDateTime">-</span>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="loaded && showEndDates">
+  <div class="text-emph">Fin {{ getSystemOperatorName(element.activationDocument.senderMarketParticipantMrid) }}</div>
+  <span *ngIf="element.activationDocument.endCreatedDateTime">{{ element.activationDocument.endCreatedDateTime | date:'shortDate' }}<br/><strong>{{ element.activationDocument.endCreatedDateTime | date:'mediumTime' }}</strong></span>
+  <span *ngIf="!element.activationDocument.endCreatedDateTime">-</span>
+  <div *ngIf="element.subOrderList.length > 0" class="pt-3"></div>
+  <div *ngIf="element.subOrderList.length > 0">
+    <div class="text-emph">Fin {{ getSystemOperatorName(element.subOrderList[0].senderMarketParticipantMrid) }}</div>
+    <span *ngIf="element.subOrderList[0].endCreatedDateTime">{{ element.subOrderList[0].endCreatedDateTime | date:'shortDate' }}<br/><strong>{{ element.subOrderList[0].endCreatedDateTime | date:'mediumTime' }}</strong></span>
+    <span *ngIf="!element.subOrderList[0].endCreatedDateTime">-</span>
+  </div>
+</ng-container>

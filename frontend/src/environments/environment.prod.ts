@@ -9,10 +9,11 @@ export const environment = {
     realm: 'star',
     clientId: 'frontend',
   },
-  // Tri
-  pageSizes: [5, 10, 20],
-  // Upload des fichiers
-  tailleMaxUploadFichiers: 5000000, // En octets
+  // Upload des fichiers (en octets)
+  tailleMaxUploadFichiers: 5000000,
   // Interval de dates max recherche historique de limitation (en jours)
-  intervalDateMaxRechercheHistoriqueLimitation : 7,
+  intervalDateMaxRechercheHistoriqueLimitation: 7,
+  // Duree d'affichage des messages d'erreur / de succès (en secondes)
+  snackBarSuccessTime: 5 * 1000,
+  snackBarErrorTime: 2 * 60 * 1000,
 };

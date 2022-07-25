@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "630b7cbc-ce4c-47ea-a23a-ec850b14d4fe",
+		"name": "EnergyAccount/Amounts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19736127"
+	},
+	"item": [
+		{
+			"name": "RTE - Post energy account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Users/vincent.obertelli/Desktop/Recette fonctionnelle/ENE et ENI/ENE.json"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/energyAccounts",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"energyAccounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Get energy account",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/energyAccounts",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"energyAccounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Post energy amounts",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/energyAmounts",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"energyAmounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Get energy amounts",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/energyAmounts",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"energyAmounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Post energy account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/energyAccounts",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"energyAccounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Get energy account",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/energyAccounts",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"energyAccounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enedis - Post energy amounts",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/energyAmounts",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"energyAmounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enedis - Get energy amounts",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/energyAmounts",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"energyAmounts"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

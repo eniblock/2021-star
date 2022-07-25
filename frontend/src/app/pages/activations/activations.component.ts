@@ -9,8 +9,6 @@ import {
   flatHistoriqueLimitation,
   HistoriqueLimitationService
 } from 'src/app/services/api/historique-limitation.service';
-import {SystemOperatorService} from "../../services/api/system-operator.service";
-import {SystemOperator} from "../../models/SystemOperator";
 import {DateHelper} from "../../helpers/date.helper";
 
 @Component({
@@ -24,14 +22,12 @@ export class ActivationsComponent implements OnInit {
   resultatsRechercheWithOnlyOneSubOrderByOrder?: RechercheHistoriqueLimitationEntite[]; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder
 
   typeInstance?: Instance;
-  systemOperators: SystemOperator[] = [];
 
   columnsToDisplay: string[] = [];
 
   constructor(
     private instanceService: InstanceService,
     private historiqueLimitationService: HistoriqueLimitationService,
-    private systemOperatorService: SystemOperatorService,
   ) {
   }
 
@@ -39,9 +35,6 @@ export class ActivationsComponent implements OnInit {
     this.instanceService.getTypeInstance().subscribe((instance) => {
       this.typeInstance = instance;
     });
-    this.systemOperatorService.getSystemOperators().subscribe(systemOperators =>
-      this.systemOperators = systemOperators
-    );
   }
 
   rechercher(form: FormulaireRechercheHistoriqueLimitation) {

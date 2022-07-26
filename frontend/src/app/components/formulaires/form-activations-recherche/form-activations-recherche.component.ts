@@ -27,8 +27,8 @@ export class FormActivationsRechercheComponent implements OnInit {
       originAutomationRegisteredResourceMrid: [''],
       producerMarketParticipantName: [''],
       siteName: [''],
-      startCreatedDateTime: ['', Validators.required],
-      endCreatedDateTime: ['', Validators.required],
+      startCreatedDateTime: [''],
+      endCreatedDateTime: [''],
     },
     {validator: this.validateDates}
   )
@@ -115,15 +115,19 @@ export class FormActivationsRechercheComponent implements OnInit {
   }
 
   private validateDates(control: AbstractControl): ValidationErrors | null {
-    const startCreatedDateTime = new Date(control.get("startCreatedDateTime")!.value);
-    const endCreatedDateTime = new Date(control.get("endCreatedDateTime")!.value);
-    const interval = endCreatedDateTime.getTime() - startCreatedDateTime.getTime();
-    if (interval > environment.intervalDateMaxRechercheHistoriqueLimitation * 24 * 3600 * 1000) {
-      return {ERROR_FORM_DATE_INTERVAL_TOO_LARGE: true}
-    } else if (interval < 0) {
-      return {ERROR_FORM_DATE_INTERVAL_NEGATIVE: true}
+    const startCreatedDateTime = control.get("startCreatedDateTime")!.value;
+    const endCreatedDateTime = control.get("endCreatedDateTime")!.value;
+    if (!startCreatedDateTime || !endCreatedDateTime) {
+      return null;
     }
-    return null
+
+    const interval = new Date(endCreatedDateTime).getTime() - new Date(startCreatedDateTime).getTime();
+    if (interval < 0) {
+      return {ERROR_FORM_DATE_INTERVAL_NEGATIVE: true}
+    } else if (interval > environment.intervalDateMaxRechercheHistoriqueLimitation * 24 * 3600 * 1000) {
+      // return {ERROR_FORM_DATE_INTERVAL_TOO_LARGE: true}
+    }
+    return null;
   }
 
 }

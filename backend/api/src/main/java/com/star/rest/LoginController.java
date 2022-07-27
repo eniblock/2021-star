@@ -55,8 +55,8 @@ public class LoginController {
     @PostMapping
     public ResponseEntity<AccessTokenResponse> signin(@RequestBody @Valid CredentialsDTO credentialsDTO) {
         Map<String, Object> clientCredentials = new HashMap<>();
-        clientCredentials.put("secret", clientSecret);
-        clientCredentials.put("grant_type", OAuth2Constants.PASSWORD);
+        clientCredentials.put(OAuth2Constants.CLIENT_SECRET, clientSecret);
+        clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.CLIENT_CREDENTIALS);
         Configuration configuration =
                 new Configuration(serverUrl, realm, clientId, clientCredentials, null);
         return ResponseEntity.ok(AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword()));

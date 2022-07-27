@@ -11,6 +11,7 @@ function install_velero {
      --secret-file ./creds \
      --backup-location-config region=${ENV},s3ForcePathStyle="true",s3Url=https://s3.${ENV}.cloud.ovh.net \
      --use-restic \
+     --restic-pod-cpu-request 100m \
      --use-volume-snapshots=false
 }
 

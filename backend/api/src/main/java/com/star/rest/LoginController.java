@@ -28,7 +28,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(LoginController.PATH)
 public class LoginController {
-    public static final String PATH = ApiRestVersion.VERSION + "/signin";
+    public static final String PATH = ApiRestVersion.VERSION + "/login";
 
     @Value("${keycloak.auth-server-url}")
     private String serverUrl;

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
 import org.keycloak.representations.AccessTokenResponse;
@@ -55,7 +56,7 @@ public class LoginController {
     public ResponseEntity<AccessTokenResponse> signin(@RequestBody @Valid CredentialsDTO credentialsDTO) {
         Map<String, Object> clientCredentials = new HashMap<>();
         clientCredentials.put("secret", clientSecret);
-        clientCredentials.put("grant_type", "password");
+        clientCredentials.put("grant_type", OAuth2Constants.CLIENT_CREDENTIALS);
         Configuration configuration =
                 new Configuration(serverUrl, realm, clientId, clientCredentials, null);
         return ResponseEntity.ok(AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword()));

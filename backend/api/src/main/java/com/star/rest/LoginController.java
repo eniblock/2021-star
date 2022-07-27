@@ -55,7 +55,7 @@ public class LoginController {
     @PostMapping
     public ResponseEntity<AccessTokenResponse> signin(@RequestBody @Valid CredentialsDTO credentialsDTO) {
         Map<String, Object> clientCredentials = new HashMap<>();
-        clientCredentials.put(OAuth2Constants.CLIENT_SECRET, clientSecret);
+        clientCredentials.put("secret", "OR3344MjFHdTjOjXi6z5BleqDOxRjNEC");
         clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.CLIENT_CREDENTIALS);
         Configuration configuration =
                 new Configuration(serverUrl, realm, clientId, clientCredentials, null);

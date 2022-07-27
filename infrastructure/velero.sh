@@ -33,3 +33,8 @@ create_schedules enedis-staging
 create_schedules orderer-staging
 create_schedules producer-staging
 create_schedules rte-staging
+
+create_schedules enedis-prod
+create_schedules orderer-prod
+create_schedules producer-prod
+create_schedules rte-prod

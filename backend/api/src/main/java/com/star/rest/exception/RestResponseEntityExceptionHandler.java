@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.lang.reflect.Executable;
 import java.time.LocalDateTime;
 
 /**
@@ -71,7 +71,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     }
 
     private ErrorDetails getErrorDetails(Exception exception, WebRequest request) {
-        return new ErrorDetails(LocalDateTime.now(), exception.getMessage(), request.getDescription(true));
+        return new ErrorDetails(LocalDateTime.now(), ExceptionUtils.getStackTrace(exception), request.getDescription(true));
     }
 
 }

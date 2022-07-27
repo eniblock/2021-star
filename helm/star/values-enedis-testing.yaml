@@ -7,3 +7,5 @@ backend:
 keycloak:
   ingress:
     host: "enedis.testing.star.eniblock.fr"
+  credentials:
+    secret: MoonJiDDpXq0CSJwIZkTmuKM719aeMuM

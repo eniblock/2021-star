@@ -30,6 +30,8 @@ keycloak:
   resource: frontend
   bearer-only: true
   public-client: true
+  credentials:
+    secret:
 
 #  Valeur possible : tso/dso/producer
 instance: tso

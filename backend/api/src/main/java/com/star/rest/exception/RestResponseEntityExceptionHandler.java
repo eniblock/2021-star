@@ -58,20 +58,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
-    @ExceptionHandler(value = {Exception.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected ResponseEntity<Object> handleInternalException(Exception exception, WebRequest request) {
-        logError(exception);
-        return handleExceptionInternal(exception, getErrorDetails(exception, request), new HttpHeaders(),
-                HttpStatus.INTERNAL_SERVER_ERROR, request);
-    }
-
     private void logError(Exception exception) {
         log.error(exception.getMessage(), exception);
     }
 
     private ErrorDetails getErrorDetails(Exception exception, WebRequest request) {
-        return new ErrorDetails(LocalDateTime.now(), ExceptionUtils.getStackTrace(exception), request.getDescription(true));
+        return new ErrorDetails(LocalDateTime.now(), ExceptionUtils.getMessage(exception), request.getDescription(true));
     }
 
 }

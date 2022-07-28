@@ -29,6 +29,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(LoginController.PATH)
 public class LoginController {
+    private static final String SECRET = "secret";
     public static final String PATH = ApiRestVersion.VERSION + "/login";
 
     @Value("${keycloak.auth-server-url}")
@@ -40,11 +41,8 @@ public class LoginController {
     @Value("${keycloak.resource}")
     private String clientId;
 
-//    Ressource : https://www.linkedin.com/pulse/use-keycloak-spring-boot-ali-helmy/?trk=public_profile_article_view
-
     @Value("${keycloak.credentials.secret}")
     private String clientSecret;
-
 
     @Operation(summary = "Login and retrieve Token.")
     @ApiResponses(value = {
@@ -53,28 +51,11 @@ public class LoginController {
             @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     public ResponseEntity<AccessTokenResponse> signin(@RequestBody @Valid CredentialsDTO credentialsDTO) {
-//        Map<String, Object> clientCredentials = new HashMap<>();
-//        clientCredentials.put("secret", "OR3344MjFHdTjOjXi6z5BleqDOxRjNEC");
-//        clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.CLIENT_CREDENTIALS);
-//        Configuration configuration =
-//                new Configuration(serverUrl, realm, clientId, clientCredentials, null);
-
-//        2022-07-28 08:15:32.438 DEBUG 1 --- [nio-8080-exec-9] com.star.rest.LoginController            : le clientSecret varabilisé est : OR3344MjFHdTjOjXi6z5BleqDOxRjNEC
-//        2022-07-28 08:15:32.438 DEBUG 1 --- [nio-8080-exec-9] com.star.rest.LoginController            : le serverUrl varabilisé est : https://enedis.testing.star.eniblock.fr/auth
-//        2022-07-28 08:15:32.438 DEBUG 1 --- [nio-8080-exec-9] com.star.rest.LoginController            : le realm varabilisé est : star
-//        2022-07-28 08:15:32.439 DEBUG 1 --- [nio-8080-exec-9] com.star.rest.LoginController            : le clientId varabilisé est : backend
-
-        log.debug("le clientSecret varabilisé est : "+clientSecret);
-        log.debug("le serverUrl varabilisé est : "+serverUrl);
-        log.debug("le realm varabilisé est : "+realm);
-        log.debug("le clientId varabilisé est : "+clientId);
+        log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);
         Map<String, Object> clientCredentials = new HashMap<>();
-        clientCredentials.put("secret", "OR3344MjFHdTjOjXi6z5BleqDOxRjNEC");
-//        clientCredentials.put("grant_type", "password");
+        clientCredentials.put(SECRET, clientSecret);
         clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.PASSWORD);
-
-        Configuration configuration =
-                new Configuration("https://enedis.testing.star.eniblock.fr/auth", "star", "frontend", clientCredentials, null);
+        Configuration configuration = new Configuration(serverUrl, realm, clientId, clientCredentials, null);
         return ResponseEntity.ok(AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword()));
         }
 }

@@ -65,16 +65,13 @@ public class LoginController {
 //        clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.CLIENT_CREDENTIALS);
 //        Configuration configuration =
 //                new Configuration(serverUrl, realm, clientId, clientCredentials, null);
-//        return ResponseEntity.ok(AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword()));
 
+        Map<String, Object> clientCredentials = new HashMap<>();
+        clientCredentials.put("secret", "OR3344MjFHdTjOjXi6z5BleqDOxRjNEC");
+        clientCredentials.put("grant_type", "password");
 
-        Keycloak keycloak = KeycloakBuilder.builder() //
-                .realm(realm) //
-                .serverUrl(serverUrl)//
-                .clientId(clientId) //
-                .clientSecret(clientSecret) //
-                .username(credentialsDTO.getUsername()) //
-                .password(credentialsDTO.getPassword()).build();
-            return ResponseEntity.ok(keycloak.tokenManager().getAccessToken());
+        Configuration configuration =
+                new Configuration("https://enedis.testing.star.eniblock.fr/auth", "star", "frontend", clientCredentials, null);
+        return ResponseEntity.ok(AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword()));
         }
 }

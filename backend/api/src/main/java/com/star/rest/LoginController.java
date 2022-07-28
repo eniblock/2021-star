@@ -50,13 +50,13 @@ public class LoginController {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
-    public ResponseEntity<String> signin(@RequestBody @Valid CredentialsDTO credentialsDTO) {
+    public ResponseEntity<AccessTokenResponse> signin(@RequestBody @Valid CredentialsDTO credentialsDTO) {
         log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);
         Map<String, Object> clientCredentials = new HashMap<>();
         clientCredentials.put(SECRET, clientSecret);
         clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.PASSWORD);
         Configuration configuration = new Configuration(serverUrl, realm, clientId, clientCredentials, null);
         AccessTokenResponse accessTokenResponse = AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword());
-        return ResponseEntity.ok(accessTokenResponse.getToken());
+        return ResponseEntity.ok(accessTokenResponse);
         }
 }

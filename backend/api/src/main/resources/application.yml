@@ -31,7 +31,7 @@ keycloak:
   bearer-only: true
   public-client: true
   credentials:
-    secret:
+    secret: RtaW4iLCJJc3N1ZXIiOiJJc3N
 
 #  Valeur possible : tso/dso/producer
 instance: tso

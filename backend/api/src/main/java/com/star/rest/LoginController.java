@@ -59,6 +59,11 @@ public class LoginController {
 //        Configuration configuration =
 //                new Configuration(serverUrl, realm, clientId, clientCredentials, null);
 
+//        2022-07-28 08:15:32.438 DEBUG 1 --- [nio-8080-exec-9] com.star.rest.LoginController            : le clientSecret varabilisé est : OR3344MjFHdTjOjXi6z5BleqDOxRjNEC
+//        2022-07-28 08:15:32.438 DEBUG 1 --- [nio-8080-exec-9] com.star.rest.LoginController            : le serverUrl varabilisé est : https://enedis.testing.star.eniblock.fr/auth
+//        2022-07-28 08:15:32.438 DEBUG 1 --- [nio-8080-exec-9] com.star.rest.LoginController            : le realm varabilisé est : star
+//        2022-07-28 08:15:32.439 DEBUG 1 --- [nio-8080-exec-9] com.star.rest.LoginController            : le clientId varabilisé est : backend
+
         log.debug("le clientSecret varabilisé est : "+clientSecret);
         log.debug("le serverUrl varabilisé est : "+serverUrl);
         log.debug("le realm varabilisé est : "+realm);

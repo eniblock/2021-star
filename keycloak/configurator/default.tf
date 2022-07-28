@@ -43,3 +43,13 @@ resource "keycloak_openid_client" "frontend" {
   direct_access_grants_enabled = true
   valid_redirect_uris          = ["*"]
 }
+
+resource "keycloak_openid_client" "backend" {
+  realm_id                     = keycloak_realm.main.id
+  client_id                    = "backend"
+  access_type                  = "CONFIDENTIAL"
+  standard_flow_enabled        = true
+  direct_access_grants_enabled = true
+  valid_redirect_uris          = ["*"]
+  client_secret                =  RtaW4iLCJJc3N1ZXIiOiJJc3N
+}

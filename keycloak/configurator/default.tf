@@ -51,5 +51,5 @@ resource "keycloak_openid_client" "backend" {
   standard_flow_enabled        = true
   direct_access_grants_enabled = true
   valid_redirect_uris          = ["*"]
-  client_secret                =  "RtaW4iLCJJc3N1ZXIiOiJJc3N"
+  client_secret                = "RtaW4iLCJJc3N1ZXIiOiJJc3N"
 }

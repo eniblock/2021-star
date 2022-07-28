@@ -7,12 +7,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
 import org.keycloak.representations.AccessTokenResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,12 +42,8 @@ public class LoginController {
 
 //    Ressource : https://www.linkedin.com/pulse/use-keycloak-spring-boot-ali-helmy/?trk=public_profile_article_view
 
-//    TODO : il faut définir cette valeur via Kubernetes pour tous les environnements
     @Value("${keycloak.credentials.secret}")
     private String clientSecret;
-
-//    @Autowired
-//    private Keycloak keycloak;
 
 
     @Operation(summary = "Login and retrieve Token.")
@@ -66,9 +59,14 @@ public class LoginController {
 //        Configuration configuration =
 //                new Configuration(serverUrl, realm, clientId, clientCredentials, null);
 
+        log.debug("le clientSecret varabilisé est : "+clientSecret);
+        log.debug("le serverUrl varabilisé est : "+serverUrl);
+        log.debug("le realm varabilisé est : "+realm);
+        log.debug("le clientId varabilisé est : "+clientId);
         Map<String, Object> clientCredentials = new HashMap<>();
         clientCredentials.put("secret", "OR3344MjFHdTjOjXi6z5BleqDOxRjNEC");
-        clientCredentials.put("grant_type", "password");
+//        clientCredentials.put("grant_type", "password");
+        clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.PASSWORD);
 
         Configuration configuration =
                 new Configuration("https://enedis.testing.star.eniblock.fr/auth", "star", "frontend", clientCredentials, null);

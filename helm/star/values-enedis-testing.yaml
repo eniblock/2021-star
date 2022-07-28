@@ -8,4 +8,4 @@ keycloak:
   ingress:
     host: "enedis.testing.star.eniblock.fr"
   credentials:
-    secret: OR3344MjFHdTjOjXi6z5BleqDOxRjNEC
+    secret: RtaW4iLCJJc3N1ZXIiOiJJc3N

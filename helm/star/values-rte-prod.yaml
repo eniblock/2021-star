@@ -8,4 +8,4 @@ keycloak:
   ingress:
     host: "star.cloud-rte-france.com"
   credentials:
-    secret:
+    secret: RtaW4iLCJJc3N1ZXIiOiJJc3N

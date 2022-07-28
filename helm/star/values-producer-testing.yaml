@@ -8,4 +8,4 @@ keycloak:
   ingress:
     host: "producer.testing.star.eniblock.fr"
   credentials:
-    secret: EvLQO2LIicnSyEQ0HQOnWcffEt8oqLMp
+    secret: RtaW4iLCJJc3N1ZXIiOiJJc3N

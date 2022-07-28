@@ -8,4 +8,4 @@ keycloak:
   ingress:
     host: "rte.testing.star.eniblock.fr"
   credentials:
-    secret: UilWyfG8ibzjstGMigFjXdTC7yCDdFQ0
+    secret: RtaW4iLCJJc3N1ZXIiOiJJc3N

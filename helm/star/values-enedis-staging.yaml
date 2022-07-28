@@ -8,4 +8,4 @@ keycloak:
   ingress:
     host: "enedis.staging.star.eniblock.fr"
   credentials:
-    secret:
+    secret: RtaW4iLCJJc3N1ZXIiOiJJc3N

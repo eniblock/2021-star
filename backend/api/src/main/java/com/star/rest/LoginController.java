@@ -7,9 +7,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
 import org.keycloak.representations.AccessTokenResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +49,9 @@ public class LoginController {
     @Value("${keycloak.credentials.secret}")
     private String clientSecret;
 
+//    @Autowired
+//    private Keycloak keycloak;
+
 
     @Operation(summary = "Login and retrieve Token.")
     @ApiResponses(value = {
@@ -54,11 +60,21 @@ public class LoginController {
             @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     public ResponseEntity<AccessTokenResponse> signin(@RequestBody @Valid CredentialsDTO credentialsDTO) {
-        Map<String, Object> clientCredentials = new HashMap<>();
-        clientCredentials.put("secret", "OR3344MjFHdTjOjXi6z5BleqDOxRjNEC");
-        clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.CLIENT_CREDENTIALS);
-        Configuration configuration =
-                new Configuration(serverUrl, realm, clientId, clientCredentials, null);
-        return ResponseEntity.ok(AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword()));
-    }
+//        Map<String, Object> clientCredentials = new HashMap<>();
+//        clientCredentials.put("secret", "OR3344MjFHdTjOjXi6z5BleqDOxRjNEC");
+//        clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.CLIENT_CREDENTIALS);
+//        Configuration configuration =
+//                new Configuration(serverUrl, realm, clientId, clientCredentials, null);
+//        return ResponseEntity.ok(AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword()));
+
+
+        Keycloak keycloak = KeycloakBuilder.builder() //
+                .realm(realm) //
+                .serverUrl(serverUrl)//
+                .clientId(clientId) //
+                .clientSecret(clientSecret) //
+                .username(credentialsDTO.getUsername()) //
+                .password(credentialsDTO.getPassword()).build();
+            return ResponseEntity.ok(keycloak.tokenManager().getAccessToken());
+        }
 }

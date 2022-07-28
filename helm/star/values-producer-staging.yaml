@@ -7,5 +7,3 @@ backend:
 keycloak:
   ingress:
     host: "producer.staging.star.eniblock.fr"
-  credentials:
-    secret: RtaW4iLCJJc3N1ZXIiOiJJc3N

@@ -12,8 +12,6 @@ backend:
 keycloak:
   ingress:
     host: "producer.localhost"
-  credentials:
-    secret: RtaW4iLCJJc3N1ZXIiOiJJc3N
   configurator:
     secrets:
       users:

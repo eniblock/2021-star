@@ -12,8 +12,6 @@ backend:
 keycloak:
   ingress:
     host: "enedis.localhost"
-  credentials:
-    secret:
   configurator:
     secrets:
       users:

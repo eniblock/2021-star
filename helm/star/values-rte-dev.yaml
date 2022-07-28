@@ -13,8 +13,6 @@ backend:
 keycloak:
   ingress:
     host: "rte.localhost"
-  credentials:
-    secret: RtaW4iLCJJc3N1ZXIiOiJJc3N
   configurator:
     secrets:
       users:

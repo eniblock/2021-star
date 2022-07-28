@@ -86,8 +86,6 @@ spec:
               value: "false"
 
             # keycloak configuration
-            - name: KEYCLOAK_CREDENTIALS_SECRET
-              value: "{{ .Values.keycloak.credentials.secret }}"
             - name: KEYCLOAK_AUTH_SERVER_URL
               value: "https://{{ .Values.ingress.host }}/auth"
             - name: KEYCLOAK_REALM

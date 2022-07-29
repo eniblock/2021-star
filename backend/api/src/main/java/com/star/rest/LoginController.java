@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,11 +53,11 @@ public class LoginController {
             @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     public ResponseEntity<AuthToken> signin(@RequestBody CredentialsDTO credentialsDTO) {
+        log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);
+        Assert.notNull(credentialsDTO, "Credentials is required");
+        Assert.hasLength(credentialsDTO.getUsername(), "Username is required");
+        Assert.hasLength(credentialsDTO.getPassword(), "Password is required");
         try {
-            log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);
-            Assert.notNull(credentialsDTO, "Credentials is required");
-            Assert.hasLength(credentialsDTO.getUsername(), "Username is required");
-            Assert.hasLength(credentialsDTO.getPassword(), "Password is required");
             Map<String, Object> clientCredentials = new HashMap<>();
             clientCredentials.put(SECRET, clientSecret);
             clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.PASSWORD);

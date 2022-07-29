@@ -1,5 +1,6 @@
 package com.star.rest;
 
+import com.star.dto.login.AuthToken;
 import com.star.dto.login.CredentialsDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +13,7 @@ import org.keycloak.authorization.client.Configuration;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,13 +52,17 @@ public class LoginController {
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
-    public ResponseEntity<AccessTokenResponse> signin(@RequestBody @Valid CredentialsDTO credentialsDTO) {
-        log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);
-        Map<String, Object> clientCredentials = new HashMap<>();
-        clientCredentials.put(SECRET, clientSecret);
-        clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.PASSWORD);
-        Configuration configuration = new Configuration(serverUrl, realm, clientId, clientCredentials, null);
-        AccessTokenResponse accessTokenResponse = AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword());
-        return ResponseEntity.ok(accessTokenResponse);
+    public ResponseEntity<AuthToken> signin(@RequestBody @Valid CredentialsDTO credentialsDTO) {
+        try {
+            log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);
+            Map<String, Object> clientCredentials = new HashMap<>();
+            clientCredentials.put(SECRET, clientSecret);
+            clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.PASSWORD);
+            Configuration configuration = new Configuration(serverUrl, realm, clientId, clientCredentials, null);
+            AccessTokenResponse accessTokenResponse = AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword());
+            return ResponseEntity.ok(new AuthToken(accessTokenResponse.getToken()));
+        } catch (Exception ex) {
+            throw new BadCredentialsException(ex.getMessage());
         }
+    }
 }

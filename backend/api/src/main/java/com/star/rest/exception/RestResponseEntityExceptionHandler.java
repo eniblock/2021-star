@@ -9,6 +9,7 @@ import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -48,6 +49,15 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         logError(runtimeException);
         return handleExceptionInternal(runtimeException, getErrorDetails(runtimeException, request), new HttpHeaders(),
                 HttpStatus.CONFLICT, request);
+    }
+
+
+    @ExceptionHandler(value = {BadCredentialsException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    protected ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException badCredentialsException, WebRequest request) {
+        logError(badCredentialsException);
+        return handleExceptionInternal(badCredentialsException, getErrorDetails(badCredentialsException, request),
+                new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
     }
 
     @ExceptionHandler(value = {TechnicalException.class, JsonProcessingException.class, ContractException.class})

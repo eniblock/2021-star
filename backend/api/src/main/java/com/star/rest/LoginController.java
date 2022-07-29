@@ -53,7 +53,6 @@ public class LoginController {
             @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     public ResponseEntity<AuthToken> signin(@RequestBody CredentialsDTO credentialsDTO) {
-
         log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);
         Assert.notNull(credentialsDTO, "Credentials is required");
         Assert.hasLength(credentialsDTO.getUsername(), "Username is required");

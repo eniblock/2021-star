@@ -40,24 +40,36 @@ public class SecurityComponent {
     }
 
     public String getProducerMarketParticipantMrid(boolean throwExceptionIfNotExists) {
+        var producerMarketParticipantMrid = getClaimInKeycloakToken("producerMarketParticipantMrid");
+        if (throwExceptionIfNotExists && (producerMarketParticipantMrid == null || producerMarketParticipantMrid.isBlank())) {
+            throw new IllegalArgumentException("Le token de l'utilisateur n'a pas d'attribut \"producerMarketParticipantMrid\" !");
+        }
+        return producerMarketParticipantMrid;
+    }
+
+    public String getSystemOperatorMarketParticipantMrid(boolean throwExceptionIfNotExists) {
+        var systemOperatorMarketParticipantMrid = getClaimInKeycloakToken("systemOperatorMarketParticipantMrid");
+        if (throwExceptionIfNotExists && (systemOperatorMarketParticipantMrid == null || systemOperatorMarketParticipantMrid.isBlank())) {
+            throw new IllegalArgumentException("Le token de l'utilisateur n'a pas d'attribut \"systemOperatorMarketParticipantMrid\" !");
+        }
+        return systemOperatorMarketParticipantMrid;
+    }
+
+    private String getClaimInKeycloakToken(String claim) {
         var keycloakAuthenticationToken = getKeycloakAuthenticationToken();
         if (keycloakAuthenticationToken == null) {
             return null;
         }
         Principal principal = (Principal) keycloakAuthenticationToken.getPrincipal();
-        String producerMarketParticipantMrid = null;
         if (principal instanceof KeycloakPrincipal) {
             KeycloakPrincipal keycloakPrincipal = (KeycloakPrincipal) principal;
             AccessToken accessToken = keycloakPrincipal.getKeycloakSecurityContext().getToken();
             Map<String, Object> customClaims = accessToken.getOtherClaims();
-            if (customClaims.containsKey("producerMarketParticipantMrid")) {
-                producerMarketParticipantMrid = String.valueOf(customClaims.get("producerMarketParticipantMrid"));
+            if (customClaims.containsKey(claim)) {
+                return String.valueOf(customClaims.get("systemOperatorMarketParticipantMrid"));
             }
         }
-        if (throwExceptionIfNotExists && (producerMarketParticipantMrid == null || producerMarketParticipantMrid.isBlank())) {
-            throw new IllegalArgumentException("Le token de l'utilisateur n'a pas d'attribut \"producerMarketParticipantMrid\" !");
-        }
-        return producerMarketParticipantMrid;
+        return null;
     }
 
     public boolean isInstance(InstanceEnum instanceEnum) {

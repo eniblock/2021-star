@@ -95,8 +95,8 @@ public class EnergyAmountService {
      * @throws IOException
      * @throws TechnicalException
      */
-    public ImportEnergyAmountResult createEnergyAmounts(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
-        var importEnergyAmountResult = checkFiles(fichiers, instance, true);
+    public ImportEnergyAmountResult createEnergyAmounts(List<FichierImportation> fichiers, InstanceEnum instance, String systemOperatorMarketParticipantMrid) throws IOException, TechnicalException {
+        var importEnergyAmountResult = checkFiles(fichiers, instance, true, systemOperatorMarketParticipantMrid);
         if (isEmpty(importEnergyAmountResult.getErrors()) && !isEmpty(importEnergyAmountResult.getDatas())) {
             importEnergyAmountResult.setDatas(energyAmountRepository.save(importEnergyAmountResult.getDatas(), instance));
         }
@@ -112,8 +112,8 @@ public class EnergyAmountService {
      * @throws IOException
      * @throws TechnicalException
      */
-    public ImportEnergyAmountResult updateEnergyAmounts(List<FichierImportation> fichiers, InstanceEnum instance) throws IOException, TechnicalException {
-        var importEnergyAmountResult = checkFiles(fichiers, instance, false);
+    public ImportEnergyAmountResult updateEnergyAmounts(List<FichierImportation> fichiers, InstanceEnum instance, String systemOperatorMarketParticipantMrid) throws IOException, TechnicalException {
+        var importEnergyAmountResult = checkFiles(fichiers, instance, false, systemOperatorMarketParticipantMrid);
         if (isEmpty(importEnergyAmountResult.getErrors()) && !isEmpty(importEnergyAmountResult.getDatas())) {
             importEnergyAmountResult.setDatas(energyAmountRepository.update(importEnergyAmountResult.getDatas(), instance));
         }
@@ -129,7 +129,7 @@ public class EnergyAmountService {
      * @return
      * @throws IOException
      */
-    private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance, boolean creation) throws IOException, TechnicalException {
+    private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance, boolean creation, String systemOperatorMarketParticipantMrid) throws IOException, TechnicalException {
         if (InstanceEnum.DSO.equals(instance) & fichiers == null || fichiers.size() == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }
@@ -163,10 +163,9 @@ public class EnergyAmountService {
                             new String[]{registeredResourceMrid}, null));
                 }
             }
-//            Vérification du champ senderMarketParticipantMrid
+            // Vérification du champ senderMarketParticipantMrid
             String senderMarketParticipantMrid = energyAmount.getSenderMarketParticipantMrid();
-            if (TSO.equals(instance) && !StringUtils.equalsIgnoreCase(TSO.getSystemOperatorMrid(), senderMarketParticipantMrid) ||
-                    DSO.equals(instance) && !StringUtils.equalsIgnoreCase(DSO.getSystemOperatorMrid(), senderMarketParticipantMrid)) {
+            if (!StringUtils.equalsIgnoreCase(systemOperatorMarketParticipantMrid, senderMarketParticipantMrid)) {
                 errors.add(messageSource.getMessage("import.file.energy.amount.senderMarketParticipantMrid.error",
                         new String[]{senderMarketParticipantMrid}, null));
             }

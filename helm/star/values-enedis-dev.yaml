@@ -20,6 +20,7 @@ keycloak:
           last_name: enedis
           email: userenedis@star.com
           initial_password: kcuserenedis
+          systemOperatorMarketParticipantMrid: 17X100A100A0001A
 
 mail:
   dev: true

@@ -21,6 +21,7 @@ keycloak:
           last_name: rte
           email: userrte@star.com
           initial_password: kcuserrte
+          systemOperatorMarketParticipantMrid: 10XFR-RTE------Q
 
 mail:
   dev: true

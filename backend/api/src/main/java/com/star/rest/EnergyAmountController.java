@@ -9,6 +9,7 @@ import com.star.mapper.energyamount.EnergyAmountMapper;
 import com.star.models.common.FichierImportation;
 import com.star.models.energyamount.EnergyAmountCriteria;
 import com.star.models.energyamount.ImportEnergyAmountResult;
+import com.star.security.SecurityComponent;
 import com.star.service.EnergyAmountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -56,6 +57,9 @@ public class EnergyAmountController {
     @Autowired
     private EnergyAmountService energyAmountService;
 
+    @Autowired
+    private SecurityComponent securityComponent;
+
     @Operation(summary = "Post an energy amount (file or energy amount object).")
     @ApiResponses(
             value = {
@@ -77,7 +81,7 @@ public class EnergyAmountController {
                 for (MultipartFile file : files) {
                     fichiers.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
                 }
-                importEnergyAmountResult = energyAmountService.createEnergyAmounts(fichiers, instance);
+                importEnergyAmountResult = energyAmountService.createEnergyAmounts(fichiers, instance, securityComponent.getSystemOperatorMarketParticipantMrid(true));
             }
             if (energyAmount != null) {
                 importEnergyAmountResult = energyAmountService.saveEnergyAmount(energyAmountMapper.formDtoToBean(energyAmount), instance, true);
@@ -110,7 +114,7 @@ public class EnergyAmountController {
                 for (MultipartFile file : files) {
                     fichiers.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
                 }
-                importEnergyAmountResult = energyAmountService.updateEnergyAmounts(fichiers, instance);
+                importEnergyAmountResult = energyAmountService.updateEnergyAmounts(fichiers, instance, securityComponent.getSystemOperatorMarketParticipantMrid(true));
             }
             if (energyAmount != null) {
                 importEnergyAmountResult = energyAmountService.saveEnergyAmount(energyAmountMapper.formDtoToBean(energyAmount), instance, false);

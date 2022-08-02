@@ -71,7 +71,7 @@ public class InstanceController {
                     .getProducer(securityComponent.getProducerMarketParticipantMrid(true))
                     .getProducerMarketParticipantName());
         } else {
-            var systemOperatorMarketParticipantMrid = getSystemOperatorMrid();
+            var systemOperatorMarketParticipantMrid = securityComponent.getSystemOperatorMarketParticipantMrid(true);
             return ResponseEntity.ok(marketParticipantService
                     .getSystemOperators().stream()
                     .filter(so -> so.getSystemOperatorMarketParticipantMrid().equals(systemOperatorMarketParticipantMrid))
@@ -80,16 +80,6 @@ public class InstanceController {
                     .getSystemOperatorMarketParticipantName()
             );
         }
-    }
-
-    private String getSystemOperatorMrid() {
-        switch (instance) {
-            case TSO:
-                return TSO.getSystemOperatorMrid();
-            case DSO:
-                return DSO.getSystemOperatorMrid();
-        }
-        return null;
     }
 
 }

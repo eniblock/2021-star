@@ -9,6 +9,7 @@ resource "keycloak_user" "init" {
   last_name  = each.value["last_name"]
   attributes = {
     "producerMarketParticipantMrid" = lookup(each.value, "producerMarketParticipantMrid", "17X100A100A0001A")
+    "systemOperatorMarketParticipantMrid" = lookup(each.value, "systemOperatorMarketParticipantMrid", "undefined")
   }
 
   initial_password {

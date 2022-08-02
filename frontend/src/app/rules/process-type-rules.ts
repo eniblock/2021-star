@@ -6,6 +6,10 @@ export const processTypeToStr = (
   switch (processType) {
     case ProcessType.A05:
       return 'Comptage';
+    case ProcessType.A14:
+      return 'Référence';
+    case ProcessType.Z99:
+      return 'Référence';
   }
   return 'ProcessType inconnu';
 };

@@ -87,4 +87,4 @@ secrets-*.yaml
 /terraform/lb_ingress_ip*
 
 # velero credentials
-infrastructure/creds
+infrastructure/creds*

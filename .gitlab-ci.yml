@@ -119,6 +119,44 @@ helm:
       --set mail.username=$SMTP_USER
       --set mail.password=$SMTP_PASSWORD
 
+.deploy_star_gra:
+  stage: deploy
+  image: registry.gitlab.com/xdev-tech/build/deploy:3.1
+  variables:
+  script:
+    - chmod 600 $KUBECONFIG_GRA
+    - dockerhublogin
+    - star_version=`yq eval .version helm/star/Chart.yaml`
+    - if [ -z "$CI_COMMIT_TAG" ]; then star_version=$star_version-$CI_COMMIT_REF_SLUG; fi
+    - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
+    - helm repo update
+    - kubectl delete -n ${CI_ENVIRONMENT_NAME} job --all
+    # peers
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      peer1 hlf-k8s/hlf-peer
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1.yaml
+      --set "peer.chaincodes[0].image.tag=$star_version"
+    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+      peer2 hlf-k8s/hlf-peer
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
+      --set "peer.chaincodes[0].image.tag=$star_version"
+    # star
+    - helm dependency update ./helm/star
+    - helm upgrade --install --wait --timeout 8m
+      star ./helm/star
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/star/values-${CI_ENVIRONMENT_NAME}.yaml
+      --values $USERS
+      --set image.tag=$star_version
+      --set keycloak.image.tag=$star_version
+      --set mail.username=$SMTP_USER
+      --set mail.password=$SMTP_PASSWORD
+
 .deploy_orderer:
   stage: deploy
   image: registry.gitlab.com/xdev-tech/build/deploy:3.1
@@ -154,6 +192,13 @@ deploy-enedis-testing:
   only:
     - develop
 
+deploy-enedis-testing-gra:
+  extends: .deploy_star_gra
+  environment:
+    name: enedis-testing
+  only:
+    - develop
+
 deploy-rte-testing:
   extends: .deploy_star
   environment:
@@ -161,8 +206,22 @@ deploy-rte-testing:
   only:
     - develop
 
+deploy-rte-testing:
+  extends: .deploy_star_gra
+  environment:
+    name: rte-testing
+  only:
+    - develop
+
 deploy-producer-testing:
   extends: .deploy_star
+  environment:
+    name: producer-testing
+  only:
+    - develop
+
+deploy-producer-testing-gra:
+  extends: .deploy_star_gra
   environment:
     name: producer-testing
   only:

@@ -206,7 +206,7 @@ deploy-rte-testing:
   only:
     - develop
 
-deploy-rte-testing:
+deploy-rte-testing-gra:
   extends: .deploy_star_gra
   environment:
     name: rte-testing

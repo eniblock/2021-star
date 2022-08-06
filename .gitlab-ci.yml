@@ -146,19 +146,6 @@ helm:
       --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
       --set "peer.chaincodes[0].image.tag=$star_version"
       --kubeconfig $KUBECONFIG_GRA
-    # star
-    - helm dependency update ./helm/star --kubeconfig $KUBECONFIG_GRA
-    - helm upgrade --install --wait --timeout 8m
-      star ./helm/star
-      -n ${CI_ENVIRONMENT_NAME}
-      --post-renderer kbldpp
-      --values helm/star/values-${CI_ENVIRONMENT_NAME}.yaml
-      --values $USERS
-      --set image.tag=$star_version
-      --set keycloak.image.tag=$star_version
-      --set mail.username=$SMTP_USER
-      --set mail.password=$SMTP_PASSWORD
-      --kubeconfig $KUBECONFIG_GRA
 
 .deploy_orderer:
   stage: deploy

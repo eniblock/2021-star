@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.limitation.OrdreLimitation;
+import com.star.models.limitation.OrdreLimitationEligibilityStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hyperledger.fabric.gateway.Contract;
@@ -30,6 +31,7 @@ public class OrdreLimitationRepository {
     public static final String GET_BY_QUERY = "GetActivationDocumentByQuery";
     public static final String GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE = "GetActivationDocumentReconciliationState";
     public static final String UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS = "UpdateActivationDocumentByOrders";
+    public static final String UPDATE_ACTIVATION_DOCUMENT_ELIGIBILITY_STATUS = "UpdateActivationDocumentEligibilityStatus";
 
     @Autowired
     private Contract contract;
@@ -85,7 +87,16 @@ public class OrdreLimitationRepository {
         }
     }
 
-
+    public void updateOrdreDebutEligibilityStatus(OrdreLimitationEligibilityStatus ordreLimitationEligibilityStatus) throws BusinessException, TechnicalException {
+        log.info("Modification de eligibility Status limitation : {}", ordreLimitationEligibilityStatus);
+        try {
+            contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_ELIGIBILITY_STATUS, objectMapper.writeValueAsString(ordreLimitationEligibilityStatus));
+        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
+            throw new TechnicalException("Erreur technique lors de la modification de eligibility Status ", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
+    }
     public void reconciliate() throws ContractException, TimeoutException, InterruptedException {
         byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
         if (evaluateTransaction != null && evaluateTransaction.length > 2) {

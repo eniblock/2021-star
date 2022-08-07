@@ -136,7 +136,7 @@ helm:
       peer1 hlf-k8s/hlf-peer
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
-      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1.gra.yaml
+      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1-gra.yaml
       --set "peer.chaincodes[0].image.tag=$star_version"
       --kubeconfig $KUBECONFIG_GRA
     - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION

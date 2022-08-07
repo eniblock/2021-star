@@ -5,6 +5,7 @@ export const ACTIVATIONS_TABLE_COLUMNS_DEF = [
   { id: 'originAutomationRegisteredResourceMrid', champ: 'Poste Source' },
   { id: 'producerMarketParticipantName', champ: 'Nom Producteur' },
   { id: 'siteName', champ: 'Nom Site' },
+  { id: 'meteringPointMrid', champ: 'Code Site' },
   { id: 'producerMarketParticipantMrid', champ: 'Code Producteur' },
   { id: 'debutLimitation', champ: 'Début limitation' },
   { id: 'finLimitation', champ: 'Fin limitation' },

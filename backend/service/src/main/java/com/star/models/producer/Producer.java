@@ -54,4 +54,11 @@ public class Producer implements ImportCSV {
         this.producerMarketParticipantName = csvRecord.get(headers.get(1));
         this.producerMarketParticipantRoleType = csvRecord.get(headers.get(2));
     }
+
+    @JsonIgnore
+    private String systemOperatorMarketParticipantMrid;
+    @JsonIgnore
+    private String systemOperatorMarketParticipantName;
+    @JsonIgnore
+    private String systemOperatorMarketParticipantRoleType;
 }

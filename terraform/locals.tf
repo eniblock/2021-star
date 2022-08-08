@@ -49,16 +49,21 @@ locals {
 
       gra7 = {
         monitoring_domain      = "obs.${local.env}.star.eniblock.fr"
-        # project_fqdn_testing = [
-        #    "peer2.enedis.testing.star.eniblock.fr", 
-        #    "peer2.producer.testing.star.eniblock.fr", 
-        #    "peer2.rte.testing.star.eniblock.fr"
-        #]
-        # project_fqdn_staging = [
+         project_fqdn_testing = [
+            "peer1.enedis.testing.gra.star.eniblock.fr", 
+            "peer1.producer.testing.gra.star.eniblock.fr", 
+            "peer1.rte.testing.gra.star.eniblock.fr",
+            "peer2.enedis.testing.gra.star.eniblock.fr", 
+            "peer2.producer.testing.gra.star.eniblock.fr", 
+            "peer2.rte.testing.gra.star.eniblock.fr"
+        ]
+         project_fqdn_staging = [
         #    "peer2.enedis.staging.star.eniblock.fr", 
         #    "peer2.producer.staging.star.eniblock.fr", 
         #    "peer2.rte.staging.star.eniblock.fr"
-        #]
+        ]
+        project_fqdn_prod      = [
+        ]
         s3_container_region    = "gra"
       }
   }

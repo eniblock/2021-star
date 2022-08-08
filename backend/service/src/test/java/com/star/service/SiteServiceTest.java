@@ -234,21 +234,6 @@ class SiteServiceTest extends AbstractTest {
     }
 
     @Test
-    void testFindSiteDsoOnTsoInstance() {
-        // GIVEN
-        SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(TSO)
-                .meteringPointMrId("PRMJGHVG17868").producerMarketParticipantMrid("PRODUCER_MR_ID")
-                .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME")
-                .technologyType(Arrays.asList(TechnologyTypeEnum.EOLIEN)).build();
-
-        // WHEN
-        Assertions.assertThrows(BusinessException.class, () -> siteService.findSite(siteCrteria, Sort.by("technologyType")));
-
-
-        // THEN
-    }
-
-    @Test
     void testFindSite() throws TechnicalException {
         // GIVEN
         SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(TSO)

@@ -66,7 +66,7 @@ public class SecurityComponent {
             AccessToken accessToken = keycloakPrincipal.getKeycloakSecurityContext().getToken();
             Map<String, Object> customClaims = accessToken.getOtherClaims();
             if (customClaims.containsKey(claim)) {
-                return String.valueOf(customClaims.get("systemOperatorMarketParticipantMrid"));
+                return String.valueOf(customClaims.get(claim));
             }
         }
         return null;

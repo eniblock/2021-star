@@ -12,9 +12,9 @@ export interface FormulaireRechercheHistoriqueLimitation {
 }
 
 export interface RechercheHistoriqueLimitationEntite {
-  site: Site,
-  producer: Producer,
-  energyAmount: EnergyAmount,
+  site: Site | null,
+  producer: Producer | null,
+  energyAmount: EnergyAmount | null,
   activationDocument: OrdreLimitation,
   subOrderList: OrdreLimitation[],
 }

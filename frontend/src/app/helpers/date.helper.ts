@@ -34,7 +34,7 @@ export class DateHelper {
   }
 
   public static stringToTimestamp(dateStr: string): number {
-    return new Date(dateStr).getTime();
+    return dateStr ? new Date(dateStr).getTime() : 0;
   }
 
   public static durationToMilliseconds(resolution: string): number {

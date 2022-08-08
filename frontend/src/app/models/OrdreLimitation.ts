@@ -1,3 +1,5 @@
+import {MeasurementUnitName} from "./enum/MeasurementUnitName.enum";
+
 export interface FormulaireOrdreDebutLimitationFichier {
   files: File[];
 }
@@ -31,6 +33,6 @@ export interface OrdreLimitation {
   businessType: string;
   reasonCode: string;
   orderValue: string;
-  measurementUnitName: string;
+  measurementUnitName: MeasurementUnitName;
   senderMarketParticipantMrid: string;
 }

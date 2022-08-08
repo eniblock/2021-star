@@ -12,7 +12,7 @@ import {map} from "rxjs/operators";
 import {TechnologyType} from "../../models/enum/TechnologyType.enum";
 import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
 
-const MOCK = true;
+const MOCK = false;
 
 @Injectable({
   providedIn: 'root',

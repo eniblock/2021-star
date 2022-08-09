@@ -1,3 +1,5 @@
+import {EligibilityStatus} from "./enum/EligibilityStatus.enum";
+
 export interface FormulaireOrdreDebutLimitationFichier {
   files: File[];
 }
@@ -24,7 +26,11 @@ export interface FormulaireOrdreFinLimitation {
 }
 
 export interface OrdreLimitation {
+  activationDocumentMrid: string;
   originAutomationRegisteredResourceMrid: string;
+  registeredResourceMrid: string;
+  eligibilityStatus: EligibilityStatus;
+  eligibilityStatusEditable: boolean;
   startCreatedDateTime: string;
   endCreatedDateTime: string;
   messageType: string;

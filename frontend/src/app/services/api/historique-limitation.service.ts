@@ -11,8 +11,9 @@ import {
 import {environment} from 'src/environments/environment';
 import {UrlService} from '../common/url.service';
 import {map} from "rxjs/operators";
+import {EligibilityStatus} from "../../models/enum/EligibilityStatus.enum";
 
-const MOCK = false;
+const MOCK = true;
 
 @Injectable({
   providedIn: 'root',
@@ -98,7 +99,11 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         quantity: '9'
       },
       activationDocument: {
+        activationDocumentMrid: "A1",
         originAutomationRegisteredResourceMrid: 'CONFOLENS',
+        registeredResourceMrid: "B1",
+        eligibilityStatus: EligibilityStatus.OUI,
+        eligibilityStatusEditable: false,
         startCreatedDateTime: '2020-01-01T00:00:00Z',
         endCreatedDateTime: '2020-01-02T23:59:59Z',
         messageType: 'A98',
@@ -139,7 +144,11 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         quantity: '23'
       },
       activationDocument: {
+        activationDocumentMrid: "A2",
         originAutomationRegisteredResourceMrid: 'MANSLE',
+        registeredResourceMrid: "B2",
+        eligibilityStatus: EligibilityStatus.NON,
+        eligibilityStatusEditable: true,
         startCreatedDateTime: '2020-01-01T01:00:00Z',
         endCreatedDateTime: '2020-01-02T23:59:58Z',
         messageType: 'D01',
@@ -151,7 +160,11 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
       },
       subOrderList: [
         {
+          activationDocumentMrid: "A3",
           originAutomationRegisteredResourceMrid: 'MANSLE2',
+          registeredResourceMrid: "B3",
+          eligibilityStatus: EligibilityStatus.OUI,
+          eligibilityStatusEditable: false,
           startCreatedDateTime: '2020-01-01T01:00:00Z',
           endCreatedDateTime: '2020-01-02T23:59:59Z',
           messageType: 'D01',
@@ -161,7 +174,11 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
         }, {
+          activationDocumentMrid: "A4",
           originAutomationRegisteredResourceMrid: 'MANSLE3',
+          registeredResourceMrid: "B4",
+          eligibilityStatus: EligibilityStatus.OUI,
+          eligibilityStatusEditable: true,
           startCreatedDateTime: '2020-01-01T02:00:00Z',
           endCreatedDateTime: '2020-01-02T22:59:59Z',
           messageType: 'D01',

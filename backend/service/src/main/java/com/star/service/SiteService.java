@@ -148,9 +148,6 @@ public class SiteService {
             if ((DSO.equals(siteCrteria.getInstance()) && isSiteHTA(meteringPointMrId)) ||
                     TSO.equals(siteCrteria.getInstance()) && isSiteHTB(meteringPointMrId)) {
                 selectors.add(Expression.eq(METERING_POINT_MRID, siteCrteria.getMeteringPointMrId()));
-            } else {
-                throw new BusinessException(messageSource.getMessage("import.file.meteringpointmrid.acces.error",
-                        new String[]{meteringPointMrId, siteCrteria.getInstance().getValue()}, null));
             }
         } else {
             switch (siteCrteria.getInstance()) {

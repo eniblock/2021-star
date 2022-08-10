@@ -14,7 +14,12 @@ export class ActivationDocumentService {
         id: string): Promise<Uint8Array> {
         console.debug('============= START : getRaw %s / %s ActivationDocumentService ===========', collection, id);
 
-        const prodAsBytes = await ctx.stub.getPrivateData(collection, id);
+        let prodAsBytes: Uint8Array;
+        try {
+            prodAsBytes = await ctx.stub.getPrivateData(collection, id);
+        } catch (error) {
+            throw new Error(`ActivationDocument : ${id} does not exist`);
+        }
         if (!prodAsBytes || prodAsBytes.length === 0) {
             throw new Error(`ActivationDocument : ${id} does not exist`);
         }
@@ -32,7 +37,12 @@ export class ActivationDocumentService {
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
 
-        const activationDocumentAsBytes: Uint8Array = await ActivationDocumentService.getRaw(ctx, collection, id);
+        var activationDocumentAsBytes: Uint8Array = null;
+        try {
+            activationDocumentAsBytes = await ActivationDocumentService.getRaw(ctx, collection, id);
+        } catch (error) {
+            throw error;
+        }
         var activationDocumentObj:ActivationDocument = null;
         if (activationDocumentAsBytes) {
             try {
@@ -55,26 +65,20 @@ export class ActivationDocumentService {
         var result:DataReference = null;
         if (collections) {
             for (const collection of collections) {
+                let collectionResult:ActivationDocument;
                 try {
-                    const collectionResult = await ActivationDocumentService.getObj(ctx, params, id, collection);
-                    if (collectionResult && collectionResult.activationDocumentMrid == id) {
-                        const result : DataReference = {
-                            collection: collection,
-                            docType: ParametersType.ACTIVATION_DOCUMENT,
-                            data: collectionResult
-                        }
-                        return result;
+                    collectionResult = await ActivationDocumentService.getObj(ctx, params, id, collection);
+                } catch (error) {
+                    // DO NOTHING
+                }
+                if (collectionResult && collectionResult.activationDocumentMrid == id) {
+                    result  = {
+                        collection: collection,
+                        docType: ParametersType.ACTIVATION_DOCUMENT,
+                        data: collectionResult
                     }
-                } catch(error) {
-                    if (error.message === `ERROR ActivationDocument-> Input string NON-JSON value`) {
-                        throw (error)
-                    }
-                    //do nothing just empty list returned
                 }
             }
-        }
-        if (!result || !result.data || result.data.activationDocumentMrid === "") {
-            throw new Error(`ActivationDocument : ${id} does not exist`);
         }
 
         return result;

@@ -9,14 +9,14 @@ export class HLFServices {
         docType: string,
         target: string = ''): Promise<string> {
 
-        const collectionMap: Map<string, string[]> = params.values.get(docType);
         var collection: string = '';
-        if (collectionMap) {
-            if (!target || target.length === 0) {
+        if (!target || target.length === 0) {
+            const collectionMap: Map<string, string[]> = params.values.get(docType);
+            if (collectionMap) {
                 collection = collectionMap.get(ParametersType.DEFAULT)[0];
-            } else {
-                collection = target;
             }
+        } else {
+            collection = target;
         }
 
         return collection;
@@ -46,14 +46,14 @@ export class HLFServices {
         docType: string,
         target: string[] = []): Promise<string[]> {
 
-        const collectionMap: Map<string, string[]> = params.values.get(docType);
         var collections: string[];
-        if (collectionMap) {
-            if (!target || target.length === 0) {
+        if (!target || target.length === 0) {
+            const collectionMap: Map<string, string[]> = params.values.get(docType);
+            if (collectionMap) {
                 collections = collectionMap.get(ParametersType.DEFAULT);
-            } else {
-                collections = target;
             }
+        } else {
+            collections = target;
         }
 
         return collections;

@@ -309,7 +309,7 @@ export class ActivationDocumentController {
     }
 
     private static statusInternationalValue(statusValue: string): string {
-        var newStatus = 'ERROR';
+        var newStatus = EligibilityStatus.EligibilityERROR;
 
         if (!statusValue) {
             newStatus = EligibilityStatus.EligibilityPending;
@@ -325,7 +325,7 @@ export class ActivationDocumentController {
                 newStatus = EligibilityStatus.EligibilityPending;
             }
         }
-        if (newStatus === 'ERROR') {
+        if (newStatus === EligibilityStatus.EligibilityERROR) {
             throw new Error(`Eligibility Status isn't referenced.`);
         }
 
@@ -333,7 +333,7 @@ export class ActivationDocumentController {
     }
 
     private static statusFrenchValue(statusValue: string): string {
-        var newStatus = 'ERROR';
+        var newStatus = EligibilityStatus.EligibilityERROR;
 
         if (!statusValue) {
             newStatus = EligibilityStatus.EligibilityPending;
@@ -349,7 +349,7 @@ export class ActivationDocumentController {
                 newStatus = EligibilityStatus.FREligibilityPending;
             }
         }
-        if (newStatus === 'ERROR') {
+        if (newStatus === EligibilityStatus.EligibilityERROR) {
             throw new Error(`Eligibility Status isn't referenced.`);
         }
 
@@ -360,7 +360,7 @@ export class ActivationDocumentController {
     public static async updateActivationDocumentEligibilityStatus(
         ctx: Context,
         params: STARParameters,
-        inputStr: string) {
+        inputStr: string): Promise<ActivationDocument> {
 
         console.info('============= START : updateActivationDocumentEligibilityStatus ActivationDocumentController ===========');
 
@@ -373,7 +373,6 @@ export class ActivationDocumentController {
         try {
             statusToUpdate = JSON.parse(inputStr);
         } catch (error) {
-        // console.error('error=', error);
             throw new Error(`ERROR updateActivationDocumentEligibilityStatus -> Input string NON-JSON value`);
         }
 
@@ -385,9 +384,24 @@ export class ActivationDocumentController {
         var newStatus = ActivationDocumentController.statusInternationalValue(statusToUpdate.eligibilityStatus);
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
-        const activationDocumentReference:DataReference = await ActivationDocumentService.getObjRefbyId(ctx, params, statusToUpdate.activationDocumentMrid, collections);
 
-        const activationDocument: ActivationDocument = activationDocumentReference.data;
+        let activationDocumentReference:DataReference;
+        try {
+            activationDocumentReference = await ActivationDocumentService.getObjRefbyId(ctx, params, statusToUpdate.activationDocumentMrid, collections);
+        } catch (error) {
+            throw new Error(`ERROR cannot find reference to Activation Document ${statusToUpdate.activationDocumentMrid} for status Update.`);
+        }
+
+        let activationDocument: ActivationDocument;
+        activationDocument = activationDocumentReference.data;
+
+        if (!activationDocument) {
+            throw new Error(`ERROR cannot find reference to Activation Document ${statusToUpdate.activationDocumentMrid} for status Update.`);
+        }
+
+        if (!activationDocument.eligibilityStatusEditable) {
+            throw new Error(`ERROR Activation Document ${statusToUpdate.activationDocumentMrid} status is not Editable.`);
+        }
 
         let systemOperatorObj: SystemOperator;
         try {
@@ -406,6 +420,7 @@ export class ActivationDocumentController {
         await ActivationDocumentService.write(ctx, params, activationDocument, activationDocumentReference.collection);
 
         console.info('============= END   : updateActivationDocumentEligibilityStatus ActivationDocumentController ===========');
+        return await this.outputFormatFRActivationDocument(ctx, params, activationDocument);
     }
 
 

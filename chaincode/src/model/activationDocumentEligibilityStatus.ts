@@ -11,6 +11,6 @@ export class ActivationDocumentEligibilityStatus {
             'eligibilityStatus is a compulsory string').typeError('eligibilityStatus must be a string'),
     });
 
-    public activationDocumentMrid: string; // PK
-    public eligibilityStatus?: string;
+    public activationDocumentMrid: string;
+    public eligibilityStatus: string;
 }

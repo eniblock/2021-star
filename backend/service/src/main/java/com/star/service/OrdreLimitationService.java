@@ -6,6 +6,7 @@ import com.cloudant.client.api.query.Operation;
 import com.cloudant.client.api.query.QueryBuilder;
 import com.cloudant.client.api.query.Selector;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.star.enums.EligibilityStatusEnum;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
@@ -14,14 +15,17 @@ import com.star.models.common.FichierImportation;
 import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.limitation.OrdreLimitationCriteria;
+import com.star.models.limitation.OrdreLimitationEligibilityStatus;
 import com.star.repository.OrdreLimitationRepository;
 import com.star.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -36,12 +40,14 @@ import java.util.List;
 
 import static com.star.enums.DocTypeEnum.ACTIVATION_DOCUMENT;
 import static com.star.utils.DateUtils.toLocalDateTime;
+import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.upperCase;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -71,7 +77,7 @@ public class OrdreLimitationService {
         List<OrdreLimitation> ordreDebutLimitations = new ArrayList<>();
         for (FichierImportation fichierOrdreLimitation : fichierOrdreLimitations) {
             String value = IOUtils.toString(fichierOrdreLimitation.getInputStream(), StandardCharsets.UTF_8);
-            List<OrdreLimitation>  currentOrdreLimitations = !isBlank(value) ? objectMapper.readValue(value, objectMapper.getTypeFactory().constructCollectionType(List.class, OrdreLimitation.class)) : Collections.emptyList();
+            List<OrdreLimitation> currentOrdreLimitations = !isBlank(value) ? objectMapper.readValue(value, objectMapper.getTypeFactory().constructCollectionType(List.class, OrdreLimitation.class)) : Collections.emptyList();
             if (CollectionUtils.isEmpty(currentOrdreLimitations)) {
                 errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichierOrdreLimitation.getFileName()}, null));
                 break;
@@ -95,6 +101,7 @@ public class OrdreLimitationService {
                     currentErrors.add(messageSource.getMessage("import.ordreLimitation.debut.orderEnd.error",
                             new String[]{fichierOrdreLimitation.getFileName()}, null));
                 }
+                checkEligibilityStatus(ordreLimitation.getEligibilityStatus(), currentErrors);
                 currentErrors.addAll(validator.validate(ordreLimitation).stream().map(violation ->
                         messageSource.getMessage("import.error",
                                 new String[]{fichierOrdreLimitation.getFileName(), violation.getMessage()}, null)).collect(toList()));
@@ -126,6 +133,9 @@ public class OrdreLimitationService {
                 if (ordreDebutLimitation.getSenderMarketParticipantMrid() == null) {
                     ordreDebutLimitation.setSenderMarketParticipantMrid(EMPTY);
                 }
+                if (isBlank(ordreDebutLimitation.getEligibilityStatus())) {
+                    ordreDebutLimitation.setEligibilityStatus(EMPTY);
+                }
             });
             importOrdreDebutLimitationResult.setDatas(ordreLimitationRepository.saveOrdreLimitations(ordreDebutLimitations));
         }
@@ -140,7 +150,7 @@ public class OrdreLimitationService {
         List<OrdreLimitation> ordreLimitations = new ArrayList<>();
         for (FichierImportation fichierOrdreLimitation : fichierOrdreLimitations) {
             String value = IOUtils.toString(fichierOrdreLimitation.getInputStream(), StandardCharsets.UTF_8);
-            List<OrdreLimitation>  currentOrdreLimitations = !isBlank(value) ? objectMapper.readValue(value, objectMapper.getTypeFactory().constructCollectionType(List.class, OrdreLimitation.class)) : Collections.emptyList();
+            List<OrdreLimitation> currentOrdreLimitations = !isBlank(value) ? objectMapper.readValue(value, objectMapper.getTypeFactory().constructCollectionType(List.class, OrdreLimitation.class)) : Collections.emptyList();
             if (CollectionUtils.isEmpty(currentOrdreLimitations)) {
                 errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichierOrdreLimitation.getFileName()}, null));
                 break;
@@ -172,6 +182,7 @@ public class OrdreLimitationService {
                     currentErrors.add(messageSource.getMessage("import.ordreLimitation.couple.orderEnd.error",
                             new String[]{fichierOrdreLimitation.getFileName()}, null));
                 }
+                checkEligibilityStatus(ordreLimitation.getEligibilityStatus(), currentErrors);
                 currentErrors.addAll(validator.validate(ordreLimitation).stream().map(violation ->
                         messageSource.getMessage("import.error",
                                 new String[]{fichierOrdreLimitation.getFileName(), violation.getMessage()}, null)).collect(toList()));
@@ -185,22 +196,25 @@ public class OrdreLimitationService {
         if (isNotEmpty(errors)) {
             importCoupleOrdreLimitationResult.setErrors(errors);
         } else {
-            ordreLimitations.forEach(ordreDebutLimitation -> {
-                ordreDebutLimitation.setActivationDocumentMrid(randomUUID().toString());
-                ordreDebutLimitation.setInstance(instance.getValue());
-                ordreDebutLimitation.setSubOrderList(new ArrayList<>());
-                ordreDebutLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
-                if (ordreDebutLimitation.getOrderValue() == null) {
-                    ordreDebutLimitation.setOrderValue(EMPTY);
+            ordreLimitations.forEach(ordreLimitation -> {
+                ordreLimitation.setActivationDocumentMrid(randomUUID().toString());
+                ordreLimitation.setInstance(instance.getValue());
+                ordreLimitation.setSubOrderList(new ArrayList<>());
+                ordreLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
+                if (ordreLimitation.getOrderValue() == null) {
+                    ordreLimitation.setOrderValue(EMPTY);
                 }
-                if (ordreDebutLimitation.getReceiverMarketParticipantMrid() == null) {
-                    ordreDebutLimitation.setReceiverMarketParticipantMrid(EMPTY);
+                if (ordreLimitation.getReceiverMarketParticipantMrid() == null) {
+                    ordreLimitation.setReceiverMarketParticipantMrid(EMPTY);
                 }
-                if (ordreDebutLimitation.getRevisionNumber() == null) {
-                    ordreDebutLimitation.setRevisionNumber(REVISION_NUMBER);
+                if (ordreLimitation.getRevisionNumber() == null) {
+                    ordreLimitation.setRevisionNumber(REVISION_NUMBER);
                 }
-                if (ordreDebutLimitation.getSenderMarketParticipantMrid() == null) {
-                    ordreDebutLimitation.setSenderMarketParticipantMrid(EMPTY);
+                if (ordreLimitation.getSenderMarketParticipantMrid() == null) {
+                    ordreLimitation.setSenderMarketParticipantMrid(EMPTY);
+                }
+                if (isBlank(ordreLimitation.getEligibilityStatus())) {
+                    ordreLimitation.setEligibilityStatus(EMPTY);
                 }
             });
             importCoupleOrdreLimitationResult.setDatas(ordreLimitationRepository.saveOrdreLimitations(ordreLimitations));
@@ -237,6 +251,7 @@ public class OrdreLimitationService {
                     throw new BusinessException(messageSource.getMessage("import.date.format.error",
                             new String[]{fichierOrdreLimitation.getFileName()}, null));
                 }
+                checkEligibilityStatus(ordreLimitation.getEligibilityStatus(), currentErrors);
                 currentErrors.addAll(validator.validate(ordreLimitation).stream().map(violation ->
                         messageSource.getMessage("import.error",
                                 new String[]{fichierOrdreLimitation.getFileName(), violation.getMessage()}, null)).collect(toList()));
@@ -250,23 +265,26 @@ public class OrdreLimitationService {
         if (isNotEmpty(errors)) {
             importOrdreFinLimitationResult.setErrors(errors);
         } else {
-            ordreFinLimitations.forEach(ordreDebutLimitation -> {
-                ordreDebutLimitation.setActivationDocumentMrid(randomUUID().toString());
-                ordreDebutLimitation.setInstance(instance.getValue());
-                ordreDebutLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
-                ordreDebutLimitation.setSubOrderList(new ArrayList<>());
-                ordreDebutLimitation.setEndCreatedDateTime(EMPTY);
-                if (ordreDebutLimitation.getOrderValue() == null) {
-                    ordreDebutLimitation.setOrderValue(EMPTY);
+            ordreFinLimitations.forEach(ordreFinLimitation -> {
+                ordreFinLimitation.setActivationDocumentMrid(randomUUID().toString());
+                ordreFinLimitation.setInstance(instance.getValue());
+                ordreFinLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
+                ordreFinLimitation.setSubOrderList(new ArrayList<>());
+                ordreFinLimitation.setEndCreatedDateTime(EMPTY);
+                if (ordreFinLimitation.getOrderValue() == null) {
+                    ordreFinLimitation.setOrderValue(EMPTY);
                 }
-                if (ordreDebutLimitation.getReceiverMarketParticipantMrid() == null) {
-                    ordreDebutLimitation.setReceiverMarketParticipantMrid(EMPTY);
+                if (ordreFinLimitation.getReceiverMarketParticipantMrid() == null) {
+                    ordreFinLimitation.setReceiverMarketParticipantMrid(EMPTY);
                 }
-                if (ordreDebutLimitation.getRevisionNumber() == null) {
-                    ordreDebutLimitation.setRevisionNumber(REVISION_NUMBER);
+                if (ordreFinLimitation.getRevisionNumber() == null) {
+                    ordreFinLimitation.setRevisionNumber(REVISION_NUMBER);
                 }
-                if (ordreDebutLimitation.getSenderMarketParticipantMrid() == null) {
-                    ordreDebutLimitation.setSenderMarketParticipantMrid(EMPTY);
+                if (ordreFinLimitation.getSenderMarketParticipantMrid() == null) {
+                    ordreFinLimitation.setSenderMarketParticipantMrid(EMPTY);
+                }
+                if (isBlank(ordreFinLimitation.getEligibilityStatus())) {
+                    ordreFinLimitation.setEligibilityStatus(EMPTY);
                 }
             });
             importOrdreFinLimitationResult.setDatas(ordreLimitationRepository.saveOrdreLimitations(ordreFinLimitations));
@@ -311,5 +329,23 @@ public class OrdreLimitationService {
         if (isNotBlank(criteria.getActivationDocumentMrid())) {
             selectors.add(Expression.eq("activationDocumentMrid", criteria.getActivationDocumentMrid()));
         }
+    }
+
+    private void checkEligibilityStatus(String eligibilityStatus, List<String> currentErrors) {
+        if (StringUtils.isNotBlank(eligibilityStatus) && !asList(EligibilityStatusEnum.values()).contains(upperCase(eligibilityStatus))) {
+            currentErrors.add(messageSource.getMessage("import.ordreLimitation.eligibilityStatus.error",
+                    new String[]{}, null));
+        }
+    }
+
+    public OrdreLimitation ordreDebutEligibilityStatus(OrdreLimitationEligibilityStatus ordreLimitationEligibilityStatus) throws TechnicalException {
+        Assert.notNull(ordreLimitationEligibilityStatus, "ordreLimitationEligibilityStatus must not be null");
+        ordreLimitationRepository.updateOrdreDebutEligibilityStatus(ordreLimitationEligibilityStatus);
+        OrdreLimitationCriteria ordreLimitationCriteria = OrdreLimitationCriteria.builder().activationDocumentMrid(ordreLimitationEligibilityStatus.getActivationDocumentMrid()).build();
+        List<OrdreLimitation> ordreLimitations = findLimitationOrders(ordreLimitationCriteria);
+        if (CollectionUtils.isEmpty(ordreLimitations)) {
+            throw new BusinessException("Ordre limitation with id " + ordreLimitationEligibilityStatus.getActivationDocumentMrid() + " is unknown");
+        }
+        return ordreLimitations.get(0);
     }
 }

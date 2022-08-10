@@ -1,5 +1,9 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
+import {MatDialog} from "@angular/material/dialog";
+import {
+  ActivationIndemnisationChooseYesNoComponent
+} from "./activation-indemnisation-choose-yes-no/activation-indemnisation-choose-yes-no.component";
 
 @Component({
   selector: 'app-activation-indemnisation',
@@ -15,7 +19,9 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
   public loading = false;
   public marginIcons = "";
 
-  constructor() {
+  constructor(
+    public dialog: MatDialog,
+  ) {
   }
 
   ngOnInit(): void {
@@ -41,7 +47,14 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
   }
 
   click() {
-    this.loading = true;
+    const dialogRef = this.dialog.open(ActivationIndemnisationChooseYesNoComponent, {
+      width: '250px',
+      data: {eligibilityStatus: this.eligibilityStatus},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+    });
   }
 
 }

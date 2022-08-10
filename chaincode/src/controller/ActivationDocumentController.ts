@@ -108,7 +108,12 @@ export class ActivationDocumentController {
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
         const result:DataReference = await ActivationDocumentService.getObjRefbyId(ctx, params, activationDocumentMrid, collections);
 
-        return await ActivationDocumentController.outputFormatFRActivationDocument(ctx, params, result.data);
+        var formatedResult: ActivationDocument = null;
+        if (result && result.data) {
+            formatedResult = await ActivationDocumentController.outputFormatFRActivationDocument(ctx, params, result.data);
+        }
+
+        return formatedResult;
     }
 
 

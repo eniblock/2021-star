@@ -1,5 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {OrdreLimitation} from "../../../models/OrdreLimitation";
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
 
 @Component({
@@ -7,16 +6,42 @@ import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
   templateUrl: './activation-indemnisation.component.html',
   styleUrls: ['./activation-indemnisation.component.css']
 })
-export class ActivationIndemnisationComponent implements OnInit {
+export class ActivationIndemnisationComponent implements OnInit, OnChanges {
 
-  public EligibilityStatus = EligibilityStatus
+  @Input() eligibilityStatus: EligibilityStatus | null = null;
+  @Input() eligibilityStatusEditable: boolean = false;
 
-  @Input() ordreLimitation!: OrdreLimitation;
+  public buttonClass = "";
+  public loading = false;
+  public marginIcons = "";
 
   constructor() {
   }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    switch (this.eligibilityStatus) {
+      case EligibilityStatus.OUI:
+        this.buttonClass = "text-success";
+        break;
+      case EligibilityStatus.NON:
+        this.buttonClass = "text-danger";
+        break;
+      case null:
+        this.buttonClass = "";
+        break;
+    }
+    if (this.eligibilityStatus == EligibilityStatus.OUI || this.eligibilityStatus == EligibilityStatus.NON) {
+      this.marginIcons = "ms-2";
+    } else {
+      this.marginIcons = "";
+    }
+  }
+
+  click() {
+    this.loading = true;
   }
 
 }

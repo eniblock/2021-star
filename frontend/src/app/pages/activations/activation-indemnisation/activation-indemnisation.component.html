@@ -1,15 +1,18 @@
-<ng-container *ngIf="ordreLimitation.eligibilityStatusEditable">
-  <!-- OUI editable -->
-  <!-- NON editable -->
-  <!-- null editable -->
+<ng-container *ngIf="eligibilityStatusEditable">
+  <button mat-raised-button [disabled]="loading" [class]="buttonClass" (click)="click()">
+    {{ eligibilityStatus }}
+    <i [class]="'fa-solid fa-pen ' + marginIcons" *ngIf="!loading"></i>
+    <i [class]="'fa-solid fa-hourglass ' + marginIcons" *ngIf="loading"></i>
+  </button>
 </ng-container>
 
-<ng-container *ngIf="!ordreLimitation.eligibilityStatusEditable">
-  <ng-container *ngIf="ordreLimitation.eligibilityStatus">
-    {{ ordreLimitation.eligibilityStatus }}
+<ng-container *ngIf="!eligibilityStatusEditable">
+  <ng-container *ngIf="eligibilityStatus">
+    <button mat-stroked-button disabled [class]="buttonClass">{{ eligibilityStatus }}</button>
   </ng-container>
-  <ng-container *ngIf="!ordreLimitation.eligibilityStatus">
-    -
+  <ng-container *ngIf="!eligibilityStatus">
+    <!-- no button -->
   </ng-container>
 </ng-container>
+
 

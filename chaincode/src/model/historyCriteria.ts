@@ -7,6 +7,7 @@ export class HistoryCriteria {
             .notRequired().typeError('originAutomationRegisteredResourceMrid must be a string'),
         producerMarketParticipantMrid: Yup.string().notRequired().typeError('producerMarketParticipantMrid must be a string'),
         producerMarketParticipantName: Yup.string().notRequired().typeError('producerMarketParticipantName must be a string'),
+        meteringPointMrid: Yup.string().notRequired().typeError('meteringPointMrid must be a string'),
         siteName: Yup.string().notRequired().typeError('siteName must be a string'),
         registeredResourceMrid: Yup.string().notRequired().typeError('registeredResourceMrid must be a string'),
         startCreatedDateTime: Yup.string().notRequired().typeError('startCreatedDateTime must be a string'),
@@ -18,6 +19,7 @@ export class HistoryCriteria {
     public producerMarketParticipantList?: string[];
     public producerMarketParticipantMrid?: string;
     public producerMarketParticipantName?: string;
+    public meteringPointMrid?: string;
     public siteName?: string;
     public registeredResourceMrid?: string;
     public registeredResourceList?: string[];

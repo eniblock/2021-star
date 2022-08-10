@@ -23,12 +23,14 @@ export class ActivationDocument {
         registeredResourceMrid: Yup.string().required(
             'registeredResourceMrid is required').typeError('registeredResourceMrid must be a string'),
         revisionNumber: Yup.string().notRequired().matches(/^[0-9]*$/),
-        senderMarketParticipantMrid: Yup.string().required('senderMarketParticipantMrid is required').typeError('messageType must be a string'),
-        receiverMarketParticipantMrid: Yup.string().required('receiverMarketParticipantMrid is required').typeError('messageType must be a string'),
+        senderMarketParticipantMrid: Yup.string().required('senderMarketParticipantMrid is required').typeError('senderMarketParticipantMrid must be a string'),
+        receiverMarketParticipantMrid: Yup.string().required('receiverMarketParticipantMrid is required').typeError('receiverMarketParticipantMrid must be a string'),
         startCreatedDateTime: Yup.string().notRequired(),
         instance: Yup.string().notRequired(),
         subOrderList: Yup.array().notRequired(),
         testDateTime: Yup.string().notRequired(),
+        eligibilityStatus: Yup.string().notRequired(),
+        eligibilityStatusEditable: Yup.boolean().notRequired().typeError('eligibilityStatusEditable must be a boolean'),
     });
 
     public docType?: string;
@@ -50,4 +52,6 @@ export class ActivationDocument {
     public potentialChild?: boolean;
     public instance?: boolean;
     public subOrderList?: string[];
+    public eligibilityStatus?: string;
+    public eligibilityStatusEditable: boolean;
 }

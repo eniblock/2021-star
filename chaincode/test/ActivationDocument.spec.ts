@@ -20,6 +20,8 @@ import { DocType } from '../src/enums/DocType';
 import { RoleType } from '../src/enums/RoleType';
 import { DataReference } from '../src/model/dataReference';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
+import { ActivationDocumentEligibilityStatus } from '../src/model/activationDocumentEligibilityStatus';
+import { EligibilityStatus } from '../src/enums/EligibilityStatus';
 
 class TestContext {
     clientIdentity: any;
@@ -347,7 +349,8 @@ describe('Star Tests ActivationDocument', () => {
             expected.orderEnd = true;
             expected.potentialParent = false;
             expected.potentialChild = true;
-            expected.docType = 'activationDocument';
+            expected.eligibilityStatus = '';
+            expected.docType = DocType.ACTIVATION_DOCUMENT;
 
             // console.info("-----------")
             // console.info(transactionContext.stub.putPrivateData.firstCall.args);
@@ -393,12 +396,14 @@ describe('Star Tests ActivationDocument', () => {
             expected.orderEnd = true;
             expected.potentialParent = false;
             expected.potentialChild = true;
-            expected.docType = 'activationDocument';
+            expected.eligibilityStatus = '';
+            expected.docType = DocType.ACTIVATION_DOCUMENT;
             const expected2: ActivationDocument = activationDocument2;
             expected2.orderEnd = true;
             expected2.potentialParent = false;
             expected2.potentialChild = true;
-            expected2.docType = 'activationDocument';
+            expected2.eligibilityStatus = '';
+            expected2.docType = DocType.ACTIVATION_DOCUMENT;
 
             // console.info("-----------")
             // console.info(transactionContext.stub.putPrivateData.firstCall.args);
@@ -497,7 +502,7 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return ERROR CreateActivationDocument couple HTA wrong MSPID -> RTE', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-            const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_ForRTETest));
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
@@ -573,7 +578,8 @@ describe('Star Tests ActivationDocument', () => {
             expected.orderEnd = false;
             expected.potentialParent = false;
             expected.potentialChild = false;
-            expected.docType = 'activationDocument';
+            expected.eligibilityStatus = '';
+            expected.docType = DocType.ACTIVATION_DOCUMENT;
 
             // console.info("-----------")
             // console.info(transactionContext.stub.putPrivateData.firstCall.args);
@@ -620,7 +626,13 @@ describe('Star Tests ActivationDocument', () => {
             // console.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
-            const expected: ActivationDocument[] = [Values.HTA_ActivationDocument_Valid, Values.HTA_ActivationDocument_Valid_Doc2];
+            const expectedDoc1 = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            expectedDoc1.eligibilityStatus = '';
+            expectedDoc1.eligibilityStatusEditable = false;
+            const expectedDoc2 = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            expectedDoc2.eligibilityStatus = '';
+            expectedDoc2.eligibilityStatusEditable = false;
+            const expected: ActivationDocument[] = [expectedDoc1, expectedDoc2];
 
             expect(ret).to.eql(expected);
         });
@@ -753,7 +765,10 @@ describe('Star Tests ActivationDocument', () => {
             // console.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
-            const expected: ActivationDocument[] = [Values.HTA_ActivationDocument_Valid];
+            const expectedDoc1 = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            expectedDoc1.eligibilityStatus = '';
+            expectedDoc1.eligibilityStatusEditable = false;
+            const expected: ActivationDocument[] = [expectedDoc1];
 
             expect(ret).to.eql(expected);
         });
@@ -1339,6 +1354,210 @@ describe('Star Tests ActivationDocument', () => {
 
     });
 ////////////////////////////////////////////////////////////////////////////
+////////////////////    UPDATE ELIGIBILITY STATUS     //////////////////////
+////////////////////////////////////////////////////////////////////////////
+
+    describe('Test Update Activation Document Eligibility Status', () => {
+        it('should return ERROR UpdateActivationDocumentEligibilityStatus on unknown collection', async () => {
+
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
+            const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            activationDocument_Producer.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument_Producer.potentialParent= true;
+            activationDocument_Producer.potentialChild= false;
+
+
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                activationDocument_Producer.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_Producer)));
+
+            const updatedStatus_Producer : ActivationDocumentEligibilityStatus = {
+                activationDocumentMrid:activationDocument_Producer.activationDocumentMrid,
+                eligibilityStatus:EligibilityStatus.EligibilityAccepted
+            };
+
+            const updateOrders_str = JSON.stringify(updatedStatus_Producer);
+
+            try {
+                await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal(`ActivationDocument : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
+            }
+        });
+
+        it('should return ERROR UpdateActivationDocumentEligibilityStatus on unknown document', async () => {
+
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+
+            const updatedStatus_Producer : ActivationDocumentEligibilityStatus = {
+                activationDocumentMrid:activationDocument_Producer.activationDocumentMrid,
+                eligibilityStatus:EligibilityStatus.EligibilityAccepted
+            };
+
+            const updateOrders_str = JSON.stringify(updatedStatus_Producer);
+
+            try {
+                await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal(`ActivationDocument : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
+            }
+        });
+
+        it('should return SUCCESS UpdateActivationDocumentEligibilityStatus: TSO Producer Document', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
+            const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            activationDocument_Producer.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument_Producer.potentialParent= true;
+            activationDocument_Producer.potentialChild= false;
+
+
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                activationDocument_Producer.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_Producer)));
+
+            const updatedStatus_Producer : ActivationDocumentEligibilityStatus = {
+                activationDocumentMrid:activationDocument_Producer.activationDocumentMrid,
+                eligibilityStatus:EligibilityStatus.EligibilityAccepted
+            };
+            const updateOrders_str = JSON.stringify(updatedStatus_Producer);
+
+            await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
+
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(activationDocument_garbageProducer))
+            // console.info("-----------")
+
+            const expectedValue_Producer = JSON.parse(JSON.stringify(activationDocument_Producer));
+            expectedValue_Producer.eligibilityStatus = EligibilityStatus.EligibilityAccepted;
+            expectedValue_Producer.eligibilityStatusEditable = false;
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                collectionProducer,
+                activationDocument_Producer.activationDocumentMrid,
+                Buffer.from(JSON.stringify(expectedValue_Producer))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+        it('should return SUCCESS UpdateActivationDocumentEligibilityStatus: DSO Producer Document', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
+            const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument_Producer.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument_Producer.potentialParent= true;
+            activationDocument_Producer.potentialChild= false;
+
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                activationDocument_Producer.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_Producer)));
+
+            const updatedStatus_Producer : ActivationDocumentEligibilityStatus = {
+                activationDocumentMrid:activationDocument_Producer.activationDocumentMrid,
+                eligibilityStatus:EligibilityStatus.EligibilityAccepted
+            };
+            const updateOrders_str = JSON.stringify(updatedStatus_Producer);
+
+            await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
+
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(activationDocument_garbageProducer))
+            // console.info("-----------")
+
+            const expectedValue_Producer = JSON.parse(JSON.stringify(activationDocument_Producer));
+            expectedValue_Producer.eligibilityStatus = EligibilityStatus.EligibilityAccepted;
+            expectedValue_Producer.eligibilityStatusEditable = false;
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                collectionProducer,
+                activationDocument_Producer.activationDocumentMrid,
+                Buffer.from(JSON.stringify(expectedValue_Producer))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+        it('should return SUCCESS UpdateActivationDocumentEligibilityStatus : TSO Document', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionsDSO: string[] = collectionMap.get(RoleType.Role_DSO) as string[];
+            const collectionDSO: string = collectionsDSO[0];
+
+
+            const activationDocument_TSO: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            activationDocument_TSO.docType=DocType.ACTIVATION_DOCUMENT;
+            activationDocument_TSO.potentialParent= true;
+            activationDocument_TSO.potentialChild= false;
+
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+            transactionContext.stub.getPrivateData.withArgs(collectionDSO,
+                activationDocument_TSO.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_TSO)));
+
+            const updatedStatus_TSO : ActivationDocumentEligibilityStatus = {
+                activationDocumentMrid:activationDocument_TSO.activationDocumentMrid,
+                eligibilityStatus:EligibilityStatus.EligibilityRefused
+            };
+
+            const updateOrders_str = JSON.stringify(updatedStatus_TSO);
+
+            await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
+
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(activationDocument_garbageTSO))
+            // console.info("-----------")
+
+            const expectedValue_TSO = JSON.parse(JSON.stringify(activationDocument_TSO));
+            expectedValue_TSO.eligibilityStatus = EligibilityStatus.EligibilityRefused;
+            expectedValue_TSO.eligibilityStatusEditable = false;
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                collectionDSO,
+                activationDocument_TSO.activationDocumentMrid,
+                Buffer.from(JSON.stringify(expectedValue_TSO))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+    });
+
+
+////////////////////////////////////////////////////////////////////////////
 /////////////////////////    UPDATE BY ORDERS     //////////////////////////
 ////////////////////////////////////////////////////////////////////////////
     describe('Test Update Activation Document by Orders', () => {
@@ -1377,7 +1596,7 @@ describe('Star Tests ActivationDocument', () => {
 
 
 
-        it('should return ERROR UpdateActivationDocumentByOrders on authorozed changes', async () => {
+        it('should return ERROR UpdateActivationDocumentByOrders on authorized changes', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
@@ -1401,7 +1620,7 @@ describe('Star Tests ActivationDocument', () => {
 
 
 
-        it('should return ERROR UpdateActivationDocumentByOrders on authorozed changes', async () => {
+        it('should return ERROR UpdateActivationDocumentByOrders on authorized changes', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);

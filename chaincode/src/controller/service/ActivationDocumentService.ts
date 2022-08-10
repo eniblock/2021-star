@@ -4,6 +4,8 @@ import { ParametersType } from "../../enums/ParametersType";
 import { ActivationDocument } from "../../model/activationDocument";
 import { QueryStateService } from "./QueryStateService";
 import { HLFServices } from "./HLFservice";
+import { DataReference } from "../../model/dataReference";
+import { DocType } from "../../enums/DocType";
 
 export class ActivationDocumentService {
     private static async getRaw(
@@ -42,22 +44,26 @@ export class ActivationDocumentService {
         return activationDocumentObj;
     }
 
-    public static async getObjbyId(
+    public static async getObjRefbyId(
         ctx: Context,
         params: STARParameters,
         id: string,
-        target: string[] = []): Promise<ActivationDocument> {
+        target: string[] = []): Promise<DataReference> {
 
         const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
-        var allResults: any[] = [];
 
-        var activationDocumentObj:ActivationDocument = null;
+        var result:DataReference = null;
         if (collections) {
             for (const collection of collections) {
                 try {
                     const collectionResult = await ActivationDocumentService.getObj(ctx, params, id, collection);
                     if (collectionResult && collectionResult.activationDocumentMrid == id) {
-                        return collectionResult;
+                        const result : DataReference = {
+                            collection: collection,
+                            docType: ParametersType.ACTIVATION_DOCUMENT,
+                            data: collectionResult
+                        }
+                        return result;
                     }
                 } catch(error) {
                     if (error.message === `ERROR ActivationDocument-> Input string NON-JSON value`) {
@@ -67,11 +73,11 @@ export class ActivationDocumentService {
                 }
             }
         }
-        if (!activationDocumentObj || activationDocumentObj.activationDocumentMrid === "") {
+        if (!result || !result.data || result.data.activationDocumentMrid === "") {
             throw new Error(`ActivationDocument : ${id} does not exist`);
         }
 
-        return activationDocumentObj;
+        return result;
     }
 
     public static async write(
@@ -83,7 +89,7 @@ export class ActivationDocumentService {
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
 
-        activationDocumentInput.docType = 'activationDocument';
+        activationDocumentInput.docType = DocType.ACTIVATION_DOCUMENT;
 
         await ctx.stub.putPrivateData(collection,
             activationDocumentInput.activationDocumentMrid,

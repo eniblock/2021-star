@@ -23,8 +23,47 @@ import { DocType } from '../enums/DocType';
 import { ConciliationState } from '../model/conciliationState';
 import { DataReference } from '../model/dataReference';
 import { QueryStateService } from './service/QueryStateService';
+import { ActivationDocumentEligibilityStatus } from '../model/activationDocumentEligibilityStatus';
+import { EligibilityStatus } from '../enums/EligibilityStatus';
 
 export class ActivationDocumentController {
+
+    private static async outputFormatFRActivationDocument(
+        ctx: Context,
+        params: STARParameters,
+        activationDocument: ActivationDocument) : Promise<ActivationDocument> {
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            activationDocument.eligibilityStatusEditable = false;
+        } else {
+            let systemOperatorObj: SystemOperator;
+            try {
+                systemOperatorObj = await SystemOperatorService.getObj(ctx, activationDocument.senderMarketParticipantMrid);
+            } catch (error) {
+                activationDocument.eligibilityStatusEditable = false;
+            }
+
+            if (!systemOperatorObj || systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
+                activationDocument.eligibilityStatusEditable = false;
+            }
+        }
+
+        activationDocument.eligibilityStatus = ActivationDocumentController.statusFrenchValue(activationDocument.eligibilityStatus);
+        return activationDocument;
+    }
+
+    private static async formatActivationDocuments(
+        ctx: Context,
+        params: STARParameters,
+        activationDocuments: ActivationDocument[]) : Promise<ActivationDocument[]> {
+
+        let returnedList: ActivationDocument[] = [];
+        for (const activationDocument of activationDocuments) {
+            returnedList.push(await this.outputFormatFRActivationDocument(ctx, params, activationDocument));
+        }
+        return returnedList;
+    }
 
     public static async getActivationDocumentByProducer(
         ctx: Context,
@@ -36,7 +75,8 @@ export class ActivationDocumentController {
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
 
         const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
-        const formated = JSON.stringify(allResults);
+        const formatedResults: ActivationDocument[] = await ActivationDocumentController.formatActivationDocuments(ctx, params, allResults);
+        const formated = JSON.stringify(formatedResults);
 
         return formated;
     }
@@ -53,7 +93,8 @@ export class ActivationDocumentController {
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
 
         const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
-        const formated = JSON.stringify(allResults);
+        const formatedResults: ActivationDocument[] = await ActivationDocumentController.formatActivationDocuments(ctx, params, allResults);
+        const formated = JSON.stringify(formatedResults);
 
         return formated;
     }
@@ -65,9 +106,9 @@ export class ActivationDocumentController {
         activationDocumentMrid: string): Promise<ActivationDocument> {
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
-        const result:ActivationDocument = await ActivationDocumentService.getObjbyId(ctx, params, activationDocumentMrid, collections);
+        const result:DataReference = await ActivationDocumentService.getObjRefbyId(ctx, params, activationDocumentMrid, collections);
 
-        return result;
+        return await ActivationDocumentController.outputFormatFRActivationDocument(ctx, params, result.data);
     }
 
 
@@ -79,7 +120,8 @@ export class ActivationDocumentController {
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
 
         const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
-        const formated = JSON.stringify(allResults);
+        const formatedResults: ActivationDocument[] = await ActivationDocumentController.formatActivationDocuments(ctx, params, allResults);
+        const formated = JSON.stringify(formatedResults);
 
         return formated;
     }
@@ -183,7 +225,7 @@ export class ActivationDocumentController {
             throw new Error('ERROR createActivationDocument : '.concat(error.message).concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
         }
 
-        if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase !== identity.toLowerCase ) {
+        if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
             throw new Error(`Organisation, ${identity} cannot send Activation Document for sender ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
@@ -256,12 +298,116 @@ export class ActivationDocumentController {
         const tsoChild : boolean = (RoleType.Role_TSO === role_systemOperator && activationDocumentObj.orderEnd === true && !activationDocumentObj.startCreatedDateTime);
         activationDocumentObj.potentialChild = dsoChild || tsoChild;
 
+        activationDocumentObj.eligibilityStatus = this.statusInternationalValue(activationDocumentObj.eligibilityStatus);
+        activationDocumentObj.eligibilityStatusEditable = !(activationDocumentObj.eligibilityStatus === EligibilityStatus.EligibilityAccepted);
+
         await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
 
         console.info('============= END   : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,
         );
     }
+
+    private static statusInternationalValue(statusValue: string): string {
+        var newStatus = 'ERROR';
+
+        if (!statusValue) {
+            newStatus = EligibilityStatus.EligibilityPending;
+        } else {
+            statusValue = statusValue.toLowerCase();
+            if (statusValue === EligibilityStatus.EligibilityAccepted || statusValue === EligibilityStatus.FREligibilityAccepted) {
+                newStatus = EligibilityStatus.EligibilityAccepted;
+            }
+            if (statusValue === EligibilityStatus.EligibilityRefused || statusValue === EligibilityStatus.FREligibilityRefused) {
+                newStatus = EligibilityStatus.EligibilityRefused;
+            }
+            if (statusValue === EligibilityStatus.EligibilityPending || statusValue === EligibilityStatus.FREligibilityPending) {
+                newStatus = EligibilityStatus.EligibilityPending;
+            }
+        }
+        if (newStatus === 'ERROR') {
+            throw new Error(`Eligibility Status isn't referenced.`);
+        }
+
+        return newStatus;
+    }
+
+    private static statusFrenchValue(statusValue: string): string {
+        var newStatus = 'ERROR';
+
+        if (!statusValue) {
+            newStatus = EligibilityStatus.EligibilityPending;
+        } else {
+            statusValue = statusValue.toLowerCase();
+            if (statusValue === EligibilityStatus.EligibilityAccepted || statusValue === EligibilityStatus.FREligibilityAccepted) {
+                newStatus = EligibilityStatus.FREligibilityAccepted;
+            }
+            if (statusValue === EligibilityStatus.EligibilityRefused || statusValue === EligibilityStatus.FREligibilityRefused) {
+                newStatus = EligibilityStatus.FREligibilityRefused;
+            }
+            if (statusValue === EligibilityStatus.EligibilityPending || statusValue === EligibilityStatus.FREligibilityPending) {
+                newStatus = EligibilityStatus.FREligibilityPending;
+            }
+        }
+        if (newStatus === 'ERROR') {
+            throw new Error(`Eligibility Status isn't referenced.`);
+        }
+
+        return newStatus;
+    }
+
+
+    public static async updateActivationDocumentEligibilityStatus(
+        ctx: Context,
+        params: STARParameters,
+        inputStr: string) {
+
+        console.info('============= START : updateActivationDocumentEligibilityStatus ActivationDocumentController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
+        }
+
+        let statusToUpdate: ActivationDocumentEligibilityStatus;
+        try {
+            statusToUpdate = JSON.parse(inputStr);
+        } catch (error) {
+        // console.error('error=', error);
+            throw new Error(`ERROR updateActivationDocumentEligibilityStatus -> Input string NON-JSON value`);
+        }
+
+        ActivationDocumentEligibilityStatus.schema.validateSync(
+            statusToUpdate,
+            {strict: true, abortEarly: false},
+        );
+
+        var newStatus = ActivationDocumentController.statusInternationalValue(statusToUpdate.eligibilityStatus);
+
+        const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+        const activationDocumentReference:DataReference = await ActivationDocumentService.getObjRefbyId(ctx, params, statusToUpdate.activationDocumentMrid, collections);
+
+        const activationDocument: ActivationDocument = activationDocumentReference.data;
+
+        let systemOperatorObj: SystemOperator;
+        try {
+            systemOperatorObj = await SystemOperatorService.getObj(ctx, activationDocument.senderMarketParticipantMrid);
+        } catch (error) {
+            throw new Error(error.message.concat(` for Activation Document ${activationDocument.activationDocumentMrid} status Update.`));
+        }
+
+        if (!systemOperatorObj || systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
+            throw new Error(`ERROR updateActivationDocumentEligibilityStatus : ${identity.toLowerCase()} has no right to modify the Eligibility Status of ${systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase()} document.`);
+        }
+
+        activationDocument.eligibilityStatus = newStatus;
+        activationDocument.eligibilityStatusEditable = false;
+
+        await ActivationDocumentService.write(ctx, params, activationDocument, activationDocumentReference.collection);
+
+        console.info('============= END   : updateActivationDocumentEligibilityStatus ActivationDocumentController ===========');
+    }
+
 
     public static async updateActivationDocumentByOrders(
         ctx: Context,

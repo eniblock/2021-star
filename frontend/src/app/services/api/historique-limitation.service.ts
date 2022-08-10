@@ -25,20 +25,27 @@ export class HistoriqueLimitationService {
   }
 
   rechercher(form: FormulaireRechercheHistoriqueLimitation): Observable<RechercheHistoriqueLimitationEntite[]> {
+    let callResult: Observable<RechercheHistoriqueLimitationEntite[]>;
     if (MOCK) {
       console.log(form);
-      return getMocks(form)
-        .pipe(
-          map(result => result.map(histo => ({...histo, subOrderList: histo.subOrderList.filter(e => e != null)}))) // We remove null elements
-        );
+      callResult = getMocks(form);
+    } else {
+      let urlParams = this.urlService.toUrlParams(form);
+      callResult = this.httpClient.get<RechercheHistoriqueLimitationEntite[]>(`${environment.serverUrl}/historiqueLimitations?${urlParams}`)
     }
 
-    let urlParams = this.urlService.toUrlParams(form);
-    let callResult = this.httpClient.get<RechercheHistoriqueLimitationEntite[]>(`${environment.serverUrl}/historiqueLimitations?${urlParams}`)
+    return callResult
       .pipe(
-        map(result => result.map(histo => ({...histo, subOrderList: histo.subOrderList.filter(e => e != null)}))) // We remove null elements
+        map(result => result.map(histo => ({
+            ...histo,
+            activationDocument: {
+              ...histo.activationDocument,
+              eligibilityStatus: histo.activationDocument.eligibilityStatus ? histo.activationDocument.eligibilityStatus.toUpperCase() as EligibilityStatus : null // EligibilityStatus => to upperCase
+            },
+            subOrderList: histo.subOrderList.filter(e => e != null) // We remove null elements
+          })
+        ))
       );
-    return callResult;
   }
 
   pushFormulaireRecherche(form: FormulaireRechercheHistoriqueLimitation) {
@@ -68,7 +75,6 @@ export const flatHistoriqueLimitation = (histo: RechercheHistoriqueLimitationEnt
 /* *********************************************************
                                MOCKS
    ********************************************************* */
-
 const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<RechercheHistoriqueLimitationEntite[]> => {
   return of([
     {
@@ -102,7 +108,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         activationDocumentMrid: "A1",
         originAutomationRegisteredResourceMrid: 'CONFOLENS',
         registeredResourceMrid: "B1",
-        eligibilityStatus: EligibilityStatus.OUI,
+        eligibilityStatus: EligibilityStatus.OUI, ////////////////////////////////////////////////// null,
         eligibilityStatusEditable: false,
         startCreatedDateTime: '2020-01-01T00:00:00Z',
         endCreatedDateTime: '2020-01-02T23:59:59Z',
@@ -147,8 +153,8 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         activationDocumentMrid: "A2",
         originAutomationRegisteredResourceMrid: 'MANSLE',
         registeredResourceMrid: "B2",
-        eligibilityStatus: EligibilityStatus.NON,
-        eligibilityStatusEditable: true,
+        eligibilityStatus: "non" as any,/////////////////////////////////////////////// EligibilityStatus.NON,
+        eligibilityStatusEditable: false,
         startCreatedDateTime: '2020-01-01T01:00:00Z',
         endCreatedDateTime: '2020-01-02T23:59:58Z',
         messageType: 'D01',

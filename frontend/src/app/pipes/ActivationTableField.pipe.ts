@@ -11,7 +11,7 @@ export const ACTIVATIONS_TABLE_COLUMNS_DEF = [
   { id: 'typeLimitation', champ: 'Type de limitation' },
   { id: 'quantity', champ: 'ENE/I (MWh)' },
   { id: 'motif', champ: 'Motif' },
-  { id: 'indemnisation', champ: 'Eligible indemn.' },
+  { id: 'indemnisation', champ: 'Eligible indemnisation' },
 ];
 
 @Pipe({

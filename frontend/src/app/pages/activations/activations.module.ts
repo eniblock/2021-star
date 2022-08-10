@@ -17,6 +17,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { GraphModule } from 'src/app/components/graph/graph.module';
 import { ActivationGraphComponent } from './activation-graph/activation-graph.component';
 import { ActivationHorodatesComponent } from './activation-horodates/activation-horodates.component';
+import { ActivationIndemnisationComponent } from './activation-indemnisation/activation-indemnisation.component';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import { ActivationHorodatesComponent } from './activation-horodates/activation-
     ActivationsColumnSelectorComponent,
     ActivationGraphComponent,
     ActivationHorodatesComponent,
+    ActivationIndemnisationComponent,
   ],
 })
 export class ActivationsModule {}

@@ -1,0 +1,15 @@
+<ng-container *ngIf="ordreLimitation.eligibilityStatusEditable">
+  <!-- OUI editable -->
+  <!-- NON editable -->
+  <!-- null editable -->
+</ng-container>
+
+<ng-container *ngIf="!ordreLimitation.eligibilityStatusEditable">
+  <ng-container *ngIf="ordreLimitation.eligibilityStatus">
+    {{ ordreLimitation.eligibilityStatus }}
+  </ng-container>
+  <ng-container *ngIf="!ordreLimitation.eligibilityStatus">
+    -
+  </ng-container>
+</ng-container>
+

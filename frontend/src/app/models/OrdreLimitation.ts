@@ -29,7 +29,7 @@ export interface OrdreLimitation {
   activationDocumentMrid: string;
   originAutomationRegisteredResourceMrid: string;
   registeredResourceMrid: string;
-  eligibilityStatus: EligibilityStatus;
+  eligibilityStatus: EligibilityStatus | null;
   eligibilityStatusEditable: boolean;
   startCreatedDateTime: string;
   endCreatedDateTime: string;

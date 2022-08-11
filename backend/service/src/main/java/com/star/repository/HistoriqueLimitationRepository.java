@@ -35,6 +35,7 @@ public class HistoriqueLimitationRepository {
     private OrdreLimitationRepository ordreLimitationRepository;
 
     public HistoriqueLimitation[] findHistoriqueByQuery(HistoriqueLimitationCriteria criteria) throws BusinessException, TechnicalException {
+        log.debug("Appel de la blockchainpour rechercher les historiques de limitation avec les critères suivantes : {}", criteria);
         HistoriqueLimitation[] returnedArray = {};
         try {
             ordreLimitationRepository.reconciliate();

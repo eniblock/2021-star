@@ -11,8 +11,6 @@ import {SystemOperator} from "../../../models/SystemOperator";
 import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
 import {TechnologyType} from 'src/app/models/enum/TechnologyType.enum';
 import {DateHelper} from "../../../helpers/date.helper";
-import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
-import {OrdreLimitation} from "../../../models/OrdreLimitation";
 
 @Component({
   selector: 'app-activations-resultats',
@@ -148,8 +146,4 @@ export class ActivationsResultatsComponent implements OnChanges {
     }
   }
 
-  changeEligibilityStatus(activationDocument: OrdreLimitation, newVal: EligibilityStatus) {
-    console.log(activationDocument.activationDocumentMrid, newVal);
-    activationDocument.eligibilityStatusEditable=false;
-  }
 }

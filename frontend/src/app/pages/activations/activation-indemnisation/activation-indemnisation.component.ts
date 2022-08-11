@@ -1,10 +1,10 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
 import {MatDialog} from "@angular/material/dialog";
 import {
   ActivationIndemnisationChooseYesNoComponent
 } from "./activation-indemnisation-choose-yes-no/activation-indemnisation-choose-yes-no.component";
-import {FormulaireRechercheReseau} from "../../../models/RechercheReseau";
+import {OrdreLimitationService} from "../../../services/api/ordre-limitation.service";
 
 @Component({
   selector: 'app-activation-indemnisation',
@@ -15,7 +15,7 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
 
   @Input() eligibilityStatus: EligibilityStatus | null = null;
   @Input() eligibilityStatusEditable: boolean = false;
-  @Output() userMakeChoice = new EventEmitter<EligibilityStatus>();
+  @Input() activationDocumentMrid: string = "";
 
   public buttonClass = "";
   public buttonDisabledClass = "";
@@ -24,6 +24,7 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
 
   constructor(
     public dialog: MatDialog,
+    private ordreLimitationService: OrdreLimitationService,
   ) {
   }
 
@@ -31,6 +32,10 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.updateButtonClasses();
+  }
+
+  updateButtonClasses() {
     switch (this.eligibilityStatus) {
       case EligibilityStatus.OUI:
         this.buttonClass = "bg-success text-white";
@@ -52,6 +57,7 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
   }
 
   click() {
+    const activationDocumentMrid = this.activationDocumentMrid;
     const dialogRef = this.dialog.open(ActivationIndemnisationChooseYesNoComponent, {
       width: '500px',
       data: {eligibilityStatus: this.eligibilityStatus},
@@ -59,7 +65,18 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result != undefined) {
-        this.userMakeChoice.emit(result);
+        this.loading = true;
+        this.ordreLimitationService.updateEligibilityStatus(activationDocumentMrid, result).subscribe(
+          (result) => {
+            this.loading = false;
+            this.eligibilityStatus = result.eligibilityStatus;
+            this.eligibilityStatusEditable = result.eligibilityStatusEditable;
+            this.updateButtonClasses();
+          },
+          (error) => {
+            this.loading = false;
+          }
+        );
       }
     });
   }

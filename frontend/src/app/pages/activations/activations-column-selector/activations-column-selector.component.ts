@@ -12,10 +12,10 @@ const ALL_TSO_COLUMNS_ID: string[] = [
   'producerMarketParticipantMrid',
   'debutLimitation',
   'finLimitation',
+  'indemnisation',
   'typeLimitation',
   'quantity',
   'motif',
-  'indemnisation',
 ];
 
 const ALL_DSO_COLUMNS_ID: string[] = [
@@ -27,10 +27,10 @@ const ALL_DSO_COLUMNS_ID: string[] = [
   'producerMarketParticipantMrid',
   'debutLimitation',
   'finLimitation',
+  'indemnisation',
   'typeLimitation',
   'quantity',
   'motif',
-  'indemnisation',
 ];
 
 const ALL_PRODUCER_COLUMNS_ID: string[] = [
@@ -40,10 +40,10 @@ const ALL_PRODUCER_COLUMNS_ID: string[] = [
   'meteringPointMrid',
   'debutLimitation',
   'finLimitation',
+  'indemnisation',
   'typeLimitation',
   'quantity',
   'motif',
-  'indemnisation',
 ];
 
 @Component({
@@ -87,7 +87,7 @@ export class ActivationsColumnSelectorComponent implements OnInit {
     // Select initialisation
     this.form
       .get('columns')
-      ?.setValue(this.allColumns.slice(0, this.allColumns.length - 4));
+      ?.setValue(this.allColumns.slice(0, this.allColumns.length - 3));
 
     // Update table columns
     this.formChange();

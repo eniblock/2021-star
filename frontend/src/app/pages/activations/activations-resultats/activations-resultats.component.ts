@@ -145,4 +145,5 @@ export class ActivationsResultatsComponent implements OnChanges {
       this.dataComputedSorted = [...this.dataComputed].sort((d1: any, d2: any) => sortFunction(d1, d2));
     }
   }
+
 }

@@ -92,7 +92,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, 'XXXXXX');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createActivationDocument-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR ActivationDocument-> Input string NON-JSON value');
             }
         });
 
@@ -444,7 +444,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, 'XXXXXX');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createActivationDocument-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR ActivationDocument-> Input string NON-JSON value');
             }
         });
 

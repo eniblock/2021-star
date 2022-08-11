@@ -142,24 +142,7 @@ export class ActivationDocumentController {
             throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
         }
 
-        let activationDocumentObj: ActivationDocument;
-        try {
-            activationDocumentObj = JSON.parse(inputStr);
-        } catch (error) {
-            // console.error('error=', error);
-            throw new Error(`ERROR createActivationDocument-> Input string NON-JSON value`);
-        }
-
-        try {
-            ActivationDocument.schema.validateSync(
-                activationDocumentObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            console.error('error=', error);
-            throw error;
-        }
-
+        const activationDocumentObj: ActivationDocument =ActivationDocument.formatString(inputStr);
         await ActivationDocumentController.createActivationDocumentObj(ctx, params, activationDocumentObj);
 
         console.info('============= END : Create ActivationDocumentController ===========');
@@ -176,26 +159,7 @@ export class ActivationDocumentController {
             throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
         }
 
-        let activationDocumentList: ActivationDocument[] = [];
-        try {
-            activationDocumentList = JSON.parse(inputStr);
-        } catch (error) {
-            throw new Error(`ERROR createActivationDocument by list-> Input string NON-JSON value`);
-        }
-
-        if (activationDocumentList && activationDocumentList.length > 0) {
-            for (var activationDocumentObj of activationDocumentList) {
-                try {
-                    ActivationDocument.schema.validateSync(
-                        activationDocumentObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    console.error('error=', error);
-                    throw error;
-                }
-            }
-        }
+        const activationDocumentList: ActivationDocument[] = ActivationDocument.formatListString(inputStr);
 
         if (activationDocumentList) {
             for (var activationDocumentObj of activationDocumentList) {

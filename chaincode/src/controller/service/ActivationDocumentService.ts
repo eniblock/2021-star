@@ -37,20 +37,9 @@ export class ActivationDocumentService {
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
 
-        var activationDocumentAsBytes: Uint8Array = null;
-        try {
-            activationDocumentAsBytes = await ActivationDocumentService.getRaw(ctx, collection, id);
-        } catch (error) {
-            throw error;
-        }
-        var activationDocumentObj:ActivationDocument = null;
-        if (activationDocumentAsBytes) {
-            try {
-                activationDocumentObj = JSON.parse(activationDocumentAsBytes.toString());
-            } catch (error) {
-                throw new Error(`ERROR ActivationDocument-> Input string NON-JSON value`);
-            }
-        }
+        var activationDocumentAsBytes: Uint8Array = await ActivationDocumentService.getRaw(ctx, collection, id);
+        var activationDocumentObj:ActivationDocument = ActivationDocument.formatString(activationDocumentAsBytes.toString());
+
         return activationDocumentObj;
     }
 
@@ -69,7 +58,9 @@ export class ActivationDocumentService {
                 try {
                     collectionResult = await ActivationDocumentService.getObj(ctx, params, id, collection);
                 } catch (error) {
-                    // DO NOTHING
+                    if (error && error.message && error.message.includes("NON-JSON")) {
+                        throw error;
+                    }
                 }
                 if (collectionResult && collectionResult.activationDocumentMrid == id) {
                     result  = {
@@ -79,6 +70,10 @@ export class ActivationDocumentService {
                     }
                 }
             }
+        }
+
+        if (!result || ! result.data) {
+            throw new Error(`ActivationDocument : ${id} does not exist`);
         }
 
         return result;

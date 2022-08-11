@@ -4,6 +4,50 @@
 import * as Yup from 'yup';
 
 export class ActivationDocument {
+    public static formatString(inputString: string) : ActivationDocument {
+        let activationDocumentObj: ActivationDocument;
+        try {
+            activationDocumentObj = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR ActivationDocument-> Input string NON-JSON value`);
+        }
+
+        try {
+            ActivationDocument.schema.validateSync(
+                activationDocumentObj,
+                {strict: true, abortEarly: false},
+            );
+        } catch (error) {
+            throw error;
+        }
+        return activationDocumentObj;
+    }
+
+    public static formatListString(inputString: string) : ActivationDocument[] {
+        let activationDocumentList: ActivationDocument[] = [];
+        try {
+            activationDocumentList = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR ActivationDocument by list-> Input string NON-JSON value`);
+        }
+
+        if (activationDocumentList && activationDocumentList.length > 0) {
+            for (var activationDocumentObj of activationDocumentList) {
+                try {
+                    ActivationDocument.schema.validateSync(
+                        activationDocumentObj,
+                        {strict: true, abortEarly: false},
+                    );
+                } catch (error) {
+                    throw error;
+                }
+            }
+        }
+        return activationDocumentList;
+    }
+
+
+
 
     public static readonly schema = Yup.object().shape({
         activationDocumentMrid: Yup.string().required(

@@ -403,6 +403,27 @@ export class Values {
         reasonCode: 'A70', // optionnal in case of TVC modulation
         senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
+        eligibilityStatusEditable: true,
+    }
+
+    public static HTA_ActivationDocument_Valid_ForRTETest: ActivationDocument = {
+        activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
+        originAutomationRegisteredResourceMrid: Values.HTA_yellowPage.originAutomationRegisteredResourceMrid, // FK1
+        registeredResourceMrid: Values.HTA_site_valid.meteringPointMrid,
+        measurementUnitName: 'KW',
+        messageType: 'A98',
+        businessType: 'C55',
+        orderEnd: false,
+
+        orderValue: '1',
+        startCreatedDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
+        // testDateTime: 'Date', // Test DELETE ME //////////////////////
+        endCreatedDateTime: JSON.parse(JSON.stringify(Values.getEndDate())),
+        revisionNumber: '1',
+        reasonCode: 'A70', // optionnal in case of TVC modulation
+        senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
+        receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
+        eligibilityStatusEditable: true,
     }
 
     public static HTA_ActivationDocument_Valid_Doc2: ActivationDocument = {
@@ -422,6 +443,7 @@ export class Values {
         reasonCode: 'Y98', // optionnal in case of TVC modulation
         senderMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
+        eligibilityStatusEditable: true,
     }
 
     public static HTB_ActivationDocument_Valid: ActivationDocument = {
@@ -439,7 +461,8 @@ export class Values {
         revisionNumber: "1",
         reasonCode: "string",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
-        receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid
+        receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
+        eligibilityStatusEditable: true,
     }
 
     public static HTB_ActivationDocument_JustStartDate: ActivationDocument = {
@@ -447,16 +470,17 @@ export class Values {
         originAutomationRegisteredResourceMrid: Values.HTB_yellowPage.originAutomationRegisteredResourceMrid,
         registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
         measurementUnitName: "MW",
-        messageType: "string",
-        businessType: "string",
+        messageType: "A98",
+        businessType: "C55",
 
         orderEnd: false,
         orderValue: "1",
         startCreatedDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
         revisionNumber: "1",
-        reasonCode: "string",
+        reasonCode: "A70",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
-        receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid
+        receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
+        eligibilityStatusEditable: true,
     }
 
     public static HTB_ActivationDocument_JustEndDate: ActivationDocument = {
@@ -473,7 +497,8 @@ export class Values {
         revisionNumber: "1",
         reasonCode: "string",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
-        receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid
+        receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
+        eligibilityStatusEditable: true,
     }
 
     public static HTB_ActivationDocument_HTA_JustStartDate: ActivationDocument = {
@@ -490,7 +515,8 @@ export class Values {
         revisionNumber: "1",
         reasonCode: "string",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
-        receiverMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid
+        receiverMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
+        eligibilityStatusEditable: true,
     }
 
 

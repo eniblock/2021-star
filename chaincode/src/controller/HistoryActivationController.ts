@@ -95,6 +95,9 @@ export class HistoryActivationController {
         var args: string[] = [];
 
         if (criteriaObj) {
+            if (criteriaObj.meteringPointMrid) {
+                args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
+            }
             if (criteriaObj.registeredResourceMrid) {
                 args.push(`"meteringPointMrid":"${criteriaObj.registeredResourceMrid}"`);
             }

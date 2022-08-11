@@ -34,6 +34,8 @@ public class OrdreLimitation implements ImportCSV {
     private String originAutomationRegisteredResourceMrid;
     @NotBlank(message = "Le champ registeredResourceMrid est obligatoire")
     private String registeredResourceMrid;
+    private String eligibilityStatus;
+    private boolean eligibilityStatusEditable;
     private String orderValue;
     @ValueOfEnum(enumClass = MeasurementUnitTypeEnum.class, message = " must be any of MW/KW")
     private String measurementUnitName;

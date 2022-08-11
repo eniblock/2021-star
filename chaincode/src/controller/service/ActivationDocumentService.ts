@@ -4,6 +4,8 @@ import { ParametersType } from "../../enums/ParametersType";
 import { ActivationDocument } from "../../model/activationDocument";
 import { QueryStateService } from "./QueryStateService";
 import { HLFServices } from "./HLFservice";
+import { DataReference } from "../../model/dataReference";
+import { DocType } from "../../enums/DocType";
 
 export class ActivationDocumentService {
     private static async getRaw(
@@ -12,7 +14,12 @@ export class ActivationDocumentService {
         id: string): Promise<Uint8Array> {
         console.debug('============= START : getRaw %s / %s ActivationDocumentService ===========', collection, id);
 
-        const prodAsBytes = await ctx.stub.getPrivateData(collection, id);
+        let prodAsBytes: Uint8Array;
+        try {
+            prodAsBytes = await ctx.stub.getPrivateData(collection, id);
+        } catch (error) {
+            throw new Error(`ActivationDocument : ${id} does not exist`);
+        }
         if (!prodAsBytes || prodAsBytes.length === 0) {
             throw new Error(`ActivationDocument : ${id} does not exist`);
         }
@@ -30,48 +37,46 @@ export class ActivationDocumentService {
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
 
-        const activationDocumentAsBytes: Uint8Array = await ActivationDocumentService.getRaw(ctx, collection, id);
-        var activationDocumentObj:ActivationDocument = null;
-        if (activationDocumentAsBytes) {
-            try {
-                activationDocumentObj = JSON.parse(activationDocumentAsBytes.toString());
-            } catch (error) {
-                throw new Error(`ERROR ActivationDocument-> Input string NON-JSON value`);
-            }
-        }
+        var activationDocumentAsBytes: Uint8Array = await ActivationDocumentService.getRaw(ctx, collection, id);
+        var activationDocumentObj:ActivationDocument = ActivationDocument.formatString(activationDocumentAsBytes.toString());
+
         return activationDocumentObj;
     }
 
-    public static async getObjbyId(
+    public static async getObjRefbyId(
         ctx: Context,
         params: STARParameters,
         id: string,
-        target: string[] = []): Promise<ActivationDocument> {
+        target: string[] = []): Promise<DataReference> {
 
         const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
-        var allResults: any[] = [];
 
-        var activationDocumentObj:ActivationDocument = null;
+        var result:DataReference = null;
         if (collections) {
             for (const collection of collections) {
+                let collectionResult:ActivationDocument;
                 try {
-                    const collectionResult = await ActivationDocumentService.getObj(ctx, params, id, collection);
-                    if (collectionResult && collectionResult.activationDocumentMrid == id) {
-                        return collectionResult;
+                    collectionResult = await ActivationDocumentService.getObj(ctx, params, id, collection);
+                } catch (error) {
+                    if (error && error.message && error.message.includes("NON-JSON")) {
+                        throw error;
                     }
-                } catch(error) {
-                    if (error.message === `ERROR ActivationDocument-> Input string NON-JSON value`) {
-                        throw (error)
+                }
+                if (collectionResult && collectionResult.activationDocumentMrid == id) {
+                    result  = {
+                        collection: collection,
+                        docType: ParametersType.ACTIVATION_DOCUMENT,
+                        data: collectionResult
                     }
-                    //do nothing just empty list returned
                 }
             }
         }
-        if (!activationDocumentObj || activationDocumentObj.activationDocumentMrid === "") {
+
+        if (!result || ! result.data) {
             throw new Error(`ActivationDocument : ${id} does not exist`);
         }
 
-        return activationDocumentObj;
+        return result;
     }
 
     public static async write(
@@ -83,7 +88,7 @@ export class ActivationDocumentService {
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.ACTIVATION_DOCUMENT, target);
 
-        activationDocumentInput.docType = 'activationDocument';
+        activationDocumentInput.docType = DocType.ACTIVATION_DOCUMENT;
 
         await ctx.stub.putPrivateData(collection,
             activationDocumentInput.activationDocumentMrid,

@@ -27,6 +27,7 @@ export class FormActivationsRechercheComponent implements OnInit {
       originAutomationRegisteredResourceMrid: [''],
       producerMarketParticipantName: [''],
       siteName: [''],
+      meteringPointMrid: [''],
       startCreatedDateTime: [''],
       endCreatedDateTime: [''],
     },

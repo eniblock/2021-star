@@ -22,5 +22,6 @@ public class HistoriqueLimitationCriteria {
     private String startCreatedDateTime;
     private String endCreatedDateTime;
     private String activationDocumentMrid;
+    private String meteringPointMrid;
     private InstanceEnum instance;
 }

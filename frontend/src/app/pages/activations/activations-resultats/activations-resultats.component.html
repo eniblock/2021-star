@@ -44,7 +44,7 @@
   <ng-container matColumnDef="indemnisation">
     <th mat-header-cell *matHeaderCellDef> {{ 'indemnisation' | ActivationTableField }} </th>
     <td mat-cell *matCellDef="let element">
-      <app-activation-indemnisation [eligibilityStatus]="element.activationDocument.eligibilityStatus" [eligibilityStatusEditable]="element.activationDocument.eligibilityStatusEditable"></app-activation-indemnisation>
+      <app-activation-indemnisation [eligibilityStatus]="element.activationDocument.eligibilityStatus" [eligibilityStatusEditable]="element.activationDocument.eligibilityStatusEditable" (userMakeChoice)="changeEligibilityStatus(element.activationDocument, $event)"></app-activation-indemnisation>
     </td>
   </ng-container>
 

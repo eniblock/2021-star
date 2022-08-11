@@ -1,9 +1,10 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
 import {MatDialog} from "@angular/material/dialog";
 import {
   ActivationIndemnisationChooseYesNoComponent
 } from "./activation-indemnisation-choose-yes-no/activation-indemnisation-choose-yes-no.component";
+import {FormulaireRechercheReseau} from "../../../models/RechercheReseau";
 
 @Component({
   selector: 'app-activation-indemnisation',
@@ -14,8 +15,10 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
 
   @Input() eligibilityStatus: EligibilityStatus | null = null;
   @Input() eligibilityStatusEditable: boolean = false;
+  @Output() userMakeChoice = new EventEmitter<EligibilityStatus>();
 
   public buttonClass = "";
+  public buttonDisabledClass = "";
   public loading = false;
   public marginIcons = "";
 
@@ -31,9 +34,11 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
     switch (this.eligibilityStatus) {
       case EligibilityStatus.OUI:
         this.buttonClass = "bg-success text-white";
+        this.buttonDisabledClass = "text-success";
         break;
       case EligibilityStatus.NON:
         this.buttonClass = "bg-danger text-white";
+        this.buttonDisabledClass = "text-danger";
         break;
       case null:
         this.buttonClass = "bg-primary text-white";
@@ -53,7 +58,9 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
+      if (result != undefined) {
+        this.userMakeChoice.emit(result);
+      }
     });
   }
 

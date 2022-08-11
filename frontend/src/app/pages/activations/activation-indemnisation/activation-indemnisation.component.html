@@ -8,7 +8,7 @@
 
 <ng-container *ngIf="!eligibilityStatusEditable">
   <ng-container *ngIf="eligibilityStatus">
-    <button mat-stroked-button disabled [class]="buttonClass">{{ eligibilityStatus }}</button>
+    <button mat-stroked-button disabled [class]="buttonDisabledClass">{{ eligibilityStatus }}</button>
   </ng-container>
   <ng-container *ngIf="!eligibilityStatus">
     <!-- no button -->

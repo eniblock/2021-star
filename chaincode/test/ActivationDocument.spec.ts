@@ -1411,7 +1411,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal(`ActivationDocument : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
+                expect(err.message).to.equal(`ERROR cannot find reference to Activation Document ${activationDocument_Producer.activationDocumentMrid} for status Update.`);
             }
         });
 

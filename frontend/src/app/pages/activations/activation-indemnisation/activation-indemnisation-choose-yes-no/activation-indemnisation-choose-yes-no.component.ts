@@ -13,10 +13,13 @@ export interface DialogDataEligibilityStatus {
 })
 export class ActivationIndemnisationChooseYesNoComponent implements OnInit {
 
+  EligibilityStatus = EligibilityStatus;
+
   constructor(
     public dialogRef: MatDialogRef<ActivationIndemnisationChooseYesNoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogDataEligibilityStatus,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }

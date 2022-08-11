@@ -3,11 +3,12 @@ import {
   FormulaireOrdreDebutEtFinLimitationFichier,
   FormulaireOrdreDebutLimitationFichier,
   FormulaireOrdreFinLimitation,
-  FormulaireOrdreFinLimitationFichier, OrdreLimitation,
+  FormulaireOrdreFinLimitationFichier,
+  OrdreLimitation,
 } from 'src/app/models/OrdreLimitation';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {FormDataHelper} from "./helpers/formData-helper";
 import {EligibilityStatus} from "../../models/enum/EligibilityStatus.enum";
 
@@ -65,9 +66,11 @@ export class OrdreLimitationService {
   }
 
   updateEligibilityStatus(activationDocumentMrid: string, eligibilityStatus: EligibilityStatus): Observable<OrdreLimitation> {
-    console.log(activationDocumentMrid, eligibilityStatus);
-    return of({eligibilityStatus: "NON", eligibilityStatusEditable: false} as any);
-    // /eligibilityStatus
+    const body = {activationDocumentMrid: activationDocumentMrid, eligibilityStatus: eligibilityStatus};
+    return this.httpClient.post<OrdreLimitation>(
+      `${environment.serverUrl}/ordreLimitations/eligibilityStatus`,
+      body
+    );
   }
 
 }

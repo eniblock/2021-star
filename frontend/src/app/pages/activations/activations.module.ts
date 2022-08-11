@@ -17,6 +17,9 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { GraphModule } from 'src/app/components/graph/graph.module';
 import { ActivationGraphComponent } from './activation-graph/activation-graph.component';
 import { ActivationHorodatesComponent } from './activation-horodates/activation-horodates.component';
+import { ActivationIndemnisationComponent } from './activation-indemnisation/activation-indemnisation.component';
+import { ActivationIndemnisationChooseYesNoComponent } from './activation-indemnisation/activation-indemnisation-choose-yes-no/activation-indemnisation-choose-yes-no.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   imports: [
@@ -33,6 +36,7 @@ import { ActivationHorodatesComponent } from './activation-horodates/activation-
     MatSortModule,
     MatBottomSheetModule,
     GraphModule,
+    MatDialogModule,
   ],
   declarations: [
     ActivationsComponent,
@@ -40,6 +44,8 @@ import { ActivationHorodatesComponent } from './activation-horodates/activation-
     ActivationsColumnSelectorComponent,
     ActivationGraphComponent,
     ActivationHorodatesComponent,
+    ActivationIndemnisationComponent,
+    ActivationIndemnisationChooseYesNoComponent,
   ],
 })
 export class ActivationsModule {}

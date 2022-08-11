@@ -94,6 +94,7 @@ public class HistoriqueLimitationController {
                 .meteringPointMrid(meteringPointMrid)
                 .instance(instance)
                 .build();
+        log.debug("Recherche des historique de limitation avec les critères suivantes : {}", criteria);
         if (PRODUCER.equals(instance)) {
             // A producer can get only his own site data
             criteria.setProducerMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));

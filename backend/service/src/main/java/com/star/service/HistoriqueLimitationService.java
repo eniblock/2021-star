@@ -20,6 +20,7 @@ public class HistoriqueLimitationService {
     private HistoriqueLimitationRepository historiqueLimitationRepository;
 
     public HistoriqueLimitation[] findHistorique(HistoriqueLimitationCriteria criteria) throws TechnicalException {
+        log.debug("Recherche des historiques de limitation avec les critères suivantes : {}", criteria);
         return historiqueLimitationRepository.findHistoriqueByQuery(criteria);
     }
 }

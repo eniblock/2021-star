@@ -53,10 +53,15 @@ export class HistoryActivationController {
 
             if (criteriaObj) {
                 const query = await HistoryActivationController.buildActivationDocumentQuery(criteriaObj);
+                console.info("000000000000000000000")
+                console.info(query)
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
 
                 const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
+
+                console.info(allActivationDocument)
+                console.info("000000000000000000000")
 
                 if (allActivationDocument && allActivationDocument.length > 0) {
                     result = await HistoryActivationController.consolidate(ctx, params, allActivationDocument);
@@ -73,7 +78,9 @@ export class HistoryActivationController {
         criteriaObj: HistoryCriteria,
         role: string): Promise<HistoryCriteria> {
 
-        criteriaObj.producerMarketParticipantName = criteriaObj.producerMarketParticipantName.trim();
+        if (criteriaObj.producerMarketParticipantName) {
+            criteriaObj.producerMarketParticipantName = criteriaObj.producerMarketParticipantName.trim();
+        }
 
         const prodIdList: string[] = [];
         if (criteriaObj.producerMarketParticipantMrid) {
@@ -118,14 +125,19 @@ export class HistoryActivationController {
         criteriaObj.originAutomationRegisteredResourceList = [];
         criteriaObj.registeredResourceList = [];
         if (args.length > 0) {
+            console.info("*********************")
             const querySite = await QueryStateService.buildQuery(DocType.SITE, args);
+            console.info(querySite)
             const siteList: any[] = await SiteService.getQueryArrayResult(ctx, params, querySite);
+            console.info(siteList)
+            console.info("*********************")
 
             if (siteList.length == 0) {
                 return null;
             }
             for (var site of siteList) {
-                if (site.meteringPointMrid === criteriaObj.originAutomationRegisteredResourceMrid
+                if (site.meteringPointMrid === criteriaObj.meteringPointMrid
+                    || site.meteringPointMrid === criteriaObj.originAutomationRegisteredResourceMrid
                     || criteriaObj.producerMarketParticipantList.includes(site.producerMarketParticipantMrid)
                     || site.siteName == criteriaObj.siteName) {
                         criteriaObj.originAutomationRegisteredResourceList.push(site.substationMrid);

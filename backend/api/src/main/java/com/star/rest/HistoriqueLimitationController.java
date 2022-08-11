@@ -79,7 +79,9 @@ public class HistoriqueLimitationController {
             @Parameter(description = "endCreatedDateTime search criteria")
             @RequestParam(required = false, defaultValue = "") String endCreatedDateTime,
             @Parameter(description = "activationDocumentMrid search criteria")
-            @RequestParam(required = false, defaultValue = "") String activationDocumentMrid
+            @RequestParam(required = false, defaultValue = "") String activationDocumentMrid,
+            @Parameter(description = "meteringPointMrid search criteria")
+            @RequestParam(required = false, defaultValue = "") String meteringPointMrid
     ) throws TechnicalException {
         var criteria = HistoriqueLimitationCriteria.builder()
                 .originAutomationRegisteredResourceMrid(originAutomationRegisteredResourceMrid)
@@ -89,6 +91,7 @@ public class HistoriqueLimitationController {
                 .startCreatedDateTime(startCreatedDateTime)
                 .endCreatedDateTime(endCreatedDateTime)
                 .activationDocumentMrid(activationDocumentMrid)
+                .meteringPointMrid(meteringPointMrid)
                 .instance(instance)
                 .build();
         if (PRODUCER.equals(instance)) {

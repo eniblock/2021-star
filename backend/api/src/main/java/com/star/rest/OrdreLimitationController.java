@@ -177,7 +177,6 @@ public class OrdreLimitationController {
                     @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping(ELIGIBILITY_STATUS)
-    @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<OrdreLimitation> ordreDebutEligibilityStatus(@RequestBody OrdreLimitationEligibilityStatusDTO ordreLimitationEligibilityStatusDTO) throws BusinessException, TechnicalException {
         return ResponseEntity.ok(ordreLimitationService.ordreDebutEligibilityStatus(
                 ordreLimitationEligibilityStatusMapper.dtoToBean(ordreLimitationEligibilityStatusDTO)));

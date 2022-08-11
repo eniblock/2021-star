@@ -30,13 +30,13 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     switch (this.eligibilityStatus) {
       case EligibilityStatus.OUI:
-        this.buttonClass = "text-success";
+        this.buttonClass = "bg-success text-white";
         break;
       case EligibilityStatus.NON:
-        this.buttonClass = "text-danger";
+        this.buttonClass = "bg-danger text-white";
         break;
       case null:
-        this.buttonClass = "";
+        this.buttonClass = "bg-primary text-white";
         break;
     }
     if (this.eligibilityStatus == EligibilityStatus.OUI || this.eligibilityStatus == EligibilityStatus.NON) {
@@ -48,7 +48,7 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
 
   click() {
     const dialogRef = this.dialog.open(ActivationIndemnisationChooseYesNoComponent, {
-      width: '250px',
+      width: '500px',
       data: {eligibilityStatus: this.eligibilityStatus},
     });
 

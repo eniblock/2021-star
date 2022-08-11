@@ -1,3 +1,4 @@
+import {EligibilityStatus} from "./enum/EligibilityStatus.enum";
 import {MeasurementUnitName} from "./enum/MeasurementUnitName.enum";
 
 export interface FormulaireOrdreDebutLimitationFichier {
@@ -26,7 +27,11 @@ export interface FormulaireOrdreFinLimitation {
 }
 
 export interface OrdreLimitation {
+  activationDocumentMrid: string;
   originAutomationRegisteredResourceMrid: string;
+  registeredResourceMrid: string;
+  eligibilityStatus: EligibilityStatus | null;
+  eligibilityStatusEditable: boolean;
   startCreatedDateTime: string;
   endCreatedDateTime: string;
   messageType: string;

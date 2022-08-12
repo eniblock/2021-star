@@ -25,7 +25,7 @@
       </mat-autocomplete>
     </mat-form-field>
 
-    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+    <mat-form-field class="col-12" appearance="outline">
       <mat-label>Code site</mat-label>
       <input matInput placeholder="Code site" type="text" formControlName="meteringPointMrid">
     </mat-form-field>
@@ -67,7 +67,7 @@
       <mat-label>Poste Source</mat-label>
       <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid"
              [matAutocomplete]="substationMridAutocomplete">
-      <mat-autocomplete autoActiveFirstOption #substationMridAutocomplete="matAutocomplete">
+      <mat-autocomplete autoOrdreRechercheSitesProductionActiveFirstOption #substationMridAutocomplete="matAutocomplete">
         <mat-option *ngFor="let option of filteredPosteSourceCodes | async" [value]="option">
           {{option}}
         </mat-option>
@@ -79,7 +79,7 @@
       <input matInput placeholder="Nom du site" type="text" formControlName="siteName">
     </mat-form-field>
 
-    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+    <mat-form-field class="col-12" appearance="outline">
       <mat-label>Code site</mat-label>
       <input matInput placeholder="Code site" type="text" formControlName="meteringPointMrid">
     </mat-form-field>

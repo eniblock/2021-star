@@ -163,13 +163,13 @@ h3 {
   background-color: white;
 }
 
-// Reseau
-.reseau-resultat {
+// Sites production
+.sites-production-resultat {
   border-radius: 15px;
   background-color: white;
   cursor: pointer;
 }
-.reseau-resultat-detail {
+.sites-production-resultat-detail {
   border-radius: 15px;
   overflow: hidden; // Allows achild divs enfant to "respect" the radius of their parent
 

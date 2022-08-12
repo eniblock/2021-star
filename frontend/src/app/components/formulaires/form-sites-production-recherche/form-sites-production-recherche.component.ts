@@ -6,9 +6,9 @@ import {
   getTypesDeRechercheSimple,
   TypeDeRechercheSimple,
 } from 'src/app/models/enum/TypeDeRechercheSimple.enum';
-import {FormulaireRechercheReseau} from 'src/app/models/RechercheReseau';
+import {FormulaireRechercheSitesProduction} from 'src/app/models/RechercheSitesProduction';
 import {InstanceService} from 'src/app/services/api/instance.service';
-import {ReseauService} from 'src/app/services/api/reseau.service';
+import {SitesProductionService} from 'src/app/services/api/sites-production.service';
 import {ProducerService} from "../../../services/api/producer.service";
 import {SiteService} from "../../../services/api/site.service";
 import {Observable} from "rxjs";
@@ -16,12 +16,12 @@ import {map, startWith} from "rxjs/operators";
 import {SortHelper} from "../../../helpers/sort.helper";
 
 @Component({
-  selector: 'app-form-reseau-recherche',
-  templateUrl: './form-reseau-recherche.component.html',
-  styleUrls: ['./form-reseau-recherche.component.css'],
+  selector: 'app-form-sites-production-recherche',
+  templateUrl: './form-sites-production-recherche.component.html',
+  styleUrls: ['./form-sites-production-recherche.component.css'],
 })
-export class FormReseauRechercheComponent implements OnInit {
-  @Output() formSubmit = new EventEmitter<FormulaireRechercheReseau>();
+export class FormSitesProductionRechercheComponent implements OnInit {
+  @Output() formSubmit = new EventEmitter<FormulaireRechercheSitesProduction>();
 
   typesDeRechercheSimple: TypeDeRechercheSimple[] = [];
   TechnologyTypeEnum = TechnologyType;
@@ -62,7 +62,7 @@ export class FormReseauRechercheComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private reseauService: ReseauService,
+    private sitesProductionService: SitesProductionService,
     private instanceService: InstanceService,
     private producerService: ProducerService,
     private siteService: SiteService,
@@ -80,8 +80,8 @@ export class FormReseauRechercheComponent implements OnInit {
     });
 
     // On charge le formulaire en cache si y'en a un
-    const formSauvegardeDansStorage: FormulaireRechercheReseau =
-      this.reseauService.popFormulaireRecherche();
+    const formSauvegardeDansStorage: FormulaireRechercheSitesProduction =
+      this.sitesProductionService.popFormulaireRecherche();
     if (formSauvegardeDansStorage != null) {
       this.rechercheAvancee =
         formSauvegardeDansStorage.typeDeRechercheSimple == undefined;

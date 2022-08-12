@@ -1,4 +1,4 @@
-export enum OrdreRechercheReseau {
+export enum OrdreRechercheSitesProduction {
   producerMarketParticipantName = 'producerMarketParticipantName',
   technologyType = 'technologyType',
 }

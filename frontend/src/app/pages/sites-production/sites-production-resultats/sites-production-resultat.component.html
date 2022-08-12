@@ -1,10 +1,10 @@
-<div class="reseau-resultat p-4" *ngIf="!showDetails" (click)="open()">
+<div class="sites-production-resultat p-4" *ngIf="!showDetails" (click)="open()">
     <app-icon-technology-type class="float-end" style="margin-top: -.25em;" [technologyType]="resultat?.technologyType"></app-icon-technology-type>
     <app-badge class="float-end me-5" [text]="resultat?.producerMarketParticipantName" [color]="'primary'"></app-badge>
     {{ resultat?.siteName }}
 </div>
 
-<div class="reseau-resultat-detail" *ngIf="showDetails">
+<div class="sites-production-resultat-detail" *ngIf="showDetails">
     <div class="row">
         <div class="header col-12 col-lg-4">
             <div class="p-4">

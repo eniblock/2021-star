@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 export enum PATH_ROUTE {
   ACCUEIL = 'accueil',
-  RESEAU = 'reseau',
+  SITES_PRODUCTION = 'sitesProduction',
   ACTIVATIONS = 'activations',
   CHARGER = 'charger',
 
@@ -25,9 +25,9 @@ const routes: Routes = [
   },
 
   {
-    path: PATH_ROUTE.RESEAU,
+    path: PATH_ROUTE.SITES_PRODUCTION,
     loadChildren: () =>
-      import('./pages/reseau/reseau.module').then((m) => m.ReseauModule),
+      import('./pages/sites-production/sites-production.module').then((m) => m.SitesProductionModule),
     data: { roles: [] },
   },
 

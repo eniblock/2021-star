@@ -4,26 +4,26 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {
-  FormulaireRechercheReseau,
-  RechercheReseauEntite,
-  RechercheReseauRequete,
-} from 'src/app/models/RechercheReseau';
+  FormulaireRechercheSitesProduction,
+  RechercheSitesProductionEntite,
+  RechercheSitesProductionRequete,
+} from 'src/app/models/RechercheSitesProduction';
 import {environment} from 'src/environments/environment';
-import {OrdreRechercheReseau} from 'src/app/models/enum/OrdreRechercheReseau.enum';
+import {OrdreRechercheSitesProduction} from 'src/app/models/enum/OrdreRechercheSitesProduction.enum';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ReseauService {
-  private readonly CACHE_KEY = 'formulaireRechercheReseau';
+export class SitesProductionService {
+  private readonly CACHE_KEY = 'FormulaireRechercheSitesProduction';
 
   constructor(private httpClient: HttpClient, private urlService: UrlService) {}
 
   rechercher(
-    form: FormulaireRechercheReseau,
-    requestForm: RequestForm<OrdreRechercheReseau>
-  ): Observable<RechercheReseauEntite[]> {
-    const formToSend: RechercheReseauRequete = {
+    form: FormulaireRechercheSitesProduction,
+    requestForm: RequestForm<OrdreRechercheSitesProduction>
+  ): Observable<RechercheSitesProductionEntite[]> {
+    const formToSend: RechercheSitesProductionRequete = {
       ...form.valeursRecherchees,
       ...requestForm,
     };
@@ -32,16 +32,16 @@ export class ReseauService {
       formToSend[form.typeDeRechercheSimple] = form.champDeRechercheSimple;
     }
     let urlParams = this.urlService.toUrlParams(formToSend);
-    return this.httpClient.get<RechercheReseauEntite[]>(
+    return this.httpClient.get<RechercheSitesProductionEntite[]>(
       `${environment.serverUrl}/site?${urlParams}`
     );
   }
 
-  pushFormulaireRecherche(form: FormulaireRechercheReseau) {
+  pushFormulaireRecherche(form: FormulaireRechercheSitesProduction) {
     sessionStorage.setItem(this.CACHE_KEY, JSON.stringify(form));
   }
 
-  popFormulaireRecherche(): FormulaireRechercheReseau {
+  popFormulaireRecherche(): FormulaireRechercheSitesProduction {
     let form = sessionStorage.getItem(this.CACHE_KEY);
     sessionStorage.removeItem(this.CACHE_KEY);
     return form == null ? null : JSON.parse(form);

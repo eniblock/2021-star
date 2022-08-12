@@ -267,14 +267,35 @@ export class ActivationDocumentController {
         const tsoChild : boolean = (RoleType.Role_TSO === role_systemOperator && activationDocumentObj.orderEnd === true && !activationDocumentObj.startCreatedDateTime);
         activationDocumentObj.potentialChild = dsoChild || tsoChild;
 
-        activationDocumentObj.eligibilityStatus = this.statusInternationalValue(activationDocumentObj.eligibilityStatus);
+        activationDocumentObj.eligibilityStatus = ActivationDocumentController.checkEligibilityStatus(params, activationDocumentObj);
         activationDocumentObj.eligibilityStatusEditable = !(activationDocumentObj.eligibilityStatus === EligibilityStatus.EligibilityAccepted);
+        activationDocumentObj.eligibilityStatus = this.statusInternationalValue(activationDocumentObj.eligibilityStatus);
 
         await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
 
         console.info('============= END   : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,
         );
+    }
+
+    private static checkEligibilityStatus(
+        params: STARParameters,
+        activationDocumentObj:ActivationDocument): string {
+
+        let newStatus: string;
+        if (activationDocumentObj.eligibilityStatus !== EligibilityStatus.EligibilityERROR) {
+            const eligibilityTable:string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_ELIGIBILITY);
+
+            const pattern = activationDocumentObj.messageType + "-" + activationDocumentObj.businessType + "-" + activationDocumentObj.reasonCode;
+            if (eligibilityTable && eligibilityTable.includes(pattern)) {
+                console.info("new Status Accepted")
+                newStatus=EligibilityStatus.EligibilityAccepted;
+            }
+
+        } else {
+            newStatus=activationDocumentObj.eligibilityStatus;
+        }
+        return newStatus;
     }
 
     private static statusInternationalValue(statusValue: string): string {

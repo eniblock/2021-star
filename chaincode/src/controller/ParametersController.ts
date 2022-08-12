@@ -145,6 +145,12 @@ export class ParametersController {
             activationDocumentRules.push("D01-Z04-Y99");
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_RULES, activationDocumentRules);
 
+            const activationDocumentEligibility: string[] = [];
+            //messageType + "-" + businessType + "-" + reasonCode
+            activationDocumentEligibility.push("D01-Z01-A70");
+            activationDocumentEligibility.push("D01-Z02-A70");
+            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_ELIGIBILITY, activationDocumentEligibility);
+
             const valueEnergy: string[] = [];
             valueEnergy.push(enedis_producer);
             parameters.values.set(ParametersType.ENERGY_AMOUNT, valueEnergy);
@@ -241,6 +247,11 @@ export class ParametersController {
             activationDocumentRules.push("A54-C55-Z91");
             activationDocumentRules.push("A54-C55-Z92");
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_RULES, activationDocumentRules);
+
+            const activationDocumentEligibility: string[] = [];
+            //messageType + "-" + businessType + "-" + reasonCode
+            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_ELIGIBILITY, activationDocumentEligibility);
+
 
             const valueEnergy: string[] = [];
             valueEnergy.push(producer_rte);

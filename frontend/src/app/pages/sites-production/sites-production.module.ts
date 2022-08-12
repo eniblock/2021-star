@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReseauComponent } from './reseau.component';
-import { ReseauRoutes } from './reseau.routing';
-import { ReseauResultatComponent } from './reseau-resultats/reseau-resultat.component';
+import { SitesProductionComponent } from './sites-production.component';
+import { SitesProductionRoutes } from './sites-production.routing';
+import { SitesProductionResultatComponent } from './sites-production-resultats/sites-production-resultat.component';
 import { FormulairesModule } from 'src/app/components/formulaires/formulaires.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +14,7 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
 @NgModule({
   imports: [
     CommonModule,
-    ReseauRoutes,
+    SitesProductionRoutes,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -24,8 +24,8 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     PipesModule,
   ],
   declarations: [
-    ReseauComponent,
-    ReseauResultatComponent,
+    SitesProductionComponent,
+    SitesProductionResultatComponent,
   ],
 })
-export class ReseauModule {}
+export class SitesProductionModule {}

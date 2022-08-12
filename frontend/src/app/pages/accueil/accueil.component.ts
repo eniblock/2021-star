@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PATH_ROUTE } from 'src/app/app-routing.module';
 import { FormulaireRechercheHistoriqueLimitation } from 'src/app/models/RechercheHistoriqueLimitation';
-import { FormulaireRechercheReseau } from 'src/app/models/RechercheReseau';
+import { FormulaireRechercheSitesProduction } from 'src/app/models/RechercheSitesProduction';
 import { HistoriqueLimitationService } from 'src/app/services/api/historique-limitation.service';
-import { ReseauService } from 'src/app/services/api/reseau.service';
+import { SitesProductionService } from 'src/app/services/api/sites-production.service';
 
 @Component({
   selector: 'app-accueil',
@@ -16,15 +16,15 @@ export class AccueilComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private reseauService: ReseauService,
+    private sitesProductionService: SitesProductionService,
     private historiqueLimitationService: HistoriqueLimitationService
   ) {}
 
   ngOnInit() {}
 
-  formRechercheReseauSubmit(form: FormulaireRechercheReseau) {
-    this.reseauService.pushFormulaireRecherche(form);
-    this.router.navigate(['/', PATH_ROUTE.RESEAU]);
+  formRechercheSitesProductionSubmit(form: FormulaireRechercheSitesProduction) {
+    this.sitesProductionService.pushFormulaireRecherche(form);
+    this.router.navigate(['/', PATH_ROUTE.SITES_PRODUCTION]);
   }
 
   formRechercheActivationsSubmit(

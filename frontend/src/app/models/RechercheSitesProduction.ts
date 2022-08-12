@@ -1,17 +1,17 @@
-import {OrdreRechercheReseau} from './enum/OrdreRechercheReseau.enum';
+import {OrdreRechercheSitesProduction} from './enum/OrdreRechercheSitesProduction.enum';
 import {TechnologyType} from './enum/TechnologyType.enum';
 import {TypeDeRechercheSimple} from './enum/TypeDeRechercheSimple.enum';
 import {TypeSite} from './enum/TypeSite.enum';
 import {RequestForm} from "./RequestForm";
 
-export interface FormulaireRechercheReseau {
+export interface FormulaireRechercheSitesProduction {
   typeDeRechercheSimple?: TypeDeRechercheSimple;
   champDeRechercheSimple?: string;
-  valeursRecherchees: RechercheReseauRequete;
+  valeursRecherchees: RechercheSitesProductionRequete;
 }
 
-export interface RechercheReseauRequete
-  extends RequestForm<OrdreRechercheReseau> {
+export interface RechercheSitesProductionRequete
+  extends RequestForm<OrdreRechercheSitesProduction> {
   siteName?: string;
   substationName?: string;
   substationMrid?: string;
@@ -21,7 +21,7 @@ export interface RechercheReseauRequete
   meteringPointMrId?: string;
 }
 
-export interface RechercheReseauEntite {
+export interface RechercheSitesProductionEntite {
   typeSite: TypeSite;
   producerMarketParticipantMrid: string;
   producerMarketParticipantName: string;

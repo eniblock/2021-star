@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { FormReseauRechercheComponent } from './form-reseau-recherche/form-reseau-recherche.component';
+import { FormSitesProductionRechercheComponent } from './form-sites-production-recherche/form-sites-production-recherche.component';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { FormOrdreDebutLimitationComponent } from './form-ordre-debut-limitation/form-ordre-debut-limitation.component';
 import { FormOrdreFinLimitationComponent } from './form-ordre-fin-limitation/form-ordre-fin-limitation.component';
@@ -39,7 +39,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatAutocompleteModule,
   ],
   declarations: [
-    FormReseauRechercheComponent,
+    FormSitesProductionRechercheComponent,
     FormOrdreDebutLimitationComponent,
     FormOrdreFinLimitationComponent,
     FormOrdreFinLimitationFichierComponent,
@@ -52,7 +52,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     FormEneEniComponent,
   ],
   exports: [
-    FormReseauRechercheComponent,
+    FormSitesProductionRechercheComponent,
     FormOrdreDebutLimitationComponent,
     FormOrdreFinLimitationComponent,
     FormOrdreDebutEtFinLimitationComponent,

@@ -28,7 +28,7 @@ import { EligibilityStatus } from '../enums/EligibilityStatus';
 
 export class ActivationDocumentController {
 
-    private static async outputFormatFRActivationDocument(
+    public static async outputFormatFRActivationDocument(
         ctx: Context,
         params: STARParameters,
         activationDocument: ActivationDocument) : Promise<ActivationDocument> {

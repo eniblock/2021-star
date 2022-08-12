@@ -198,7 +198,8 @@ export class HistoryActivationController {
         const informationList: HistoryInformation[] = [];
         const filledList: string[] = [];
 
-        for (const activationDocument of allActivationDocument) {
+        for (const activationDocumentQueryValue of allActivationDocument) {
+            const activationDocument = await ActivationDocumentController.outputFormatFRActivationDocument(ctx, params, activationDocumentQueryValue);
 
             if (activationDocument && activationDocument.activationDocumentMrid) {
 

@@ -35,6 +35,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,6 +57,10 @@ import static org.apache.commons.lang3.StringUtils.upperCase;
 @Slf4j
 @Service
 public class OrdreLimitationService {
+    private static final List<String> ELIGIBILITY_STATUS_LIST = Arrays.asList(EligibilityStatusEnum.values())
+            .stream()
+            .map(eligibilityStatusEnum -> eligibilityStatusEnum.name())
+            .collect(toList());
 
     private static final String REVISION_NUMBER = "1";
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
@@ -332,7 +337,10 @@ public class OrdreLimitationService {
     }
 
     private void checkEligibilityStatus(String eligibilityStatus, List<String> currentErrors) {
-        if (StringUtils.isNotBlank(eligibilityStatus) && !asList(EligibilityStatusEnum.values()).contains(upperCase(eligibilityStatus))) {
+        log.debug("Valeur reçue pour le champ eligibilityStatus : {}", eligibilityStatus);
+        log.debug("Liste des valeurs acceptées : {}", ELIGIBILITY_STATUS_LIST);
+        if (StringUtils.isNotBlank(eligibilityStatus) && !ELIGIBILITY_STATUS_LIST.contains(upperCase(eligibilityStatus))) {
+            log.debug("L'element {} n'est pas contenue dans la liste {}. Rejet !", eligibilityStatus, ELIGIBILITY_STATUS_LIST);
             currentErrors.add(messageSource.getMessage("import.ordreLimitation.eligibilityStatus.error",
                     new String[]{}, null));
         }

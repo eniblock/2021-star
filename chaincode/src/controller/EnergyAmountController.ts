@@ -21,17 +21,21 @@ export class EnergyAmountController {
     private static async checkEnergyAmout(
         ctx: Context,
         params: STARParameters,
-        energyObj: EnergyAmount,
+        inputStr: string,
         energyType: EnergyType,
         checkSite: boolean = false) : Promise<EnergyAmount> {
 
-        const identity = params.values.get(ParametersType.IDENTITY);
-        if (energyType === EnergyType.ENE && identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        let energyObj: EnergyAmount;
+        try {
+            energyObj = JSON.parse(inputStr);
+        } catch (error) {
+            throw new Error(`ERROR manage EnergyAmount-> Input string NON-JSON value`);
         }
-        if (energyType === EnergyType.ENI && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
-        }
+
+        EnergyAmount.schema.validateSync(
+            energyObj,
+            {strict: true, abortEarly: false},
+        );
 
         let orderObj: ActivationDocument;
         try {
@@ -150,29 +154,6 @@ export class EnergyAmountController {
 
 
 
-    public static async createTSOEnergyAmountList(
-        ctx: Context,
-        params: STARParameters,
-        inputStr: string) {
-        console.info('============= START : createTSOEnergyAmountList EnergyAmountController ===========');
-
-        var energyList: EnergyAmount[];
-        try {
-            energyList = EnergyAmount.formatListString(inputStr);
-        } catch (error) {
-            throw error;
-        }
-        if (energyList) {
-            for (var energyObj of energyList) {
-                energyObj = await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENE);
-                await EnergyAmountService.write(ctx, params, energyObj);
-            }
-        }
-
-        console.info('============= END   : createTSOEnergyAmountList %s EnergyAmountController ===========',
-            energyObj.energyAmountMarketDocumentMrid,
-        );
-    }
 
 
     public static async createTSOEnergyAmount(
@@ -181,13 +162,12 @@ export class EnergyAmountController {
         inputStr: string) {
         console.info('============= START : createTSOEnergyAmount EnergyAmountController ===========');
 
-        var energyObj: EnergyAmount;
-        try {
-            energyObj = EnergyAmount.formatString(inputStr);
-            energyObj = await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENE);
-        } catch (error) {
-            throw error;
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
+
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE);
 
         await EnergyAmountService.write(ctx, params, energyObj);
 
@@ -198,42 +178,18 @@ export class EnergyAmountController {
 
 
 
-    public static async updateTSOEnergyAmountList(
-        ctx: Context,
-        params: STARParameters,
-        inputStr: string) {
-        console.info('============= START : updateTSOEnergyAmountList EnergyAmountController ===========');
-
-        var energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
-        if (energyList) {
-            for (var energyObj of energyList) {
-                energyObj = await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENE);
-
-                //Check existence
-                try {
-                    await EnergyAmountService.getRaw(ctx, params, energyObj.energyAmountMarketDocumentMrid);
-                } catch(error) {
-                    throw new Error(error.message.concat(` Can not be updated.`));
-                }
-
-                await EnergyAmountService.write(ctx, params, energyObj);
-            }
-        }
-
-        console.info('============= END   : updateTSOEnergyAmountList %s EnergyAmountController ===========',
-            energyObj.energyAmountMarketDocumentMrid,
-        );
-    }
-
-
     public static async updateTSOEnergyAmount(
         ctx: Context,
         params: STARParameters,
         inputStr: string) {
         console.info('============= START : updateTSOEnergyAmount EnergyAmountController ===========');
 
-        var energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
-        energyObj = await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENE);
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE);
 
         //Check existence
         try {
@@ -252,25 +208,6 @@ export class EnergyAmountController {
 
 
 
-    public static async createDSOEnergyAmountList(
-        ctx: Context,
-        params: STARParameters,
-        inputStr: string) {
-        console.info('============= START : createDSOEnergyAmountList EnergyAmountController ===========');
-
-        var energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
-        if (energyList) {
-            for (var energyObj of energyList) {
-                energyObj = await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENI, true);
-                await EnergyAmountService.write(ctx, params, energyObj);
-            }
-        }
-
-        console.info('============= END   : createDSOEnergyAmountList %s EnergyAmountController ===========',
-            energyObj.energyAmountMarketDocumentMrid,
-        );
-    }
-
 
     public static async createDSOEnergyAmount(
         ctx: Context,
@@ -278,8 +215,12 @@ export class EnergyAmountController {
         inputStr: string) {
         console.info('============= START : createDSOEnergyAmount EnergyAmountController ===========');
 
-        var energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
-        energyObj = await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENI, true);
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI, true);
 
         await EnergyAmountService.write(ctx, params, energyObj);
 
@@ -291,33 +232,6 @@ export class EnergyAmountController {
 
 
 
-    public static async updateDSOEnergyAmountList(
-        ctx: Context,
-        params: STARParameters,
-        inputStr: string) {
-        console.info('============= START : updateDSOEnergyAmountList EnergyAmountController ===========');
-
-        var energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
-        if (energyList) {
-            for (var energyObj of energyList) {
-                energyObj = await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENI, true);
-
-                //Check existence
-                try {
-                    await EnergyAmountService.getRaw(ctx, params, energyObj.energyAmountMarketDocumentMrid);
-                } catch(error) {
-                    throw new Error(error.message.concat(` Can not be updated.`));
-                }
-
-                await EnergyAmountService.write(ctx, params, energyObj);
-            }
-        }
-
-        console.info('============= END   : updateDSOEnergyAmountList %s EnergyAmountController ===========',
-            energyObj.energyAmountMarketDocumentMrid,
-        );
-    }
-
 
     public static async updateDSOEnergyAmount(
         ctx: Context,
@@ -325,8 +239,12 @@ export class EnergyAmountController {
         inputStr: string) {
         console.info('============= START : updateDSOEnergyAmount EnergyAmountController ===========');
 
-        var energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
-        energyObj = await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENI, true);
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI, true);
 
         //Check existence
         try {

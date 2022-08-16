@@ -5,49 +5,6 @@ import * as Yup from 'yup';
 
 export class EnergyAmount {
 
-    public static formatString(inputString: string) : EnergyAmount {
-        let energyObj: EnergyAmount;
-        try {
-            energyObj = JSON.parse(inputString);
-        } catch (error) {
-            throw new Error(`ERROR manage EnergyAmount-> Input string NON-JSON value`);
-        }
-
-        try {
-            EnergyAmount.schema.validateSync(
-                energyObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
-    return energyObj;
-    }
-
-    public static formatListString(inputString: string) : EnergyAmount[] {
-        let energyList: EnergyAmount[] = [];
-        try {
-            energyList = JSON.parse(inputString);
-        } catch (error) {
-            throw new Error(`ERROR EnergyAmount by list-> Input string NON-JSON value`);
-        }
-
-        if (energyList && energyList.length > 0) {
-            for (var energyObj of energyList) {
-                try {
-                    EnergyAmount.schema.validateSync(
-                        energyObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
-            }
-        }
-        return energyList;
-    }
-
-
     public static readonly schema = Yup.object().shape({
         activationDocumentMrid: Yup.string().required(
             'activationDocumentMrid is a compulsory string').typeError('activationDocumentMrid is a compulsory string',

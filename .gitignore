@@ -82,9 +82,6 @@ secrets-*.yaml
 
 #scripts-test-chaincode
 /scripts-test-chaincode
-#tests crypto files
-/test/**/*.crt
-
 
 # terraform output files
 /terraform/lb_ingress_ip*

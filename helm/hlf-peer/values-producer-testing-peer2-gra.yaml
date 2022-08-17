@@ -2,7 +2,16 @@ ingress:
   enabled: true
   host: peer2.producer.testing.gra.star.eniblock.fr
   secretName: hlf--peer2-tls
-
+  from:
+  - podSelector: {}
+    namespaceSelector:
+      matchLabels:
+        name: ingress
+  - podSelector: {}
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: istio-system
+        
 ##################################
 ## Peer configuration options    #
 ##################################

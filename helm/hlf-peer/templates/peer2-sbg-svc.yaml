@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: peer2-hlf-peer
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - name: request
+      protocol: TCP
+      port: 7051
+      targetPort: 7051
+    - name: event
+      protocol: TCP
+      port: 7053
+      targetPort: 7053

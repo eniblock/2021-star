@@ -100,12 +100,12 @@ helm:
       --post-renderer kbldpp
       --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1.yaml
       --set "peer.chaincodes[0].image.tag=$star_version"
-    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
-      peer2 hlf-k8s/hlf-peer
-      -n ${CI_ENVIRONMENT_NAME}
-      --post-renderer kbldpp
-      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
-      --set "peer.chaincodes[0].image.tag=$star_version"
+#    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+#      peer2 hlf-k8s/hlf-peer
+#      -n ${CI_ENVIRONMENT_NAME}
+#      --post-renderer kbldpp
+#      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
+#      --set "peer.chaincodes[0].image.tag=$star_version"
     # star
     - helm dependency update ./helm/star
     - helm upgrade --install --wait --timeout 8m
@@ -132,19 +132,31 @@ helm:
     - helm repo update --kubeconfig $KUBECONFIG_GRA
     - kubectl delete -n ${CI_ENVIRONMENT_NAME} job --all --kubeconfig $KUBECONFIG_GRA
     # peers
-    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
-      peer1 hlf-k8s/hlf-peer
-      -n ${CI_ENVIRONMENT_NAME}
-      --post-renderer kbldpp
-      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1-gra.yaml
-      --set "peer.chaincodes[0].image.tag=$star_version"
-      --kubeconfig $KUBECONFIG_GRA
+#    - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
+#      peer1 hlf-k8s/hlf-peer
+#      -n ${CI_ENVIRONMENT_NAME}
+#      --post-renderer kbldpp
+#      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer1-gra.yaml
+#      --set "peer.chaincodes[0].image.tag=$star_version"
+#      --kubeconfig $KUBECONFIG_GRA
     - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       peer2 hlf-k8s/hlf-peer
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
       --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2-gra.yaml
       --set "peer.chaincodes[0].image.tag=$star_version"
+      --kubeconfig $KUBECONFIG_GRA
+    - helm dependency update ./helm/star --kubeconfig $KUBECONFIG_GRA
+    - helm upgrade --install --wait --timeout 8m
+      star ./helm/star
+      -n ${CI_ENVIRONMENT_NAME}
+      --post-renderer kbldpp
+      --values helm/star/values-${CI_ENVIRONMENT_NAME}.yaml
+      --values "$USERS"
+      --set image.tag=$star_version
+      --set keycloak.image.tag=$star_version
+      --set mail.username=$SMTP_USER
+      --set mail.password=$SMTP_PASSWORD
       --kubeconfig $KUBECONFIG_GRA
 
 .deploy_orderer:

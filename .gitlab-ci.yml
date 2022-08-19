@@ -118,7 +118,7 @@ helm:
       --set keycloak.image.tag=$star_version
       --set mail.username=$SMTP_USER
       --set mail.password=$SMTP_PASSWORD
-    - kubectl apply -f- helm/hlf-peer/templates/peer2-sbg-svc.yaml -n ${CI_ENVIRONMENT_NAME}
+    - kubectl apply -f helm/hlf-peer/templates/peer2-sbg-svc.yaml -n ${CI_ENVIRONMENT_NAME}
 
 .deploy_star_gra:
   stage: deploy
@@ -159,7 +159,7 @@ helm:
       --set mail.username=$SMTP_USER
       --set mail.password=$SMTP_PASSWORD
       --kubeconfig $KUBECONFIG_GRA
-    - kubectl apply -f- helm/hlf-peer/templates/peer1-gra-svc.yaml -n ${CI_ENVIRONMENT_NAME}
+    - kubectl apply -f helm/hlf-peer/templates/peer1-gra-svc.yaml -n ${CI_ENVIRONMENT_NAME}
 
 .deploy_orderer:
   stage: deploy

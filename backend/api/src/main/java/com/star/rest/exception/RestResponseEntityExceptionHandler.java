@@ -1,6 +1,7 @@
 package com.star.rest.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,22 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+    @ExceptionHandler(value = {JsonProcessingException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<Object> handleJsonProcessingException(JsonProcessingException jsonProcessingException, WebRequest request) {
+        logError(jsonProcessingException);
+        return handleExceptionInternal(jsonProcessingException, getErrorDetails(jsonProcessingException, request), new HttpHeaders(),
+                HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = {JsonMappingException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<Object> handleJsonMappingException(JsonMappingException jsonMappingException, WebRequest request) {
+        logError(jsonMappingException);
+        return handleExceptionInternal(jsonMappingException, getErrorDetails(jsonMappingException, request), new HttpHeaders(),
+                HttpStatus.BAD_REQUEST, request);
+    }
+
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     protected ResponseEntity<Object> handleConflict(RuntimeException runtimeException, WebRequest request) {
@@ -60,7 +77,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
     }
 
-    @ExceptionHandler(value = {TechnicalException.class, JsonProcessingException.class, ContractException.class})
+    @ExceptionHandler(value = {TechnicalException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected ResponseEntity<Object> handleTechnicalException(RuntimeException runtimeException, WebRequest request) {
         logError(runtimeException);

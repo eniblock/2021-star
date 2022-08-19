@@ -63,6 +63,7 @@ export class ActivationsResultatsComponent implements OnChanges {
     for (let d of data) {
       if (d) {
         if (!d.site) {
+          d.hasSite = false;
           d.site = {
             typeSite: TypeSite.HTB,
             producerMarketParticipantMrid: '---',
@@ -79,6 +80,8 @@ export class ActivationsResultatsComponent implements OnChanges {
             systemOperatorEntityFlexibilityDomainName: '---',
             systemOperatorCustomerServiceName: '---'
           }
+        } else {
+          d.hasSite = true;
         }
         if (!d.producer) {
           d.producer = {

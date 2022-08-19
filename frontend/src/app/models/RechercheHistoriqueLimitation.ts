@@ -12,6 +12,7 @@ export interface FormulaireRechercheHistoriqueLimitation {
 }
 
 export interface RechercheHistoriqueLimitationEntite {
+  hasSite?: boolean,
   site: Site | null,
   producer: Producer | null,
   energyAmount: EnergyAmount | null,

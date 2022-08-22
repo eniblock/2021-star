@@ -18,6 +18,7 @@ import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
 import { Values } from './Values';
 import { DocType } from '../src/enums/DocType';
+import { HLFServices } from '../src/controller/service/HLFservice';
 
 
 class TestContext {
@@ -99,7 +100,7 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             transactionContext.clientIdentity.getMSPID.returns(Values.FakeMSP);
@@ -116,7 +117,7 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const input = await Values.deleteJSONField(JSON.stringify(Values.HTA_yellowPage), 'originAutomationRegisteredResourceMrid');
@@ -134,7 +135,7 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const input = await Values.deleteJSONField(JSON.stringify(Values.HTA_yellowPage), 'registeredResourceMrid');
@@ -152,7 +153,7 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const input = await Values.deleteJSONField(JSON.stringify(Values.HTA_yellowPage), 'systemOperatorMarketParticipantMrid');
@@ -170,7 +171,7 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             try {
@@ -187,7 +188,7 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             await star.CreateYellowPages(transactionContext, JSON.stringify(Values.HTA_yellowPage));

@@ -2,7 +2,7 @@
   {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_ENEDIS_AD_1",
     "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_1",
-    "orderValue": "0",
+    "orderValue": "EnedistoEnedis_NothingDoneYear2020",
     "measurementUnitName": "MW",
     "startCreatedDateTime": "2020-01-01T01:01:01Z",
     "revisionNumber": "",
@@ -16,7 +16,7 @@
   {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_ENEDIS_AD_1",
     "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_1",
-    "orderValue": "0",
+    "orderValue": "EnedistoEnedis_StartNoReconciliation",
     "measurementUnitName": "MW",
     "startCreatedDateTime": "2025-01-01T01:01:01Z",
     "revisionNumber": "",
@@ -30,7 +30,7 @@
   {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_ENEDIS_AD_2",
     "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_2",
-    "orderValue": "0",
+    "orderValue": "EnedistoEnedis_StartNoReconciliation",
     "measurementUnitName": "MW",
     "startCreatedDateTime": "2025-02-02T02:02:02Z",
     "revisionNumber": "",
@@ -44,7 +44,7 @@
   {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_ENEDIS_AD_2",
     "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_2",
-    "orderValue": "0",
+    "orderValue": "EnedistoEnedis_EndNoReconciliation",
     "measurementUnitName": "MW",
     "endCreatedDateTime": "2025-02-02T02:02:22Z",
     "revisionNumber": "",
@@ -58,9 +58,10 @@
   {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_ENEDIS_AD_3",
     "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_3",
-    "orderValue": "0",
+    "orderValue": "FromRTEtoEnedis_Reconciliation_Eligibility",
     "measurementUnitName": "MW",
     "startCreatedDateTime": "2025-03-03T03:03:03Z",
+    "endCreatedDateTime": "2025-03-03T03:53:53Z",
     "revisionNumber": "",
     "messageType": "D01",
     "businessType" : "Z01",

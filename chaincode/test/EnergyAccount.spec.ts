@@ -19,6 +19,7 @@ import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 import { Values } from './Values';
 import { DocType } from '../src/enums/DocType';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
+import { HLFServices } from '../src/controller/service/HLFservice';
 
 
 class TestContext {
@@ -83,7 +84,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, 'RTE01EIC');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR EnergyAccount-> Input string NON-JSON value');
             }
         });
 
@@ -112,7 +113,7 @@ describe('Star Tests EnergyAccount', () => {
                 classificationType: "A02",
                 product: "Energie active/Réactive",
                 startCreatedDateTime: '',
-                endCreatedDateTime: ''
+                endCreatedDateTime: '',
             };
 
             // `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
@@ -320,7 +321,7 @@ describe('Star Tests EnergyAccount', () => {
                 classificationType: "A02",
                 product: "Energie active/Réactive",
                 startCreatedDateTime: '',
-                endCreatedDateTime: ''
+                endCreatedDateTime: '',
             };
 
             try {
@@ -357,7 +358,7 @@ describe('Star Tests EnergyAccount', () => {
                 classificationType: "A02",
                 product: "Energie active/Réactive",
                 startCreatedDateTime: '',
-                endCreatedDateTime: ''
+                endCreatedDateTime: '',
             };
 
             try {
@@ -372,7 +373,7 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(Values.HTA_EnergyAccount_a3));
@@ -395,7 +396,7 @@ describe('Star Tests EnergyAccount', () => {
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const energyaccount_str = JSON.stringify(energyaccount);
@@ -414,7 +415,7 @@ describe('Star Tests EnergyAccount', () => {
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const energyaccount_str = JSON.stringify(energyaccount);
@@ -432,7 +433,7 @@ describe('Star Tests EnergyAccount', () => {
 
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             try {
@@ -451,7 +452,7 @@ describe('Star Tests EnergyAccount', () => {
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const energyaccount_str = await Values.deleteJSONField(JSON.stringify(energyaccount), "marketEvaluationPointMrid");
@@ -478,7 +479,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, 'RTE01EIC');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR EnergyAccount-> Input string NON-JSON value');
             }
         });
 
@@ -487,7 +488,7 @@ describe('Star Tests EnergyAccount', () => {
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from("XXXX"));
 
             const energyaccount_str = JSON.stringify(energyaccount);
@@ -504,7 +505,7 @@ describe('Star Tests EnergyAccount', () => {
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from("XXXXX"));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             const energyaccount_str = JSON.stringify(energyaccount);
@@ -546,7 +547,7 @@ describe('Star Tests EnergyAccount', () => {
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             energyaccount.senderMarketParticipantMrid = "17V000000992746666"
@@ -566,7 +567,7 @@ describe('Star Tests EnergyAccount', () => {
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             const energyaccount_str = JSON.stringify(energyaccount);
@@ -583,7 +584,7 @@ describe('Star Tests EnergyAccount', () => {
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3));
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             const energyaccount_str = await Values.deleteJSONField(JSON.stringify(energyaccount), "marketEvaluationPointMrid");
@@ -601,7 +602,7 @@ describe('Star Tests EnergyAccount', () => {
 
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
 
@@ -623,7 +624,7 @@ describe('Star Tests EnergyAccount', () => {
 
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(energyaccount));
@@ -769,7 +770,7 @@ describe('Star Tests EnergyAccount', () => {
             args.push(`"meteringPointMrid": "${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
             args.push(`"senderMarketParticipantMrid": "${Values.HTA_EnergyAccount_a1.senderMarketParticipantMrid}"`);
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
@@ -783,7 +784,7 @@ describe('Star Tests EnergyAccount', () => {
             // console.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
-            const expected: EnergyAccount[] = [Values.HTA_EnergyAccount_a1];
+            const expected: EnergyAccount[] = [JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a1))];
 
             expect(ret).to.eql(expected);
         });
@@ -906,7 +907,7 @@ describe('Star Tests EnergyAccount', () => {
             args.push(`"meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
 
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
             // console.info("query : ", query);
 
@@ -953,7 +954,7 @@ describe('Star Tests EnergyAccount', () => {
             args.push(`"meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
 
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
             // const query = `{
             //     "selector":
@@ -981,7 +982,7 @@ describe('Star Tests EnergyAccount', () => {
             // console.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
-            const expected: EnergyAccount[] = [Values.HTB_EnergyAccount_a3,Values.HTB_EnergyAccount_a4];
+            const expected: EnergyAccount[] = [JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3)),JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a4))];
 
             expect(ret).to.eql(expected);
         });
@@ -1020,7 +1021,7 @@ describe('Star Tests EnergyAccount', () => {
             args.push(`"meteringPointMrid":"${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
             args.push(`"receiverMarketParticipantMrid":"${Values.HTA_EnergyAccount_a1.receiverMarketParticipantMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
@@ -1036,7 +1037,7 @@ describe('Star Tests EnergyAccount', () => {
             // console.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
-            const expected: EnergyAccount[] = [Values.HTA_EnergyAccount_a1];
+            const expected: EnergyAccount[] = [JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a1))];
 
             expect(ret).to.eql(expected);
         });

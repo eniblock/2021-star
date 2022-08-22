@@ -9,7 +9,7 @@ import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
 import { EnergyAmount } from '../src/model/energyAmount';
-import { ActivationDocument } from '../src/model/activationDocument';
+import { ActivationDocument } from '../src/model/activationDocument/activationDocument';
 import { STARParameters } from '../src/model/starParameters';
 
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
@@ -151,11 +151,11 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const collectionsActivationDocument: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+            const collectionsActivationDocument: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             transactionContext.stub.getPrivateData.withArgs(collectionsActivationDocument[0],
                 Values.HTB_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
 
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
@@ -182,7 +182,7 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             transactionContext.stub.getPrivateData.withArgs(collections[0],
                 energyamount.activationDocumentMrid).resolves(Buffer.from("XXX"));
 
@@ -200,14 +200,14 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
             const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
             activationDocument.registeredResourceMrid = 'toto';
             transactionContext.stub.getPrivateData.withArgs(collections[0],
                 energyamount.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
 
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             try {
@@ -224,11 +224,11 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             transactionContext.stub.getPrivateData.withArgs(collections[0],
                 Values.HTB_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
 
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from("XXX"));
 
             try {
@@ -245,11 +245,11 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             transactionContext.stub.getPrivateData.withArgs(collections[0],
                 Values.HTB_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
 
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             try {
@@ -304,11 +304,11 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             transactionContext.stub.getPrivateData.withArgs(collections[0],
                 Values.HTB_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
 
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             const dateStart = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
@@ -467,11 +467,11 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+            const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             transactionContext.stub.getPrivateData.withArgs(collections[0],
                 Values.HTA_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_ActivationDocument_Valid)));
 
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_EnergyAmount.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const dateStart = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
@@ -495,11 +495,11 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const collectionsActivationDocument: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+            const collectionsActivationDocument: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             transactionContext.stub.getPrivateData.withArgs(collectionsActivationDocument[0],
                 Values.HTA_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_ActivationDocument_Valid)));
 
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_EnergyAmount.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(Values.HTA_EnergyAmount));

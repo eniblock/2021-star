@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
-import { DataReference } from './dataReference';
+import { DataReference } from '../dataReference';
 
-export class ConciliationState {
+export class ReconciliationState {
 
     public static readonly schema = Yup.object().shape({
         updateOrders: Yup.array().of(Yup.object()).required('updateOrders is a compulsory DataReference[].').typeError('updateOrders must be a DataReference[]'),

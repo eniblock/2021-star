@@ -13,6 +13,7 @@ import { DocType } from '../enums/DocType';
 import { ParametersType } from '../enums/ParametersType';
 import { EnergyAccountService } from './service/EnergyAccountService';
 import { SystemOperatorService } from './service/SystemOperatorService';
+import { DataReference } from '../model/dataReference';
 
 export class EnergyAccountController {
 
@@ -20,68 +21,91 @@ export class EnergyAccountController {
         ctx: Context,
         params: STARParameters,
         inputStr: string) {
-        console.info('============= START : Create EnergyAccount ===========');
+        console.debug('============= START : Create EnergyAccount ===========');
 
-        const energyAccount:EnergyAccount = await EnergyAccountController.checkEnergyAccount(ctx, params, inputStr);
+        const energyObj:EnergyAccount = EnergyAccount.formatString(inputStr);
+        await EnergyAccountController.checkEnergyAccountObj(ctx, params, energyObj);
 
-        await EnergyAccountService.write(ctx, params, energyAccount);
+        //Get existing sites
+        var existingSitesRef:Map<string, DataReference>;
+        try {
+            existingSitesRef = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
+        } catch(error) {
+            throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` Can not be updated.`));
+        }
 
-        console.info('============= END   : Create %s EnergyAccount ===========',
-            energyAccount.energyAccountMarketDocumentMrid,
+        for (var [key, ] of existingSitesRef) {
+            await EnergyAccountService.write(ctx, params, energyObj, key);
+        }
+
+        console.debug('============= END   : Create %s EnergyAccount ===========',
+            energyObj.energyAccountMarketDocumentMrid,
         );
     }
 
+    public static async createEnergyAccountByReference(
+        ctx: Context,
+        params: STARParameters,
+        dataReference: DataReference) {
+        console.debug('============= START : Create EnergyAccount by Reference ===========');
+
+        await EnergyAccountController.checkEnergyAccountObj(ctx, params, dataReference.data, dataReference.collection);
+        await EnergyAccountService.write(ctx, params, dataReference.data, dataReference.collection);
+
+        console.debug('============= END   : Create %s EnergyAccount by Reference ===========',
+            dataReference.data.energyAccountMarketDocumentMrid,
+        );
+    }
 
     public static async updateEnergyAccount(
         ctx: Context,
         params: STARParameters,
         inputStr: string) {
-        console.info('============= START : Update EnergyAccount ===========');
+        console.debug('============= START : Update EnergyAccount ===========');
 
-        const energyAccount:EnergyAccount = await EnergyAccountController.checkEnergyAccount(ctx, params, inputStr);
+        const energyObj:EnergyAccount = EnergyAccount.formatString(inputStr);
+        await EnergyAccountController.checkEnergyAccountObj(ctx, params, energyObj);
 
-        //Check existence
+        //Get existing data
+        var existingEnergyAccountRef:Map<string, DataReference>;
         try {
-            await EnergyAccountService.getRaw(ctx, params, energyAccount.energyAccountMarketDocumentMrid);
+            existingEnergyAccountRef = await EnergyAccountService.getObjRefbyId(ctx, params, energyObj.energyAccountMarketDocumentMrid);
         } catch(error) {
             throw new Error(error.message.concat(` Can not be updated.`));
         }
 
-        await EnergyAccountService.write(ctx, params, energyAccount);
+        for (var [key, ] of existingEnergyAccountRef) {
+            await EnergyAccountService.write(ctx, params, energyObj, key);
+        }
 
-        console.info('============= END   : Update %s EnergyAccount ===========',
-            energyAccount.energyAccountMarketDocumentMrid,
+        console.debug('============= END   : Update %s EnergyAccount ===========',
+        energyObj.energyAccountMarketDocumentMrid,
         );
     }
 
 
 
 
-    private static async checkEnergyAccount(
+    private static async checkEnergyAccountObj(
         ctx: Context,
         params: STARParameters,
-        inputStr: string): Promise<EnergyAccount>{
+        energyObj:EnergyAccount,
+        target: string = ''): Promise<void>{
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Account.`);
         }
 
-        let energyObj: EnergyAccount;
-        try {
-            energyObj = JSON.parse(inputStr);
-        } catch (error) {
-            throw new Error(`ERROR createEnergyAccount-> Input string NON-JSON value`);
-        }
-
-        EnergyAccount.schema.validateSync(
-            energyObj,
-            {strict: true, abortEarly: false},
-        );
-
         let siteObj: Site;
         try {
-            siteObj = await SiteService.getObj(ctx, params, energyObj.meteringPointMrid);
+            if (target && target.length > 0) {
+                siteObj = await SiteService.getObj(ctx, params, energyObj.meteringPointMrid, target);
+            } else {
+                const existingSitesRef = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
+                const siteObjRef: DataReference = existingSitesRef.values().next().value;
+                siteObj = siteObjRef.data;
+            }
         } catch (error) {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
@@ -108,10 +132,32 @@ export class EnergyAccountController {
         } else if (identity === OrganizationTypeMsp.ENEDIS && energyObj.marketEvaluationPointMrid) {
             throw new Error(`Energy Account, presence of marketEvaluationPointMrid optionnal for HTA but required for HTB in EnergyAccount.`);
         }
-
-        energyObj.docType = DocType.ENERGY_ACCOUNT;
-        return energyObj;
     }
+
+
+    public static async dataExists(
+        ctx: Context,
+        params: STARParameters,
+        id: string,
+        target: string = ''): Promise<boolean> {
+
+        let existing: boolean = false;
+        const result:Map<string, DataReference> = await EnergyAccountService.getObjRefbyId(ctx, params, id);
+        if (target && target.length > 0) {
+            const dataReference: DataReference = result.get(target);
+            existing = dataReference
+                && dataReference.data
+                && dataReference.data.energyAccountMarketDocumentMrid == id;
+        } else {
+            existing = result
+                && result.values().next().value
+                && result.values().next().value.data
+                && result.values().next().value.data.energyAccountMarketDocumentMrid == id;
+        }
+
+        return existing;
+    }
+
 
 
 
@@ -123,6 +169,24 @@ export class EnergyAccountController {
             meteringPointMrid: string,
             systemOperatorEicCode: string,
             startCreatedDateTime: string): Promise<string> {
+
+        const allResults = await EnergyAccountController.getEnergyAccountForSystemOperatorObj(
+            ctx, params, meteringPointMrid, systemOperatorEicCode, startCreatedDateTime);
+        const formated = JSON.stringify(allResults);
+
+        return formated;
+    }
+
+
+
+
+    public static async getEnergyAccountForSystemOperatorObj(
+        ctx: Context,
+        params: STARParameters,
+        meteringPointMrid: string,
+        systemOperatorEicCode: string,
+        startCreatedDateTime: string,
+        target: string = ''): Promise<any[]> {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -158,43 +222,10 @@ export class EnergyAccountController {
             args.push(`"senderMarketParticipantMrid": "${systemOperatorEicCode}"`);
         }
 
-        // if (identity === OrganizationTypeMsp.RTE) {
-        //     query = `{
-        //         "selector":
-        //         {
-        //             "docType": "energyAccount",
-        //             "meteringPointMrid": "${meteringPointMrid}",
-        //             "createdDateTime": {
-        //                 "$gte": ${JSON.stringify(dateUp)},
-        //                 "$lte": ${JSON.stringify(dateDown)}
-        //             },
-        //             "sort": [{
-        //                 "createdDateTime" : "desc"
-        //             }]
-        //         }
-        //     }`;
-        // } else {
-        //     query = `{
-        //         "selector":
-        //         {
-        //             "docType": "energyAccount",
-        //             "meteringPointMrid": "${meteringPointMrid}",
-        //             "senderMarketParticipantMrid": "${systemOperatorEicCode}",
-        //             "createdDateTime": {
-        //                 "$gte": ${JSON.stringify(dateUp)},
-        //                 "$lte": ${JSON.stringify(dateDown)}
-        //             },
-        //             "sort": [{
-        //                 "createdDateTime" : "desc"
-        //             }]
-        //         }
-        //     }`;
-        // }
+        // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+        const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
-        const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
-
-
-        return await EnergyAccountService.getQueryStringResult(ctx, params, query);
+        return await EnergyAccountService.getQueryArrayResult(ctx, params, query, target);
     }
 
 
@@ -241,24 +272,12 @@ export class EnergyAccountController {
         args.push(`"meteringPointMrid":"${meteringPointMrid}"`);
         args.push(`"receiverMarketParticipantMrid":"${producerEicCode}"`);
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-        const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
 
-        // const query = `{
-        //         "selector":
-        //         {
-        //             "docType": "energyAccount",
-        //             "meteringPointMrid": "${meteringPointMrid}",
-        //             "receiverMarketParticipantMrid": "${producerEicCode}",
-        //             "createdDateTime": {
-        //                 "$gte": ${JSON.stringify(dateUp)},
-        //                 "$lte": ${JSON.stringify(dateDown)}
-        //             },
-        //             "sort": [{
-        //                 "createdDateTime" : "desc"
-        //             }]
-        //         }
-        //     }`;
+        // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+        const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
-        return await EnergyAccountService.getQueryStringResult(ctx, params, query);
+        const allResults = await EnergyAccountService.getQueryArrayResult(ctx, params, query);
+        const formated = JSON.stringify(allResults);
+        return formated;
     }
 }

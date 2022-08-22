@@ -11,9 +11,8 @@
     ROLE = 'role',
     ROLE_TABLE = 'roleTable',
 
-    SITE = 'site',
+    DATA_TARGET = 'dataTarget',
 
-    ACTIVATION_DOCUMENT = 'activationDocument',
     ACTIVATION_DOCUMENT_RULES = 'activationDocumentRules',
     ACTIVATION_DOCUMENT_ELIGIBILITY = 'activationDocumentEligibility',
     PPCO_TIME_THRESHOLD = 'pPCOTimeThershold',

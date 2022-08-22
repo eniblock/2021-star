@@ -2,7 +2,7 @@ import { Context } from 'fabric-contract-api';
 
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 
-import { ActivationDocument } from '../model/activationDocument';
+import { ActivationDocument } from '../model/activationDocument/activationDocument';
 import { EnergyAmount } from '../model/energyAmount';
 import { SystemOperator } from '../model/systemOperator';
 import { STARParameters } from '../model/starParameters';
@@ -11,7 +11,7 @@ import { QueryStateService } from './service/QueryStateService';
 import { SiteService } from './service/SiteService';
 import { DocType } from '../enums/DocType';
 import { EnergyAmountService } from './service/EnergyAmountService';
-import { ActivationDocumentController } from './ActivationDocumentController';
+import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
 import { ParametersType } from '../enums/ParametersType';
 import { EnergyType } from '../enums/EnergyType';
 import { SystemOperatorService } from './service/SystemOperatorService';
@@ -46,7 +46,7 @@ export class EnergyAmountController {
 
         if (checkSite && energyObj.registeredResourceMrid && energyObj.registeredResourceMrid !== "") {
             try {
-                await SiteService.getObj(ctx, params, energyObj.registeredResourceMrid);
+                    await SiteService.getObjRefbyId(ctx, params, energyObj.registeredResourceMrid);
             } catch(error) {
                 throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
             }

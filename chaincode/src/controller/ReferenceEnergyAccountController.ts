@@ -46,7 +46,9 @@ export class ReferenceEnergyAccountController {
 
         let siteObj: Site;
         try {
-            siteObj = await SiteService.getObj(ctx, params, energyObj.meteringPointMrid);
+            const existingSitesRef = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
+            const siteObjRef = existingSitesRef.values().next().value;
+            siteObj = siteObjRef.data;
         } catch (error) {
             throw new Error('ERROR createReferenceEnergyAccount : '.concat(error.message).concat(` for Reference Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }

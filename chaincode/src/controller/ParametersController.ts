@@ -4,6 +4,8 @@ import { STARParameters } from '../model/starParameters';
 import { ParametersType } from '../enums/ParametersType';
 import { RoleType } from '../enums/RoleType';
 import { HLFServices } from './service/HLFservice';
+import { DataReference } from '../model/dataReference';
+
 
 const enedis_producer = "enedis-producer";
 const enedis_rte = "enedis-rte";
@@ -19,6 +21,7 @@ const role_producer = RoleType.Role_Producer;
 const role_rte = RoleType.Role_TSO;
 
 export class ParametersController {
+    public static targetJoinSeparator = "-";
     // public static async changeAllParameters(
     //     ctx: Context,
     //     inputStr: string) {
@@ -123,18 +126,24 @@ export class ParametersController {
 
             parameters.values.set(ParametersType.ROLE, role_enedis);
 
-            const valueSite: string[] = [];
-            valueSite.push(enedis_producer);
-            parameters.values.set(ParametersType.SITE, valueSite);
 
-            const valueActivationDocument = new Map<string, string[]>();
-            valueActivationDocument.set(OrganizationTypeMsp.RTE, [enedis_rte]);
-            valueActivationDocument.set(RoleType.Role_TSO, [enedis_rte]);
-            valueActivationDocument.set(OrganizationTypeMsp.PRODUCER, [enedis_producer]);
-            valueActivationDocument.set(RoleType.Role_Producer, [enedis_producer]);
-            valueActivationDocument.set(ParametersType.DEFAULT, [enedis_producer]);
-            valueActivationDocument.set(ParametersType.ALL, [enedis_producer, enedis_rte]);
-            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
+
+            const valueDataTarget = new Map<string, string[]>();
+            valueDataTarget.set(ParametersType.DEFAULT, [enedis_producer]);
+            valueDataTarget.set(ParametersType.ALL, [enedis_producer, enedis_rte, enedis_producer_rte]);
+
+            valueDataTarget.set(OrganizationTypeMsp.RTE, [enedis_rte]);
+            valueDataTarget.set(enedis_rte, [enedis_rte]);
+            valueDataTarget.set(RoleType.Role_TSO, [enedis_rte]);
+
+            valueDataTarget.set(OrganizationTypeMsp.PRODUCER, [enedis_producer]);
+            valueDataTarget.set(enedis_producer, [enedis_producer]);
+            valueDataTarget.set(RoleType.Role_Producer, [enedis_producer]);
+
+            valueDataTarget.set(enedis_producer_rte, [enedis_producer_rte]);
+
+            parameters.values.set(ParametersType.DATA_TARGET, valueDataTarget);
+
 
             const activationDocumentRules: string[] = [];
             //messageType + "-" + businessType + "-" + reasonCode
@@ -167,18 +176,25 @@ export class ParametersController {
 
             parameters.values.set(ParametersType.ROLE, role_producer);
 
-            const valueSite: string[] = [];
-            valueSite.push(enedis_producer);
-            valueSite.push(producer_rte);
-            parameters.values.set(ParametersType.SITE, valueSite);
 
-            const valueActivationDocument = new Map<string, string[]>();
-            valueActivationDocument.set(OrganizationTypeMsp.ENEDIS, [enedis_producer]);
-            valueActivationDocument.set(OrganizationTypeMsp.PRODUCER, [enedis_producer, producer_rte]);
-            valueActivationDocument.set(RoleType.Role_Producer, [enedis_producer, producer_rte]);
-            valueActivationDocument.set(OrganizationTypeMsp.RTE, [producer_rte]);
-            valueActivationDocument.set(ParametersType.ALL, [enedis_producer, producer_rte]);
-            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
+
+            const valueDataTarget = new Map<string, string[]>();
+
+            valueDataTarget.set(ParametersType.ALL, [enedis_producer, producer_rte, enedis_producer_rte]);
+
+            valueDataTarget.set(OrganizationTypeMsp.ENEDIS, [enedis_producer]);
+            valueDataTarget.set(enedis_producer, [enedis_producer]);
+
+            valueDataTarget.set(OrganizationTypeMsp.PRODUCER, [enedis_producer, producer_rte]);
+            valueDataTarget.set(RoleType.Role_Producer, [enedis_producer, producer_rte]);
+
+            valueDataTarget.set(OrganizationTypeMsp.RTE, [producer_rte]);
+            valueDataTarget.set(producer_rte, [producer_rte]);
+
+            valueDataTarget.set(enedis_producer_rte, [enedis_producer_rte]);
+
+            parameters.values.set(ParametersType.DATA_TARGET, valueDataTarget);
+
 
             const valueEnergy: string[] = [];
             valueEnergy.push(enedis_producer);
@@ -197,18 +213,24 @@ export class ParametersController {
 
             parameters.values.set(ParametersType.ROLE, role_rte);
 
-            const valueSite: string[] = [];
-            valueSite.push(producer_rte);
-            parameters.values.set(ParametersType.SITE, valueSite);
 
-            const valueActivationDocument = new Map<string, string[]>();
-            valueActivationDocument.set(OrganizationTypeMsp.ENEDIS, [enedis_rte]);
-            valueActivationDocument.set(RoleType.Role_DSO, [enedis_rte]);
-            valueActivationDocument.set(OrganizationTypeMsp.PRODUCER, [producer_rte]);
-            valueActivationDocument.set(RoleType.Role_Producer, [producer_rte]);
-            valueActivationDocument.set(ParametersType.DEFAULT, [producer_rte]);
-            valueActivationDocument.set(ParametersType.ALL, [enedis_rte, producer_rte]);
-            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT, valueActivationDocument);
+            const valueDataTarget = new Map<string, string[]>();
+
+            valueDataTarget.set(ParametersType.DEFAULT, [producer_rte]);
+            valueDataTarget.set(ParametersType.ALL, [enedis_rte, producer_rte, enedis_producer_rte]);
+
+            valueDataTarget.set(OrganizationTypeMsp.ENEDIS, [enedis_rte]);
+            valueDataTarget.set(RoleType.Role_DSO, [enedis_rte]);
+            valueDataTarget.set(enedis_rte, [enedis_rte]);
+
+            valueDataTarget.set(OrganizationTypeMsp.PRODUCER, [producer_rte]);
+            valueDataTarget.set(RoleType.Role_Producer, [producer_rte]);
+            valueDataTarget.set(producer_rte, [producer_rte]);
+
+            valueDataTarget.set(enedis_producer_rte, [enedis_producer_rte]);
+
+            parameters.values.set(ParametersType.DATA_TARGET, valueDataTarget);
+
 
             const activationDocumentRules: string[] = [];
             //messageType + "-" + businessType + "-" + reasonCode

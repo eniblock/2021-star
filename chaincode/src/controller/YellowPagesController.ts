@@ -58,6 +58,11 @@ export class YellowPagesController {
         originAutomationRegisteredResourceMrid: string): Promise<YellowPages[]> {
 
         const query = `{"selector": {"docType": "${DocType.YELLOW_PAGES}", "originAutomationRegisteredResourceMrid": "${originAutomationRegisteredResourceMrid}"}}`;
+
+        console.info("-*-*-*-*-*-*-*-*-*-*-*-*-")
+        console.info(query)
+        console.info("-*-*-*-*-*-*-*-*-*-*-*-*-")
+
         const allResults : YellowPages[] = await QueryStateService.getQueryArrayResult(ctx, query);
         return allResults;
     }

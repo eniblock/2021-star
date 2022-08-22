@@ -3,10 +3,11 @@ import { Site } from "../src/model/site";
 import { SystemOperator } from "../src/model/systemOperator";
 import { StateQueryIterator } from 'fabric-shim/lib/iterators';
 import { OrganizationTypeMsp } from "../src/enums/OrganizationMspType";
-import { ActivationDocument } from "../src/model/activationDocument";
+import { ActivationDocument } from "../src/model/activationDocument/activationDocument";
 import { YellowPages } from "../src/model/yellowPages";
 import { EnergyAmount } from "../src/model/energyAmount";
 import { EnergyAccount } from "../src/model/energyAccount";
+import { DataVersionType } from "../src/enums/DataVersionType";
 
 export class Values {
     public static FakeMSP = 'FakeMSP';
@@ -209,14 +210,14 @@ export class Values {
         siteName: 'Ferme éolienne de Genonville',
         substationMrid: 'GDO A4RTD',
         substationName: 'CIVRAY',
-        marketEvaluationPointMrid: 'CodePPE', // optional
-        schedulingEntityRegisteredResourceMrid: 'CodeEDP', // optional
-        siteAdminMrid: '489 981 029', // optional
-        siteLocation: 'Biscarosse', // optional
-        siteIecCode: 'S7X0000013077478', // optional
-        systemOperatorEntityFlexibilityDomainMrid: 'PSC4511', // optional
-        systemOperatorEntityFlexibilityDomainName: 'Départ 1', // optional
-        systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres', // optional
+        marketEvaluationPointMrid: 'CodePPE',
+        schedulingEntityRegisteredResourceMrid: 'CodeEDP',
+        siteAdminMrid: '489 981 029',
+        siteLocation: 'Biscarosse',
+        siteIecCode: 'S7X0000013077478',
+        systemOperatorEntityFlexibilityDomainMrid: 'PSC4511',
+        systemOperatorEntityFlexibilityDomainName: 'Départ 1',
+        systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres',
     };
 
     public static siteHTBProdA: Site = {
@@ -235,7 +236,7 @@ export class Values {
         siteIecCode: 'S7X0000013077478',
         systemOperatorEntityFlexibilityDomainMrid: 'PSC4511',
         systemOperatorEntityFlexibilityDomainName: 'Départ 1',
-        systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'
+        systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres',
     }
 
     public static siteHTBProdB: Site = {
@@ -254,7 +255,7 @@ export class Values {
         siteIecCode: 'S7X0000013077478',
         systemOperatorEntityFlexibilityDomainMrid: 'PSC4511',
         systemOperatorEntityFlexibilityDomainName: 'Départ 1',
-        systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres'
+        systemOperatorCustomerServiceName: 'DR Nantes Deux-Sèvres',
     }
 
 
@@ -404,6 +405,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        dataVersion: DataVersionType.CREATION,
     }
 
     public static HTA_ActivationDocument_Valid_ForRTETest: ActivationDocument = {
@@ -424,6 +426,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        dataVersion: DataVersionType.CREATION,
     }
 
     public static HTA_ActivationDocument_Valid_Doc2: ActivationDocument = {
@@ -444,6 +447,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        dataVersion: DataVersionType.CREATION,
     }
 
     public static HTB_ActivationDocument_Valid: ActivationDocument = {
@@ -463,6 +467,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        dataVersion: DataVersionType.CREATION,
     }
 
     public static HTB_ActivationDocument_JustStartDate: ActivationDocument = {
@@ -481,6 +486,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        dataVersion: DataVersionType.CREATION,
     }
 
     public static HTB_ActivationDocument_JustEndDate: ActivationDocument = {
@@ -499,6 +505,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        dataVersion: DataVersionType.CREATION,
     }
 
     public static HTB_ActivationDocument_HTA_JustStartDate: ActivationDocument = {
@@ -517,6 +524,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        dataVersion: DataVersionType.CREATION,
     }
 
 
@@ -627,7 +635,7 @@ export class Values {
         classificationType: "A02",
         product: "Energie active/Réactive",
         startCreatedDateTime: "",
-        endCreatedDateTime: ""
+        endCreatedDateTime: "",
     }
 
     public static HTA_EnergyAccount_a2 : EnergyAccount = {
@@ -651,7 +659,7 @@ export class Values {
         classificationType: "A02",
         product: "Energie active/Réactive",
         startCreatedDateTime: "",
-        endCreatedDateTime: ""
+        endCreatedDateTime: "",
     }
 
     public static HTA_EnergyAccount_a3 : EnergyAccount = {
@@ -675,7 +683,7 @@ export class Values {
         classificationType: "A02",
         product: "Energie active/Réactive",
         startCreatedDateTime: "",
-        endCreatedDateTime: ""
+        endCreatedDateTime: "",
     };
 
 
@@ -700,7 +708,7 @@ export class Values {
         classificationType: "A02",
         product: "Energie active/Réactive",
         startCreatedDateTime: "",
-        endCreatedDateTime: ""
+        endCreatedDateTime: "",
     }
 
     public static HTB_EnergyAccount_a4 : EnergyAccount = {
@@ -724,7 +732,7 @@ export class Values {
         classificationType: "A02",
         product: "Energie active/Réactive",
         startCreatedDateTime: "",
-        endCreatedDateTime: ""
+        endCreatedDateTime: "",
     }
 
     public static HTB_EnergyAccount_a5 : EnergyAccount = {
@@ -748,7 +756,7 @@ export class Values {
         classificationType: "A02",
         product: "Energie active/Réactive",
         startCreatedDateTime: "",
-        endCreatedDateTime: ""
+        endCreatedDateTime: "",
     }
 
 

@@ -91,6 +91,7 @@ public class OrdreLimitationRepository {
         log.info("Modification de eligibility Status limitation : {}", ordreLimitationEligibilityStatus);
         try {
             contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_ELIGIBILITY_STATUS, objectMapper.writeValueAsString(ordreLimitationEligibilityStatus));
+            this.reconciliate();
         } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la modification de eligibility Status ", exception);
         } catch (ContractException contractException) {

@@ -8,33 +8,6 @@ import { HLFServices } from "./HLFservice";
 import { QueryStateService } from "./QueryStateService";
 
 export class EnergyAccountService {
-    // public static async getRaw(
-    //     ctx: Context,
-    //     params: STARParameters,
-    //     energyAccountMarketDocumentMrid: string): Promise<Uint8Array> {
-    //     console.debug('============= START : getRaw %s EnergyAccountService ===========', energyAccountMarketDocumentMrid);
-
-    //     const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
-
-    //     var energyAccountAsBytes: Uint8Array = new Uint8Array();
-    //     var i=0;
-
-    //     if (collections) {
-    //         while (i<collections.length && (!energyAccountAsBytes || energyAccountAsBytes.length === 0)) {
-    //             energyAccountAsBytes = await ctx.stub.getPrivateData(collections[i], energyAccountMarketDocumentMrid);
-    //             i++;
-    //         }
-    //     }
-
-    //     if (!energyAccountAsBytes || energyAccountAsBytes.length === 0) {
-    //         throw new Error(`Energy Account : ${energyAccountMarketDocumentMrid} does not exist.`);
-    //     }
-
-    //     console.debug('============= END : getRaw %s EnergyAccountService ===========', energyAccountMarketDocumentMrid);
-    //     return energyAccountAsBytes;
-    // }
-
-
     public static async getRaw(
         ctx: Context,
         collection: string,

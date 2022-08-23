@@ -7,7 +7,6 @@ import { ActivationDocument } from "../src/model/activationDocument/activationDo
 import { YellowPages } from "../src/model/yellowPages";
 import { EnergyAmount } from "../src/model/energyAmount";
 import { EnergyAccount } from "../src/model/energyAccount";
-import { DataVersionType } from "../src/enums/DataVersionType";
 
 export class Values {
     public static FakeMSP = 'FakeMSP';
@@ -404,8 +403,7 @@ export class Values {
         reasonCode: 'A70', // optionnal in case of TVC modulation
         senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
-        eligibilityStatusEditable: true,
-        dataVersion: DataVersionType.CREATION,
+        eligibilityStatusEditable: true
     }
 
     public static HTA_ActivationDocument_Valid_ForRTETest: ActivationDocument = {
@@ -425,8 +423,7 @@ export class Values {
         reasonCode: 'A70', // optionnal in case of TVC modulation
         senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
-        eligibilityStatusEditable: true,
-        dataVersion: DataVersionType.CREATION,
+        eligibilityStatusEditable: true
     }
 
     public static HTA_ActivationDocument_Valid_Doc2: ActivationDocument = {
@@ -446,8 +443,7 @@ export class Values {
         reasonCode: 'Y98', // optionnal in case of TVC modulation
         senderMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
-        eligibilityStatusEditable: true,
-        dataVersion: DataVersionType.CREATION,
+        eligibilityStatusEditable: true
     }
 
     public static HTB_ActivationDocument_Valid: ActivationDocument = {
@@ -466,8 +462,7 @@ export class Values {
         reasonCode: "string",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
-        eligibilityStatusEditable: true,
-        dataVersion: DataVersionType.CREATION,
+        eligibilityStatusEditable: true
     }
 
     public static HTB_ActivationDocument_JustStartDate: ActivationDocument = {
@@ -485,8 +480,7 @@ export class Values {
         reasonCode: "A70",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
-        eligibilityStatusEditable: true,
-        dataVersion: DataVersionType.CREATION,
+        eligibilityStatusEditable: true
     }
 
     public static HTB_ActivationDocument_JustEndDate: ActivationDocument = {
@@ -504,8 +498,7 @@ export class Values {
         reasonCode: "string",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
-        eligibilityStatusEditable: true,
-        dataVersion: DataVersionType.CREATION,
+        eligibilityStatusEditable: true
     }
 
     public static HTB_ActivationDocument_HTA_JustStartDate: ActivationDocument = {
@@ -523,8 +516,7 @@ export class Values {
         reasonCode: "string",
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
-        eligibilityStatusEditable: true,
-        dataVersion: DataVersionType.CREATION,
+        eligibilityStatusEditable: true
     }
 
 

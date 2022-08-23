@@ -19,7 +19,5 @@
     PC_TIME_MATCH_THRESHOLD = 'pCTimeMatchThreshold',
     PC_TIME_UPDATEEND_MATCH_THRESHOLD = 'pCTimeUpdateEndMatchThreshold',
 
-    ENERGY_AMOUNT = 'energyAmount',
-    ENERGY_ACCOUNT = 'energyAccount',
     REFERENCE_ENERGY_ACCOUNT = 'referenceEnergyAccount',
   }

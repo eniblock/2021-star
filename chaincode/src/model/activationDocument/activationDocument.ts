@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import * as Yup from 'yup';
-import { DataVersionType } from '../../enums/DataVersionType';
+import { DataActionType } from '../../enums/DataActionType';
 
 export class ActivationDocument {
     public static formatString(inputString: string) : ActivationDocument {
@@ -14,9 +14,6 @@ export class ActivationDocument {
         }
 
         try {
-            if (!activationDocumentObj.dataVersion) {
-                activationDocumentObj.dataVersion = DataVersionType.PENDING;
-            }
             ActivationDocument.schema.validateSync(
                 activationDocumentObj,
                 {strict: true, abortEarly: false},
@@ -37,9 +34,6 @@ export class ActivationDocument {
 
         if (activationDocumentList && activationDocumentList.length > 0) {
             for (var activationDocumentObj of activationDocumentList) {
-                if (!activationDocumentObj.dataVersion) {
-                    activationDocumentObj.dataVersion = DataVersionType.PENDING;
-                }
                 try {
                     ActivationDocument.schema.validateSync(
                         activationDocumentObj,
@@ -79,7 +73,6 @@ export class ActivationDocument {
         testDateTime: Yup.string().notRequired(),
         eligibilityStatus: Yup.string().notRequired(),
         eligibilityStatusEditable: Yup.boolean().notRequired().typeError('eligibilityStatusEditable must be a boolean'),
-        dataVersion: Yup.string().required('dataVersion is required').typeError('dataVersion must be a string'),
     });
 
     public docType?: string;
@@ -103,5 +96,4 @@ export class ActivationDocument {
     public subOrderList?: string[];
     public eligibilityStatus?: string;
     public eligibilityStatusEditable: boolean;
-    public dataVersion: string;
 }

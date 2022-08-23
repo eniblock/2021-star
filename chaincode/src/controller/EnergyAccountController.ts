@@ -14,6 +14,7 @@ import { ParametersType } from '../enums/ParametersType';
 import { EnergyAccountService } from './service/EnergyAccountService';
 import { SystemOperatorService } from './service/SystemOperatorService';
 import { DataReference } from '../model/dataReference';
+import { SiteController } from './SiteController';
 
 export class EnergyAccountController {
 
@@ -31,7 +32,7 @@ export class EnergyAccountController {
         try {
             existingSitesRef = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
         } catch(error) {
-            throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` Can not be updated.`));
+            throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` Can not be created.`));
         }
 
         for (var [key, ] of existingSitesRef) {
@@ -99,16 +100,11 @@ export class EnergyAccountController {
 
         let siteObj: Site;
         try {
-            if (target && target.length > 0) {
-                siteObj = await SiteService.getObj(ctx, params, energyObj.meteringPointMrid, target);
-            } else {
-                const existingSitesRef = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
-                const siteObjRef: DataReference = existingSitesRef.values().next().value;
-                siteObj = siteObjRef.data;
-            }
-        } catch (error) {
+            siteObj = await SiteController.getSiteById(ctx, params, energyObj.meteringPointMrid, target);
+        } catch(error) {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
+
 
         let systemOperatorObj: SystemOperator;
         try {

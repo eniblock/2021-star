@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ONLINE_MODE=false
+ONLINE_MODE=true
 PAUSE_TIME=0s
 if $ONLINE_MODE
 then
@@ -61,7 +61,7 @@ for i in `seq $RTE_ACTIVATIONDOCUMENT_VALUE_NB`
 do
     index=$(($i-1))
     activationDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    activationDocumentMrid=$(echo "activationDocument_$activationDocumentMrid")
+    activationDocumentMrid=$(echo "activationDocument_rte_$activationDocumentMrid")
     IdListRTE_PRODUCER+=( $activationDocumentMrid )
     ELEMENT_VALUE=$(echo $RTE_ACTIVATIONDOCUMENT_VALUE | jq --argjson index $index --arg activationDocumentMrid $activationDocumentMrid '.[$index] + {activationDocumentMrid: $activationDocumentMrid}')
     ELEMENT_VALUE=${ELEMENT_VALUE//[$'\t\r\n ']}
@@ -96,7 +96,7 @@ for i in `seq $RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_NB`
 do
     index=$(($i-1))
     activationDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    activationDocumentMrid=$(echo "activationDocument_$activationDocumentMrid")
+    activationDocumentMrid=$(echo "activationDocument_rte_$activationDocumentMrid")
     IdListRTE_ENEDIS+=( $activationDocumentMrid )
     ELEMENT_VALUE=$(echo $RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE | jq --argjson index $index --arg activationDocumentMrid $activationDocumentMrid '.[$index] + {activationDocumentMrid: $activationDocumentMrid}')
     RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_WITHID=$(echo $RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_WITHID | jq --argjson index $index --argjson ELEMENT_VALUE "$ELEMENT_VALUE" '.[$index] |= . + $ELEMENT_VALUE' )
@@ -126,7 +126,7 @@ for i in `seq $ENEDIS_ACTIVATIONDOCUMENT_VALUE_NB`
 do
     index=$(($i-1))
     activationDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    activationDocumentMrid=$(echo "activationDocument_$activationDocumentMrid")
+    activationDocumentMrid=$(echo "activationDocument_enedis_$activationDocumentMrid")
     IdListENEDIS+=( $activationDocumentMrid )
     ELEMENT_VALUE=$(echo $ENEDIS_ACTIVATIONDOCUMENT_VALUE | jq --argjson index $index --arg activationDocumentMrid $activationDocumentMrid '.[$index] + {activationDocumentMrid: $activationDocumentMrid}')
     ELEMENT_VALUE=${ELEMENT_VALUE//[$'\t\r\n ']}
@@ -230,7 +230,7 @@ for i in `seq $ENEDIS_ENERGYAMOUNTS_NB`
 do
     tabindex=$(echo ".["$i-1"]")
     energyAmountMarketDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    energyAmountMarketDocumentMrid=$(echo "energyAmount_$energyAmountMarketDocumentMrid")
+    energyAmountMarketDocumentMrid=$(echo "energyAmount_enedis_$energyAmountMarketDocumentMrid")
     ENEDIS_ENERGYAMOUNTS_VALUE=$(echo $ENEDIS_ENERGYAMOUNTS | jq $tabindex | jq --arg value $energyAmountMarketDocumentMrid '. + {energyAmountMarketDocumentMrid: $value}')
     timeINTERVAL=$(echo $ENEDIS_ENERGYAMOUNTS_VALUE | jq '.timeInterval')
     timeINTERVAL=$(echo $timeINTERVAL | sed "s/\//99/g")
@@ -252,7 +252,7 @@ do
             peer chaincode invoke \
                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
                 --tls $ENEDIS_TLSOPT \
-                -c '{"Args":["CreateEnergyAccount","'$ENEDIS_ENERGYAMOUNTS_VALUE_STR'"]}'
+                -c '{"Args":["CreateDSOEnergyAmount","'$ENEDIS_ENERGYAMOUNTS_VALUE_STR'"]}'
     fi
 
 done
@@ -266,18 +266,12 @@ echo
 RTE_ENERGYAMOUNTS=$(cat $DATA_PATH/62-HTB-EnergyAmount.json | jq '.')
 RTE_ENERGYAMOUNTS_NB=$(echo $RTE_ENERGYAMOUNTS | jq 'length')
 
-echo "*****"
-for key in ${!mapRTE_ACTIVATIONDOCUMENTS[@]};do
- echo $key
- echo ${mapRTE_ACTIVATIONDOCUMENTS[$key]}
-done
-echo "*****"
 
 for i in `seq $RTE_ENERGYAMOUNTS_NB`
 do
     tabindex=$(echo ".["$i-1"]")
     energyAmountMarketDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    energyAmountMarketDocumentMrid=$(echo "energyAmount_$energyAmountMarketDocumentMrid")
+    energyAmountMarketDocumentMrid=$(echo "energyAmount_rte_$energyAmountMarketDocumentMrid")
     RTE_ENERGYAMOUNTS_VALUE=$(echo $RTE_ENERGYAMOUNTS | jq $tabindex | jq --arg value $energyAmountMarketDocumentMrid '. + {energyAmountMarketDocumentMrid: $value}')
     timeINTERVAL=$(echo $RTE_ENERGYAMOUNTS_VALUE | jq '.timeInterval')
     timeINTERVAL=$(echo $timeINTERVAL | sed "s/\//99/g")
@@ -300,7 +294,7 @@ do
             peer chaincode invoke \
                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
                 --tls $RTE_TLSOPT \
-                -c '{"Args":["CreateEnergyAccount","'$RTE_ENERGYAMOUNTS_VALUE_STR'"]}'
+                -c '{"Args":["CreateTSOEnergyAmount","'$RTE_ENERGYAMOUNTS_VALUE_STR'"]}'
     fi
 
 done

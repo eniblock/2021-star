@@ -1,5 +1,5 @@
 import { Context } from "fabric-contract-api";
-import { DataVersionType } from "../../enums/DataVersionType";
+import { DataActionType } from "../../enums/DataActionType";
 import { DocType } from "../../enums/DocType";
 import { ActivationDocument } from "../../model/activationDocument/activationDocument";
 import { DataReference } from "../../model/dataReference";
@@ -12,7 +12,7 @@ export class OrderManagerController {
         ctx: Context,
         params: STARParameters,
         updateOrder: DataReference) {
-        console.info('============= START : executeOrder ReconciliationController ===========');
+        console.debug('============= START : executeOrder OrderManagerController ===========');
 
         if (updateOrder.data) {
             ActivationDocument.schema.validateSync(
@@ -21,16 +21,15 @@ export class OrderManagerController {
             );
             const activationDocument:ActivationDocument = updateOrder.data;
 
-            if (activationDocument.dataVersion === DataVersionType.DELETION) {
-                await ActivationDocumentService.delete(ctx, params, activationDocument.activationDocumentMrid, updateOrder.collection);
-            } else if (activationDocument.dataVersion === DataVersionType.CREATION) {
+            if (updateOrder.dataAction === DataActionType.COLLECTION_CHANGE) {
                 await ActivationDocumentController.createActivationDocumentByReference(ctx, params, updateOrder);
+                await ActivationDocumentService.delete(ctx, params, activationDocument.activationDocumentMrid, updateOrder.previousCollection);
             } else {
                 await this.updateByOrders(ctx, params, activationDocument, updateOrder.collection);
             }
         }
 
-        console.info('============= END   : executeOrder ReconciliationController ===========');
+        console.debug('============= END   : executeOrder OrderManagerController ===========');
     }
 
 
@@ -40,7 +39,7 @@ export class OrderManagerController {
         activationDocument:ActivationDocument,
         collection: string) {
 
-        console.info('============= START : updateByOrders ReconciliationController ===========');
+        console.debug('============= START : updateByOrders OrderManagerController ===========');
         const original:ActivationDocument = await ActivationDocumentService.getObj(ctx, params, activationDocument.activationDocumentMrid, collection);
 
         const original_order:ActivationDocument = JSON.parse(JSON.stringify(original));
@@ -50,12 +49,8 @@ export class OrderManagerController {
         original_order.subOrderList = activationDocument.subOrderList;
         original_order.eligibilityStatus = activationDocument.eligibilityStatus;
         original_order.eligibilityStatusEditable = activationDocument.eligibilityStatusEditable;
-        original_order.dataVersion = activationDocument.dataVersion;
 
         if (JSON.stringify(original_order) !== JSON.stringify(activationDocument)) {
-            console.info("Error - ActivationDocument updateByOrders");
-            console.info("expected:",original_order);
-            console.info("actual:",activationDocument);
             throw new Error(`Error on document ${activationDocument.activationDocumentMrid} all modified data cannot be updated by orders.`);
         }
 
@@ -68,6 +63,6 @@ export class OrderManagerController {
         }
         activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
         await ActivationDocumentService.write(ctx, params, activationDocument, collection);
-        console.info('============= END : updateByOrders ReconciliationController ===========');
+        console.debug('============= END : updateByOrders OrderManagerController ===========');
     }
 }

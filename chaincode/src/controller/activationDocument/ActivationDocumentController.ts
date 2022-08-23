@@ -19,7 +19,7 @@ import { RoleType } from '../../enums/RoleType';
 import { DataReference } from '../../model/dataReference';
 import { EligibilityStatusType } from '../../enums/EligibilityStatusType';
 import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
-import { DataVersionType } from '../../enums/DataVersionType';
+import { DataActionType } from '../../enums/DataActionType';
 
 export class ActivationDocumentController {
     public static async getActivationDocumentByProducer(
@@ -60,14 +60,23 @@ export class ActivationDocumentController {
     public static async getActivationDocumentById(
         ctx: Context,
         params: STARParameters,
-        activationDocumentMrid: string): Promise<ActivationDocument> {
+        activationDocumentMrid: string,
+        target: string = ''): Promise<ActivationDocument> {
 
-        const result:Map<string, DataReference> = await ActivationDocumentService.getObjRefbyId(ctx, params, activationDocumentMrid);
-        const dataReference = result.values().next().value;
+        let orderObj: ActivationDocument;
+        if (target && target.length > 0) {
+            orderObj = await ActivationDocumentService.getObj(ctx, params, activationDocumentMrid, target);
+        } else {
+            const result:Map<string, DataReference> = await ActivationDocumentService.getObjRefbyId(ctx, params, activationDocumentMrid);
+            const dataReference = result.values().next().value;
+            if (dataReference && dataReference.data) {
+                orderObj = dataReference.data;
+            }
+        }
 
         var formatedResult: ActivationDocument = null;
-        if (dataReference && dataReference.data) {
-            formatedResult = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(ctx, params, dataReference.data);
+        if (orderObj) {
+            formatedResult = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(ctx, params, orderObj);
         }
 
         return formatedResult;
@@ -262,7 +271,6 @@ export class ActivationDocumentController {
         activationDocumentObj.eligibilityStatusEditable = !(activationDocumentObj.eligibilityStatus === EligibilityStatusType.EligibilityAccepted);
         activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.statusInternationalValue(activationDocumentObj.eligibilityStatus);
 
-        activationDocumentObj.dataVersion = DataVersionType.CREATION;
         await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
 
         console.info('============= END   : Create %s createActivationDocumentObj ===========',

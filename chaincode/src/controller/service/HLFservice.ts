@@ -51,6 +51,9 @@ export class HLFServices {
             const collectionMap: Map<string, string[]> = params.values.get(docType);
             if (collectionMap) {
                 collections = collectionMap.get(ParametersType.DEFAULT);
+                if (!collections) {
+                    collections = collectionMap.values().next().value;
+                }
             }
         } else {
             collections = target;

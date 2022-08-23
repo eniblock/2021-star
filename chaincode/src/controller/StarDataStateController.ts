@@ -1,5 +1,7 @@
 import { Context } from "fabric-contract-api";
 import { DocType } from "../enums/DocType";
+import { OrganizationTypeMsp } from "../enums/OrganizationMspType";
+import { ParametersType } from "../enums/ParametersType";
 import { ActivationDocument } from "../model/activationDocument/activationDocument";
 import { DataReference } from "../model/dataReference";
 import { EnergyAccount } from "../model/energyAccount";
@@ -9,6 +11,8 @@ import { EligibilityController } from "./activationDocument/EligibilityControlle
 import { OrderManagerController } from "./activationDocument/OrderManagerController";
 import { ReconciliationController } from "./activationDocument/ReconciliationController";
 import { EnergyAccountController } from "./EnergyAccountController";
+import { EnergyAmountController } from "./EnergyAmountController";
+import { ReferenceEnergyAccountController } from "./ReferenceEnergyAccountController";
 import { SiteController } from "./SiteController";
 
 export class StarDataStateController {
@@ -63,10 +67,11 @@ export class StarDataStateController {
                     const data: Site = updateOrder.data;
                     params.addInMemoryPool(data.meteringPointMrid, updateOrder);
 
-                } else if (updateOrder.docType === DocType.ENERGY_ACCOUNT) {
-                    const data: EnergyAccount = updateOrder.data;
-                    params.addInMemoryPool(data.energyAccountMarketDocumentMrid, updateOrder);
                 }
+                //  else if (updateOrder.docType === DocType.ENERGY_ACCOUNT) {
+                //     const data: EnergyAccount = updateOrder.data;
+                //     params.addInMemoryPool(data.energyAccountMarketDocumentMrid, updateOrder);
+                // }
 
             }
             //PROCESS Step
@@ -77,6 +82,10 @@ export class StarDataStateController {
                     await SiteController.createSiteByReference(ctx, params, updateOrder);
                 } else if (updateOrder.docType === DocType.ENERGY_ACCOUNT) {
                     await EnergyAccountController.createEnergyAccountByReference(ctx, params, updateOrder);
+                } else if (updateOrder.docType === DocType.REFERENCE_ENERGY_ACCOUNT) {
+                    await ReferenceEnergyAccountController.createReferenceEnergyAccountByReference(ctx, params, updateOrder);
+                } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
+                    await EnergyAmountController.executeOrder(ctx, params, updateOrder);
                 }
 
             }

@@ -938,11 +938,9 @@ describe('Star Tests ActivationDocument', () => {
 
             activationDocument01_garbage.orderEnd = true;
             activationDocument01_garbage.potentialParent = false;
-            activationDocument01_garbage.dataVersion = "1";
 
             activationDocument02_garbage.orderEnd = true;
             activationDocument02_garbage.potentialChild = false;
-            activationDocument02_garbage.dataVersion = "1";
 
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
@@ -995,11 +993,9 @@ describe('Star Tests ActivationDocument', () => {
 
             activationDocument01_garbage.orderEnd = true;
             activationDocument01_garbage.potentialParent = false;
-            activationDocument01_garbage.dataVersion = "1";
 
             activationDocument02_garbage.orderEnd = true;
             activationDocument02_garbage.potentialChild = false;
-            activationDocument02_garbage.dataVersion = "1";
 
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
@@ -1073,12 +1069,10 @@ describe('Star Tests ActivationDocument', () => {
 
             parentStartDocument.orderEnd = true;
             parentStartDocument.subOrderList = [childEndDocument.activationDocumentMrid];
-            parentStartDocument.dataVersion = "1";
 
             childEndDocument.potentialChild = false;
             childEndDocument.subOrderList = [parentStartDocument.activationDocumentMrid];
             childEndDocument.docType=DocType.ACTIVATION_DOCUMENT;
-            childEndDocument.dataVersion = "1";
 
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: parentStartDocument});
@@ -1164,12 +1158,10 @@ describe('Star Tests ActivationDocument', () => {
 
             parentStartDocument.orderEnd = true;
             parentStartDocument.subOrderList = [childEndDocument.activationDocumentMrid];
-            parentStartDocument.dataVersion = "1";
 
             childEndDocument.potentialChild = false;
             childEndDocument.subOrderList = [parentStartDocument.activationDocumentMrid];
             childEndDocument.docType=DocType.ACTIVATION_DOCUMENT;
-            childEndDocument.dataVersion = "1";
 
 
             const updateOrders: DataReference[] = [];
@@ -1255,11 +1247,9 @@ describe('Star Tests ActivationDocument', () => {
 
             parentDocument.orderEnd = true;
             parentDocument.subOrderList = [childDocument_Reconciliation.activationDocumentMrid];
-            parentDocument.dataVersion = "1";
 
             childDocument_Reconciliation.potentialChild = false;
             childDocument_Reconciliation.subOrderList = [parentDocument.activationDocumentMrid];
-            childDocument_Reconciliation.dataVersion = "1";
 
 
             const updateOrders: DataReference[] = [];
@@ -1355,11 +1345,9 @@ describe('Star Tests ActivationDocument', () => {
 
             parentDocument.orderEnd = true;
             parentDocument.subOrderList = [childDocument_Reconciliation.activationDocumentMrid];
-            parentDocument.dataVersion = "1";
 
             childDocument_Reconciliation.potentialChild = false;
             childDocument_Reconciliation.subOrderList = [parentDocument.activationDocumentMrid];
-            childDocument_Reconciliation.dataVersion = "1";
 
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: parentDocument});
@@ -1601,7 +1589,6 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument_Producer.potentialParent= false;
             activationDocument_Producer.orderEnd = true;
             activationDocument_Producer.subOrderList = ["AAA", "BBB"];
-            activationDocument_Producer.dataVersion = "1";
 
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: "XXX", data: activationDocument_Producer});
@@ -1626,7 +1613,6 @@ describe('Star Tests ActivationDocument', () => {
             const collectionProducer: string = collectionsProducer[0];
 
             const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
-            activationDocument_Producer.dataVersion = "1";
 
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument_Producer});
@@ -1654,7 +1640,6 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument_Producer.docType=DocType.ACTIVATION_DOCUMENT;
             activationDocument_Producer.potentialParent= true;
             activationDocument_Producer.potentialChild= false;
-            activationDocument_Producer.dataVersion = "1";
 
 
             transactionContext.stub.getPrivateData.withArgs(collectionProducer,
@@ -1697,7 +1682,6 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument_Producer.potentialParent= false;
             activationDocument_Producer.orderEnd = true;
             activationDocument_Producer.subOrderList = ["AAA", "BBB"];
-            activationDocument_Producer.dataVersion = "1";
 
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument_Producer});
@@ -1742,10 +1726,8 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument_Producer.potentialParent= false;
             activationDocument_Producer.orderEnd = true;
             activationDocument_Producer.subOrderList = ["AAA", "BBB"];
-            activationDocument_Producer.dataVersion = "1";
             activationDocument_TSO.potentialParent= false;
             activationDocument_TSO.subOrderList = ["111", "222"];
-            activationDocument_TSO.dataVersion = "1";
 
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument_Producer});

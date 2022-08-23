@@ -162,8 +162,6 @@ export class ParametersController {
 
             const valueEnergy: string[] = [];
             valueEnergy.push(enedis_producer);
-            parameters.values.set(ParametersType.ENERGY_AMOUNT, valueEnergy);
-            parameters.values.set(ParametersType.ENERGY_ACCOUNT, valueEnergy);
             parameters.values.set(ParametersType.REFERENCE_ENERGY_ACCOUNT, valueEnergy);
 
             /*
@@ -199,8 +197,6 @@ export class ParametersController {
             const valueEnergy: string[] = [];
             valueEnergy.push(enedis_producer);
             valueEnergy.push(producer_rte);
-            parameters.values.set(ParametersType.ENERGY_AMOUNT, valueEnergy);
-            parameters.values.set(ParametersType.ENERGY_ACCOUNT, valueEnergy);
             parameters.values.set(ParametersType.REFERENCE_ENERGY_ACCOUNT, valueEnergy);
 
             /*
@@ -277,8 +273,6 @@ export class ParametersController {
 
             const valueEnergy: string[] = [];
             valueEnergy.push(producer_rte);
-            parameters.values.set(ParametersType.ENERGY_AMOUNT, valueEnergy);
-            parameters.values.set(ParametersType.ENERGY_ACCOUNT, valueEnergy);
             parameters.values.set(ParametersType.REFERENCE_ENERGY_ACCOUNT, valueEnergy);
 
             /*

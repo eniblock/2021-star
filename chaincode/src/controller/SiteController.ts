@@ -169,6 +169,28 @@ export class SiteController {
 
 
 
+    public static async getSiteById(
+        ctx: Context,
+        params: STARParameters,
+        id: string,
+        target: string = ''): Promise<Site> {
+
+        let siteObj: Site;
+        if (target && target.length > 0) {
+            siteObj = await SiteService.getObj(ctx, params, id, target);
+        } else {
+            const result:Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, id);
+            const dataReference = result.values().next().value;
+            if (dataReference && dataReference.data) {
+                siteObj = dataReference.data;
+            }
+        }
+
+        return siteObj;
+    }
+
+
+
 
     public static async getSitesBySystemOperator(
         ctx: Context,

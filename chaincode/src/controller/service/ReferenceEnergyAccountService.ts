@@ -3,19 +3,21 @@ import { DocType } from "../../enums/DocType";
 import { ParametersType } from "../../enums/ParametersType";
 import { EnergyAccount } from "../../model/energyAccount";
 import { STARParameters } from "../../model/starParameters";
+import { HLFServices } from "./HLFservice";
 import { QueryStateService } from "./QueryStateService";
 
 export class ReferenceEnergyAccountService {
     public static async write(
         ctx: Context,
         params: STARParameters,
-        energyObj: EnergyAccount): Promise<void> {
+        energyObj: EnergyAccount,
+        target: string = ''): Promise<void> {
         console.debug('============= START : Write %s ReferenceEnergyAccountService ===========', energyObj.energyAccountMarketDocumentMrid);
 
-        const collections: string[] = params.values.get(ParametersType.REFERENCE_ENERGY_ACCOUNT);
-        energyObj.docType = DocType.REFERENCE_ENERGY_ACCOUNT;
+        const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, target);
 
-        await ctx.stub.putPrivateData(collections[0], energyObj.energyAccountMarketDocumentMrid, Buffer.from(JSON.stringify(energyObj)));
+        energyObj.docType = DocType.REFERENCE_ENERGY_ACCOUNT;
+        await ctx.stub.putPrivateData(collection, energyObj.energyAccountMarketDocumentMrid, Buffer.from(JSON.stringify(energyObj)));
 
         console.debug('============= END : Write %s (%s) ReferenceEnergyAccountService ===========', energyObj.energyAccountMarketDocumentMrid);
     }
@@ -23,11 +25,18 @@ export class ReferenceEnergyAccountService {
     public static async getQueryArrayResult(
         ctx: Context,
         params: STARParameters,
-        query: string): Promise<any[]>  {
+        query: string,
+        target: string = ''): Promise<any[]>  {
 
         console.debug('============= START : getQueryArrayResult ReferenceEnergyAccountService ===========');
 
-        const collections: string[] = params.values.get(ParametersType.REFERENCE_ENERGY_ACCOUNT);
+        let collections: string[];
+        if (target && target.length > 0) {
+            collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
+        } else {
+            collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        }
+
         var allResults = [];
 
         var i=0;

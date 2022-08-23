@@ -59,10 +59,6 @@ export class YellowPagesController {
 
         const query = `{"selector": {"docType": "${DocType.YELLOW_PAGES}", "originAutomationRegisteredResourceMrid": "${originAutomationRegisteredResourceMrid}"}}`;
 
-        console.info("-*-*-*-*-*-*-*-*-*-*-*-*-")
-        console.info(query)
-        console.info("-*-*-*-*-*-*-*-*-*-*-*-*-")
-
         const allResults : YellowPages[] = await QueryStateService.getQueryArrayResult(ctx, query);
         return allResults;
     }

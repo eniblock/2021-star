@@ -373,12 +373,10 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(Values.HTA_EnergyAccount_a3));
-
-            const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
 
             const expected = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3))
             expected.docType = DocType.ENERGY_ACCOUNT;
@@ -624,12 +622,10 @@ describe('Star Tests EnergyAccount', () => {
 
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], energyaccount.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             await star.CreateEnergyAccount(transactionContext, JSON.stringify(energyaccount));
-
-            const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
 
             const expected = JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3))
             expected.docType = DocType.ENERGY_ACCOUNT;
@@ -773,7 +769,7 @@ describe('Star Tests EnergyAccount', () => {
             const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collections[0], query).resolves(iterator);
 
             let ret = await star.GetEnergyAccountForSystemOperator(transactionContext,
@@ -971,7 +967,7 @@ describe('Star Tests EnergyAccount', () => {
             //     }
             // }`;
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collections[0], query).resolves(iterator);
 
             let ret = await star.GetEnergyAccountForSystemOperator(transactionContext,
@@ -1025,7 +1021,7 @@ describe('Star Tests EnergyAccount', () => {
 
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collections: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collections[0], query).resolves(iterator);
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
 

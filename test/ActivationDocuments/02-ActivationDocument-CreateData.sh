@@ -33,7 +33,7 @@ for i in `seq $ENEDIS_ENERGYACCOUNTS_NB`
 do
     tabindex=$(echo ".["$i-1"]")
     energyAccountMarketDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    energyAccountMarketDocumentMrid=$(echo "energyAccount_$energyAccountMarketDocumentMrid")
+    energyAccountMarketDocumentMrid=$(echo "energyAccount_enedis_$energyAccountMarketDocumentMrid")
     ENEDIS_ENERGYACCOUNTS_VALUE=$(echo $ENEDIS_ENERGYACCOUNTS | jq $tabindex | jq --arg value $energyAccountMarketDocumentMrid '. + {energyAccountMarketDocumentMrid: $value}')
     ENEDIS_ENERGYACCOUNTS_VALUE_STR=$(echo $ENEDIS_ENERGYACCOUNTS_VALUE | sed "s/\"/\\\\\"/g")
     ENEDIS_ENERGYACCOUNTS_VALUE_STR=${ENEDIS_ENERGYACCOUNTS_VALUE_STR//[$'\t\r\n ']}
@@ -67,7 +67,7 @@ for i in `seq $RTE_ENERGYACCOUNTS_NB`
 do
     tabindex=$(echo ".["$i-1"]")
     energyAccountMarketDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    energyAccountMarketDocumentMrid=$(echo "energyAccount_$energyAccountMarketDocumentMrid")
+    energyAccountMarketDocumentMrid=$(echo "energyAccount_rte_$energyAccountMarketDocumentMrid")
     RTE_ENERGYACCOUNTS_VALUE=$(echo $RTE_ENERGYACCOUNTS | jq $tabindex | jq --arg value $energyAccountMarketDocumentMrid '. + {energyAccountMarketDocumentMrid: $value}')
     RTE_ENERGYACCOUNTS_VALUE_STR=$(echo $RTE_ENERGYACCOUNTS_VALUE | sed "s/\"/\\\\\"/g")
     RTE_ENERGYACCOUNTS_VALUE_STR=${RTE_ENERGYACCOUNTS_VALUE_STR//[$'\t\r\n ']}

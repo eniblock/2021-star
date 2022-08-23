@@ -1,5 +1,5 @@
 import { Context } from 'fabric-contract-api';
-import { DataVersionType } from '../../enums/DataVersionType';
+import { DataActionType } from '../../enums/DataActionType';
 import { DocType } from '../../enums/DocType';
 import { EligibilityStatusType } from '../../enums/EligibilityStatusType';
 import { OrganizationTypeMsp } from '../../enums/OrganizationMspType';
@@ -8,10 +8,13 @@ import { ActivationDocument } from '../../model/activationDocument/activationDoc
 import { EligibilityStatus } from '../../model/activationDocument/eligibilityStatus';
 import { DataReference } from '../../model/dataReference';
 import { EnergyAccount } from '../../model/energyAccount';
+import { EnergyAmount } from '../../model/energyAmount';
 import { STARParameters } from '../../model/starParameters';
 import { SystemOperator } from '../../model/systemOperator';
 import { EnergyAccountController } from '../EnergyAccountController';
+import { EnergyAmountController } from '../EnergyAmountController';
 import { ParametersController } from '../ParametersController';
+import { ReferenceEnergyAccountController } from '../ReferenceEnergyAccountController';
 import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
 import { ActivationDocumentService } from '../service/ActivationDocumentService';
 import { HLFServices } from '../service/HLFservice';
@@ -177,7 +180,11 @@ export class EligibilityController {
 
         const activationDocument: ActivationDocument = referencedDocument.data;
 
-        const siteRefMap = await SiteService.getObjRefbyId(ctx, params, activationDocument.registeredResourceMrid);
+        /*****************
+         * SITE
+         ****************/
+
+         const siteRefMap = await SiteService.getObjRefbyId(ctx, params, activationDocument.registeredResourceMrid);
         if (!siteRefMap.has(referencedDocument.collection)) {
             //Only include Site data in orders if it is not already know in destination collection
             if (siteRefMap.has(initialTarget)) {
@@ -203,7 +210,11 @@ export class EligibilityController {
         var requiredReferences: DataReference[] = [];
 
         const activationDocument: ActivationDocument = referencedDocument.data;
+        const identity = params.values.get(ParametersType.IDENTITY);
 
+        /*****************
+         * ENERGY ACCOUNT
+         ****************/
         const energyAccountList: any[] = await EnergyAccountController.getEnergyAccountForSystemOperatorObj(
             ctx,
             params,
@@ -213,6 +224,7 @@ export class EligibilityController {
             initialTarget);
 
         if (energyAccountList && energyAccountList.length > 0) {
+
             for (var energyAccount of energyAccountList) {
 
                 const existing = await EnergyAccountController.dataExists(ctx, params, energyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
@@ -223,7 +235,53 @@ export class EligibilityController {
 
         }
 
-        console.info('============= END : getCreationLinkedData - EligibilityController ===========');
+        /*****************
+         * REFERENCE ENERGY ACCOUNT
+         ****************/
+         if (identity === OrganizationTypeMsp.RTE) {
+            const referenceEnergyAccountList: any[] = await ReferenceEnergyAccountController.getReferenceEnergyAccountForSystemOperatorObj(
+                ctx,
+                params,
+                activationDocument.registeredResourceMrid,
+                activationDocument.senderMarketParticipantMrid,
+                activationDocument.startCreatedDateTime,
+                initialTarget);
+
+            if (referenceEnergyAccountList && referenceEnergyAccountList.length > 0) {
+
+                for (var referenceEnergyAccount of referenceEnergyAccountList) {
+
+                    const existing = await EnergyAccountController.dataExists(ctx, params, referenceEnergyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
+                    if (!existing) {
+                        requiredReferences.push({docType:DocType.REFERENCE_ENERGY_ACCOUNT, collection:referencedDocument.collection, data: referenceEnergyAccount})
+                    }
+                }
+
+            }
+        }
+
+
+        /*****************
+         * ENERGY AMOUNT
+         ****************/
+        const energyAmount: EnergyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(ctx, params, activationDocument.activationDocumentMrid, initialTarget);
+
+        if (energyAmount
+            && energyAmount.energyAmountMarketDocumentMrid
+            && energyAmount.energyAmountMarketDocumentMrid.length > 0) {
+
+            const dataReference: DataReference = {
+                docType: DocType.ENERGY_AMOUNT,
+                previousCollection: initialTarget,
+                collection: referencedDocument.collection,
+                dataAction: DataActionType.COLLECTION_CHANGE,
+                data: energyAmount
+            }
+
+            requiredReferences.push(dataReference);
+        }
+
+         console.info('============= END : getCreationLinkedData - EligibilityController ===========');
         return requiredReferences;
     }
 
@@ -254,12 +312,7 @@ export class EligibilityController {
             referencedDocument.collection = targetDocument;
 
             if (initialTarget && targetDocument === initialTarget) {
-                //Change data version
-                const activationDocument: ActivationDocument = referencedDocument.data;
-                var version = parseInt(activationDocument.dataVersion) + 1;
-                activationDocument.dataVersion = version.toString();
-                referencedDocument.data = activationDocument;
-
+                //Just update Order
                 eligibilityReferences.push(referencedDocument);
             } else {
                 //Before creation in new collection, it is needed to create requirements
@@ -269,12 +322,14 @@ export class EligibilityController {
                 }
 
                 //Creation of the data in the new collection
-                const activationDocument: ActivationDocument = referencedDocument.data;
-                activationDocument.dataVersion = DataVersionType.CREATION;
-                referencedDocument.data = activationDocument;
-
-                eligibilityReferences.push(referencedDocument);
-
+                const dataReference: DataReference = {
+                    docType: DocType.ACTIVATION_DOCUMENT,
+                    previousCollection: initialTarget,
+                    collection: targetDocument,
+                    dataAction: DataActionType.COLLECTION_CHANGE,
+                    data: referencedDocument.data
+                }
+                eligibilityReferences.push(dataReference);
 
                 //After creation in new collection, it is needed to create linked data
                 const linkedData = await EligibilityController.getCreationLinkedData(ctx, params, referencedDocument, initialTarget);
@@ -282,16 +337,6 @@ export class EligibilityController {
                     eligibilityReferences.push(data);
                 }
 
-
-                //Deletion of the data in the previous collection
-                var referencedDocumentToDelete:DataReference = JSON.parse(JSON.stringify(referencedDocument));
-                referencedDocumentToDelete.collection=initialTarget;
-
-                const activationDocumentToDelete: ActivationDocument = referencedDocumentToDelete.data;
-                activationDocumentToDelete.dataVersion = DataVersionType.DELETION;
-                referencedDocumentToDelete.data = activationDocumentToDelete;
-
-                eligibilityReferences.push(referencedDocumentToDelete);
             }
         }
 

@@ -18,6 +18,7 @@ import { ParametersType } from '../src/enums/ParametersType';
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
 import { Values } from './Values';
+import { HLFServices } from '../src/controller/service/HLFservice';
 
 
 class TestContext {
@@ -82,7 +83,7 @@ describe('Star Tests SITES', () => {
                 await star.CreateSite(transactionContext, 'RTE01EIC');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createSite-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR Site-> Input string NON-JSON value');
             }
         });
 
@@ -174,7 +175,7 @@ describe('Star Tests SITES', () => {
             await star.CreateSite(transactionContext, JSON.stringify(Values.HTB_site_valid));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
 
             const siteInput = JSON.parse(JSON.stringify(Values.HTB_site_valid));
             siteInput.producerMarketParticipantName = Values.HTB_Producer.producerMarketParticipantName;
@@ -194,11 +195,18 @@ describe('Star Tests SITES', () => {
             await star.CreateSite(transactionContext, JSON.stringify(Values.HTA_site_valid));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
 
             const siteInput: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
             siteInput.producerMarketParticipantName = Values.HTA_Producer.producerMarketParticipantName;
             siteInput.docType = DocType.SITE;
+
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(siteInput))
+            // console.info("-----------")
 
             transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
         });
@@ -246,19 +254,32 @@ describe('Star Tests SITES', () => {
         });
 
         it('should return SUCCESS on QuerySite', async () => {
-            let siteOutput = Values.HTB_site_valid;
+            let siteOutput = JSON.parse(JSON.stringify(Values.HTB_site_valid));
             siteOutput.docType = DocType.SITE;
 
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteOutput.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteOutput)));
+            const collectionName = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collectionName, siteOutput.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteOutput)));
 
-            let test = JSON.parse(await star.QuerySite(transactionContext, siteOutput.meteringPointMrid));
+            const testValue = await star.QuerySite(transactionContext, siteOutput.meteringPointMrid);
+            const test = JSON.parse(testValue);
             expect(test).to.eql(Object.assign({docType: DocType.SITE}, siteOutput));
-            transactionContext.stub.getPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteOutput.meteringPointMrid);
 
-            let ret = JSON.parse(await transactionContext.stub.getPrivateData(collectionNames[0], siteOutput.meteringPointMrid));
+            const allCollections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+            expect(transactionContext.stub.getPrivateData.callCount).to.eql(allCollections.length);
+
+            for (var i = 0; i < transactionContext.stub.getPrivateData.callCount; i++) {
+                // console.info("-----------")
+                // console.info(transactionContext.stub.getPrivateData.getCall(i).args[0]);
+                // console.info(transactionContext.stub.getPrivateData.getCall(i).args[1]);
+                // console.info("-----------")
+
+                expect(allCollections).to.include(transactionContext.stub.getPrivateData.getCall(i).args[0]);
+                expect(transactionContext.stub.getPrivateData.getCall(i).args[1]).to.eql(siteOutput.meteringPointMrid);
+            }
+
+            const ret = JSON.parse(await transactionContext.stub.getPrivateData(collectionName, siteOutput.meteringPointMrid));
             expect(ret).to.eql(Object.assign({docType: DocType.SITE}, siteOutput));
         });
     });
@@ -287,7 +308,7 @@ describe('Star Tests SITES', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
 
             const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionNames[0], mockHandler)
             const queryHTA = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${Values.HTA_site_valid.systemOperatorMarketParticipantMrid}"}}`;
@@ -303,7 +324,7 @@ describe('Star Tests SITES', () => {
             // console.log('retA=', retA)
             expect(retA.length).to.equal(1);
 
-            const expected: Site[] = [Values.HTA_site_valid];
+            const expected: Site[] = [JSON.parse(JSON.stringify(Values.HTA_site_valid))];
 
             expect(retA).to.eql(expected);
         });
@@ -383,7 +404,7 @@ describe('Star Tests SITES', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
 
             const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionNames[0], mockHandler)
             const queryHTA = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${Values.HTA_site_valid.producerMarketParticipantMrid}"}}`;
@@ -399,7 +420,7 @@ describe('Star Tests SITES', () => {
             // console.log('retA=', retA)
             expect(retA.length).to.equal(1);
 
-            const expected: Site[] = [ Values.HTA_site_valid ];
+            const expected: Site[] = [ JSON.parse(JSON.stringify(Values.HTA_site_valid)) ];
 
             expect(retA).to.eql(expected);
         });
@@ -459,7 +480,7 @@ describe('Star Tests SITES', () => {
         it('should return success on getSites for producer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
 
             const producerMarketParticipantMrid = Values.HTA_site_valid_ProdA.producerMarketParticipantMrid;
 
@@ -474,7 +495,7 @@ describe('Star Tests SITES', () => {
             // console.log('retProd=', retProd)
             expect(retProd.length).to.equal(2);
 
-            const expected: Site[] = [Values.HTA_site_valid_ProdA, Values.HTA_site_valid_ProdB];
+            const expected: Site[] = [JSON.parse(JSON.stringify(Values.HTA_site_valid_ProdA)), JSON.parse(JSON.stringify(Values.HTA_site_valid_ProdB))];
 
             expect(retProd).to.eql(expected);
         });

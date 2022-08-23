@@ -1,4 +1,4 @@
-import { ActivationDocument } from "./activationDocument";
+import { ActivationDocument } from "./activationDocument/activationDocument";
 import { EnergyAmount } from "./energyAmount";
 import { Producer } from "./producer";
 import { Site } from "./site";

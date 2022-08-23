@@ -10,27 +10,34 @@ import { SiteService } from './service/SiteService';
 import { SystemOperatorService } from './service/SystemOperatorService';
 import { ProducerService } from './service/ProducerService';
 import { Producer } from '../model/producer';
+import { DataReference } from '../model/dataReference';
 
 export class SiteController {
     public static async createSite(
         ctx: Context,
         params: STARParameters,
         inputStr: string): Promise<void> {
-        // let site: Site;
-        // try {
-        //     site = JSON.parse(inputStr);
-        //   } catch (error) {
-        //     // console.error('error=', error);
-        //     throw new Error(`ERROR createSite-> Input string NON-JSON value`);
-        //   }
-        console.info('============= START : Create Site ===========');
 
-        let siteObj: Site;
-        try {
-            siteObj = JSON.parse(inputStr);
-        } catch (error) {
-            throw new Error(`ERROR createSite-> Input string NON-JSON value`);
-        }
+        const siteObj: Site = Site.formatString(inputStr);
+        await this.createSiteObj(ctx, params, siteObj);
+    }
+
+    public static async createSiteByReference(
+        ctx: Context,
+        params: STARParameters,
+        dataReference: DataReference): Promise<void> {
+
+        await this.createSiteObj(ctx, params, dataReference.data, dataReference.collection);
+    }
+
+
+
+    public static async createSiteObj(
+        ctx: Context,
+        params: STARParameters,
+        siteObj: any,
+        target: string = ''): Promise<void> {
+        console.info('============= START : createSiteObj Site ===========');
 
         Site.schema.validateSync(
             siteObj,
@@ -64,8 +71,8 @@ export class SiteController {
 
         siteObj.producerMarketParticipantName = producerObj.producerMarketParticipantName;
 
-        await SiteService.write(ctx, params, siteObj);
-        console.info('============= END   : Create %s Site ===========',
+        await SiteService.write(ctx, params, siteObj, target);
+        console.info('============= END   : createSiteObj %s Site ===========',
             siteObj.meteringPointMrid,
         );
     }
@@ -101,9 +108,12 @@ export class SiteController {
         } else {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
         }
-        const siteAsBytes = await SiteService.getRaw(ctx, params, siteObj.meteringPointMrid);
-        if (!siteAsBytes || siteAsBytes.length === 0) {
-            throw new Error(`${siteObj} does not exist. Can not be updated.`);
+
+        var existingSitesRef:Map<string, DataReference>;
+        try {
+            existingSitesRef = await SiteService.getObjRefbyId(ctx, params, siteObj.meteringPointMrid);
+        } catch(error) {
+            throw new Error(error.message.concat(' for site update'));
         }
 
         try {
@@ -118,7 +128,10 @@ export class SiteController {
             throw new Error(error.message.concat(' for site update'));
         }
 
-        await SiteService.write(ctx, params, siteObj);
+        for (var [key, ] of existingSitesRef) {
+            await SiteService.write(ctx, params, siteObj, key);
+        }
+
         console.info('============= END : Update %s Site ===========',
             siteObj.meteringPointMrid,
         );
@@ -133,10 +146,12 @@ export class SiteController {
         siteId: string): Promise<string> {
 
         console.info('============= START : Query %s Site ===========', siteId);
-        const siteAsBytes = await SiteService.getRaw(ctx, params, siteId);
-        console.debug(siteId, siteAsBytes.toString());
+        const result:Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, siteId);
+        const dataReference = result.values().next().value;
+
+        console.debug(siteId, JSON.stringify(dataReference.data));
         console.info('============= END   : Query %s Site ===========', siteId);
-        return siteAsBytes.toString();
+        return JSON.stringify(dataReference.data);
     }
 
 
@@ -148,8 +163,30 @@ export class SiteController {
         siteId: string): Promise<boolean> {
 
         console.info('============= START : Query %s Site ===========', siteId);
-        const siteAsBytes = await SiteService.getRaw(ctx, params, siteId);
-        return siteAsBytes && siteAsBytes.length !== 0;
+        const result:Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, siteId);
+        return result && result.values().next().value && result.values().next().value.data && result.values().next().value.collection.length !== 0;
+    }
+
+
+
+    public static async getSiteById(
+        ctx: Context,
+        params: STARParameters,
+        id: string,
+        target: string = ''): Promise<Site> {
+
+        let siteObj: Site;
+        if (target && target.length > 0) {
+            siteObj = await SiteService.getObj(ctx, params, id, target);
+        } else {
+            const result:Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, id);
+            const dataReference = result.values().next().value;
+            if (dataReference && dataReference.data) {
+                siteObj = dataReference.data;
+            }
+        }
+
+        return siteObj;
     }
 
 

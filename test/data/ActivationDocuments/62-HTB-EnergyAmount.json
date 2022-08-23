@@ -1,0 +1,53 @@
+[
+    {
+        "registeredResourceMrid": "PDL_SITE_RTE_AD_1",
+        "quantity": "number",
+        "measurementUnitName": "MW",
+        "revisionNumber": "1",
+        "businessType": "A14 / Z14",
+        "docStatus": "A02",
+        "processType": "A05",
+        "classificationType": "A02",
+        "areaDomain": "17X100A100A0001A",
+        "senderMarketParticipantMrid": "SYSOP_RTE_AD_1",
+        "senderMarketParticipantRole": "A50",
+        "receiverMarketParticipantMrid": "PROD_RTE_AD_1",
+        "receiverMarketParticipantRole": "A32",
+        "createdDateTime": "2021-10-22T10:29:10.000Z",
+        "timeInterval": "2020-01-01T01:01:01Z/"
+    },
+    {
+        "registeredResourceMrid": "PDL_SITE_RTE_AD_1",
+        "quantity": "number",
+        "measurementUnitName": "MW",
+        "revisionNumber": "1",
+        "businessType": "A14 / Z14",
+        "docStatus": "A02",
+        "processType": "A05",
+        "classificationType": "A02",
+        "areaDomain": "17X100A100A0001A",
+        "senderMarketParticipantMrid": "SYSOP_RTE_AD_1",
+        "senderMarketParticipantRole": "A50",
+        "receiverMarketParticipantMrid": "PROD_RTE_AD_1",
+        "receiverMarketParticipantRole": "A32",
+        "createdDateTime": "2025-01-01T01:01:01Z",
+        "timeInterval": "2025-01-01T01:01:01Z/"
+    },
+    {
+        "registeredResourceMrid": "PDL_SITE_RTE_AD_2",
+        "quantity": "number",
+        "measurementUnitName": "MW",
+        "revisionNumber": "1",
+        "businessType": "A14 / Z14",
+        "docStatus": "A02",
+        "processType": "A05",
+        "classificationType": "A02",
+        "areaDomain": "17X100A100A0001A",
+        "senderMarketParticipantMrid": "SYSOP_RTE_AD_2",
+        "senderMarketParticipantRole": "A50",
+        "receiverMarketParticipantMrid": "PROD_RTE_AD_2",
+        "receiverMarketParticipantRole": "A32",
+        "createdDateTime": "2025-02-02T02:02:02Z",
+        "timeInterval": "2025-02-02T02:02:02Z/"
+    }
+]

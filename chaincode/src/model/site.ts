@@ -4,6 +4,47 @@
 import * as Yup from 'yup';
 
 export class Site {
+    public static formatString(inputString: string) : Site {
+        let siteObj: Site;
+        try {
+            siteObj = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR Site-> Input string NON-JSON value`);
+        }
+
+        try {
+            Site.schema.validateSync(
+                siteObj,
+                {strict: true, abortEarly: false},
+            );
+        } catch (error) {
+            throw error;
+        }
+        return siteObj;
+    }
+
+    public static formatListString(inputString: string) : Site[] {
+        let siteList: Site[] = [];
+        try {
+            siteList = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR Site by list-> Input string NON-JSON value`);
+        }
+
+        if (siteList && siteList.length > 0) {
+            for (var siteObj of siteList) {
+                try {
+                    Site.schema.validateSync(
+                        siteObj,
+                        {strict: true, abortEarly: false},
+                    );
+                } catch (error) {
+                    throw error;
+                }
+            }
+        }
+        return siteList;
+    }
 
     public static readonly schema = Yup.object().shape({
         docType: Yup.string().notRequired(),

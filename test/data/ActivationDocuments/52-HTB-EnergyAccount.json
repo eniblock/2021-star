@@ -1,0 +1,97 @@
+[
+    {
+        "energyAccountMarketDocumentMrid": "energyAccount_PDL_SITE_RTE_AD_1",
+        "meteringPointMrid": "PDL_SITE_RTE_AD_1",
+        "marketEvaluationPointMrid": "CodePPE",
+        "areaDomain": "17X100A100A0001A",
+        "senderMarketParticipantMrid": "SYSOP_RTE_AD_1",
+        "senderMarketParticipantRole": "A50",
+        "receiverMarketParticipantMrid": "receiverMarketParticipant",
+        "receiverMarketParticipantRole": "A32",
+        "createdDateTime": "2025-01-01T01:01:11Z",
+        "measurementUnitName": "MW",
+        "timeInterval": "2021-10-22T10:29:10.000Z",
+        "resolution": "PT10M",
+        "timeSeries": [
+            {
+                "inQuantity": 7500,
+                "position": 3
+            },
+            {
+                "inQuantity": 7500,
+                "position": 3
+            }
+        ],
+        "revisionNumber": "1",
+        "businessType": "A14 / Z14",
+        "docStatus": "A02",
+        "processType": "A05",
+        "classificationType": "A02",
+        "product": "Energie active/Réactive",
+        "startCreatedDateTime": "",
+        "endCreatedDateTime": ""
+    },
+    {
+        "energyAccountMarketDocumentMrid": "energyAccount_PDL_SITE_RTE_AD_2",
+        "meteringPointMrid": "PDL_SITE_RTE_AD_2",
+        "marketEvaluationPointMrid": "CodePPE",
+        "areaDomain": "17X100A100A0001A",
+        "senderMarketParticipantMrid": "SYSOP_RTE_AD_2",
+        "senderMarketParticipantRole": "A50",
+        "receiverMarketParticipantMrid": "receiverMarketParticipant",
+        "receiverMarketParticipantRole": "A32",
+        "createdDateTime": "2025-02-02T02:02:12Z",
+        "measurementUnitName": "MW",
+        "timeInterval": "2021-10-22T10:29:10.000Z",
+        "resolution": "PT10M",
+        "timeSeries": [
+            {
+                "inQuantity": 7500,
+                "position": 3
+            },
+            {
+                "inQuantity": 7500,
+                "position": 3
+            }
+        ],
+        "revisionNumber": "1",
+        "businessType": "A14 / Z14",
+        "docStatus": "A02",
+        "processType": "A05",
+        "classificationType": "A02",
+        "product": "Energie active/Réactive",
+        "startCreatedDateTime": "",
+        "endCreatedDateTime": ""
+    },
+    {
+        "energyAccountMarketDocumentMrid": "energyAccount_PDL_SITE_RTE_AD_3",
+        "meteringPointMrid": "PDL_SITE_RTE_AD_3",
+        "marketEvaluationPointMrid": "CodePPE",
+        "areaDomain": "17X100A100A0001A",
+        "senderMarketParticipantMrid": "SYSOP_RTE_AD_3",
+        "senderMarketParticipantRole": "A50",
+        "receiverMarketParticipantMrid": "receiverMarketParticipant",
+        "receiverMarketParticipantRole": "A32",
+        "createdDateTime": "2025-03-03T03:03:13Z",
+        "measurementUnitName": "MW",
+        "timeInterval": "2021-10-22T10:29:10.000Z",
+        "resolution": "PT10M",
+        "timeSeries": [
+            {
+                "inQuantity": 7500,
+                "position": 3
+            },
+            {
+                "inQuantity": 7500,
+                "position": 3
+            }
+        ],
+        "revisionNumber": "1",
+        "businessType": "A14 / Z14",
+        "docStatus": "A02",
+        "processType": "A05",
+        "classificationType": "A02",
+        "product": "Energie active/Réactive",
+        "startCreatedDateTime": "",
+        "endCreatedDateTime": ""
+    }]

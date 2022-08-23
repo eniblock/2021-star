@@ -1,31 +1,31 @@
 import {Context} from "fabric-contract-api";
 
-import { DocType } from "../enums/DocType";
-import { ParametersType } from "../enums/ParametersType";
-import { RoleType } from "../enums/RoleType";
+import { DocType } from "../../enums/DocType";
+import { ParametersType } from "../../enums/ParametersType";
+import { RoleType } from "../../enums/RoleType";
 
-import { ActivationDocument } from "../model/activationDocument";
-import { EnergyAmount } from "../model/energyAmount";
-import { HistoryCriteria } from "../model/historyCriteria";
-import { HistoryInformation } from "../model/historyInformation";
-import { Producer } from "../model/producer";
-import { Site } from "../model/site";
-import { STARParameters } from "../model/starParameters";
-import { YellowPages } from "../model/yellowPages";
+import { ActivationDocument } from "../../model/activationDocument/activationDocument";
+import { EnergyAmount } from "../../model/energyAmount";
+import { HistoryCriteria } from "../../model/historyCriteria";
+import { HistoryInformation } from "../../model/historyInformation";
+import { Producer } from "../../model/producer";
+import { Site } from "../../model/site";
+import { STARParameters } from "../../model/starParameters";
+import { YellowPages } from "../../model/yellowPages";
 
 import { ActivationDocumentController } from "./ActivationDocumentController";
-import { EnergyAmountController } from "./EnergyAmountController";
-import { ProducerController } from "./ProducerController";
+import { EnergyAmountController } from "../EnergyAmountController";
+import { ProducerController } from "../ProducerController";
+import { ActivationDocumentEligibilityService } from "../service/ActivationDocumentEligibilityService";
 
-import { ActivationDocumentService } from "./service/ActivationDocumentService";
-import { HLFServices } from "./service/HLFservice";
-import { ProducerService } from "./service/ProducerService";
-import { QueryStateService } from "./service/QueryStateService";
-import { SiteService } from "./service/SiteService";
-import { SystemOperatorService } from "./service/SystemOperatorService";
-import { YellowPagesController } from "./YellowPagesController";
+import { ActivationDocumentService } from "../service/ActivationDocumentService";
+import { HLFServices } from "../service/HLFservice";
+import { ProducerService } from "../service/ProducerService";
+import { QueryStateService } from "../service/QueryStateService";
+import { SiteService } from "../service/SiteService";
+import { YellowPagesController } from "../YellowPagesController";
 
-export class HistoryActivationController {
+export class HistoryController {
 
     public static async getHistoryByQuery(
         ctx: Context,
@@ -49,17 +49,17 @@ export class HistoryActivationController {
             );
 
             const role: string = params.values.get(ParametersType.ROLE);
-            criteriaObj = await HistoryActivationController.consolidateCriteria(ctx, params, criteriaObj, role);
+            criteriaObj = await HistoryController.consolidateCriteria(ctx, params, criteriaObj, role);
 
             if (criteriaObj) {
-                const query = await HistoryActivationController.buildActivationDocumentQuery(criteriaObj);
+                const query = await HistoryController.buildActivationDocumentQuery(criteriaObj);
 
-                const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.ACTIVATION_DOCUMENT, ParametersType.ALL);
+                const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
                 const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
 
                 if (allActivationDocument && allActivationDocument.length > 0) {
-                    result = await HistoryActivationController.consolidate(ctx, params, allActivationDocument);
+                    result = await HistoryController.consolidate(ctx, params, allActivationDocument);
                 }
             }
         }
@@ -199,7 +199,7 @@ export class HistoryActivationController {
         const filledList: string[] = [];
 
         for (const activationDocumentQueryValue of allActivationDocument) {
-            const activationDocument = await ActivationDocumentController.outputFormatFRActivationDocument(ctx, params, activationDocumentQueryValue);
+            const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(ctx, params, activationDocumentQueryValue);
 
             if (activationDocument && activationDocument.activationDocumentMrid) {
 
@@ -220,7 +220,9 @@ export class HistoryActivationController {
                 //Manage Yello Page to get Site Information
                 var siteRegistered: Site = null;
                 try {
-                    siteRegistered = await SiteService.getObj(ctx, params, activationDocument.registeredResourceMrid);
+                    const existingSitesRef = await SiteService.getObjRefbyId(ctx, params, activationDocument.registeredResourceMrid);
+                    const siteObjRef = existingSitesRef.values().next().value;
+                    siteRegistered = siteObjRef;
                 } catch (error) {
                     //DO nothing except "Not accessible information"
                 }
@@ -308,7 +310,7 @@ export class HistoryActivationController {
 
         }
 
-        const finalinformation = HistoryActivationController.cleanFilled(ctx, informationList, filledList);
+        const finalinformation = HistoryController.cleanFilled(ctx, informationList, filledList);
         return finalinformation;
     }
 
@@ -328,7 +330,7 @@ export class HistoryActivationController {
                     subOrderExists = subOrderExists || filledList.includes(subOrderId);
                 }
                 if (!subOrderExists) {
-                    const finalInfo = await HistoryActivationController.fillDegradedInformation(ctx, information);
+                    const finalInfo = await HistoryController.fillDegradedInformation(ctx, information);
                     finalinformation.push(finalInfo);
                 }
             }

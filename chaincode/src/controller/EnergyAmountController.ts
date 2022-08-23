@@ -2,51 +2,74 @@ import { Context } from 'fabric-contract-api';
 
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 
-import { ActivationDocument } from '../model/activationDocument';
+import { ActivationDocument } from '../model/activationDocument/activationDocument';
 import { EnergyAmount } from '../model/energyAmount';
 import { SystemOperator } from '../model/systemOperator';
 import { STARParameters } from '../model/starParameters';
 
 import { QueryStateService } from './service/QueryStateService';
-import { SiteService } from './service/SiteService';
 import { DocType } from '../enums/DocType';
 import { EnergyAmountService } from './service/EnergyAmountService';
-import { ActivationDocumentController } from './ActivationDocumentController';
+import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
 import { ParametersType } from '../enums/ParametersType';
 import { EnergyType } from '../enums/EnergyType';
 import { SystemOperatorService } from './service/SystemOperatorService';
+import { DataReference } from '../model/dataReference';
+import { SiteController } from './SiteController';
+import { ActivationDocumentService } from './service/ActivationDocumentService';
+import { DataActionType } from '../enums/DataActionType';
 
 export class EnergyAmountController {
+    public static async executeOrder(
+        ctx: Context,
+        params: STARParameters,
+        updateOrder: DataReference) {
+        console.info('============= START : executeOrder EnergyAmountController ===========');
+
+        if (updateOrder.data) {
+            EnergyAmount.schema.validateSync(
+                updateOrder.data,
+                {strict: true, abortEarly: false},
+            );
+            const energyAmount:EnergyAmount = updateOrder.data;
+
+            if (updateOrder.dataAction === DataActionType.COLLECTION_CHANGE) {
+                const identity = params.values.get(ParametersType.IDENTITY);
+
+                if (identity === OrganizationTypeMsp.ENEDIS) {
+                    await EnergyAmountController.createDSOEnergyAmountByReference(ctx, params, updateOrder);
+                } else if (identity === OrganizationTypeMsp.RTE) {
+                    await EnergyAmountController.createTSOEnergyAmountByReference(ctx, params, updateOrder);
+                }
+
+                await EnergyAmountService.delete(ctx, params, energyAmount.energyAmountMarketDocumentMrid, updateOrder.previousCollection);
+            }
+
+
+        }
+
+        console.info('============= END   : executeOrder EnergyAmountController ===========');
+    }
+
 
     private static async checkEnergyAmout(
         ctx: Context,
         params: STARParameters,
-        inputStr: string,
+        energyObj: EnergyAmount,
         energyType: EnergyType,
-        checkSite: boolean = false) : Promise<EnergyAmount> {
-
-        let energyObj: EnergyAmount;
-        try {
-            energyObj = JSON.parse(inputStr);
-        } catch (error) {
-            throw new Error(`ERROR manage EnergyAmount-> Input string NON-JSON value`);
-        }
-
-        EnergyAmount.schema.validateSync(
-            energyObj,
-            {strict: true, abortEarly: false},
-        );
+        checkSite: boolean = false,
+        target: string = '') : Promise<void> {
 
         let orderObj: ActivationDocument;
         try {
-            orderObj = await ActivationDocumentController.getActivationDocumentById(ctx, params, energyObj.activationDocumentMrid);
+            orderObj = await ActivationDocumentController.getActivationDocumentById(ctx, params, energyObj.activationDocumentMrid, target);
         } catch(error) {
             throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
         }
 
         if (checkSite && energyObj.registeredResourceMrid && energyObj.registeredResourceMrid !== "") {
             try {
-                await SiteService.getObj(ctx, params, energyObj.registeredResourceMrid);
+                    await SiteController.getSiteById(ctx, params, energyObj.registeredResourceMrid, target);
             } catch(error) {
                 throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
             }
@@ -83,8 +106,6 @@ export class EnergyAmountController {
         if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
             throw new Error(`ERROR manage EnergyAmount mismatch between ${energyType} : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
         }
-
-        return energyObj;
     }
 //      ================STAR-425 : Partie du code en commentaire car on utilise pas les clés composites===========================
 
@@ -167,12 +188,44 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE);
+        const energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
+        await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENE);
 
-        await EnergyAmountService.write(ctx, params, energyObj);
+        //Get existing Activation Documents
+        var existingActivationDocumentRef:Map<string, DataReference>;
+        try {
+            existingActivationDocumentRef = await ActivationDocumentService.getObjRefbyId(ctx, params, energyObj.activationDocumentMrid);
+        } catch(error) {
+            throw new Error('ERROR createEnergyAmount : '.concat(error.message).concat(` Can not be created.`));
+        }
+
+        for (var [key, ] of existingActivationDocumentRef) {
+            await EnergyAmountService.write(ctx, params, energyObj, key);
+        }
 
         console.info('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
+        );
+    }
+
+
+
+    public static async createTSOEnergyAmountByReference(
+        ctx: Context,
+        params: STARParameters,
+        dataReference: DataReference) {
+        console.info('============= START : createTSOEnergyAmount EnergyAmountController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        await EnergyAmountController.checkEnergyAmout(ctx, params, dataReference.data, EnergyType.ENE, false, dataReference.collection);
+        await EnergyAmountService.write(ctx, params, dataReference.data, dataReference.collection);
+
+        console.info('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
+            dataReference.data.energyAmountMarketDocumentMrid,
         );
     }
 
@@ -189,16 +242,20 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENE);
+        const energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
+        await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENE);
 
-        //Check existence
+        //Get existing data
+        var existingEnergyAmountRef:Map<string, DataReference>;
         try {
-            await EnergyAmountService.getRaw(ctx, params, energyObj.energyAmountMarketDocumentMrid);
+            existingEnergyAmountRef = await EnergyAmountService.getObjRefbyId(ctx, params, energyObj.energyAmountMarketDocumentMrid);
         } catch(error) {
             throw new Error(error.message.concat(` Can not be updated.`));
         }
 
-        await EnergyAmountService.write(ctx, params, energyObj);
+        for (var [key, ] of existingEnergyAmountRef) {
+            await EnergyAmountService.write(ctx, params, energyObj, key);
+        }
 
         console.info('============= END   : updateTSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
@@ -220,12 +277,44 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI, true);
+        const energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
+        await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENI, true);
 
-        await EnergyAmountService.write(ctx, params, energyObj);
+        //Get existing Activation Documents
+        var existingActivationDocumentRef:Map<string, DataReference>;
+        try {
+            existingActivationDocumentRef = await ActivationDocumentService.getObjRefbyId(ctx, params, energyObj.activationDocumentMrid);
+        } catch(error) {
+            throw new Error('ERROR createEnergyAmount : '.concat(error.message).concat(` Can not be created.`));
+        }
+
+        for (var [key, ] of existingActivationDocumentRef) {
+            await EnergyAmountService.write(ctx, params, energyObj, key);
+        }
 
         console.info('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
+        );
+    }
+
+
+
+    public static async createDSOEnergyAmountByReference(
+        ctx: Context,
+        params: STARParameters,
+        dataReference: DataReference) {
+        console.info('============= START : createDSOEnergyAmount EnergyAmountController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        await EnergyAmountController.checkEnergyAmout(ctx, params, dataReference.data, EnergyType.ENI, true, dataReference.collection);
+        await EnergyAmountService.write(ctx, params, dataReference.data, dataReference.collection);
+
+        console.info('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
+        dataReference.data.energyAmountMarketDocumentMrid,
         );
     }
 
@@ -244,20 +333,51 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        const energyObj: EnergyAmount = await EnergyAmountController.checkEnergyAmout(ctx, params, inputStr, EnergyType.ENI, true);
+        const energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
+        await EnergyAmountController.checkEnergyAmout(ctx, params, energyObj, EnergyType.ENI, true);
 
-        //Check existence
+        //Get existing data
+        var existingEnergyAmountRef:Map<string, DataReference>;
         try {
-            await EnergyAmountService.getRaw(ctx, params, energyObj.energyAmountMarketDocumentMrid);
+            existingEnergyAmountRef = await EnergyAmountService.getObjRefbyId(ctx, params, energyObj.energyAmountMarketDocumentMrid);
         } catch(error) {
             throw new Error(error.message.concat(` Can not be updated.`));
         }
 
-        await EnergyAmountService.write(ctx, params, energyObj);
+        for (var [key, ] of existingEnergyAmountRef) {
+            await EnergyAmountService.write(ctx, params, energyObj, key);
+        }
+
 
         console.info('============= END   : updateDSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
+    }
+
+
+
+
+    public static async dataExists(
+        ctx: Context,
+        params: STARParameters,
+        id: string,
+        target: string = ''): Promise<boolean> {
+
+        let existing: boolean = false;
+        const result:Map<string, DataReference> = await EnergyAmountService.getObjRefbyId(ctx, params, id);
+        if (target && target.length > 0) {
+            const dataReference: DataReference = result.get(target);
+            existing = dataReference
+                && dataReference.data
+                && dataReference.data.energyAmountMarketDocumentMrid == id;
+        } else {
+            existing = result
+                && result.values().next().value
+                && result.values().next().value.data
+                && result.values().next().value.data.energyAmountMarketDocumentMrid == id;
+        }
+
+        return existing;
     }
 
 
@@ -384,10 +504,11 @@ export class EnergyAmountController {
     public static async getEnergyAmountByActivationDocument(
         ctx: Context,
         params: STARParameters,
-        activationDocumentMrid: string): Promise<EnergyAmount> {
+        activationDocumentMrid: string,
+        target: string = ''): Promise<EnergyAmount> {
 
         const query = `{"selector": {"docType": "${DocType.ENERGY_AMOUNT}", "activationDocumentMrid": "${activationDocumentMrid}"}}`;
-        const allResults = await EnergyAmountService.getQueryArrayResult(ctx, params, query);
+        const allResults = await EnergyAmountService.getQueryArrayResult(ctx, params, query, target);
 
         var energyAmout:EnergyAmount;
         if (allResults && allResults.length >0) {

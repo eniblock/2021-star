@@ -2,7 +2,7 @@
   {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_1",
     "registeredResourceMrid": "PDL_SITE_RTE_AD_1",
-    "orderValue": "0",
+    "orderValue": "RTEtoRTE_NothingDoneYear2020",
     "measurementUnitName": "MW",
     "startCreatedDateTime": "2020-01-01T01:01:01Z",
     "revisionNumber": "",
@@ -16,7 +16,7 @@
   {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_1",
     "registeredResourceMrid": "PDL_SITE_RTE_AD_1",
-    "orderValue": "0",
+    "orderValue": "RTEtoRTE_NoEndReonciliation",
     "measurementUnitName": "MW",
     "startCreatedDateTime": "2025-01-01T01:01:01Z",
     "revisionNumber": "",
@@ -30,7 +30,7 @@
   {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_2",
     "registeredResourceMrid": "PDL_SITE_RTE_AD_2",
-    "orderValue": "0",
+    "orderValue": "RTEtoRTE_StartReconciliation",
     "measurementUnitName": "MW",
     "startCreatedDateTime": "2025-02-02T02:02:02Z",
     "revisionNumber": "",
@@ -44,7 +44,7 @@
   {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_2",
     "registeredResourceMrid": "PDL_SITE_RTE_AD_2",
-    "orderValue": "0",
+    "orderValue": "RTEtoRTE_EndReconciliation",
     "measurementUnitName": "MW",
     "endCreatedDateTime": "2025-02-02T02:02:22Z",
     "revisionNumber": "",

@@ -156,6 +156,7 @@ export class ActivationGraphComponent implements OnInit {
         });
 
         // f) Add last point
+        /*
         if (points[currentIndice].length > 0) {
           const p = points[currentIndice][points[currentIndice].length - 1];
           points[currentIndice].push({
@@ -163,6 +164,7 @@ export class ActivationGraphComponent implements OnInit {
             y: p.y,
           });
         }
+        */
       });
 
     //////////////////////////////////////
@@ -176,6 +178,7 @@ export class ActivationGraphComponent implements OnInit {
       yTitle: `Puissance ${globalMeasurementUnitName}`,
       serieNames: serieNames,
       data: points,
+      shownAreas: [0],
       exportFileName: `${this.bottomSheetParams.startCreatedDateTime}_${this.bottomSheetParams.endCreatedDateTime}_${this.bottomSheetParams.meteringPointMrid}`,
       seriesThatMustBeInterpolated: [0],
     };

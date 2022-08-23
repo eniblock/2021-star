@@ -31,7 +31,14 @@
 
         <mat-form-field class="col-12 col-lg-6" appearance="outline">
           <mat-label>Code de la méthode de calcul utilisée</mat-label>
-          <input matInput placeholder="Code de la méthode de calcul utilisée" formControlName="classificationType">
+          <mat-select formControlName="classificationType">
+            <mat-option [value]="'Z01'">Z01 : méthode de corrélation des plus proches voisins</mat-option>
+            <mat-option [value]="'Z02'">Z02 : méthode d'estimation de la production</mat-option>
+            <mat-option [value]="'Z03'">Z03 : méthode d'estimation par combinaison</mat-option>
+            <mat-option [value]="'Z04'">Z04 : méthode d'estimation par apprentissage automatique</mat-option>
+            <mat-option [value]="'Z05'">Z05 : méthode de comparaison de la planification des ressources</mat-option>
+            <mat-option [value]="'Z06'">Z06 : méthode d'estimation par rectangle</mat-option>
+          </mat-select>
         </mat-form-field>
 
 

@@ -3,7 +3,7 @@
  */
 
 import { Context, Contract } from 'fabric-contract-api';
-import { ActivationDocumentController } from './controller/ActivationDocumentController';
+import { ActivationDocumentController } from './controller/activationDocument/ActivationDocumentController';
 import { EnergyAccountController } from './controller/EnergyAccountController';
 import { EnergyAmountController } from './controller/EnergyAmountController';
 import { ParametersController } from './controller/ParametersController';
@@ -14,8 +14,10 @@ import { SiteController } from './controller/SiteController';
 import { SystemOperatorController } from './controller/SystemOperatorController';
 import { ViewMarketParticipantController } from './controller/ViewMarketParticipantController';
 import { YellowPagesController } from './controller/YellowPagesController';
-import {HistoryActivationController} from "./controller/HistoryActivationController";
+import {HistoryController} from "./controller/activationDocument/HistoryController";
 import { ParametersType } from './enums/ParametersType';
+import { EligibilityController } from './controller/activationDocument/EligibilityController';
+import { StarDataStateController } from './controller/StarDataStateController';
 
 export class Star extends Contract {
 
@@ -293,7 +295,7 @@ export class Star extends Contract {
     public async GetActivationDocumentReconciliationState(ctx: Context) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ActivationDocumentController.getReconciliationState(ctx, params));
+            return (await StarDataStateController.getStarDataState(ctx, params));
         } catch (error) {
             throw error;
         }
@@ -302,7 +304,7 @@ export class Star extends Contract {
     public async UpdateActivationDocumentEligibilityStatus(ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ActivationDocumentController.updateActivationDocumentEligibilityStatus(ctx, params, inputStr));
+            return (await EligibilityController.updateEligibilityStatus(ctx, params, inputStr));
         } catch (error) {
             throw error;
         }
@@ -311,7 +313,7 @@ export class Star extends Contract {
     public async UpdateActivationDocumentByOrders(ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ActivationDocumentController.updateActivationDocumentByOrders(ctx, params, inputStr));
+            return (await StarDataStateController.executeStarDataOrders(ctx, params, inputStr));
         } catch (error) {
             throw error;
         }
@@ -356,7 +358,7 @@ export class Star extends Contract {
         inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await HistoryActivationController.getHistoryByQuery(ctx, params, inputStr));
+            return (await HistoryController.getHistoryByQuery(ctx, params, inputStr));
         } catch (error) {
             throw error;
         }

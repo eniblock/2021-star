@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import * as Yup from 'yup';
+import { DataActionType } from '../../enums/DataActionType';
 
 export class ActivationDocument {
     public static formatString(inputString: string) : ActivationDocument {
@@ -45,9 +46,6 @@ export class ActivationDocument {
         }
         return activationDocumentList;
     }
-
-
-
 
     public static readonly schema = Yup.object().shape({
         activationDocumentMrid: Yup.string().required(

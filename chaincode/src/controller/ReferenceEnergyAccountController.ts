@@ -12,19 +12,17 @@ import { SystemOperatorService } from './service/SystemOperatorService';
 import { ReferenceEnergyAccountService } from './service/ReferenceEnergyAccountService';
 import { ParametersType } from '../enums/ParametersType';
 import { DocType } from '../enums/DocType';
+import { DataReference } from '../model/dataReference';
 
 export class ReferenceEnergyAccountController {
+
+
 
     public static async createReferenceEnergyAccount(
         ctx: Context,
         params: STARParameters,
         inputStr: string) {
         console.info('============= START : Create ReferenceEnergyAccount ===========');
-
-        const identity = params.values.get(ParametersType.IDENTITY);
-        if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Organisation, ${identity} does not have write access for Reference Energy Account.`);
-        }
 
         let energyObj: EnergyAccount;
         try {
@@ -38,6 +36,43 @@ export class ReferenceEnergyAccountController {
             {strict: true, abortEarly: false},
         );
 
+        await ReferenceEnergyAccountController.createReferenceEnergyAccountObj(ctx, params, energyObj);
+
+        console.info('============= END   : Create %s ReferenceEnergyAccount ===========',
+            energyObj.energyAccountMarketDocumentMrid,
+        );
+    }
+
+
+
+    public static async createReferenceEnergyAccountByReference(
+        ctx: Context,
+        params: STARParameters,
+        dataReference: DataReference) {
+        console.info('============= START : Create ReferenceEnergyAccount by Reference ===========');
+
+        await ReferenceEnergyAccountController.createReferenceEnergyAccountObj(ctx, params, dataReference.data, dataReference.collection);
+
+        console.info('============= END   : Create %s ReferenceEnergyAccount by Reference ===========',
+            dataReference.data.energyAccountMarketDocumentMrid,
+        );
+    }
+
+
+
+    public static async createReferenceEnergyAccountObj(
+        ctx: Context,
+        params: STARParameters,
+        energyObj: EnergyAccount,
+        target: string = '') {
+        console.info('============= START : Create ReferenceEnergyAccount Obj ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE) {
+            throw new Error(`Organisation, ${identity} does not have write access for Reference Energy Account.`);
+        }
+
+
         if (!energyObj.marketEvaluationPointMrid) {
             throw new Error(`ERROR createReferenceEnergyAccount, missing marketEvaluationPointMrid.`);
         } else if (!energyObj.processType) {
@@ -45,8 +80,11 @@ export class ReferenceEnergyAccountController {
         }
 
         let siteObj: Site;
+        var existingSitesRef:Map<string, DataReference>;
         try {
-            siteObj = await SiteService.getObj(ctx, params, energyObj.meteringPointMrid);
+            existingSitesRef = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
+            const siteObjRef = existingSitesRef.values().next().value;
+            siteObj = siteObjRef.data;
         } catch (error) {
             throw new Error('ERROR createReferenceEnergyAccount : '.concat(error.message).concat(` for Reference Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
@@ -68,19 +106,45 @@ export class ReferenceEnergyAccountController {
             throw new Error(`Reference Energy Account, sender: ${energyObj.senderMarketParticipantMrid} is not the same as site.systemOperator: ${siteObj.systemOperatorMarketParticipantMrid} in EnergyAccount creation.`);
         }
 
-        await ReferenceEnergyAccountService.write(ctx, params, energyObj);
+        if (target && target.length > 0) {
+            await ReferenceEnergyAccountService.write(ctx, params, energyObj, target);
+        }else {
+            for (var [key, ] of existingSitesRef) {
+                await ReferenceEnergyAccountService.write(ctx, params, energyObj, key);
+            }
+        }
 
-        console.info('============= END   : Create %s ReferenceEnergyAccount ===========',
+        console.info('============= END   : Create %s ReferenceEnergyAccount Obj ===========',
             energyObj.energyAccountMarketDocumentMrid,
         );
     }
 
+
+
+
     public static async getReferenceEnergyAccountForSystemOperator(
+        ctx: Context,
+        params: STARParameters,
+        meteringPointMrid: string,
+        systemOperatorEicCode: string,
+        startCreatedDateTime: string): Promise<string> {
+
+        const allResults = await ReferenceEnergyAccountController.getReferenceEnergyAccountForSystemOperatorObj(
+            ctx, params, meteringPointMrid, systemOperatorEicCode, startCreatedDateTime);
+        const formated = JSON.stringify(allResults);
+
+        return formated;
+
+    }
+
+
+    public static async getReferenceEnergyAccountForSystemOperatorObj(
             ctx: Context,
             params: STARParameters,
             meteringPointMrid: string,
             systemOperatorEicCode: string,
-            startCreatedDateTime: string): Promise<string> {
+            startCreatedDateTime: string,
+            target: string = ''): Promise<any[]> {
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
             throw new Error(`Organisation, ${identity} does not have read access for Reference Energy Account.`);
@@ -119,9 +183,12 @@ export class ReferenceEnergyAccountController {
         //     }
         // }`;
 
-        const allResults = await ReferenceEnergyAccountService.getQueryStringResult(ctx, params, query);
+        const allResults = await ReferenceEnergyAccountService.getQueryArrayResult(ctx, params, query, target);
         return allResults;
     }
+
+
+
 
     public static async getReferenceEnergyAccountByProducer(
         ctx: Context,

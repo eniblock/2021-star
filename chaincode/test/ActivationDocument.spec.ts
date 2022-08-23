@@ -8,7 +8,7 @@ const expect = chai.expect;
 import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
-import { ActivationDocument } from '../src/model/activationDocument';
+import { ActivationDocument } from '../src/model/activationDocument/activationDocument';
 import { STARParameters } from '../src/model/starParameters';
 
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
@@ -20,8 +20,9 @@ import { DocType } from '../src/enums/DocType';
 import { RoleType } from '../src/enums/RoleType';
 import { DataReference } from '../src/model/dataReference';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
-import { ActivationDocumentEligibilityStatus } from '../src/model/activationDocumentEligibilityStatus';
-import { EligibilityStatus } from '../src/enums/EligibilityStatus';
+import { EligibilityStatus } from '../src/model/activationDocument/eligibilityStatus';
+import { EligibilityStatusType } from '../src/enums/EligibilityStatusType';
+import { HLFServices } from '../src/controller/service/HLFservice';
 
 class TestContext {
     clientIdentity: any;
@@ -76,7 +77,7 @@ describe('Star Tests ActivationDocument', () => {
                 transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
                 const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+                const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
                 transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
@@ -105,7 +106,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             const ad_str = await Values.deleteJSONField(JSON.stringify(Values.HTA_ActivationDocument_Valid), 'originAutomationRegisteredResourceMrid');
@@ -250,7 +251,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             try {
@@ -272,7 +273,7 @@ describe('Star Tests ActivationDocument', () => {
             // transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             try {
@@ -294,7 +295,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             var input = JSON.stringify(activationDocument);
@@ -316,7 +317,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             activationDocument.reasonCode = '';
@@ -336,7 +337,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             // const iterator = Values.getYellowPageQueryMock(Values.HTA_yellowPage, mockHandler);
@@ -349,7 +350,8 @@ describe('Star Tests ActivationDocument', () => {
             expected.orderEnd = true;
             expected.potentialParent = false;
             expected.potentialChild = true;
-            expected.eligibilityStatus = '';
+            expected.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            expected.eligibilityStatusEditable = false;
             expected.docType = DocType.ACTIVATION_DOCUMENT;
 
             // console.info("-----------")
@@ -380,7 +382,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(activationDocument2.receiverMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocument.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocument2.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
@@ -396,7 +398,8 @@ describe('Star Tests ActivationDocument', () => {
             expected.orderEnd = true;
             expected.potentialParent = false;
             expected.potentialChild = true;
-            expected.eligibilityStatus = '';
+            expected.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            expected.eligibilityStatusEditable = false;
             expected.docType = DocType.ACTIVATION_DOCUMENT;
             const expected2: ActivationDocument = activationDocument2;
             expected2.orderEnd = true;
@@ -416,7 +419,6 @@ describe('Star Tests ActivationDocument', () => {
             // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
             // console.info(JSON.stringify(expected))
             // console.info("-----------")
-
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
                 "enedis-producer",
@@ -507,7 +509,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
             try {
@@ -525,7 +527,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
             // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            // const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            // const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             // transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             try {
@@ -547,7 +549,7 @@ describe('Star Tests ActivationDocument', () => {
             // transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
             // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            // const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            // const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             // transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             try {
@@ -569,7 +571,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = params.values.get(ParametersType.SITE);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
@@ -904,7 +906,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
             const collectionTSO: string = collectionsTSO[0];
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
@@ -936,8 +938,10 @@ describe('Star Tests ActivationDocument', () => {
 
             activationDocument01_garbage.orderEnd = true;
             activationDocument01_garbage.potentialParent = false;
+
             activationDocument02_garbage.orderEnd = true;
             activationDocument02_garbage.potentialChild = false;
+
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
@@ -952,7 +956,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
             const collectionTSO: string = collectionsTSO[0];
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
@@ -989,8 +993,10 @@ describe('Star Tests ActivationDocument', () => {
 
             activationDocument01_garbage.orderEnd = true;
             activationDocument01_garbage.potentialParent = false;
+
             activationDocument02_garbage.orderEnd = true;
             activationDocument02_garbage.potentialChild = false;
+
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
@@ -1007,7 +1013,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
             const collectionProducer: string = collectionsProducer[0];
 
@@ -1015,7 +1021,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
-            const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
+            const collectionNamesSite: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
 
@@ -1084,7 +1090,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
             const collectionProducer: string = collectionsProducer[0];
 
@@ -1092,7 +1098,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
             transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
 
-            const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
+            const collectionNamesSite: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
 
@@ -1157,6 +1163,7 @@ describe('Star Tests ActivationDocument', () => {
             childEndDocument.subOrderList = [parentStartDocument.activationDocumentMrid];
             childEndDocument.docType=DocType.ACTIVATION_DOCUMENT;
 
+
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: parentStartDocument});
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childEndDocument});
@@ -1173,7 +1180,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
             const collectionTSO: string = collectionsTSO[0];
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
@@ -1194,7 +1201,7 @@ describe('Star Tests ActivationDocument', () => {
             childDocument_Reconciliation.potentialChild= true;
             childDocument_Reconciliation.orderEnd = false;
 
-            const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
+            const collectionNamesSite: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0],
                 childDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
@@ -1244,6 +1251,7 @@ describe('Star Tests ActivationDocument', () => {
             childDocument_Reconciliation.potentialChild = false;
             childDocument_Reconciliation.subOrderList = [parentDocument.activationDocumentMrid];
 
+
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: parentDocument});
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childDocument_Reconciliation});
@@ -1260,7 +1268,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
             const collectionTSO: string = collectionsTSO[0];
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
@@ -1290,7 +1298,7 @@ describe('Star Tests ActivationDocument', () => {
             childDocument_Reconciliation.potentialChild= true;
             childDocument_Reconciliation.orderEnd = false;
 
-            const collectionNamesSite: string[] = params.values.get(ParametersType.SITE);
+            const collectionNamesSite: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0],
                 childDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
@@ -1363,7 +1371,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
             const collectionProducer: string = collectionsProducer[0];
 
@@ -1377,9 +1385,9 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getPrivateData.withArgs(collectionProducer,
                 activationDocument_Producer.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_Producer)));
 
-            const updatedStatus_Producer : ActivationDocumentEligibilityStatus = {
+            const updatedStatus_Producer : EligibilityStatus = {
                 activationDocumentMrid:activationDocument_Producer.activationDocumentMrid,
-                eligibilityStatus:EligibilityStatus.EligibilityAccepted
+                eligibilityStatus:EligibilityStatusType.EligibilityAccepted
             };
 
             const updateOrders_str = JSON.stringify(updatedStatus_Producer);
@@ -1400,9 +1408,9 @@ describe('Star Tests ActivationDocument', () => {
 
             const activationDocument_Producer: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
 
-            const updatedStatus_Producer : ActivationDocumentEligibilityStatus = {
+            const updatedStatus_Producer : EligibilityStatus = {
                 activationDocumentMrid:activationDocument_Producer.activationDocumentMrid,
-                eligibilityStatus:EligibilityStatus.EligibilityAccepted
+                eligibilityStatus:EligibilityStatusType.EligibilityAccepted
             };
 
             const updateOrders_str = JSON.stringify(updatedStatus_Producer);
@@ -1419,7 +1427,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
             const collectionProducer: string = collectionsProducer[0];
 
@@ -1433,9 +1441,9 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getPrivateData.withArgs(collectionProducer,
                 activationDocument_Producer.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_Producer)));
 
-            const updatedStatus_Producer : ActivationDocumentEligibilityStatus = {
+            const updatedStatus_Producer : EligibilityStatus = {
                 activationDocumentMrid:activationDocument_Producer.activationDocumentMrid,
-                eligibilityStatus:EligibilityStatus.EligibilityAccepted
+                eligibilityStatus:EligibilityStatusType.EligibilityAccepted
             };
             const updateOrders_str = JSON.stringify(updatedStatus_Producer);
 
@@ -1449,7 +1457,7 @@ describe('Star Tests ActivationDocument', () => {
             // console.info("-----------")
 
             const expectedValue_Producer = JSON.parse(JSON.stringify(activationDocument_Producer));
-            expectedValue_Producer.eligibilityStatus = EligibilityStatus.EligibilityAccepted;
+            expectedValue_Producer.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
             expectedValue_Producer.eligibilityStatusEditable = false;
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
@@ -1465,7 +1473,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
             const collectionProducer: string = collectionsProducer[0];
 
@@ -1479,9 +1487,9 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getPrivateData.withArgs(collectionProducer,
                 activationDocument_Producer.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_Producer)));
 
-            const updatedStatus_Producer : ActivationDocumentEligibilityStatus = {
+            const updatedStatus_Producer : EligibilityStatus = {
                 activationDocumentMrid:activationDocument_Producer.activationDocumentMrid,
-                eligibilityStatus:EligibilityStatus.EligibilityAccepted
+                eligibilityStatus:EligibilityStatusType.EligibilityAccepted
             };
             const updateOrders_str = JSON.stringify(updatedStatus_Producer);
 
@@ -1495,7 +1503,7 @@ describe('Star Tests ActivationDocument', () => {
             // console.info("-----------")
 
             const expectedValue_Producer = JSON.parse(JSON.stringify(activationDocument_Producer));
-            expectedValue_Producer.eligibilityStatus = EligibilityStatus.EligibilityAccepted;
+            expectedValue_Producer.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
             expectedValue_Producer.eligibilityStatusEditable = false;
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
@@ -1511,7 +1519,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsDSO: string[] = collectionMap.get(RoleType.Role_DSO) as string[];
             const collectionDSO: string = collectionsDSO[0];
 
@@ -1525,9 +1533,9 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.stub.getPrivateData.withArgs(collectionDSO,
                 activationDocument_TSO.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument_TSO)));
 
-            const updatedStatus_TSO : ActivationDocumentEligibilityStatus = {
+            const updatedStatus_TSO : EligibilityStatus = {
                 activationDocumentMrid:activationDocument_TSO.activationDocumentMrid,
-                eligibilityStatus:EligibilityStatus.EligibilityRefused
+                eligibilityStatus:EligibilityStatusType.EligibilityRefused
             };
 
             const updateOrders_str = JSON.stringify(updatedStatus_TSO);
@@ -1542,7 +1550,7 @@ describe('Star Tests ActivationDocument', () => {
             // console.info("-----------")
 
             const expectedValue_TSO = JSON.parse(JSON.stringify(activationDocument_TSO));
-            expectedValue_TSO.eligibilityStatus = EligibilityStatus.EligibilityRefused;
+            expectedValue_TSO.eligibilityStatus = EligibilityStatusType.EligibilityRefused;
             expectedValue_TSO.eligibilityStatusEditable = false;
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
@@ -1565,7 +1573,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
             const collectionProducer: string = collectionsProducer[0];
 
@@ -1600,7 +1608,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
             const collectionProducer: string = collectionsProducer[0];
 
@@ -1624,7 +1632,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
             const collectionProducer: string = collectionsProducer[0];
 
@@ -1657,7 +1665,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
             const collectionProducer: string = collectionsProducer[0];
 
@@ -1693,7 +1701,7 @@ describe('Star Tests ActivationDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.ACTIVATION_DOCUMENT);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
             const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
             const collectionTSO: string = collectionsTSO[0];
             const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];

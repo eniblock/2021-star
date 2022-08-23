@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import {DatePipe} from '@angular/common';
 import {
   Component,
   Input,
@@ -6,7 +6,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { EChartsOption } from 'echarts';
+import {EChartsOption} from 'echarts';
 
 export interface Point {
   x: number; // timestamp
@@ -18,6 +18,7 @@ export interface GraphData {
   yTitle?: string;
   serieNames: string[];
   data: Point[][];
+  shownAreas: number[]; // [0,2] => la 1ere et la 3eme serie sont leur zone marquée
   exportFileName: string;
   seriesThatMustBeInterpolated: number[]; // the indice of the serie where we have to interpolate each point
 }
@@ -42,7 +43,7 @@ export interface GraphData {
       { x: new Date('2015/04/29 14:00:00').getTime(), y: 7 },
     ],
   ],
-  seriesThatMustBeInterpolated: []; 
+  seriesThatMustBeInterpolated: [];
   exportFileName: 'monFichier',
 }
 */
@@ -60,9 +61,11 @@ export class SquareGraphComponent implements OnInit, OnChanges {
 
   echartsData: EChartsOption = {};
 
-  constructor(public datepipe: DatePipe) {}
+  constructor(public datepipe: DatePipe) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.makeEchartsData();
@@ -158,16 +161,16 @@ export class SquareGraphComponent implements OnInit, OnChanges {
             },
           },
 
-          splitLine: { show: false },
+          splitLine: {show: false},
         },
         yAxis: {
           type: 'value',
           name: graphData.yTitle,
           nameLocation: 'middle',
           nameGap: 60,
-          nameTextStyle: { fontWeight: 'bold' }, // fontSize:14
-          axisPointer: { snap: true },
-          splitLine: { show: false },
+          nameTextStyle: {fontWeight: 'bold'}, // fontSize:14
+          axisPointer: {snap: true},
+          splitLine: {show: false},
         },
         legend: {
           data: graphData.serieNames,
@@ -191,6 +194,25 @@ export class SquareGraphComponent implements OnInit, OnChanges {
 
       // We add data
       graphData.data.forEach((serie, indice) => {
+        const markArea = (this.graphData?.shownAreas.find(i => i == indice) !== undefined && serie.length > 0)
+          ? {
+            silent: true,
+            itemStyle: {
+              opacity: 0.3
+            },
+            data: [
+              [
+                {
+                  xAxis: +serie[0].x
+                },
+                {
+                  xAxis: +serie[serie.length - 1].x
+                }
+              ]
+            ]
+          }
+          : null;
+
         (echartsData.series as any).push({
           name: graphData.serieNames[indice],
           type: 'line',
@@ -198,6 +220,7 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           symbolSize: 5,
           step: 'end',
           smooth: false,
+          markArea: markArea,
           data: graphData.seriesThatMustBeInterpolated.some((i) => i == indice)
             ? this.interpolateSerieOnAllAbscisses(serie, allAbscisses)
             : serie.map((p) => [p.x, p.y]),
@@ -218,10 +241,10 @@ export class SquareGraphComponent implements OnInit, OnChanges {
       allAbscisses.forEach((x) => {
         if (x >= serie[0].x && x <= serie[serie.length - 1].x) {
           if (x == serie[currentIndice].x) {
-            points.push({ x: x, y: serie[currentIndice].y });
+            points.push({x: x, y: serie[currentIndice].y});
             currentIndice++;
           } else {
-            points.push({ x: x, y: serie[currentIndice - 1].y });
+            points.push({x: x, y: serie[currentIndice - 1].y});
           }
         }
       });

@@ -67,6 +67,3 @@ data "local_file" "lb_ingress_ip_address_file" {
 output "lb_ingress_ip_address" {
   value = data.local_file.lb_ingress_ip_address_file.content
 }
-
-
-

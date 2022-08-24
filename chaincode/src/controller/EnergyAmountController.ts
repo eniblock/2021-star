@@ -18,6 +18,7 @@ import { DataReference } from '../model/dataReference';
 import { SiteController } from './SiteController';
 import { ActivationDocumentService } from './service/ActivationDocumentService';
 import { DataActionType } from '../enums/DataActionType';
+import { SiteService } from './service/SiteService';
 
 export class EnergyAmountController {
     public static async executeOrder(
@@ -68,11 +69,26 @@ export class EnergyAmountController {
         }
 
         if (checkSite && energyObj.registeredResourceMrid && energyObj.registeredResourceMrid !== "") {
+            // try {
+            //         await SiteController.getSiteById(ctx, params, energyObj.registeredResourceMrid, target);
+            // } catch(error) {
+            //     throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
+            // }
+
+            var siteRef: DataReference;
             try {
-                    await SiteController.getSiteById(ctx, params, energyObj.registeredResourceMrid, target);
+                const siteRefMap: Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, energyObj.registeredResourceMrid);
+                siteRef = siteRefMap.get(target);
             } catch(error) {
                 throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
             }
+            if (!siteRef
+                || siteRef.collection !== target
+                || !siteRef.data.meteringPointMrid
+                || siteRef.data.meteringPointMrid != energyObj.registeredResourceMrid) {
+                    throw new Error(`Site : ${energyObj.registeredResourceMrid}  for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`);
+            }
+
 
             if (orderObj.registeredResourceMrid !== energyObj.registeredResourceMrid) {
                 throw new Error(`ERROR manage EnergyAmount mismatch beetween registeredResourceMrid in Activation Document : ${orderObj.registeredResourceMrid} and Energy Amount : ${energyObj.registeredResourceMrid}.`);

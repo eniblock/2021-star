@@ -58,12 +58,20 @@ export class HistoryController {
 
                 const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
 
+                console.debug("oooooooooooooooooo")
+                console.debug(query)
+                console.debug(JSON.stringify(allActivationDocument))
+                console.debug("oooooooooooooooooo")
+
                 if (allActivationDocument && allActivationDocument.length > 0) {
                     result = await HistoryController.consolidate(ctx, params, allActivationDocument);
                 }
             }
         }
 
+        console.debug("####################")
+        console.debug(JSON.stringify(result))
+        console.debug("####################")
         return result;
     }
 
@@ -122,6 +130,10 @@ export class HistoryController {
         if (args.length > 0) {
             const querySite = await QueryStateService.buildQuery(DocType.SITE, args);
             const siteList: any[] = await SiteService.getQueryArrayResult(ctx, params, querySite);
+            console.debug("///////////////////")
+            console.debug(querySite)
+            console.debug(JSON.stringify(siteList))
+            console.debug("///////////////////")
 
             if (siteList.length == 0) {
                 return null;
@@ -145,6 +157,9 @@ export class HistoryController {
             criteriaObj.registeredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
         }
 
+        console.debug("/*/*/*/*/*/*/*/*/*/")
+        console.debug(JSON.stringify(criteriaObj))
+        console.debug("/*/*/*/*/*/*/*/*/*/")
         return criteriaObj;
     }
 
@@ -158,6 +173,7 @@ export class HistoryController {
 
                 const originAutomationRegisteredResourceList_str = JSON.stringify(criteriaObj.originAutomationRegisteredResourceList);
                 criteriaPlace.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
+                criteriaPlace.push(`"registeredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
                 // args.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
             }
             if (criteriaObj.registeredResourceList
@@ -222,7 +238,9 @@ export class HistoryController {
                 try {
                     const existingSitesRef = await SiteService.getObjRefbyId(ctx, params, activationDocument.registeredResourceMrid);
                     const siteObjRef = existingSitesRef.values().next().value;
-                    siteRegistered = siteObjRef;
+                    if (siteObjRef) {
+                        siteRegistered = siteObjRef.data;
+                    }
                 } catch (error) {
                     //DO nothing except "Not accessible information"
                 }
@@ -326,8 +344,10 @@ export class HistoryController {
                 finalinformation.push(information);
             } else {
                 var subOrderExists = false;
-                for (var subOrderId of information.activationDocument.subOrderList) {
-                    subOrderExists = subOrderExists || filledList.includes(subOrderId);
+                if (information && information.activationDocument && information.activationDocument.subOrderList) {
+                    for (var subOrderId of information.activationDocument.subOrderList) {
+                        subOrderExists = subOrderExists || filledList.includes(subOrderId);
+                    }
                 }
                 if (!subOrderExists) {
                     const finalInfo = await HistoryController.fillDegradedInformation(ctx, information);

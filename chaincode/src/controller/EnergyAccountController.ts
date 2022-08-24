@@ -99,11 +99,25 @@ export class EnergyAccountController {
         }
 
         let siteObj: Site;
+        // try {
+        //     siteObj = await SiteController.getSiteById(ctx, params, energyObj.meteringPointMrid, target);
+        // } catch(error) {
+        //     throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
+        // }
+        var siteRef: DataReference;
         try {
-            siteObj = await SiteController.getSiteById(ctx, params, energyObj.meteringPointMrid, target);
+            const siteRefMap: Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
+            siteRef = siteRefMap.get(target);
         } catch(error) {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
+        if (!siteRef
+            || siteRef.collection !== target
+            || !siteRef.data.meteringPointMrid
+            || siteRef.data.meteringPointMrid != energyObj.meteringPointMrid) {
+                throw new Error(`ERROR createEnergyAccount : Site : ${energyObj.meteringPointMrid}  for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`);
+        }
+        siteObj = siteRef.data;
 
 
         let systemOperatorObj: SystemOperator;

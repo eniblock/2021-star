@@ -19,7 +19,6 @@ import { RoleType } from '../../enums/RoleType';
 import { DataReference } from '../../model/dataReference';
 import { EligibilityStatusType } from '../../enums/EligibilityStatusType';
 import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
-import { DataActionType } from '../../enums/DataActionType';
 
 export class ActivationDocumentController {
     public static async getActivationDocumentByProducer(
@@ -237,11 +236,21 @@ export class ActivationDocumentController {
         if (!producerSystemOperatorObj
             || !producerSystemOperatorObj.systemOperatorMarketParticipantName
             || producerSystemOperatorObj.systemOperatorMarketParticipantName === "") {
+
+            var siteRef: DataReference;
             try {
-                await SiteService.getRaw(ctx, targetDocument, activationDocumentObj.registeredResourceMrid);
+                const siteRefMap: Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, activationDocumentObj.registeredResourceMrid);
+                siteRef = siteRefMap.get(targetDocument);
+                // await SiteService.getRaw(ctx, targetDocument, activationDocumentObj.registeredResourceMrid);
             } catch(error) {
                 throw new Error(error.message.concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
             }
+            if (!siteRef
+                || siteRef.collection !== targetDocument
+                || !siteRef.data.meteringPointMrid
+                || siteRef.data.meteringPointMrid != activationDocumentObj.registeredResourceMrid) {
+                    throw new Error(`Site : ${activationDocumentObj.registeredResourceMrid} does not exist for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
+                }
         }
 
         if (isEmpty(activationDocumentObj.endCreatedDateTime) && isEmpty(activationDocumentObj.orderValue)) {

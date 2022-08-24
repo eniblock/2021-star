@@ -29,11 +29,17 @@ export class StarDataStateController {
             orderReferences = await EligibilityController.getEligibilityStatusState(ctx, params, orderReferences);
         }
 
-        var sate_str = JSON.stringify(orderReferences);
+        var state_str = JSON.stringify(orderReferences);
+
+        console.debug("*******************************")
+        console.debug("*******************************")
+        console.debug(state_str)
+        console.debug("*******************************")
+        console.debug("*******************************")
 
         console.info('============= END : getStarDataState StarDataStateController ===========');
 
-        return sate_str;
+        return state_str;
 
     }
 
@@ -72,7 +78,6 @@ export class StarDataStateController {
                 //     const data: EnergyAccount = updateOrder.data;
                 //     params.addInMemoryPool(data.energyAccountMarketDocumentMrid, updateOrder);
                 // }
-
             }
             //PROCESS Step
             for (const updateOrder of updateOrders) {

@@ -50,10 +50,10 @@ declare -A mapENEDIS_ACTIVATIONDOCUMENTS
 
 echo "***********************************"
 echo
-echo "** RTE to PRODUCER - ACTIVATION DOCUMENTS DATA CREATION"
+echo "** RTE to PRODUCER - ACTIVATION DOCUMENTS DATA CREATION START"
 echo
 
-RTE_ACTIVATIONDOCUMENT_VALUE=$(cat $DATA_PATH/21-rte-OrdreLimitation-rte.json | jq '.')
+RTE_ACTIVATIONDOCUMENT_VALUE=$(cat $DATA_PATH/21-rte-OrdreLimitation-rte-start.json | jq '.')
 RTE_ACTIVATIONDOCUMENT_VALUE_NB=$(echo $RTE_ACTIVATIONDOCUMENT_VALUE | jq 'length')
 RTE_ACTIVATIONDOCUMENT_VALUE_WITHID=$(echo "[]" | jq '.')
 
@@ -85,10 +85,46 @@ fi
 
 echo "***********************************"
 echo
-echo "** RTE to ENEDIS - ACTIVATION DOCUMENTS DATA CREATION"
+echo "** RTE to PRODUCER - ACTIVATION DOCUMENTS DATA CREATION END"
 echo
 
-RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE=$(cat $DATA_PATH/22-rte-OrdreLimitation-enedis.json | jq '.')
+RTE_ACTIVATIONDOCUMENT_VALUE=$(cat $DATA_PATH/22-rte-OrdreLimitation-rte-end.json | jq '.')
+RTE_ACTIVATIONDOCUMENT_VALUE_NB=$(echo $RTE_ACTIVATIONDOCUMENT_VALUE | jq 'length')
+RTE_ACTIVATIONDOCUMENT_VALUE_WITHID=$(echo "[]" | jq '.')
+
+for i in `seq $RTE_ACTIVATIONDOCUMENT_VALUE_NB`
+do
+    index=$(($i-1))
+    activationDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
+    activationDocumentMrid=$(echo "activationDocument_rte_$activationDocumentMrid")
+    IdListRTE_PRODUCER+=( $activationDocumentMrid )
+    ELEMENT_VALUE=$(echo $RTE_ACTIVATIONDOCUMENT_VALUE | jq --argjson index $index --arg activationDocumentMrid $activationDocumentMrid '.[$index] + {activationDocumentMrid: $activationDocumentMrid}')
+    ELEMENT_VALUE=${ELEMENT_VALUE//[$'\t\r\n ']}
+    ID_ELEMENT_VALUE=$(GetMapDateKey $ELEMENT_VALUE)
+    mapRTE_ACTIVATIONDOCUMENTS["$ID_ELEMENT_VALUE"]=$activationDocumentMrid
+    RTE_ACTIVATIONDOCUMENT_VALUE_WITHID=$(echo $RTE_ACTIVATIONDOCUMENT_VALUE_WITHID | jq --argjson index $index --argjson ELEMENT_VALUE "$ELEMENT_VALUE" '.[$index] |= . + $ELEMENT_VALUE' )
+done
+RTE_ACTIVATIONDOCUMENT_VALUE_STR=$(echo $RTE_ACTIVATIONDOCUMENT_VALUE_WITHID | sed "s/\"/\\\\\"/g")
+RTE_ACTIVATIONDOCUMENT_VALUE_STR=${RTE_ACTIVATIONDOCUMENT_VALUE_STR//[$'\t\r\n ']}
+
+if $ONLINE_MODE
+then
+    kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+        peer chaincode invoke \
+            -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+            --tls $PRODUCER_TLSOPT $RTE_TLSOPT \
+            -c '{"Args":["CreateActivationDocumentList","'$RTE_ACTIVATIONDOCUMENT_VALUE_STR'"]}'
+fi
+
+
+
+
+echo "***********************************"
+echo
+echo "** RTE to ENEDIS - ACTIVATION DOCUMENTS DATA CREATION START"
+echo
+
+RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE=$(cat $DATA_PATH/23-rte-OrdreLimitation-enedis-start.json | jq '.')
 RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_NB=$(echo $RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE | jq 'length')
 RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_WITHID=$(echo "[]" | jq '.')
 
@@ -113,12 +149,46 @@ then
             -c '{"Args":["CreateActivationDocumentList","'$RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_STR'"]}'
 fi
 
+
+
+echo "***********************************"
+echo
+echo "** RTE to ENEDIS - ACTIVATION DOCUMENTS DATA CREATION COUPLE"
+echo
+
+RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE=$(cat $DATA_PATH/24-rte-OrdreLimitation-enedis-couple.json | jq '.')
+RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_NB=$(echo $RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE | jq 'length')
+RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_WITHID=$(echo "[]" | jq '.')
+
+for i in `seq $RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_NB`
+do
+    index=$(($i-1))
+    activationDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
+    activationDocumentMrid=$(echo "activationDocument_rte_$activationDocumentMrid")
+    IdListRTE_ENEDIS+=( $activationDocumentMrid )
+    ELEMENT_VALUE=$(echo $RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE | jq --argjson index $index --arg activationDocumentMrid $activationDocumentMrid '.[$index] + {activationDocumentMrid: $activationDocumentMrid}')
+    RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_WITHID=$(echo $RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_WITHID | jq --argjson index $index --argjson ELEMENT_VALUE "$ELEMENT_VALUE" '.[$index] |= . + $ELEMENT_VALUE' )
+done
+RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_STR=$(echo $RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_WITHID | sed "s/\"/\\\\\"/g")
+RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_STR=${RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_STR//[$'\t\r\n ']}
+
+if $ONLINE_MODE
+then
+    kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+        peer chaincode invoke \
+            -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+            --tls $ENEDIS_TLSOPT $RTE_TLSOPT \
+            -c '{"Args":["CreateActivationDocumentList","'$RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_STR'"]}'
+fi
+
+
+
 echo "***********************************"
 echo
 echo "** ENEDIS - ACTIVATION DOCUMENTS DATA CREATION"
 echo
 
-ENEDIS_ACTIVATIONDOCUMENT_VALUE=$(cat $DATA_PATH/31-enedis-OrdreLimitation.json | jq '.')
+ENEDIS_ACTIVATIONDOCUMENT_VALUE=$(cat $DATA_PATH/31-enedis-OrdreLimitation-couple.json | jq '.')
 ENEDIS_ACTIVATIONDOCUMENT_VALUE_NB=$(echo $ENEDIS_ACTIVATIONDOCUMENT_VALUE | jq 'length')
 ENEDIS_ACTIVATIONDOCUMENT_VALUE_WITHID=$(echo "[]" | jq '.')
 

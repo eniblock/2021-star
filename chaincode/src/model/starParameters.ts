@@ -30,6 +30,7 @@ export class STARParameters {
     }
 
     public getFromMemoryPool(key:string): Map<string, DataReference> {
-        return this.memoryPool.get(key);
+        const poolelt = this.memoryPool.get(key);
+        return poolelt;
     }
 }

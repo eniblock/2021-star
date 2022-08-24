@@ -275,7 +275,7 @@ public class OrdreLimitationService {
                 ordreFinLimitation.setInstance(instance.getValue());
                 ordreFinLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
                 ordreFinLimitation.setSubOrderList(new ArrayList<>());
-                ordreFinLimitation.setEndCreatedDateTime(EMPTY);
+                ordreFinLimitation.setStartCreatedDateTime(EMPTY);
                 if (ordreFinLimitation.getOrderValue() == null) {
                     ordreFinLimitation.setOrderValue(EMPTY);
                 }

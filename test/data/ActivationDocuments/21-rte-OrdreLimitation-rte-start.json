@@ -40,19 +40,5 @@
     "orderEnd": false,
     "senderMarketParticipantMrid": "SYSOP_RTE_AD_2",
     "receiverMarketParticipantMrid": "PROD_RTE_AD_2"
-  },
-  {
-    "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_2",
-    "registeredResourceMrid": "PDL_SITE_RTE_AD_2",
-    "orderValue": "RTEtoRTE_EndReconciliation",
-    "measurementUnitName": "MW",
-    "endCreatedDateTime": "2025-02-02T02:02:22Z",
-    "revisionNumber": "",
-    "messageType": "A54",
-    "businessType" : "C55",
-    "reasonCode": "A70",
-    "orderEnd": false,
-    "senderMarketParticipantMrid": "SYSOP_RTE_AD_2",
-    "receiverMarketParticipantMrid": "PROD_RTE_AD_2"
   }
 ]

@@ -1,20 +1,5 @@
 [
   {
-    "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_3",
-    "registeredResourceMrid": "SUBSTATION_RTE_AD_3",
-    "orderValue": "RTEtoEnedis_Reconciliation",
-    "measurementUnitName": "MW",
-    "startCreatedDateTime": "2025-03-03T03:03:03Z",
-    "endCreatedDateTime": "2025-03-03T03:53:53Z",
-    "revisionNumber": "",
-    "messageType": "A54",
-    "businessType" : "C55",
-    "reasonCode": "A70",
-    "orderEnd": false,
-    "senderMarketParticipantMrid": "SYSOP_RTE_AD_3",
-    "receiverMarketParticipantMrid": "SYSOP_ENEDIS_AD_3"
-  },
-  {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_4",
     "registeredResourceMrid": "SUBSTATION_RTE_AD_3",
     "orderValue": "RTEtoEnedis_NoooooReconciliation",

@@ -7,7 +7,7 @@ resource "cloudflare_record" "domains" {
   )
   zone_id  = data.cloudflare_zone.eniblock_fr.id
   name     = replace(each.value, "/\\.eniblock\\.fr$/", "")
-  value    = "141.95.163.210"
+  value    = data.local_file.lb_ingress_ip_address_file.content
   type     = "A"
   ttl      = 300
   depends_on  = [

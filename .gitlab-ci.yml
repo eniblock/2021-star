@@ -120,12 +120,13 @@ helm:
   variables:
   script:
     - chmod 600 $KUBECONFIG_GRA
+    - export KUBECONFIG=$KUBECONFIG_GRA
     - dockerhublogin
     - star_version=`yq eval .version helm/star/Chart.yaml`
     - if [ -z "$CI_COMMIT_TAG" ]; then star_version=$star_version-$CI_COMMIT_REF_SLUG; fi
-    - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev --kubeconfig $KUBECONFIG_GRA
-    - helm repo update --kubeconfig $KUBECONFIG_GRA
-    - kubectl delete -n ${CI_ENVIRONMENT_NAME} job --all --kubeconfig $KUBECONFIG_GRA
+    - helm repo add hlf-k8s https://gitlab.com/api/v4/projects/30449896/packages/helm/dev
+    - helm repo update
+    - kubectl delete -n ${CI_ENVIRONMENT_NAME} job --all
     # peers
     - helm upgrade --install --wait --timeout 8m --version $HLF_K8S_VERSION
       peer2 hlf-k8s/hlf-peer
@@ -133,8 +134,7 @@ helm:
       --post-renderer kbldpp
       --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2-gra.yaml
       --set "peer.chaincodes[0].image.tag=$star_version"
-      --kubeconfig $KUBECONFIG_GRA
-    - kubectl apply -f helm/hlf-peer/templates/peer1-gra-svc.yaml -n ${CI_ENVIRONMENT_NAME} --kubeconfig $KUBECONFIG_GRA
+    - kubectl apply -f helm/hlf-peer/templates/peer1-gra-svc.yaml -n ${CI_ENVIRONMENT_NAME}
 
 .deploy_orderer:
   stage: deploy

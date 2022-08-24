@@ -222,6 +222,13 @@ deploy-enedis-staging:
   only:
     - staging
 
+deploy-enedis-staging-gra:
+  extends: .deploy_star_gra
+  environment:
+    name: enedis-staging
+  only:
+    - develop
+
 deploy-rte-staging:
   extends: .deploy_star
   environment:
@@ -229,12 +236,26 @@ deploy-rte-staging:
   only:
     - staging
 
+deploy-rte-staging-gra:
+  extends: .deploy_star_gra
+  environment:
+    name: rte-staging
+  only:
+    - develop
+
 deploy-producer-staging:
   extends: .deploy_star
   environment:
     name: producer-staging
   only:
     - staging
+
+deploy-producer-staging-gra:
+  extends: .deploy_star_gra
+  environment:
+    name: producer-staging
+  only:
+    - develop
 
 deploy-orderer-staging:
   extends: .deploy_orderer

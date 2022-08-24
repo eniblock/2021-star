@@ -69,9 +69,6 @@ export class HistoryController {
             }
         }
 
-        console.debug("####################")
-        console.debug(JSON.stringify(result))
-        console.debug("####################")
         return result;
     }
 

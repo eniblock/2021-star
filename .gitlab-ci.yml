@@ -132,7 +132,7 @@ helm:
       peer2 hlf-k8s/hlf-peer
       -n ${CI_ENVIRONMENT_NAME}
       --post-renderer kbldpp
-      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2-gra.yaml
+      --values helm/hlf-peer/values-${CI_ENVIRONMENT_NAME}-peer2.yaml
       --set "peer.chaincodes[0].image.tag=$star_version"
     - kubectl apply -f helm/hlf-peer/templates/peer1-gra-svc.yaml -n ${CI_ENVIRONMENT_NAME}
 

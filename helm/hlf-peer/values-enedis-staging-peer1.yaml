@@ -2,6 +2,15 @@ ingress:
   enabled: true
   host: peer1.enedis.staging.star.eniblock.fr
   secretName: hlf--peer1-tls
+  from:
+  - podSelector: {}
+    namespaceSelector:
+      matchLabels:
+        name: ingress
+  - podSelector: {}
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: istio-system
 
 ##################################
 ## Peer configuration options    #

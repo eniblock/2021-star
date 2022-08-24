@@ -2,6 +2,7 @@ package com.star.service;
 
 import com.cloudant.client.api.query.Expression;
 import com.cloudant.client.api.query.Selector;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
 import com.star.exception.BusinessException;
@@ -60,7 +61,7 @@ public class EnergyAccountService {
 
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
-    public ImportEnergyAccountResult createEnergyAccount(List<FichierImportation> fichiers) throws IOException, TechnicalException {
+    public ImportEnergyAccountResult createEnergyAccount(List<FichierImportation> fichiers) throws IOException, TechnicalException, BusinessException {
         var importEnergyAccountResult = checkFiles(fichiers, true);
         if (isEmpty(importEnergyAccountResult.getErrors()) && !isEmpty(importEnergyAccountResult.getDatas())) {
             importEnergyAccountResult.setDatas(energyAccountRepository.save(importEnergyAccountResult.getDatas()));
@@ -68,7 +69,7 @@ public class EnergyAccountService {
         return importEnergyAccountResult;
     }
 
-    public ImportEnergyAccountResult updateEnergyAccount(List<FichierImportation> fichiers) throws IOException, TechnicalException {
+    public ImportEnergyAccountResult updateEnergyAccount(List<FichierImportation> fichiers) throws IOException, TechnicalException, BusinessException {
         var importEnergyAccountResult = checkFiles(fichiers, false);
         if (isEmpty(importEnergyAccountResult.getErrors()) && !isEmpty(importEnergyAccountResult.getDatas())) {
             importEnergyAccountResult.setDatas(energyAccountRepository.update(importEnergyAccountResult.getDatas()));
@@ -76,7 +77,7 @@ public class EnergyAccountService {
         return importEnergyAccountResult;
     }
 
-    private ImportEnergyAccountResult checkFiles(List<FichierImportation> fichiers, boolean creation) throws IOException {
+    private ImportEnergyAccountResult checkFiles(List<FichierImportation> fichiers, boolean creation) throws IOException, BusinessException {
         importUtilsService.checkImportFiles(fichiers, FileExtensionEnum.JSON.getValue());
 
         var importEnergyAccountResult = new ImportEnergyAccountResult();
@@ -91,17 +92,22 @@ public class EnergyAccountService {
                 errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichier.getFileName()}, null));
                 break;
             }
-            var energyAccount = objectMapper.readValue(fileInside, EnergyAccount.class);
-            errors.addAll(validator.validate(energyAccount).stream().map(violation ->
-                    messageSource.getMessage("import.error",
-                            new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
-            // En modification, il faut vérifier que le champ energyAccountMarketDocumentMrid est renseigné.
-            if (!creation && StringUtils.isBlank(energyAccount.getEnergyAccountMarketDocumentMrid())) {
-                errors.add(messageSource.getMessage("import.error",
-                        new String[]{fichier.getFileName(), "energyAccountMarketDocumentMrid est obligatoire."}, null));
-            }
-            if (isEmpty(errors)) {
-                energyAccounts.add(energyAccount);
+            try {
+                var energyAccount = objectMapper.readValue(fileInside, EnergyAccount.class);
+                errors.addAll(validator.validate(energyAccount).stream().map(violation ->
+                        messageSource.getMessage("import.error",
+                                new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
+                // En modification, il faut vérifier que le champ energyAccountMarketDocumentMrid est renseigné.
+                if (!creation && StringUtils.isBlank(energyAccount.getEnergyAccountMarketDocumentMrid())) {
+                    errors.add(messageSource.getMessage("import.error",
+                            new String[]{fichier.getFileName(), "energyAccountMarketDocumentMrid est obligatoire."}, null));
+                }
+                if (isEmpty(errors)) {
+                    energyAccounts.add(energyAccount);
+                }
+            } catch (JsonProcessingException jsonProcessingException) {
+                log.error(jsonProcessingException.getMessage());
+                throw new BusinessException("Erreur lors du traitement du fichier.Echec du parsing du contenu du fichier (champ, ligne ou attribut incorrect).");
             }
         }
         // Handling data
@@ -140,7 +146,8 @@ public class EnergyAccountService {
         return importEnergyAccountResult;
     }
 
-    public EnergyAccount[] findEnergyAccount(EnergyAccountCriteria energyAccountCriteria) throws BusinessException, TechnicalException {
+    public EnergyAccount[] findEnergyAccount(EnergyAccountCriteria energyAccountCriteria) throws
+            BusinessException, TechnicalException {
         var selectors = new ArrayList<Selector>();
         selectors.add(Expression.eq("docType", ENERGY_ACCOUNT.getDocType()));
         if (isNotBlank(energyAccountCriteria.getMeteringPointMrid())) {

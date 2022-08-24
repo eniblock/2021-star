@@ -2,6 +2,7 @@ package com.star.service;
 
 import com.cloudant.client.api.query.Expression;
 import com.cloudant.client.api.query.Selector;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
@@ -38,7 +39,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.star.enums.DocTypeEnum.ENERGY_AMOUNT;
-import static com.star.enums.InstanceEnum.DSO;
 import static com.star.enums.InstanceEnum.TSO;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
@@ -145,33 +145,38 @@ public class EnergyAmountService {
                 errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichier.getFileName()}, null));
                 break;
             }
-            var energyAmount = objectMapper.readValue(fileInside, EnergyAmount.class);
-            errors.addAll(validator.validate(energyAmount).stream().map(violation ->
-                    messageSource.getMessage("import.error",
-                            new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
-            // Vérifier que l'ID du document est fourni quand on est en modification
-            if (!creation && StringUtils.isBlank(energyAmount.getEnergyAmountMarketDocumentMrid())) {
-                errors.add(messageSource.getMessage("import.error",
-                        new String[]{fichier.getFileName(), "energyAmountMarketDocumentMrid est obligatoire."}, null));
-            }
-            String registeredResourceMrid = energyAmount.getRegisteredResourceMrid();
-            if (isBlank(registeredResourceMrid)) {
-                energyAmount.setRegisteredResourceMrid(EMPTY);
-            } else {
-                if (!siteService.existSite(registeredResourceMrid)) {
-                    errors.add(messageSource.getMessage("import.file.energy.amount.unknown.site",
-                            new String[]{registeredResourceMrid}, null));
+            try {
+                var energyAmount = objectMapper.readValue(fileInside, EnergyAmount.class);
+                errors.addAll(validator.validate(energyAmount).stream().map(violation ->
+                        messageSource.getMessage("import.error",
+                                new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
+                // Vérifier que l'ID du document est fourni quand on est en modification
+                if (!creation && StringUtils.isBlank(energyAmount.getEnergyAmountMarketDocumentMrid())) {
+                    errors.add(messageSource.getMessage("import.error",
+                            new String[]{fichier.getFileName(), "energyAmountMarketDocumentMrid est obligatoire."}, null));
                 }
-            }
-            // Vérification du champ senderMarketParticipantMrid
-            String senderMarketParticipantMrid = energyAmount.getSenderMarketParticipantMrid();
-            if (!StringUtils.equalsIgnoreCase(systemOperatorMarketParticipantMrid, senderMarketParticipantMrid)) {
-                errors.add(messageSource.getMessage("import.file.energy.amount.senderMarketParticipantMrid.error",
-                        new String[]{senderMarketParticipantMrid}, null));
-            }
+                String registeredResourceMrid = energyAmount.getRegisteredResourceMrid();
+                if (isBlank(registeredResourceMrid)) {
+                    energyAmount.setRegisteredResourceMrid(EMPTY);
+                } else {
+                    if (!siteService.existSite(registeredResourceMrid)) {
+                        errors.add(messageSource.getMessage("import.file.energy.amount.unknown.site",
+                                new String[]{registeredResourceMrid}, null));
+                    }
+                }
+                // Vérification du champ senderMarketParticipantMrid
+                String senderMarketParticipantMrid = energyAmount.getSenderMarketParticipantMrid();
+                if (!StringUtils.equalsIgnoreCase(systemOperatorMarketParticipantMrid, senderMarketParticipantMrid)) {
+                    errors.add(messageSource.getMessage("import.file.energy.amount.senderMarketParticipantMrid.error",
+                            new String[]{senderMarketParticipantMrid}, null));
+                }
 
-            if (isEmpty(errors)) {
-                energyAmounts.add(energyAmount);
+                if (isEmpty(errors)) {
+                    energyAmounts.add(energyAmount);
+                }
+            } catch (JsonProcessingException jsonProcessingException) {
+                log.error(jsonProcessingException.getMessage());
+                throw new BusinessException("Erreur lors du traitement du fichier.Echec du parsing du contenu du fichier (champ, ligne ou attribut incorrect).");
             }
         }
         // Handling data

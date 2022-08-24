@@ -7,6 +7,9 @@ locals {
       sbg5 = {
         monitoring_domain      = "obs.${local.env}.star.eniblock.fr"
         project_fqdn_testing   = [
+            "enedis.testing.star.eniblock.fr",
+            "producer.testing.star.eniblock.fr",
+            "rte.testing.star.eniblock.fr",
             "orderer1.orderer.testing.star.eniblock.fr",
             "orderer2.orderer.testing.star.eniblock.fr",
             "orderer3.orderer.testing.star.eniblock.fr",
@@ -15,6 +18,9 @@ locals {
             "peer1.rte.testing.star.eniblock.fr",
         ]
         project_fqdn_staging   = [
+            "enedis.staging.star.eniblock.fr",
+            "producer.staging.star.eniblock.fr",
+            "rte.staging.star.eniblock.fr",
             "orderer1.orderer.staging.star.eniblock.fr",
             "orderer2.orderer.staging.star.eniblock.fr",
             "orderer3.orderer.staging.star.eniblock.fr",

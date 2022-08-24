@@ -18,9 +18,10 @@ COPY service/src service/src/
 
 RUN --mount=type=cache,target=/root/.m2 \
   ./mvnw  package -DskipTests -B
+
+
 FROM openjdk:11 as dev
 VOLUME /tmp
-
 COPY --from=build  /workspace/app/api/target/api*.jar /app/api.jar
 ENTRYPOINT ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005","-jar","/app/api.jar"]
 

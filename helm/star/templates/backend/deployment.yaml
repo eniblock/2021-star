@@ -27,7 +27,6 @@ spec:
       labels:
         {{- include "star.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: backend
-        {{ include "star.fullname" . }}-ipfs-client: "true"
         # allows to contact the peers
         hlf-peer-msp-id: {{ .Values.backend.peerConnectionOrganization }}
     spec:

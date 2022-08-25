@@ -213,14 +213,40 @@ export class ActivationDocumentController {
         const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
         var role_producer: string = '';
         var role_systemOperator: string = '';
-        if (producerObj && roleTable.has(producerObj.producerMarketParticipantName)) {
-            role_producer = roleTable.get(producerObj.producerMarketParticipantName);
-        } else if (producerObj && roleTable.has(producerSystemOperatorObj.systemOperatorMarketParticipantName)) {
-            role_producer = roleTable.get(producerSystemOperatorObj.systemOperatorMarketParticipantName);
+
+        var producerName: string;
+        if (producerObj) {
+            producerName = producerObj.producerMarketParticipantName;
+            if (producerName && producerName.length > 0) {
+                producerName = producerName.toLowerCase();
+            }
+        }
+        var producerSystemOperatorName: string;
+        if (producerSystemOperatorObj) {
+            producerSystemOperatorName = producerSystemOperatorObj.systemOperatorMarketParticipantName;
+            if (producerSystemOperatorName && producerSystemOperatorName.length > 0) {
+                producerSystemOperatorName = producerSystemOperatorName.toLowerCase();
+            }
         }
 
-        if (systemOperatorObj && roleTable.has(systemOperatorObj.systemOperatorMarketParticipantName)) {
-            role_systemOperator = roleTable.get(systemOperatorObj.systemOperatorMarketParticipantName);
+
+        if (roleTable.has(producerName)) {
+            role_producer = roleTable.get(producerName);
+        } else if (roleTable.has(producerSystemOperatorName)) {
+            role_producer = roleTable.get(producerSystemOperatorName);
+        }
+
+
+        var systemOperatorName: string;
+        if (systemOperatorObj) {
+            systemOperatorName = systemOperatorObj.systemOperatorMarketParticipantName;
+            if (systemOperatorName && systemOperatorName.length > 0) {
+                systemOperatorName = systemOperatorName.toLowerCase();
+            }
+        }
+
+        if (roleTable.has(systemOperatorName)) {
+            role_systemOperator = roleTable.get(systemOperatorName);
         }
 
         //Define target collection

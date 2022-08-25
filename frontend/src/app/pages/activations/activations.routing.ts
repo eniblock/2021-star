@@ -9,4 +9,4 @@ const routes: Routes = [
   },
 ];
 
-export const ActivationsRoutes = RouterModule.forChild(routes);
+export const LimitationsRoutes = RouterModule.forChild(routes);

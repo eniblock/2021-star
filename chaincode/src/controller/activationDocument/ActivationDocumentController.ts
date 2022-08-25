@@ -367,8 +367,8 @@ export class ActivationDocumentController {
         console.debug("*********************")
         console.debug("*********************")
 
-        await ActivationDocumentService.delete(ctx, params, "a8b437c0-b087-4d5a-afa5-c72738822ee1");
-        await ActivationDocumentService.delete(ctx, params, "e54fc1be-47e0-440b-96eb-9af4b9869c76");
+        await ActivationDocumentService.delete(ctx, params, "a8b437c0-b087-4d5a-afa5-c72738822ee1", "enedis-rte");
+        await ActivationDocumentService.delete(ctx, params, "e54fc1be-47e0-440b-96eb-9af4b9869c76", "enedis-rte");
         // await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
 
         console.info('============= END   : Create %s createActivationDocumentObj ===========',

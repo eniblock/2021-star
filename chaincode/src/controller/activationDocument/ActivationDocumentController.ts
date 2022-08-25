@@ -285,9 +285,36 @@ export class ActivationDocumentController {
         console.debug("*********************")
 
         console.debug(JSON.stringify(activationDocumentObj))
+
+        console.debug("")
+
+        console.debug(activationDocumentObj.potentialParent)
+        console.debug("potentialParent final value :")
+
+        console.debug("")
+
         console.debug(JSON.stringify(RoleType.Role_TSO === role_systemOperator))
+        console.debug("Value Test :")
+        console.debug(role_systemOperator)
+        console.debug("role_systemOperator :")
+        console.debug(RoleType.Role_TSO)
+        console.debug("RoleType.Role_TSO :")
+
+        console.debug("")
+
         console.debug(JSON.stringify(RoleType.Role_DSO == role_producer))
+        console.debug("Value Test :")
+        console.debug(role_producer)
+        console.debug("role_producer :")
+        console.debug(RoleType.Role_DSO)
+        console.debug("RoleType.Role_DSO :")
+
+        console.debug("")
+
+        console.debug(JSON.stringify(activationDocumentObj.startCreatedDateTime !== ""))
+        console.debug("Value Test :")
         console.debug(JSON.stringify(activationDocumentObj.startCreatedDateTime))
+        console.debug("startCreatedDateTime :")
 
         console.debug("*********************")
         console.debug("*********************")

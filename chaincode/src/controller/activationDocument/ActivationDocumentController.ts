@@ -296,10 +296,8 @@ export class ActivationDocumentController {
         console.debug(roleTable.get(producerSystemOperatorObj.systemOperatorMarketParticipantName))
         console.debug("---")
         console.debug("value")
-        console.debug(producerSystemOperatorObj.systemOperatorMarketParticipantName)
-        console.debug("systemOperatorMarketParticipantName")
-        console.debug(JSON.stringify([...roleTable]))
-        console.debug("roleTable")
+        console.debug(systemOperatorObj.systemOperatorMarketParticipantName)
+        console.debug("systemOperatorObj.systemOperatorMarketParticipantName")
 
         console.debug("")
 
@@ -311,6 +309,14 @@ export class ActivationDocumentController {
         console.debug("RoleType.Role_TSO :")
 
         console.debug("")
+        console.debug("---")
+        console.debug(roleTable.get(producerSystemOperatorObj.systemOperatorMarketParticipantName))
+        console.debug("---")
+        console.debug("value")
+        console.debug(producerSystemOperatorObj.systemOperatorMarketParticipantName)
+        console.debug("producerSystemOperatorObj.systemOperatorMarketParticipantName")
+
+        console.debug("")
 
         console.debug(JSON.stringify(RoleType.Role_DSO == role_producer))
         console.debug("Value Test :")
@@ -318,6 +324,11 @@ export class ActivationDocumentController {
         console.debug("role_producer :")
         console.debug(RoleType.Role_DSO)
         console.debug("RoleType.Role_DSO :")
+
+        console.debug("")
+
+        console.debug(JSON.stringify([...roleTable]))
+        console.debug("roleTable")
 
         console.debug("")
 

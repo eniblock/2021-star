@@ -46,7 +46,7 @@ public class ProducerRepository {
         if (CollectionUtils.isEmpty(producers)) {
             return Collections.emptyList();
         }
-        log.info("Sauvegarde des producers : {}", producers);
+        log.info("Sauvegarde de {} producers", producers.size());
         for (Producer producer : producers) {
             if (producer != null) {
                 try {

@@ -51,7 +51,7 @@ public class OrdreLimitationRepository {
         if (CollectionUtils.isEmpty(ordreLimitations)) {
             return emptyList();
         }
-        log.info("Sauvegarde des ordres de limitation : {}", ordreLimitations);
+        log.info("Sauvegarde de {} ordres de limitation.", ordreLimitations.size());
         try {
             contract.submitTransaction(CREATE_LIST, objectMapper.writeValueAsString(ordreLimitations));
             this.reconciliate();

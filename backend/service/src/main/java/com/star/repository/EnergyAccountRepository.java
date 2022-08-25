@@ -46,7 +46,7 @@ public class EnergyAccountRepository {
         if (CollectionUtils.isEmpty(energyAccounts)) {
             return Collections.emptyList();
         }
-        log.info("Sauvegarde des energy accounts : {}", energyAccounts);
+        log.info("Sauvegarde de {} energy accounts", energyAccounts.size());
         writeEnergyAccountToBc(energyAccounts, CREATE);
         return energyAccounts;
     }
@@ -55,7 +55,7 @@ public class EnergyAccountRepository {
         if (CollectionUtils.isEmpty(energyAccounts)) {
             return Collections.emptyList();
         }
-        log.info("Modification des energy accounts : {}", energyAccounts);
+        log.info("Modification de {} energy accounts", energyAccounts.size());
         writeEnergyAccountToBc(energyAccounts, UPDATE);
         return energyAccounts;
     }

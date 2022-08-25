@@ -24,6 +24,7 @@ import { ProducerService } from "../service/ProducerService";
 import { QueryStateService } from "../service/QueryStateService";
 import { SiteService } from "../service/SiteService";
 import { YellowPagesController } from "../YellowPagesController";
+import { EligibilityStatusType } from "../../enums/EligibilityStatusType";
 
 export class HistoryController {
 
@@ -59,7 +60,9 @@ export class HistoryController {
                 const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
 
                 if (allActivationDocument && allActivationDocument.length > 0) {
-                    result = await HistoryController.consolidate(ctx, params, allActivationDocument);
+                    const informationList = await HistoryController.consolidate(ctx, params, allActivationDocument);
+                    result = await HistoryController.generateOutput(ctx, informationList);
+
                 }
             }
         }
@@ -219,7 +222,6 @@ export class HistoryController {
         allActivationDocument: ActivationDocument[]): Promise<HistoryInformation[]> {
 
         const informationList: HistoryInformation[] = [];
-        const filledList: string[] = [];
 
         for (const activationDocumentQueryValue of allActivationDocument) {
             const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(ctx, params, activationDocumentQueryValue);
@@ -341,10 +343,6 @@ export class HistoryController {
                     energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null
                 };
 
-                if (information.site && information.producer) {
-                    filledList.push(activationDocument.activationDocumentMrid);
-                }
-
                 siteRegistered = null;
                 producer = null;
                 energyAmount = null;
@@ -353,64 +351,161 @@ export class HistoryController {
             }
 
         }
-
-        const finalinformation = HistoryController.cleanFilled(ctx, informationList, filledList);
-        return finalinformation;
+        return informationList;
     }
 
 
 
 
 
+
+
+    private static async generateOutput(
+        ctx: Context,
+        initialInformation : HistoryInformation[]): Promise<HistoryInformation[]> {
+
+        var finalinformation: HistoryInformation[] = JSON.parse(JSON.stringify(initialInformation));
+
+        finalinformation = await HistoryController.sortInformation(finalinformation);
+        finalinformation = await HistoryController.cleanFilled(ctx, finalinformation);
+
+        return finalinformation;
+    }
+
+
+    private static async sortInformation(
+        initialInformation : HistoryInformation[]): Promise<HistoryInformation[]> {
+
+        var finalinformation: HistoryInformation[] = [];
+
+        const dateMap: Map<string, HistoryInformation[]> = new Map();
+        const keyArray: string[] = [];
+
+        //Create date Map and key (date) List
+        for (var information of initialInformation) {
+            if (information.activationDocument) {
+                const key = "".concat(information.activationDocument.startCreatedDateTime)
+                    .concat("ZZZ")
+                    .concat(information.activationDocument.endCreatedDateTime);
+                var values: HistoryInformation[];
+                if (!keyArray.includes(key)) {
+                    values = [];
+                    keyArray.push(key);
+                } else {
+                    values = dateMap.get(key);
+                }
+                values.push(information);
+                dateMap.set(key, values);
+            }
+        }
+
+        //Sort the Array by key (date)
+        keyArray.sort();
+
+        //Fill final information following the sorted list
+        for (var key of keyArray) {
+            const sortedInformationArray = dateMap.get(key);
+            if (sortedInformationArray) {
+                for (var information of sortedInformationArray) {
+                    finalinformation.push(information);
+                }
+            }
+        }
+
+        return finalinformation;
+    }
 
     private static async cleanFilled(
         ctx: Context,
-        initialInformation : HistoryInformation[],
-        filledList: string[]): Promise<HistoryInformation[]> {
+        initialInformation : HistoryInformation[]): Promise<HistoryInformation[]> {
 
         const finalinformation: HistoryInformation[] = [];
+        const embeddedInformation: string[] = [];
 
+        //First the editable
+        var remainingInformationStep1: HistoryInformation[] = [];
         for (var information of initialInformation) {
-            if (information.site && information.producer) {
+            if (information.site
+                && information.producer
+                && information.activationDocument
+                && information.activationDocument.eligibilityStatusEditable) {
+
                 finalinformation.push(information);
-            } else {
-                var subOrderExists = false;
-                if (information && information.activationDocument && information.activationDocument.subOrderList) {
-                    for (var subOrderId of information.activationDocument.subOrderList) {
-                        subOrderExists = subOrderExists || filledList.includes(subOrderId);
+
+                embeddedInformation.push(information.activationDocument.activationDocumentMrid);
+                if (information.subOrderList) {
+                    for (var subOrder of information.subOrderList) {
+                        embeddedInformation.push(subOrder.activationDocumentMrid);
                     }
                 }
-                if (!subOrderExists) {
-                    const finalInfo = await HistoryController.fillDegradedInformation(ctx, information);
-                    finalinformation.push(finalInfo);
+            } else {
+                remainingInformationStep1.push(information);
+            }
+        }
+
+        //Second the eligibility defined
+        var remainingInformationStep2: HistoryInformation[] = [];
+        for (var information of remainingInformationStep1) {
+            //Not include ones already included
+            if (information.activationDocument
+                && !embeddedInformation.includes(information.activationDocument.activationDocumentMrid)) {
+
+                if (information.activationDocument.eligibilityStatus
+                    && information.activationDocument.eligibilityStatus !== "") {
+
+                    finalinformation.push(information);
+
+                    embeddedInformation.push(information.activationDocument.activationDocumentMrid);
+                    if (information.subOrderList) {
+                        for (var subOrder of information.subOrderList) {
+                            embeddedInformation.push(subOrder.activationDocumentMrid);
+                        }
+                    }
+                } else {
+                    remainingInformationStep2.push(information);
                 }
             }
         }
+
+        //Third the information with reconciliation (even if no eligibility editable or filled)
+        var remainingInformationStep3: HistoryInformation[] = [];
+        for (var information of remainingInformationStep2) {
+            //Not include ones already included
+            if (information.activationDocument
+                && !embeddedInformation.includes(information.activationDocument.activationDocumentMrid)) {
+
+                if (information.subOrderList
+                    && information.subOrderList.length > 0) {
+
+                    finalinformation.push(information);
+
+                    embeddedInformation.push(information.activationDocument.activationDocumentMrid);
+                    if (information.subOrderList) {
+                        for (var subOrder of information.subOrderList) {
+                            embeddedInformation.push(subOrder.activationDocumentMrid);
+                        }
+                    }
+                } else {
+                    remainingInformationStep3.push(information);
+                }
+            }
+        }
+
+        //Fourth the last ones
+        for (var information of remainingInformationStep3) {
+            //Not include ones already included
+            if (information.activationDocument
+                && !embeddedInformation.includes(information.activationDocument.activationDocumentMrid)) {
+
+                finalinformation.push(information);
+            }
+        }
+
 
         return finalinformation;
     }
 
 
 
-
-
-    private static async fillDegradedInformation(
-        ctx: Context,
-        initialInformation : HistoryInformation): Promise<HistoryInformation> {
-        var filledInformation: HistoryInformation= JSON.parse(JSON.stringify(initialInformation));
-
-        if (filledInformation && filledInformation.activationDocument) {
-            if (filledInformation.activationDocument.registeredResourceMrid) {
-                const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByRegisteredResourceMrid(ctx, filledInformation.activationDocument.registeredResourceMrid);
-                if (yellowPages && yellowPages.length >0) {
-                    filledInformation.activationDocument.originAutomationRegisteredResourceMrid = yellowPages[0].originAutomationRegisteredResourceMrid;
-                }
-            } else {
-                filledInformation.activationDocument.originAutomationRegisteredResourceMrid = '---';
-            }
-        }
-
-        return filledInformation;
-    }
 
 }

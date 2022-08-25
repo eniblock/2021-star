@@ -180,7 +180,7 @@ k8s_yaml(read_file(secret_path))
 for orderer in ['orderer1', 'orderer2', 'orderer3']:
     helm_remote('hlf-ord',
         repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-        version="0.1.0-develop.42",
+        version="0.1.0-develop.43",
         namespace='orderer',
         release_name=orderer,
         values=['helm/hlf-ord/values-orderer-' + env + '-' + orderer + '.yaml'],
@@ -209,7 +209,7 @@ for org in ['enedis', 'rte', 'producer']:
         else:
             helm_remote('hlf-peer',
                 repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-                version="0.1.0-develop.42",
+                version="0.1.0-develop.43",
                 namespace=org,
                 release_name=peer,
                 values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],

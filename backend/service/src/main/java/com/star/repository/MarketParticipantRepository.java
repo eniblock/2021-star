@@ -44,7 +44,7 @@ public class MarketParticipantRepository {
         if (CollectionUtils.isEmpty(systemOperators)) {
             return Collections.emptyList();
         }
-        log.info("Sauvegarde des markets participants : {}", systemOperators);
+        log.info("Sauvegarde de {} markets participants", systemOperators.size());
         for (SystemOperator systemOperator : systemOperators) {
             if (systemOperator != null) {
                 try {

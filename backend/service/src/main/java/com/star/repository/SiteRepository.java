@@ -45,7 +45,7 @@ public class SiteRepository {
         if (CollectionUtils.isEmpty(sites)) {
             return Collections.emptyList();
         }
-        log.info("Sauvegarde des sites : {}", sites);
+        log.info("Sauvegarde de {} sites", sites.size());
         return writeSitesToBc(sites, CREATE_SITE);
     }
 
@@ -54,7 +54,7 @@ public class SiteRepository {
         if (CollectionUtils.isEmpty(sites)) {
             return Collections.emptyList();
         }
-        log.info("Modification des sites : {}", sites);
+        log.info("Modification de {} sites", sites.size());
         return writeSitesToBc(sites, UPDATE_SITE);
     }
 

@@ -50,7 +50,7 @@ public class EnergyAmountRepository {
         if (CollectionUtils.isEmpty(energyAmounts)) {
             return emptyList();
         }
-        log.info("Sauvegarde des energy amounts : {}", energyAmounts);
+        log.info("Sauvegarde de {} energy amounts", energyAmounts.size());
         if (InstanceEnum.DSO.equals(instance)) {
             writeEnergyAmountToBc(energyAmounts, CREATE_DSO_ENERGY_AMOUNT);
         } else {

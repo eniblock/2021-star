@@ -153,6 +153,7 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/tls-acme: "true"
+    nginx.org/proxy-read-timeout: "120s"
   host: ""
   from:
     - podSelector: {}

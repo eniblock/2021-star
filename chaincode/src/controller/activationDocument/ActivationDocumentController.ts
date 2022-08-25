@@ -306,70 +306,7 @@ export class ActivationDocumentController {
         activationDocumentObj.eligibilityStatusEditable = !(activationDocumentObj.eligibilityStatus === EligibilityStatusType.EligibilityAccepted);
         activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.statusInternationalValue(activationDocumentObj.eligibilityStatus);
 
-        console.debug("*********************")
-        console.debug("*********************")
-        console.debug("*********************")
-
-        console.debug(JSON.stringify(activationDocumentObj))
-
-        console.debug("")
-
-        console.debug(activationDocumentObj.potentialParent)
-        console.debug("potentialParent final value :")
-
-        console.debug("")
-        console.debug("---")
-        console.debug(roleTable.get(systemOperatorObj.systemOperatorMarketParticipantName))
-        console.debug("---")
-        console.debug("value")
-        console.debug(systemOperatorObj.systemOperatorMarketParticipantName)
-        console.debug("systemOperatorObj.systemOperatorMarketParticipantName")
-
-        console.debug("")
-
-        console.debug(JSON.stringify(RoleType.Role_TSO === role_systemOperator))
-        console.debug("Value Test :")
-        console.debug(role_systemOperator)
-        console.debug("role_systemOperator :")
-        console.debug(RoleType.Role_TSO)
-        console.debug("RoleType.Role_TSO :")
-
-        console.debug("")
-        console.debug("---")
-        console.debug(roleTable.get(producerSystemOperatorObj.systemOperatorMarketParticipantName))
-        console.debug("---")
-        console.debug("value")
-        console.debug(producerSystemOperatorObj.systemOperatorMarketParticipantName)
-        console.debug("producerSystemOperatorObj.systemOperatorMarketParticipantName")
-
-        console.debug("")
-
-        console.debug(JSON.stringify(RoleType.Role_DSO == role_producer))
-        console.debug("Value Test :")
-        console.debug(role_producer)
-        console.debug("role_producer :")
-        console.debug(RoleType.Role_DSO)
-        console.debug("RoleType.Role_DSO :")
-
-        console.debug("")
-
-        console.debug(JSON.stringify([...roleTable]))
-        console.debug("roleTable")
-
-        console.debug("")
-
-        console.debug(JSON.stringify(activationDocumentObj.startCreatedDateTime !== ""))
-        console.debug("Value Test :")
-        console.debug(JSON.stringify(activationDocumentObj.startCreatedDateTime))
-        console.debug("startCreatedDateTime :")
-
-        console.debug("*********************")
-        console.debug("*********************")
-        console.debug("*********************")
-
-        await ActivationDocumentService.delete(ctx, params, "a8b437c0-b087-4d5a-afa5-c72738822ee1", "enedis-rte");
-        await ActivationDocumentService.delete(ctx, params, "e54fc1be-47e0-440b-96eb-9af4b9869c76", "enedis-rte");
-        // await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
+        await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
 
         console.info('============= END   : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,

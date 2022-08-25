@@ -49,12 +49,31 @@ export class ReconciliationController {
                 }
             }
 
+            console.info("111111111111111111111111111111")
+            console.info("remaining")
+            console.info(reconciliationState.remaining)
+            console.info("updateOrders")
+            console.info(reconciliationState.updateOrders)
+            console.info("111111111111111111111111111111")
             if (reconciliationState && reconciliationState.remaining && reconciliationState.remaining.length >0 ) {
                 reconciliationState = await ReconciliationController.garbageCleanage(params, reconciliationState);
             }
+            console.info("2222222222222222222222222222222222")
+            console.info("remaining")
+            console.info(reconciliationState.remaining)
+            console.info("updateOrders")
+            console.info(reconciliationState.updateOrders)
+            console.info("2222222222222222222222222222222222")
             if (reconciliationState && reconciliationState.remaining && reconciliationState.remaining.length >0 ) {
                 reconciliationState = await ReconciliationController.searchReconciliation(ctx, params, reconciliationState);
             }
+            console.info("33333333333333333333333333333333333")
+            console.info("remaining")
+            console.info(reconciliationState.remaining)
+            console.info("updateOrders")
+            console.info(reconciliationState.updateOrders)
+            console.info("333333333333333333333333333333333333")
+
         }
 
         console.info('============= END : getReconciliationState ReconciliationController ===========');

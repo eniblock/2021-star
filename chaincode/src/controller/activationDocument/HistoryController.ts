@@ -501,6 +501,14 @@ export class HistoryController {
             }
         }
 
+        console.debug("_____________________")
+        console.debug("_____________________")
+        console.debug("_____________________")
+        console.debug(JSON.stringify(finalinformation))
+        console.debug("_____________________")
+        console.debug("_____________________")
+        console.debug("_____________________")
+
 
         return finalinformation;
     }

@@ -4,12 +4,12 @@
     <mat-label>Champs à afficher dans le tableau</mat-label>
     <mat-select formControlName="columns" multiple (selectionChange)="formChange()">
       <mat-select-trigger>
-        {{ form.value.columns?.length>0 ? (form.value.columns[0] | ActivationTableField) : ''}}
+        {{ form.value.columns?.length>0 ? (form.value.columns[0] | LimitationTableFieldPipe) : ''}}
         <span *ngIf="form.value.columns?.length > 1">
           (+{{form.value.columns.length - 1}} {{form.value.columns.length === 2 ? 'autre' : 'autres'}})
         </span>
       </mat-select-trigger>
-      <mat-option *ngFor="let c of allColumns" [value]="c">{{c | ActivationTableField}}</mat-option>
+      <mat-option *ngFor="let c of allColumns" [value]="c">{{c | LimitationTableFieldPipe}}</mat-option>
     </mat-select>
   </mat-form-field>
 

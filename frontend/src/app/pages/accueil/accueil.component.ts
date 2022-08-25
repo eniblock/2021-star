@@ -31,6 +31,6 @@ export class AccueilComponent implements OnInit {
     form: FormulaireRechercheHistoriqueLimitation
   ) {
     this.historiqueLimitationService.pushFormulaireRecherche(form);
-    this.router.navigate(['/', PATH_ROUTE.ACTIVATIONS]);
+    this.router.navigate(['/', PATH_ROUTE.LIMITATIONS]);
   }
 }

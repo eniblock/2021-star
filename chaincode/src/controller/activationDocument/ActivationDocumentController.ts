@@ -293,7 +293,7 @@ export class ActivationDocumentController {
 
         console.debug("")
         console.debug("---")
-        console.debug(roleTable.get(producerSystemOperatorObj.systemOperatorMarketParticipantName))
+        console.debug(roleTable.get(systemOperatorObj.systemOperatorMarketParticipantName))
         console.debug("---")
         console.debug("value")
         console.debug(systemOperatorObj.systemOperatorMarketParticipantName)

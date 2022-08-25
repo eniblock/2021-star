@@ -72,22 +72,31 @@ export class StarDataStateController {
                 //     const data: EnergyAccount = updateOrder.data;
                 //     params.addInMemoryPool(data.energyAccountMarketDocumentMrid, updateOrder);
                 // }
+                console.debug("oooooooooooooooooooooo")
+                console.debug("oooooooooooooooooooooo")
+                console.debug("oooooooooooooooooooooo")
+
+                console.debug(JSON.stringify(updateOrder))
+
+                console.debug("oooooooooooooooooooooo")
+                console.debug("oooooooooooooooooooooo")
+                console.debug("oooooooooooooooooooooo")
             }
             //PROCESS Step
-            for (const updateOrder of updateOrders) {
-                if (updateOrder.docType === DocType.ACTIVATION_DOCUMENT) {
-                    await OrderManagerController.executeOrder(ctx, params, updateOrder);
-                } else if (updateOrder.docType === DocType.SITE) {
-                    await SiteController.createSiteByReference(ctx, params, updateOrder);
-                } else if (updateOrder.docType === DocType.ENERGY_ACCOUNT) {
-                    await EnergyAccountController.createEnergyAccountByReference(ctx, params, updateOrder);
-                } else if (updateOrder.docType === DocType.REFERENCE_ENERGY_ACCOUNT) {
-                    await ReferenceEnergyAccountController.createReferenceEnergyAccountByReference(ctx, params, updateOrder);
-                } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
-                    await EnergyAmountController.executeOrder(ctx, params, updateOrder);
-                }
+            // for (const updateOrder of updateOrders) {
+            //     if (updateOrder.docType === DocType.ACTIVATION_DOCUMENT) {
+            //         await OrderManagerController.executeOrder(ctx, params, updateOrder);
+            //     } else if (updateOrder.docType === DocType.SITE) {
+            //         await SiteController.createSiteByReference(ctx, params, updateOrder);
+            //     } else if (updateOrder.docType === DocType.ENERGY_ACCOUNT) {
+            //         await EnergyAccountController.createEnergyAccountByReference(ctx, params, updateOrder);
+            //     } else if (updateOrder.docType === DocType.REFERENCE_ENERGY_ACCOUNT) {
+            //         await ReferenceEnergyAccountController.createReferenceEnergyAccountByReference(ctx, params, updateOrder);
+            //     } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
+            //         await EnergyAmountController.executeOrder(ctx, params, updateOrder);
+            //     }
 
-            }
+            // }
         }
 
         console.info('============= END : executeStarDataOrders StarDataStateController ===========');

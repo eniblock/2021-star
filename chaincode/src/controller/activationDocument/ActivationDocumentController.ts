@@ -280,6 +280,19 @@ export class ActivationDocumentController {
         activationDocumentObj.eligibilityStatusEditable = !(activationDocumentObj.eligibilityStatus === EligibilityStatusType.EligibilityAccepted);
         activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.statusInternationalValue(activationDocumentObj.eligibilityStatus);
 
+        console.debug("*********************")
+        console.debug("*********************")
+        console.debug("*********************")
+
+        console.debug(JSON.stringify(activationDocumentObj))
+        console.debug(JSON.stringify(RoleType.Role_TSO === role_systemOperator))
+        console.debug(JSON.stringify(RoleType.Role_DSO == role_producer))
+        console.debug(JSON.stringify(activationDocumentObj.startCreatedDateTime))
+
+        console.debug("*********************")
+        console.debug("*********************")
+        console.debug("*********************")
+
         await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
 
         console.info('============= END   : Create %s createActivationDocumentObj ===========',

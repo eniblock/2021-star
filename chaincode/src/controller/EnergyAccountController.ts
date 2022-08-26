@@ -36,7 +36,7 @@ export class EnergyAccountController {
         }
 
         for (var [key, ] of existingSitesRef) {
-            await EnergyAccountService.write(ctx, params, energyObj, key);
+            // await EnergyAccountService.write(ctx, params, energyObj, key);
         }
 
         console.debug('============= END   : Create %s EnergyAccount ===========',

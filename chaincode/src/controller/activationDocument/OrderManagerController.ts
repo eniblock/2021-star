@@ -54,13 +54,14 @@ export class OrderManagerController {
             throw new Error(`Error on document ${activationDocument.activationDocumentMrid} all modified data cannot be updated by orders.`);
         }
 
-        if (original.subOrderList) {
-            for (const listElt of original.subOrderList) {
-                if (!activationDocument.subOrderList.includes(listElt)) {
-                    throw new Error(`Error on document ${activationDocument.activationDocumentMrid} ids can only be added to subOrderList.`);
-                }
-            }
-        }
+        //TODO check subOrderList
+        // if (original.subOrderList) {
+        //     for (const listElt of original.subOrderList) {
+        //         if (!activationDocument.subOrderList.includes(listElt)) {
+        //             throw new Error(`Error on document ${activationDocument.activationDocumentMrid} ids can only be added to subOrderList.`);
+        //         }
+        //     }
+        // }
         activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
         await ActivationDocumentService.write(ctx, params, activationDocument, collection);
         console.debug('============= END : updateByOrders OrderManagerController ===========');

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { OrdreRechercheSitesProductionPipe } from './OrdreRechercheSitesProduction.pipe';
 import { TechnologyTypePipe } from './TechnologyType.pipe';
 import { TypeDeRechercheSimplePipe } from './TypeDeRechercheSimple.pipe';
-import { ActivationTableFieldPipe } from './ActivationTableField.pipe';
+import { LimitationTableFieldPipe } from './LimitationTableField.pipe';
 
 @NgModule({
   imports: [CommonModule],
@@ -11,13 +11,13 @@ import { ActivationTableFieldPipe } from './ActivationTableField.pipe';
     OrdreRechercheSitesProductionPipe,
     TechnologyTypePipe,
     TypeDeRechercheSimplePipe,
-    ActivationTableFieldPipe,
+    LimitationTableFieldPipe,
   ],
   exports: [
     OrdreRechercheSitesProductionPipe,
     TechnologyTypePipe,
     TypeDeRechercheSimplePipe,
-    ActivationTableFieldPipe,
+    LimitationTableFieldPipe,
   ],
 })
 export class PipesModule {}

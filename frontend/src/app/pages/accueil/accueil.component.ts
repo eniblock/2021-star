@@ -27,10 +27,10 @@ export class AccueilComponent implements OnInit {
     this.router.navigate(['/', PATH_ROUTE.SITES_PRODUCTION]);
   }
 
-  formRechercheActivationsSubmit(
+  formRechercheLimitationsSubmit(
     form: FormulaireRechercheHistoriqueLimitation
   ) {
     this.historiqueLimitationService.pushFormulaireRecherche(form);
-    this.router.navigate(['/', PATH_ROUTE.ACTIVATIONS]);
+    this.router.navigate(['/', PATH_ROUTE.LIMITATIONS]);
   }
 }

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-export const ACTIVATIONS_TABLE_COLUMNS_DEF = [
+export const LIMITATIONS_TABLE_COLUMNS_DEF = [
   { id: 'technologyType', champ: 'Filière' },
   { id: 'originAutomationRegisteredResourceMrid', champ: 'Poste Source' },
   { id: 'producerMarketParticipantName', champ: 'Nom Producteur' },
@@ -16,14 +16,14 @@ export const ACTIVATIONS_TABLE_COLUMNS_DEF = [
 ];
 
 @Pipe({
-  name: 'ActivationTableField',
+  name: 'LimitationTableFieldPipe',
 })
-export class ActivationTableFieldPipe implements PipeTransform {
+export class LimitationTableFieldPipe implements PipeTransform {
   transform(value?: string): any {
     if (value == undefined) {
       return '';
     }
-    const r = ACTIVATIONS_TABLE_COLUMNS_DEF.find(
+    const r = LIMITATIONS_TABLE_COLUMNS_DEF.find(
       (def) => def.id == value
     )?.champ;
     return r == null ? '' : r;

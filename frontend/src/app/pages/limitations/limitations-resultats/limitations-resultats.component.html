@@ -1,70 +1,70 @@
-<table mat-table matSort [dataSource]="dataComputedSorted" class="w-100 activations" (matSortChange)="sortChange($event)">
+<table mat-table matSort [dataSource]="dataComputedSorted" class="w-100 limitations" (matSortChange)="sortChange($event)">
 
   <ng-container matColumnDef="technologyType">
-    <th mat-header-cell *matHeaderCellDef> {{ 'technologyType' | ActivationTableField }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ 'technologyType' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element">
       <app-icon-technology-type [technologyType]="element.site.technologyType" *ngIf="element.hasSite"></app-icon-technology-type>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="originAutomationRegisteredResourceMrid">
-    <th mat-header-cell *matHeaderCellDef> {{ 'originAutomationRegisteredResourceMrid' | ActivationTableField }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ 'originAutomationRegisteredResourceMrid' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element"> <strong>{{ element.activationDocument.originAutomationRegisteredResourceMrid }}</strong> </td>
   </ng-container>
 
   <ng-container matColumnDef="producerMarketParticipantName">
-    <th mat-header-cell *matHeaderCellDef> {{ 'producerMarketParticipantName' | ActivationTableField }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ 'producerMarketParticipantName' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element"> <strong>{{ element.producer.producerMarketParticipantName }}</strong> </td>
   </ng-container>
 
   <ng-container matColumnDef="siteName">
-    <th mat-header-cell *matHeaderCellDef> {{ 'siteName' | ActivationTableField }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ 'siteName' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element"> {{ element.site.siteName }} </td>
   </ng-container>
 
   <ng-container matColumnDef="meteringPointMrid">
-    <th mat-header-cell *matHeaderCellDef> {{ 'meteringPointMrid' | ActivationTableField }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ 'meteringPointMrid' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element"> {{ element.site.meteringPointMrid }} </td>
   </ng-container>
 
   <ng-container matColumnDef="producerMarketParticipantMrid">
-    <th mat-header-cell *matHeaderCellDef> {{ 'producerMarketParticipantMrid' | ActivationTableField }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ 'producerMarketParticipantMrid' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element"> {{ element.producer.producerMarketParticipantMrid }} </td>
   </ng-container>
 
   <ng-container matColumnDef="debutLimitation">
-    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'debutLimitation' | ActivationTableField }} </th>
+    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'debutLimitation' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element">
-      <app-activation-horodates [ordreLimitation]="element.activationDocument" [ordreLimitationLinked]="element.subOrderList[0]" [showStartDates]="true"></app-activation-horodates>
+      <app-limitations-horodates [ordreLimitation]="element.activationDocument" [ordreLimitationLinked]="element.subOrderList[0]" [showStartDates]="true"></app-limitations-horodates>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="finLimitation">
-    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'finLimitation' | ActivationTableField }} </th>
+    <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'finLimitation' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element">
-      <app-activation-horodates [ordreLimitation]="element.activationDocument" [ordreLimitationLinked]="element.subOrderList[0]" [showEndDates]="true"></app-activation-horodates>
+      <app-limitations-horodates [ordreLimitation]="element.activationDocument" [ordreLimitationLinked]="element.subOrderList[0]" [showEndDates]="true"></app-limitations-horodates>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="indemnisation">
-    <th mat-header-cell *matHeaderCellDef> {{ 'indemnisation' | ActivationTableField }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ 'indemnisation' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element">
-      <app-activation-indemnisation [eligibilityStatus]="element.activationDocument.eligibilityStatus" [eligibilityStatusEditable]="element.activationDocument.eligibilityStatusEditable" [activationDocumentMrid]="element.activationDocument.activationDocumentMrid"></app-activation-indemnisation>
+      <app-limitations-indemnisation [eligibilityStatus]="element.activationDocument.eligibilityStatus" [eligibilityStatusEditable]="element.activationDocument.eligibilityStatusEditable" [activationDocumentMrid]="element.activationDocument.activationDocumentMrid"></app-limitations-indemnisation>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="typeLimitation">
-    <th mat-header-cell *matHeaderCellDef> {{ 'typeLimitation' | ActivationTableField }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ 'typeLimitation' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element"> {{ element.limitationType }} </td>
   </ng-container>
 
   <ng-container matColumnDef="quantity">
-    <th mat-header-cell *matHeaderCellDef> {{ 'quantity' | ActivationTableField }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ 'quantity' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element"> {{ element.energyAmount?.quantity}}</td>
   </ng-container>
 
   <ng-container matColumnDef="motif">
-    <th mat-header-cell *matHeaderCellDef> {{ 'motif' | ActivationTableField }} </th>
+    <th mat-header-cell *matHeaderCellDef> {{ 'motif' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element"> {{ element.motif }} </td>
   </ng-container>
 

@@ -47,11 +47,11 @@ const ALL_PRODUCER_COLUMNS_ID: string[] = [
 ];
 
 @Component({
-  selector: 'app-activations-column-selector',
-  templateUrl: './activations-column-selector.component.html',
-  styleUrls: ['./activations-column-selector.component.css'],
+  selector: 'app-limitations-column-selector',
+  templateUrl: './limitations-column-selector.component.html',
+  styleUrls: ['./limitations-column-selector.component.css'],
 })
-export class ActivationsColumnSelectorComponent implements OnInit {
+export class LimitationsColumnSelectorComponent implements OnInit {
   @Output() columnsToDisplayChange = new EventEmitter<string[]>();
 
   form: FormGroup = this.formBuilder.group({

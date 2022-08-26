@@ -49,7 +49,7 @@
   <ng-container matColumnDef="indemnisation">
     <th mat-header-cell *matHeaderCellDef> {{ 'indemnisation' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element">
-      <app-activation-indemnisation [eligibilityStatus]="element.activationDocument.eligibilityStatus" [eligibilityStatusEditable]="element.activationDocument.eligibilityStatusEditable" [activationDocumentMrid]="element.activationDocument.activationDocumentMrid"></app-activation-indemnisation>
+      <app-limitations-indemnisation [eligibilityStatus]="element.activationDocument.eligibilityStatus" [eligibilityStatusEditable]="element.activationDocument.eligibilityStatusEditable" [activationDocumentMrid]="element.activationDocument.activationDocumentMrid"></app-limitations-indemnisation>
     </td>
   </ng-container>
 

@@ -7,16 +7,16 @@ export interface DialogDataEligibilityStatus {
 }
 
 @Component({
-  selector: 'app-activation-indemnisation-choose-yes-no',
-  templateUrl: './activation-indemnisation-choose-yes-no.component.html',
-  styleUrls: ['./activation-indemnisation-choose-yes-no.component.css']
+  selector: 'app-limitations-indemnisation-choose-yes-no',
+  templateUrl: './limitations-indemnisation-choose-yes-no.component.html',
+  styleUrls: ['./limitations-indemnisation-choose-yes-no.component.css']
 })
-export class ActivationIndemnisationChooseYesNoComponent implements OnInit {
+export class LimitationsIndemnisationChooseYesNoComponent implements OnInit {
 
   EligibilityStatus = EligibilityStatus;
 
   constructor(
-    public dialogRef: MatDialogRef<ActivationIndemnisationChooseYesNoComponent>,
+    public dialogRef: MatDialogRef<LimitationsIndemnisationChooseYesNoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogDataEligibilityStatus,
   ) {
   }

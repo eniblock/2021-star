@@ -16,10 +16,10 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {GraphModule} from 'src/app/components/graph/graph.module';
 import {ActivationGraphComponent} from './activation-graph/activation-graph.component';
 import {ActivationHorodatesComponent} from './activation-horodates/activation-horodates.component';
-import {ActivationIndemnisationComponent} from './activation-indemnisation/activation-indemnisation.component';
+import {LimitationsIndemnisationComponent} from './limitations-indemnisation/limitations-indemnisation.component';
 import {
-  ActivationIndemnisationChooseYesNoComponent
-} from './activation-indemnisation/activation-indemnisation-choose-yes-no/activation-indemnisation-choose-yes-no.component';
+  LimitationsIndemnisationChooseYesNoComponent
+} from './limitations-indemnisation/limitations-indemnisation-choose-yes-no/limitations-indemnisation-choose-yes-no.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {LimitationsRoutes} from "./limitations.routing";
 
@@ -46,8 +46,8 @@ import {LimitationsRoutes} from "./limitations.routing";
     ActivationsColumnSelectorComponent,
     ActivationGraphComponent,
     ActivationHorodatesComponent,
-    ActivationIndemnisationComponent,
-    ActivationIndemnisationChooseYesNoComponent,
+    LimitationsIndemnisationComponent,
+    LimitationsIndemnisationChooseYesNoComponent,
   ],
 })
 export class LimitationsModule {

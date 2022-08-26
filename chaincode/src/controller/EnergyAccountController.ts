@@ -110,7 +110,11 @@ export class EnergyAccountController {
         var siteRef: DataReference;
         try {
             const siteRefMap: Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
-            siteRef = siteRefMap.get(target);
+            if (target && target.length > 0) {
+                siteRef = siteRefMap.get(target);
+            } else {
+                siteRef = siteRefMap.values().next().value;
+            }
         } catch(error) {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }

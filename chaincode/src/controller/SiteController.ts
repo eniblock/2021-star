@@ -276,7 +276,7 @@ export class SiteController {
         // let results = await SiteService.getQueryArrayResult(ctx, params, query);
 
         // return results;
-        return "";
+        return JSON.stringify([]);
     }
 
 

@@ -31,6 +31,10 @@ export class StarDataStateController {
 
         var state_str = JSON.stringify(orderReferences);
 
+        console.debug("#######################")
+        console.debug(state_str)
+        console.debug("#######################")
+
         console.info('============= END : getStarDataState StarDataStateController ===========');
 
         return state_str;

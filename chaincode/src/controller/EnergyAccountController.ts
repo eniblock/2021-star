@@ -126,11 +126,34 @@ export class EnergyAccountController {
         console.debug("energyObj")
         console.debug(JSON.stringify(energyObj))
 
+        console.debug("")
+
+        console.debug("!siteRef")
+        console.debug(JSON.stringify(!siteRef))
+        console.debug("siteRef.collection !== target")
+        console.debug(JSON.stringify(siteRef.collection !== target))
+        console.debug("!target")
+        console.debug(JSON.stringify(!target))
+        console.debug("target.length > 0")
+        console.debug(JSON.stringify(target.length > 0))
+        console.debug("!siteRef.data.meteringPointMrid")
+        console.debug(JSON.stringify(!siteRef.data.meteringPointMrid))
+        console.debug("siteRef.data.meteringPointMrid != energyObj.meteringPointMrid")
+        console.debug(JSON.stringify(siteRef.data.meteringPointMrid != energyObj.meteringPointMrid))
+
+        console.debug("")
+
+        console.debug("final value")
+        console.debug(JSON.stringify(!siteRef
+            || (siteRef.collection !== target && !target && target.length > 0)
+            || !siteRef.data.meteringPointMrid
+            || siteRef.data.meteringPointMrid != energyObj.meteringPointMrid))
+
         if (!siteRef
-            || siteRef.collection !== target || !target || target.length == 0
+            || (siteRef.collection !== target && !target && target.length > 0)
             || !siteRef.data.meteringPointMrid
             || siteRef.data.meteringPointMrid != energyObj.meteringPointMrid) {
-                throw new Error(`ERROR createEnergyAccount : Site : ${energyObj.meteringPointMrid}  for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`);
+                throw new Error(`ERROR createEnergyAccount : Site : ${energyObj.meteringPointMrid} does not exist for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`);
         }
         siteObj = siteRef.data;
         console.info("222222222222222222222222")

@@ -15,7 +15,7 @@ import { FormOrdreFinLimitationSaisieManuelleComponent } from './form-ordre-fin-
 import { MatRadioModule } from '@angular/material/radio';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { FormActivationsRechercheComponent } from './form-activations-recherche/form-activations-recherche.component';
+import { FormLimitationsRechercheComponent } from './form-limitations-recherche/form-limitations-recherche.component';
 import { FormOrdreDebutEtFinLimitationComponent } from './form-ordre-debut-et-fin-limitation/form-ordre-debut-et-fin-limitation.component';
 import { FormCourbeComptageReferenceComponent } from './form-courbe-comptage-reference/form-courbe-comptage-reference.component';
 import { FormEneEniFichierComponent } from './form-ene-eni/form-ene-eni-fichier/form-ene-eni-fichier.component';
@@ -45,7 +45,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     FormOrdreFinLimitationFichierComponent,
     FormOrdreFinLimitationSaisieManuelleComponent,
     FormOrdreDebutEtFinLimitationComponent,
-    FormActivationsRechercheComponent,
+    FormLimitationsRechercheComponent,
     FormCourbeComptageReferenceComponent,
     FormEneEniFichierComponent,
     FormEneEniFormComponent,
@@ -56,7 +56,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     FormOrdreDebutLimitationComponent,
     FormOrdreFinLimitationComponent,
     FormOrdreDebutEtFinLimitationComponent,
-    FormActivationsRechercheComponent,
+    FormLimitationsRechercheComponent,
     FormCourbeComptageReferenceComponent,
     FormEneEniComponent,
   ],

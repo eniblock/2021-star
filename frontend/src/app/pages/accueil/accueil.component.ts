@@ -27,7 +27,7 @@ export class AccueilComponent implements OnInit {
     this.router.navigate(['/', PATH_ROUTE.SITES_PRODUCTION]);
   }
 
-  formRechercheActivationsSubmit(
+  formRechercheLimitationsSubmit(
     form: FormulaireRechercheHistoriqueLimitation
   ) {
     this.historiqueLimitationService.pushFormulaireRecherche(form);

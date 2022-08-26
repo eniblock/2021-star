@@ -48,8 +48,8 @@ export class SiteService {
         params: STARParameters,
         id: string): Promise<Map<string, DataReference>> {
 
-        console.info("----------------------------------")
-        console.info("id:",id)
+        // console.info("----------------------------------")
+        // console.info("id:",id)
         var result:Map<string, DataReference> = params.getFromMemoryPool(id);
 
         if (!result) {
@@ -57,14 +57,14 @@ export class SiteService {
             const target: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, target);
 
-            console.info("target:",JSON.stringify(target))
-            console.info("collections:",JSON.stringify(collections))
-            console.info("- - - - - - - - - - - - - - - - -")
+            // console.info("target:",JSON.stringify(target))
+            // console.info("collections:",JSON.stringify(collections))
+            // console.info("- - - - - - - - - - - - - - - - -")
 
             if (collections) {
                 for (const collection of collections) {
                     let collectionResult:Site;
-                    console.info("collection:",collection)
+                    // console.info("collection:",collection)
                     try {
                         collectionResult = await SiteService.getObj(ctx, params, id, collection);
                     } catch (error) {
@@ -74,7 +74,7 @@ export class SiteService {
                         error = null;
                     }
 
-                    console.info("collectionResult:",JSON.stringify(collectionResult))
+                    // console.info("collectionResult:",JSON.stringify(collectionResult))
 
                     if (collectionResult && collectionResult.meteringPointMrid == id) {
                         const elt  = {
@@ -85,20 +85,20 @@ export class SiteService {
                         result.set(collection, elt);
                     }
 
-                    console.info("result:",JSON.stringify([...result]))
-                    console.info("- - - - - - - - - - - - - - - - -")
+                    // console.info("result:",JSON.stringify([...result]))
+                    // console.info("- - - - - - - - - - - - - - - - -")
                 }
             }
         }
 
-        console.info("result:",JSON.stringify([...result]))
-        console.info("- - - - - - - - - - - - - - - - -")
+        // console.info("result:",JSON.stringify([...result]))
+        // console.info("- - - - - - - - - - - - - - - - -")
 
         if (!result || ! result.keys().next().value) {
             throw new Error(`Site : ${id} does not exist (not found in any collection).`);
         }
 
-        console.info("----------------------------------")
+        // console.info("----------------------------------")
         return result;
     }
 

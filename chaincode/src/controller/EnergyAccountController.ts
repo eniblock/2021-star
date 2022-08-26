@@ -115,6 +115,13 @@ export class EnergyAccountController {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
         console.info("1.1.1.1.1.1.1111111111")
+        console.debug("SiteRef")
+        console.debug(JSON.stringify(siteRef))
+        console.debug("target")
+        console.debug(target)
+        console.debug("energyObj")
+        console.debug(JSON.stringify(energyObj))
+
         if (!siteRef
             || siteRef.collection !== target || !target || target.length == 0
             || !siteRef.data.meteringPointMrid

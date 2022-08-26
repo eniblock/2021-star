@@ -93,13 +93,6 @@ export class ActivationDocumentController {
         const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
         const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(ctx, params, allResults);
 
-        if (formatedResults && formatedResults.length > 0) {
-            console.debug("----------------")
-            console.debug("getActivationDocumentByQuery - result[0]")
-            console.debug(JSON.stringify(formatedResults[0]))
-            console.debug("----------------")
-        }
-
         const formated = JSON.stringify(formatedResults);
 
         return formated;

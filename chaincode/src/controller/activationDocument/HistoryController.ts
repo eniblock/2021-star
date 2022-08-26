@@ -223,6 +223,13 @@ export class HistoryController {
 
         const informationList: HistoryInformation[] = [];
 
+        if (allActivationDocument && allActivationDocument.length > 0) {
+            console.debug("----------------")
+            console.debug("history ActivationDocument[0]")
+            console.debug(JSON.stringify(allActivationDocument[0]))
+            console.debug("----------------")
+        }
+
         for (const activationDocumentQueryValue of allActivationDocument) {
             const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(ctx, params, activationDocumentQueryValue);
 

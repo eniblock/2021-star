@@ -78,15 +78,19 @@ export class EnergyAmountController {
             var siteRef: DataReference;
             try {
                 const siteRefMap: Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, energyObj.registeredResourceMrid);
-                siteRef = siteRefMap.get(target);
+                if (target && target.length > 0) {
+                    siteRef = siteRefMap.get(target);
+                } else {
+                    siteRef = siteRefMap.values().next().value;
+                }
             } catch(error) {
                 throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
             }
             if (!siteRef
-                || siteRef.collection !== target
+                || (siteRef.collection !== target && !target && target.length > 0)
                 || !siteRef.data.meteringPointMrid
                 || siteRef.data.meteringPointMrid != energyObj.registeredResourceMrid) {
-                    throw new Error(`Site : ${energyObj.registeredResourceMrid}  for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`);
+                    throw new Error(`Site : ${energyObj.registeredResourceMrid} does not exist for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`);
             }
 
 

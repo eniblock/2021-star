@@ -266,13 +266,17 @@ export class ActivationDocumentController {
             var siteRef: DataReference;
             try {
                 const siteRefMap: Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, activationDocumentObj.registeredResourceMrid);
-                siteRef = siteRefMap.get(targetDocument);
+                if (targetDocument && targetDocument.length > 0) {
+                    siteRef = siteRefMap.get(targetDocument);
+                } else {
+                    siteRef = siteRefMap.values().next().value;
+                }
                 // await SiteService.getRaw(ctx, targetDocument, activationDocumentObj.registeredResourceMrid);
             } catch(error) {
                 throw new Error(error.message.concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
             }
             if (!siteRef
-                || siteRef.collection !== targetDocument
+                || (siteRef.collection !== targetDocument && !targetDocument && targetDocument.length > 0)
                 || !siteRef.data.meteringPointMrid
                 || siteRef.data.meteringPointMrid != activationDocumentObj.registeredResourceMrid) {
                     throw new Error(`Site : ${activationDocumentObj.registeredResourceMrid} does not exist for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);

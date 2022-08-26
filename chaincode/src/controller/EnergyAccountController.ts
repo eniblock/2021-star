@@ -27,7 +27,6 @@ export class EnergyAccountController {
         const energyObj:EnergyAccount = EnergyAccount.formatString(inputStr);
         await EnergyAccountController.checkEnergyAccountObj(ctx, params, energyObj);
 
-        console.info("33333333333333333333333333333333")
         //Get existing sites
         var existingSitesRef:Map<string, DataReference>;
         try {
@@ -35,11 +34,10 @@ export class EnergyAccountController {
         } catch(error) {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` Can not be created.`));
         }
-        console.info("44444444444444444444444444444")
 
-        // for (var [key, ] of existingSitesRef) {
-        //     await EnergyAccountService.write(ctx, params, energyObj, key);
-        // }
+        for (var [key, ] of existingSitesRef) {
+            await EnergyAccountService.write(ctx, params, energyObj, key);
+        }
 
         console.debug('============= END   : Create %s EnergyAccount ===========',
             energyObj.energyAccountMarketDocumentMrid,
@@ -106,7 +104,6 @@ export class EnergyAccountController {
         // } catch(error) {
         //     throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         // }
-        console.info("1111111111111111111111")
         var siteRef: DataReference;
         try {
             const siteRefMap: Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
@@ -118,36 +115,6 @@ export class EnergyAccountController {
         } catch(error) {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
-        console.info("1.1.1.1.1.1.1111111111")
-        console.debug("SiteRef")
-        console.debug(JSON.stringify(siteRef))
-        console.debug("target")
-        console.debug(target)
-        console.debug("energyObj")
-        console.debug(JSON.stringify(energyObj))
-
-        console.debug("")
-
-        console.debug("!siteRef")
-        console.debug(JSON.stringify(!siteRef))
-        console.debug("siteRef.collection !== target")
-        console.debug(JSON.stringify(siteRef.collection !== target))
-        console.debug("!target")
-        console.debug(JSON.stringify(!target))
-        console.debug("target.length > 0")
-        console.debug(JSON.stringify(target.length > 0))
-        console.debug("!siteRef.data.meteringPointMrid")
-        console.debug(JSON.stringify(!siteRef.data.meteringPointMrid))
-        console.debug("siteRef.data.meteringPointMrid != energyObj.meteringPointMrid")
-        console.debug(JSON.stringify(siteRef.data.meteringPointMrid != energyObj.meteringPointMrid))
-
-        console.debug("")
-
-        console.debug("final value")
-        console.debug(JSON.stringify(!siteRef
-            || (siteRef.collection !== target && !target && target.length > 0)
-            || !siteRef.data.meteringPointMrid
-            || siteRef.data.meteringPointMrid != energyObj.meteringPointMrid))
 
         if (!siteRef
             || (siteRef.collection !== target && !target && target.length > 0)
@@ -156,7 +123,6 @@ export class EnergyAccountController {
                 throw new Error(`ERROR createEnergyAccount : Site : ${energyObj.meteringPointMrid} does not exist for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`);
         }
         siteObj = siteRef.data;
-        console.info("222222222222222222222222")
 
 
         let systemOperatorObj: SystemOperator;

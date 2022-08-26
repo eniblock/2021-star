@@ -13,11 +13,11 @@ import {TechnologyType} from 'src/app/models/enum/TechnologyType.enum';
 import {DateHelper} from "../../../helpers/date.helper";
 
 @Component({
-  selector: 'app-activations-resultats',
-  templateUrl: './activations-resultats.component.html',
-  styleUrls: ['./activations-resultats.component.css'],
+  selector: 'app-limitations-resultats',
+  templateUrl: './limitations-resultats.component.html',
+  styleUrls: ['./limitations-resultats.component.css'],
 })
-export class ActivationsResultatsComponent implements OnChanges {
+export class LimitationsResultatsComponent implements OnChanges {
   @Input() data: RechercheHistoriqueLimitationEntite[] = [];
   @Input() systemOperators: SystemOperator[] = [];
   @Input() columnsToDisplay: string[] = [];

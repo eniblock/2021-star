@@ -7,7 +7,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {PipesModule} from 'src/app/pipes/pipes.module';
 import {MatButtonModule} from '@angular/material/button';
-import {ActivationsResultatsComponent} from './activations-resultats/activations-resultats.component';
+import {LimitationsResultatsComponent} from './limitations-resultats/limitations-resultats.component';
 import {MatTableModule} from '@angular/material/table';
 import {ActivationsColumnSelectorComponent} from './activations-column-selector/activations-column-selector.component';
 import {MatSortModule} from '@angular/material/sort';
@@ -42,7 +42,7 @@ import {LimitationsRoutes} from "./limitations.routing";
   ],
   declarations: [
     LimitationsComponent,
-    ActivationsResultatsComponent,
+    LimitationsResultatsComponent,
     ActivationsColumnSelectorComponent,
     LimitationsGraphComponent,
     ActivationHorodatesComponent,

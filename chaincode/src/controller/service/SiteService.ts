@@ -71,6 +71,7 @@ export class SiteService {
                         if (error && error.message && error.message.includes("NON-JSON")) {
                             throw error;
                         }
+                        error = null;
                     }
 
                     console.info("collectionResult:",JSON.stringify(collectionResult))
@@ -94,7 +95,7 @@ export class SiteService {
         console.info("- - - - - - - - - - - - - - - - -")
 
         if (!result || ! result.keys().next().value) {
-            throw new Error(`Site : ${id} does not exist`);
+            throw new Error(`Site : ${id} does not exist (not found in any collection).`);
         }
 
         console.info("----------------------------------")

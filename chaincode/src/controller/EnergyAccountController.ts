@@ -114,8 +114,9 @@ export class EnergyAccountController {
         } catch(error) {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
+        console.info("1.1.1.1.1.1.1111111111")
         if (!siteRef
-            || siteRef.collection !== target
+            || siteRef.collection !== target || !target || target.length == 0
             || !siteRef.data.meteringPointMrid
             || siteRef.data.meteringPointMrid != energyObj.meteringPointMrid) {
                 throw new Error(`ERROR createEnergyAccount : Site : ${energyObj.meteringPointMrid}  for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`);

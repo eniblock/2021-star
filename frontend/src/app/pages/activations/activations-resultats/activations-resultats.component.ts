@@ -3,7 +3,7 @@ import {Sort} from '@angular/material/sort';
 import {InstanceService} from 'src/app/services/api/instance.service';
 import {Instance} from 'src/app/models/enum/Instance.enum';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
-import {ActivationGraphComponent} from '../activation-graph/activation-graph.component';
+import {LimitationsGraphComponent} from '../limitations-graph/limitations-graph.component';
 import {motifToString,} from 'src/app/rules/motif-rules';
 import {RechercheHistoriqueLimitationEntite} from 'src/app/models/RechercheHistoriqueLimitation';
 import {getLimitationType} from "../../../rules/limitation-type-rules";
@@ -111,7 +111,7 @@ export class ActivationsResultatsComponent implements OnChanges {
       measurementUnitNameConsign: activation.activationDocument.measurementUnitName,
     }
 
-    this.bottomSheet.open(ActivationGraphComponent, {
+    this.bottomSheet.open(LimitationsGraphComponent, {
       panelClass: 'graph-bottom-sheet',
       data: dataValue,
     });

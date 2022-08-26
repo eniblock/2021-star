@@ -122,9 +122,10 @@ export class ActivationDocumentController {
             await ActivationDocumentService.delete(ctx, params, "c4dd6569-5e3b-4e3d-b47a-f6880d6d72d9", collection);
         }
 
-        const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
-        const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(ctx, params, allResults);
-        const formated = JSON.stringify(formatedResults);
+        // const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
+        // const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(ctx, params, allResults);
+        // const formated = JSON.stringify(formatedResults);
+        const formated = JSON.stringify([]);
 
         return formated;
     }

@@ -35,14 +35,14 @@
   <ng-container matColumnDef="debutLimitation">
     <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'debutLimitation' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element">
-      <app-activation-horodates [ordreLimitation]="element.activationDocument" [ordreLimitationLinked]="element.subOrderList[0]" [showStartDates]="true"></app-activation-horodates>
+      <app-limitations-horodates [ordreLimitation]="element.activationDocument" [ordreLimitationLinked]="element.subOrderList[0]" [showStartDates]="true"></app-limitations-horodates>
     </td>
   </ng-container>
 
   <ng-container matColumnDef="finLimitation">
     <th mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'finLimitation' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element">
-      <app-activation-horodates [ordreLimitation]="element.activationDocument" [ordreLimitationLinked]="element.subOrderList[0]" [showEndDates]="true"></app-activation-horodates>
+      <app-limitations-horodates [ordreLimitation]="element.activationDocument" [ordreLimitationLinked]="element.subOrderList[0]" [showEndDates]="true"></app-limitations-horodates>
     </td>
   </ng-container>
 

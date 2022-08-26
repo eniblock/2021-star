@@ -34,7 +34,7 @@ const routes: Routes = [
   {
     path: PATH_ROUTE.LIMITATIONS,
     loadChildren: () =>
-      import('./pages/activations/limitations.module').then(
+      import('./pages/limitations/limitations.module').then(
         (m) => m.LimitationsModule
       ),
     data: { roles: [] },

@@ -15,7 +15,7 @@ import {MicroComponentsModule} from 'src/app/components/micro-components/micro-c
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {GraphModule} from 'src/app/components/graph/graph.module';
 import {LimitationsGraphComponent} from './limitations-graph/limitations-graph.component';
-import {ActivationHorodatesComponent} from './activation-horodates/activation-horodates.component';
+import {LimitationsHorodatesComponent} from './limitations-horodates/limitations-horodates.component';
 import {LimitationsIndemnisationComponent} from './limitations-indemnisation/limitations-indemnisation.component';
 import {
   LimitationsIndemnisationChooseYesNoComponent
@@ -45,7 +45,7 @@ import {LimitationsRoutes} from "./limitations.routing";
     LimitationsResultatsComponent,
     LimitationsColumnSelectorComponent,
     LimitationsGraphComponent,
-    ActivationHorodatesComponent,
+    LimitationsHorodatesComponent,
     LimitationsIndemnisationComponent,
     LimitationsIndemnisationChooseYesNoComponent,
   ],

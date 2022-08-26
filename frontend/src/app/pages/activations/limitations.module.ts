@@ -9,7 +9,7 @@ import {PipesModule} from 'src/app/pipes/pipes.module';
 import {MatButtonModule} from '@angular/material/button';
 import {LimitationsResultatsComponent} from './limitations-resultats/limitations-resultats.component';
 import {MatTableModule} from '@angular/material/table';
-import {ActivationsColumnSelectorComponent} from './activations-column-selector/activations-column-selector.component';
+import {LimitationsColumnSelectorComponent} from './limitations-column-selector/limitations-column-selector.component';
 import {MatSortModule} from '@angular/material/sort';
 import {MicroComponentsModule} from 'src/app/components/micro-components/micro-components.module';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
@@ -43,7 +43,7 @@ import {LimitationsRoutes} from "./limitations.routing";
   declarations: [
     LimitationsComponent,
     LimitationsResultatsComponent,
-    ActivationsColumnSelectorComponent,
+    LimitationsColumnSelectorComponent,
     LimitationsGraphComponent,
     ActivationHorodatesComponent,
     LimitationsIndemnisationComponent,

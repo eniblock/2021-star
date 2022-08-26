@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 export enum PATH_ROUTE {
   ACCUEIL = 'accueil',
   SITES_PRODUCTION = 'sitesProduction',
-  ACTIVATIONS = 'activations',
+  LIMITATIONS = 'limitations',
   CHARGER = 'charger',
 
   ERROR = 'error',
@@ -32,10 +32,10 @@ const routes: Routes = [
   },
 
   {
-    path: PATH_ROUTE.ACTIVATIONS,
+    path: PATH_ROUTE.LIMITATIONS,
     loadChildren: () =>
-      import('./pages/activations/activations.module').then(
-        (m) => m.ActivationsModule
+      import('./pages/limitations/limitations.module').then(
+        (m) => m.LimitationsModule
       ),
     data: { roles: [] },
   },

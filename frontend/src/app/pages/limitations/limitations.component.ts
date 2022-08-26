@@ -12,11 +12,11 @@ import {
 import {DateHelper} from "../../helpers/date.helper";
 
 @Component({
-  selector: 'app-activations',
-  templateUrl: './activations.component.html',
-  styleUrls: ['./activations.component.css'],
+  selector: 'app-limitations',
+  templateUrl: './limitations.component.html',
+  styleUrls: ['./limitations.component.css'],
 })
-export class ActivationsComponent implements OnInit {
+export class LimitationsComponent implements OnInit {
   formRecherche?: FormulaireRechercheHistoriqueLimitation;
 
   resultatsRechercheWithOnlyOneSubOrderByOrder?: RechercheHistoriqueLimitationEntite[]; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder

@@ -12,11 +12,11 @@ import {SortHelper} from "../../../helpers/sort.helper";
 import {environment} from "../../../../environments/environment";
 
 @Component({
-  selector: 'app-form-activations-recherche',
-  templateUrl: './form-activations-recherche.component.html',
-  styleUrls: ['./form-activations-recherche.component.css'],
+  selector: 'app-form-limitations-recherche',
+  templateUrl: './form-limitations-recherche.component.html',
+  styleUrls: ['./form-limitations-recherche.component.css'],
 })
-export class FormActivationsRechercheComponent implements OnInit {
+export class FormLimitationsRechercheComponent implements OnInit {
   @Output() formSubmit =
     new EventEmitter<FormulaireRechercheHistoriqueLimitation>();
 

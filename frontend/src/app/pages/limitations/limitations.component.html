@@ -5,7 +5,7 @@
 
 <div class="row my-3">
   <div class="col">
-    <app-form-activations-recherche (formSubmit)="rechercher($event)"></app-form-activations-recherche>
+    <app-form-limitations-recherche (formSubmit)="rechercher($event)"></app-form-limitations-recherche>
   </div>
 </div>
 
@@ -15,7 +15,7 @@
     <div class="row">
       <div class="col-6"></div>
       <div class="col-6">
-        <app-activations-column-selector (columnsToDisplayChange)="updateColumnsToDisplay($event)"></app-activations-column-selector>
+        <app-limitations-column-selector (columnsToDisplayChange)="updateColumnsToDisplay($event)"></app-limitations-column-selector>
       </div>
     </div>
   </div>
@@ -23,7 +23,7 @@
 
 <div class="row my-3" *ngIf="resultatsRechercheWithOnlyOneSubOrderByOrder && resultatsRechercheWithOnlyOneSubOrderByOrder.length > 0">
   <div class="col">
-    <app-activations-resultats [data]="resultatsRechercheWithOnlyOneSubOrderByOrder" [columnsToDisplay]="columnsToDisplay"></app-activations-resultats>
+    <app-limitations-resultats [data]="resultatsRechercheWithOnlyOneSubOrderByOrder" [columnsToDisplay]="columnsToDisplay"></app-limitations-resultats>
   </div>
 </div>
 

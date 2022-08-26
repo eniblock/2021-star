@@ -12,11 +12,11 @@ import {EnergyAccountService} from 'src/app/services/api/energy-account.service'
 import {DateHelper} from './../../../helpers/date.helper';
 
 @Component({
-  selector: 'app-activation-graph',
-  templateUrl: './activation-graph.component.html',
-  styleUrls: ['./activation-graph.component.css'],
+  selector: 'app-limitations-graph',
+  templateUrl: './limitations-graph.component.html',
+  styleUrls: ['./limitations-graph.component.css'],
 })
-export class ActivationGraphComponent implements OnInit {
+export class LimitationsGraphComponent implements OnInit {
   data: EnergyAccount[] = [];
   graphData?: GraphData;
 

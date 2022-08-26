@@ -2,16 +2,16 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core'
 import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
 import {MatDialog} from "@angular/material/dialog";
 import {
-  ActivationIndemnisationChooseYesNoComponent
-} from "./activation-indemnisation-choose-yes-no/activation-indemnisation-choose-yes-no.component";
+  LimitationsIndemnisationChooseYesNoComponent
+} from "./limitations-indemnisation-choose-yes-no/limitations-indemnisation-choose-yes-no.component";
 import {OrdreLimitationService} from "../../../services/api/ordre-limitation.service";
 
 @Component({
-  selector: 'app-activation-indemnisation',
-  templateUrl: './activation-indemnisation.component.html',
-  styleUrls: ['./activation-indemnisation.component.css']
+  selector: 'app-limitations-indemnisation',
+  templateUrl: './limitations-indemnisation.component.html',
+  styleUrls: ['./limitations-indemnisation.component.css']
 })
-export class ActivationIndemnisationComponent implements OnInit, OnChanges {
+export class LimitationsIndemnisationComponent implements OnInit, OnChanges {
 
   @Input() eligibilityStatus: EligibilityStatus | null = null;
   @Input() eligibilityStatusEditable: boolean = false;
@@ -58,7 +58,7 @@ export class ActivationIndemnisationComponent implements OnInit, OnChanges {
 
   click() {
     const activationDocumentMrid = this.activationDocumentMrid;
-    const dialogRef = this.dialog.open(ActivationIndemnisationChooseYesNoComponent, {
+    const dialogRef = this.dialog.open(LimitationsIndemnisationChooseYesNoComponent, {
       width: '500px',
       data: {eligibilityStatus: this.eligibilityStatus},
     });

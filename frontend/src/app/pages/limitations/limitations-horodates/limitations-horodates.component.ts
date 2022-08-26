@@ -5,11 +5,11 @@ import {OrdreLimitation} from "../../../models/OrdreLimitation";
 import {DateHelper} from "../../../helpers/date.helper";
 
 @Component({
-  selector: 'app-activation-horodates',
-  templateUrl: './activation-horodates.component.html',
-  styleUrls: ['./activation-horodates.component.css']
+  selector: 'app-limitations-horodates',
+  templateUrl: './limitations-horodates.component.html',
+  styleUrls: ['./limitations-horodates.component.css']
 })
-export class ActivationHorodatesComponent implements OnInit {
+export class LimitationsHorodatesComponent implements OnInit {
 
   @Input() showStartDates = false;
   @Input() showEndDates = false;

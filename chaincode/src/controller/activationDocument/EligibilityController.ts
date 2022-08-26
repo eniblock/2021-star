@@ -102,15 +102,15 @@ export class EligibilityController {
         console.info(JSON.stringify(targetArrayValue))
         console.info("------------------")
 
-
         targetArrayValue = [...new Set(targetArrayValue)];
         if (targetArrayValue && targetArrayValue.length >0 ) {
-            targetArrayValue.sort();
-            targetKey = targetArrayValue.join(ParametersController.targetJoinSeparator);
+            var finalTargetArrayValues:string[] = [];
+            for (var value of targetArrayValue) {
+                finalTargetArrayValues.push(value.toLowerCase());
+            }
+            finalTargetArrayValues.sort();
+            targetKey = finalTargetArrayValues.join(ParametersController.targetJoinSeparator);
         }
-        console.info("------------------")
-        console.info(targetKey)
-        console.info("------------------")
 
         targetKey = targetKey.toLowerCase();
 

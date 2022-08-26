@@ -1,10 +1,10 @@
 import { Routes, RouterModule } from '@angular/router';
-import { ActivationsComponent } from './activations.component';
+import { LimitationsComponent } from './limitations.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: ActivationsComponent,
+    component: LimitationsComponent,
     pathMatch: 'full',
   },
 ];

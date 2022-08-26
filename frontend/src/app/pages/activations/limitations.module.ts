@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ActivationsComponent} from './activations.component';
+import {LimitationsComponent} from './limitations.component';
 import {FormulairesModule} from 'src/app/components/formulaires/formulaires.module';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -21,7 +21,7 @@ import {
   ActivationIndemnisationChooseYesNoComponent
 } from './activation-indemnisation/activation-indemnisation-choose-yes-no/activation-indemnisation-choose-yes-no.component';
 import {MatDialogModule} from '@angular/material/dialog';
-import {LimitationsRoutes} from "./activations.routing";
+import {LimitationsRoutes} from "./limitations.routing";
 
 @NgModule({
   imports: [
@@ -41,7 +41,7 @@ import {LimitationsRoutes} from "./activations.routing";
     MatDialogModule,
   ],
   declarations: [
-    ActivationsComponent,
+    LimitationsComponent,
     ActivationsResultatsComponent,
     ActivationsColumnSelectorComponent,
     ActivationGraphComponent,
@@ -50,5 +50,5 @@ import {LimitationsRoutes} from "./activations.routing";
     ActivationIndemnisationChooseYesNoComponent,
   ],
 })
-export class ActivationsModule {
+export class LimitationsModule {
 }

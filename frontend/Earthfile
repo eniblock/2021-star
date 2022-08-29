@@ -1,0 +1,39 @@
+VERSION 0.5
+
+ARG repository=registry.gitlab.com/xdev-tech/star/frontend
+
+deps:
+    FROM node:16-alpine
+    WORKDIR /app
+    COPY package.json package-lock.json ./
+    RUN --mount=type=cache,target=/root/.npm \
+        npm ci
+
+dev:
+    FROM +deps
+    COPY ./ ./
+    CMD npm start
+    ARG tag=latest
+    ARG ref=${repository}:${tag}
+    SAVE IMAGE ${ref}
+
+build:
+    FROM +dev
+    RUN npm run build-prod
+    SAVE ARTIFACT /app/dist
+    # cache this target (including the layers from the target dependencies)
+    ARG tag=latest
+    SAVE IMAGE --cache-from=${repository}:cache-build-develop --push ${repository}:cache-build-${tag}
+
+docker:
+    FROM nginx:1.19.2-alpine
+    COPY nginx.conf /etc/nginx/templates/default.conf.template
+    COPY +build/dist/frontend /usr/share/nginx/html
+    ARG tag=latest
+    ARG ref=${repository}:${tag}
+    ARG buildid=
+    IF [ "${buildid}" = "" ]
+        SAVE IMAGE --cache-from=${repository}:develop --push ${ref}
+    ELSE
+        SAVE IMAGE --cache-from=${repository}:develop --push ${ref} ${ref}.${buildid}
+    END

@@ -66,12 +66,12 @@ docker-backend:
 
 docker-frontend:
   image:
-    name: registry.gitlab.com/xdev-tech/build/earthly:3.2
+    name: registry.gitlab.com/xdev-tech/build/earthly:develop
   stage: docker
   script:
     - echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USER --password-stdin
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
-    - earthly-daemonless --ci --push ./frontend/+docker $(tag-opts helm/star)
+    - earthly-daemonless --ci --push --remote-cache=$CI_REGISTRY_IMAGE/frontend:build-cache ./frontend/+docker --tag=$(buildtag helm/star)
 
 helm:
   stage: helm

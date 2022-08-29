@@ -8,22 +8,21 @@ deps:
     COPY package.json package-lock.json ./
     RUN --mount=type=cache,target=/root/.npm \
         npm ci
+    SAVE IMAGE --cache-hint
 
 dev:
     FROM +deps
     COPY ./ ./
     CMD npm start
-    ARG tag=latest
-    ARG ref=${repository}:${tag}
+    ARG ref=
     SAVE IMAGE ${ref}
 
 build:
-    FROM +dev
+    FROM +deps
+    COPY ./ ./
     RUN npm run build-prod
     SAVE ARTIFACT /app/dist
-    # cache this target (including the layers from the target dependencies)
-    ARG tag=latest
-    SAVE IMAGE --cache-from=${repository}:cache-build-develop --push ${repository}:cache-build-${tag}
+    SAVE IMAGE --cache-hint
 
 docker:
     FROM nginx:1.19.2-alpine
@@ -31,9 +30,4 @@ docker:
     COPY +build/dist/frontend /usr/share/nginx/html
     ARG tag=latest
     ARG ref=${repository}:${tag}
-    ARG buildid=
-    IF [ "${buildid}" = "" ]
-        SAVE IMAGE --cache-from=${repository}:develop --push ${ref}
-    ELSE
-        SAVE IMAGE --cache-from=${repository}:develop --push ${ref} ${ref}.${buildid}
-    END
+    SAVE IMAGE --push ${ref}

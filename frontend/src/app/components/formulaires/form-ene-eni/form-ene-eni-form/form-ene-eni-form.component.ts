@@ -19,7 +19,7 @@ export class FormEneEniFormComponent implements OnInit {
     processType: [PROCESS_TYPE_INIT_VALUE, Validators.required],
     businessType: [BUSINESS_TYPE_INIT_VALUE, Validators.required],
     classificationType: ['', Validators.required],
-    quantity: ['', [Validators.required, Validators.pattern('[0-9]*')]],
+    quantity: ['', [Validators.required, Validators.pattern('[0-9]*[\,\.]?[0-9]*')]],
     measurementUnitName: ['', Validators.required],
     timestampDateStart: ['', Validators.required],
     timestampTimeStart: [

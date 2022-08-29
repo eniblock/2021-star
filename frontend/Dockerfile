@@ -1,5 +1,6 @@
 # syntax = docker/dockerfile:1.0-experimental
 FROM node:16-alpine AS dev
+RUN mkdir /app
 WORKDIR /app
 
 # cache the dependencies

@@ -13,7 +13,7 @@ resource "helm_release" "monitoring" {
   namespace        = "monitoring"
   create_namespace = true
   chart            = "kube-prometheus-stack"
-  version          = "19.2.2"
+  version          = "39.5.0"
   repository       = "https://prometheus-community.github.io/helm-charts"
   values = [
     templatefile("${path.module}/helm/prometheus.tpl", {
@@ -63,4 +63,3 @@ data "vault_generic_secret" "monitoring" {
 data "vault_generic_secret" "grafana_permission_sync" {
   path = "secret/projects/xdevit"
 }
-

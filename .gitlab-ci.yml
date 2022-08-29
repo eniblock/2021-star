@@ -72,7 +72,7 @@ docker-frontend:
     - echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USER --password-stdin
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
     - set -x
-    - earthly-daemonless --strict --push --remote-cache=$CI_REGISTRY_IMAGE/frontend:build-cache ./frontend/+docker --tag=$(buildtag helm/star)
+    - earthly-daemonless --strict --push --max-remote-cache --remote-cache=$CI_REGISTRY_IMAGE/frontend:build-cache ./frontend/+docker --tag=$(buildtag helm/star)
 
 helm:
   stage: helm

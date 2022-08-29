@@ -7,7 +7,7 @@ COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm \
   npm ci
 
-COPY . .
+COPY ./ ./
 
 CMD npm start
 

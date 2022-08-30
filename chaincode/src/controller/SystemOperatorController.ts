@@ -8,15 +8,15 @@ import { STARParameters } from '../model/starParameters';
 import { SystemOperator } from '../model/systemOperator';
 
 import { QueryStateService } from './service/QueryStateService';
+import { StarDataService } from './service/StarDataService';
 import { SystemOperatorService } from './service/SystemOperatorService';
 
 export class SystemOperatorController {
 
     public static async createSystemOperator(
-        ctx: Context,
         params: STARParameters,
         inputStr: string) {
-        console.info('============= START : Create System Operator Market Participant ===========');
+        console.debug('============= START : Create System Operator Market Participant ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -39,9 +39,9 @@ export class SystemOperatorController {
             throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
-        await SystemOperatorService.write(ctx, systemOperatorObj);
+        await SystemOperatorService.write(params, systemOperatorObj);
 
-        console.info('============= END   : Create %s System Operator Market Participant ===========',
+        console.debug('============= END   : Create %s System Operator Market Participant ===========',
             systemOperatorObj.systemOperatorMarketParticipantMrid,
         );
     }
@@ -50,14 +50,14 @@ export class SystemOperatorController {
 
 
 
-    public static async querySystemOperator(ctx: Context, sompId: string): Promise<string> {
-        console.info('============= START : Query %s System Operator Market Participant ===========', sompId);
+    public static async getSystemOperatorObjById(params: STARParameters, sompId: string): Promise<SystemOperator> {
+        console.debug('============= START : Query %s System Operator Market Participant ===========', sompId);
 
-        const sompAsBytes = await SystemOperatorService.getRaw(ctx, sompId);
+        const dataObj = await StarDataService.getObj(params, {id:sompId, docType: DocType.SYSTEM_OPERATOR});
         // console.info(sompId, sompAsBytes.toString());
 
-        console.info('============= END   : Query %s System Operator Market Participant ===========', sompId);
-        return sompAsBytes.toString();
+        console.debug('============= END   : Query %s System Operator Market Participant ===========', sompId);
+        return dataObj;
     }
 
 
@@ -65,11 +65,10 @@ export class SystemOperatorController {
 
 
     public static async updateSystemOperator(
-        ctx: Context,
         params: STARParameters,
         inputStr: string) {
 
-        console.info('============= START : Update System Operator Market Participant ===========');
+        console.debug('============= START : Update System Operator Market Participant ===========');
 
             const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -92,14 +91,11 @@ export class SystemOperatorController {
             throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
-        const sompAsBytes = await this.querySystemOperator(ctx, systemOperatorObj.systemOperatorMarketParticipantMrid);
-        if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`${systemOperatorObj.systemOperatorMarketParticipantMrid} does not exist`);
-        }
+        await this.getSystemOperatorObjById(params, systemOperatorObj.systemOperatorMarketParticipantMrid);
 
-        await SystemOperatorService.write(ctx, systemOperatorObj);
+        await SystemOperatorService.write(params, systemOperatorObj);
 
-        console.info('============= END : Update %s System Operator Market Participant ===========',
+        console.debug('============= END : Update %s System Operator Market Participant ===========',
             systemOperatorObj.systemOperatorMarketParticipantMrid,
         );
     }
@@ -108,12 +104,13 @@ export class SystemOperatorController {
 
 
 
-    public static async getAllSystemOperator(ctx: Context): Promise<string> {
-        return await QueryStateService.getAllStates(ctx, DocType.SYSTEM_OPERATOR);
+    public static async getAllSystemOperator(params: STARParameters): Promise<string> {
+        return await QueryStateService.getAllStates(params, DocType.SYSTEM_OPERATOR);
     }
 
 
-    public static async getSystemOperatorByQuery(ctx: Context, query: string): Promise<string> {
-        return await QueryStateService.getQueryStringResult(ctx, query);
+
+    public static async getSystemOperatorByQuery(params: STARParameters, query: string): Promise<string> {
+        return await QueryStateService.getQueryStringResult(params, {query: query});
     }
 }

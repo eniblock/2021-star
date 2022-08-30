@@ -1,29 +1,27 @@
-import { Context } from 'fabric-contract-api';
 
 import { OrganizationTypeMsp } from '../../enums/OrganizationMspType';
 import { ParametersType } from '../../enums/ParametersType';
+import { RoleType } from '../../enums/RoleType';
+import { DocType } from '../../enums/DocType';
 
 import { ActivationDocument } from '../../model/activationDocument/activationDocument';
 import { YellowPages } from '../../model/yellowPages';
 import { STARParameters } from '../../model/starParameters';
 import { SystemOperator } from '../../model/systemOperator';
+import { ReconciliationState } from '../../model/activationDocument/reconciliationState';
+import { DataReference } from '../../model/dataReference';
 
 import { HLFServices } from '../service/HLFservice';
 import { ActivationDocumentService } from '../service/ActivationDocumentService';
+import { QueryStateService } from '../service/QueryStateService';
 
 import { YellowPagesController } from '../YellowPagesController';
 import { SystemOperatorController } from '../SystemOperatorController';
-import { RoleType } from '../../enums/RoleType';
-import { DocType } from '../../enums/DocType';
-import { ReconciliationState } from '../../model/activationDocument/reconciliationState';
-import { DataReference } from '../../model/dataReference';
-import { QueryStateService } from '../service/QueryStateService';
 
 export class ReconciliationController {
     public static async getReconciliationState(
-        ctx: Context,
         params: STARParameters): Promise<DataReference[]> {
-        console.info('============= START : getReconciliationState ReconciliationController ===========');
+        console.debug('============= START : getReconciliationState ReconciliationController ===========');
 
         var reconciliationState: ReconciliationState = new ReconciliationState();
         reconciliationState.remaining = [];
@@ -38,7 +36,7 @@ export class ReconciliationController {
 
                 if (collections) {
                     for (var collection of collections) {
-                        var allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, [collection]);
+                        var allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(params, query, [collection]);
 
                         if (allResults.length > 0) {
                             for (var result of allResults) {
@@ -53,12 +51,12 @@ export class ReconciliationController {
                 reconciliationState = await ReconciliationController.garbageCleanage(params, reconciliationState);
             }
             if (reconciliationState && reconciliationState.remaining && reconciliationState.remaining.length >0 ) {
-                reconciliationState = await ReconciliationController.searchReconciliation(ctx, params, reconciliationState);
+                reconciliationState = await ReconciliationController.searchReconciliation(params, reconciliationState);
             }
 
         }
 
-        console.info('============= END : getReconciliationState ReconciliationController ===========');
+        console.debug('============= END : getReconciliationState ReconciliationController ===========');
 
         return reconciliationState.updateOrders;
     }
@@ -113,7 +111,6 @@ export class ReconciliationController {
     }
 
     private static async searchReconciliation(
-        ctx: Context,
         params: STARParameters,
         conciliationState: ReconciliationState): Promise<ReconciliationState> {
 
@@ -133,14 +130,15 @@ export class ReconciliationController {
                         && remainingDocument.data.endCreatedDateTime
                     ) {
 
-                        matchResult = await ReconciliationController.searchMatchParentWithChild(ctx, params, remainingDocument);
+                        matchResult = await ReconciliationController.searchMatchParentWithChild(params, remainingDocument);
 
                     } else if (!remainingDocument.data.startCreatedDateTime
                             && remainingDocument.data.endCreatedDateTime) {
 
-                        const senderMarketParticipant: SystemOperator = JSON.parse(await SystemOperatorController.querySystemOperator(ctx, remainingDocument.data.senderMarketParticipantMrid));
-                        if (senderMarketParticipant.systemOperatorMarketParticipantName === OrganizationTypeMsp.RTE) {
-                            matchResult = await ReconciliationController.searchUpdateEndState(ctx, params, remainingDocument);
+                        const senderMarketParticipant: SystemOperator =
+                            await SystemOperatorController.getSystemOperatorObjById(params, remainingDocument.data.senderMarketParticipantMrid);
+                        if (senderMarketParticipant.systemOperatorMarketParticipantName.toLocaleLowerCase() === OrganizationTypeMsp.RTE.toLocaleLowerCase()) {
+                            matchResult = await ReconciliationController.searchUpdateEndState(params, remainingDocument);
                         }
 
                     }
@@ -160,14 +158,13 @@ export class ReconciliationController {
     }
 
     private static async searchMatchParentWithChild(
-        ctx: Context,
         params: STARParameters,
         childReference: DataReference): Promise<DataReference[]> {
         console.debug('============= START : searchMatchParentWithChild ReconciliationController ===========');
 
         const yellowPageList: YellowPages[] =
             await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(
-                ctx,
+                params,
                 childReference.data.originAutomationRegisteredResourceMrid
             );
         // console.info("0000000000000000000000000")
@@ -208,14 +205,15 @@ export class ReconciliationController {
         // console.info("0000000000000000000000000")
 
         const roleTargetQuery = RoleType.Role_TSO;
-        const searchResult = await ReconciliationController.searchMatching(ctx, params, childReference, query, roleTargetQuery);
+        const searchResult = await ReconciliationController.searchMatching(params, childReference, query, roleTargetQuery);
 
         console.debug('============= END : searchMatchParentWithChild ReconciliationController ===========');
         return searchResult;
     }
 
+
+
     private static async searchUpdateEndState(
-        ctx: Context,
         params: STARParameters,
         childReference: DataReference): Promise<DataReference[]> {
         console.debug('============= START : searchUpdateEndState ReconciliationController ===========');
@@ -246,7 +244,7 @@ export class ReconciliationController {
         // console.info("0000000000000000000000000")
 
         const roleTargetQuery = RoleType.Role_Producer;
-        const searchResult = await ReconciliationController.searchMatching(ctx, params, childReference, query, roleTargetQuery);
+        const searchResult = await ReconciliationController.searchMatching(params, childReference, query, roleTargetQuery);
 
         console.debug('============= END : searchUpdateEndState ReconciliationController ===========');
         return searchResult;
@@ -255,7 +253,6 @@ export class ReconciliationController {
 
 
     private static async searchMatching(
-        ctx: Context,
         params: STARParameters,
         childReference: DataReference,
         query:string,
@@ -267,7 +264,7 @@ export class ReconciliationController {
 
         if (collections) {
             for (var collection of collections) {
-                const allParents: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, [collection]);
+                const allParents: any[] = await ActivationDocumentService.getQueryArrayResult(params, query, [collection]);
                 const index = await ReconciliationController.findIndexofClosestEndDate(childReference.data, allParents);
 
                 // If a parent document is found

@@ -1,42 +1,39 @@
-import { Context } from 'fabric-contract-api';
 
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
+import { DocType } from '../enums/DocType';
+import { ParametersType } from '../enums/ParametersType';
 
 import { EnergyAccount } from '../model/energyAccount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
 import { STARParameters } from '../model/starParameters';
+import { DataReference } from '../model/dataReference';
 
 import { QueryStateService } from './service/QueryStateService';
-import { SiteService } from './service/SiteService';
-import { DocType } from '../enums/DocType';
-import { ParametersType } from '../enums/ParametersType';
 import { EnergyAccountService } from './service/EnergyAccountService';
-import { SystemOperatorService } from './service/SystemOperatorService';
-import { DataReference } from '../model/dataReference';
-import { SiteController } from './SiteController';
+import { StarPrivateDataService } from './service/StarPrivateDataService';
+import { StarDataService } from './service/StarDataService';
 
 export class EnergyAccountController {
 
     public static async createEnergyAccount(
-        ctx: Context,
         params: STARParameters,
         inputStr: string) {
         console.debug('============= START : Create EnergyAccount ===========');
 
         const energyObj:EnergyAccount = EnergyAccount.formatString(inputStr);
-        await EnergyAccountController.checkEnergyAccountObj(ctx, params, energyObj);
+        await EnergyAccountController.checkEnergyAccountObj(params, energyObj);
 
         //Get existing sites
         var existingSitesRef:Map<string, DataReference>;
         try {
-            existingSitesRef = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
+            existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: energyObj.meteringPointMrid});
         } catch(error) {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` Can not be created.`));
         }
 
         for (var [key, ] of existingSitesRef) {
-            await EnergyAccountService.write(ctx, params, energyObj, key);
+            await EnergyAccountService.write(params, energyObj, key);
         }
 
         console.debug('============= END   : Create %s EnergyAccount ===========',
@@ -45,13 +42,12 @@ export class EnergyAccountController {
     }
 
     public static async createEnergyAccountByReference(
-        ctx: Context,
         params: STARParameters,
         dataReference: DataReference) {
         console.debug('============= START : Create EnergyAccount by Reference ===========');
 
-        await EnergyAccountController.checkEnergyAccountObj(ctx, params, dataReference.data, dataReference.collection);
-        await EnergyAccountService.write(ctx, params, dataReference.data, dataReference.collection);
+        await EnergyAccountController.checkEnergyAccountObj(params, dataReference.data, dataReference.collection);
+        await EnergyAccountService.write(params, dataReference.data, dataReference.collection);
 
         console.debug('============= END   : Create %s EnergyAccount by Reference ===========',
             dataReference.data.energyAccountMarketDocumentMrid,
@@ -59,24 +55,23 @@ export class EnergyAccountController {
     }
 
     public static async updateEnergyAccount(
-        ctx: Context,
         params: STARParameters,
         inputStr: string) {
         console.debug('============= START : Update EnergyAccount ===========');
 
         const energyObj:EnergyAccount = EnergyAccount.formatString(inputStr);
-        await EnergyAccountController.checkEnergyAccountObj(ctx, params, energyObj);
+        await EnergyAccountController.checkEnergyAccountObj(params, energyObj);
 
         //Get existing data
         var existingEnergyAccountRef:Map<string, DataReference>;
         try {
-            existingEnergyAccountRef = await EnergyAccountService.getObjRefbyId(ctx, params, energyObj.energyAccountMarketDocumentMrid);
+            existingEnergyAccountRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ENERGY_ACCOUNT, id: energyObj.energyAccountMarketDocumentMrid});
         } catch(error) {
             throw new Error(error.message.concat(` Can not be updated.`));
         }
 
         for (var [key, ] of existingEnergyAccountRef) {
-            await EnergyAccountService.write(ctx, params, energyObj, key);
+            await EnergyAccountService.write(params, energyObj, key);
         }
 
         console.debug('============= END   : Update %s EnergyAccount ===========',
@@ -88,7 +83,6 @@ export class EnergyAccountController {
 
 
     private static async checkEnergyAccountObj(
-        ctx: Context,
         params: STARParameters,
         energyObj:EnergyAccount,
         target: string = ''): Promise<void>{
@@ -100,13 +94,13 @@ export class EnergyAccountController {
 
         let siteObj: Site;
         // try {
-        //     siteObj = await SiteController.getSiteById(ctx, params, energyObj.meteringPointMrid, target);
+        //     siteObj = await SiteController.getSiteById(params, energyObj.meteringPointMrid, target);
         // } catch(error) {
         //     throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         // }
         var siteRef: DataReference;
         try {
-            const siteRefMap: Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
+            const siteRefMap: Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: energyObj.meteringPointMrid});
             if (target && target.length > 0) {
                 siteRef = siteRefMap.get(target);
             } else {
@@ -127,7 +121,7 @@ export class EnergyAccountController {
 
         let systemOperatorObj: SystemOperator;
         try {
-            systemOperatorObj = await SystemOperatorService.getObj(ctx, energyObj.senderMarketParticipantMrid);
+            systemOperatorObj = await StarDataService.getObj(params, {id: energyObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
@@ -151,13 +145,13 @@ export class EnergyAccountController {
 
 
     public static async dataExists(
-        ctx: Context,
         params: STARParameters,
         id: string,
         target: string = ''): Promise<boolean> {
 
         let existing: boolean = false;
-        const result:Map<string, DataReference> = await EnergyAccountService.getObjRefbyId(ctx, params, id);
+        const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ENERGY_ACCOUNT, id: id});
+
         if (target && target.length > 0) {
             const dataReference: DataReference = result.get(target);
             existing = dataReference
@@ -179,14 +173,13 @@ export class EnergyAccountController {
 
 
     public static async getEnergyAccountForSystemOperator(
-            ctx: Context,
             params: STARParameters,
             meteringPointMrid: string,
             systemOperatorEicCode: string,
             startCreatedDateTime: string): Promise<string> {
 
         const allResults = await EnergyAccountController.getEnergyAccountForSystemOperatorObj(
-            ctx, params, meteringPointMrid, systemOperatorEicCode, startCreatedDateTime);
+            params, meteringPointMrid, systemOperatorEicCode, startCreatedDateTime);
         const formated = JSON.stringify(allResults);
 
         return formated;
@@ -196,7 +189,6 @@ export class EnergyAccountController {
 
 
     public static async getEnergyAccountForSystemOperatorObj(
-        ctx: Context,
         params: STARParameters,
         meteringPointMrid: string,
         systemOperatorEicCode: string,
@@ -217,7 +209,7 @@ export class EnergyAccountController {
 
         let systemOperatorObj: SystemOperator;
         try {
-            systemOperatorObj = await SystemOperatorService.getObj(ctx, systemOperatorEicCode);
+            systemOperatorObj = await StarDataService.getObj(params, {id: systemOperatorEicCode, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
             throw new Error('ERROR getEnergyAccountForSystemOperator : '.concat(error.message).concat(` for Energy Account read.`));
         }
@@ -240,7 +232,7 @@ export class EnergyAccountController {
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
-        return await EnergyAccountService.getQueryArrayResult(ctx, params, query, target);
+        return await EnergyAccountService.getQueryArrayResult(params, query, target);
     }
 
 
@@ -248,7 +240,6 @@ export class EnergyAccountController {
 
 
     public static async getEnergyAccountByQuery(
-        ctx: Context,
         params: STARParameters,
         query: string): Promise<any> {
 
@@ -257,7 +248,7 @@ export class EnergyAccountController {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
         }
 
-        let results = await EnergyAccountService.getQueryArrayResult(ctx, params, query);
+        let results = await EnergyAccountService.getQueryArrayResult(params, query);
         return results;
     }
 
@@ -266,7 +257,6 @@ export class EnergyAccountController {
 
 
     public static async getEnergyAccountByProducer(
-        ctx: Context,
         params: STARParameters,
         meteringPointMrid: string,
         producerEicCode: string,
@@ -291,7 +281,7 @@ export class EnergyAccountController {
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
-        const allResults = await EnergyAccountService.getQueryArrayResult(ctx, params, query);
+        const allResults = await EnergyAccountService.getQueryArrayResult(params, query);
         const formated = JSON.stringify(allResults);
         return formated;
     }

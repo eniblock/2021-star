@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import * as Yup from 'yup';
+import { DocType } from '../enums/DocType';
 
 /* tslint:disable:max-classes-per-file */
 
@@ -16,7 +17,7 @@ export class EnergyAccount {
         try {
             energyAccountObj = JSON.parse(inputString);
         } catch (error) {
-            throw new Error(`ERROR EnergyAccount-> Input string NON-JSON value`);
+            throw new Error(`ERROR ${DocType.ENERGY_ACCOUNT} -> Input string NON-JSON value`);
         }
 
         try {
@@ -35,7 +36,7 @@ export class EnergyAccount {
         try {
             energyAccountList = JSON.parse(inputString);
         } catch (error) {
-            throw new Error(`ERROR EnergyAccount by list-> Input string NON-JSON value`);
+            throw new Error(`ERROR ${DocType.ENERGY_ACCOUNT} by list -> Input string NON-JSON value`);
         }
 
         if (energyAccountList && energyAccountList.length > 0) {

@@ -79,7 +79,7 @@ describe('Star Tests YELLOW PAGES', () => {
                 await star.CreateYellowPages(transactionContext, JSON.stringify(Values.HTB_yellowPage));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('System Operator : '.concat(Values.HTB_yellowPage.systemOperatorMarketParticipantMrid).concat(' does not exist in Yellow Pages ').concat(Values.HTB_yellowPage.originAutomationRegisteredResourceMrid).concat('.'));
+                expect(err.message).to.equal('systemOperator : '.concat(Values.HTB_yellowPage.systemOperatorMarketParticipantMrid).concat(' does not exist in Yellow Pages ').concat(Values.HTB_yellowPage.originAutomationRegisteredResourceMrid).concat('.'));
             }
         });
 
@@ -195,6 +195,14 @@ describe('Star Tests YELLOW PAGES', () => {
 
             const expected = JSON.parse(JSON.stringify(Values.HTA_yellowPage))
             expected.docType = DocType.YELLOW_PAGES;
+
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putState.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putState.firstCall.args[1].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected))
+            // console.info("-----------")
+
             transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
                 Values.HTA_yellowPage.yellowPageMrid,
                 Buffer.from(JSON.stringify(expected))

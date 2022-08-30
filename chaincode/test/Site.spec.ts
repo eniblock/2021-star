@@ -83,7 +83,7 @@ describe('Star Tests SITES', () => {
                 await star.CreateSite(transactionContext, 'RTE01EIC');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR Site-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR '.concat(DocType.SITE).concat(' -> Input string NON-JSON value'));
             }
         });
 
@@ -96,7 +96,7 @@ describe('Star Tests SITES', () => {
             try {
                 await star.CreateSite(transactionContext, JSON.stringify(Values.HTB_site_valid));
             } catch(err) {
-                const msg = 'System Operator : '.concat(Values.HTB_site_valid.systemOperatorMarketParticipantMrid).concat(' does not exist for site creation');
+                const msg = DocType.SYSTEM_OPERATOR.concat(' : ').concat(Values.HTB_site_valid.systemOperatorMarketParticipantMrid).concat(' does not exist for site creation');
                 expect(err.message).to.equal(msg);
             }
         });
@@ -111,7 +111,7 @@ describe('Star Tests SITES', () => {
             try {
                 await star.CreateSite(transactionContext, JSON.stringify(Values.HTB_site_valid));
             } catch(err) {
-                const msg = 'Producer : '.concat(Values.HTB_site_valid.producerMarketParticipantMrid).concat(' does not exist for site creation');
+                const msg = DocType.PRODUCER.concat(' : ').concat(Values.HTB_site_valid.producerMarketParticipantMrid).concat(' does not exist for site creation');
                 expect(err.message).to.equal(msg);
             }
         });
@@ -249,7 +249,7 @@ describe('Star Tests SITES', () => {
                 await star.QuerySite(transactionContext, 'toto');
             } catch (err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('Site : toto does not exist');
+                expect(err.message).to.equal(DocType.SITE.concat(' : toto does not exist (not found in any collection).'));
             }
         });
 

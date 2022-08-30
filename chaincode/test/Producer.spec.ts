@@ -80,7 +80,7 @@ describe('Star Tests PRODUCERS', () => {
                 await star.CreateProducer(transactionContext, 'toto');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR producer-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR '.concat(DocType.PRODUCER).concat(' -> Input string NON-JSON value'));
             }
         });
 
@@ -167,7 +167,7 @@ describe('Star Tests PRODUCERS', () => {
                 await star.QueryProducer(transactionContext, 'toto');
             } catch (err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('Producer : toto does not exist');
+                expect(err.message).to.equal(DocType.PRODUCER.concat(' : toto does not exist'));
             }
         });
 
@@ -200,7 +200,7 @@ describe('Star Tests PRODUCERS', () => {
                 await star.UpdateProducer(transactionContext, 'toto');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR producer-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR '.concat(DocType.PRODUCER).concat(' -> Input string NON-JSON value'));
             }
         });
 
@@ -213,7 +213,7 @@ describe('Star Tests PRODUCERS', () => {
             try {
                 await star.UpdateProducer(transactionContext, JSON.stringify(producer));
             } catch (err) {
-                expect(err.message).to.equal('Producer : XXX does not exist');
+                expect(err.message).to.equal(DocType.PRODUCER.concat(' : XXX does not exist'));
             }
         });
 

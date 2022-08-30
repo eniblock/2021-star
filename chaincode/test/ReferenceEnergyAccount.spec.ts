@@ -87,7 +87,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                 await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(energy_account));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : ERROR Site-> Input string NON-JSON value for Reference Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
+                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : ERROR '.concat(DocType.SITE).concat(' -> Input string NON-JSON value for Reference Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
 
@@ -106,7 +106,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                 await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(energy_account));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : ERROR SystemOperator -> Input string NON-JSON value for Reference Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
+                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : ERROR '.concat(DocType.SYSTEM_OPERATOR).concat(' -> Input string NON-JSON value for Reference Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
 
@@ -133,9 +133,9 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                 await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(energy_account));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : Site : '
+                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : '.concat(DocType.SITE).concat(' : ')
                     .concat(Values.HTB_EnergyAccount_a3.meteringPointMrid)
-                    .concat(' does not exist for Reference Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
+                    .concat(' does not exist (not found in any collection). for Reference Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
 
@@ -152,7 +152,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                 await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(energy_account));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : System Operator : '
+                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : '.concat(DocType.SYSTEM_OPERATOR).concat(' : ')
                     .concat(Values.HTB_EnergyAccount_a3.senderMarketParticipantMrid)
                     .concat(' does not exist for Reference Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
@@ -276,7 +276,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                 await star.GetReferenceEnergyAccountForSystemOperator(transactionContext, producer, producer, producer);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : System Operator : toto does not exist');
+                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : '.concat(DocType.SYSTEM_OPERATOR).concat(' : toto does not exist'));
             }
         });
 
@@ -308,7 +308,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                     energy_account.createdDateTime);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : ERROR SystemOperator -> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR createReferenceEnergyAccount : ERROR '.concat(DocType.SYSTEM_OPERATOR).concat(' -> Input string NON-JSON value'));
             }
         });
 

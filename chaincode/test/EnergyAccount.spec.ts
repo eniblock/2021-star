@@ -84,7 +84,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, 'RTE01EIC');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR EnergyAccount-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR '.concat(DocType.ENERGY_ACCOUNT).concat(' -> Input string NON-JSON value'));
             }
         });
 
@@ -365,7 +365,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount : Site : PRM50012536123456 does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
+                expect(err.message).to.equal('ERROR createEnergyAccount : '.concat(DocType.SITE).concat(' : PRM50012536123456 does not exist (not found in any collection). for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
 
@@ -477,7 +477,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, 'RTE01EIC');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR EnergyAccount-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR '.concat(DocType.ENERGY_ACCOUNT).concat(' -> Input string NON-JSON value'));
             }
         });
 
@@ -494,7 +494,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount : ERROR Site-> Input string NON-JSON value for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
+                expect(err.message).to.equal('ERROR createEnergyAccount : ERROR '.concat(DocType.SITE).concat(' -> Input string NON-JSON value for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
 
@@ -511,7 +511,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount : ERROR SystemOperator -> Input string NON-JSON value for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
+                expect(err.message).to.equal('ERROR createEnergyAccount : ERROR '.concat(DocType.SYSTEM_OPERATOR).concat(' -> Input string NON-JSON value for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
 
@@ -536,7 +536,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount : Site : '.concat(energyaccount.meteringPointMrid).concat(' does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
+                expect(err.message).to.equal('ERROR createEnergyAccount : '.concat(DocType.SITE).concat(' : ').concat(energyaccount.meteringPointMrid).concat(' does not exist (not found in any collection). for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
 
@@ -554,7 +554,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount : System Operator : 17V000000992746666 does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
+                expect(err.message).to.equal('ERROR createEnergyAccount : '.concat(DocType.SYSTEM_OPERATOR).concat(' : 17V000000992746666 does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
 
@@ -651,7 +651,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.GetEnergyAccountForSystemOperator(transactionContext, producer, producer, producer);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR getEnergyAccountForSystemOperator : System Operator : toto does not exist for Energy Account read.');
+                expect(err.message).to.equal('ERROR getEnergyAccountForSystemOperator : '.concat(DocType.SYSTEM_OPERATOR).concat(' : toto does not exist for Energy Account read.'));
             }
         });
 
@@ -932,7 +932,7 @@ describe('Star Tests EnergyAccount', () => {
                     Values.HTB_EnergyAccount_a3.createdDateTime);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR getEnergyAccountForSystemOperator : ERROR SystemOperator -> Input string NON-JSON value for Energy Account read.');
+                expect(err.message).to.equal('ERROR getEnergyAccountForSystemOperator : ERROR '.concat(DocType.SYSTEM_OPERATOR).concat(' -> Input string NON-JSON value for Energy Account read.'));
             }
         });
 

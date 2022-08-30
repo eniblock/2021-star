@@ -8,7 +8,6 @@ import { QueryStateService } from "./QueryStateService";
 
 export class ReferenceEnergyAccountService {
     public static async write(
-        ctx: Context,
         params: STARParameters,
         energyObj: EnergyAccount,
         target: string = ''): Promise<void> {
@@ -17,13 +16,12 @@ export class ReferenceEnergyAccountService {
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, target);
 
         energyObj.docType = DocType.REFERENCE_ENERGY_ACCOUNT;
-        await ctx.stub.putPrivateData(collection, energyObj.energyAccountMarketDocumentMrid, Buffer.from(JSON.stringify(energyObj)));
+        await params.ctx.stub.putPrivateData(collection, energyObj.energyAccountMarketDocumentMrid, Buffer.from(JSON.stringify(energyObj)));
 
         console.debug('============= END : Write %s (%s) ReferenceEnergyAccountService ===========', energyObj.energyAccountMarketDocumentMrid);
     }
 
     public static async getQueryArrayResult(
-        ctx: Context,
         params: STARParameters,
         query: string,
         target: string = ''): Promise<any[]>  {
@@ -42,7 +40,7 @@ export class ReferenceEnergyAccountService {
         var i=0;
         if (collections) {
             while (i<collections.length) {
-                let results = await QueryStateService.getPrivateQueryArrayResult(ctx, query, collections[i]);
+                let results = await QueryStateService.getPrivateQueryArrayResult(params, { query: query, collection: collections[i]});
                 allResults = allResults.concat(results);
                 i++;
             }
@@ -53,13 +51,12 @@ export class ReferenceEnergyAccountService {
     }
 
     public static async getQueryStringResult(
-        ctx: Context,
         params: STARParameters,
         query: string): Promise<string>  {
 
         console.debug('============= START : getQueryStringResult ReferenceEnergyAccountService ===========');
 
-        const allResults = await ReferenceEnergyAccountService.getQueryArrayResult(ctx, params, query);
+        const allResults = await ReferenceEnergyAccountService.getQueryArrayResult(params, query);
         const formated = JSON.stringify(allResults);
 
         console.debug('============= END : getQueryStringResult ReferenceEnergyAccountService ===========');

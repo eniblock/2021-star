@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import * as Yup from 'yup';
+import { DocType } from '../enums/DocType';
 
 export class Site {
     public static formatString(inputString: string) : Site {
@@ -9,7 +10,7 @@ export class Site {
         try {
             siteObj = JSON.parse(inputString);
         } catch (error) {
-            throw new Error(`ERROR Site-> Input string NON-JSON value`);
+            throw new Error(`ERROR ${DocType.SITE} -> Input string NON-JSON value`);
         }
 
         try {
@@ -28,7 +29,7 @@ export class Site {
         try {
             siteList = JSON.parse(inputString);
         } catch (error) {
-            throw new Error(`ERROR Site by list-> Input string NON-JSON value`);
+            throw new Error(`ERROR ${DocType.SITE} by list -> Input string NON-JSON value`);
         }
 
         if (siteList && siteList.length > 0) {

@@ -1,7 +1,18 @@
-import { Context } from "fabric-contract-api";
 import { Iterators } from "fabric-shim";
 
+import { DocType } from "../../enums/DocType";
+
+import { queryArgument } from "../../model/arguments/queryArgument";
+import { DataReference } from "../../model/dataReference";
+import { STARParameters } from "../../model/starParameters";
+
 export class QueryStateService {
+    /*******************************
+     *                             *
+     *           COMMON            *
+     *                             *
+     *******************************/
+
     public static async buildQuery(documentType: string, args: string[], sort: string[] = []): Promise<string> {
         var query = `{"selector": { "$and": [ {"docType":"${documentType}"}`;
         for (var arg of args) {
@@ -27,117 +38,6 @@ export class QueryStateService {
         return query;
     }
 
-    public static async getQueryResult(
-        ctx: Context,
-        query: string): Promise<Iterators.StateQueryIterator>  {
-        console.debug('============= START : getQueryResult QueryStateService ===========');
-
-        // console.debug(query);
-
-        const iterator = await ctx.stub.getQueryResult(query);
-
-        console.debug('============= END : getQueryResult QueryStateService ===========');
-        return iterator;
-    }
-
-
-    public static async getPrivateQueryResult(
-        ctx: Context,
-        query: string,
-        collection: string): Promise<Iterators.StateQueryIterator>  {
-        console.debug('============= START : getPrivateQueryResult QueryStateService ===========');
-
-        // console.debug(query);
-        // console.debug(collection);
-
-        const iterator: any = await ctx.stub.getPrivateDataQueryResult(collection, query);
-
-        var returned_iterator: any;
-
-        //Sometimes iterator is StateQueryResponse object instead of StateQueryIterator object
-
-        if (iterator) {
-            if (iterator.iterator) {
-                returned_iterator = iterator.iterator;
-            } else {
-                returned_iterator = iterator;
-            }
-        }
-
-        console.debug('============= END : getPrivateQueryResult QueryStateService ===========');
-        return returned_iterator;
-    }
-
-
-
-    public static async getAllStates(ctx: Context, dataType: string): Promise<string> {
-        console.debug('============= START : getAllStates %s QueryStateService ===========', dataType);
-
-        const query = `{"selector": {"docType": "${dataType}"}}`;
-        const formated = await QueryStateService.getQueryStringResult(ctx, query);
-
-        console.debug('============= END : getAllStates %s QueryStateService ===========', dataType);
-        return formated;
-    }
-
-
-
-    public static async getQueryStringResult(
-        ctx: Context,
-        query: string): Promise<string>  {
-        console.debug('============= START : getQueryStringResult QueryStateService ===========');
-
-        const allResults = await QueryStateService.getQueryArrayResult(ctx, query);
-        const formated = JSON.stringify(allResults);
-
-        console.debug('============= END : getQueryStringResult QueryStateService ===========');
-        return formated;
-    }
-
-    // public static async getPrivateQueryStringResult(
-    //     ctx: Context,
-    //     query: string,
-    //     collection: string): Promise<string>  {
-    //     console.debug('============= START : getPrivateQueryStringResult QueryStateService ===========');
-
-    //     const iterator = await this.getPrivateQueryResult(ctx, query, collection);
-    //     const allResults = await this.formatResultToArray(iterator);
-    //     const formated = JSON.stringify(allResults);
-
-    //     console.debug('============= END : getPrivateQueryStringResult QueryStateService ===========');
-    //     return formated;
-    // }
-
-
-
-
-    public static async getQueryArrayResult(
-        ctx: Context,
-        query: string): Promise<any[]>  {
-        console.debug('============= START : getQueryStringResult QueryStateService ===========');
-
-        const iterator = await this.getQueryResult(ctx, query);
-        const allResults = await this.formatResultToArray(iterator);
-
-        console.debug('============= END : getQueryStringResult QueryStateService ===========');
-        return allResults;
-    }
-
-
-    public static async getPrivateQueryArrayResult(
-        ctx: Context,
-        query: string,
-        collection: string): Promise<any[]>  {
-        console.debug('============= START : getPrivateQueryArrayResult QueryStateService ===========');
-
-        const iterator = await this.getPrivateQueryResult(ctx, query, collection);
-        const allResults = await this.formatResultToArray(iterator);
-
-        console.debug('============= END : getPrivateQueryArrayResult QueryStateService ===========');
-        return allResults;
-    }
-
-
     private static async formatResultToArray(iterator: Iterators.StateQueryIterator): Promise<any[]> {
         const allResults:any[] = [];
         try {
@@ -160,5 +60,122 @@ export class QueryStateService {
         }
         return allResults;
     }
+
+
+    /*******************************
+     *                             *
+     *         PUBLIC DATA         *
+     *                             *
+     *******************************/
+
+
+    public static async getQueryResult(
+        params: STARParameters,
+        arg: queryArgument): Promise<Iterators.StateQueryIterator>  {
+        console.debug('============= START : getQueryResult QueryStateService ===========');
+
+        var iterator : Iterators.StateQueryIterator;
+
+        var poolValue = params.getFromMemoryPool(arg.query);
+        if (!poolValue
+            || !poolValue.values().next().value
+            || !poolValue.values().next().value.data
+            || poolValue.values().next().value.docType !== DocType.STATE_QUERY_ITERATOR) {
+
+            iterator = await params.ctx.stub.getQueryResult(arg.query);
+            const poolRef : DataReference = {collection: "", docType: DocType.STATE_QUERY_ITERATOR, data: iterator};
+            params.addInMemoryPool(arg.query, poolRef);
+        } else {
+            iterator = poolValue.values().next().value.data;
+        }
+
+        console.debug('============= END : getQueryResult QueryStateService ===========');
+        return iterator;
+    }
+
+
+
+    public static async getQueryArrayResult(
+        params: STARParameters,
+        arg: queryArgument): Promise<any[]>  {
+        console.debug('============= START : getQueryStringResult QueryStateService ===========');
+
+        const iterator = await this.getQueryResult(params, arg);
+        const allResults = await this.formatResultToArray(iterator);
+
+        console.debug('============= END : getQueryStringResult QueryStateService ===========');
+        return allResults;
+    }
+
+    public static async getQueryStringResult(
+        params: STARParameters,
+        arg: queryArgument): Promise<string>  {
+        console.debug('============= START : getQueryStringResult QueryStateService ===========');
+
+        const allResults = await QueryStateService.getQueryArrayResult(params, arg);
+        const formated = JSON.stringify(allResults);
+
+        console.debug('============= END : getQueryStringResult QueryStateService ===========');
+        return formated;
+    }
+
+    public static async getAllStates(
+        params: STARParameters,
+        dataType: string): Promise<string> {
+        console.debug('============= START : getAllStates %s QueryStateService ===========', dataType);
+
+        const query = `{"selector": {"docType": "${dataType}"}}`;
+        const formated = await QueryStateService.getQueryStringResult(params, {query:query});
+
+        console.debug('============= END : getAllStates %s QueryStateService ===========', dataType);
+        return formated;
+    }
+
+    /*******************************
+     *                             *
+     *        PRIVATE DATA         *
+     *                             *
+     *******************************/
+
+
+     public static async getPrivateQueryResult(
+        params: STARParameters,
+        arg: queryArgument): Promise<Iterators.StateQueryIterator>  {
+        console.debug('============= START : getPrivateQueryResult QueryStateService ===========');
+
+        // console.debug(query);
+        // console.debug(collection);
+
+        const iterator: any = await params.ctx.stub.getPrivateDataQueryResult(arg.collection, arg.query);
+
+        var returned_iterator: any;
+
+        //Sometimes iterator is StateQueryResponse object instead of StateQueryIterator object
+
+        if (iterator) {
+            if (iterator.iterator) {
+                returned_iterator = iterator.iterator;
+            } else {
+                returned_iterator = iterator;
+            }
+        }
+
+        console.debug('============= END : getPrivateQueryResult QueryStateService ===========');
+        return returned_iterator;
+    }
+
+
+    public static async getPrivateQueryArrayResult(
+        params: STARParameters,
+        arg: queryArgument): Promise<any[]>  {
+        console.debug('============= START : getPrivateQueryArrayResult QueryStateService ===========');
+
+        const iterator = await this.getPrivateQueryResult(params, arg);
+        const allResults = await this.formatResultToArray(iterator);
+
+        console.debug('============= END : getPrivateQueryArrayResult QueryStateService ===========');
+        return allResults;
+    }
+
 
 }

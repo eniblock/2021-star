@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import * as Yup from 'yup';
-import { DataActionType } from '../enums/DataActionType';
+import { DocType } from '../enums/DocType';
 
 export class EnergyAmount {
     public static formatString(inputString: string) : EnergyAmount {
@@ -10,7 +10,7 @@ export class EnergyAmount {
         try {
             energyAmountObj = JSON.parse(inputString);
         } catch (error) {
-            throw new Error(`ERROR EnergyAmount-> Input string NON-JSON value`);
+            throw new Error(`ERROR ${DocType.ENERGY_AMOUNT} -> Input string NON-JSON value`);
         }
 
         try {
@@ -29,7 +29,7 @@ export class EnergyAmount {
         try {
             energyAmountList = JSON.parse(inputString);
         } catch (error) {
-            throw new Error(`ERROR EnergyAmount by list-> Input string NON-JSON value`);
+            throw new Error(`ERROR ${DocType.ENERGY_AMOUNT} by list -> Input string NON-JSON value`);
         }
 
         if (energyAmountList && energyAmountList.length > 0) {

@@ -7,4 +7,9 @@ export enum DocType {
     SITE = 'site',
     SYSTEM_OPERATOR = "systemOperator",
     YELLOW_PAGES = 'yellowPages',
+
+
+    /* TECHNICAL TYPE      */
+    /* Used by Pool Memory */
+    STATE_QUERY_ITERATOR = 'StateQueryIterator',
 }

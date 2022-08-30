@@ -4,8 +4,8 @@ import { RoleType } from "../../enums/RoleType";
 
 import { ActivationDocument } from "../../model/activationDocument/activationDocument";
 import { EnergyAmount } from "../../model/energyAmount";
-import { HistoryCriteria } from "../../model/historyCriteria";
-import { HistoryInformation } from "../../model/historyInformation";
+import { HistoryCriteria } from "../../model/activationDocument/historyCriteria";
+import { HistoryInformation } from "../../model/activationDocument/historyInformation";
 import { Producer } from "../../model/producer";
 import { Site } from "../../model/site";
 import { STARParameters } from "../../model/starParameters";
@@ -232,6 +232,7 @@ export class HistoryController {
 
             if (activationDocument && activationDocument.activationDocumentMrid) {
                 var activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+                var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
 
                 var subOrderList: ActivationDocument[] = [];
                 if (activationDocument && activationDocument.subOrderList) {
@@ -344,7 +345,8 @@ export class HistoryController {
                     subOrderList: JSON.parse(JSON.stringify(subOrderList)),
                     site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
                     producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
-                    energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null
+                    energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
+                    displayedSourceName: displayedSourceName
                 };
 
                 siteRegistered = null;

@@ -1,13 +1,14 @@
-import { Context } from 'fabric-contract-api';
+import { STARParameters } from '../model/starParameters';
 import { ViewMarketParticipant } from '../model/viewMarketParticipant';
+
 import { ProducerController } from './ProducerController';
 import { SystemOperatorController } from './SystemOperatorController';
 
 export class ViewMarketParticipantController {
 
-    public static async viewSystemOperaterMarketParticipant(ctx: Context): Promise<string> {
-        const systemOperators = await SystemOperatorController.getAllSystemOperator(ctx);
-        const producers = await ProducerController.getAllProducer(ctx);
+    public static async viewSystemOperaterMarketParticipant(params: STARParameters): Promise<string> {
+        const systemOperators = await SystemOperatorController.getAllSystemOperator(params);
+        const producers = await ProducerController.getAllProducer(params);
 
         const restitutionView: ViewMarketParticipant = {
             producers : JSON.parse(producers),
@@ -16,9 +17,9 @@ export class ViewMarketParticipantController {
         return JSON.stringify(restitutionView);
     }
 
-    public static async viewProducerMarketParticipant(ctx: Context, prodId: string): Promise<string> {
-        const systemOperators = await SystemOperatorController.getAllSystemOperator(ctx);
-        const producers = await ProducerController.queryProducer(ctx, prodId);
+    public static async viewProducerMarketParticipant(params: STARParameters, prodId: string): Promise<string> {
+        const systemOperators = await SystemOperatorController.getAllSystemOperator(params);
+        const producers = await ProducerController.getProducerById(params, prodId);
 
         const restitutionView: ViewMarketParticipant = {
             producers : JSON.parse(producers),

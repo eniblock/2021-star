@@ -167,7 +167,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.QuerySystemOperator(transactionContext, 'toto');
             } catch (err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('System Operator : toto does not exist');
+                expect(err.message).to.equal('systemOperator : toto does not exist');
             }
         });
 
@@ -175,7 +175,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
-            let test = JSON.parse(await star.QuerySystemOperator(transactionContext, Values.HTB_systemoperator.systemOperatorMarketParticipantMrid));
+            let test = await star.QuerySystemOperator(transactionContext, Values.HTB_systemoperator.systemOperatorMarketParticipantMrid);
             expect(test).to.eql(Values.HTB_systemoperator);
         });
     });
@@ -191,7 +191,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
             } catch (err) {
-                expect(err.message).to.equal('System Operator : XXX does not exist');
+                expect(err.message).to.equal('systemOperator : XXX does not exist');
             }
         });
 

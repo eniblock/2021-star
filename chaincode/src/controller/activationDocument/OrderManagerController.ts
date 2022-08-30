@@ -1,15 +1,17 @@
-import { Context } from "fabric-contract-api";
 import { DataActionType } from "../../enums/DataActionType";
 import { DocType } from "../../enums/DocType";
+
 import { ActivationDocument } from "../../model/activationDocument/activationDocument";
 import { DataReference } from "../../model/dataReference";
 import { STARParameters } from "../../model/starParameters";
+
 import { ActivationDocumentService } from "../service/ActivationDocumentService";
+import { StarPrivateDataService } from "../service/StarPrivateDataService";
+
 import { ActivationDocumentController } from "./ActivationDocumentController";
 
 export class OrderManagerController {
     public static async executeOrder(
-        ctx: Context,
         params: STARParameters,
         updateOrder: DataReference) {
         console.debug('============= START : executeOrder OrderManagerController ===========');
@@ -22,10 +24,10 @@ export class OrderManagerController {
             const activationDocument:ActivationDocument = updateOrder.data;
 
             if (updateOrder.dataAction === DataActionType.COLLECTION_CHANGE) {
-                await ActivationDocumentController.createActivationDocumentByReference(ctx, params, updateOrder);
-                await ActivationDocumentService.delete(ctx, params, activationDocument.activationDocumentMrid, updateOrder.previousCollection);
+                await ActivationDocumentController.createActivationDocumentByReference(params, updateOrder);
+                await ActivationDocumentService.delete(params, activationDocument.activationDocumentMrid, updateOrder.previousCollection);
             } else {
-                await this.updateByOrders(ctx, params, activationDocument, updateOrder.collection);
+                await this.updateByOrders(params, activationDocument, updateOrder.collection);
             }
         }
 
@@ -34,13 +36,12 @@ export class OrderManagerController {
 
 
     public static async updateByOrders(
-        ctx: Context,
         params: STARParameters,
         activationDocument:ActivationDocument,
         collection: string) {
 
         console.debug('============= START : updateByOrders OrderManagerController ===========');
-        const original:ActivationDocument = await ActivationDocumentService.getObj(ctx, params, activationDocument.activationDocumentMrid, collection);
+        const original:ActivationDocument = await StarPrivateDataService.getObj(params, {id: activationDocument.activationDocumentMrid, docType: DocType.ACTIVATION_DOCUMENT, collection: collection});
 
         const original_order:ActivationDocument = JSON.parse(JSON.stringify(original));
         original_order.orderEnd = activationDocument.orderEnd;
@@ -63,7 +64,7 @@ export class OrderManagerController {
         //     }
         // }
         activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
-        await ActivationDocumentService.write(ctx, params, activationDocument, collection);
+        await ActivationDocumentService.write(params, activationDocument, collection);
         console.debug('============= END : updateByOrders OrderManagerController ===========');
     }
 }

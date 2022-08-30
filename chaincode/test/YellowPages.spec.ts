@@ -79,7 +79,7 @@ describe('Star Tests YELLOW PAGES', () => {
                 await star.CreateYellowPages(transactionContext, JSON.stringify(Values.HTB_yellowPage));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('System Operator : '.concat(Values.HTB_yellowPage.systemOperatorMarketParticipantMrid).concat(' does not exist in Yellow Pages ').concat(Values.HTB_yellowPage.originAutomationRegisteredResourceMrid).concat('.'));
+                expect(err.message).to.equal('systemOperator : '.concat(Values.HTB_yellowPage.systemOperatorMarketParticipantMrid).concat(' does not exist in Yellow Pages ').concat(Values.HTB_yellowPage.originAutomationRegisteredResourceMrid).concat('.'));
             }
         });
 

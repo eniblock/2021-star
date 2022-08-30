@@ -3,6 +3,7 @@
  */
 import * as Yup from 'yup';
 import { DataActionType } from '../../enums/DataActionType';
+import { DocType } from '../../enums/DocType';
 
 export class ActivationDocument {
     public static formatString(inputString: string) : ActivationDocument {
@@ -10,7 +11,7 @@ export class ActivationDocument {
         try {
             activationDocumentObj = JSON.parse(inputString);
         } catch (error) {
-            throw new Error(`ERROR ActivationDocument-> Input string NON-JSON value`);
+            throw new Error(`ERROR ${DocType.ACTIVATION_DOCUMENT} -> Input string NON-JSON value`);
         }
 
         try {
@@ -29,7 +30,7 @@ export class ActivationDocument {
         try {
             activationDocumentList = JSON.parse(inputString);
         } catch (error) {
-            throw new Error(`ERROR ActivationDocument by list-> Input string NON-JSON value`);
+            throw new Error(`ERROR ${DocType.ACTIVATION_DOCUMENT} by list-> Input string NON-JSON value`);
         }
 
         if (activationDocumentList && activationDocumentList.length > 0) {

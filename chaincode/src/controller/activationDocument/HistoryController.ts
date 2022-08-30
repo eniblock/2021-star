@@ -1,5 +1,3 @@
-import {Context} from "fabric-contract-api";
-
 import { DocType } from "../../enums/DocType";
 import { ParametersType } from "../../enums/ParametersType";
 import { RoleType } from "../../enums/RoleType";
@@ -16,20 +14,19 @@ import { YellowPages } from "../../model/yellowPages";
 import { ActivationDocumentController } from "./ActivationDocumentController";
 import { EnergyAmountController } from "../EnergyAmountController";
 import { ProducerController } from "../ProducerController";
-import { ActivationDocumentEligibilityService } from "../service/ActivationDocumentEligibilityService";
+import { YellowPagesController } from "../YellowPagesController";
 
+import { ActivationDocumentEligibilityService } from "../service/ActivationDocumentEligibilityService";
 import { ActivationDocumentService } from "../service/ActivationDocumentService";
 import { HLFServices } from "../service/HLFservice";
-import { ProducerService } from "../service/ProducerService";
 import { QueryStateService } from "../service/QueryStateService";
 import { SiteService } from "../service/SiteService";
-import { YellowPagesController } from "../YellowPagesController";
-import { EligibilityStatusType } from "../../enums/EligibilityStatusType";
+import { StarPrivateDataService } from "../service/StarPrivateDataService";
+import { StarDataService } from "../service/StarDataService";
 
 export class HistoryController {
 
     public static async getHistoryByQuery(
-        ctx: Context,
         params: STARParameters,
         inputStr: string): Promise<HistoryInformation[]> {
 
@@ -50,18 +47,18 @@ export class HistoryController {
             );
 
             const role: string = params.values.get(ParametersType.ROLE);
-            criteriaObj = await HistoryController.consolidateCriteria(ctx, params, criteriaObj, role);
+            criteriaObj = await HistoryController.consolidateCriteria(params, criteriaObj, role);
 
             if (criteriaObj) {
                 const query = await HistoryController.buildActivationDocumentQuery(criteriaObj);
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
-                const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
+                const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(params, query, collections);
 
                 if (allActivationDocument && allActivationDocument.length > 0) {
-                    const informationList = await HistoryController.consolidate(ctx, params, allActivationDocument);
-                    result = await HistoryController.generateOutput(ctx, informationList);
+                    const informationList = await HistoryController.consolidate(params, allActivationDocument);
+                    result = await HistoryController.generateOutput(informationList);
 
                 }
             }
@@ -77,7 +74,6 @@ export class HistoryController {
 
 
     private static async consolidateCriteria(
-        ctx: Context,
         params: STARParameters,
         criteriaObj: HistoryCriteria,
         role: string): Promise<HistoryCriteria> {
@@ -92,7 +88,7 @@ export class HistoryController {
         }
         if (criteriaObj.producerMarketParticipantName) {
             prodIdList.push(criteriaObj.producerMarketParticipantName);
-            const allProdId = await ProducerController.getProducerByName(ctx, criteriaObj.producerMarketParticipantName);
+            const allProdId = await ProducerController.getProducerByName(params, criteriaObj.producerMarketParticipantName);
             if (allProdId) {
                 for (var prodId of allProdId) {
                     if (prodId && prodId.producerMarketParticipantMrid) {
@@ -130,7 +126,7 @@ export class HistoryController {
         criteriaObj.registeredResourceList = [];
         if (args.length > 0) {
             const querySite = await QueryStateService.buildQuery(DocType.SITE, args);
-            const siteList: any[] = await SiteService.getQueryArrayResult(ctx, params, querySite);
+            const siteList: any[] = await SiteService.getQueryArrayResult(params, querySite);
 
             if (siteList.length == 0) {
                 return null;
@@ -147,7 +143,7 @@ export class HistoryController {
         }
 
         if (criteriaObj.originAutomationRegisteredResourceMrid) {
-            const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(ctx, criteriaObj.originAutomationRegisteredResourceMrid);
+            const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(params, criteriaObj.originAutomationRegisteredResourceMrid);
             if (yellowPages) {
                 for (var yellowPage of yellowPages) {
                     criteriaObj.registeredResourceList.push(yellowPage.registeredResourceMrid);
@@ -156,7 +152,7 @@ export class HistoryController {
             criteriaObj.originAutomationRegisteredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
         }
         if (criteriaObj.registeredResourceMrid) {
-            const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByRegisteredResourceMrid(ctx, criteriaObj.registeredResourceMrid);
+            const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByRegisteredResourceMrid(params, criteriaObj.registeredResourceMrid);
             if (yellowPages) {
                 for (var yellowPage of yellowPages) {
                     criteriaObj.originAutomationRegisteredResourceList.push(yellowPage.originAutomationRegisteredResourceMrid);
@@ -168,6 +164,8 @@ export class HistoryController {
 
         return criteriaObj;
     }
+
+
 
     public static async buildActivationDocumentQuery(criteriaObj: HistoryCriteria) : Promise<string> {
         var args: string[] = [];
@@ -217,21 +215,20 @@ export class HistoryController {
 
 
     private static async consolidate(
-        ctx: Context,
         params: STARParameters,
         allActivationDocument: ActivationDocument[]): Promise<HistoryInformation[]> {
 
         const informationList: HistoryInformation[] = [];
 
-        if (allActivationDocument && allActivationDocument.length > 0) {
-            console.debug("----------------")
-            console.debug("history ActivationDocument[0]")
-            console.debug(JSON.stringify(allActivationDocument[0]))
-            console.debug("----------------")
-        }
+        // if (allActivationDocument && allActivationDocument.length > 0) {
+        //     console.debug("----------------")
+        //     console.debug("history ActivationDocument[0]")
+        //     console.debug(JSON.stringify(allActivationDocument[0]))
+        //     console.debug("----------------")
+        // }
 
         for (const activationDocumentQueryValue of allActivationDocument) {
-            const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(ctx, params, activationDocumentQueryValue);
+            const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocumentQueryValue);
 
             if (activationDocument && activationDocument.activationDocumentMrid) {
                 var activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
@@ -241,7 +238,7 @@ export class HistoryController {
                     for(const activationDocumentMrid of activationDocument.subOrderList) {
                         var subOrder: ActivationDocument;
                         try {
-                            subOrder = await ActivationDocumentController.getActivationDocumentById(ctx, params, activationDocumentMrid);
+                            subOrder = await ActivationDocumentController.getActivationDocumentById(params, activationDocumentMrid);
                         } catch(error) {
                             //do nothing, but empty document : suborder information is not in accessible collection
                         }
@@ -253,7 +250,7 @@ export class HistoryController {
                 //Manage Yello Page to get Site Information
                 var siteRegistered: Site = null;
                 try {
-                    const existingSitesRef = await SiteService.getObjRefbyId(ctx, params, activationDocumentForInformation.registeredResourceMrid);
+                    const existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
                     const siteObjRef = existingSitesRef.values().next().value;
                     if (siteObjRef) {
                         siteRegistered = siteObjRef.data;
@@ -266,7 +263,7 @@ export class HistoryController {
                     activationDocumentForInformation = JSON.parse(JSON.stringify(subOrderList[0]));
                 }
                 try {
-                    const existingSitesRef = await SiteService.getObjRefbyId(ctx, params, activationDocumentForInformation.registeredResourceMrid);
+                    const existingSitesRef =await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
                     const siteObjRef = existingSitesRef.values().next().value;
                     if (siteObjRef) {
                         siteRegistered = siteObjRef.data;
@@ -283,7 +280,7 @@ export class HistoryController {
                 var producer: Producer = null;
                 try {
                     if (siteRegistered && siteRegistered.producerMarketParticipantMrid) {
-                        producer = await ProducerService.getObj(ctx, siteRegistered.producerMarketParticipantMrid);
+                        producer = await StarDataService.getObj(params, {id: siteRegistered.producerMarketParticipantMrid, docType: DocType.PRODUCER});
                     }
                 } catch (error) {
                     //DO nothing except "Not accessible information"
@@ -291,7 +288,7 @@ export class HistoryController {
                 if (!producer) {
                     try {
                         if (activationDocumentForInformation.receiverMarketParticipantMrid) {
-                            const prod = await ProducerService.getObj(ctx, activationDocumentForInformation.receiverMarketParticipantMrid);
+                            const prod = await StarDataService.getObj(params, {id: activationDocumentForInformation.receiverMarketParticipantMrid, docType: DocType.PRODUCER});
                             if (prod) {
                                 const untypedValue = JSON.parse(JSON.stringify(prod))
                                 if (untypedValue && untypedValue.producerMarketParticipantMrid) {
@@ -317,7 +314,7 @@ export class HistoryController {
                 // if (!producer) {
                 //     try {
                 //         if (activationDocument.receiverMarketParticipantMrid) {
-                //             var so = await SystemOperatorService.getObj(ctx, activationDocument.receiverMarketParticipantMrid);
+                //             var so = await SystemOperatorService.getObj(activationDocument.receiverMarketParticipantMrid);
                 //             if (so) {
                 //                 producer = {
                 //                     producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
@@ -335,7 +332,7 @@ export class HistoryController {
                 var energyAmount: EnergyAmount = null;
                 try {
                     if (activationDocumentForInformation && activationDocumentForInformation.activationDocumentMrid) {
-                        energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(ctx, params, activationDocumentForInformation.activationDocumentMrid);
+                        energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(params, activationDocumentForInformation.activationDocumentMrid);
                     }
 
                 } catch (error) {
@@ -368,13 +365,12 @@ export class HistoryController {
 
 
     private static async generateOutput(
-        ctx: Context,
         initialInformation : HistoryInformation[]): Promise<HistoryInformation[]> {
 
         var finalinformation: HistoryInformation[] = JSON.parse(JSON.stringify(initialInformation));
 
         finalinformation = await HistoryController.sortInformation(finalinformation);
-        finalinformation = await HistoryController.cleanFilled(ctx, finalinformation);
+        finalinformation = await HistoryController.cleanFilled(finalinformation);
 
         return finalinformation;
     }
@@ -422,8 +418,9 @@ export class HistoryController {
         return finalinformation;
     }
 
+
+
     private static async cleanFilled(
-        ctx: Context,
         initialInformation : HistoryInformation[]): Promise<HistoryInformation[]> {
 
         const finalinformation: HistoryInformation[] = [];

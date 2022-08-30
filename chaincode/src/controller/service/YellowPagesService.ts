@@ -11,7 +11,7 @@ export class YellowPagesService {
         params: STARParameters,
         yellowPageObj: YellowPages): Promise<void> {
 
-        yellowPageObj.docType = DocType.SYSTEM_OPERATOR;
+        yellowPageObj.docType = DocType.YELLOW_PAGES;
         await StarDataService.write(params, {id: yellowPageObj.yellowPageMrid, dataObj: yellowPageObj});
     }
 

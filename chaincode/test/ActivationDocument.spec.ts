@@ -93,7 +93,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, 'XXXXXX');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR ActivationDocument-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR '.concat(DocType.ACTIVATION_DOCUMENT).concat(' -> Input string NON-JSON value'));
             }
         });
 
@@ -258,7 +258,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createActivationDocument : System Operator : '
+                expect(err.message).to.equal('ERROR createActivationDocument : '.concat(DocType.SYSTEM_OPERATOR).concat(' : ')
                     .concat(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid)
                     .concat(' does not exist for Activation Document ')
                     .concat(activationDocument.activationDocumentMrid)
@@ -446,7 +446,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, 'XXXXXX');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR ActivationDocument-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR '.concat(DocType.ACTIVATION_DOCUMENT).concat(' -> Input string NON-JSON value'));
             }
         });
 
@@ -534,9 +534,9 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('Site : '
+                expect(err.message).to.equal(DocType.SITE.concat(' : ')
                     .concat(Values.HTB_site_valid.meteringPointMrid)
-                    .concat(' does not exist for Activation Document ')
+                    .concat(' does not exist (not found in any collection). for Activation Document ')
                     .concat(activationDocument.activationDocumentMrid)
                     .concat(' creation.'));
             }
@@ -1396,7 +1396,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal(`ActivationDocument : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
+                expect(err.message).to.equal(`ERROR cannot find reference to Activation Document ${activationDocument_Producer.activationDocumentMrid} for status Update.`);
             }
         });
 

@@ -195,6 +195,14 @@ describe('Star Tests YELLOW PAGES', () => {
 
             const expected = JSON.parse(JSON.stringify(Values.HTA_yellowPage))
             expected.docType = DocType.YELLOW_PAGES;
+
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putState.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putState.firstCall.args[1].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected))
+            // console.info("-----------")
+
             transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
                 Values.HTA_yellowPage.yellowPageMrid,
                 Buffer.from(JSON.stringify(expected))

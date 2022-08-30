@@ -98,9 +98,9 @@ export class EligibilityController {
         var targetKey: string = '';
         var targetValue: string = '';
 
-        console.info("------------------")
-        console.info(JSON.stringify(targetArrayValue))
-        console.info("------------------")
+        // console.info("------------------")
+        // console.info(JSON.stringify(targetArrayValue))
+        // console.info("------------------")
 
         targetArrayValue = [...new Set(targetArrayValue)];
         if (targetArrayValue && targetArrayValue.length >0 ) {
@@ -114,9 +114,9 @@ export class EligibilityController {
 
         targetKey = targetKey.toLowerCase();
 
-        console.info("------------------")
-        console.info(targetKey)
-        console.info("------------------")
+        // console.info("------------------")
+        // console.info(targetKey)
+        // console.info("------------------")
 
         const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
         if (collectionMap) {

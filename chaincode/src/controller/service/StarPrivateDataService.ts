@@ -65,8 +65,9 @@ export class StarPrivateDataService {
         params: STARParameters,
         arg: IdArgument): Promise<Map<string, DataReference>> {
 
-        // console.info("----------------------------------")
-        // console.info("id:",id)
+        // console.debug("----------------------------------")
+        // console.debug("id:",arg.id)
+
         var result:Map<string, DataReference> = params.getFromMemoryPool(arg.id);
 
         if (!result || !result.values().next().value) {
@@ -74,14 +75,14 @@ export class StarPrivateDataService {
             const target: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, target);
 
-            // console.info("target:",JSON.stringify(target))
-            // console.info("collections:",JSON.stringify(collections))
-            // console.info("- - - - - - - - - - - - - - - - -")
+            // console.debug("target:",JSON.stringify(target))
+            // console.debug("collections:",JSON.stringify(collections))
+            // console.debug("- - - - - - - - - - - - - - - - -")
 
             if (collections) {
                 for (const collection of collections) {
                     let collectionResult:any;
-                    // console.info("collection:",collection)
+                    // console.debug("collection:",collection)
                     try {
                         collectionResult = await StarPrivateDataService.getObj(params, {id: arg.id, collection: collection, docType: arg.docType});
                     } catch (error) {
@@ -91,9 +92,9 @@ export class StarPrivateDataService {
                         error = null;
                     }
 
-                    // console.info("collectionResult:",JSON.stringify(collectionResult))
+                    // console.debug("collectionResult:",JSON.stringify(collectionResult))
 
-                    if (collectionResult && collectionResult.meteringPointMrid == arg.id) {
+                    if (collectionResult) {
                         const elt  = {
                             collection: collection,
                             docType: arg.docType,
@@ -103,20 +104,20 @@ export class StarPrivateDataService {
                         params.addInMemoryPool(arg.id, elt);
                     }
 
-                    // console.info("result:",JSON.stringify([...result]))
-                    // console.info("- - - - - - - - - - - - - - - - -")
+                    // console.debug("result:",JSON.stringify([...result]))
+                    // console.debug("- - - - - - - - - - - - - - - - -")
                 }
             }
         }
 
-        // console.info("result:",JSON.stringify([...result]))
-        // console.info("- - - - - - - - - - - - - - - - -")
+        // console.debug("result:",JSON.stringify([...result]))
+        // console.debug("- - - - - - - - - - - - - - - - -")
 
         if (!result || ! result.keys().next().value) {
             throw new Error(`${arg.docType} : ${arg.id} does not exist (not found in any collection).`);
         }
 
-        // console.info("----------------------------------")
+        // console.debug("----------------------------------")
         return result;
     }
 

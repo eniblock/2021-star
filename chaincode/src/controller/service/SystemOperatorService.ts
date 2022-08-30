@@ -1,64 +1,40 @@
 import { Context } from "fabric-contract-api";
 import { Iterators } from "fabric-shim";
+import { DocType } from "../../enums/DocType";
+import { STARParameters } from "../../model/starParameters";
 import { SystemOperator } from "../../model/systemOperator";
+import { StarDataService } from "./StarDataService";
 
 
 export class SystemOperatorService {
-    public static async getRaw(
-        ctx: Context,
-        id: string): Promise<Uint8Array> {
-        console.debug('============= START : getRaw %s SystemOperatorService ===========', id);
 
-        const sompAsBytes = await ctx.stub.getState(id);
-        if (!sompAsBytes || sompAsBytes.length === 0) {
-            throw new Error(`System Operator : ${id} does not exist`);
-        }
+    // public static async getObj(
+    //     ctx: Context,
+    //     params: STARParameters,
+    //     id: string): Promise<SystemOperator> {
 
-        console.debug('============= END : getRaw %s SystemOperatorService ===========', id);
-        return sompAsBytes;
-    }
+    //     var dataObj:SystemOperator = await StarDataService.getObj(ctx, params, id, DocType.SYSTEM_OPERATOR);
 
-
-    public static async getObj(
-        ctx: Context,
-        id: string): Promise<SystemOperator> {
-
-        const dataAsBytes: Uint8Array = await SystemOperatorService.getRaw(ctx, id);
-        var dataObj:SystemOperator = null;
-        if (dataAsBytes) {
-            try {
-                dataObj = JSON.parse(dataAsBytes.toString());
-            } catch (error) {
-                throw new Error(`ERROR SystemOperator -> Input string NON-JSON value`);
-            }
-        }
-        return dataObj;
-    }
+    //     return dataObj;
+    // }
 
 
     public static async write(
-        ctx: Context,
+        params: STARParameters,
         systemOperatorObj: SystemOperator): Promise<void> {
-        console.debug('============= START : Write %s SystemOperatorService ===========', systemOperatorObj.systemOperatorMarketParticipantMrid);
 
-        systemOperatorObj.docType = 'systemOperator';
-
-        await ctx.stub.putState(
-            systemOperatorObj.systemOperatorMarketParticipantMrid,
-            Buffer.from(JSON.stringify(systemOperatorObj)),
-        );
-
-        console.debug('============= END : Write %s SystemOperatorService ===========', systemOperatorObj.systemOperatorMarketParticipantMrid);
+        systemOperatorObj.docType = DocType.SYSTEM_OPERATOR;
+        await StarDataService.write(params, {id: systemOperatorObj.systemOperatorMarketParticipantMrid, dataObj: systemOperatorObj});
     }
 
+
+
     public static async getQueryResult(
-        ctx: Context,
+        params: STARParameters,
         query: string): Promise<Iterators.StateQueryIterator>  {
         console.debug('============= START : getQueryResult SystemOperatorService ===========', );
 
-        // console.debug(query);
-
-        const iterator = await ctx.stub.getQueryResult(query);
+        const iterator = await params.ctx.stub.getQueryResult(query);
 
         console.debug('============= END : getQueryResult SystemOperatorService ===========');
         return iterator;

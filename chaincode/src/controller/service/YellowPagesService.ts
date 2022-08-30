@@ -1,21 +1,18 @@
-import { Context } from "fabric-contract-api";
+import { DocType } from "../../enums/DocType";
+
+import { STARParameters } from "../../model/starParameters";
 import { YellowPages } from "../../model/yellowPages";
+
+import { StarDataService } from "./StarDataService";
 
 export class YellowPagesService {
 
     public static async write(
-        ctx: Context,
+        params: STARParameters,
         yellowPageObj: YellowPages): Promise<void> {
-        console.debug('============= START : Write %s YellowPagesService ===========', yellowPageObj.yellowPageMrid);
 
-        yellowPageObj.docType = 'yellowPages';
-
-        await ctx.stub.putState(
-            yellowPageObj.yellowPageMrid,
-            Buffer.from(JSON.stringify(yellowPageObj)),
-        );
-
-        console.debug('============= END : Write %s YellowPagesService ===========', yellowPageObj.yellowPageMrid);
+        yellowPageObj.docType = DocType.YELLOW_PAGES;
+        await StarDataService.write(params, {id: yellowPageObj.yellowPageMrid, dataObj: yellowPageObj});
     }
 
 }

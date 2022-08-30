@@ -220,62 +220,81 @@ echo
 echo "GetActivationDocumentHistory"
 echo
 
-RTE_SITES=$(csvtojson < $DATA_PATH/13-rte-Site.csv --delimiter=';')
-RTE_SITES_NB=$(echo $RTE_SITES | jq 'length')
 
-RTE_TOTALRESULT=""
+echo "--- process start $(date +"%T.%3N") ---"
 
-for i in `seq $RTE_SITES_NB`
-do
-        tabindex=$(echo ".["$i-1"]")
-        RTE_SITES_VALUE=$(echo $RTE_SITES | jq $tabindex)
-        RTE_SITE_ID=$(echo $RTE_SITES_VALUE | jq '.meteringPointMrid')
-        RTE_SITE_ID=$(echo $RTE_SITE_ID | sed "s/\"/\\\\\"/g")
+OUTPUT_RTE=$(
+        kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+                peer chaincode invoke \
+                -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls $RTE_TLSOPT \
+                -c '{"Args":["GetActivationDocumentHistory", "{}"]}' 2>&1)
 
-        RTE_CRITERIA_meteringPointMrid_STR='{\"meteringPointMrid\":'$RTE_SITE_ID'}'
-        RTE_CRITERIA_meteringPointMrid_STR=${RTE_CRITERIA_meteringPointMrid_STR//[$'\t\r\n ']}
 
-        OUTPUT_RTE=$(
-                kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
-                        peer chaincode invoke \
-                        -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls $RTE_TLSOPT \
-                        -c '{"Args":["GetActivationDocumentHistory","'$RTE_CRITERIA_meteringPointMrid_STR'"]}' 2>&1)
+echo "--- process end   $(date +"%T.%3N") ---"
 
-        # echo "*-*-*-*-*-*-*"
-        # echo $OUTPUT_RTE
-        # echo "*-*-*-*-*-*-*"
 
-        OUTPUT_RTE=$(echo $OUTPUT_RTE | grep -o -P '(?<=").*(?=")')
-        OUTPUT_RTE=$(echo $OUTPUT_RTE | sed "s/\\\\\"/\"/g")
-        OUTPUT_RTE=$(printf "%b" $OUTPUT_RTE)
-        OUTPUT_RTE=$(jq -n $OUTPUT_RTE)
 
-        RTE_TOTALRESULT=$((echo $RTE_TOTALRESULT; echo $OUTPUT_RTE) | jq -n '[ inputs[] ] | unique_by(."activationDocument"."activationDocumentMrid")')
 
-done
+# echo
+# echo "GetActivationDocumentHistory"
+# echo
 
-RTE_TOTALRESULT_NB=$(echo $RTE_TOTALRESULT | jq 'length')
+# RTE_SITES=$(csvtojson < $DATA_PATH/13-rte-Site.csv --delimiter=';')
+# RTE_SITES_NB=$(echo $RTE_SITES | jq 'length')
 
-for i in `seq $RTE_TOTALRESULT_NB`
-do
-    index=$(($i-1))
-    activationDocument_VALUE=$(echo $RTE_TOTALRESULT | jq --argjson index $index '.[$index].activationDocument')
-    subOrderList_VALUE=$(echo $RTE_TOTALRESULT | jq --argjson index $index '.[$index].subOrderList')
-    site_VALUE=$(echo $RTE_TOTALRESULT | jq --argjson index $index '.[$index].site')
-    producer_VALUE=$(echo $RTE_TOTALRESULT | jq --argjson index $index '.[$index].producer')
-    energyAmount_VALUE=$(echo $RTE_TOTALRESULT | jq --argjson index $index '.[$index].energyAmount')
-    echo "00000000000000000000000000000000000"
-    echo $activationDocument_VALUE
-    echo "###"
-    echo $subOrderList_VALUE
-    echo "###"
-    echo $site_VALUE
-    echo "###"
-    echo $producer_VALUE
-    echo "###"
-    echo $energyAmount_VALUE
-    echo "00000000000000000000000000000000000"
-done
+# RTE_TOTALRESULT=""
+
+# for i in `seq $RTE_SITES_NB`
+# do
+#         tabindex=$(echo ".["$i-1"]")
+#         RTE_SITES_VALUE=$(echo $RTE_SITES | jq $tabindex)
+#         RTE_SITE_ID=$(echo $RTE_SITES_VALUE | jq '.meteringPointMrid')
+#         RTE_SITE_ID=$(echo $RTE_SITE_ID | sed "s/\"/\\\\\"/g")
+
+#         RTE_CRITERIA_meteringPointMrid_STR='{\"meteringPointMrid\":'$RTE_SITE_ID'}'
+#         RTE_CRITERIA_meteringPointMrid_STR=${RTE_CRITERIA_meteringPointMrid_STR//[$'\t\r\n ']}
+
+#         OUTPUT_RTE=$(
+#                 kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+#                         peer chaincode invoke \
+#                         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls $RTE_TLSOPT \
+#                         -c '{"Args":["GetActivationDocumentHistory","'$RTE_CRITERIA_meteringPointMrid_STR'"]}' 2>&1)
+
+#         # echo "*-*-*-*-*-*-*"
+#         # echo $OUTPUT_RTE
+#         # echo "*-*-*-*-*-*-*"
+
+#         OUTPUT_RTE=$(echo $OUTPUT_RTE | grep -o -P '(?<=").*(?=")')
+#         OUTPUT_RTE=$(echo $OUTPUT_RTE | sed "s/\\\\\"/\"/g")
+#         OUTPUT_RTE=$(printf "%b" $OUTPUT_RTE)
+#         OUTPUT_RTE=$(jq -n $OUTPUT_RTE)
+
+#         RTE_TOTALRESULT=$((echo $RTE_TOTALRESULT; echo $OUTPUT_RTE) | jq -n '[ inputs[] ] | unique_by(."activationDocument"."activationDocumentMrid")')
+
+# done
+
+# RTE_TOTALRESULT_NB=$(echo $RTE_TOTALRESULT | jq 'length')
+
+# for i in `seq $RTE_TOTALRESULT_NB`
+# do
+#     index=$(($i-1))
+#     activationDocument_VALUE=$(echo $RTE_TOTALRESULT | jq --argjson index $index '.[$index].activationDocument')
+#     subOrderList_VALUE=$(echo $RTE_TOTALRESULT | jq --argjson index $index '.[$index].subOrderList')
+#     site_VALUE=$(echo $RTE_TOTALRESULT | jq --argjson index $index '.[$index].site')
+#     producer_VALUE=$(echo $RTE_TOTALRESULT | jq --argjson index $index '.[$index].producer')
+#     energyAmount_VALUE=$(echo $RTE_TOTALRESULT | jq --argjson index $index '.[$index].energyAmount')
+#     echo "00000000000000000000000000000000000"
+#     echo $activationDocument_VALUE
+#     echo "###"
+#     echo $subOrderList_VALUE
+#     echo "###"
+#     echo $site_VALUE
+#     echo "###"
+#     echo $producer_VALUE
+#     echo "###"
+#     echo $energyAmount_VALUE
+#     echo "00000000000000000000000000000000000"
+# done
 
 
 

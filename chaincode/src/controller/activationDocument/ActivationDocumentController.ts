@@ -1,28 +1,25 @@
-import { Context } from 'fabric-contract-api';
 import { isEmpty } from 'lodash';
 
 import { OrganizationTypeMsp } from '../../enums/OrganizationMspType';
 import { ParametersType } from '../../enums/ParametersType';
+import { RoleType } from '../../enums/RoleType';
+import { EligibilityStatusType } from '../../enums/EligibilityStatusType';
+import { DocType } from '../../enums/DocType';
 
 import { ActivationDocument } from '../../model/activationDocument/activationDocument';
 import { STARParameters } from '../../model/starParameters';
 import { SystemOperator } from '../../model/systemOperator';
-
-import { SiteService } from '../service/SiteService';
-import { HLFServices } from '../service/HLFservice';
-import { SystemOperatorService } from '../service/SystemOperatorService';
-import { ProducerService } from '../service/ProducerService';
-import { ActivationDocumentService } from '../service/ActivationDocumentService';
-
 import { Producer } from '../../model/producer';
-import { RoleType } from '../../enums/RoleType';
 import { DataReference } from '../../model/dataReference';
-import { EligibilityStatusType } from '../../enums/EligibilityStatusType';
+
+import { HLFServices } from '../service/HLFservice';
+import { ActivationDocumentService } from '../service/ActivationDocumentService';
 import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
+import { StarPrivateDataService } from '../service/StarPrivateDataService';
+import { StarDataService } from '../service/StarDataService';
 
 export class ActivationDocumentController {
     public static async getActivationDocumentByProducer(
-        ctx: Context,
         params: STARParameters,
         producerMrid: string): Promise<string> {
 
@@ -30,8 +27,8 @@ export class ActivationDocumentController {
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
-        const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
-        const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(ctx, params, allResults);
+        const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(params, query, collections);
+        const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(params, allResults);
         const formated = JSON.stringify(formatedResults);
 
         return formated;
@@ -40,7 +37,6 @@ export class ActivationDocumentController {
 
 
     public static async getActivationDocumentBySystemOperator(
-        ctx: Context,
         params: STARParameters,
         systemOperatorMrid: string): Promise<string> {
 
@@ -48,8 +44,8 @@ export class ActivationDocumentController {
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
-        const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
-        const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(ctx, params, allResults);
+        const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(params, query, collections);
+        const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(params, allResults);
         const formated = JSON.stringify(formatedResults);
 
         return formated;
@@ -57,16 +53,15 @@ export class ActivationDocumentController {
 
 
     public static async getActivationDocumentById(
-        ctx: Context,
         params: STARParameters,
         activationDocumentMrid: string,
         target: string = ''): Promise<ActivationDocument> {
 
         let orderObj: ActivationDocument;
         if (target && target.length > 0) {
-            orderObj = await ActivationDocumentService.getObj(ctx, params, activationDocumentMrid, target);
+            orderObj = await StarPrivateDataService.getObj(params, {id: activationDocumentMrid, docType: DocType.ACTIVATION_DOCUMENT, collection: target});
         } else {
-            const result:Map<string, DataReference> = await ActivationDocumentService.getObjRefbyId(ctx, params, activationDocumentMrid);
+            const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ACTIVATION_DOCUMENT, id: activationDocumentMrid});
             const dataReference = result.values().next().value;
             if (dataReference && dataReference.data) {
                 orderObj = dataReference.data;
@@ -75,7 +70,7 @@ export class ActivationDocumentController {
 
         var formatedResult: ActivationDocument = null;
         if (orderObj) {
-            formatedResult = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(ctx, params, orderObj);
+            formatedResult = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, orderObj);
         }
 
         return formatedResult;
@@ -84,14 +79,13 @@ export class ActivationDocumentController {
 
 
     public static async getActivationDocumentByQuery(
-        ctx: Context,
         params: STARParameters,
         query: string): Promise<string> {
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
-        const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(ctx, params, query, collections);
-        const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(ctx, params, allResults);
+        const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(params, query, collections);
+        const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(params, allResults);
 
         const formated = JSON.stringify(formatedResults);
 
@@ -101,10 +95,9 @@ export class ActivationDocumentController {
 
 
     public static async createActivationDocument(
-        ctx: Context,
         params: STARParameters,
         inputStr: string) {
-        console.info('============= START : Create ActivationDocumentController ===========');
+        console.debug('============= START : Create ActivationDocumentController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -112,18 +105,17 @@ export class ActivationDocumentController {
         }
 
         const activationDocumentObj: ActivationDocument =ActivationDocument.formatString(inputStr);
-        await ActivationDocumentController.createActivationDocumentObj(ctx, params, activationDocumentObj);
+        await ActivationDocumentController.createActivationDocumentObj(params, activationDocumentObj);
 
-        console.info('============= END : Create ActivationDocumentController ===========');
+        console.debug('============= END : Create ActivationDocumentController ===========');
     }
 
 
 
     public static async createActivationDocumentByReference(
-        ctx: Context,
         params: STARParameters,
         dataReference: DataReference) {
-        console.info('============= START : create ByReference ActivationDocumentController ===========');
+        console.debug('============= START : create ByReference ActivationDocumentController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -135,18 +127,17 @@ export class ActivationDocumentController {
             {strict: true, abortEarly: false},
         );
 
-        await ActivationDocumentController.createActivationDocumentObj(ctx, params, dataReference.data, dataReference.collection);
+        await ActivationDocumentController.createActivationDocumentObj(params, dataReference.data, dataReference.collection);
 
-        console.info('============= END : create ByReference ActivationDocumentController ===========');
+        console.debug('============= END : create ByReference ActivationDocumentController ===========');
     }
 
 
 
     public static async createActivationDocumentList(
-        ctx: Context,
         params: STARParameters,
         inputStr: string) {
-        console.info('============= START : Create List ActivationDocumentController ===========');
+        console.debug('============= START : Create List ActivationDocumentController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -157,21 +148,20 @@ export class ActivationDocumentController {
 
         if (activationDocumentList) {
             for (var activationDocumentObj of activationDocumentList) {
-                await ActivationDocumentController.createActivationDocumentObj(ctx, params, activationDocumentObj);
+                await ActivationDocumentController.createActivationDocumentObj(params, activationDocumentObj);
             }
         }
 
-        console.info('============= END : Create List ActivationDocumentController ===========');
+        console.debug('============= END : Create List ActivationDocumentController ===========');
     }
 
 
 
     private static async createActivationDocumentObj(
-        ctx: Context,
         params: STARParameters,
         activationDocumentObj: ActivationDocument,
         definedTarget: string = '') {
-        console.info('============= START : Create createActivationDocumentObj ===========');
+        console.debug('============= START : Create createActivationDocumentObj ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
 
@@ -186,7 +176,7 @@ export class ActivationDocumentController {
 
         let systemOperatorObj: SystemOperator;
         try {
-            systemOperatorObj = await SystemOperatorService.getObj(ctx, activationDocumentObj.senderMarketParticipantMrid);
+            systemOperatorObj = await StarDataService.getObj(params, {id: activationDocumentObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
             throw new Error('ERROR createActivationDocument : '.concat(error.message).concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
         }
@@ -195,19 +185,18 @@ export class ActivationDocumentController {
             throw new Error(`Organisation, ${identity} cannot send Activation Document for sender ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
-        var producerAsBytes: Uint8Array;
+        var producerObj:Producer;
         if (activationDocumentObj.receiverMarketParticipantMrid) {
             try {
-                producerAsBytes = await ProducerService.getRaw(ctx, activationDocumentObj.receiverMarketParticipantMrid);
+                producerObj = await StarDataService.getObj(params, {id: activationDocumentObj.receiverMarketParticipantMrid});
             } catch(error) {
                 throw new Error(`Producer : ${activationDocumentObj.receiverMarketParticipantMrid} does not exist for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
             }
         }
-        var producerObj:Producer;
+
         var producerSystemOperatorObj:SystemOperator;
-        if (producerAsBytes) {
-            producerObj = JSON.parse(producerAsBytes.toString());
-            producerSystemOperatorObj = JSON.parse(producerAsBytes.toString());
+        if (producerObj) {
+            producerSystemOperatorObj = JSON.parse(JSON.stringify(producerObj));
         }
 
         /* Mix Collection is true if order doesn't directly go to producer */
@@ -255,7 +244,7 @@ export class ActivationDocumentController {
         if (producerSystemOperatorObj && roleTable.has(producerSystemOperatorObj.systemOperatorMarketParticipantName)) {
             const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
 
-            const target = producerSystemOperatorObj.systemOperatorMarketParticipantName;
+            const target = producerSystemOperatorObj.systemOperatorMarketParticipantName.toLowerCase();
             targetDocument = collectionMap.get(target)[0];
         }
 
@@ -266,13 +255,13 @@ export class ActivationDocumentController {
 
             var siteRef: DataReference;
             try {
-                const siteRefMap: Map<string, DataReference> = await SiteService.getObjRefbyId(ctx, params, activationDocumentObj.registeredResourceMrid);
+                const siteRefMap: Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentObj.registeredResourceMrid});
                 if (targetDocument && targetDocument.length > 0) {
                     siteRef = siteRefMap.get(targetDocument);
                 } else {
                     siteRef = siteRefMap.values().next().value;
                 }
-                // await SiteService.getRaw(ctx, targetDocument, activationDocumentObj.registeredResourceMrid);
+                // await SiteService.getRaw(targetDocument, activationDocumentObj.registeredResourceMrid);
             } catch(error) {
                 throw new Error(error.message.concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
             }
@@ -311,9 +300,9 @@ export class ActivationDocumentController {
         activationDocumentObj.eligibilityStatusEditable = !(activationDocumentObj.eligibilityStatus === EligibilityStatusType.EligibilityAccepted);
         activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.statusInternationalValue(activationDocumentObj.eligibilityStatus);
 
-        await ActivationDocumentService.write(ctx, params, activationDocumentObj, targetDocument);
+        await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);
 
-        console.info('============= END   : Create %s createActivationDocumentObj ===========',
+        console.debug('============= END   : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,
         );
     }

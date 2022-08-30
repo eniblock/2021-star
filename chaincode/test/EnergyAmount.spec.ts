@@ -121,7 +121,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, 'RTE01EIC');
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR EnergyAmount-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR '.concat(DocType.ENERGY_AMOUNT).concat(' -> Input string NON-JSON value'));
             }
         });
 
@@ -141,7 +141,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(Values.HTB_EnergyAmount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ActivationDocument : '.concat(Values.HTB_EnergyAmount.activationDocumentMrid).concat(' does not exist for Energy Amount ea4cef73-ff6b-400b-8957-d34000eb30a1 creation.'));
+                expect(err.message).to.equal(DocType.ACTIVATION_DOCUMENT.concat(' : ').concat(Values.HTB_EnergyAmount.activationDocumentMrid).concat(' does not exist (not found in any collection). for Energy Amount ea4cef73-ff6b-400b-8957-d34000eb30a1 creation.'));
             }
         });
 
@@ -196,7 +196,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal(`ERROR ActivationDocument-> Input string NON-JSON value for Energy Amount ${energyamount.energyAmountMarketDocumentMrid} creation.`);
+                expect(err.message).to.equal(`ERROR ${DocType.ACTIVATION_DOCUMENT} -> Input string NON-JSON value for Energy Amount ${energyamount.energyAmountMarketDocumentMrid} creation.`);
             }
         });
 
@@ -350,7 +350,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateDSOEnergyAmount(transactionContext, 'RTE01EIC');
             } catch(err) {
-                expect(err.message).to.equal('ERROR EnergyAmount-> Input string NON-JSON value');
+                expect(err.message).to.equal('ERROR '.concat(DocType.ENERGY_AMOUNT).concat(' -> Input string NON-JSON value'));
             }
         });
 
@@ -533,7 +533,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.GetEnergyAmountForSystemOperator(transactionContext, producer, producer, producer);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR getEnergyAmountForSystemOperator : System Operator : toto does not exist for Energy Amount read.');
+                expect(err.message).to.equal('ERROR getEnergyAmountForSystemOperator : '.concat(DocType.SYSTEM_OPERATOR).concat(' : toto does not exist for Energy Amount read.'));
             }
         });
 
@@ -586,7 +586,7 @@ describe('Star Tests EnergyAmount', () => {
                     Values.HTB_EnergyAmount.createdDateTime);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR getEnergyAmountForSystemOperator : ERROR SystemOperator -> Input string NON-JSON value for Energy Amount read.');
+                expect(err.message).to.equal('ERROR getEnergyAmountForSystemOperator : ERROR '.concat(DocType.SYSTEM_OPERATOR).concat(' -> Input string NON-JSON value for Energy Amount read.'));
             }
         });
 

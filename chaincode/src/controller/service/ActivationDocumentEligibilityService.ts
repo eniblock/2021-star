@@ -1,11 +1,11 @@
-import { Context } from "fabric-contract-api";
 import { STARParameters } from '../../model/starParameters';
 import { ParametersType } from "../../enums/ParametersType";
 import { ActivationDocument } from "../../model/activationDocument/activationDocument";
 import { EligibilityStatusType } from "../../enums/EligibilityStatusType";
 import { OrganizationTypeMsp } from "../../enums/OrganizationMspType";
 import { SystemOperator } from "../../model/systemOperator";
-import { SystemOperatorService } from "./SystemOperatorService";
+import { DocType } from "../../enums/DocType";
+import { StarDataService } from "./StarDataService";
 
 export class ActivationDocumentEligibilityService {
     public static checkEligibilityStatus(
@@ -76,7 +76,6 @@ export class ActivationDocumentEligibilityService {
     }
 
     public static async outputFormatFRActivationDocument(
-        ctx: Context,
         params: STARParameters,
         activationDocument: ActivationDocument) : Promise<ActivationDocument> {
 
@@ -86,7 +85,7 @@ export class ActivationDocumentEligibilityService {
         } else {
             let systemOperatorObj: SystemOperator;
             try {
-                systemOperatorObj = await SystemOperatorService.getObj(ctx, activationDocument.senderMarketParticipantMrid);
+                systemOperatorObj = await StarDataService.getObj(params, {id:activationDocument.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
             } catch (error) {
                 activationDocument.eligibilityStatusEditable = false;
             }
@@ -101,13 +100,12 @@ export class ActivationDocumentEligibilityService {
     }
 
     public static async formatActivationDocuments(
-        ctx: Context,
         params: STARParameters,
         activationDocuments: ActivationDocument[]) : Promise<ActivationDocument[]> {
 
         let returnedList: ActivationDocument[] = [];
         for (const activationDocument of activationDocuments) {
-            returnedList.push(await this.outputFormatFRActivationDocument(ctx, params, activationDocument));
+            returnedList.push(await this.outputFormatFRActivationDocument(params, activationDocument));
         }
         return returnedList;
     }

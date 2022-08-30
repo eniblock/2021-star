@@ -1,157 +1,50 @@
-import { Context } from "fabric-contract-api";
 import { DocType } from "../../enums/DocType";
 import { ParametersType } from "../../enums/ParametersType";
-import { DataReference } from "../../model/dataReference";
+import { IdArgument } from "../../model/arguments/idArgument";
+import { queryArgument } from "../../model/arguments/queryArgument";
+
 import { EnergyAmount } from '../../model/energyAmount';
 import { STARParameters } from "../../model/starParameters";
+
 import { HLFServices } from "./HLFservice";
 import { QueryStateService } from "./QueryStateService";
+import { StarPrivateDataService } from "./StarPrivateDataService";
 
 export class EnergyAmountService {
-    public static async getRaw(
-        ctx: Context,
-        collection: string,
-        id: string): Promise<Uint8Array> {
-        console.debug('============= START : getRaw %s ProducerService ===========', id);
-
-        let energyAmountAsBytes: Uint8Array;
-        try {
-            energyAmountAsBytes = await ctx.stub.getPrivateData(collection, id);
-        } catch (error) {
-            throw new Error(`Energy Amount : ${id} does not exist`);
-        }
-        if (!energyAmountAsBytes || energyAmountAsBytes.length === 0) {
-            throw new Error(`Energy Amount : ${id} does not exist`);
-        }
-
-        console.debug('============= END : getRaw %s ProducerService ===========', id);
-        return energyAmountAsBytes;
-    }
-
-
-
-
-    private static async getObj(
-        ctx: Context,
-        params: STARParameters,
-        id: string,
-        target: string = ''): Promise<EnergyAmount> {
-
-        const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, target);
-
-        const energyAmountAsBytes: Uint8Array = await EnergyAmountService.getRaw(ctx, collection, id);
-        const energyAmountObj:EnergyAmount = EnergyAmount.formatString(energyAmountAsBytes.toString());
-
-        return energyAmountObj;
-    }
-
-
-
-
-    public static async getObjRefbyId(
-        ctx: Context,
-        params: STARParameters,
-        id: string): Promise<Map<string, DataReference>> {
-
-        // console.info("----------------------------------")
-        // console.info("id:",id)
-        var result:Map<string, DataReference> = params.getFromMemoryPool(id);
-
-        if (!result) {
-            result = new Map();
-            const target: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
-            const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, target);
-
-            // console.info("target:",JSON.stringify(target))
-            // console.info("collections:",JSON.stringify(collections))
-            // console.info("- - - - - - - - - - - - - - - - -")
-
-            if (collections) {
-                for (const collection of collections) {
-                    let collectionResult:EnergyAmount;
-                    // console.info("collection:",collection)
-                    try {
-                        collectionResult = await EnergyAmountService.getObj(ctx, params, id, collection);
-                    } catch (error) {
-                        if (error && error.message && error.message.includes("NON-JSON")) {
-                            throw error;
-                        }
-                    }
-
-                    // console.info("collectionResult:",JSON.stringify(collectionResult))
-
-                    if (collectionResult && collectionResult.energyAmountMarketDocumentMrid == id) {
-                        const elt  = {
-                            collection: collection,
-                            docType: DocType.ENERGY_AMOUNT,
-                            data: collectionResult
-                        }
-                        result.set(collection, elt);
-                    }
-
-                    // console.info("result:",JSON.stringify([...result]))
-                    // console.info("- - - - - - - - - - - - - - - - -")
-                }
-            }
-        }
-
-        // console.info("result:",JSON.stringify([...result]))
-        // console.info("- - - - - - - - - - - - - - - - -")
-
-        if (!result || ! result.keys().next().value) {
-            throw new Error(`Site : ${id} does not exist`);
-        }
-
-        // console.info("----------------------------------")
-        return result;
-    }
-
-
     public static async write(
-        ctx: Context,
         params: STARParameters,
         energyObj: EnergyAmount,
         target: string = ''): Promise<void> {
 
-        console.debug('============= START : Write %s EnergyAmountService ===========', energyObj.energyAmountMarketDocumentMrid);
-
-        const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, target);
         energyObj.docType = DocType.ENERGY_AMOUNT;
-
-        await ctx.stub.putPrivateData(collection, energyObj.energyAmountMarketDocumentMrid, Buffer.from(JSON.stringify(energyObj)));
-
-        console.debug('============= END : Write %s EnergyAmountService ===========', energyObj.energyAmountMarketDocumentMrid);
+        await StarPrivateDataService.write(params, {id: energyObj.energyAmountMarketDocumentMrid, dataObj: energyObj, collection: target});
     }
 
 
 
     public static async delete(
-        ctx: Context,
         params: STARParameters,
-        id: string,
-        target: string = ''): Promise<void> {
-        console.debug('============= START : Delete %s EnergyAmountService ===========', id);
+        arg: IdArgument): Promise<void> {
+        console.debug('============= START : Delete %s EnergyAmountService ===========', arg.id);
 
-        const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, target);
+        const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, arg.collection);
 
-        await ctx.stub.deletePrivateData(collection, id);
+        await params.ctx.stub.deletePrivateData(collection, arg.id);
 
-        console.debug('============= END : Delete %s EnergyAmountService ===========', id);
+        console.debug('============= END : Delete %s EnergyAmountService ===========', arg.id);
     }
 
 
 
     public static async getQueryArrayResult(
-        ctx: Context,
         params: STARParameters,
-        query: string,
-        target: string = ''): Promise<any[]>  {
+        arg: queryArgument): Promise<any[]>  {
 
         console.debug('============= START : getQueryArrayResult EnergyAmountService ===========');
 
         let collections: string[];
-        if (target && target.length > 0) {
-            collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
+        if (arg.collection && arg.collection.length > 0) {
+            collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [arg.collection]);
         } else {
             collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
         }
@@ -160,7 +53,7 @@ export class EnergyAmountService {
         var i=0;
         if (collections) {
             while (i<collections.length) {
-                let results = await QueryStateService.getPrivateQueryArrayResult(ctx, query, collections[i]);
+                let results = await QueryStateService.getPrivateQueryArrayResult(params, { query: arg.query, collection: collections[i]});
                 allResults = allResults.concat(results);
                 i++;
             }

@@ -1,28 +1,27 @@
-import { Context } from 'fabric-contract-api';
-
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
+import { ParametersType } from '../enums/ParametersType';
+import { DocType } from '../enums/DocType';
+
 import { EnergyAccount } from '../model/energyAccount';
 import { Site } from '../model/site';
 import { SystemOperator } from '../model/systemOperator';
 import { STARParameters } from '../model/starParameters';
+import { DataReference } from '../model/dataReference';
 
 import { QueryStateService } from './service/QueryStateService';
-import { SiteService } from './service/SiteService';
 import { SystemOperatorService } from './service/SystemOperatorService';
 import { ReferenceEnergyAccountService } from './service/ReferenceEnergyAccountService';
-import { ParametersType } from '../enums/ParametersType';
-import { DocType } from '../enums/DocType';
-import { DataReference } from '../model/dataReference';
+import { StarPrivateDataService } from './service/StarPrivateDataService';
+import { StarDataService } from './service/StarDataService';
 
 export class ReferenceEnergyAccountController {
 
 
 
     public static async createReferenceEnergyAccount(
-        ctx: Context,
         params: STARParameters,
         inputStr: string) {
-        console.info('============= START : Create ReferenceEnergyAccount ===========');
+        console.debug('============= START : Create ReferenceEnergyAccount ===========');
 
         let energyObj: EnergyAccount;
         try {
@@ -36,9 +35,9 @@ export class ReferenceEnergyAccountController {
             {strict: true, abortEarly: false},
         );
 
-        await ReferenceEnergyAccountController.createReferenceEnergyAccountObj(ctx, params, energyObj);
+        await ReferenceEnergyAccountController.createReferenceEnergyAccountObj(params, energyObj);
 
-        console.info('============= END   : Create %s ReferenceEnergyAccount ===========',
+        console.debug('============= END   : Create %s ReferenceEnergyAccount ===========',
             energyObj.energyAccountMarketDocumentMrid,
         );
     }
@@ -46,14 +45,13 @@ export class ReferenceEnergyAccountController {
 
 
     public static async createReferenceEnergyAccountByReference(
-        ctx: Context,
         params: STARParameters,
         dataReference: DataReference) {
-        console.info('============= START : Create ReferenceEnergyAccount by Reference ===========');
+        console.debug('============= START : Create ReferenceEnergyAccount by Reference ===========');
 
-        await ReferenceEnergyAccountController.createReferenceEnergyAccountObj(ctx, params, dataReference.data, dataReference.collection);
+        await ReferenceEnergyAccountController.createReferenceEnergyAccountObj(params, dataReference.data, dataReference.collection);
 
-        console.info('============= END   : Create %s ReferenceEnergyAccount by Reference ===========',
+        console.debug('============= END   : Create %s ReferenceEnergyAccount by Reference ===========',
             dataReference.data.energyAccountMarketDocumentMrid,
         );
     }
@@ -61,11 +59,10 @@ export class ReferenceEnergyAccountController {
 
 
     public static async createReferenceEnergyAccountObj(
-        ctx: Context,
         params: STARParameters,
         energyObj: EnergyAccount,
         target: string = '') {
-        console.info('============= START : Create ReferenceEnergyAccount Obj ===========');
+        console.debug('============= START : Create ReferenceEnergyAccount Obj ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
@@ -82,7 +79,7 @@ export class ReferenceEnergyAccountController {
         let siteObj: Site;
         var existingSitesRef:Map<string, DataReference>;
         try {
-            existingSitesRef = await SiteService.getObjRefbyId(ctx, params, energyObj.meteringPointMrid);
+            existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: energyObj.meteringPointMrid});
             var siteObjRef:DataReference;
             if (target && target.length > 0) {
                 siteObjRef = existingSitesRef.get(target);
@@ -96,7 +93,7 @@ export class ReferenceEnergyAccountController {
 
         let systemOperatorObj: SystemOperator;
         try {
-            systemOperatorObj = await SystemOperatorService.getObj(ctx, energyObj.senderMarketParticipantMrid);
+            systemOperatorObj = await StarDataService.getObj(params, {id: energyObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
             throw new Error('ERROR createReferenceEnergyAccount : '.concat(error.message).concat(` for Reference Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
@@ -112,14 +109,14 @@ export class ReferenceEnergyAccountController {
         }
 
         if (target && target.length > 0) {
-            await ReferenceEnergyAccountService.write(ctx, params, energyObj, target);
+            await ReferenceEnergyAccountService.write(params, energyObj, target);
         }else {
             for (var [key, ] of existingSitesRef) {
-                await ReferenceEnergyAccountService.write(ctx, params, energyObj, key);
+                await ReferenceEnergyAccountService.write(params, energyObj, key);
             }
         }
 
-        console.info('============= END   : Create %s ReferenceEnergyAccount Obj ===========',
+        console.debug('============= END   : Create %s ReferenceEnergyAccount Obj ===========',
             energyObj.energyAccountMarketDocumentMrid,
         );
     }
@@ -128,14 +125,13 @@ export class ReferenceEnergyAccountController {
 
 
     public static async getReferenceEnergyAccountForSystemOperator(
-        ctx: Context,
         params: STARParameters,
         meteringPointMrid: string,
         systemOperatorEicCode: string,
         startCreatedDateTime: string): Promise<string> {
 
         const allResults = await ReferenceEnergyAccountController.getReferenceEnergyAccountForSystemOperatorObj(
-            ctx, params, meteringPointMrid, systemOperatorEicCode, startCreatedDateTime);
+            params, meteringPointMrid, systemOperatorEicCode, startCreatedDateTime);
         const formated = JSON.stringify(allResults);
 
         return formated;
@@ -144,12 +140,12 @@ export class ReferenceEnergyAccountController {
 
 
     public static async getReferenceEnergyAccountForSystemOperatorObj(
-            ctx: Context,
-            params: STARParameters,
-            meteringPointMrid: string,
-            systemOperatorEicCode: string,
-            startCreatedDateTime: string,
-            target: string = ''): Promise<any[]> {
+        params: STARParameters,
+        meteringPointMrid: string,
+        systemOperatorEicCode: string,
+        startCreatedDateTime: string,
+        target: string = ''): Promise<any[]> {
+
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
             throw new Error(`Organisation, ${identity} does not have read access for Reference Energy Account.`);
@@ -163,7 +159,7 @@ export class ReferenceEnergyAccountController {
         // console.log('dateDown=', JSON.stringify(dateDown));
 
         try {
-            await SystemOperatorService.getObj(ctx, systemOperatorEicCode);
+            await StarDataService.getObj(params, {id: systemOperatorEicCode, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
             throw new Error('ERROR createReferenceEnergyAccount : '.concat(error.message));
         }
@@ -188,7 +184,7 @@ export class ReferenceEnergyAccountController {
         //     }
         // }`;
 
-        const allResults = await ReferenceEnergyAccountService.getQueryArrayResult(ctx, params, query, target);
+        const allResults = await ReferenceEnergyAccountService.getQueryArrayResult(params, query, target);
         return allResults;
     }
 
@@ -196,7 +192,6 @@ export class ReferenceEnergyAccountController {
 
 
     public static async getReferenceEnergyAccountByProducer(
-        ctx: Context,
         params: STARParameters,
         meteringPointMrid: string,
         producerEicCode: string,
@@ -235,7 +230,7 @@ export class ReferenceEnergyAccountController {
         //         }
         //     }`;
 
-        const allResults = await ReferenceEnergyAccountService.getQueryStringResult(ctx, params, query);
+        const allResults = await ReferenceEnergyAccountService.getQueryStringResult(params, query);
         return allResults;
     }
 }

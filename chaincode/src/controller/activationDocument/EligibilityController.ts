@@ -1,36 +1,36 @@
-import { Context } from 'fabric-contract-api';
 import { DataActionType } from '../../enums/DataActionType';
 import { DocType } from '../../enums/DocType';
 import { EligibilityStatusType } from '../../enums/EligibilityStatusType';
 import { OrganizationTypeMsp } from '../../enums/OrganizationMspType';
 import { ParametersType } from '../../enums/ParametersType';
+
 import { ActivationDocument } from '../../model/activationDocument/activationDocument';
 import { EligibilityStatus } from '../../model/activationDocument/eligibilityStatus';
 import { DataReference } from '../../model/dataReference';
-import { EnergyAccount } from '../../model/energyAccount';
 import { EnergyAmount } from '../../model/energyAmount';
 import { STARParameters } from '../../model/starParameters';
 import { SystemOperator } from '../../model/systemOperator';
+
 import { EnergyAccountController } from '../EnergyAccountController';
 import { EnergyAmountController } from '../EnergyAmountController';
 import { ParametersController } from '../ParametersController';
 import { ReferenceEnergyAccountController } from '../ReferenceEnergyAccountController';
+
 import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
 import { ActivationDocumentService } from '../service/ActivationDocumentService';
 import { HLFServices } from '../service/HLFservice';
-import { SiteService } from '../service/SiteService';
-import { SystemOperatorService } from '../service/SystemOperatorService';
+import { StarDataService } from '../service/StarDataService';
+import { StarPrivateDataService } from '../service/StarPrivateDataService';
 
 export class EligibilityController {
 
 
 
     public static async updateEligibilityStatus(
-        ctx: Context,
         params: STARParameters,
         inputStr: string): Promise<ActivationDocument> {
 
-        console.info('============= START : updateEligibilityStatus EligibilityController ===========');
+        console.debug('============= START : updateEligibilityStatus EligibilityController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -53,7 +53,7 @@ export class EligibilityController {
 
         let activationDocumentReferenceMap:Map<string, DataReference>;
         try {
-            activationDocumentReferenceMap = await ActivationDocumentService.getObjRefbyId(ctx, params, statusToUpdate.activationDocumentMrid);
+            activationDocumentReferenceMap = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ACTIVATION_DOCUMENT, id: statusToUpdate.activationDocumentMrid});
         } catch (error) {
             throw new Error(`ERROR cannot find reference to Activation Document ${statusToUpdate.activationDocumentMrid} for status Update.`);
         }
@@ -72,7 +72,7 @@ export class EligibilityController {
 
         let systemOperatorObj: SystemOperator;
         try {
-            systemOperatorObj = await SystemOperatorService.getObj(ctx, activationDocument.senderMarketParticipantMrid);
+            systemOperatorObj = await StarDataService.getObj(params, {id: activationDocument.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
             throw new Error(error.message.concat(` for Activation Document ${activationDocument.activationDocumentMrid} status Update.`));
         }
@@ -84,10 +84,10 @@ export class EligibilityController {
         activationDocument.eligibilityStatus = newStatus;
         activationDocument.eligibilityStatusEditable = false;
 
-        await ActivationDocumentService.write(ctx, params, activationDocument, activationDocumentReference.collection);
+        await ActivationDocumentService.write(params, activationDocument, activationDocumentReference.collection);
 
-        console.info('============= END   : updateEligibilityStatus EligibilityController ===========');
-        return await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(ctx, params, activationDocument);
+        console.debug('============= END   : updateEligibilityStatus EligibilityController ===========');
+        return await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocument);
     }
 
 
@@ -98,9 +98,9 @@ export class EligibilityController {
         var targetKey: string = '';
         var targetValue: string = '';
 
-        console.info("------------------")
-        console.info(JSON.stringify(targetArrayValue))
-        console.info("------------------")
+        // console.info("------------------")
+        // console.info(JSON.stringify(targetArrayValue))
+        // console.info("------------------")
 
         targetArrayValue = [...new Set(targetArrayValue)];
         if (targetArrayValue && targetArrayValue.length >0 ) {
@@ -114,9 +114,9 @@ export class EligibilityController {
 
         targetKey = targetKey.toLowerCase();
 
-        console.info("------------------")
-        console.info(targetKey)
-        console.info("------------------")
+        // console.info("------------------")
+        // console.info(targetKey)
+        // console.info("------------------")
 
         const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
         if (collectionMap) {
@@ -131,13 +131,12 @@ export class EligibilityController {
 
 
     private static async findDataTarget(
-        ctx: Context,
         params: STARParameters,
         activationDocument: ActivationDocument,
         currentTarget:string,
         activationDocumentRefMap:Map<string, DataReference>=null): Promise<string> {
 
-        console.info('============= START : findDataDestination - EligibilityController ===========');
+        console.debug('============= START : findDataDestination - EligibilityController ===========');
 
         currentTarget = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, currentTarget);
 
@@ -158,7 +157,8 @@ export class EligibilityController {
         }
 
         if (!parentDocument && activationDocument && activationDocument.subOrderList && activationDocument.subOrderList.length > 0) {
-            const parentDocumentMapRef:Map<string, DataReference> = await ActivationDocumentService.getObjRefbyId(ctx, params, activationDocument.subOrderList[0]);
+            const parentDocumentMapRef:Map<string, DataReference> =
+                await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ACTIVATION_DOCUMENT, id: activationDocument.subOrderList[0]});
             parentDocumentRef = parentDocumentMapRef.values().next().value;
             if (parentDocumentRef && parentDocumentRef.data) {
                 parentDocument = parentDocumentRef.data;
@@ -167,16 +167,16 @@ export class EligibilityController {
 
         var sender: SystemOperator;
         if (parentDocument && parentDocument.senderMarketParticipantMrid) {
-            sender = await SystemOperatorService.getObj(ctx, parentDocument.senderMarketParticipantMrid);
+            sender = await StarDataService.getObj(params, {id: parentDocument.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         }
 
         if (sender && sender.systemOperatorMarketParticipantName) {
-            targetArrayValue.push(sender.systemOperatorMarketParticipantName);
+            targetArrayValue.push(sender.systemOperatorMarketParticipantName.toLowerCase());
         }
 
         finalTarget = EligibilityController.generateTarget(params, targetArrayValue);
 
-        console.info('============= END : findDataDestination - EligibilityController ===========');
+        console.debug('============= END : findDataDestination - EligibilityController ===========');
         return finalTarget;
     }
 
@@ -184,12 +184,11 @@ export class EligibilityController {
 
 
     private static async getCreationRequierments(
-        ctx: Context,
         params: STARParameters,
         referencedDocument: DataReference,
         initialTarget: string): Promise<DataReference[]>  {
 
-        console.info('============= START : getCreationRequierments - EligibilityController ===========');
+        console.debug('============= START : getCreationRequierments - EligibilityController ===========');
         var requiredReferences: DataReference[] = [];
 
         const activationDocument: ActivationDocument = referencedDocument.data;
@@ -198,7 +197,7 @@ export class EligibilityController {
          * SITE
          ****************/
 
-         const siteRefMap = await SiteService.getObjRefbyId(ctx, params, activationDocument.registeredResourceMrid);
+         const siteRefMap = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocument.registeredResourceMrid});
         if (!siteRefMap.has(referencedDocument.collection)) {
             //Only include Site data in orders if it is not already know in destination collection
             if (siteRefMap.has(initialTarget)) {
@@ -207,7 +206,7 @@ export class EligibilityController {
             }
         }
 
-        console.info('============= END : getCreationRequierments - EligibilityController ===========');
+        console.debug('============= END : getCreationRequierments - EligibilityController ===========');
         return requiredReferences;
     }
 
@@ -215,12 +214,11 @@ export class EligibilityController {
 
 
     private static async getCreationLinkedData(
-        ctx: Context,
         params: STARParameters,
         referencedDocument: DataReference,
         initialTarget: string): Promise<DataReference[]>  {
 
-        console.info('============= START : getCreationLinkedData - EligibilityController ===========');
+        console.debug('============= START : getCreationLinkedData - EligibilityController ===========');
         var requiredReferences: DataReference[] = [];
 
         const activationDocument: ActivationDocument = referencedDocument.data;
@@ -230,7 +228,6 @@ export class EligibilityController {
          * ENERGY ACCOUNT
          ****************/
         const energyAccountList: any[] = await EnergyAccountController.getEnergyAccountForSystemOperatorObj(
-            ctx,
             params,
             activationDocument.registeredResourceMrid,
             activationDocument.senderMarketParticipantMrid,
@@ -241,7 +238,7 @@ export class EligibilityController {
 
             for (var energyAccount of energyAccountList) {
 
-                const existing = await EnergyAccountController.dataExists(ctx, params, energyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
+                const existing = await EnergyAccountController.dataExists(params, energyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
                 if (!existing) {
                     requiredReferences.push({docType:DocType.ENERGY_ACCOUNT, collection:referencedDocument.collection, data: energyAccount})
                 }
@@ -254,7 +251,6 @@ export class EligibilityController {
          ****************/
          if (identity === OrganizationTypeMsp.RTE) {
             const referenceEnergyAccountList: any[] = await ReferenceEnergyAccountController.getReferenceEnergyAccountForSystemOperatorObj(
-                ctx,
                 params,
                 activationDocument.registeredResourceMrid,
                 activationDocument.senderMarketParticipantMrid,
@@ -265,7 +261,7 @@ export class EligibilityController {
 
                 for (var referenceEnergyAccount of referenceEnergyAccountList) {
 
-                    const existing = await EnergyAccountController.dataExists(ctx, params, referenceEnergyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
+                    const existing = await EnergyAccountController.dataExists(params, referenceEnergyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
                     if (!existing) {
                         requiredReferences.push({docType:DocType.REFERENCE_ENERGY_ACCOUNT, collection:referencedDocument.collection, data: referenceEnergyAccount})
                     }
@@ -278,7 +274,7 @@ export class EligibilityController {
         /*****************
          * ENERGY AMOUNT
          ****************/
-        const energyAmount: EnergyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(ctx, params, activationDocument.activationDocumentMrid, initialTarget);
+        const energyAmount: EnergyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(params, activationDocument.activationDocumentMrid, initialTarget);
 
         if (energyAmount
             && energyAmount.energyAmountMarketDocumentMrid
@@ -295,7 +291,7 @@ export class EligibilityController {
             requiredReferences.push(dataReference);
         }
 
-         console.info('============= END : getCreationLinkedData - EligibilityController ===========');
+         console.debug('============= END : getCreationLinkedData - EligibilityController ===========');
         return requiredReferences;
     }
 
@@ -304,10 +300,9 @@ export class EligibilityController {
 
 
     public static async getEligibilityStatusState(
-        ctx: Context,
         params: STARParameters,
         referencedDocuments: DataReference[]): Promise<DataReference[]> {
-        console.info('============= START : getEligibilityState - EligibilityController ===========');
+        console.debug('============= START : getEligibilityState - EligibilityController ===========');
         var eligibilityReferences: DataReference[] = [];
 
         const activationDocumentRefMap:Map<string, DataReference>= ActivationDocumentService.dataReferenceArrayToMap(referencedDocuments);
@@ -319,7 +314,7 @@ export class EligibilityController {
             var targetDocument: string;
 
             if (activationDocument && activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted) {
-                targetDocument = await EligibilityController.findDataTarget(ctx, params, activationDocument, initialTarget, activationDocumentRefMap);
+                targetDocument = await EligibilityController.findDataTarget(params, activationDocument, initialTarget, activationDocumentRefMap);
             } else {
                 targetDocument = initialTarget;
             }
@@ -330,7 +325,7 @@ export class EligibilityController {
                 eligibilityReferences.push(referencedDocument);
             } else {
                 //Before creation in new collection, it is needed to create requirements
-                const requirements = await EligibilityController.getCreationRequierments(ctx, params, referencedDocument, initialTarget);
+                const requirements = await EligibilityController.getCreationRequierments(params, referencedDocument, initialTarget);
                 for (var requirement of requirements) {
                     eligibilityReferences.push(requirement);
                 }
@@ -346,7 +341,7 @@ export class EligibilityController {
                 eligibilityReferences.push(dataReference);
 
                 //After creation in new collection, it is needed to create linked data
-                const linkedData = await EligibilityController.getCreationLinkedData(ctx, params, referencedDocument, initialTarget);
+                const linkedData = await EligibilityController.getCreationLinkedData(params, referencedDocument, initialTarget);
                 for (var data of linkedData) {
                     eligibilityReferences.push(data);
                 }
@@ -354,7 +349,7 @@ export class EligibilityController {
             }
         }
 
-        console.info('============= END : getEligibilityState - EligibilityController ===========');
+        console.debug('============= END : getEligibilityState - EligibilityController ===========');
         return eligibilityReferences;
     }
 

@@ -1,12 +1,10 @@
-import { Context } from "fabric-contract-api";
 import { DocType } from "../enums/DocType";
-import { OrganizationTypeMsp } from "../enums/OrganizationMspType";
-import { ParametersType } from "../enums/ParametersType";
+
 import { ActivationDocument } from "../model/activationDocument/activationDocument";
 import { DataReference } from "../model/dataReference";
-import { EnergyAccount } from "../model/energyAccount";
 import { Site } from "../model/site";
 import { STARParameters } from "../model/starParameters";
+
 import { EligibilityController } from "./activationDocument/EligibilityController";
 import { OrderManagerController } from "./activationDocument/OrderManagerController";
 import { ReconciliationController } from "./activationDocument/ReconciliationController";
@@ -17,36 +15,34 @@ import { SiteController } from "./SiteController";
 
 export class StarDataStateController {
     public static async getStarDataState(
-        ctx: Context,
         params: STARParameters): Promise<string> {
 
-        console.info('============= START : getStarDataState StarDataStateController ===========');
+        console.debug('============= START : getStarDataState StarDataStateController ===========');
         var orderReferences : DataReference[];
 
-        orderReferences = await ReconciliationController.getReconciliationState(ctx, params);
+        orderReferences = await ReconciliationController.getReconciliationState(params);
 
         if (orderReferences && orderReferences.length > 0) {
-            orderReferences = await EligibilityController.getEligibilityStatusState(ctx, params, orderReferences);
+            orderReferences = await EligibilityController.getEligibilityStatusState(params, orderReferences);
         }
 
         var state_str = JSON.stringify(orderReferences);
 
-        console.debug("#######################")
-        console.debug(state_str)
-        console.debug("#######################")
+        // console.debug("#######################")
+        // console.debug(state_str)
+        // console.debug("#######################")
 
-        console.info('============= END : getStarDataState StarDataStateController ===========');
+        console.debug('============= END : getStarDataState StarDataStateController ===========');
 
         return state_str;
 
     }
 
     public static async executeStarDataOrders(
-        ctx: Context,
         params: STARParameters,
         inputStr: string) {
 
-        console.info('============= START : executeStarDataOrders StarDataStateController ===========');
+        console.debug('============= START : executeStarDataOrders StarDataStateController ===========');
 
         let updateOrders: DataReference[];
         try {
@@ -80,20 +76,20 @@ export class StarDataStateController {
             // PROCESS Step
             for (const updateOrder of updateOrders) {
                 if (updateOrder.docType === DocType.ACTIVATION_DOCUMENT) {
-                    await OrderManagerController.executeOrder(ctx, params, updateOrder);
+                    await OrderManagerController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.SITE) {
-                    await SiteController.createSiteByReference(ctx, params, updateOrder);
+                    await SiteController.createSiteByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.ENERGY_ACCOUNT) {
-                    await EnergyAccountController.createEnergyAccountByReference(ctx, params, updateOrder);
+                    await EnergyAccountController.createEnergyAccountByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.REFERENCE_ENERGY_ACCOUNT) {
-                    await ReferenceEnergyAccountController.createReferenceEnergyAccountByReference(ctx, params, updateOrder);
+                    await ReferenceEnergyAccountController.createReferenceEnergyAccountByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
-                    await EnergyAmountController.executeOrder(ctx, params, updateOrder);
+                    await EnergyAmountController.executeOrder(params, updateOrder);
                 }
 
             }
         }
 
-        console.info('============= END : executeStarDataOrders StarDataStateController ===========');
+        console.debug('============= END : executeStarDataOrders StarDataStateController ===========');
         }
 }

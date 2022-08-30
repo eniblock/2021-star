@@ -1,7 +1,7 @@
 [
   {
     "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_3",
-    "registeredResourceMrid": "SUBSTATION_RTE_AD_3",
+    "registeredResourceMrid": "SUB_RTE4ENEDIS_3",
     "orderValue": "RTEtoEnedis_Reconciliation",
     "measurementUnitName": "MW",
     "startCreatedDateTime": "2025-03-03T03:03:03Z",

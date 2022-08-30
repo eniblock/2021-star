@@ -101,6 +101,7 @@ export class ParametersController {
         console.debug('============= START : Get Parameter Static ===========');
 
         const parameters: STARParameters = new STARParameters();
+        parameters.ctx = ctx;
         parameters.values = new Map();
 
         const identity: string = await HLFServices.getMspID(ctx);

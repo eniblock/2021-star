@@ -33,7 +33,7 @@ export class EnergyAccountService {
         if (target && target.length > 0) {
             collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
         } else {
-            collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, RoleType.Role_Producer);
+            collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
         }
 
         var allResults = [];

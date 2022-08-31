@@ -36,6 +36,8 @@ export class SiteService {
         return formated;
     }
 
+
+
     public static async getQueryArrayResult(
         params: STARParameters,
         query: string): Promise<any>  {

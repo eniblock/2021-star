@@ -141,9 +141,136 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(Values.HTB_EnergyAmount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal(DocType.ACTIVATION_DOCUMENT.concat(' : ').concat(Values.HTB_EnergyAmount.activationDocumentMrid).concat(' does not exist (not found in any collection). for Energy Amount ea4cef73-ff6b-400b-8957-d34000eb30a1 creation.'));
+                expect(err.message).to.equal(DocType.ACTIVATION_DOCUMENT.concat(' : ').concat(Values.HTB_EnergyAmount.activationDocumentMrid).concat(' does not exist (not found in any collection). for Energy Amount ').concat(Values.HTB_EnergyAmount.energyAmountMarketDocumentMrid).concat(' creation.'));
             }
         });
+
+        it('should return ERROR CreateTSOEnergyAmount error in Interval End Date.', async () => {
+            const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collection,
+                Values.HTB_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
+
+            transactionContext.stub.getPrivateData.withArgs(collection, Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+
+            energyamount.timeInterval = `${Values.HTB_ActivationDocument_Valid.startCreatedDateTime}/`
+            try {
+                await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat("/")
+                .concat()
+                .concat(' and Activation Document : ')
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat("/")
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
+                .concat(' dates.'));
+            }
+        });
+
+        it('should return ERROR CreateTSOEnergyAmount error in Interval Start Date.', async () => {
+            const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collection,
+                Values.HTB_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
+
+            transactionContext.stub.getPrivateData.withArgs(collection, Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+
+            energyamount.timeInterval = `/${Values.HTB_ActivationDocument_Valid.endCreatedDateTime}`
+            try {
+                await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
+                .concat()
+                .concat("/")
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
+                .concat(' and Activation Document : ')
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat("/")
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
+                .concat(' dates.'));
+            }
+        });
+
+
+
+        it('should return ERROR CreateTSOEnergyAmount error in Interval Start Date before Activation Document Start.', async () => {
+            const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collection,
+                Values.HTB_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
+
+            transactionContext.stub.getPrivateData.withArgs(collection, Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+
+            const dateStart = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, 1);
+            const dateEnd = Values.HTB_ActivationDocument_Valid.endCreatedDateTime;
+            energyamount.timeInterval = `${dateStart}/${dateEnd}`;
+
+            try {
+                await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
+                .concat(Values.formatDate(dateStart as string))
+                .concat("/")
+                .concat(Values.formatDate(dateEnd as string))
+                .concat(' and Activation Document : ')
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat("/")
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
+                .concat(' dates.'));
+            }
+        });
+
+
+        it('should return ERROR CreateTSOEnergyAmount error in Interval End Date after Activation Document End.', async () => {
+            const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collection,
+                Values.HTB_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
+
+            transactionContext.stub.getPrivateData.withArgs(collection, Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+
+            const dateStart = Values.HTB_ActivationDocument_Valid.startCreatedDateTime;
+            const dateEnd = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.endCreatedDateTime))  as string, -1);
+            energyamount.timeInterval = `${dateStart}/${dateEnd}`;
+
+            try {
+                await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
+            } catch(err) {
+                // console.info(err.message)
+                expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
+                .concat(Values.formatDate(dateStart as string))
+                .concat("/")
+                .concat(Values.formatDate(dateEnd as string))
+                .concat(' and Activation Document : ')
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat("/")
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
+                .concat(' dates.'));
+            }
+        });
+
+
 
         it('should return SUCCESS CreateTSOEnergyAmount.', async () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
@@ -179,6 +306,118 @@ describe('Star Tests EnergyAmount', () => {
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
         });
 
+
+
+
+        it('should return SUCCESS CreateTSOEnergyAmountList.', async () => {
+            const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+            const energyamount2:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount_2));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collection,
+                Values.HTB_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_ActivationDocument_Valid)));
+
+            transactionContext.stub.getPrivateData.withArgs(collection, Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+
+            const energyAmountList: EnergyAmount[] = [energyamount, energyamount2];
+            await star.CreateTSOEnergyAmountList(transactionContext, JSON.stringify(energyAmountList));
+
+            const expected = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount))
+            expected.docType = DocType.ENERGY_AMOUNT;
+            const expected2 = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount_2))
+            expected2.docType = DocType.ENERGY_AMOUNT;
+
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected))
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected2))
+            // console.info("-----------")
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                collection,
+                Values.HTB_EnergyAmount.energyAmountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                collection,
+                Values.HTB_EnergyAmount_2.energyAmountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(expected2))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+        });
+
+
+
+        it('should return SUCCESS CreateTSOEnergyAmountList Activation Document on 2 different days.', async () => {
+            const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+            const energyamount2:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount_2));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
+            activationDocument.endCreatedDateTime = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, -2);
+
+            transactionContext.stub.getPrivateData.withArgs(collection,
+                activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+            transactionContext.stub.getPrivateData.withArgs(collection, Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+
+            const dateStart = activationDocument.startCreatedDateTime;
+            const dateEnd = activationDocument.endCreatedDateTime;
+            energyamount.timeInterval = `${dateStart}/${dateStart}`;
+            energyamount2.timeInterval = `${dateEnd}/${dateEnd}`;
+
+            // console.debug("energyamount.timeInterval : ", energyamount.timeInterval);
+            // console.debug("energyamount2.timeInterval : ", energyamount2.timeInterval);
+
+            const energyAmountList: EnergyAmount[] = [energyamount, energyamount2];
+            await star.CreateTSOEnergyAmountList(transactionContext, JSON.stringify(energyAmountList));
+
+            const expected = JSON.parse(JSON.stringify(energyamount))
+            expected.docType = DocType.ENERGY_AMOUNT;
+            const expected2 = JSON.parse(JSON.stringify(energyamount2))
+            expected2.docType = DocType.ENERGY_AMOUNT;
+
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected))
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected2))
+            // console.info("-----------")
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                collection,
+                Values.HTB_EnergyAmount.energyAmountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                collection,
+                Values.HTB_EnergyAmount_2.energyAmountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(expected2))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+        });
 
 
 
@@ -324,11 +563,15 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : "'
-                .concat(Values.reduceDateTimeStr(dateStart,1))
-                .concat('" and Activation Document : "')
-                .concat(Values.reduceDateTimeStr(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string,1))
-                .concat('" dates.'));
+                expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
+                .concat(Values.formatDate(dateStart))
+                .concat("/")
+                .concat(Values.formatDate(dateEnd))
+                .concat(' and Activation Document : ')
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat("/")
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat(' dates.'));
             }
         });
     });
@@ -488,11 +731,15 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENI : "'
-                .concat(Values.reduceDateTimeStr(dateStart,1))
-                .concat('" and Activation Document : "')
-                .concat(Values.reduceDateTimeStr(Values.HTA_ActivationDocument_Valid.startCreatedDateTime as string,1))
-                .concat('" dates.'));
+                expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENI : '
+                .concat(Values.formatDate(dateStart))
+                .concat("/")
+                .concat(Values.formatDate(dateEnd))
+                .concat(' and Activation Document : ')
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat("/")
+                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat(' dates.'));
             }
         });
 

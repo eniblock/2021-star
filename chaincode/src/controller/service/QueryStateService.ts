@@ -162,7 +162,7 @@ export class QueryStateService {
             const iterator: any = await params.ctx.stub.getPrivateDataQueryResult(arg.collection, arg.query);
 
             //Sometimes iterator is StateQueryResponse object instead of StateQueryIterator object
-            console.debug("iterator :", iterator)
+            // console.debug("iterator :", iterator)
 
             if (iterator) {
                 if (iterator.iterator) {
@@ -171,7 +171,7 @@ export class QueryStateService {
                     returned_iterator = iterator;
                 }
             }
-            console.debug("iterator :", returned_iterator)
+            // console.debug("iterator :", returned_iterator)
 
             const poolRef : DataReference = {collection: arg.collection, docType: DocType.STATE_QUERY_ITERATOR, data: returned_iterator};
             params.addInMemoryPool(poolKey, poolRef);

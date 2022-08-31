@@ -175,19 +175,20 @@ describe('Star Tests ActivationDocument', () => {
             }
         });
 
-        it('should return ERROR CreateActivationDocument missing orderEnd', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+        // OrderEnd is fulltime calculated, then not required anymore
+        // it('should return ERROR CreateActivationDocument missing orderEnd', async () => {
+        //     transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
-            var input = JSON.stringify(Values.HTA_ActivationDocument_Valid);
-            input = await Values.deleteJSONField(input, "orderEnd");
+        //     var input = JSON.stringify(Values.HTA_ActivationDocument_Valid);
+        //     input = await Values.deleteJSONField(input, "orderEnd");
 
-            try {
-                await star.CreateActivationDocument(transactionContext, input);
-            } catch(err) {
-                // console.info(err.message)
-                expect(err.message).to.equal('orderEnd is required');
-            }
-        });
+        //     try {
+        //         await star.CreateActivationDocument(transactionContext, input);
+        //     } catch(err) {
+        //         // console.info(err.message)
+        //         expect(err.message).to.equal('orderEnd is required');
+        //     }
+        // });
 
         it('should return ERROR CreateActivationDocument missing senderMarketParticipantMrid', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
@@ -417,7 +418,7 @@ describe('Star Tests ActivationDocument', () => {
             // console.info(transactionContext.stub.putPrivateData.secondCall.args);
             // console.info("ooooooooo")
             // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected))
+            // console.info(JSON.stringify(expected2))
             // console.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
@@ -462,12 +463,13 @@ describe('Star Tests ActivationDocument', () => {
             input = await Values.deleteJSONField(input, "originAutomationRegisteredResourceMrid");
             input = await Values.deleteJSONField(input, "registeredResourceMrid");
 
-            const errors = [
+        // OrderEnd is fulltime calculated, then not required anymore
+        const errors = [
                 'activationDocumentMrid is a compulsory string',
                 'businessType is required',
                 'measurementUnitName is required',
                 'messageType is required',
-                'orderEnd is required',
+                // 'orderEnd is required',
                 'originAutomationRegisteredResourceMrid is required',
                 'registeredResourceMrid is required'
               ];
@@ -483,8 +485,8 @@ describe('Star Tests ActivationDocument', () => {
                 expect(err.errors[4]).to.equal(errors[4]);
                 expect(err.errors[5]).to.equal(errors[5]);
                 expect(err.errors[6]).to.equal(errors[6]);
-                expect(err.errors[7]).to.equal(errors[7]);
-                expect(err.message).to.equal('7 errors occurred');
+                // expect(err.errors[7]).to.equal(errors[7]);
+                expect(err.message).to.equal('6 errors occurred');
             }
         });
 
@@ -1598,7 +1600,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal(`ActivationDocument : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
+                expect(err.message).to.equal(`${DocType.ACTIVATION_DOCUMENT} : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
             }
         });
 
@@ -1622,7 +1624,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal(`ActivationDocument : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
+                expect(err.message).to.equal(`${DocType.ACTIVATION_DOCUMENT} : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
             }
         });
 
@@ -1655,7 +1657,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal(`Error on document ${activationDocument_Producer.activationDocumentMrid} only orderEnd, potentialChild, potentialParent and subOrderList can be updated by orders.`);
+                expect(err.message).to.equal(`Error on document ${activationDocument_Producer.activationDocumentMrid} all modified data cannot be updated by orders.`);
             }
         });
 

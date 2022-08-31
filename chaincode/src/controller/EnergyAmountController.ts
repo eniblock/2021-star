@@ -49,6 +49,32 @@ export class EnergyAmountController {
     }
 
 
+
+
+    private static formatDate(dateValue: Date): string {
+        var stringValue: string = "";
+
+        // Remember : NaN is never equal to itself.
+        if (dateValue && dateValue.getTime() === dateValue.getTime()) {
+            var tmp: string = "";
+            tmp = dateValue.getFullYear().toString();
+            stringValue = stringValue.concat(tmp);
+
+            stringValue = stringValue.concat("-");
+
+            tmp = (dateValue.getMonth()+1).toString();
+            stringValue = stringValue.concat(tmp);
+
+            stringValue = stringValue.concat("-");
+
+            tmp = dateValue.getDate().toString();
+            stringValue = stringValue.concat(tmp);
+        }
+
+        return stringValue;
+    }
+
+
     private static async checkEnergyAmout(
         params: STARParameters,
         energyObj: EnergyAmount,
@@ -106,20 +132,51 @@ export class EnergyAmountController {
 
         // console.log('dateBegin=', dateBegin);
 
-        // const dateEnd = new Date(end.trim());
-        // // console.log('dateEnd=', dateEnd);
-        // dateEnd.setUTCHours(0,0,0,0);
+        var dateEnd: Date = null;
+        var dateEndStr = end.trim();
+        if (dateEndStr && dateEndStr.length > 0) {
+            dateEnd = new Date(dateEndStr);
+            // // console.log('dateEnd=', dateEnd);
+            dateEnd.setUTCHours(0,0,0,0);
+        }
 
         // console.log('dateEnd=', dateEnd);
 
         const orderDateStart = new Date(orderObj.startCreatedDateTime);
         orderDateStart.setUTCHours(0,0,0,0);
+
+        var orderDateEnd: Date = null;
+        if (orderObj.endCreatedDateTime) {
+            orderDateEnd= new Date(orderObj.endCreatedDateTime);
+            orderDateEnd.setUTCHours(0,0,0,0);
+        }
         // console.log('orderDateStart=', orderDateStart);
 
-        // console.log(JSON.stringify(dateBegin));
-        // console.log(JSON.stringify(dateEnd));
-        if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
-            throw new Error(`ERROR manage EnergyAmount mismatch between ${energyType} : ${JSON.stringify(dateBegin)} and Activation Document : ${JSON.stringify(orderDateStart)} dates.`);
+
+        var checkDatesRules = true;
+        if (!dateBegin || !orderDateStart) {
+            checkDatesRules = false;
+        }
+
+        checkDatesRules = checkDatesRules && (dateBegin >= orderDateStart);
+        if (orderDateEnd) {
+            checkDatesRules = checkDatesRules && (dateBegin <= orderDateEnd);
+
+            if (!dateEnd) {
+                checkDatesRules = false;
+            } else {
+                checkDatesRules = checkDatesRules && (dateEnd <= orderDateEnd);
+            }
+        }
+
+        if (!checkDatesRules) {
+            var dateBeginStr = EnergyAmountController.formatDate(dateBegin);
+            dateEndStr = "";
+            if (dateEnd) { dateEndStr = EnergyAmountController.formatDate(dateEnd); }
+            var orderDateStartStr = EnergyAmountController.formatDate(orderDateStart);
+            var orderDateEndStr = "";
+            if (orderDateEnd) {orderDateEndStr = EnergyAmountController.formatDate(orderDateEnd); }
+            throw new Error(`ERROR manage EnergyAmount mismatch between ${energyType} : ${dateBeginStr}/${dateEndStr} and Activation Document : ${orderDateStartStr}/${orderDateEndStr} dates.`);
         }
     }
 //      ================STAR-425 : Partie du code en commentaire car on utilise pas les clés composites===========================
@@ -224,6 +281,42 @@ export class EnergyAmountController {
 
 
 
+    public static async createTSOEnergyAmountList(
+        params: STARParameters,
+        inputStr: string) {
+
+        console.debug('============= START : createTSOEnergyAmountList EnergyAmountController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        const energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
+
+        if (energyList) {
+            for(var energyObj of energyList) {
+                await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENE);
+
+                //Get existing Activation Documents
+                var existingActivationDocumentRef:Map<string, DataReference>;
+                try {
+                    existingActivationDocumentRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ACTIVATION_DOCUMENT, id: energyObj.activationDocumentMrid});
+                } catch(error) {
+                    throw new Error('ERROR createEnergyAmount : '.concat(error.message).concat(` Can not be created.`));
+                }
+
+                for (var [key, ] of existingActivationDocumentRef) {
+                    await EnergyAmountService.write(params, energyObj, key);
+                }
+            }
+        }
+
+        console.debug('============= END   : createTSOEnergyAmountList EnergyAmountController ===========');
+    }
+
+
+
     public static async createTSOEnergyAmountByReference(
         params: STARParameters,
         dataReference: DataReference) {
@@ -306,6 +399,41 @@ export class EnergyAmountController {
         console.debug('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
+    }
+
+
+
+    public static async createDSOEnergyAmountList(
+        params: STARParameters,
+        inputStr: string) {
+        console.debug('============= START : createDSOEnergyAmountList EnergyAmountController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        const energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
+
+        if (energyList) {
+            for(var energyObj of energyList) {
+                await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENI, true);
+
+                //Get existing Activation Documents
+                var existingActivationDocumentRef:Map<string, DataReference>;
+                try {
+                    existingActivationDocumentRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ACTIVATION_DOCUMENT, id: energyObj.activationDocumentMrid});
+                } catch(error) {
+                    throw new Error('ERROR createEnergyAmount : '.concat(error.message).concat(` Can not be created.`));
+                }
+
+                for (var [key, ] of existingActivationDocumentRef) {
+                    await EnergyAmountService.write(params, energyObj, key);
+                }
+            }
+        }
+
+        console.debug('============= END   : createDSOEnergyAmountList EnergyAmountController ===========');
     }
 
 

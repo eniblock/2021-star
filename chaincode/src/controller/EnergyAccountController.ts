@@ -41,6 +41,40 @@ export class EnergyAccountController {
         );
     }
 
+
+
+
+    public static async createEnergyAccountList(
+        params: STARParameters,
+        inputStr: string) {
+        console.debug('============= START : Create createEnergyAccountList ===========');
+
+        const energyList: EnergyAccount[] = EnergyAccount.formatListString(inputStr);
+
+        if (energyList) {
+            for (var energyObj of energyList) {
+                await EnergyAccountController.checkEnergyAccountObj(params, energyObj);
+
+                //Get existing sites
+                var existingSitesRef:Map<string, DataReference>;
+                try {
+                    existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: energyObj.meteringPointMrid});
+                } catch(error) {
+                    throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` Can not be created.`));
+                }
+
+                for (var [key, ] of existingSitesRef) {
+                    await EnergyAccountService.write(params, energyObj, key);
+                }
+            }
+        }
+
+        console.debug('============= END   : Create createEnergyAccountList ===========');
+    }
+
+
+
+
     public static async createEnergyAccountByReference(
         params: STARParameters,
         dataReference: DataReference) {
@@ -53,6 +87,9 @@ export class EnergyAccountController {
             dataReference.data.energyAccountMarketDocumentMrid,
         );
     }
+
+
+
 
     public static async updateEnergyAccount(
         params: STARParameters,

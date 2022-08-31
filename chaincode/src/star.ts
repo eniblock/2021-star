@@ -398,6 +398,15 @@ export class Star extends Contract {
         }
     }
 
+    public async CreateEnergyAccountList(ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await EnergyAccountController.createEnergyAccountList(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async UpdateEnergyAccount(ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
@@ -521,6 +530,15 @@ export class Star extends Contract {
         }
     }
 
+    public async CreateTSOEnergyAmountList(ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await EnergyAmountController.createTSOEnergyAmountList(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async UpdateTSOEnergyAmount(ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
@@ -534,6 +552,15 @@ export class Star extends Contract {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
             return (await EnergyAmountController.createDSOEnergyAmount(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async CreateDSOEnergyAmountList(ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await EnergyAmountController.createDSOEnergyAmountList(params, inputStr));
         } catch (error) {
             throw error;
         }

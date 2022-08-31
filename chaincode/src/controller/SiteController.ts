@@ -146,7 +146,7 @@ export class SiteController {
         const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: siteId});
         const dataReference = result.values().next().value;
 
-        console.debug(siteId, JSON.stringify(dataReference.data));
+        // console.debug(siteId, JSON.stringify(dataReference.data));
         console.debug('============= END   : Query %s Site ===========', siteId);
         return JSON.stringify(dataReference.data);
     }

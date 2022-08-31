@@ -50,6 +50,30 @@ export class Values {
         return dateEnd;
     }
 
+    public static formatDate(dateValueStr: string): string {
+        var dateValue = new Date(Date.parse(dateValueStr));
+        dateValue.setUTCHours(0,0,0,0);
+
+        var stringValue: string = "";
+
+        if (dateValue) {
+            var tmp: string = "";
+            tmp = dateValue.getFullYear().toString();
+            stringValue = stringValue.concat(tmp);
+
+            stringValue = stringValue.concat("-");
+
+            tmp = (dateValue.getMonth()+1).toString();
+            stringValue = stringValue.concat(tmp);
+
+            stringValue = stringValue.concat("-");
+
+            tmp = dateValue.getDate().toString();
+            stringValue = stringValue.concat(tmp);
+        }
+
+        return stringValue;
+    }
 
     public static reduceDateTimeStr(dateref: string, reducing: number): string {
         var reducedDate = new Date(Date.parse(dateref));
@@ -535,7 +559,7 @@ export class Values {
     }
 
     public static HTB_EnergyAmount : EnergyAmount = {
-        energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a1",
+        energyAmountMarketDocumentMrid: "mmea4cef73-ff6b-400b-8957-d34000eb30a1",
         activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
         registeredResourceMrid: Values.HTB_ActivationDocument_Valid.registeredResourceMrid,
         quantity: "number",
@@ -554,8 +578,28 @@ export class Values {
         timeInterval: `${Values.HTB_ActivationDocument_Valid.startCreatedDateTime}/${Values.HTB_ActivationDocument_Valid.endCreatedDateTime}`,
     };
 
+    public static HTB_EnergyAmount_2 : EnergyAmount = {
+        energyAmountMarketDocumentMrid: "mmea4cef73-ff6b-400b-8957-d34000eb30a2",
+        activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
+        registeredResourceMrid: Values.HTB_ActivationDocument_Valid.registeredResourceMrid,
+        quantity: "number",
+        measurementUnitName: "KW",
+        revisionNumber: "1",
+        businessType: "A14 / Z14",
+        docStatus: "A02",
+        processType: "A05",
+        classificationType: "A02",
+        areaDomain: "17X100A100A0001A",
+        senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
+        senderMarketParticipantRole: "A50",
+        receiverMarketParticipantMrid: "Producteur1",
+        receiverMarketParticipantRole: "A32",
+        createdDateTime: "2021-10-23T10:29:10.000Z",
+        timeInterval: `${Values.HTB_ActivationDocument_Valid.startCreatedDateTime}/${Values.HTB_ActivationDocument_Valid.endCreatedDateTime}`,
+    };
+
     public static HTA_EnergyAmount : EnergyAmount = {
-        energyAmountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+        energyAmountMarketDocumentMrid: "mmea4cef73-ff6b-400b-8957-d34000eb30a3",
         activationDocumentMrid: Values.HTA_ActivationDocument_Valid.activationDocumentMrid,
         registeredResourceMrid: Values.HTA_site_valid.meteringPointMrid,
         quantity: "number",
@@ -573,6 +617,27 @@ export class Values {
         createdDateTime: "2021-10-22T10:29:10.000Z",
         timeInterval: `${Values.HTA_ActivationDocument_Valid.startCreatedDateTime}/${Values.HTA_ActivationDocument_Valid.endCreatedDateTime}`,
     };
+
+    public static HTA_EnergyAmount_2 : EnergyAmount = {
+        energyAmountMarketDocumentMrid: "mmea4cef73-ff6b-400b-8957-d34000eb30a4",
+        activationDocumentMrid: Values.HTA_ActivationDocument_Valid.activationDocumentMrid,
+        registeredResourceMrid: Values.HTA_site_valid.meteringPointMrid,
+        quantity: "number",
+        measurementUnitName: "KW",
+        revisionNumber: "1",
+        businessType: "A14 / Z14",
+        docStatus: "A02",
+        processType: "A05",
+        classificationType: "A02",
+        areaDomain: "17X100A100A0001A",
+        senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
+        senderMarketParticipantRole: "A50",
+        receiverMarketParticipantMrid: "Producteur1",
+        receiverMarketParticipantRole: "A32",
+        createdDateTime: "2021-10-23T10:29:10.000Z",
+        timeInterval: `${Values.HTA_ActivationDocument_Valid.startCreatedDateTime}/${Values.HTA_ActivationDocument_Valid.endCreatedDateTime}`,
+    };
+
 
 
 
@@ -666,6 +731,31 @@ export class Values {
         createdDateTime: "2021-10-22T10:29:10.000Z",
         measurementUnitName: "KW",
         timeInterval: "2021-10-22T10:29:10.000Z",
+        resolution: "PT10M",
+        timeSeries: [{ inQuantity: 7500, position: 3 }, { inQuantity: 7500, position: 3 }],
+        revisionNumber: "1",
+        businessType: "A14 / Z14",
+        docStatus: "A02",
+        processType: "A05",
+        classificationType: "A02",
+        product: "Energie active/Réactive",
+        startCreatedDateTime: "",
+        endCreatedDateTime: "",
+    };
+
+
+    public static HTA_EnergyAccount_a4 : EnergyAccount = {
+        energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a4",
+        meteringPointMrid: Values.HTA_site_valid.meteringPointMrid,
+        // marketEvaluationPointMrid: "CodePPE",
+        areaDomain: "17X100A100A0001A",
+        senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
+        senderMarketParticipantRole: "A50",
+        receiverMarketParticipantMrid: "Producteur1",
+        receiverMarketParticipantRole: "A32",
+        createdDateTime: "2021-10-23T10:29:10.000Z",
+        measurementUnitName: "KW",
+        timeInterval: "2021-10-23T10:29:10.000Z",
         resolution: "PT10M",
         timeSeries: [{ inQuantity: 7500, position: 3 }, { inQuantity: 7500, position: 3 }],
         revisionNumber: "1",

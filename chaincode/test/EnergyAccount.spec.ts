@@ -389,6 +389,48 @@ describe('Star Tests EnergyAccount', () => {
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
         });
 
+        it('should return SUCCESS CreateEnergyAccountList 2 HTA', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            const list_EnergyAccount = [Values.HTA_EnergyAccount_a3, Values.HTA_EnergyAccount_a4];
+            await star.CreateEnergyAccountList(transactionContext, JSON.stringify(list_EnergyAccount));
+
+            const expected = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3))
+            expected.docType = DocType.ENERGY_ACCOUNT;
+            const expected2 = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a4))
+            expected2.docType = DocType.ENERGY_ACCOUNT;
+
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected))
+            // console.info("-----------")
+            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // console.info("ooooooooo")
+            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // console.info(JSON.stringify(expected2))
+            // console.info("-----------")
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                collections[0],
+                Values.HTA_EnergyAccount_a3.energyAccountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                collections[0],
+                Values.HTA_EnergyAccount_a4.energyAccountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(expected2))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+        });
+
         it('should return ERROR CreateEnergyAccount HTA missing System Operator', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const energyaccount:EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));

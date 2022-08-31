@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoriqueLimitation {
+    private String displayedSourceName;
     private Site site;
     private Producer producer;
     private EnergyAmount energyAmount;

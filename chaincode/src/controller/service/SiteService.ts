@@ -8,6 +8,7 @@ import { STARParameters } from '../../model/starParameters';
 import { QueryStateService } from "./QueryStateService";
 import { HLFServices } from "./HLFservice";
 import { StarPrivateDataService } from "./StarPrivateDataService";
+import { RoleType } from "../../enums/RoleType";
 
 export class SiteService {
 
@@ -42,13 +43,24 @@ export class SiteService {
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
         var allResults = [];
+        var allResultsId: string[] = [];
 
-        var i=0;
         if (collections) {
-            while (i<collections.length) {
-                let results = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, collection: collections[i]});
-                allResults = allResults.concat(results);
-                i++;
+            for (var i=0; i<collections.length; i++) {
+                // console.debug("collection : ", collections[i])
+                let results: Site[] = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, collection: collections[i]});
+                // console.debug("results :", JSON.stringify(results))
+                for (var result of results) {
+                    if (result
+                        && result.meteringPointMrid
+                        && result.meteringPointMrid !== ""
+                        && !allResultsId.includes(result.meteringPointMrid)) {
+                            allResultsId.push(result.meteringPointMrid);
+                            allResults.push(result);
+                        }
+                }
+                // console.debug("allResults :", JSON.stringify(allResults))
+                // console.debug("allResultsId :", JSON.stringify(allResultsId))
             }
         }
 

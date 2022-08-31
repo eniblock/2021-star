@@ -1,5 +1,6 @@
 import { DocType } from "../../enums/DocType";
 import { ParametersType } from "../../enums/ParametersType";
+import { RoleType } from "../../enums/RoleType";
 
 import { EnergyAccount } from "../../model/energyAccount";
 import { STARParameters } from "../../model/starParameters";
@@ -32,17 +33,25 @@ export class EnergyAccountService {
         if (target && target.length > 0) {
             collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
         } else {
-            collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+            collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, RoleType.Role_Producer);
         }
 
         var allResults = [];
+        var allResultsId: string[] = [];
 
-        var i=0;
         if (collections) {
-            while (i<collections.length) {
+            for (var i=0; i<collections.length; i++) {
                 let results = await QueryStateService.getPrivateQueryArrayResult(params, {query:query, collection: collections[i]});
-                allResults = allResults.concat(results);
-                i++;
+
+                for (var result of results) {
+                    if (result
+                        && result.energyAccountMarketDocumentMrid
+                        && result.energyAccountMarketDocumentMrid !== ""
+                        && !allResultsId.includes(result.energyAccountMarketDocumentMrid)) {
+                            allResultsId.push(result.energyAccountMarketDocumentMrid);
+                            allResults.push(result);
+                        }
+                }
             }
         }
 

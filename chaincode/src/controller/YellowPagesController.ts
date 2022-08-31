@@ -88,6 +88,7 @@ export class YellowPagesController {
             || poolValue.values().next().value.docType !== DocType.YELLOW_PAGES) {
 
             allResults  = await QueryStateService.getQueryArrayResult(params, {query: query});
+
             const poolRef : DataReference = {collection: "", docType: DocType.YELLOW_PAGES, data: allResults};
             params.addInMemoryPool(query, poolRef);
         } else {

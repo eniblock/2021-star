@@ -87,10 +87,10 @@ while [[ $OUTPUT_ENEDIS ]]; do
                 then
                         TLSOPT="$TLSOPT $PRODUCER_TLSOPT"
                 fi
-                if [[ "[$collection_RTE]" != "[]" ]]
-                then
-                        TLSOPT="$TLSOPT $RTE_TLSOPT"
-                fi
+                # if [[ "[$collection_RTE]" != "[]" ]]
+                # then
+                #         TLSOPT="$TLSOPT $RTE_TLSOPT"
+                # fi
 
                 echo
                 echo "UpdateActivationDocumentByOrders $COLLECTION_OUTPUT"
@@ -165,10 +165,10 @@ while [[ $OUTPUT_RTE ]]; do
                 collection_PRODUCER=$(echo $VALUE_OUTPUT | grep "producer")
                 collection_RTE=$(echo $VALUE_OUTPUT | grep "rte")
                 TLSOPT=""
-                if [[ "[$collection_ENEDIS]" != "[]" ]]
-                then
-                        TLSOPT="$TLSOPT $ENEDIS_TLSOPT"
-                fi
+                # if [[ "[$collection_ENEDIS]" != "[]" ]]
+                # then
+                #         TLSOPT="$TLSOPT $ENEDIS_TLSOPT"
+                # fi
                 if [[ "[$collection_PRODUCER]" != "[]" ]]
                 then
                         TLSOPT="$TLSOPT $PRODUCER_TLSOPT"

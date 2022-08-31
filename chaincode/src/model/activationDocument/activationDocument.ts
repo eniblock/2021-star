@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import * as Yup from 'yup';
-import { DataActionType } from '../../enums/DataActionType';
 import { DocType } from '../../enums/DocType';
 
 export class ActivationDocument {
@@ -56,7 +55,7 @@ export class ActivationDocument {
         endCreatedDateTime: Yup.string().notRequired(),
         measurementUnitName: Yup.string().required('measurementUnitName is required').matches(/\bMW|\bKW/).typeError('measurementUnitName must be a Enumerator MW or KW'),
         messageType: Yup.string().required('messageType is required').typeError('messageType must be a string'),
-        orderEnd: Yup.boolean().required('orderEnd is required').typeError('orderEnd must be a boolean'),
+        orderEnd: Yup.boolean().notRequired().typeError('orderEnd must be a boolean'),
         orderValue: Yup.string().notRequired(),
         originAutomationRegisteredResourceMrid: Yup.string().required(
             'originAutomationRegisteredResourceMrid is required').typeError('originAutomationRegisteredResourceMrid must be a string'),
@@ -83,7 +82,7 @@ export class ActivationDocument {
     public measurementUnitName: string;
     public messageType: string;
     public businessType: string;
-    public orderEnd: boolean;
+    public orderEnd?: boolean;
     public orderValue?: string;
     public startCreatedDateTime?: string;
     public endCreatedDateTime?: string;

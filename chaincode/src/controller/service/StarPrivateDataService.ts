@@ -37,7 +37,9 @@ export class StarPrivateDataService {
 
         var dataObj:any = null;
 
-        const dataRef = params.getFromMemoryPool(arg.id);
+        const poolKey = arg.collection.concat(arg.id);
+
+        const dataRef = params.getFromMemoryPool(poolKey);
         if (dataRef
             && dataRef.get(arg.collection)
             && dataRef.get(arg.collection).data
@@ -51,6 +53,9 @@ export class StarPrivateDataService {
             if (dataAsBytes) {
                 try {
                     dataObj = JSON.parse(dataAsBytes.toString());
+
+                    const poolRef : DataReference = {collection: arg.collection, docType: arg.docType, data: dataObj};
+                    params.addInMemoryPool(poolKey, poolRef);
                 } catch (error) {
                     throw new Error(`ERROR ${arg.docType} -> Input string NON-JSON value`);
                 }

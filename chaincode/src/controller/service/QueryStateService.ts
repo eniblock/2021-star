@@ -76,15 +76,18 @@ export class QueryStateService {
 
         var iterator : Iterators.StateQueryIterator;
 
-        var poolValue = params.getFromMemoryPool(arg.query);
+        const poolKey = arg.query;
+
+        var poolValue = params.getFromMemoryPool(poolKey);
         if (!poolValue
             || !poolValue.values().next().value
             || !poolValue.values().next().value.data
             || poolValue.values().next().value.docType !== DocType.STATE_QUERY_ITERATOR) {
 
             iterator = await params.ctx.stub.getQueryResult(arg.query);
+
             const poolRef : DataReference = {collection: "", docType: DocType.STATE_QUERY_ITERATOR, data: iterator};
-            params.addInMemoryPool(arg.query, poolRef);
+            params.addInMemoryPool(poolKey, poolRef);
         } else {
             iterator = poolValue.values().next().value.data;
         }
@@ -146,18 +149,34 @@ export class QueryStateService {
         // console.debug(query);
         // console.debug(collection);
 
-        const iterator: any = await params.ctx.stub.getPrivateDataQueryResult(arg.collection, arg.query);
+        var returned_iterator : any;
 
-        var returned_iterator: any;
+        const poolKey = arg.collection.concat(arg.query);
 
-        //Sometimes iterator is StateQueryResponse object instead of StateQueryIterator object
+        var poolValue = params.getFromMemoryPool(poolKey);
+        if (!poolValue
+            || !poolValue.values().next().value
+            || !poolValue.values().next().value.data
+            || poolValue.values().next().value.docType !== DocType.STATE_QUERY_ITERATOR) {
 
-        if (iterator) {
-            if (iterator.iterator) {
-                returned_iterator = iterator.iterator;
-            } else {
-                returned_iterator = iterator;
+            const iterator: any = await params.ctx.stub.getPrivateDataQueryResult(arg.collection, arg.query);
+
+            //Sometimes iterator is StateQueryResponse object instead of StateQueryIterator object
+            console.debug("iterator :", iterator)
+
+            if (iterator) {
+                if (iterator.iterator) {
+                    returned_iterator = iterator.iterator;
+                } else {
+                    returned_iterator = iterator;
+                }
             }
+            console.debug("iterator :", returned_iterator)
+
+            const poolRef : DataReference = {collection: arg.collection, docType: DocType.STATE_QUERY_ITERATOR, data: returned_iterator};
+            params.addInMemoryPool(poolKey, poolRef);
+        } else {
+            returned_iterator = poolValue.values().next().value.data;
         }
 
         console.debug('============= END : getPrivateQueryResult QueryStateService ===========');

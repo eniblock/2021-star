@@ -26,7 +26,9 @@ export class StarDataService {
 
         var dataObj:any = null;
 
-        const dataRef = params.getFromMemoryPool(arg.id);
+        const poolKey = arg.id;
+
+        const dataRef = params.getFromMemoryPool(poolKey);
         if (dataRef
             && dataRef.values().next().value
             && dataRef.values().next().value.data
@@ -40,6 +42,9 @@ export class StarDataService {
             if (dataAsBytes) {
                 try {
                     dataObj = JSON.parse(dataAsBytes.toString());
+
+                    const poolRef : DataReference = {collection: "", docType: arg.docType, data: dataObj};
+                    params.addInMemoryPool(poolKey, poolRef);
                 } catch (error) {
                     throw new Error(`ERROR ${arg.docType} -> Input string NON-JSON value`);
                 }

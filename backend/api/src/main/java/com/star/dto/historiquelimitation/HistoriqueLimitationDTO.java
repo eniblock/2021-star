@@ -14,6 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class HistoriqueLimitationDTO {
+    private String displayedSourceName;
     private SiteDTO site;
     private Producer producer;
     private EnergyAmountDTO energyAmount;

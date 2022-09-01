@@ -14,9 +14,9 @@ import com.star.models.energyaccount.ImportEnergyAccountResult;
 import com.star.repository.EnergyAccountRepository;
 import com.star.service.helpers.QueryBuilderHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -94,18 +94,27 @@ public class EnergyAccountService {
                 break;
             }
             try {
-                var energyAccount = objectMapper.readValue(fileInside, EnergyAccount.class);
-                errors.addAll(validator.validate(energyAccount).stream().map(violation ->
-                        messageSource.getMessage("import.error",
-                                new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
-                // En modification, il faut vérifier que le champ energyAccountMarketDocumentMrid est renseigné.
-                if (!creation && StringUtils.isBlank(energyAccount.getEnergyAccountMarketDocumentMrid())) {
-                    errors.add(messageSource.getMessage("import.error",
-                            new String[]{fichier.getFileName(), "energyAccountMarketDocumentMrid est obligatoire."}, null));
+                List<EnergyAccount> currentEnergyAccounts = objectMapper.readValue(fileInside, objectMapper.getTypeFactory().constructCollectionType(List.class, EnergyAccount.class));
+                if (CollectionUtils.isEmpty(currentEnergyAccounts)) {
+                    errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichier.getFileName()}, null));
+                    break;
                 }
-                if (isEmpty(errors)) {
-                    energyAccounts.add(energyAccount);
-                }
+                currentEnergyAccounts.forEach(currentEnergyAccount -> {
+                    List<String> currentErrors = new ArrayList<>();
+                    currentErrors.addAll(validator.validate(currentEnergyAccount).stream().map(violation ->
+                            messageSource.getMessage("import.error",
+                                    new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
+                    // En modification, il faut vérifier que le champ energyAccountMarketDocumentMrid est renseigné.
+                    if (!creation && StringUtils.isBlank(currentEnergyAccount.getEnergyAccountMarketDocumentMrid())) {
+                        currentErrors.add(messageSource.getMessage("import.error",
+                                new String[]{fichier.getFileName(), "energyAccountMarketDocumentMrid est obligatoire."}, null));
+                    }
+                    if (isNotEmpty(currentErrors)) {
+                        errors.addAll(currentErrors);
+                    } else {
+                        energyAccounts.add(currentEnergyAccount);
+                    }
+                });
             } catch (JsonProcessingException jsonProcessingException) {
                 log.error(jsonProcessingException.getMessage());
                 throw new BusinessException(messageSource.getMessage("import.read.json.error", null, null));

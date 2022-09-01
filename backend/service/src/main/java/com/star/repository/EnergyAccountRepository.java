@@ -24,8 +24,8 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 @Repository
 public class EnergyAccountRepository {
-    public static final String CREATE = "CreateEnergyAccount";
-    public static final String UPDATE = "UpdateEnergyAccount";
+    public static final String CREATE_LIST = "CreateEnergyAccountList";
+    public static final String UPDATE_LIST = "UpdateEnergyAccountList";
     public static final String GET_ENERGY_ACCOUNT_WITH_PAGINATION = "GetEnergyAccountWithPagination";
 
     @Autowired
@@ -47,7 +47,7 @@ public class EnergyAccountRepository {
             return Collections.emptyList();
         }
         log.info("Sauvegarde de {} energy accounts", energyAccounts.size());
-        writeEnergyAccountToBc(energyAccounts, CREATE);
+        writeEnergyAccountsToBc(energyAccounts, CREATE_LIST);
         return energyAccounts;
     }
 
@@ -56,22 +56,17 @@ public class EnergyAccountRepository {
             return Collections.emptyList();
         }
         log.info("Modification de {} energy accounts", energyAccounts.size());
-        writeEnergyAccountToBc(energyAccounts, UPDATE);
+        writeEnergyAccountsToBc(energyAccounts, UPDATE_LIST);
         return energyAccounts;
     }
 
-
-    private List<EnergyAccount> writeEnergyAccountToBc(List<EnergyAccount> energyAccounts, String bcApiName) throws TechnicalException {
-        for (EnergyAccount energyAccount : energyAccounts) {
-            if (energyAccount != null) {
-                try {
-                    contract.submitTransaction(bcApiName, objectMapper.writeValueAsString(energyAccount));
-                } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur technique lors de l'enregistrement de l'energy account ", exception);
-                } catch (ContractException contractException) {
-                    throw new BusinessException(contractException.getMessage());
-                }
-            }
+    private List<EnergyAccount> writeEnergyAccountsToBc(List<EnergyAccount> energyAccounts, String bcApiName) throws TechnicalException {
+        try {
+            contract.submitTransaction(bcApiName, objectMapper.writeValueAsString(energyAccounts));
+        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
+            throw new TechnicalException("Erreur technique lors de l'enregistrement de l'energy account ", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
         }
         return energyAccounts;
     }

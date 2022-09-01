@@ -1,4 +1,4 @@
-{
+[{
    "energyAccountMarketDocumentMrid":"ea4cef73-ff6b-400b-8957-d34000eb30a3",
    "meteringPointMrid":"PRM30001510803649",
    "marketEvaluationPointMrid":null,
@@ -596,3 +596,4 @@
       }
    ]
 }
+]

@@ -1,598 +1,600 @@
-{
-   "energyAccountMarketDocumentMrid":"ea4cef73-ff6b-400b-8957-d34000eb30a3",
-   "meteringPointMrid":"PRM30001510803649",
-   "marketEvaluationPointMrid":null,
-   "revisionNumber":1,
-   "businessType":"A14",
-   "docStatus":"A02",
-   "processType":"A05",
-   "classificationType":"A02",
-   "product":"Energie active/Reactive",
-   "areaDomain":"17X100A100A0001A",
-   "senderMarketParticipantMrid":"17V0000009927464",
-   "senderMarketParticipantRole":"A50",
-   "receiverMarketParticipantMrid":"STAR",
-   "receiverMarketParticipantRole":"A32",
-   "createdDateTime":"2019-09-07T15:50:15",
-   "measurementUnitName":"KW",
-   "timeInterval":"2019-09-07T15:50:15Z / 2019-09-07T15:50:15Z",
-   "resolution":"PT10M",
-   "timeSeries":[
+[
+  {
+    "energyAccountMarketDocumentMrid": "ea4cef73-ff6b-400b-8957-d34000eb30a3",
+    "meteringPointMrid": "PRM30001510803649",
+    "marketEvaluationPointMrid": null,
+    "revisionNumber": 1,
+    "businessType": "A14",
+    "docStatus": "A02",
+    "processType": "A05",
+    "classificationType": "A02",
+    "product": "Energie active/Reactive",
+    "areaDomain": "17X100A100A0001A",
+    "senderMarketParticipantMrid": "17V0000009927464",
+    "senderMarketParticipantRole": "A50",
+    "receiverMarketParticipantMrid": "STAR",
+    "receiverMarketParticipantRole": "A32",
+    "createdDateTime": "2019-09-07T15:50:15",
+    "measurementUnitName": "KW",
+    "timeInterval": "2019-09-07T15:50:15Z / 2019-09-07T15:50:15Z",
+    "resolution": "PT10M",
+    "timeSeries": [
       {
-         "position":1,
-         "inQuantity":06633000
+        "position": 1,
+        "inQuantity": 06633000
       },
       {
-         "position":2,
-        "inQuantity":5021000
+        "position": 2,
+        "inQuantity": 5021000
       },
       {
-         "position":3,
-         "inQuantity":2539287
+        "position": 3,
+        "inQuantity": 2539287
       },
       {
-         "position":4,
-         "inQuantity":2539287
+        "position": 4,
+        "inQuantity": 2539287
       },
       {
-         "position":5,
-         "inQuantity":2539287
+        "position": 5,
+        "inQuantity": 2539287
       },
       {
-         "position":6,
-         "inQuantity":2539287
+        "position": 6,
+        "inQuantity": 2539287
       },
       {
-         "position":7,
-         "inQuantity":2539287
+        "position": 7,
+        "inQuantity": 2539287
       },
       {
-         "position":8,
-         "inQuantity":2539287
+        "position": 8,
+        "inQuantity": 2539287
       },
       {
-         "position":9,
-         "inQuantity":2539287
+        "position": 9,
+        "inQuantity": 2539287
       },
       {
-         "position":10,
-         "inQuantity":2539287
+        "position": 10,
+        "inQuantity": 2539287
       },
       {
-         "position":11,
-         "inQuantity":6633000
+        "position": 11,
+        "inQuantity": 6633000
       },
       {
-         "position":12,
-        "inQuantity":5021000
+        "position": 12,
+        "inQuantity": 5021000
       },
       {
-         "position":13,
-         "inQuantity":2539287
+        "position": 13,
+        "inQuantity": 2539287
       },
       {
-         "position":14,
-         "inQuantity":2539287
+        "position": 14,
+        "inQuantity": 2539287
       },
       {
-         "position":15,
-         "inQuantity":2539287
+        "position": 15,
+        "inQuantity": 2539287
       },
       {
-         "position":16,
-         "inQuantity":2539287
+        "position": 16,
+        "inQuantity": 2539287
       },
       {
-         "position":17,
-         "inQuantity":2539287
+        "position": 17,
+        "inQuantity": 2539287
       },
       {
-         "position":18,
-         "inQuantity":2539287
+        "position": 18,
+        "inQuantity": 2539287
       },
       {
-         "position":19,
-         "inQuantity":2539287
+        "position": 19,
+        "inQuantity": 2539287
       },
       {
-         "position":20,
-         "inQuantity":2539287
+        "position": 20,
+        "inQuantity": 2539287
       },
-        {
-         "position":21,
-         "inQuantity":6633000
+      {
+        "position": 21,
+        "inQuantity": 6633000
       },
       {
-         "position":22,
-        "inQuantity":5021000
+        "position": 22,
+        "inQuantity": 5021000
       },
       {
-         "position":23,
-         "inQuantity":2539287
+        "position": 23,
+        "inQuantity": 2539287
       },
       {
-         "position":24,
-         "inQuantity":2539287
+        "position": 24,
+        "inQuantity": 2539287
       },
       {
-         "position":25,
-         "inQuantity":2539287
+        "position": 25,
+        "inQuantity": 2539287
       },
       {
-         "position":26,
-         "inQuantity":2539287
+        "position": 26,
+        "inQuantity": 2539287
       },
       {
-         "position":27,
-         "inQuantity":2539287
+        "position": 27,
+        "inQuantity": 2539287
       },
       {
-         "position":28,
-         "inQuantity":2539287
+        "position": 28,
+        "inQuantity": 2539287
       },
       {
-         "position":29,
-         "inQuantity":2539287
+        "position": 29,
+        "inQuantity": 2539287
       },
       {
-         "position":30,
-         "inQuantity":2539287
+        "position": 30,
+        "inQuantity": 2539287
       },
       {
-         "position":31,
-         "inQuantity":6633000
+        "position": 31,
+        "inQuantity": 6633000
       },
       {
-         "position":32,
-        "inQuantity":5021000
+        "position": 32,
+        "inQuantity": 5021000
       },
       {
-         "position":33,
-         "inQuantity":2539287
+        "position": 33,
+        "inQuantity": 2539287
       },
       {
-         "position":34,
-         "inQuantity":2539287
+        "position": 34,
+        "inQuantity": 2539287
       },
       {
-         "position":35,
-         "inQuantity":2539287
+        "position": 35,
+        "inQuantity": 2539287
       },
       {
-         "position":36,
-         "inQuantity":2539287
+        "position": 36,
+        "inQuantity": 2539287
       },
       {
-         "position":37,
-         "inQuantity":2539287
+        "position": 37,
+        "inQuantity": 2539287
       },
       {
-         "position":38,
-         "inQuantity":2539287
+        "position": 38,
+        "inQuantity": 2539287
       },
       {
-         "position":39,
-         "inQuantity":2539287
+        "position": 39,
+        "inQuantity": 2539287
       },
       {
-         "position":40,
-         "inQuantity":2539287
+        "position": 40,
+        "inQuantity": 2539287
       },
       {
-         "position":41,
-         "inQuantity":6633000
+        "position": 41,
+        "inQuantity": 6633000
       },
       {
-         "position":42,
-        "inQuantity":5021000
+        "position": 42,
+        "inQuantity": 5021000
       },
       {
-         "position":43,
-         "inQuantity":2539287
+        "position": 43,
+        "inQuantity": 2539287
       },
       {
-         "position":44,
-         "inQuantity":2539287
+        "position": 44,
+        "inQuantity": 2539287
       },
       {
-         "position":45,
-         "inQuantity":2539287
+        "position": 45,
+        "inQuantity": 2539287
       },
       {
-         "position":46,
-         "inQuantity":2539287
+        "position": 46,
+        "inQuantity": 2539287
       },
       {
-         "position":47,
-         "inQuantity":2539287
+        "position": 47,
+        "inQuantity": 2539287
       },
       {
-         "position":48,
-         "inQuantity":2539287
+        "position": 48,
+        "inQuantity": 2539287
       },
       {
-         "position":49,
-         "inQuantity":2539287
+        "position": 49,
+        "inQuantity": 2539287
       },
       {
-         "position":50,
-         "inQuantity":2539287
+        "position": 50,
+        "inQuantity": 2539287
       },
       {
-         "position":51,
-         "inQuantity":6633000
+        "position": 51,
+        "inQuantity": 6633000
       },
       {
-         "position":52,
-        "inQuantity":5021000
+        "position": 52,
+        "inQuantity": 5021000
       },
       {
-         "position":53,
-         "inQuantity":2539287
+        "position": 53,
+        "inQuantity": 2539287
       },
       {
-         "position":54,
-         "inQuantity":2539287
+        "position": 54,
+        "inQuantity": 2539287
       },
       {
-         "position":55,
-         "inQuantity":2539287
+        "position": 55,
+        "inQuantity": 2539287
       },
       {
-         "position":56,
-         "inQuantity":2539287
+        "position": 56,
+        "inQuantity": 2539287
       },
       {
-         "position":57,
-         "inQuantity":2539287
+        "position": 57,
+        "inQuantity": 2539287
       },
       {
-         "position":58,
-         "inQuantity":2539287
+        "position": 58,
+        "inQuantity": 2539287
       },
       {
-         "position":59,
-         "inQuantity":2539287
+        "position": 59,
+        "inQuantity": 2539287
       },
       {
-         "position":60,
-         "inQuantity":2539287
+        "position": 60,
+        "inQuantity": 2539287
       },
       {
-         "position":61,
-         "inQuantity":6633000
+        "position": 61,
+        "inQuantity": 6633000
       },
       {
-         "position":62,
-        "inQuantity":5021000
+        "position": 62,
+        "inQuantity": 5021000
       },
       {
-         "position":63,
-         "inQuantity":2539287
+        "position": 63,
+        "inQuantity": 2539287
       },
       {
-         "position":64,
-         "inQuantity":2539287
+        "position": 64,
+        "inQuantity": 2539287
       },
       {
-         "position":65,
-         "inQuantity":2539287
+        "position": 65,
+        "inQuantity": 2539287
       },
       {
-         "position":66,
-         "inQuantity":2539287
+        "position": 66,
+        "inQuantity": 2539287
       },
       {
-         "position":67,
-         "inQuantity":2539287
+        "position": 67,
+        "inQuantity": 2539287
       },
       {
-         "position":68,
-         "inQuantity":2539287
+        "position": 68,
+        "inQuantity": 2539287
       },
       {
-         "position":69,
-         "inQuantity":2539287
+        "position": 69,
+        "inQuantity": 2539287
       },
       {
-         "position":70,
-         "inQuantity":2539287
+        "position": 70,
+        "inQuantity": 2539287
       },
       {
-         "position":71,
-         "inQuantity":6633000
+        "position": 71,
+        "inQuantity": 6633000
       },
       {
-         "position":72,
-        "inQuantity":5021000
+        "position": 72,
+        "inQuantity": 5021000
       },
       {
-         "position":73,
-         "inQuantity":239098
+        "position": 73,
+        "inQuantity": 239098
       },
       {
-         "position":74,
-         "inQuantity":2983243
+        "position": 74,
+        "inQuantity": 2983243
       },
       {
-         "position":75,
-         "inQuantity":8264392
+        "position": 75,
+        "inQuantity": 8264392
       },
       {
-         "position":76,
-         "inQuantity":1529289
+        "position": 76,
+        "inQuantity": 1529289
       },
       {
-         "position":77,
-         "inQuantity":81801
+        "position": 77,
+        "inQuantity": 81801
       },
       {
-         "position":78,
-         "inQuantity":93705
+        "position": 78,
+        "inQuantity": 93705
       },
       {
-         "position":79,
-         "inQuantity":0
+        "position": 79,
+        "inQuantity": 0
       },
       {
-         "position":80,
-         "inQuantity":2539287
+        "position": 80,
+        "inQuantity": 2539287
       },
       {
-         "position":81,
-         "inQuantity":6633000
+        "position": 81,
+        "inQuantity": 6633000
       },
       {
-         "position":82,
-        "inQuantity":5021000
+        "position": 82,
+        "inQuantity": 5021000
       },
       {
-         "position":83,
-         "inQuantity":239098
+        "position": 83,
+        "inQuantity": 239098
       },
       {
-         "position":84,
-         "inQuantity":2983243
+        "position": 84,
+        "inQuantity": 2983243
       },
       {
-         "position":85,
-         "inQuantity":8264392
+        "position": 85,
+        "inQuantity": 8264392
       },
       {
-         "position":86,
-         "inQuantity":15679
+        "position": 86,
+        "inQuantity": 15679
       },
       {
-         "position":87,
-         "inQuantity":81801
+        "position": 87,
+        "inQuantity": 81801
       },
       {
-         "position":88,
-         "inQuantity":93705
+        "position": 88,
+        "inQuantity": 93705
       },
       {
-         "position":89,
-         "inQuantity":2539287
+        "position": 89,
+        "inQuantity": 2539287
       },
       {
-         "position":90,
-         "inQuantity":257587
+        "position": 90,
+        "inQuantity": 257587
       },
       {
-         "position":91,
-         "inQuantity":0
+        "position": 91,
+        "inQuantity": 0
       },
       {
-         "position":92,
-        "inQuantity":5021000
+        "position": 92,
+        "inQuantity": 5021000
       },
       {
-         "position":93,
-         "inQuantity":239098
+        "position": 93,
+        "inQuantity": 239098
       },
       {
-         "position":94,
-         "inQuantity":2983243
+        "position": 94,
+        "inQuantity": 2983243
       },
       {
-         "position":95,
-         "inQuantity":8264392
+        "position": 95,
+        "inQuantity": 8264392
       },
       {
-         "position":96,
-         "inQuantity":1529289
+        "position": 96,
+        "inQuantity": 1529289
       },
       {
-         "position":97,
-         "inQuantity":81801
+        "position": 97,
+        "inQuantity": 81801
       },
       {
-         "position":98,
-         "inQuantity":93705
+        "position": 98,
+        "inQuantity": 93705
       },
       {
-         "position":99,
-         "inQuantity":2539287
+        "position": 99,
+        "inQuantity": 2539287
       },
       {
-         "position":100,
-         "inQuantity":2539287
+        "position": 100,
+        "inQuantity": 2539287
       },
       {
-         "position":101,
-         "inQuantity":0
+        "position": 101,
+        "inQuantity": 0
       },
       {
-         "position":102,
-        "inQuantity":5021000
+        "position": 102,
+        "inQuantity": 5021000
       },
       {
-         "position":103,
-         "inQuantity":239098
+        "position": 103,
+        "inQuantity": 239098
       },
       {
-         "position":104,
-         "inQuantity":2983243
+        "position": 104,
+        "inQuantity": 2983243
       },
       {
-         "position":105,
-         "inQuantity":8264392
+        "position": 105,
+        "inQuantity": 8264392
       },
       {
-         "position":106,
-         "inQuantity":1529289
+        "position": 106,
+        "inQuantity": 1529289
       },
       {
-         "position":107,
-         "inQuantity":81801
+        "position": 107,
+        "inQuantity": 81801
       },
       {
-         "position":108,
-         "inQuantity":93705
+        "position": 108,
+        "inQuantity": 93705
       },
       {
-         "position":109,
-         "inQuantity":2539287
+        "position": 109,
+        "inQuantity": 2539287
       },
       {
-         "position":110,
-         "inQuantity":2539287
+        "position": 110,
+        "inQuantity": 2539287
       },
       {
-         "position":111,
-         "inQuantity":6633000
+        "position": 111,
+        "inQuantity": 6633000
       },
       {
-         "position":112,
-        "inQuantity":5021000
+        "position": 112,
+        "inQuantity": 5021000
       },
       {
-         "position":113,
-         "inQuantity":239098
+        "position": 113,
+        "inQuantity": 239098
       },
       {
-         "position":114,
-         "inQuantity":2983243
+        "position": 114,
+        "inQuantity": 2983243
       },
       {
-         "position":115,
-         "inQuantity":0
+        "position": 115,
+        "inQuantity": 0
       },
       {
-         "position":116,
-         "inQuantity":1529
+        "position": 116,
+        "inQuantity": 1529
       },
       {
-         "position":117,
-         "inQuantity":81801
+        "position": 117,
+        "inQuantity": 81801
       },
       {
-         "position":118,
-         "inQuantity":93705
+        "position": 118,
+        "inQuantity": 93705
       },
       {
-         "position":119,
-         "inQuantity":2539287
+        "position": 119,
+        "inQuantity": 2539287
       },
       {
-         "position":120,
-         "inQuantity":250865
+        "position": 120,
+        "inQuantity": 250865
       },
       {
-         "position":121,
-         "inQuantity":673000
+        "position": 121,
+        "inQuantity": 673000
       },
       {
-         "position":122,
-        "inQuantity":5000
+        "position": 122,
+        "inQuantity": 5000
       },
       {
-         "position":123,
-         "inQuantity":239098
+        "position": 123,
+        "inQuantity": 239098
       },
       {
-         "position":124,
-         "inQuantity":9824
+        "position": 124,
+        "inQuantity": 9824
       },
       {
-         "position":125,
-         "inQuantity":8876592
+        "position": 125,
+        "inQuantity": 8876592
       },
       {
-         "position":126,
-         "inQuantity":1529289
+        "position": 126,
+        "inQuantity": 1529289
       },
       {
-         "position":127,
-         "inQuantity":81801
+        "position": 127,
+        "inQuantity": 81801
       },
       {
-         "position":128,
-         "inQuantity":93705
+        "position": 128,
+        "inQuantity": 93705
       },
       {
-         "position":129,
-         "inQuantity":253
+        "position": 129,
+        "inQuantity": 253
       },
       {
-         "position":130,
-         "inQuantity":2539287
+        "position": 130,
+        "inQuantity": 2539287
       },
       {
-         "position":131,
-         "inQuantity":6633000
+        "position": 131,
+        "inQuantity": 6633000
       },
       {
-         "position":132,
-        "inQuantity":0
+        "position": 132,
+        "inQuantity": 0
       },
       {
-         "position":133,
-         "inQuantity":239072
+        "position": 133,
+        "inQuantity": 239072
       },
       {
-         "position":134,
-         "inQuantity":2983243
+        "position": 134,
+        "inQuantity": 2983243
       },
       {
-         "position":135,
-         "inQuantity":8264392
+        "position": 135,
+        "inQuantity": 8264392
       },
       {
-         "position":136,
-         "inQuantity":9289
+        "position": 136,
+        "inQuantity": 9289
       },
       {
-         "position":137,
-         "inQuantity":81801
+        "position": 137,
+        "inQuantity": 81801
       },
       {
-         "position":138,
-         "inQuantity":93705
+        "position": 138,
+        "inQuantity": 93705
       },
       {
-         "position":139,
-         "inQuantity":25787
+        "position": 139,
+        "inQuantity": 25787
       },
       {
-         "position":140,
-         "inQuantity":2539287
+        "position": 140,
+        "inQuantity": 2539287
       },
       {
-         "position":141,
-         "inQuantity":8801
+        "position": 141,
+        "inQuantity": 8801
       },
       {
-         "position":142,
-         "inQuantity":913705
+        "position": 142,
+        "inQuantity": 913705
       },
       {
-         "position":143,
-         "inQuantity":2536871
+        "position": 143,
+        "inQuantity": 2536871
       },
       {
-         "position":144,
-         "inQuantity":2539
+        "position": 144,
+        "inQuantity": 2539
       }
-   ]
-}
+    ]
+  }
+]

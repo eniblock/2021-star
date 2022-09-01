@@ -219,155 +219,155 @@ fi
 
 
 
-echo
-echo "wait $PAUSE_TIME"
-sleep $PAUSE_TIME
+# echo
+# echo "wait $PAUSE_TIME"
+# sleep $PAUSE_TIME
 
 
 
-echo "***********************************"
-echo
-echo "** RTE to PRODUCER - CHANGING ELIGIBILITY STATUS"
-echo
+# echo "***********************************"
+# echo
+# echo "** RTE to PRODUCER - CHANGING ELIGIBILITY STATUS"
+# echo
 
-index=0
-for id in ${IdListRTE_PRODUCER[@]}
-do
-    index=$(expr $index + 1)
-    rank=$(expr $index % 2)
-    if [ $rank -eq 1 ]
-    then
-        ELIGIBILITYSTATUS_VALUE=$(cat $DATA_PATH/41-EligibilityStatusOUI.json | jq '.')
-    else
-        ELIGIBILITYSTATUS_VALUE=$(cat $DATA_PATH/42-EligibilityStatusNON.json | jq '.')
-    fi
-    ELIGIBILITYSTATUS_VALUE_WITHID=$(echo $ELIGIBILITYSTATUS_VALUE | jq --arg id $id '. + {activationDocumentMrid: $id}')
-    ELIGIBILITYSTATUS_VALUE_STR=$(echo $ELIGIBILITYSTATUS_VALUE_WITHID | sed "s/\"/\\\\\"/g")
-    ELIGIBILITYSTATUS_VALUE_STR=${ELIGIBILITYSTATUS_VALUE_STR//[$'\t\r\n ']}
+# index=0
+# for id in ${IdListRTE_PRODUCER[@]}
+# do
+#     index=$(expr $index + 1)
+#     rank=$(expr $index % 2)
+#     if [ $rank -eq 1 ]
+#     then
+#         ELIGIBILITYSTATUS_VALUE=$(cat $DATA_PATH/41-EligibilityStatusOUI.json | jq '.')
+#     else
+#         ELIGIBILITYSTATUS_VALUE=$(cat $DATA_PATH/42-EligibilityStatusNON.json | jq '.')
+#     fi
+#     ELIGIBILITYSTATUS_VALUE_WITHID=$(echo $ELIGIBILITYSTATUS_VALUE | jq --arg id $id '. + {activationDocumentMrid: $id}')
+#     ELIGIBILITYSTATUS_VALUE_STR=$(echo $ELIGIBILITYSTATUS_VALUE_WITHID | sed "s/\"/\\\\\"/g")
+#     ELIGIBILITYSTATUS_VALUE_STR=${ELIGIBILITYSTATUS_VALUE_STR//[$'\t\r\n ']}
 
-    if $ONLINE_MODE
-    then
-        kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
-            peer chaincode invoke \
-                -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $PRODUCER_TLSOPT $RTE_TLSOPT \
-                -c '{"Args":["UpdateActivationDocumentEligibilityStatus","'$ELIGIBILITYSTATUS_VALUE_STR'"]}'
-    fi
-done
-
-
-echo "***********************************"
-echo
-echo "** RTE to ENEDIS - CHANGING ELIGIBILITY STATUS"
-echo
-
-index=0
-for id in ${IdListRTE_ENEDIS[@]}
-do
-    index=$(expr $index + 1)
-    rank=$(expr $index % 2)
-    if [ $rank -eq 1 ]
-    then
-        ELIGIBILITYSTATUS_VALUE=$(cat $DATA_PATH/41-EligibilityStatusOUI.json | jq '.')
-    else
-        ELIGIBILITYSTATUS_VALUE=$(cat $DATA_PATH/42-EligibilityStatusNON.json | jq '.')
-    fi
-    ELIGIBILITYSTATUS_VALUE_WITHID=$(echo $ELIGIBILITYSTATUS_VALUE | jq --arg id $id '. + {activationDocumentMrid: $id}')
-    ELIGIBILITYSTATUS_VALUE_STR=$(echo $ELIGIBILITYSTATUS_VALUE_WITHID | sed "s/\"/\\\\\"/g")
-    ELIGIBILITYSTATUS_VALUE_STR=${ELIGIBILITYSTATUS_VALUE_STR//[$'\t\r\n ']}
-
-    if $ONLINE_MODE
-    then
-        kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
-            peer chaincode invoke \
-                -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $ENEDIS_TLSOPT $RTE_TLSOPT \
-                -c '{"Args":["UpdateActivationDocumentEligibilityStatus","'$ELIGIBILITYSTATUS_VALUE_STR'"]}'
-    fi
-done
+#     if $ONLINE_MODE
+#     then
+#         kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+#             peer chaincode invoke \
+#                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+#                 --tls $PRODUCER_TLSOPT $RTE_TLSOPT \
+#                 -c '{"Args":["UpdateActivationDocumentEligibilityStatus","'$ELIGIBILITYSTATUS_VALUE_STR'"]}'
+#     fi
+# done
 
 
+# echo "***********************************"
+# echo
+# echo "** RTE to ENEDIS - CHANGING ELIGIBILITY STATUS"
+# echo
 
-echo "***********************************"
-echo
-echo "** ENEDIS - ENERGY AMOUNT CREATION"
-echo
+# index=0
+# for id in ${IdListRTE_ENEDIS[@]}
+# do
+#     index=$(expr $index + 1)
+#     rank=$(expr $index % 2)
+#     if [ $rank -eq 1 ]
+#     then
+#         ELIGIBILITYSTATUS_VALUE=$(cat $DATA_PATH/41-EligibilityStatusOUI.json | jq '.')
+#     else
+#         ELIGIBILITYSTATUS_VALUE=$(cat $DATA_PATH/42-EligibilityStatusNON.json | jq '.')
+#     fi
+#     ELIGIBILITYSTATUS_VALUE_WITHID=$(echo $ELIGIBILITYSTATUS_VALUE | jq --arg id $id '. + {activationDocumentMrid: $id}')
+#     ELIGIBILITYSTATUS_VALUE_STR=$(echo $ELIGIBILITYSTATUS_VALUE_WITHID | sed "s/\"/\\\\\"/g")
+#     ELIGIBILITYSTATUS_VALUE_STR=${ELIGIBILITYSTATUS_VALUE_STR//[$'\t\r\n ']}
 
-ENEDIS_ENERGYAMOUNTS=$(cat $DATA_PATH/61-HTA-EnergyAmount.json | jq '.')
-ENEDIS_ENERGYAMOUNTS_NB=$(echo $ENEDIS_ENERGYAMOUNTS | jq 'length')
-
-for i in `seq $ENEDIS_ENERGYAMOUNTS_NB`
-do
-    tabindex=$(echo ".["$i-1"]")
-    energyAmountMarketDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    energyAmountMarketDocumentMrid=$(echo "energyAmount_enedis_$energyAmountMarketDocumentMrid")
-    ENEDIS_ENERGYAMOUNTS_VALUE=$(echo $ENEDIS_ENERGYAMOUNTS | jq $tabindex | jq --arg value $energyAmountMarketDocumentMrid '. + {energyAmountMarketDocumentMrid: $value}')
-    timeINTERVAL=$(echo $ENEDIS_ENERGYAMOUNTS_VALUE | jq '.timeInterval')
-    timeINTERVAL=$(echo $timeINTERVAL | sed "s/\//99/g")
-    key=$(Clean $timeINTERVAL)
-    activationDocumentMrid=${mapENEDIS_ACTIVATIONDOCUMENTS[$key]}
-    ENEDIS_ENERGYAMOUNTS_VALUE=$(echo $ENEDIS_ENERGYAMOUNTS_VALUE | jq --arg value $activationDocumentMrid '. + {activationDocumentMrid: $value}')
-
-    ENEDIS_ENERGYAMOUNTS_VALUE_STR=$(echo $ENEDIS_ENERGYAMOUNTS_VALUE | sed "s/\"/\\\\\"/g")
-    ENEDIS_ENERGYAMOUNTS_VALUE_STR=${ENEDIS_ENERGYAMOUNTS_VALUE_STR//[$'\t\r\n ']}
-
-    echo
-    echo
-    echo "CREATION $ENEDIS_NODE Energy Account : $ENEDIS_ENERGYAMOUNTS_VALUE_STR"
-    echo
-
-    if $ONLINE_MODE
-    then
-        kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
-            peer chaincode invoke \
-                -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $ENEDIS_TLSOPT \
-                -c '{"Args":["CreateDSOEnergyAmount","'$ENEDIS_ENERGYAMOUNTS_VALUE_STR'"]}'
-    fi
-
-done
+#     if $ONLINE_MODE
+#     then
+#         kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+#             peer chaincode invoke \
+#                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+#                 --tls $ENEDIS_TLSOPT $RTE_TLSOPT \
+#                 -c '{"Args":["UpdateActivationDocumentEligibilityStatus","'$ELIGIBILITYSTATUS_VALUE_STR'"]}'
+#     fi
+# done
 
 
-echo "***********************************"
-echo
-echo "** RTE - ENERGY AMOUNT CREATION"
-echo
 
-RTE_ENERGYAMOUNTS=$(cat $DATA_PATH/62-HTB-EnergyAmount.json | jq '.')
-RTE_ENERGYAMOUNTS_NB=$(echo $RTE_ENERGYAMOUNTS | jq 'length')
+# echo "***********************************"
+# echo
+# echo "** ENEDIS - ENERGY AMOUNT CREATION"
+# echo
+
+# ENEDIS_ENERGYAMOUNTS=$(cat $DATA_PATH/61-HTA-EnergyAmount.json | jq '.')
+# ENEDIS_ENERGYAMOUNTS_NB=$(echo $ENEDIS_ENERGYAMOUNTS | jq 'length')
+
+# for i in `seq $ENEDIS_ENERGYAMOUNTS_NB`
+# do
+#     tabindex=$(echo ".["$i-1"]")
+#     energyAmountMarketDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
+#     energyAmountMarketDocumentMrid=$(echo "energyAmount_enedis_$energyAmountMarketDocumentMrid")
+#     ENEDIS_ENERGYAMOUNTS_VALUE=$(echo $ENEDIS_ENERGYAMOUNTS | jq $tabindex | jq --arg value $energyAmountMarketDocumentMrid '. + {energyAmountMarketDocumentMrid: $value}')
+#     timeINTERVAL=$(echo $ENEDIS_ENERGYAMOUNTS_VALUE | jq '.timeInterval')
+#     timeINTERVAL=$(echo $timeINTERVAL | sed "s/\//99/g")
+#     key=$(Clean $timeINTERVAL)
+#     activationDocumentMrid=${mapENEDIS_ACTIVATIONDOCUMENTS[$key]}
+#     ENEDIS_ENERGYAMOUNTS_VALUE=$(echo $ENEDIS_ENERGYAMOUNTS_VALUE | jq --arg value $activationDocumentMrid '. + {activationDocumentMrid: $value}')
+
+#     ENEDIS_ENERGYAMOUNTS_VALUE_STR=$(echo $ENEDIS_ENERGYAMOUNTS_VALUE | sed "s/\"/\\\\\"/g")
+#     ENEDIS_ENERGYAMOUNTS_VALUE_STR=${ENEDIS_ENERGYAMOUNTS_VALUE_STR//[$'\t\r\n ']}
+
+#     echo
+#     echo
+#     echo "CREATION $ENEDIS_NODE Energy Account : $ENEDIS_ENERGYAMOUNTS_VALUE_STR"
+#     echo
+
+#     if $ONLINE_MODE
+#     then
+#         kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+#             peer chaincode invoke \
+#                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+#                 --tls $ENEDIS_TLSOPT \
+#                 -c '{"Args":["CreateDSOEnergyAmount","'$ENEDIS_ENERGYAMOUNTS_VALUE_STR'"]}'
+#     fi
+
+# done
 
 
-for i in `seq $RTE_ENERGYAMOUNTS_NB`
-do
-    tabindex=$(echo ".["$i-1"]")
-    energyAmountMarketDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    energyAmountMarketDocumentMrid=$(echo "energyAmount_rte_$energyAmountMarketDocumentMrid")
-    RTE_ENERGYAMOUNTS_VALUE=$(echo $RTE_ENERGYAMOUNTS | jq $tabindex | jq --arg value $energyAmountMarketDocumentMrid '. + {energyAmountMarketDocumentMrid: $value}')
-    timeINTERVAL=$(echo $RTE_ENERGYAMOUNTS_VALUE | jq '.timeInterval')
-    timeINTERVAL=$(echo $timeINTERVAL | sed "s/\//99/g")
-    key=$(Clean $timeINTERVAL)
-    activationDocumentMrid=${mapRTE_ACTIVATIONDOCUMENTS[$key]}
-    RTE_ENERGYAMOUNTS_VALUE=$(echo $RTE_ENERGYAMOUNTS_VALUE | jq --arg value $activationDocumentMrid '. + {activationDocumentMrid: $value}')
+# echo "***********************************"
+# echo
+# echo "** RTE - ENERGY AMOUNT CREATION"
+# echo
 
-    RTE_ENERGYAMOUNTS_VALUE_STR=$(echo $RTE_ENERGYAMOUNTS_VALUE | sed "s/\"/\\\\\"/g")
-    RTE_ENERGYAMOUNTS_VALUE_STR=${RTE_ENERGYAMOUNTS_VALUE_STR//[$'\t\r\n ']}
-    echo $RTE_ENERGYAMOUNTS_VALUE_STR
+# RTE_ENERGYAMOUNTS=$(cat $DATA_PATH/62-HTB-EnergyAmount.json | jq '.')
+# RTE_ENERGYAMOUNTS_NB=$(echo $RTE_ENERGYAMOUNTS | jq 'length')
 
-    echo
-    echo
-    echo "CREATION $RTE_NODE Energy Account : $RTE_ENERGYAMOUNTS_VALUE_STR"
-    echo
 
-    if $ONLINE_MODE
-    then
-        kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
-            peer chaincode invoke \
-                -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $RTE_TLSOPT \
-                -c '{"Args":["CreateTSOEnergyAmount","'$RTE_ENERGYAMOUNTS_VALUE_STR'"]}'
-    fi
+# for i in `seq $RTE_ENERGYAMOUNTS_NB`
+# do
+#     tabindex=$(echo ".["$i-1"]")
+#     energyAmountMarketDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
+#     energyAmountMarketDocumentMrid=$(echo "energyAmount_rte_$energyAmountMarketDocumentMrid")
+#     RTE_ENERGYAMOUNTS_VALUE=$(echo $RTE_ENERGYAMOUNTS | jq $tabindex | jq --arg value $energyAmountMarketDocumentMrid '. + {energyAmountMarketDocumentMrid: $value}')
+#     timeINTERVAL=$(echo $RTE_ENERGYAMOUNTS_VALUE | jq '.timeInterval')
+#     timeINTERVAL=$(echo $timeINTERVAL | sed "s/\//99/g")
+#     key=$(Clean $timeINTERVAL)
+#     activationDocumentMrid=${mapRTE_ACTIVATIONDOCUMENTS[$key]}
+#     RTE_ENERGYAMOUNTS_VALUE=$(echo $RTE_ENERGYAMOUNTS_VALUE | jq --arg value $activationDocumentMrid '. + {activationDocumentMrid: $value}')
 
-done
+#     RTE_ENERGYAMOUNTS_VALUE_STR=$(echo $RTE_ENERGYAMOUNTS_VALUE | sed "s/\"/\\\\\"/g")
+#     RTE_ENERGYAMOUNTS_VALUE_STR=${RTE_ENERGYAMOUNTS_VALUE_STR//[$'\t\r\n ']}
+#     echo $RTE_ENERGYAMOUNTS_VALUE_STR
+
+#     echo
+#     echo
+#     echo "CREATION $RTE_NODE Energy Account : $RTE_ENERGYAMOUNTS_VALUE_STR"
+#     echo
+
+#     if $ONLINE_MODE
+#     then
+#         kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+#             peer chaincode invoke \
+#                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+#                 --tls $RTE_TLSOPT \
+#                 -c '{"Args":["CreateTSOEnergyAmount","'$RTE_ENERGYAMOUNTS_VALUE_STR'"]}'
+#     fi
+
+# done
 
 
 

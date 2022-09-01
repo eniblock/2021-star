@@ -291,13 +291,23 @@ export class ActivationDocumentController {
             activationDocumentObj.orderEnd = false;
         }
 
-        activationDocumentObj.potentialParent =  (RoleType.Role_TSO === role_systemOperator && RoleType.Role_DSO == role_producer && activationDocumentObj.startCreatedDateTime !== "");
+        activationDocumentObj.potentialParent =  (RoleType.Role_TSO === role_systemOperator && RoleType.Role_DSO === role_producer && activationDocumentObj.startCreatedDateTime !== "");
         const dsoChild : boolean = (RoleType.Role_DSO === role_systemOperator && activationDocumentObj.startCreatedDateTime !== "");
         const tsoChild : boolean = (RoleType.Role_TSO === role_systemOperator && activationDocumentObj.orderEnd === true && !activationDocumentObj.startCreatedDateTime);
         activationDocumentObj.potentialChild = dsoChild || tsoChild;
 
+
+
         activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.checkEligibilityStatus(params, activationDocumentObj);
-        activationDocumentObj.eligibilityStatusEditable = !(activationDocumentObj.eligibilityStatus === EligibilityStatusType.EligibilityAccepted);
+
+        if (activationDocumentObj.eligibilityStatus === EligibilityStatusType.EligibilityAccepted
+            || (RoleType.Role_TSO === role_systemOperator && RoleType.Role_DSO === role_producer)) {
+
+            activationDocumentObj.eligibilityStatusEditable = false;
+        } else {
+            activationDocumentObj.eligibilityStatusEditable = true;
+        }
+
         activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.statusInternationalValue(activationDocumentObj.eligibilityStatus);
 
         await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);

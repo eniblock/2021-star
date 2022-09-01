@@ -117,6 +117,33 @@ export class EnergyAccountController {
     }
 
 
+    public static async updateEnergyAccountList(
+        params: STARParameters,
+        inputStr: string) {
+        console.debug('============= START : Update EnergyAccount List ===========');
+
+        const energyList: EnergyAccount[] = EnergyAccount.formatListString(inputStr);
+
+        if (energyList) {
+            for (var energyObj of energyList) {
+                await EnergyAccountController.checkEnergyAccountObj(params, energyObj);
+
+                //Get existing data
+                var existingEnergyAccountRef:Map<string, DataReference>;
+                try {
+                    existingEnergyAccountRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ENERGY_ACCOUNT, id: energyObj.energyAccountMarketDocumentMrid});
+                } catch(error) {
+                    throw new Error(error.message.concat(` Can not be updated.`));
+                }
+
+                for (var [key, ] of existingEnergyAccountRef) {
+                    await EnergyAccountService.write(params, energyObj, key);
+                }
+            }
+        }
+
+        console.debug('============= END   : Update %s EnergyAccount List ===========');
+    }
 
 
     private static async checkEnergyAccountObj(

@@ -370,6 +370,40 @@ export class EnergyAmountController {
 
 
 
+    public static async updateTSOEnergyAmountList(
+        params: STARParameters,
+        inputStr: string) {
+        console.debug('============= START : updateTSOEnergyAmountList EnergyAmountController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        const energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
+
+        if (energyList) {
+            for(var energyObj of energyList) {
+                await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENE);
+
+                //Get existing data
+                var existingEnergyAmountRef:Map<string, DataReference>;
+                try {
+                    existingEnergyAmountRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ENERGY_AMOUNT, id: energyObj.energyAmountMarketDocumentMrid});
+                } catch(error) {
+                    throw new Error(error.message.concat(` Can not be updated.`));
+                }
+
+                for (var [key, ] of existingEnergyAmountRef) {
+                    await EnergyAmountService.write(params, energyObj, key);
+                }
+            }
+        }
+
+        console.debug('============= END   : updateTSOEnergyAmountList %s EnergyAmountController ===========');
+    }
+
+
 
     public static async createDSOEnergyAmount(
         params: STARParameters,
@@ -456,6 +490,42 @@ export class EnergyAmountController {
         );
     }
 
+
+
+
+
+    public static async updateDSOEnergyAmountList(
+        params: STARParameters,
+        inputStr: string) {
+        console.debug('============= START : updateDSOEnergyAmountList EnergyAmountController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+        }
+
+        const energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
+
+        if (energyList) {
+            for(var energyObj of energyList) {
+                await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENI, true);
+
+                //Get existing data
+                var existingEnergyAmountRef:Map<string, DataReference>;
+                try {
+                    existingEnergyAmountRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ENERGY_AMOUNT, id: energyObj.energyAmountMarketDocumentMrid});
+                } catch(error) {
+                    throw new Error(error.message.concat(` Can not be updated.`));
+                }
+
+                for (var [key, ] of existingEnergyAmountRef) {
+                    await EnergyAmountService.write(params, energyObj, key);
+                }
+            }
+        }
+
+        console.debug('============= END   : updateDSOEnergyAmountList %s EnergyAmountController ===========');
+    }
 
 
 

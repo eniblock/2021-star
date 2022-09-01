@@ -417,6 +417,16 @@ export class Star extends Contract {
     }
 
 
+    public async UpdateEnergyAccountList(ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await EnergyAccountController.updateEnergyAccountList(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
     public async GetEnergyAccountForSystemOperator(
         ctx: Context,
         meteringPointMrid: string,
@@ -548,6 +558,15 @@ export class Star extends Contract {
         }
     }
 
+    public async UpdateTSOEnergyAmountList(ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await EnergyAmountController.updateTSOEnergyAmountList(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async CreateDSOEnergyAmount(ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
@@ -570,6 +589,15 @@ export class Star extends Contract {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
             return (await EnergyAmountController.updateDSOEnergyAmount(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async UpdateDSOEnergyAmountList(ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await EnergyAmountController.updateDSOEnergyAmountList(params, inputStr));
         } catch (error) {
             throw error;
         }

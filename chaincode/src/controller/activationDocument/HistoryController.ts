@@ -23,6 +23,7 @@ import { QueryStateService } from "../service/QueryStateService";
 import { SiteService } from "../service/SiteService";
 import { StarPrivateDataService } from "../service/StarPrivateDataService";
 import { StarDataService } from "../service/StarDataService";
+import { DataReference } from "../../model/dataReference";
 
 export class HistoryInformationInBuilding {
     public historyInformation: Map<string, HistoryInformation> = new Map();
@@ -310,8 +311,8 @@ export class HistoryController {
             var siteRegistered: Site = null;
             try {
                 const existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
-                const siteObjRef = existingSitesRef.values().next().value;
-                if (siteObjRef) {
+                const siteObjRef:DataReference = existingSitesRef.values().next().value;
+                if (siteObjRef && siteObjRef.docType === DocType.SITE) {
                     siteRegistered = siteObjRef.data;
                 }
             } catch (error) {
@@ -324,7 +325,7 @@ export class HistoryController {
             try {
                 const existingSitesRef =await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
                 const siteObjRef = existingSitesRef.values().next().value;
-                if (siteObjRef) {
+                if (siteObjRef && siteObjRef.docType === DocType.SITE) {
                     siteRegistered = siteObjRef.data;
                 }
             } catch (error) {

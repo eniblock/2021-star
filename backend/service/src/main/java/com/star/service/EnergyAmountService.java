@@ -177,8 +177,7 @@ public class EnergyAmountService {
                 }
             } catch (JsonProcessingException jsonProcessingException) {
                 log.error(jsonProcessingException.getMessage());
-                throw new BusinessException(messageSource.getMessage("import.read.json.error",
-                        new String[]{ExceptionUtils.getMessage(jsonProcessingException)}, null));
+                throw new BusinessException(messageSource.getMessage("import.read.json.error", null, null));
             }
         }
         // Handling data

@@ -120,7 +120,7 @@ public class OrdreLimitationService {
                 });
             } catch (JsonProcessingException jsonProcessingException) {
                 log.error(jsonProcessingException.getMessage());
-                throw new BusinessException("Erreur lors du traitement du fichier.Echec du parsing du contenu du fichier (champ, ligne ou attribut incorrect).");
+                throw new BusinessException(messageSource.getMessage("import.read.json.error", null, null));
             }
         }
         if (isNotEmpty(errors)) {
@@ -206,7 +206,7 @@ public class OrdreLimitationService {
                 });
             } catch (JsonProcessingException jsonProcessingException) {
                 log.error(jsonProcessingException.getMessage());
-                throw new BusinessException("Erreur lors du traitement du fichier.Echec du parsing du contenu du fichier (champ, ligne ou attribut incorrect).");
+                throw new BusinessException(messageSource.getMessage("import.read.json.error", null, null));
             }
         }
         if (isNotEmpty(errors)) {
@@ -280,8 +280,7 @@ public class OrdreLimitationService {
                 });
             } catch (JsonProcessingException jsonProcessingException) {
                 log.error(jsonProcessingException.getMessage());
-                throw new BusinessException(messageSource.getMessage("import.read.json.error",
-                        new String[]{ExceptionUtils.getMessage(jsonProcessingException)}, null));
+                throw new BusinessException(messageSource.getMessage("import.read.json.error", null, null));
             }
         }
         if (isNotEmpty(errors)) {

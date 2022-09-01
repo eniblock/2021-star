@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -130,7 +129,7 @@ public class EnergyAmountService {
      * @return
      * @throws IOException
      */
-    private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance, boolean creation, String systemOperatorMarketParticipantMrid) throws IOException, TechnicalException {
+    private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance, boolean creation, String systemOperatorMarketParticipantMrid) throws IOException {
         if (InstanceEnum.DSO.equals(instance) & fichiers == null || fichiers.size() == 0) {
             throw new IllegalArgumentException("Files must not be empty");
         }
@@ -147,34 +146,47 @@ public class EnergyAmountService {
                 break;
             }
             try {
-                var energyAmount = objectMapper.readValue(fileInside, EnergyAmount.class);
-                errors.addAll(validator.validate(energyAmount).stream().map(violation ->
-                        messageSource.getMessage("import.error",
-                                new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
-                // Vérifier que l'ID du document est fourni quand on est en modification
-                if (!creation && StringUtils.isBlank(energyAmount.getEnergyAmountMarketDocumentMrid())) {
-                    errors.add(messageSource.getMessage("import.error",
-                            new String[]{fichier.getFileName(), "energyAmountMarketDocumentMrid est obligatoire."}, null));
+                List<EnergyAmount> currentEnergyAmounts = objectMapper.readValue(fileInside, objectMapper.getTypeFactory().constructCollectionType(List.class, EnergyAmount.class));
+                if (CollectionUtils.isEmpty(currentEnergyAmounts)) {
+                    errors.add(messageSource.getMessage("import.file.empty.error", new String[]{fichier.getFileName()}, null));
+                    break;
                 }
-                String registeredResourceMrid = energyAmount.getRegisteredResourceMrid();
-                if (isBlank(registeredResourceMrid)) {
-                    energyAmount.setRegisteredResourceMrid(EMPTY);
-                } else {
-                    if (!siteService.existSite(registeredResourceMrid)) {
-                        errors.add(messageSource.getMessage("import.file.energy.amount.unknown.site",
-                                new String[]{registeredResourceMrid}, null));
+                currentEnergyAmounts.forEach(currentEnergyAmount -> {
+                    List<String> currentErrors = new ArrayList<>();
+                    currentErrors.addAll(validator.validate(currentEnergyAmount).stream().map(violation ->
+                            messageSource.getMessage("import.error",
+                                    new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
+                    // Vérifier que l'ID du document est fourni quand on est en modification
+                    if (!creation && StringUtils.isBlank(currentEnergyAmount.getEnergyAmountMarketDocumentMrid())) {
+                        currentErrors.add(messageSource.getMessage("import.error",
+                                new String[]{fichier.getFileName(), "energyAmountMarketDocumentMrid est obligatoire."}, null));
                     }
-                }
-                // Vérification du champ senderMarketParticipantMrid
-                String senderMarketParticipantMrid = energyAmount.getSenderMarketParticipantMrid();
-                if (!StringUtils.equalsIgnoreCase(systemOperatorMarketParticipantMrid, senderMarketParticipantMrid)) {
-                    errors.add(messageSource.getMessage("import.file.energy.amount.senderMarketParticipantMrid.error",
-                            new String[]{senderMarketParticipantMrid}, null));
-                }
-
-                if (isEmpty(errors)) {
-                    energyAmounts.add(energyAmount);
-                }
+                    String registeredResourceMrid = currentEnergyAmount.getRegisteredResourceMrid();
+                    if (isBlank(registeredResourceMrid)) {
+                        currentEnergyAmount.setRegisteredResourceMrid(EMPTY);
+                    } else {
+                        try {
+                            if (!siteService.existSite(registeredResourceMrid)) {
+                                currentErrors.add(messageSource.getMessage("import.file.energy.amount.unknown.site",
+                                        new String[]{registeredResourceMrid}, null));
+                            }
+                        } catch (TechnicalException technicalException) {
+                            log.error(technicalException.getMessage());
+                            currentErrors.add(technicalException.getMessage());
+                        }
+                    }
+                    // Vérification du champ senderMarketParticipantMrid
+                    String senderMarketParticipantMrid = currentEnergyAmount.getSenderMarketParticipantMrid();
+                    if (!StringUtils.equalsIgnoreCase(systemOperatorMarketParticipantMrid, senderMarketParticipantMrid)) {
+                        currentErrors.add(messageSource.getMessage("import.file.energy.amount.senderMarketParticipantMrid.error",
+                                new String[]{senderMarketParticipantMrid}, null));
+                    }
+                    if (isNotEmpty(currentErrors)) {
+                        errors.addAll(currentErrors);
+                    } else {
+                        energyAmounts.add(currentEnergyAmount);
+                    }
+                });
             } catch (JsonProcessingException jsonProcessingException) {
                 log.error(jsonProcessingException.getMessage());
                 throw new BusinessException(messageSource.getMessage("import.read.json.error", null, null));

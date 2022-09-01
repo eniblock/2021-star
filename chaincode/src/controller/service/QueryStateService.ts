@@ -124,14 +124,14 @@ export class QueryStateService {
 
     public static async getAllStates(
         params: STARParameters,
-        dataType: string): Promise<string> {
+        dataType: string): Promise<any[]> {
         console.debug('============= START : getAllStates %s QueryStateService ===========', dataType);
 
         const query = `{"selector": {"docType": "${dataType}"}}`;
-        const formated = await QueryStateService.getQueryStringResult(params, {query:query});
+        const arrayResult = await QueryStateService.getQueryArrayResult(params, {query:query});
 
         console.debug('============= END : getAllStates %s QueryStateService ===========', dataType);
-        return formated;
+        return arrayResult;
     }
 
     /*******************************

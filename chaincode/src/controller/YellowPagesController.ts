@@ -17,6 +17,7 @@ export class YellowPagesController {
     public static async createYellowPages(
         params: STARParameters,
         inputStr: string) {
+
         console.debug('============= START : Create YellowPages ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
@@ -53,9 +54,14 @@ export class YellowPagesController {
 
 
     public static async getAllYellowPages(params: STARParameters): Promise<string> {
-        return await QueryStateService.getAllStates(params, DocType.YELLOW_PAGES);
+        const arrayResult = this.getAllYellowPagesObject(params);
+        return JSON.stringify(arrayResult);
     }
 
+
+    public static async getAllYellowPagesObject(params: STARParameters): Promise<YellowPages[]> {
+        return await QueryStateService.getAllStates(params, DocType.YELLOW_PAGES);
+    }
 
 
 

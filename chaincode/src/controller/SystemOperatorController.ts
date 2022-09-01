@@ -105,7 +105,8 @@ export class SystemOperatorController {
 
 
     public static async getAllSystemOperator(params: STARParameters): Promise<string> {
-        return await QueryStateService.getAllStates(params, DocType.SYSTEM_OPERATOR);
+        const arrayResult = await QueryStateService.getAllStates(params, DocType.SYSTEM_OPERATOR);
+        return JSON.stringify(arrayResult);
     }
 
 

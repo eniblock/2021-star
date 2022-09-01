@@ -101,7 +101,8 @@ export class ProducerController {
 
 
     public static async getAllProducer( params: STARParameters): Promise<string> {
-        return await QueryStateService.getAllStates(params, DocType.PRODUCER);
+        const arrayResult = await QueryStateService.getAllStates(params, DocType.PRODUCER);
+        return JSON.stringify(arrayResult);
     }
 
 

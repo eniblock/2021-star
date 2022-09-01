@@ -24,11 +24,22 @@ import { SiteService } from "../service/SiteService";
 import { StarPrivateDataService } from "../service/StarPrivateDataService";
 import { StarDataService } from "../service/StarDataService";
 
+export class HistoryInformationInBuilding {
+    public historyInformation: Map<string, HistoryInformation> = new Map();
+    public eligibilityToDefine: string[] = [];
+    public eligibilityDefined: string[] = [];
+    public reconciliated: string[] = [];
+    public others: string[] = [];
+}
+
 export class HistoryController {
 
     public static async getHistoryByQuery(
         params: STARParameters,
         inputStr: string): Promise<HistoryInformation[]> {
+
+        console.debug('============= START : getHistoryByQuery ===========');
+
 
         let criteriaObj: HistoryCriteria;
         var result : HistoryInformation[];
@@ -56,13 +67,30 @@ export class HistoryController {
 
                 const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(params, query, collections);
 
+                const allValidActivationDocument: ActivationDocument[] = [];
+                //Filter to keep only valid documents (and store in memory pool)
                 if (allActivationDocument && allActivationDocument.length > 0) {
-                    const informationList = await HistoryController.consolidate(params, allActivationDocument);
-                    result = await HistoryController.generateOutput(informationList);
+                    for (var document of allActivationDocument) {
+                        if (document && document.activationDocumentMrid) {
+                            allValidActivationDocument.push(document);
+                            params.addInMemoryPool(document.activationDocumentMrid, {collection: '', docType: DocType.ACTIVATION_DOCUMENT, data: document});
+                        }
+                    }
+                }
+
+                if (allValidActivationDocument && allValidActivationDocument.length > 0) {
+                    const informationInBuilding: HistoryInformationInBuilding = await HistoryController.consolidate(params, allValidActivationDocument);
+                    result = await HistoryController.generateOutput(informationInBuilding);
 
                 }
             }
         }
+
+        console.debug('============= END : getHistoryByQuery ===========');
+
+        // console.debug("###############################################")
+        // console.debug(JSON.stringify(result))
+        // console.debug("###############################################")
 
         return result;
     }
@@ -77,6 +105,8 @@ export class HistoryController {
         params: STARParameters,
         criteriaObj: HistoryCriteria,
         role: string): Promise<HistoryCriteria> {
+
+        console.debug('============= START : consolidateCriteria ===========');
 
         if (criteriaObj.producerMarketParticipantName) {
             criteriaObj.producerMarketParticipantName = criteriaObj.producerMarketParticipantName.trim();
@@ -93,6 +123,8 @@ export class HistoryController {
                 for (var prodId of allProdId) {
                     if (prodId && prodId.producerMarketParticipantMrid) {
                         prodIdList.push(prodId.producerMarketParticipantMrid);
+
+                        params.addInMemoryPool(prodId.producerMarketParticipantMrid, {docType: DocType.PRODUCER, data: prodId, collection:''});
                     }
                 }
             }
@@ -136,8 +168,11 @@ export class HistoryController {
                     || site.meteringPointMrid === criteriaObj.originAutomationRegisteredResourceMrid
                     || criteriaObj.producerMarketParticipantList.includes(site.producerMarketParticipantMrid)
                     || site.siteName == criteriaObj.siteName) {
-                        criteriaObj.originAutomationRegisteredResourceList.push(site.substationMrid);
-                        criteriaObj.registeredResourceList.push(site.meteringPointMrid);
+
+                    criteriaObj.originAutomationRegisteredResourceList.push(site.substationMrid);
+                    criteriaObj.registeredResourceList.push(site.meteringPointMrid);
+
+                    params.addInMemoryPool(site.meteringPointMrid, {docType: DocType.SITE, data: site, collection:''});
                 }
             }
         }
@@ -147,6 +182,8 @@ export class HistoryController {
             if (yellowPages) {
                 for (var yellowPage of yellowPages) {
                     criteriaObj.registeredResourceList.push(yellowPage.registeredResourceMrid);
+
+                    params.addInMemoryPool(yellowPage.yellowPageMrid, {docType: DocType.YELLOW_PAGES, data: yellowPage, collection:''});
                 }
             }
             criteriaObj.originAutomationRegisteredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
@@ -156,18 +193,26 @@ export class HistoryController {
             if (yellowPages) {
                 for (var yellowPage of yellowPages) {
                     criteriaObj.originAutomationRegisteredResourceList.push(yellowPage.originAutomationRegisteredResourceMrid);
+
+                    params.addInMemoryPool(yellowPage.yellowPageMrid, {docType: DocType.YELLOW_PAGES, data: yellowPage, collection:''});
                 }
             }
             criteriaObj.registeredResourceList.push(criteriaObj.registeredResourceMrid);
             criteriaObj.registeredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
         }
 
+        console.debug('============= END : consolidateCriteria ===========');
+
         return criteriaObj;
     }
 
 
 
-    public static async buildActivationDocumentQuery(criteriaObj: HistoryCriteria) : Promise<string> {
+
+    private static async buildActivationDocumentQuery(criteriaObj: HistoryCriteria) : Promise<string> {
+
+        console.debug('============= START : buildActivationDocumentQuery ===========');
+
         var args: string[] = [];
 
         if (criteriaObj) {
@@ -207,6 +252,8 @@ export class HistoryController {
             }
         }
 
+        console.debug('============= END : buildActivationDocumentQuery ===========');
+
         return await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
     }
 
@@ -214,11 +261,15 @@ export class HistoryController {
 
 
 
+
+
     private static async consolidate(
         params: STARParameters,
-        allActivationDocument: ActivationDocument[]): Promise<HistoryInformation[]> {
+        allActivationDocument: ActivationDocument[]): Promise<HistoryInformationInBuilding> {
 
-        const informationList: HistoryInformation[] = [];
+        console.debug('============= START : consolidate ===========');
+
+        const historyInformationInBuilding: HistoryInformationInBuilding = new HistoryInformationInBuilding();
 
         // if (allActivationDocument && allActivationDocument.length > 0) {
         //     console.debug("----------------")
@@ -226,290 +277,290 @@ export class HistoryController {
         //     console.debug(JSON.stringify(allActivationDocument[0]))
         //     console.debug("----------------")
         // }
+        const yellowPages: YellowPages[] = await YellowPagesController.getAllYellowPagesObject(params);
+        const ypRegistered: string[] = [];
+        const ypAutomation: string[] = [];
+        for (var yp of yellowPages) {
+            ypRegistered.push(yp.registeredResourceMrid);
+            ypAutomation.push(yp.originAutomationRegisteredResourceMrid);
+        }
 
         for (const activationDocumentQueryValue of allActivationDocument) {
             const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocumentQueryValue);
 
-            if (activationDocument && activationDocument.activationDocumentMrid) {
-                var activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
-                var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
+            var activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+            var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
 
-                var subOrderList: ActivationDocument[] = [];
-                if (activationDocument && activationDocument.subOrderList) {
-                    for(const activationDocumentMrid of activationDocument.subOrderList) {
-                        var subOrder: ActivationDocument;
-                        try {
-                            subOrder = await ActivationDocumentController.getActivationDocumentById(params, activationDocumentMrid);
-                        } catch(error) {
-                            //do nothing, but empty document : suborder information is not in accessible collection
-                        }
-                        if (subOrder) {
-                            subOrderList.push(subOrder);
-                        }
-                    }
-                }
-                //Manage Yello Page to get Site Information
-                var siteRegistered: Site = null;
-                try {
-                    const existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
-                    const siteObjRef = existingSitesRef.values().next().value;
-                    if (siteObjRef) {
-                        siteRegistered = siteObjRef.data;
-                    }
-                } catch (error) {
-                    //DO nothing except "Not accessible information"
-                }
-                if (!siteRegistered && subOrderList && subOrderList.length > 0) {
-                    //If no site found, search information by SubOrder Id
-                    activationDocumentForInformation = JSON.parse(JSON.stringify(subOrderList[0]));
-                }
-                try {
-                    const existingSitesRef =await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
-                    const siteObjRef = existingSitesRef.values().next().value;
-                    if (siteObjRef) {
-                        siteRegistered = siteObjRef.data;
-                    }
-                } catch (error) {
-                    //DO nothing except "Not accessible information"
-                }
-                if (!siteRegistered) {
-                    //If still no site found, back to initial value
-                    activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
-                }
-
-
-                var producer: Producer = null;
-                try {
-                    if (siteRegistered && siteRegistered.producerMarketParticipantMrid) {
-                        producer = await StarDataService.getObj(params, {id: siteRegistered.producerMarketParticipantMrid, docType: DocType.PRODUCER});
-                    }
-                } catch (error) {
-                    //DO nothing except "Not accessible information"
-                }
-                if (!producer) {
+            var subOrderList: ActivationDocument[] = [];
+            if (activationDocument && activationDocument.subOrderList) {
+                for(const activationDocumentMrid of activationDocument.subOrderList) {
+                    var subOrder: ActivationDocument;
                     try {
-                        if (activationDocumentForInformation.receiverMarketParticipantMrid) {
-                            const prod = await StarDataService.getObj(params, {id: activationDocumentForInformation.receiverMarketParticipantMrid, docType: DocType.PRODUCER});
-                            if (prod) {
-                                const untypedValue = JSON.parse(JSON.stringify(prod))
-                                if (untypedValue && untypedValue.producerMarketParticipantMrid) {
-                                    producer = {
-                                        producerMarketParticipantMrid: prod.producerMarketParticipantMrid,
-                                        producerMarketParticipantName: prod.producerMarketParticipantName,
-                                        producerMarketParticipantRoleType: prod.producerMarketParticipantRoleType
-                                    }
-                                // } else if (untypedValue && untypedValue.systemOperatorMarketParticipantMrid) {
-                                //     producer = {
-                                //         producerMarketParticipantMrid: untypedValue.systemOperatorMarketParticipantMrid,
-                                //         producerMarketParticipantName: untypedValue.systemOperatorMarketParticipantName,
-                                //         producerMarketParticipantRoleType: untypedValue.systemOperatorMarketParticipantRoleType
-                                //     }
-                                }
-                            }
-
-                        }
-                    } catch (error) {
-                        //DO nothing except "Not accessible information"
+                        subOrder = await ActivationDocumentController.getActivationDocumentById(params, activationDocumentMrid);
+                    } catch(error) {
+                        //do nothing, but empty document : suborder information is not in accessible collection
+                    }
+                    if (subOrder) {
+                        subOrderList.push(subOrder);
                     }
                 }
-                // if (!producer) {
-                //     try {
-                //         if (activationDocument.receiverMarketParticipantMrid) {
-                //             var so = await SystemOperatorService.getObj(activationDocument.receiverMarketParticipantMrid);
-                //             if (so) {
-                //                 producer = {
-                //                     producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
-                //                     producerMarketParticipantName: so.systemOperatorMarketParticipantName,
-                //                     producerMarketParticipantRoleType: so.systemOperatorMarketParticipantRoleType
-                //                 }
-                //             }
-                //         }
-                //     } catch (error) {
-                //         //DO nothing except "Not accessible information"
-                //     }
-                // }
+            }
+            //Manage Yello Page to get Site Information
+            var siteRegistered: Site = null;
+            try {
+                const existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
+                const siteObjRef = existingSitesRef.values().next().value;
+                if (siteObjRef) {
+                    siteRegistered = siteObjRef.data;
+                }
+            } catch (error) {
+                //DO nothing except "Not accessible information"
+            }
+            if (!siteRegistered && subOrderList && subOrderList.length > 0) {
+                //If no site found, search information by SubOrder Id
+                activationDocumentForInformation = JSON.parse(JSON.stringify(subOrderList[0]));
+            }
+            try {
+                const existingSitesRef =await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
+                const siteObjRef = existingSitesRef.values().next().value;
+                if (siteObjRef) {
+                    siteRegistered = siteObjRef.data;
+                }
+            } catch (error) {
+                //DO nothing except "Not accessible information"
+            }
+            if (!siteRegistered) {
+                //If still no site found, back to initial value
+                activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
+            }
+            if (siteRegistered && !ypAutomation.includes(activationDocumentForInformation.originAutomationRegisteredResourceMrid)) {
+                displayedSourceName = siteRegistered.substationMrid;
+            }
 
 
-                var energyAmount: EnergyAmount = null;
+
+            var producer: Producer = null;
+            try {
+                if (siteRegistered && siteRegistered.producerMarketParticipantMrid) {
+                    producer = await StarDataService.getObj(params, {id: siteRegistered.producerMarketParticipantMrid, docType: DocType.PRODUCER});
+                }
+            } catch (error) {
+                //DO nothing except "Not accessible information"
+            }
+            if (!producer) {
                 try {
-                    if (activationDocumentForInformation && activationDocumentForInformation.activationDocumentMrid) {
-                        energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(params, activationDocumentForInformation.activationDocumentMrid);
-                    }
+                    if (activationDocumentForInformation.receiverMarketParticipantMrid) {
+                        const prod = await StarDataService.getObj(params, {id: activationDocumentForInformation.receiverMarketParticipantMrid});
+                        if (prod) {
+                            const untypedValue = JSON.parse(JSON.stringify(prod))
+                            if (untypedValue && untypedValue.producerMarketParticipantMrid) {
+                                producer = {
+                                    producerMarketParticipantMrid: prod.producerMarketParticipantMrid,
+                                    producerMarketParticipantName: prod.producerMarketParticipantName,
+                                    producerMarketParticipantRoleType: prod.producerMarketParticipantRoleType
+                                }
+                            } else if (untypedValue && untypedValue.systemOperatorMarketParticipantMrid) {
+                                //In case of TSO -> DSO, then displayed Name is registeredResourceMrid
+                                displayedSourceName = activationDocumentForInformation.registeredResourceMrid;
+                            //     producer = {
+                            //         producerMarketParticipantMrid: untypedValue.systemOperatorMarketParticipantMrid,
+                            //         producerMarketParticipantName: untypedValue.systemOperatorMarketParticipantName,
+                            //         producerMarketParticipantRoleType: untypedValue.systemOperatorMarketParticipantRoleType
+                            //     }
+                            }
+                        }
 
+                    }
                 } catch (error) {
                     //DO nothing except "Not accessible information"
                 }
-
-                const information: HistoryInformation = {
-                    activationDocument: JSON.parse(JSON.stringify(activationDocument)),
-                    subOrderList: JSON.parse(JSON.stringify(subOrderList)),
-                    site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
-                    producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
-                    energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
-                    displayedSourceName: displayedSourceName
-                };
-
-                siteRegistered = null;
-                producer = null;
-                energyAmount = null;
-
-                informationList.push(information);
             }
-
-        }
-        return informationList;
-    }
-
-
-
-
-
-
-
-    private static async generateOutput(
-        initialInformation : HistoryInformation[]): Promise<HistoryInformation[]> {
-
-        var finalinformation: HistoryInformation[] = JSON.parse(JSON.stringify(initialInformation));
-
-        finalinformation = await HistoryController.sortInformation(finalinformation);
-        finalinformation = await HistoryController.cleanFilled(finalinformation);
-
-        return finalinformation;
-    }
+            // if (!producer) {
+            //     try {
+            //         if (activationDocument.receiverMarketParticipantMrid) {
+            //             var so = await SystemOperatorService.getObj(activationDocument.receiverMarketParticipantMrid);
+            //             if (so) {
+            //                 producer = {
+            //                     producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
+            //                     producerMarketParticipantName: so.systemOperatorMarketParticipantName,
+            //                     producerMarketParticipantRoleType: so.systemOperatorMarketParticipantRoleType
+            //                 }
+            //             }
+            //         }
+            //     } catch (error) {
+            //         //DO nothing except "Not accessible information"
+            //     }
+            // }
 
 
-    private static async sortInformation(
-        initialInformation : HistoryInformation[]): Promise<HistoryInformation[]> {
-
-        var finalinformation: HistoryInformation[] = [];
-
-        const dateMap: Map<string, HistoryInformation[]> = new Map();
-        const keyArray: string[] = [];
-
-        //Create date Map and key (date) List
-        for (var information of initialInformation) {
-            if (information.activationDocument) {
-                const key = "".concat(information.activationDocument.startCreatedDateTime)
-                    .concat("ZZZ")
-                    .concat(information.activationDocument.endCreatedDateTime);
-                var values: HistoryInformation[];
-                if (!keyArray.includes(key)) {
-                    values = [];
-                    keyArray.push(key);
-                } else {
-                    values = dateMap.get(key);
+            var energyAmount: EnergyAmount = null;
+            try {
+                if (activationDocumentForInformation && activationDocumentForInformation.activationDocumentMrid) {
+                    energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(params, activationDocumentForInformation.activationDocumentMrid);
                 }
-                values.push(information);
-                dateMap.set(key, values);
+
+            } catch (error) {
+                //DO nothing except "Not accessible information"
             }
-        }
 
-        //Sort the Array by key (date)
-        keyArray.sort();
+            const information: HistoryInformation = {
+                activationDocument: JSON.parse(JSON.stringify(activationDocument)),
+                subOrderList: JSON.parse(JSON.stringify(subOrderList)),
+                site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
+                producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
+                energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
+                displayedSourceName: "ABC-123"//displayedSourceName
+            };
 
-        //Fill final information following the sorted list
-        for (var key of keyArray) {
-            const sortedInformationArray = dateMap.get(key);
-            if (sortedInformationArray) {
-                for (var information of sortedInformationArray) {
-                    finalinformation.push(information);
-                }
-            }
-        }
+            historyInformationInBuilding.historyInformation.set(information.activationDocument.activationDocumentMrid, information);
 
-        return finalinformation;
-    }
+            siteRegistered = null;
+            producer = null;
+            energyAmount = null;
 
+            const key = this.buildKey(information.activationDocument);
 
-
-    private static async cleanFilled(
-        initialInformation : HistoryInformation[]): Promise<HistoryInformation[]> {
-
-        const finalinformation: HistoryInformation[] = [];
-        const embeddedInformation: string[] = [];
-
-        //First the editable
-        var remainingInformationStep1: HistoryInformation[] = [];
-        for (var information of initialInformation) {
             if (information.site
                 && information.producer
                 && information.activationDocument
                 && information.activationDocument.eligibilityStatusEditable) {
 
-                finalinformation.push(information);
+                historyInformationInBuilding.eligibilityToDefine.push(key);
+            } else if (information.activationDocument.eligibilityStatus
+                && information.activationDocument.eligibilityStatus !== "") {
 
-                embeddedInformation.push(information.activationDocument.activationDocumentMrid);
-                if (information.subOrderList) {
-                    for (var subOrder of information.subOrderList) {
-                        embeddedInformation.push(subOrder.activationDocumentMrid);
-                    }
-                }
+                historyInformationInBuilding.eligibilityDefined.push(key);
+            } else if (information.subOrderList
+                && information.subOrderList.length > 0) {
+
+                historyInformationInBuilding.reconciliated.push(key);
             } else {
-                remainingInformationStep1.push(information);
+                historyInformationInBuilding.others.push(key);
             }
         }
+        console.debug('============= END : consolidate ===========');
 
-        //Second the eligibility defined
-        var remainingInformationStep2: HistoryInformation[] = [];
-        for (var information of remainingInformationStep1) {
-            //Not include ones already included
-            if (information.activationDocument
-                && !embeddedInformation.includes(information.activationDocument.activationDocumentMrid)) {
+        return historyInformationInBuilding;
+    }
 
-                if (information.activationDocument.eligibilityStatus
-                    && information.activationDocument.eligibilityStatus !== "") {
 
-                    finalinformation.push(information);
 
+    private static buildKey(activationDocument: ActivationDocument) : string {
+        const key = "".concat(activationDocument.startCreatedDateTime)
+        .concat("ZYXYZ")
+        .concat(activationDocument.endCreatedDateTime)
+        .concat("ZYXYZ")
+        .concat(activationDocument.activationDocumentMrid);
+
+        return key;
+    }
+
+    private static getActivationDocumentMridFromKey(key: string) : string {
+        var activationDocumentMrid: string = "";
+
+        const keyArray = key.split("ZYXYZ");
+        activationDocumentMrid = keyArray[2];
+
+        return activationDocumentMrid;
+    }
+
+
+
+    private static async generateOutput(
+        informationInBuilding : HistoryInformationInBuilding): Promise<HistoryInformation[]> {
+
+        console.debug('============= START : generateOutput ===========');
+
+        var finalinformation: HistoryInformation[] = [];
+        const embeddedInformation: string[] = [];
+
+        //Build sorted index
+        informationInBuilding.eligibilityToDefine.sort();
+        informationInBuilding.eligibilityDefined.sort();
+        informationInBuilding.reconciliated.sort();
+        informationInBuilding.others.sort();
+
+        for (var key of informationInBuilding.eligibilityToDefine) {
+            const activationDocumentMrid = this.getActivationDocumentMridFromKey(key);
+
+            if (!embeddedInformation.includes(activationDocumentMrid)) {
+                const information = informationInBuilding.historyInformation.get(activationDocumentMrid);
+
+                if (information) {
                     embeddedInformation.push(information.activationDocument.activationDocumentMrid);
                     if (information.subOrderList) {
                         for (var subOrder of information.subOrderList) {
                             embeddedInformation.push(subOrder.activationDocumentMrid);
                         }
                     }
-                } else {
-                    remainingInformationStep2.push(information);
-                }
-            }
-        }
-
-        //Third the information with reconciliation (even if no eligibility editable or filled)
-        var remainingInformationStep3: HistoryInformation[] = [];
-        for (var information of remainingInformationStep2) {
-            //Not include ones already included
-            if (information.activationDocument
-                && !embeddedInformation.includes(information.activationDocument.activationDocumentMrid)) {
-
-                if (information.subOrderList
-                    && information.subOrderList.length > 0) {
 
                     finalinformation.push(information);
+                }
+            }
 
+        }
+        for (var key of informationInBuilding.eligibilityDefined) {
+            const activationDocumentMrid = this.getActivationDocumentMridFromKey(key);
+
+            if (!embeddedInformation.includes(activationDocumentMrid)) {
+                const information = informationInBuilding.historyInformation.get(activationDocumentMrid);
+
+                if (information) {
                     embeddedInformation.push(information.activationDocument.activationDocumentMrid);
                     if (information.subOrderList) {
                         for (var subOrder of information.subOrderList) {
                             embeddedInformation.push(subOrder.activationDocumentMrid);
                         }
                     }
-                } else {
-                    remainingInformationStep3.push(information);
+
+                    finalinformation.push(information);
                 }
             }
+
         }
+        for (var key of informationInBuilding.reconciliated) {
+            const activationDocumentMrid = this.getActivationDocumentMridFromKey(key);
 
-        //Fourth the last ones
-        for (var information of remainingInformationStep3) {
-            //Not include ones already included
-            if (information.activationDocument
-                && !embeddedInformation.includes(information.activationDocument.activationDocumentMrid)) {
+            if (!embeddedInformation.includes(activationDocumentMrid)) {
+                const information = informationInBuilding.historyInformation.get(activationDocumentMrid);
 
-                finalinformation.push(information);
+                if (information) {
+                    embeddedInformation.push(information.activationDocument.activationDocumentMrid);
+                    if (information.subOrderList) {
+                        for (var subOrder of information.subOrderList) {
+                            embeddedInformation.push(subOrder.activationDocumentMrid);
+                        }
+                    }
+
+                    finalinformation.push(information);
+                }
             }
+
         }
+        for (var key of informationInBuilding.others) {
+            const activationDocumentMrid = this.getActivationDocumentMridFromKey(key);
+
+            if (!embeddedInformation.includes(activationDocumentMrid)) {
+                const information = informationInBuilding.historyInformation.get(activationDocumentMrid);
+
+                if (information) {
+                    embeddedInformation.push(information.activationDocument.activationDocumentMrid);
+                    if (information.subOrderList) {
+                        for (var subOrder of information.subOrderList) {
+                            embeddedInformation.push(subOrder.activationDocumentMrid);
+                        }
+                    }
+
+                    finalinformation.push(information);
+                }
+            }
+
+        }
+
+        console.debug('============= END : generateOutput ===========');
 
         return finalinformation;
     }
-
 
 
 

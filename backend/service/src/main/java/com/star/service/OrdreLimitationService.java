@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -115,7 +114,7 @@ public class OrdreLimitationService {
                     if (isNotEmpty(currentErrors)) {
                         errors.addAll(currentErrors);
                     } else {
-                        ordreDebutLimitations.addAll(currentOrdreLimitations);
+                        ordreDebutLimitations.add(ordreLimitation);
                     }
                 });
             } catch (JsonProcessingException jsonProcessingException) {
@@ -201,7 +200,7 @@ public class OrdreLimitationService {
                     if (isNotEmpty(currentErrors)) {
                         errors.addAll(currentErrors);
                     } else {
-                        ordreLimitations.addAll(currentOrdreLimitations);
+                        ordreLimitations.add(ordreLimitation);
                     }
                 });
             } catch (JsonProcessingException jsonProcessingException) {
@@ -275,7 +274,7 @@ public class OrdreLimitationService {
                     if (isNotEmpty(currentErrors)) {
                         errors.addAll(currentErrors);
                     } else {
-                        ordreFinLimitations.addAll(currentOrdreLimitations);
+                        ordreFinLimitations.add(ordreLimitation);
                     }
                 });
             } catch (JsonProcessingException jsonProcessingException) {

@@ -26,10 +26,10 @@ import static java.util.Collections.emptyList;
 @Slf4j
 @Repository
 public class EnergyAmountRepository {
-    public static final String CREATE_TSO_ENERGY_AMOUNT = "CreateTSOEnergyAmount";
-    public static final String UPDATE_TSO_ENERGY_AMOUNT = "UpdateTSOEnergyAmount";
-    public static final String CREATE_DSO_ENERGY_AMOUNT = "CreateDSOEnergyAmount";
-    public static final String UPDATE_DSO_ENERGY_AMOUNT = "UpdateDSOEnergyAmount";
+    public static final String CREATE_TSO_ENERGY_AMOUNT_LIST = "CreateTSOEnergyAmountList";
+    public static final String CREATE_DSO_ENERGY_AMOUNT_LIST = "CreateDSOEnergyAmountList";
+    public static final String UPDATE_TSO_ENERGY_AMOUNT_LIST = "UpdateTSOEnergyAmountList";
+    public static final String UPDATE_DSO_ENERGY_AMOUNT_LIST = "UpdateDSOEnergyAmountList";
     public static final String GET_ENERGY_AMOUNT_WITH_PAGINATION = "GetEnergyAmountWithPagination";
 
     @Autowired
@@ -52,9 +52,9 @@ public class EnergyAmountRepository {
         }
         log.info("Sauvegarde de {} energy amounts", energyAmounts.size());
         if (InstanceEnum.DSO.equals(instance)) {
-            writeEnergyAmountToBc(energyAmounts, CREATE_DSO_ENERGY_AMOUNT);
+            writeEnergyAmountsToBc(energyAmounts, CREATE_DSO_ENERGY_AMOUNT_LIST);
         } else {
-            writeEnergyAmountToBc(energyAmounts, CREATE_TSO_ENERGY_AMOUNT);
+            writeEnergyAmountsToBc(energyAmounts, CREATE_TSO_ENERGY_AMOUNT_LIST);
         }
         return energyAmounts;
     }
@@ -73,24 +73,20 @@ public class EnergyAmountRepository {
         }
         log.info("Modification des energy amounts : {}", energyAmounts);
         if (InstanceEnum.DSO.equals(instance)) {
-            writeEnergyAmountToBc(energyAmounts, UPDATE_DSO_ENERGY_AMOUNT);
+            writeEnergyAmountsToBc(energyAmounts, UPDATE_DSO_ENERGY_AMOUNT_LIST);
         } else {
-            writeEnergyAmountToBc(energyAmounts, UPDATE_TSO_ENERGY_AMOUNT);
+            writeEnergyAmountsToBc(energyAmounts, UPDATE_TSO_ENERGY_AMOUNT_LIST);
         }
         return energyAmounts;
     }
 
-    private List<EnergyAmount> writeEnergyAmountToBc(List<EnergyAmount> energyAmounts, String bcApiName) throws TechnicalException {
-        for (EnergyAmount energyAmount : energyAmounts) {
-            if (energyAmount != null) {
-                try {
-                    contract.submitTransaction(bcApiName, objectMapper.writeValueAsString(energyAmount));
-                } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur technique lors de l'enregistrement de l'energy amount ", exception);
-                } catch (ContractException contractException) {
-                    throw new BusinessException(contractException.getMessage());
-                }
-            }
+    private List<EnergyAmount> writeEnergyAmountsToBc(List<EnergyAmount> energyAmounts, String bcApiName) throws TechnicalException {
+        try {
+            contract.submitTransaction(bcApiName, objectMapper.writeValueAsString(energyAmounts));
+        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
+            throw new TechnicalException("Erreur technique lors de l'enregistrement de l'energy amount ", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
         }
         return energyAmounts;
     }

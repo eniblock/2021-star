@@ -88,9 +88,9 @@ export class HistoryController {
 
         console.debug('============= END : getHistoryByQuery ===========');
 
-        // console.debug("###############################################")
-        // console.debug(JSON.stringify(result))
-        // console.debug("###############################################")
+        console.debug("###############################################")
+        console.debug(JSON.stringify(result))
+        console.debug("###############################################")
 
         return result;
     }
@@ -294,13 +294,14 @@ export class HistoryController {
             var subOrderList: ActivationDocument[] = [];
             if (activationDocument && activationDocument.subOrderList) {
                 for(var activationDocumentMrid of activationDocument.subOrderList) {
-                    var subOrder: ActivationDocument;
+
+                    var subOrder: ActivationDocument = null;
                     try {
                         subOrder = await ActivationDocumentController.getActivationDocumentById(params, activationDocumentMrid);
                     } catch(error) {
                         //do nothing, but empty document : suborder information is not in accessible collection
                     }
-                    if (subOrder) {
+                    if (subOrder && subOrder.activationDocumentMrid) {
                         subOrderList.push(subOrder);
                     }
                 }

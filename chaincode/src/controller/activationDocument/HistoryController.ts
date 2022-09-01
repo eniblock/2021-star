@@ -293,7 +293,7 @@ export class HistoryController {
 
             var subOrderList: ActivationDocument[] = [];
             if (activationDocument && activationDocument.subOrderList) {
-                for(const activationDocumentMrid of activationDocument.subOrderList) {
+                for(var activationDocumentMrid of activationDocument.subOrderList) {
                     var subOrder: ActivationDocument;
                     try {
                         subOrder = await ActivationDocumentController.getActivationDocumentById(params, activationDocumentMrid);
@@ -409,7 +409,7 @@ export class HistoryController {
                 site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
                 producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
                 energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
-                displayedSourceName: "ABC-123"//displayedSourceName
+                displayedSourceName: displayedSourceName
             };
 
             historyInformationInBuilding.historyInformation.set(information.activationDocument.activationDocumentMrid, information);

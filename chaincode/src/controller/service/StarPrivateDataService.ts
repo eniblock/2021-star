@@ -75,6 +75,8 @@ export class StarPrivateDataService {
 
         var result:Map<string, DataReference> = params.getFromMemoryPool(arg.id);
 
+        // console.debug("result: ", JSON.stringify([...result]))
+
         if (!result || !result.values().next().value) {
             result = new Map();
             const target: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
@@ -118,7 +120,11 @@ export class StarPrivateDataService {
         // console.debug("result:",JSON.stringify([...result]))
         // console.debug("- - - - - - - - - - - - - - - - -")
 
-        if (!result || ! result.keys().next().value) {
+        if (!result || !result.values().next().value) {
+            // console.debug("EeErRrOoOrRr")
+            // console.debug("values: ", JSON.stringify(result.values()))
+            // console.debug("next: ", JSON.stringify(result.values().next()))
+            // console.debug("value: ", JSON.stringify(result.values().next().value))
             throw new Error(`${arg.docType} : ${arg.id} does not exist (not found in any collection).`);
         }
 

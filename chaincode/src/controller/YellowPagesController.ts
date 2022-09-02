@@ -54,7 +54,7 @@ export class YellowPagesController {
 
 
     public static async getAllYellowPages(params: STARParameters): Promise<string> {
-        const arrayResult = this.getAllYellowPagesObject(params);
+        const arrayResult = await this.getAllYellowPagesObject(params);
         return JSON.stringify(arrayResult);
     }
 

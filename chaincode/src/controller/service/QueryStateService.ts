@@ -78,7 +78,13 @@ export class QueryStateService {
 
         const poolKey = arg.query;
 
-        var poolValue = params.getFromMemoryPool(poolKey);
+        var poolValue = null;
+        try {
+            poolValue = params.getFromMemoryPool(poolKey);
+        } catch (err) {
+            //Do Nothing
+        }
+
         if (!poolValue
             || !poolValue.values().next().value
             || !poolValue.values().next().value.data

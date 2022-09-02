@@ -11,5 +11,5 @@ export enum DocType {
 
     /* TECHNICAL TYPE      */
     /* Used by Pool Memory */
-    STATE_QUERY_ITERATOR = 'StateQueryIterator',
+    QUERY_RESULT = 'QueryResult',
 }

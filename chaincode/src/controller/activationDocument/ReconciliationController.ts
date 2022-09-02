@@ -168,7 +168,7 @@ export class ReconciliationController {
                 childReference.data.originAutomationRegisteredResourceMrid
             );
         // console.info("0000000000000000000000000")
-        // console.log('yellowPageList for BB reconciliation=', yellowPageList.toString());
+        // console.log('yellowPageList for BB reconciliation=', JSON.stringify(yellowPageList));
         // console.info("0000000000000000000000000")
 
         var registeredResourceMridList = [];

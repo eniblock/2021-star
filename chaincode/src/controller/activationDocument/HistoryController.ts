@@ -89,9 +89,9 @@ export class HistoryController {
 
         console.debug('============= END : getHistoryByQuery ===========');
 
-        console.debug("###############################################")
-        console.debug(JSON.stringify(result))
-        console.debug("###############################################")
+        // console.debug("###############################################")
+        // console.debug(JSON.stringify(result))
+        // console.debug("###############################################")
 
         return result;
     }

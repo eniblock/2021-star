@@ -21,9 +21,16 @@ import { Values } from './Values';
 import { HLFServices } from '../src/controller/service/HLFservice';
 
 
+class TestLoggerMgt {
+    public getLogger(arg: string): any {
+        return console;
+    }
+}
+
 class TestContext {
     clientIdentity: any;
     stub: any;
+    logger: TestLoggerMgt= new TestLoggerMgt();
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
@@ -72,7 +79,7 @@ describe('Star Tests SITES', () => {
         //         // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
         //         // await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PDL00000000289766\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
         //     } catch(err) {
-        //         console.info(err.message)
+        //         params.logger.info(err.message)
         //         expect(err.message).to.equal('failed inserting key');
         //     }
         // });
@@ -82,7 +89,7 @@ describe('Star Tests SITES', () => {
             try {
                 await star.CreateSite(transactionContext, 'RTE01EIC');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR '.concat(DocType.SITE).concat(' -> Input string NON-JSON value'));
             }
         });
@@ -127,7 +134,7 @@ describe('Star Tests SITES', () => {
             try {
                 await star.CreateSite(transactionContext, JSON.stringify(Values.HTB_site_valid));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access for HTB(HV) sites');
             }
         });
@@ -143,7 +150,7 @@ describe('Star Tests SITES', () => {
                 const site = await Values.deleteJSONField(JSON.stringify(Values.HTB_site_valid), 'marketEvaluationPointMrid')
                 await star.CreateSite(transactionContext, site);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.');
             }
         });
@@ -159,7 +166,7 @@ describe('Star Tests SITES', () => {
                 const site = await Values.deleteJSONField(JSON.stringify(Values.HTB_site_valid), 'technologyType')
                 await star.CreateSite(transactionContext, site);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('technologyType is a compulsory field (string)');
             }
         });
@@ -201,12 +208,12 @@ describe('Star Tests SITES', () => {
             siteInput.producerMarketParticipantName = Values.HTA_Producer.producerMarketParticipantName;
             siteInput.docType = DocType.SITE;
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(siteInput))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(siteInput))
+            // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
         });
@@ -224,7 +231,7 @@ describe('Star Tests SITES', () => {
             try {
                 await star.CreateSite(transactionContext, JSON.stringify(Values.HTA_site_valid));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access for HTA(MV) sites');
             }
         });
@@ -248,7 +255,7 @@ describe('Star Tests SITES', () => {
             try {
                 await star.QuerySite(transactionContext, 'toto');
             } catch (err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(DocType.SITE.concat(' : toto does not exist (not found in any collection).'));
             }
         });
@@ -270,10 +277,10 @@ describe('Star Tests SITES', () => {
             expect(transactionContext.stub.getPrivateData.callCount).to.eql(allCollections.length);
 
             for (var i = 0; i < transactionContext.stub.getPrivateData.callCount; i++) {
-                // console.info("-----------")
-                // console.info(transactionContext.stub.getPrivateData.getCall(i).args[0]);
-                // console.info(transactionContext.stub.getPrivateData.getCall(i).args[1]);
-                // console.info("-----------")
+                // params.logger.info("-----------")
+                // params.logger.info(transactionContext.stub.getPrivateData.getCall(i).args[0]);
+                // params.logger.info(transactionContext.stub.getPrivateData.getCall(i).args[1]);
+                // params.logger.info("-----------")
 
                 expect(allCollections).to.include(transactionContext.stub.getPrivateData.getCall(i).args[0]);
                 expect(transactionContext.stub.getPrivateData.getCall(i).args[1]).to.eql(siteOutput.meteringPointMrid);
@@ -319,9 +326,9 @@ describe('Star Tests SITES', () => {
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryHTB).resolves(iteratorHTB);
 
             let retA = await star.GetSitesBySystemOperator(transactionContext, Values.HTA_site_valid.systemOperatorMarketParticipantMrid);
-            // console.log('retA=', retA)
+            // params.logger.log('retA=', retA)
             retA = JSON.parse(retA);
-            // console.log('retA=', retA)
+            // params.logger.log('retA=', retA)
             expect(retA.length).to.equal(1);
 
             const expected: Site[] = [JSON.parse(JSON.stringify(Values.HTA_site_valid))];
@@ -348,7 +355,7 @@ describe('Star Tests SITES', () => {
 
         //     let retB = await star.GetSitesBySystemOperator(transactionContext, Values.HTB_site_valid.systemOperatorMarketParticipantMrid);
         //     retB = JSON.parse(retB);
-        //     // console.log('retB=', retB)
+        //     // params.logger.log('retB=', retB)
         //     expect(retB.length).to.equal(2);
 
         //     const expected = [
@@ -395,7 +402,7 @@ describe('Star Tests SITES', () => {
             const producer = 'toto';
             let ret = await star.GetSitesBySystemOperator(transactionContext, producer);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -417,7 +424,7 @@ describe('Star Tests SITES', () => {
 
             let retA = await star.GetSitesByProducer(transactionContext, Values.HTA_site_valid.producerMarketParticipantMrid);
             retA = JSON.parse(retA);
-            // console.log('retA=', retA)
+            // params.logger.log('retA=', retA)
             expect(retA.length).to.equal(1);
 
             const expected: Site[] = [ JSON.parse(JSON.stringify(Values.HTA_site_valid)) ];
@@ -448,7 +455,7 @@ describe('Star Tests SITES', () => {
 
         //     let retB = await star.GetSitesByProducer(transactionContext, siteHTB.producerMarketParticipantMrid);
         //     retB = JSON.parse(retB);
-        //     // console.log('retB=', retB) //
+        //     // params.logger.log('retB=', retB) //
         //     expect(retB.length).to.equal(2);
 
         //     const expected = [
@@ -492,7 +499,7 @@ describe('Star Tests SITES', () => {
 
             let retProd = await star.GetSitesByProducer(transactionContext, producerMarketParticipantMrid);
             retProd = JSON.parse(retProd);
-            // console.log('retProd=', retProd)
+            // params.logger.log('retProd=', retProd)
             expect(retProd.length).to.equal(2);
 
             const expected: Site[] = [JSON.parse(JSON.stringify(Values.HTA_site_valid_ProdA)), JSON.parse(JSON.stringify(Values.HTA_site_valid_ProdB))];

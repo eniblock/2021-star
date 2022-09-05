@@ -20,7 +20,7 @@ export class EnergyAccountController {
     public static async createEnergyAccount(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : Create EnergyAccount ===========');
+        params.logger.info('============= START : Create EnergyAccount ===========');
 
         const energyObj:EnergyAccount = EnergyAccount.formatString(inputStr);
         await EnergyAccountController.checkEnergyAccountObj(params, energyObj);
@@ -37,7 +37,7 @@ export class EnergyAccountController {
             await EnergyAccountService.write(params, energyObj, key);
         }
 
-        console.debug('============= END   : Create %s EnergyAccount ===========',
+        params.logger.info('============= END   : Create %s EnergyAccount ===========',
             energyObj.energyAccountMarketDocumentMrid,
         );
     }
@@ -48,7 +48,7 @@ export class EnergyAccountController {
     public static async createEnergyAccountList(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : Create createEnergyAccountList ===========');
+        params.logger.info('============= START : Create createEnergyAccountList ===========');
 
         const energyList: EnergyAccount[] = EnergyAccount.formatListString(inputStr);
 
@@ -70,7 +70,7 @@ export class EnergyAccountController {
             }
         }
 
-        console.debug('============= END   : Create createEnergyAccountList ===========');
+        params.logger.info('============= END   : Create createEnergyAccountList ===========');
     }
 
 
@@ -79,12 +79,12 @@ export class EnergyAccountController {
     public static async createEnergyAccountByReference(
         params: STARParameters,
         dataReference: DataReference) {
-        console.debug('============= START : Create EnergyAccount by Reference ===========');
+        params.logger.debug('============= START : Create EnergyAccount by Reference ===========');
 
         await EnergyAccountController.checkEnergyAccountObj(params, dataReference.data, dataReference.collection);
         await EnergyAccountService.write(params, dataReference.data, dataReference.collection);
 
-        console.debug('============= END   : Create %s EnergyAccount by Reference ===========',
+        params.logger.debug('============= END   : Create %s EnergyAccount by Reference ===========',
             dataReference.data.energyAccountMarketDocumentMrid,
         );
     }
@@ -95,7 +95,7 @@ export class EnergyAccountController {
     public static async updateEnergyAccount(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : Update EnergyAccount ===========');
+        params.logger.info('============= START : Update EnergyAccount ===========');
 
         const energyObj:EnergyAccount = EnergyAccount.formatString(inputStr);
         await EnergyAccountController.checkEnergyAccountObj(params, energyObj);
@@ -112,16 +112,18 @@ export class EnergyAccountController {
             await EnergyAccountService.write(params, energyObj, key);
         }
 
-        console.debug('============= END   : Update %s EnergyAccount ===========',
+        params.logger.info('============= END   : Update %s EnergyAccount ===========',
         energyObj.energyAccountMarketDocumentMrid,
         );
     }
 
 
+
+
     public static async updateEnergyAccountList(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : Update EnergyAccount List ===========');
+        params.logger.info('============= START : Update EnergyAccount List ===========');
 
         const energyList: EnergyAccount[] = EnergyAccount.formatListString(inputStr);
 
@@ -143,7 +145,7 @@ export class EnergyAccountController {
             }
         }
 
-        console.debug('============= END   : Update %s EnergyAccount List ===========');
+        params.logger.info('============= END   : Update %s EnergyAccount List ===========');
     }
 
 
@@ -151,6 +153,7 @@ export class EnergyAccountController {
         params: STARParameters,
         energyObj:EnergyAccount,
         target: string = ''): Promise<void>{
+        params.logger.debug('============= START : Check EnergyAccount Obj ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -216,6 +219,8 @@ export class EnergyAccountController {
         } else if (identity === OrganizationTypeMsp.ENEDIS && energyObj.marketEvaluationPointMrid) {
             throw new Error(`Energy Account, presence of marketEvaluationPointMrid optionnal for HTA but required for HTB in EnergyAccount.`);
         }
+
+        params.logger.debug('=============  END  : Check EnergyAccount Obj ===========');
     }
 
 
@@ -284,6 +289,7 @@ export class EnergyAccountController {
         params: STARParameters,
         id: string,
         target: string = ''): Promise<boolean> {
+        params.logger.debug('============= START : dataExists EnergyAccount Controller ===========');
 
         let existing: boolean = false;
         const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ENERGY_ACCOUNT, id: id});
@@ -300,6 +306,7 @@ export class EnergyAccountController {
                 && result.values().next().value.data.energyAccountMarketDocumentMrid == id;
         }
 
+        params.logger.debug('=============  END  : dataExists EnergyAccount Controller ===========');
         return existing;
     }
 
@@ -313,11 +320,13 @@ export class EnergyAccountController {
             meteringPointMrid: string,
             systemOperatorEicCode: string,
             startCreatedDateTime: string): Promise<string> {
+        params.logger.info('============= START : get EnergyAccount For SystemOperator ===========');
 
         const allResults = await EnergyAccountController.getEnergyAccountForSystemOperatorObj(
             params, meteringPointMrid, systemOperatorEicCode, startCreatedDateTime);
         const formated = JSON.stringify(allResults);
 
+        params.logger.info('=============  END  : get EnergyAccount For SystemOperator ===========');
         return formated;
     }
 
@@ -330,6 +339,7 @@ export class EnergyAccountController {
         systemOperatorEicCode: string,
         startCreatedDateTime: string,
         target: string = ''): Promise<any[]> {
+        params.logger.debug('============= START : get EnergyAccount Obj For SystemOperator ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -339,9 +349,9 @@ export class EnergyAccountController {
         const dateUp = new Date(startCreatedDateTime);
 
         dateUp.setUTCHours(0,0,0,0);
-        // console.log('dateUp=', JSON.stringify(dateUp));
+        // params.logger.log('dateUp=', JSON.stringify(dateUp));
         const dateDown = new Date(dateUp.getTime() + 86399999);
-        // console.log('dateDown=', JSON.stringify(dateDown));
+        // params.logger.log('dateDown=', JSON.stringify(dateDown));
 
         let systemOperatorObj: SystemOperator;
         try {
@@ -368,6 +378,7 @@ export class EnergyAccountController {
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
+        params.logger.debug('=============  END  : get EnergyAccount Obj For SystemOperator ===========');
         return await EnergyAccountService.getQueryArrayResult(params, query, target);
     }
 
@@ -378,13 +389,16 @@ export class EnergyAccountController {
     public static async getEnergyAccountByQuery(
         params: STARParameters,
         query: string): Promise<any> {
+        params.logger.debug('============= START : get EnergyAccount Obj By Query ===========');
 
-            const identity = params.values.get(ParametersType.IDENTITY);
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
         }
 
         let results = await EnergyAccountService.getQueryArrayResult(params, query);
+
+        params.logger.debug('=============  END  : get EnergyAccount Obj By Query ===========');
         return results;
     }
 
@@ -397,6 +411,7 @@ export class EnergyAccountController {
         meteringPointMrid: string,
         producerEicCode: string,
         startCreatedDateTime: string): Promise<string> {
+        params.logger.info('============= START : get EnergyAccount By Producer ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.PRODUCER) {
@@ -405,9 +420,9 @@ export class EnergyAccountController {
         const dateUp = new Date(startCreatedDateTime);
 
         dateUp.setUTCHours(0,0,0,0);
-        // console.log('dateUp=', JSON.stringify(dateUp));
+        // params.logger.log('dateUp=', JSON.stringify(dateUp));
         const dateDown = new Date(dateUp.getTime() + 86399999);
-        // console.log('dateDown=', JSON.stringify(dateDown));
+        // params.logger.log('dateDown=', JSON.stringify(dateDown));
 
         var args: string[] = [];
         args.push(`"meteringPointMrid":"${meteringPointMrid}"`);
@@ -419,6 +434,8 @@ export class EnergyAccountController {
 
         const allResults = await EnergyAccountService.getQueryArrayResult(params, query);
         const formated = JSON.stringify(allResults);
+
+        params.logger.info('=============  END  : get EnergyAccount By Producer ===========');
         return formated;
     }
 }

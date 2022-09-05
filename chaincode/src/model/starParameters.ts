@@ -4,6 +4,7 @@
 import { Context } from 'fabric-contract-api';
 import * as Yup from 'yup';
 import { DataReference } from './dataReference';
+import { Logger } from 'winston';
 
 export class STARParameters {
     public static readonly schema = Yup.object().shape({
@@ -14,6 +15,8 @@ export class STARParameters {
     public docType?: string;
     public values: Map<string,any>;
     public ctx: Context;
+    public loggerMgt: any;
+    public logger: Logger;
 
 
     /*

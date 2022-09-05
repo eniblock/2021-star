@@ -20,10 +20,16 @@ import { Values } from './Values';
 import { DocType } from '../src/enums/DocType';
 import { HLFServices } from '../src/controller/service/HLFservice';
 
+class TestLoggerMgt {
+    public getLogger(arg: string): any {
+        return console;
+    }
+}
 
 class TestContext {
     clientIdentity: any;
     stub: any;
+    logger: TestLoggerMgt= new TestLoggerMgt();
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
@@ -67,7 +73,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, 'RTE01EIC');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR createYellowPages-> Input string NON-JSON value');
             }
         });
@@ -78,7 +84,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, JSON.stringify(Values.HTB_yellowPage));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('systemOperator : '.concat(Values.HTB_yellowPage.systemOperatorMarketParticipantMrid).concat(' does not exist in Yellow Pages ').concat(Values.HTB_yellowPage.originAutomationRegisteredResourceMrid).concat('.'));
             }
         });
@@ -90,7 +96,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, JSON.stringify(Values.HTB_yellowPage));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Site : '.concat(Values.HTB_yellowPage.registeredResourceMrid).concat(' does not exist in Yellow Pages ').concat(Values.HTB_yellowPage.originAutomationRegisteredResourceMrid).concat('.'));
             }
         });
@@ -107,7 +113,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, JSON.stringify(Values.HTA_yellowPage));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access for Yellow Pages.');
             }
         });
@@ -125,7 +131,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('originAutomationRegisteredResourceMrid is a compulsory string.');
             }
         });
@@ -143,7 +149,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('registeredResourceMrid is a compulsory string.');
             }
         });
@@ -161,7 +167,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('systemOperatorMarketParticipantMrid is a compulsory string.');
             }
         });
@@ -177,7 +183,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.CreateYellowPages(transactionContext, '{}');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('4 errors occurred');
             }
         });
@@ -196,12 +202,12 @@ describe('Star Tests YELLOW PAGES', () => {
             const expected = JSON.parse(JSON.stringify(Values.HTA_yellowPage))
             expected.docType = DocType.YELLOW_PAGES;
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putState.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putState.firstCall.args[1].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putState.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putState.firstCall.args[1].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
 
             transactionContext.stub.putState.should.have.been.calledOnceWithExactly(
                 Values.HTA_yellowPage.yellowPageMrid,
@@ -221,7 +227,7 @@ describe('Star Tests YELLOW PAGES', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             let ret = await star.GetAllYellowPages(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -230,7 +236,7 @@ describe('Star Tests YELLOW PAGES', () => {
             try {
                 await star.GetAllYellowPages(transactionContext);
             } catch (err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMspID does not have read access for Yellow Pages.');
             }
         });
@@ -245,7 +251,7 @@ describe('Star Tests YELLOW PAGES', () => {
 
             let ret = await star.GetAllYellowPages(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
             const expected: YellowPages[] = [Values.HTB_yellowPage];
@@ -281,7 +287,7 @@ describe('Star Tests YELLOW PAGES', () => {
 
         //     let ret = await star.GetAllYellowPages(transactionContext);
         //     ret = JSON.parse(ret);
-        //     // console.log('ret=', ret)
+        //     // params.logger.log('ret=', ret)
         //     expect(ret.length).to.equal(2);
 
         //     const expected = [

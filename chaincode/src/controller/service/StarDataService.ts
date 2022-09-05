@@ -7,15 +7,14 @@ export class StarDataService {
     private static async getRaw(
         params: STARParameters,
         arg: IdArgument): Promise<Uint8Array> {
-
-        console.debug('============= START : getRaw %s %s ===========', arg.id, arg.docType);
+        params.logger.debug('============= START : getRaw %s %s ===========', arg.id, arg.docType);
 
         const dataAsBytes = await params.ctx.stub.getState(arg.id);
         if (!dataAsBytes || dataAsBytes.length === 0) {
             throw new Error(`${arg.docType} : ${arg.id} does not exist`);
         }
 
-        console.debug('============= END : getRaw %s %s ===========', arg.id, arg.docType);
+        params.logger.debug('=============  END  : getRaw %s %s ===========', arg.id, arg.docType);
         return dataAsBytes;
     }
 
@@ -23,6 +22,7 @@ export class StarDataService {
     public static async getObj(
         params: STARParameters,
         arg: IdArgument): Promise<any> {
+        params.logger.debug('============= START : getObj %s %s ===========', arg.id, arg.docType);
 
         var dataObj:any = null;
 
@@ -52,6 +52,7 @@ export class StarDataService {
 
         }
 
+        params.logger.debug('=============  END  : getObj %s %s ===========', arg.id, arg.docType);
         return dataObj;
     }
 
@@ -60,7 +61,7 @@ export class StarDataService {
         params: STARParameters,
         arg: DataObjArgument): Promise<void> {
 
-        console.debug('============= START : Write %s %s ===========', arg.id, arg.dataObj.docType);
+        params.logger.debug('============= START : Write %s %s ===========', arg.id, arg.dataObj.docType);
 
         await params.ctx.stub.putState(arg.id,Buffer.from(JSON.stringify(arg.dataObj)));
 
@@ -68,7 +69,7 @@ export class StarDataService {
         params.addInMemoryPool(arg.id, poolRef);
 
 
-        console.debug('============= END : Write %s %s ===========', arg.id, arg.dataObj.docType);
+        params.logger.debug('=============  END  : Write %s %s ===========', arg.id, arg.dataObj.docType);
     }
 
 }

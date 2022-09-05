@@ -12,9 +12,16 @@ import { Star } from '../src/star'
 
 import { Values } from './Values';
 
+class TestLoggerMgt {
+    public getLogger(arg: string): any {
+        return console;
+    }
+}
+
 class TestContext {
     clientIdentity: any;
     stub: any;
+    logger: TestLoggerMgt= new TestLoggerMgt();
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
@@ -53,7 +60,7 @@ describe('Star Tests RESTITUTIONS', () => {
         it('should return SUCCESS empty Participants', async () => {
             let ret = await star.ViewSystemOperaterMarketParticipant(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
 
             const expected = { producers: [], systemOperators: [] };
 
@@ -71,7 +78,7 @@ describe('Star Tests RESTITUTIONS', () => {
 
             let ret = await star.ViewSystemOperaterMarketParticipant(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             // expect(ret.length).to.equal(3);
 
             const expected = {
@@ -94,7 +101,7 @@ describe('Star Tests RESTITUTIONS', () => {
 
             let ret = await star.ViewProducerMarketParticipant(transactionContext, Values.HTA_Producer.producerMarketParticipantMrid);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             // expect(ret.length).to.equal(3);
 
             const expected = {

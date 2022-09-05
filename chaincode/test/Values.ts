@@ -67,11 +67,11 @@ export class Values {
     }
 
     public static midnightDateStr(dateref: string): string {
-        // console.info("dateref : ", dateref);
+        // params.logger.info("dateref : ", dateref);
         var newDate = new Date(Date.parse(dateref));
 
         newDate.setHours(1,0,0,0);
-        // console.info("newDate : ", newDate);
+        // params.logger.info("newDate : ", newDate);
 
         return JSON.parse(JSON.stringify(newDate));
     }

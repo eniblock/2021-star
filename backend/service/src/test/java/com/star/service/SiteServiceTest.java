@@ -267,7 +267,7 @@ class SiteServiceTest extends AbstractTest {
         verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture());
 
         String queryValue = queryCaptor.getValue();
-        assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
+        assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTA, Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
     }
 
     @Test
@@ -284,6 +284,6 @@ class SiteServiceTest extends AbstractTest {
         verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture());
 
         String queryValue = queryCaptor.getValue();
-        assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTA);
+        assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTA, Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
     }
 }

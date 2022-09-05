@@ -253,37 +253,37 @@ class SiteServiceTest extends AbstractTest {
     }
 
 
-    @Test
-    void testFindSiteWithoutMeteringPointMrIdOnTso() throws IOException, TechnicalException, ContractException {
-        // GIVEN
-        SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(TSO)
-                .producerMarketParticipantMrid("PRODUCER_MR_ID")
-                .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
+    // @Test
+    // void testFindSiteWithoutMeteringPointMrIdOnTso() throws IOException, TechnicalException, ContractException {
+    //     // GIVEN
+    //     SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(TSO)
+    //             .producerMarketParticipantMrid("PRODUCER_MR_ID")
+    //             .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
 
-        // WHEN
-        siteService.findSite(siteCrteria, Sort.by("technologyType"));
+    //     // WHEN
+    //     siteService.findSite(siteCrteria, Sort.by("technologyType"));
 
-        // THEN
-        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture());
+    //     // THEN
+    //     verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture());
 
-        String queryValue = queryCaptor.getValue();
-        assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTA, Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
-    }
+    //     String queryValue = queryCaptor.getValue();
+    //     assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTA, Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
+    // }
 
-    @Test
-    void testFindSiteWithoutMeteringPointMrIdOnDso() throws TechnicalException {
-        // GIVEN
-        SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(DSO)
-                .producerMarketParticipantMrid("PRODUCER_MR_ID")
-                .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
+    // @Test
+    // void testFindSiteWithoutMeteringPointMrIdOnDso() throws TechnicalException {
+    //     // GIVEN
+    //     SiteCrteria siteCrteria = SiteCrteria.builder().siteIecCode("IecCode").siteName("site_test").instance(DSO)
+    //             .producerMarketParticipantMrid("PRODUCER_MR_ID")
+    //             .producerMarketParticipantName("PRC_NAME").substationMrid("SUB_MRID").substationName("SUB_NAME").build();
 
-        // WHEN
-        siteService.findSite(siteCrteria, Sort.by("producerMarketParticipantName"));
+    //     // WHEN
+    //     siteService.findSite(siteCrteria, Sort.by("producerMarketParticipantName"));
 
-        // THEN
-        verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture());
+    //     // THEN
+    //     verify(siteRepository, Mockito.times(1)).findSiteByQuery(queryCaptor.capture());
 
-        String queryValue = queryCaptor.getValue();
-        assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTA, Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
-    }
+    //     String queryValue = queryCaptor.getValue();
+    //     assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTA, Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
+    // }
 }

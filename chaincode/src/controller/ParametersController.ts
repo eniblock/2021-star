@@ -4,7 +4,7 @@ import { STARParameters } from '../model/starParameters';
 import { ParametersType } from '../enums/ParametersType';
 import { RoleType } from '../enums/RoleType';
 import { HLFServices } from './service/HLFservice';
-import { DataReference } from '../model/dataReference';
+import { CommonService } from './service/CommonService';
 
 
 const enedis_producer = "enedis-producer";
@@ -15,6 +15,13 @@ const enedis_producer_rte = "enedis-producer-rte";
 const ppco_time_threshold: number = 75*24*60*60*1000; // 75 days
 const pc_time_match_threshold: number = 5*60*1000; //5 minutes
 const pc_time_updateend_match_threshold: number = 24*60*60*1000; // 24 hours
+
+const energyAccount_TimeInterval_LAPsec = 24 * 60 * 60;
+const energyAccount_TimeInterval_LAPsec_Less1H = 23 * 60 * 60;
+const energyAccount_TimeInterval_LAPsec_Plus1H = 25 * 60 * 60;
+const energyAccount_TimeInterval_Start = "PT";
+const energyAccount_TimeInterval_Minutes = "M";
+const energyAccount_TimeInterval_Seconds = "S";
 
 const role_enedis = RoleType.Role_DSO;
 const role_producer = RoleType.Role_Producer;
@@ -113,6 +120,23 @@ export class ParametersController {
         parameters.values.set(ParametersType.PPCO_TIME_THRESHOLD, ppco_time_threshold);
         parameters.values.set(ParametersType.PC_TIME_MATCH_THRESHOLD, pc_time_match_threshold);
         parameters.values.set(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD, pc_time_updateend_match_threshold);
+
+
+
+        parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec, energyAccount_TimeInterval_LAPsec);
+        parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H, energyAccount_TimeInterval_LAPsec_Less1H);
+        const Less1H_Days: string[] = [CommonService.formatDateStr("2022-03-27")];
+        parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS, Less1H_Days);
+
+        parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H, energyAccount_TimeInterval_LAPsec_Plus1H);
+        const Plus1H_Days: string[] = [CommonService.formatDateStr("2022-10-30")];
+        parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H_DAYS, Plus1H_Days);
+
+        parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_START, energyAccount_TimeInterval_Start);
+        parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_MINUTES, energyAccount_TimeInterval_Minutes);
+        parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_SECONDS, energyAccount_TimeInterval_Seconds);
+
+
 
         const valueRoleTable = new Map<string, string>();
         valueRoleTable.set(OrganizationTypeMsp.ENEDIS, role_enedis);

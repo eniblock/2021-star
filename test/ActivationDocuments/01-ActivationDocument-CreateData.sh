@@ -233,7 +233,7 @@ echo
 echo "** RTE - YELLOWPAGE DATA CREATION"
 echo
 
-RTE_YELLOWPAGES=$(csvtojson < $DATA_PATH/14-rte-YellowPages.csv --delimiter=';')
+RTE_YELLOWPAGES=$(csvtojson < $DATA_PATH/14-YellowPages.csv --delimiter=';')
 RTE_YELLOWPAGES_NB=$(echo $RTE_YELLOWPAGES | jq 'length')
 
 for i in `seq $RTE_YELLOWPAGES_NB`

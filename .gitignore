@@ -84,6 +84,7 @@ secrets-*.yaml
 /scripts-test-chaincode
 #test crt files
 /test/**/*.crt
+test/temp
 
 
 # terraform output files

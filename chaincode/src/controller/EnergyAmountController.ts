@@ -16,6 +16,7 @@ import { StarPrivateDataService } from './service/StarPrivateDataService';
 import { StarDataService } from './service/StarDataService';
 
 import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
+import { CommonService } from './service/CommonService';
 
 export class EnergyAmountController {
     public static async executeOrder(
@@ -51,28 +52,6 @@ export class EnergyAmountController {
 
 
 
-    private static formatDate(dateValue: Date): string {
-        var stringValue: string = "";
-
-        // Remember : NaN is never equal to itself.
-        if (dateValue && dateValue.getTime() === dateValue.getTime()) {
-            var tmp: string = "";
-            tmp = dateValue.getFullYear().toString();
-            stringValue = stringValue.concat(tmp);
-
-            stringValue = stringValue.concat("-");
-
-            tmp = (dateValue.getMonth()+1).toString();
-            stringValue = stringValue.concat(tmp);
-
-            stringValue = stringValue.concat("-");
-
-            tmp = dateValue.getDate().toString();
-            stringValue = stringValue.concat(tmp);
-        }
-
-        return stringValue;
-    }
 
 
     private static async checkEnergyAmout(
@@ -132,51 +111,15 @@ export class EnergyAmountController {
 
         // console.log('dateBegin=', dateBegin);
 
-        var dateEnd: Date = null;
-        var dateEndStr = end.trim();
-        if (dateEndStr && dateEndStr.length > 0) {
-            dateEnd = new Date(dateEndStr);
-            // // console.log('dateEnd=', dateEnd);
-            dateEnd.setUTCHours(0,0,0,0);
-        }
 
         // console.log('dateEnd=', dateEnd);
 
         const orderDateStart = new Date(orderObj.startCreatedDateTime);
         orderDateStart.setUTCHours(0,0,0,0);
-
-        var orderDateEnd: Date = null;
-        if (orderObj.endCreatedDateTime) {
-            orderDateEnd= new Date(orderObj.endCreatedDateTime);
-            orderDateEnd.setUTCHours(0,0,0,0);
-        }
         // console.log('orderDateStart=', orderDateStart);
 
-
-        var checkDatesRules = true;
-        if (!dateBegin || !orderDateStart) {
-            checkDatesRules = false;
-        }
-
-        checkDatesRules = checkDatesRules && (dateBegin >= orderDateStart);
-        if (orderDateEnd) {
-            checkDatesRules = checkDatesRules && (dateBegin <= orderDateEnd);
-
-            if (!dateEnd) {
-                checkDatesRules = false;
-            } else {
-                checkDatesRules = checkDatesRules && (dateEnd <= orderDateEnd);
-            }
-        }
-
-        if (!checkDatesRules) {
-            var dateBeginStr = EnergyAmountController.formatDate(dateBegin);
-            dateEndStr = "";
-            if (dateEnd) { dateEndStr = EnergyAmountController.formatDate(dateEnd); }
-            var orderDateStartStr = EnergyAmountController.formatDate(orderDateStart);
-            var orderDateEndStr = "";
-            if (orderDateEnd) {orderDateEndStr = EnergyAmountController.formatDate(orderDateEnd); }
-            throw new Error(`ERROR manage EnergyAmount mismatch between ${energyType} : ${dateBeginStr}/${dateEndStr} and Activation Document : ${orderDateStartStr}/${orderDateEndStr} dates.`);
+        if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
+            throw new Error(`ERROR manage EnergyAmount mismatch between ${energyType} : ${CommonService.formatDate(dateBegin)} and Activation Document : ${CommonService.formatDate(orderDateStart)} dates.`);
         }
     }
 //      ================STAR-425 : Partie du code en commentaire car on utilise pas les clés composites===========================

@@ -51,146 +51,146 @@ echo
 echo
 
 
-OUTPUT_ENEDIS="${OUTPUT_ENEDIS:1:-1}"
+# OUTPUT_ENEDIS="${OUTPUT_ENEDIS:1:-1}"
 
 
-DELIMITER="}},{"
-OUTPUT_ENEDIS=$OUTPUT_ENEDIS$DELIMITER
+# DELIMITER="}},{"
+# OUTPUT_ENEDIS=$OUTPUT_ENEDIS$DELIMITER
 
-START=""
-END="}}"
+# START=""
+# END="}}"
 
-while [[ $OUTPUT_ENEDIS ]]; do
-        VALUE_OUTPUT=( "${OUTPUT_ENEDIS%%"$DELIMITER"*}" );
-        OUTPUT_ENEDIS=${OUTPUT_ENEDIS#*"$DELIMITER"};
+# while [[ $OUTPUT_ENEDIS ]]; do
+#         VALUE_OUTPUT=( "${OUTPUT_ENEDIS%%"$DELIMITER"*}" );
+#         OUTPUT_ENEDIS=${OUTPUT_ENEDIS#*"$DELIMITER"};
 
-        if [[ "[$OUTPUT_ENEDIS]" == "[]" ]]
-        then
-                END=""
-        fi
+#         if [[ "[$OUTPUT_ENEDIS]" == "[]" ]]
+#         then
+#                 END=""
+#         fi
 
-        VALUE_OUTPUT="[$START$VALUE_OUTPUT$END]"
+#         VALUE_OUTPUT="[$START$VALUE_OUTPUT$END]"
 
-        if [[ $VALUE_OUTPUT != "[]" ]]
-        then
-                COLLECTION_OUTPUT=( "${VALUE_OUTPUT#*"collection"}" );
-                COLLECTION_OUTPUT=( "${COLLECTION_OUTPUT%%","*}" );
-                collection_ENEDIS=$(echo $VALUE_OUTPUT | grep "enedis")
-                collection_PRODUCER=$(echo $VALUE_OUTPUT | grep "producer")
-                collection_RTE=$(echo $VALUE_OUTPUT | grep "rte")
-                TLSOPT=""
-                if [[ "[$collection_ENEDIS]" != "[]" ]]
-                then
-                        TLSOPT="$TLSOPT $ENEDIS_TLSOPT"
-                fi
-                if [[ "[$collection_PRODUCER]" != "[]" ]]
-                then
-                        TLSOPT="$TLSOPT $PRODUCER_TLSOPT"
-                fi
-                # if [[ "[$collection_RTE]" != "[]" ]]
-                # then
-                #         TLSOPT="$TLSOPT $RTE_TLSOPT"
-                # fi
+#         if [[ $VALUE_OUTPUT != "[]" ]]
+#         then
+#                 COLLECTION_OUTPUT=( "${VALUE_OUTPUT#*"collection"}" );
+#                 COLLECTION_OUTPUT=( "${COLLECTION_OUTPUT%%","*}" );
+#                 collection_ENEDIS=$(echo $VALUE_OUTPUT | grep "enedis")
+#                 collection_PRODUCER=$(echo $VALUE_OUTPUT | grep "producer")
+#                 collection_RTE=$(echo $VALUE_OUTPUT | grep "rte")
+#                 TLSOPT=""
+#                 if [[ "[$collection_ENEDIS]" != "[]" ]]
+#                 then
+#                         TLSOPT="$TLSOPT $ENEDIS_TLSOPT"
+#                 fi
+#                 if [[ "[$collection_PRODUCER]" != "[]" ]]
+#                 then
+#                         TLSOPT="$TLSOPT $PRODUCER_TLSOPT"
+#                 fi
+#                 # if [[ "[$collection_RTE]" != "[]" ]]
+#                 # then
+#                 #         TLSOPT="$TLSOPT $RTE_TLSOPT"
+#                 # fi
 
-                echo
-                echo "UpdateActivationDocumentByOrders $COLLECTION_OUTPUT"
-                echo $TLSOPT
-                echo $VALUE_OUTPUT
-                echo
+#                 echo
+#                 echo "UpdateActivationDocumentByOrders $COLLECTION_OUTPUT"
+#                 echo $TLSOPT
+#                 echo $VALUE_OUTPUT
+#                 echo
 
-                kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
-                        peer chaincode invoke \
-                        -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                        --tls $TLSOPT \
-                        -c '{"Args":["UpdateActivationDocumentByOrders","'$VALUE_OUTPUT'"]}'
+#                 kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+#                         peer chaincode invoke \
+#                         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+#                         --tls $TLSOPT \
+#                         -c '{"Args":["UpdateActivationDocumentByOrders","'$VALUE_OUTPUT'"]}'
 
-        fi
-        START="{"
+#         fi
+#         START="{"
 
-        echo
-        echo "wait $PAUSE_TIME"
-        sleep $PAUSE_TIME
+#         echo
+#         echo "wait $PAUSE_TIME"
+#         sleep $PAUSE_TIME
 
-done;
-
-
-
-
-echo
-echo
-echo "***********************************"
-echo
-echo "** RTE"
-echo
+# done;
 
 
 
 
-echo
-echo "GetActivationDocumentReconciliationState"
-echo
-OUTPUT_RTE=$(
-kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
-	peer chaincode invoke \
-        -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls $RTE_TLSOPT \
-        -c '{"Args":["GetActivationDocumentReconciliationState"]}' 2>&1)
+# echo
+# echo
+# echo "***********************************"
+# echo
+# echo "** RTE"
+# echo
 
 
-OUTPUT_RTE=$(echo $OUTPUT_RTE | grep -o -P '(?<=").*(?=")')
-OUTPUT_RTE="${OUTPUT_RTE:1:-1}"
-
-DELIMITER="}},{"
-OUTPUT_RTE=$OUTPUT_RTE$DELIMITER
-
-START=""
-END="}}"
 
 
-while [[ $OUTPUT_RTE ]]; do
-        VALUE_OUTPUT=( "${OUTPUT_RTE%%"$DELIMITER"*}" );
-        OUTPUT_RTE=${OUTPUT_RTE#*"$DELIMITER"};
+# echo
+# echo "GetActivationDocumentReconciliationState"
+# echo
+# OUTPUT_RTE=$(
+# kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+# 	peer chaincode invoke \
+#         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls $RTE_TLSOPT \
+#         -c '{"Args":["GetActivationDocumentReconciliationState"]}' 2>&1)
 
-        if [[ "[$OUTPUT_RTE]" == "[]" ]]
-        then
-                END=""
-        fi
 
-        VALUE_OUTPUT="[$START$VALUE_OUTPUT$END]"
+# OUTPUT_RTE=$(echo $OUTPUT_RTE | grep -o -P '(?<=").*(?=")')
+# OUTPUT_RTE="${OUTPUT_RTE:1:-1}"
 
-        if [[ $VALUE_OUTPUT != "[]" ]]
-        then
-                COLLECTION_OUTPUT=( "${VALUE_OUTPUT#*"collection"}" );
-                COLLECTION_OUTPUT=( "${COLLECTION_OUTPUT%%","*}" );
-                collection_ENEDIS=$(echo $VALUE_OUTPUT | grep "enedis")
-                collection_PRODUCER=$(echo $VALUE_OUTPUT | grep "producer")
-                collection_RTE=$(echo $VALUE_OUTPUT | grep "rte")
-                TLSOPT=""
-                # if [[ "[$collection_ENEDIS]" != "[]" ]]
-                # then
-                #         TLSOPT="$TLSOPT $ENEDIS_TLSOPT"
-                # fi
-                if [[ "[$collection_PRODUCER]" != "[]" ]]
-                then
-                        TLSOPT="$TLSOPT $PRODUCER_TLSOPT"
-                fi
-                if [[ "[$collection_RTE]" != "[]" ]]
-                then
-                        TLSOPT="$TLSOPT $RTE_TLSOPT"
-                fi
+# DELIMITER="}},{"
+# OUTPUT_RTE=$OUTPUT_RTE$DELIMITER
 
-                echo
-                echo "UpdateActivationDocumentByOrders $COLLECTION_OUTPUT"
-                echo
+# START=""
+# END="}}"
 
-                kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
-                        peer chaincode invoke \
-                        -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                        --tls $TLSOPT \
-                        -c '{"Args":["UpdateActivationDocumentByOrders","'$VALUE_OUTPUT'"]}'
 
-        fi
-        START="{"
-done;
+# while [[ $OUTPUT_RTE ]]; do
+#         VALUE_OUTPUT=( "${OUTPUT_RTE%%"$DELIMITER"*}" );
+#         OUTPUT_RTE=${OUTPUT_RTE#*"$DELIMITER"};
+
+#         if [[ "[$OUTPUT_RTE]" == "[]" ]]
+#         then
+#                 END=""
+#         fi
+
+#         VALUE_OUTPUT="[$START$VALUE_OUTPUT$END]"
+
+#         if [[ $VALUE_OUTPUT != "[]" ]]
+#         then
+#                 COLLECTION_OUTPUT=( "${VALUE_OUTPUT#*"collection"}" );
+#                 COLLECTION_OUTPUT=( "${COLLECTION_OUTPUT%%","*}" );
+#                 collection_ENEDIS=$(echo $VALUE_OUTPUT | grep "enedis")
+#                 collection_PRODUCER=$(echo $VALUE_OUTPUT | grep "producer")
+#                 collection_RTE=$(echo $VALUE_OUTPUT | grep "rte")
+#                 TLSOPT=""
+#                 # if [[ "[$collection_ENEDIS]" != "[]" ]]
+#                 # then
+#                 #         TLSOPT="$TLSOPT $ENEDIS_TLSOPT"
+#                 # fi
+#                 if [[ "[$collection_PRODUCER]" != "[]" ]]
+#                 then
+#                         TLSOPT="$TLSOPT $PRODUCER_TLSOPT"
+#                 fi
+#                 if [[ "[$collection_RTE]" != "[]" ]]
+#                 then
+#                         TLSOPT="$TLSOPT $RTE_TLSOPT"
+#                 fi
+
+#                 echo
+#                 echo "UpdateActivationDocumentByOrders $COLLECTION_OUTPUT"
+#                 echo
+
+#                 kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+#                         peer chaincode invoke \
+#                         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+#                         --tls $TLSOPT \
+#                         -c '{"Args":["UpdateActivationDocumentByOrders","'$VALUE_OUTPUT'"]}'
+
+#         fi
+#         START="{"
+# done;
 
 
 echo ""

@@ -20,6 +20,7 @@ import { ParametersController } from '../src/controller/ParametersController';
 import { DocType } from '../src/enums/DocType';
 import { HLFServices } from '../src/controller/service/HLFservice';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
+import { CommonService } from '../src/controller/service/CommonService';
 
 class TestContext {
     clientIdentity: any;
@@ -163,13 +164,13 @@ describe('Star Tests EnergyAmount', () => {
             } catch(err) {
                 // console.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat(CommonService.formatDateStr(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
                 .concat("/")
                 .concat()
                 .concat(' and Activation Document : ')
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat(CommonService.formatDateStr(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
                 .concat("/")
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
+                .concat(CommonService.formatDateStr(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
                 .concat(' dates.'));
             }
         });
@@ -193,12 +194,8 @@ describe('Star Tests EnergyAmount', () => {
                 // console.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
                 .concat()
-                .concat("/")
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
                 .concat(' and Activation Document : ')
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
-                .concat("/")
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
+                .concat(CommonService.formatDateStr(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
                 .concat(' dates.'));
             }
         });
@@ -226,13 +223,9 @@ describe('Star Tests EnergyAmount', () => {
             } catch(err) {
                 // console.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
-                .concat(Values.formatDate(dateStart as string))
-                .concat("/")
-                .concat(Values.formatDate(dateEnd as string))
+                .concat(CommonService.formatDateStr(dateStart as string))
                 .concat(' and Activation Document : ')
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
-                .concat("/")
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
+                .concat(CommonService.formatDateStr(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
                 .concat(' dates.'));
             }
         });
@@ -259,13 +252,9 @@ describe('Star Tests EnergyAmount', () => {
             } catch(err) {
                 // console.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
-                .concat(Values.formatDate(dateStart as string))
-                .concat("/")
-                .concat(Values.formatDate(dateEnd as string))
+                .concat(CommonService.formatDateStr(dateStart as string))
                 .concat(' and Activation Document : ')
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
-                .concat("/")
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.endCreatedDateTime as string))
+                .concat(CommonService.formatDateStr(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
                 .concat(' dates.'));
             }
         });
@@ -358,66 +347,6 @@ describe('Star Tests EnergyAmount', () => {
         });
 
 
-
-        it('should return SUCCESS CreateTSOEnergyAmountList Activation Document on 2 different days.', async () => {
-            const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
-            const energyamount2:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount_2));
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
-
-            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-
-            const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
-
-            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
-            activationDocument.endCreatedDateTime = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, -2);
-
-            transactionContext.stub.getPrivateData.withArgs(collection,
-                activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
-
-            transactionContext.stub.getPrivateData.withArgs(collection, Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
-
-            const dateStart = activationDocument.startCreatedDateTime;
-            const dateEnd = activationDocument.endCreatedDateTime;
-            energyamount.timeInterval = `${dateStart}/${dateStart}`;
-            energyamount2.timeInterval = `${dateEnd}/${dateEnd}`;
-
-            // console.debug("energyamount.timeInterval : ", energyamount.timeInterval);
-            // console.debug("energyamount2.timeInterval : ", energyamount2.timeInterval);
-
-            const energyAmountList: EnergyAmount[] = [energyamount, energyamount2];
-            await star.CreateTSOEnergyAmountList(transactionContext, JSON.stringify(energyAmountList));
-
-            const expected = JSON.parse(JSON.stringify(energyamount))
-            expected.docType = DocType.ENERGY_AMOUNT;
-            const expected2 = JSON.parse(JSON.stringify(energyamount2))
-            expected2.docType = DocType.ENERGY_AMOUNT;
-
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected))
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected2))
-            // console.info("-----------")
-
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
-                collection,
-                Values.HTB_EnergyAmount.energyAmountMarketDocumentMrid,
-                Buffer.from(JSON.stringify(expected))
-            );
-
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
-                collection,
-                Values.HTB_EnergyAmount_2.energyAmountMarketDocumentMrid,
-                Buffer.from(JSON.stringify(expected2))
-            );
-
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
-        });
 
 
 
@@ -564,13 +493,9 @@ describe('Star Tests EnergyAmount', () => {
             } catch(err) {
                 // console.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
-                .concat(Values.formatDate(dateStart))
-                .concat("/")
-                .concat(Values.formatDate(dateEnd))
+                .concat(CommonService.formatDateStr(dateStart))
                 .concat(' and Activation Document : ')
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
-                .concat("/")
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat(CommonService.formatDateStr(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
                 .concat(' dates.'));
             }
         });
@@ -732,13 +657,9 @@ describe('Star Tests EnergyAmount', () => {
             } catch(err) {
                 // console.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENI : '
-                .concat(Values.formatDate(dateStart))
-                .concat("/")
-                .concat(Values.formatDate(dateEnd))
+                .concat(CommonService.formatDateStr(dateStart))
                 .concat(' and Activation Document : ')
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
-                .concat("/")
-                .concat(Values.formatDate(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
+                .concat(CommonService.formatDateStr(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
                 .concat(' dates.'));
             }
         });

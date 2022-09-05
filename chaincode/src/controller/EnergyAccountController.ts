@@ -13,6 +13,7 @@ import { QueryStateService } from './service/QueryStateService';
 import { EnergyAccountService } from './service/EnergyAccountService';
 import { StarPrivateDataService } from './service/StarPrivateDataService';
 import { StarDataService } from './service/StarDataService';
+import { CommonService } from './service/CommonService';
 
 export class EnergyAccountController {
 
@@ -156,6 +157,16 @@ export class EnergyAccountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Account.`);
         }
 
+        try {
+            const nbExpectedPoints = await this.getExpectedNumberPoints(params, energyObj);
+            if (nbExpectedPoints != energyObj.timeSeries.length) {
+                throw new Error(`timeSeries[${energyObj.timeSeries.length}] does not respect the expected number of points ${nbExpectedPoints}`);
+            }
+        }
+        catch (error) {
+            throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
+        }
+
         let siteObj: Site;
         // try {
         //     siteObj = await SiteController.getSiteById(params, energyObj.meteringPointMrid, target);
@@ -197,7 +208,7 @@ export class EnergyAccountController {
         }
 
         if (siteObj.systemOperatorMarketParticipantMrid !== energyObj.senderMarketParticipantMrid) {
-            throw new Error(`Energy Account, sender: ${energyObj.senderMarketParticipantMrid} does is not the same as site.systemOperator: ${siteObj.systemOperatorMarketParticipantMrid} in EnergyAccount.`);
+            throw new Error(`Energy Account, sender: ${energyObj.senderMarketParticipantMrid} is not the same as site.systemOperator: ${siteObj.systemOperatorMarketParticipantMrid} in EnergyAccount.`);
         }
 
         if (identity === OrganizationTypeMsp.RTE && !energyObj.marketEvaluationPointMrid) {
@@ -206,6 +217,67 @@ export class EnergyAccountController {
             throw new Error(`Energy Account, presence of marketEvaluationPointMrid optionnal for HTA but required for HTB in EnergyAccount.`);
         }
     }
+
+
+
+
+
+
+    private static async getExpectedNumberPoints(params: STARParameters, energyObj:EnergyAccount): Promise<number> {
+        const startIndicator: string = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_START);
+
+        const value_Array = energyObj.resolution.split(startIndicator);
+
+        if (value_Array.length != 2 ) {
+            throw new Error(`invalid resolution`);
+        }
+
+        var nbExpectedPoints:number = 0;
+
+        //Hour Changement Management
+        const startDate = CommonService.formatDateStr(energyObj.startCreatedDateTime);
+
+        const lapTimeLess1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS);
+        const lapTimePlus1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H_DAYS);
+
+        if (lapTimeLess1HDays.includes(startDate)) {
+            const lapTimeStr: string = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H);
+            nbExpectedPoints = parseInt(lapTimeStr);
+        } else if (lapTimePlus1HDays.includes(startDate)) {
+            const lapTimeStr: string = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H);
+            nbExpectedPoints = parseInt(lapTimeStr);
+        } else {
+            const lapTimeStr: string = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec);
+            nbExpectedPoints = parseInt(lapTimeStr);
+        }
+
+        const minutesIndicator: string = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_MINUTES);
+        const valueMinutes_Array = value_Array[1].split(minutesIndicator);
+        try {
+            if (valueMinutes_Array.length == 2) {
+                nbExpectedPoints = nbExpectedPoints / 60;
+
+                var nbMinutes: number = 0;
+                nbMinutes = parseInt(valueMinutes_Array[0]);
+
+                nbExpectedPoints = nbExpectedPoints / nbMinutes;
+            } else {
+                const secondsIndicator: string = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_SECONDS);
+                var nbSeconds: number = 0;
+                const valueSeconds_Array = value_Array[1].split(secondsIndicator);
+                if (valueSeconds_Array.length == 2) {
+                    nbSeconds = parseInt(valueSeconds_Array[0]);
+                }
+
+                nbExpectedPoints = nbExpectedPoints / nbSeconds;
+            }
+        } catch(error) {
+            throw new Error(`invalid resolution`);
+        }
+
+        return nbExpectedPoints;
+    }
+
 
 
     public static async dataExists(

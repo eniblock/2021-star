@@ -337,37 +337,53 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             // const date = new Date(1634898550000);
-            const nrj : EnergyAccount = {
-                energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
-                meteringPointMrid: "PRM50012536123456",
-                // marketEvaluationPointMrid: "CodePPE",
-                areaDomain: "17X100A100A0001A",
-                senderMarketParticipantMrid: "17V0000009927454",
-                senderMarketParticipantRole: "A50",
-                receiverMarketParticipantMrid: "Producteur1",
-                receiverMarketParticipantRole: "A32",
-                createdDateTime: "2021-10-22T10:29:10.000Z",
-                measurementUnitName: "KW",
-                timeInterval: "2021-10-22T10:29:10.000Z",
-                resolution: "PT10M",
-                timeSeries: [{ inQuantity: 7500, position: 3 }, { inQuantity: 7500, position: 3 }],
-                revisionNumber: "1",
-                businessType: "A14 / Z14",
-                docStatus: "A02",
-                processType: "A05",
-                classificationType: "A02",
-                product: "Energie active/Réactive",
-                startCreatedDateTime: '',
-                endCreatedDateTime: '',
-            };
+            const nrj : EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
 
             try {
                 await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
                 // console.info(err.message)
-                expect(err.message).to.equal('ERROR createEnergyAccount : '.concat(DocType.SITE).concat(' : PRM50012536123456 does not exist (not found in any collection). for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
+                expect(err.message).to.equal('ERROR createEnergyAccount : '.concat(DocType.SITE).concat(' : PDLHTA10000289766 does not exist (not found in any collection). for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
+
+
+        it('should return ERROR CreateEnergyAccount Time Series not enough points', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
+            nrjObj.timeSeries.pop();
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrjObj));
+            } catch (err) {
+                expect(err.message).to.equal(`ERROR createEnergyAccount : timeSeries[${nrjObj.timeSeries.length}] does not respect the expected number of points 144 for Energy Account ${nrjObj.energyAccountMarketDocumentMrid} creation.`);
+            }
+
+        });
+
+        it('should return ERROR CreateEnergyAccount Time Series too much points', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrjObj));
+            } catch (err) {
+                expect(err.message).to.equal(`ERROR createEnergyAccount : timeSeries[${nrjObj.timeSeries.length}] does not respect the expected number of points 144 for Energy Account ${nrjObj.energyAccountMarketDocumentMrid} creation.`);
+            }
+
+        });
+
 
         it('should return SUCCESS CreateEnergyAccount HTA', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
@@ -389,6 +405,178 @@ describe('Star Tests EnergyAccount', () => {
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
         });
 
+
+        it('should return Error CreateEnergyAccount HTA - Hour Change Spring Less 1H not enough points', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
+            const lapTimeLess1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS);
+            nrjObj.startCreatedDateTime = lapTimeLess1HDays[0];
+
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrjObj));
+            } catch (err) {
+                expect(err.message).to.equal(`ERROR createEnergyAccount : timeSeries[${nrjObj.timeSeries.length}] does not respect the expected number of points 138 for Energy Account ${nrjObj.energyAccountMarketDocumentMrid} creation.`);
+            }
+        });
+
+
+        it('should return Error CreateEnergyAccount HTA - Hour Change Spring Less 1H too much points', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
+            const lapTimeLess1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS);
+            nrjObj.startCreatedDateTime = lapTimeLess1HDays[0];
+
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrjObj));
+            } catch (err) {
+                expect(err.message).to.equal(`ERROR createEnergyAccount : timeSeries[${nrjObj.timeSeries.length}] does not respect the expected number of points 138 for Energy Account ${nrjObj.energyAccountMarketDocumentMrid} creation.`);
+            }
+        });
+
+
+
+        it('should return SUCCESS CreateEnergyAccount HTA - Hour Change Spring Less 1H', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
+            const lapTimeLess1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS);
+            nrjObj.startCreatedDateTime = lapTimeLess1HDays[0];
+
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            nrjObj.timeSeries.pop();
+            await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrjObj));
+
+            const expected = JSON.parse(JSON.stringify(nrjObj))
+            expected.docType = DocType.ENERGY_ACCOUNT;
+            transactionContext.stub.putPrivateData.should.have.been.calledWithExactly(
+                collections[0],
+                nrjObj.energyAccountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+
+
+        it('should return Error CreateEnergyAccount HTA - Hour Change Autumn Plus 1H not enough points', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
+            const lapTimePlus1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H_DAYS);
+            nrjObj.startCreatedDateTime = lapTimePlus1HDays[0];
+
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrjObj));
+            } catch (err) {
+                expect(err.message).to.equal(`ERROR createEnergyAccount : timeSeries[${nrjObj.timeSeries.length}] does not respect the expected number of points 150 for Energy Account ${nrjObj.energyAccountMarketDocumentMrid} creation.`);
+            }
+        });
+
+
+        it('should return Error CreateEnergyAccount HTA - Hour Change Spring Less 1H too much points', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
+            const lapTimePlus1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H_DAYS);
+            nrjObj.startCreatedDateTime = lapTimePlus1HDays[0];
+
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+
+            try {
+                await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrjObj));
+            } catch (err) {
+                expect(err.message).to.equal(`ERROR createEnergyAccount : timeSeries[${nrjObj.timeSeries.length}] does not respect the expected number of points 150 for Energy Account ${nrjObj.energyAccountMarketDocumentMrid} creation.`);
+            }
+        });
+
+
+
+        it('should return SUCCESS CreateEnergyAccount HTA - Hour Change Spring Less 1H', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collections[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
+            const lapTimePlus1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H_DAYS);
+            nrjObj.startCreatedDateTime = lapTimePlus1HDays[0];
+
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            nrjObj.timeSeries.push({"position":1,"inQuantity":3822});
+            await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrjObj));
+
+            const expected = JSON.parse(JSON.stringify(nrjObj))
+            expected.docType = DocType.ENERGY_ACCOUNT;
+            transactionContext.stub.putPrivateData.should.have.been.calledWithExactly(
+                collections[0],
+                nrjObj.energyAccountMarketDocumentMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+
+
+
         it('should return SUCCESS CreateEnergyAccountList 2 HTA', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
@@ -399,9 +587,9 @@ describe('Star Tests EnergyAccount', () => {
             const list_EnergyAccount = [Values.HTA_EnergyAccount_a3, Values.HTA_EnergyAccount_a4];
             await star.CreateEnergyAccountList(transactionContext, JSON.stringify(list_EnergyAccount));
 
-            const expected = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3))
+            const expected = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
             expected.docType = DocType.ENERGY_ACCOUNT;
-            const expected2 = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a4))
+            const expected2 = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a4));
             expected2.docType = DocType.ENERGY_ACCOUNT;
 
             // console.info("-----------")
@@ -652,7 +840,7 @@ describe('Star Tests EnergyAccount', () => {
             } catch(err) {
                 // console.info(err.message)
                 expect(err.message).to.equal('Energy Account, sender: '.concat('17V000000992746D')
-                    .concat(' does is not the same as site.systemOperator: ')
+                    .concat(' is not the same as site.systemOperator: ')
                     .concat('17V0000009927454')
                     .concat(' in EnergyAccount creation.'));
             }

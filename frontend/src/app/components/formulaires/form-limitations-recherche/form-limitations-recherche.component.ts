@@ -28,6 +28,8 @@ export class FormLimitationsRechercheComponent implements OnInit {
       producerMarketParticipantName: [''],
       siteName: [''],
       meteringPointMrid: [''],
+      motif: [''],
+      typeLimitation: [''],
       startCreatedDateTime: [''],
       endCreatedDateTime: [''],
     },

@@ -81,7 +81,11 @@ public class HistoriqueLimitationController {
             @Parameter(description = "activationDocumentMrid search criteria")
             @RequestParam(required = false, defaultValue = "") String activationDocumentMrid,
             @Parameter(description = "meteringPointMrid search criteria")
-            @RequestParam(required = false, defaultValue = "") String meteringPointMrid
+            @RequestParam(required = false, defaultValue = "") String meteringPointMrid,
+            @Parameter(description = "motif search criteria")
+            @RequestParam(required = false, defaultValue = "") String motif,
+            @Parameter(description = "motif search criteria")
+            @RequestParam(required = false, defaultValue = "") String typeLimitation
     ) throws TechnicalException {
         var criteria = HistoriqueLimitationCriteria.builder()
                 .originAutomationRegisteredResourceMrid(originAutomationRegisteredResourceMrid)
@@ -92,9 +96,11 @@ public class HistoriqueLimitationController {
                 .endCreatedDateTime(endCreatedDateTime)
                 .activationDocumentMrid(activationDocumentMrid)
                 .meteringPointMrid(meteringPointMrid)
+                .motif(motif)
+                .typeLimitation(typeLimitation)
                 .instance(instance)
                 .build();
-        log.debug("Recherche des historique de limitation avec les critères suivantes : {}", criteria);
+        log.debug("Recherche des historique de limitation avec les critères : {}", criteria);
         if (PRODUCER.equals(instance)) {
             // A producer can get only his own site data
             criteria.setProducerMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));

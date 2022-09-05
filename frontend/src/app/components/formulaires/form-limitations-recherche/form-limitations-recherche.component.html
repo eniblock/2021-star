@@ -30,6 +30,19 @@
       <input matInput placeholder="Code site" type="text" formControlName="meteringPointMrid">
     </mat-form-field>
 
+    <mat-form-field class="col-12" appearance="outline">
+      <mat-label>Motif</mat-label>
+      <input matInput placeholder="Motif" type="text" formControlName="motif">
+    </mat-form-field>
+
+    <mat-form-field class="col-12" appearance="outline">
+      <mat-label>Type de limitation</mat-label>
+      <mat-select formControlName="typeLimitation">
+        <mat-option [value]="'Manuelle'">Manuelle</mat-option>
+        <mat-option [value]="'Automatique'">Automatique</mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Date de début</mat-label>
       <input matInput placeholder="Date de début" [matDatepicker]="pickerDateDebut"
@@ -82,6 +95,19 @@
     <mat-form-field class="col-12" appearance="outline">
       <mat-label>Code site</mat-label>
       <input matInput placeholder="Code site" type="text" formControlName="meteringPointMrid">
+    </mat-form-field>
+
+    <mat-form-field class="col-12" appearance="outline">
+      <mat-label>Motif</mat-label>
+      <input matInput placeholder="Motif" type="text" formControlName="motif">
+    </mat-form-field>
+
+    <mat-form-field class="col-12" appearance="outline">
+      <mat-label>Type de limitation</mat-label>
+      <mat-select formControlName="typeLimitation">
+        <mat-option [value]="'Manuelle'">Manuelle</mat-option>
+        <mat-option [value]="'Automatique'">Automatique</mat-option>
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field class="col-12 col-lg-6" appearance="outline">

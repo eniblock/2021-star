@@ -92,19 +92,6 @@ export class SquareGraphComponent implements OnInit, OnChanges {
         }
       });
 
-      // Remove unsed points
-      graphData.data.forEach((serie, indice) => {
-        graphData.data[indice] = serie.reduce(
-          (acc: Point[], val: Point, index: number) =>
-            acc.length == 0 ||
-            val.y != acc[acc.length - 1].y ||
-            index == serie.length - 1
-              ? [...acc, val]
-              : acc,
-          []
-        );
-      });
-
       // We init Echarts data
       let echartsData: EChartsOption = {
         tooltip: {

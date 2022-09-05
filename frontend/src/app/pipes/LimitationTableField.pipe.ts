@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 export const LIMITATIONS_TABLE_COLUMNS_DEF = [
   { id: 'technologyType', champ: 'Filière' },
-  { id: 'originAutomationRegisteredResourceMrid', champ: 'Poste Source' },
+  { id: 'displayedSourceName', champ: 'Poste Source' },
   { id: 'producerMarketParticipantName', champ: 'Nom Producteur' },
   { id: 'siteName', champ: 'Nom Site' },
   { id: 'meteringPointMrid', champ: 'Code Site' },

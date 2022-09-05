@@ -5,7 +5,7 @@ import { InstanceService } from 'src/app/services/api/instance.service';
 
 const ALL_TSO_COLUMNS_ID: string[] = [
   'technologyType',
-  'originAutomationRegisteredResourceMrid',
+  'displayedSourceName',
   'producerMarketParticipantName',
   'siteName',
   'meteringPointMrid',
@@ -20,7 +20,7 @@ const ALL_TSO_COLUMNS_ID: string[] = [
 
 const ALL_DSO_COLUMNS_ID: string[] = [
   'technologyType',
-  'originAutomationRegisteredResourceMrid',
+  'displayedSourceName',
   'producerMarketParticipantName',
   'siteName',
   'meteringPointMrid',
@@ -35,7 +35,7 @@ const ALL_DSO_COLUMNS_ID: string[] = [
 
 const ALL_PRODUCER_COLUMNS_ID: string[] = [
   'technologyType',
-  'originAutomationRegisteredResourceMrid',
+  'displayedSourceName',
   'siteName',
   'meteringPointMrid',
   'debutLimitation',

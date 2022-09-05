@@ -152,13 +152,13 @@ public class SiteService {
         } else {
             switch (siteCrteria.getInstance()) {
                 case DSO: // Site HTA (Enedis)
-                    selectors.add(Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTA + ")+"));
+                    // selectors.add(Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTA + ")+"));
                     break;
                 case TSO: // Site HBT (RTE)
-                    selectors.add(Operation.or(
-                            Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTB_PDL + ")+"),
-                            Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTB_CART + ")+")
-                    ));
+                    // selectors.add(Operation.or(
+                    //         Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTB_PDL + ")+"),
+                    //         Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTB_CART + ")+")
+                    // ));
                     break;
                 case PRODUCER:
                     break;

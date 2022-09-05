@@ -53,18 +53,19 @@ export class SiteService {
             for (var i=0; i<collections.length; i++) {
                 // params.logger.debug("collection : ", collections[i])
                 let results: Site[] = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, collection: collections[i]});
-                // params.logger.debug("results :", JSON.stringify(results))
+                params.logger.debug("results :", JSON.stringify(results))
                 for (var result of results) {
                     if (result
                         && result.meteringPointMrid
                         && result.meteringPointMrid !== ""
                         && !allResultsId.includes(result.meteringPointMrid)) {
+
                             allResultsId.push(result.meteringPointMrid);
                             allResults.push(result);
                         }
                 }
-                // params.logger.debug("allResults :", JSON.stringify(allResults))
-                // params.logger.debug("allResultsId :", JSON.stringify(allResultsId))
+                params.logger.debug("allResults :", JSON.stringify(allResults))
+                params.logger.debug("allResultsId :", JSON.stringify(allResultsId))
             }
         }
 

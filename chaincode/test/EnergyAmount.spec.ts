@@ -22,9 +22,17 @@ import { HLFServices } from '../src/controller/service/HLFservice';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { CommonService } from '../src/controller/service/CommonService';
 
+
+class TestLoggerMgt {
+    public getLogger(arg: string): any {
+        return console;
+    }
+}
+
 class TestContext {
     clientIdentity: any;
     stub: any;
+    logger: TestLoggerMgt= new TestLoggerMgt();
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
@@ -97,8 +105,8 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, input);
             } catch(err) {
-                // console.info(input);
-                // console.info(err)
+                // params.logger.info(input);
+                // params.logger.info(err)
                 expect(err.errors[0]).to.equal(errors[0]);
                 expect(err.errors[1]).to.equal(errors[1]);
                 expect(err.errors[2]).to.equal(errors[2]);
@@ -121,7 +129,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, 'RTE01EIC');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR '.concat(DocType.ENERGY_AMOUNT).concat(' -> Input string NON-JSON value'));
             }
         });
@@ -130,7 +138,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(Values.HTB_EnergyAmount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have write access for Energy Amount.`);
             }
         });
@@ -141,7 +149,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(Values.HTB_EnergyAmount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(DocType.ACTIVATION_DOCUMENT.concat(' : ').concat(Values.HTB_EnergyAmount.activationDocumentMrid).concat(' does not exist (not found in any collection). for Energy Amount ').concat(Values.HTB_EnergyAmount.energyAmountMarketDocumentMrid).concat(' creation.'));
             }
         });
@@ -162,7 +170,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
                 .concat(CommonService.formatDateStr(Values.HTB_ActivationDocument_Valid.startCreatedDateTime as string))
                 .concat("/")
@@ -191,7 +199,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
                 .concat()
                 .concat(' and Activation Document : ')
@@ -221,7 +229,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
                 .concat(CommonService.formatDateStr(dateStart as string))
                 .concat(' and Activation Document : ')
@@ -250,7 +258,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
                 .concat(CommonService.formatDateStr(dateStart as string))
                 .concat(' and Activation Document : ')
@@ -278,13 +286,13 @@ describe('Star Tests EnergyAmount', () => {
             const expected = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount))
             expected.docType = DocType.ENERGY_AMOUNT;
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(JSON.stringify(collection));
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected));
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(JSON.stringify(collection));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected));
+            // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.should.have.been.calledWithExactly(
                 collection,
@@ -319,17 +327,17 @@ describe('Star Tests EnergyAmount', () => {
             const expected2 = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount_2))
             expected2.docType = DocType.ENERGY_AMOUNT;
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected))
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected2))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected2))
+            // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
                 collection,
@@ -363,7 +371,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`ERROR ${DocType.ACTIVATION_DOCUMENT} -> Input string NON-JSON value for Energy Amount ${energyamount.energyAmountMarketDocumentMrid} creation.`);
             }
         });
@@ -387,7 +395,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`ERROR manage EnergyAmount mismatch beetween registeredResourceMrid in Activation Document : ${activationDocument.registeredResourceMrid} and Energy Amount : ${energyamount.registeredResourceMrid}.`);
             }
         });
@@ -408,7 +416,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`ERROR Site-> Input string NON-JSON value for Energy Amount ${energyamount.energyAmountMarketDocumentMrid} creation.`);
             }
         });
@@ -430,7 +438,7 @@ describe('Star Tests EnergyAmount', () => {
                 energyamount.registeredResourceMrid = "toto";
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`Site : ${energyamount.registeredResourceMrid} does not exist for Energy Amount ${energyamount.energyAmountMarketDocumentMrid} creation.`);
             }
         });
@@ -467,7 +475,7 @@ describe('Star Tests EnergyAmount', () => {
         //     try {
         //         await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(nrj));
         //     } catch(err) {
-        //         // console.info(err.message)
+        //         // params.logger.info(err.message)
         //         expect(err.message).to.equal('ERROR createTSOEnergyAmount mismatch in timeInterval both date must be the same day.("2021-10-22T00:00:00.000Z" vs "2021-10-23T00:00:00.000Z")');
         //     }
         // });
@@ -491,7 +499,7 @@ describe('Star Tests EnergyAmount', () => {
                 energyamount.timeInterval = `${dateStart}/${dateEnd}`;
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENE : '
                 .concat(CommonService.formatDateStr(dateStart))
                 .concat(' and Activation Document : ')
@@ -508,7 +516,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(Values.HTA_EnergyAmount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have write access for Energy Amount.`);
             }
         });
@@ -555,7 +563,7 @@ describe('Star Tests EnergyAmount', () => {
         //     try {
         //         await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(nrj));
         //     } catch(err) {
-        //         // console.info(err.message)
+        //         // params.logger.info(err.message)
         //         expect(err.message).to.equal('ERROR createDSOEnergyAmount : no results for get activationDocument');
         //     }
         // });
@@ -593,7 +601,7 @@ describe('Star Tests EnergyAmount', () => {
         //     try {
         //         await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(nrj));
         //     } catch(err) {
-        //         // console.info(err.message)
+        //         // params.logger.info(err.message)
         //         expect(err.message).to.equal('ERROR createDSOEnergyAmount mismatch in timeInterval both date must be the same day.("2021-10-22T00:00:00.000Z" vs "2021-10-23T00:00:00.000Z")');
         //     }
         // });
@@ -631,7 +639,7 @@ describe('Star Tests EnergyAmount', () => {
         //     try {
         //         await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(nrj));
         //     } catch(err) {
-        //         // console.info(err.message)
+        //         // params.logger.info(err.message)
         //         expect(err.message).to.equal('ERROR createDSOEnergyAmount mismatch in timeInterval both date must be the same day.("2021-10-22T00:00:00.000Z" vs "2021-10-23T00:00:00.000Z")');
         //     }
         // });
@@ -655,7 +663,7 @@ describe('Star Tests EnergyAmount', () => {
                 energyamount.timeInterval = `${dateStart}/${dateEnd}`;
                 await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR manage EnergyAmount mismatch between ENI : '
                 .concat(CommonService.formatDateStr(dateStart))
                 .concat(' and Activation Document : ')
@@ -700,7 +708,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.GetEnergyAmountForSystemOperator(transactionContext, producer, producer, producer);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR getEnergyAmountForSystemOperator : '.concat(DocType.SYSTEM_OPERATOR).concat(' : toto does not exist for Energy Amount read.'));
             }
         });
@@ -713,7 +721,7 @@ describe('Star Tests EnergyAmount', () => {
             const producer = 'toto';
             let ret = await star.GetEnergyAmountForSystemOperator(transactionContext, producer, Values.HTA_systemoperator.systemOperatorMarketParticipantMrid, "date");
             ret = JSON.parse(ret);
-            // console.log('retADproducer=', ret)
+            // params.logger.log('retADproducer=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -724,7 +732,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.GetEnergyAmountForSystemOperator(transactionContext, 'titi', 'toto', 'tata');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, '.concat(Values.FakeMSP).concat(' does not have read access for Energy Amount.'));
             }
         });
@@ -738,7 +746,7 @@ describe('Star Tests EnergyAmount', () => {
                     Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
                     Values.HTB_EnergyAmount.createdDateTime);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Energy Amount, sender: rte does not provide his own systemOperatorEicCode therefore he does not have read access.');
             }
         });
@@ -753,7 +761,7 @@ describe('Star Tests EnergyAmount', () => {
                     Values.HTB_EnergyAmount.senderMarketParticipantMrid,
                     Values.HTB_EnergyAmount.createdDateTime);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR getEnergyAmountForSystemOperator : ERROR '.concat(DocType.SYSTEM_OPERATOR).concat(' -> Input string NON-JSON value for Energy Amount read.'));
             }
         });
@@ -798,7 +806,7 @@ describe('Star Tests EnergyAmount', () => {
                                                                     Values.HTB_EnergyAmount.senderMarketParticipantMrid,
                                                                     Values.HTB_EnergyAmount.createdDateTime);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
             const expected: EnergyAmount[] = [Values.HTB_EnergyAmount];
@@ -844,7 +852,7 @@ describe('Star Tests EnergyAmount', () => {
 
         //     await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(nrj1));
         //     let ret1 = JSON.parse((await transactionContext.stub.getState(nrj1.energyAmountMarketDocumentMrid)).toString());
-        //     // console.log("ret1=", ret1);
+        //     // params.logger.log("ret1=", ret1);
         //     expect(ret1).to.eql( Object.assign({docType: 'energyAmount'}, nrj1 ));
 
         //     const nrj2 : EnergyAmount = {
@@ -869,13 +877,13 @@ describe('Star Tests EnergyAmount', () => {
 
         //     await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(nrj2));
         //     let ret2 = JSON.parse((await transactionContext.stub.getState(nrj2.energyAmountMarketDocumentMrid)).toString());
-        //     // console.log("ret2=", ret2);
+        //     // params.logger.log("ret2=", ret2);
         //     expect(ret2).to.eql( Object.assign({docType: 'energyAmount'}, nrj2 ));
 
 
         //     let ret = await star.GetEnergyAmountForSystemOperator(transactionContext, nrj1.registeredResourceMrid, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
         //     ret = JSON.parse(ret);
-        //     console.log('ret=', ret)
+        //     params.logger.log('ret=', ret)
         //     expect(ret.length).to.equal(2);
 
         //     const expected = [
@@ -911,7 +919,7 @@ describe('Star Tests EnergyAmount', () => {
             try {
                 await star.GetEnergyAmountByProducer(transactionContext, 'titi', 'toto', 'tata');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have read access for producer\'s Energy Amount.`);
             }
         });
@@ -921,7 +929,7 @@ describe('Star Tests EnergyAmount', () => {
             const producer = 'toto';
             let ret = await star.GetEnergyAmountByProducer(transactionContext, producer, '17V0000009927454', "date");
             ret = JSON.parse(ret);
-            // console.log('retADproducer=', ret)
+            // params.logger.log('retADproducer=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -963,7 +971,7 @@ describe('Star Tests EnergyAmount', () => {
                                                             Values.HTB_EnergyAmount.receiverMarketParticipantMrid,
                                                             Values.HTB_EnergyAmount.createdDateTime);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
             const expected: EnergyAmount[] = [Values.HTB_EnergyAmount];
@@ -1006,7 +1014,7 @@ describe('Star Tests EnergyAmount', () => {
 
         //     await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(nrj1));
         //     let ret1 = JSON.parse((await transactionContext.stub.getState(nrj1.energyAmountMarketDocumentMrid)).toString());
-        //     // console.log("ret1=", ret1);
+        //     // params.logger.log("ret1=", ret1);
         //     expect(ret1).to.eql( Object.assign({docType: 'energyAmount'}, nrj1 ));
 
         //     await star.CreateSite(transactionContext, '{\"meteringPointMrid\":\"PRM50012536123457\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
@@ -1033,13 +1041,13 @@ describe('Star Tests EnergyAmount', () => {
 
         //     await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(nrj2));
         //     let ret2 = JSON.parse((await transactionContext.stub.getState(nrj2.energyAmountMarketDocumentMrid)).toString());
-        //     // console.log("ret2=", ret2);
+        //     // params.logger.log("ret2=", ret2);
         //     expect(ret2).to.eql( Object.assign({docType: 'energyAmount'}, nrj2 ));
 
         //     transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
         //     let ret = await star.GetEnergyAmountByProducer(transactionContext, nrj1.registeredResourceMrid, nrj1.receiverMarketParticipantMrid, nrj1.createdDateTime);
         //     ret = JSON.parse(ret);
-        //     // console.log('ret=', ret)
+        //     // params.logger.log('ret=', ret)
         //     expect(ret.length).to.equal(2);
 
         //     const expected = [
@@ -1111,7 +1119,7 @@ describe('Star Tests EnergyAmount', () => {
                                                                     Values.HTA_EnergyAmount.senderMarketParticipantMrid,
                                                                     Values.HTA_EnergyAmount.createdDateTime);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
             const expected: EnergyAmount[] = [Values.HTA_EnergyAmount];
@@ -1161,7 +1169,7 @@ describe('Star Tests EnergyAmount', () => {
                                                             Values.HTA_EnergyAmount.receiverMarketParticipantMrid,
                                                             Values.HTA_EnergyAmount.createdDateTime);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
             const expected: EnergyAmount[] = [Values.HTA_EnergyAmount];

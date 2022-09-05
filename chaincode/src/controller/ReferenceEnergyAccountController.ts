@@ -9,7 +9,6 @@ import { STARParameters } from '../model/starParameters';
 import { DataReference } from '../model/dataReference';
 
 import { QueryStateService } from './service/QueryStateService';
-import { SystemOperatorService } from './service/SystemOperatorService';
 import { ReferenceEnergyAccountService } from './service/ReferenceEnergyAccountService';
 import { StarPrivateDataService } from './service/StarPrivateDataService';
 import { StarDataService } from './service/StarDataService';
@@ -21,7 +20,7 @@ export class ReferenceEnergyAccountController {
     public static async createReferenceEnergyAccount(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : Create ReferenceEnergyAccount ===========');
+        params.logger.info('============= START : Create ReferenceEnergyAccount ===========');
 
         let energyObj: EnergyAccount;
         try {
@@ -37,7 +36,7 @@ export class ReferenceEnergyAccountController {
 
         await ReferenceEnergyAccountController.createReferenceEnergyAccountObj(params, energyObj);
 
-        console.debug('============= END   : Create %s ReferenceEnergyAccount ===========',
+        params.logger.info('============= END   : Create %s ReferenceEnergyAccount ===========',
             energyObj.energyAccountMarketDocumentMrid,
         );
     }
@@ -47,11 +46,11 @@ export class ReferenceEnergyAccountController {
     public static async createReferenceEnergyAccountByReference(
         params: STARParameters,
         dataReference: DataReference) {
-        console.debug('============= START : Create ReferenceEnergyAccount by Reference ===========');
+        params.logger.debug('============= START : Create ReferenceEnergyAccount by Reference ===========');
 
         await ReferenceEnergyAccountController.createReferenceEnergyAccountObj(params, dataReference.data, dataReference.collection);
 
-        console.debug('============= END   : Create %s ReferenceEnergyAccount by Reference ===========',
+        params.logger.debug('============= END   : Create %s ReferenceEnergyAccount by Reference ===========',
             dataReference.data.energyAccountMarketDocumentMrid,
         );
     }
@@ -62,7 +61,7 @@ export class ReferenceEnergyAccountController {
         params: STARParameters,
         energyObj: EnergyAccount,
         target: string = '') {
-        console.debug('============= START : Create ReferenceEnergyAccount Obj ===========');
+        params.logger.debug('============= START : Create ReferenceEnergyAccount Obj ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
@@ -116,7 +115,7 @@ export class ReferenceEnergyAccountController {
             }
         }
 
-        console.debug('============= END   : Create %s ReferenceEnergyAccount Obj ===========',
+        params.logger.debug('============= END   : Create %s ReferenceEnergyAccount Obj ===========',
             energyObj.energyAccountMarketDocumentMrid,
         );
     }
@@ -129,11 +128,13 @@ export class ReferenceEnergyAccountController {
         meteringPointMrid: string,
         systemOperatorEicCode: string,
         startCreatedDateTime: string): Promise<string> {
+        params.logger.info('============= START : get ReferenceEnergyAccount For SystemOperator ===========');
 
         const allResults = await ReferenceEnergyAccountController.getReferenceEnergyAccountForSystemOperatorObj(
             params, meteringPointMrid, systemOperatorEicCode, startCreatedDateTime);
         const formated = JSON.stringify(allResults);
 
+        params.logger.info('=============  END  : get ReferenceEnergyAccount For SystemOperator ===========');
         return formated;
 
     }
@@ -145,6 +146,7 @@ export class ReferenceEnergyAccountController {
         systemOperatorEicCode: string,
         startCreatedDateTime: string,
         target: string = ''): Promise<any[]> {
+        params.logger.debug('============= START : get ReferenceEnergyAccount Obj For SystemOperator ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
@@ -154,9 +156,9 @@ export class ReferenceEnergyAccountController {
         const dateUp = new Date(startCreatedDateTime);
 
         dateUp.setUTCHours(0,0,0,0);
-        // console.log('dateUp=', JSON.stringify(dateUp));
+        // params.logger.log('dateUp=', JSON.stringify(dateUp));
         const dateDown = new Date(dateUp.getTime() + 86399999);
-        // console.log('dateDown=', JSON.stringify(dateDown));
+        // params.logger.log('dateDown=', JSON.stringify(dateDown));
 
         try {
             await StarDataService.getObj(params, {id: systemOperatorEicCode, docType: DocType.SYSTEM_OPERATOR});
@@ -169,22 +171,10 @@ export class ReferenceEnergyAccountController {
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
         const query = await QueryStateService.buildQuery(DocType.REFERENCE_ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
 
-        // const query = `{
-        //     "selector":
-        //     {
-        //         "docType": "referenceEnergyAccount",
-        //         "meteringPointMrid": "${meteringPointMrid}",
-        //         "createdDateTime": {
-        //             "$gte": ${JSON.stringify(dateUp)},
-        //             "$lte": ${JSON.stringify(dateDown)}
-        //         },
-        //         "sort": [{
-        //             "createdDateTime" : "desc"
-        //         }]
-        //     }
-        // }`;
-
         const allResults = await ReferenceEnergyAccountService.getQueryArrayResult(params, query, target);
+
+        params.logger.debug('=============  END  : get ReferenceEnergyAccount Obj For SystemOperator ===========');
+
         return allResults;
     }
 
@@ -196,6 +186,7 @@ export class ReferenceEnergyAccountController {
         meteringPointMrid: string,
         producerEicCode: string,
         startCreatedDateTime: string): Promise<string> {
+        params.logger.info('============= START : get ReferenceEnergyAccount By Producer ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.PRODUCER) {
@@ -204,9 +195,9 @@ export class ReferenceEnergyAccountController {
         const dateUp = new Date(startCreatedDateTime);
 
         dateUp.setUTCHours(0,0,0,0);
-        // console.log('dateUp=', JSON.stringify(dateUp));
+        // params.logger.log('dateUp=', JSON.stringify(dateUp));
         const dateDown = new Date(dateUp.getTime() + 86399999);
-        // console.log('dateDown=', JSON.stringify(dateDown));
+        // params.logger.log('dateDown=', JSON.stringify(dateDown));
 
         var args: string[] = [];
         args.push(`"meteringPointMrid": "${meteringPointMrid}"`);
@@ -214,23 +205,10 @@ export class ReferenceEnergyAccountController {
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
         const query = await QueryStateService.buildQuery(DocType.REFERENCE_ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
 
-        // const query = `{
-        //         "selector":
-        //         {
-        //             "docType": "referenceEnergyAccount",
-        //             "meteringPointMrid": "${meteringPointMrid}",
-        //             "receiverMarketParticipantMrid": "${producerEicCode}",
-        //             "createdDateTime": {
-        //                 "$gte": ${JSON.stringify(dateUp)},
-        //                 "$lte": ${JSON.stringify(dateDown)}
-        //             },
-        //             "sort": [{
-        //                 "createdDateTime" : "desc"
-        //             }]
-        //         }
-        //     }`;
-
         const allResults = await ReferenceEnergyAccountService.getQueryStringResult(params, query);
+
+        params.logger.info('============= START : get ReferenceEnergyAccount By Producer ===========');
+
         return allResults;
     }
 }

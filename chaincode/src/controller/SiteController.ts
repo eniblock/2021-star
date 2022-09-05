@@ -7,8 +7,6 @@ import { Producer } from '../model/producer';
 import { DataReference } from '../model/dataReference';
 
 import { SiteService } from './service/SiteService';
-import { SystemOperatorService } from './service/SystemOperatorService';
-import { ProducerService } from './service/ProducerService';
 import { StarDataService } from './service/StarDataService';
 import { DocType } from '../enums/DocType';
 import { StarPrivateDataService } from './service/StarPrivateDataService';
@@ -18,16 +16,24 @@ export class SiteController {
     public static async createSite(
         params: STARParameters,
         inputStr: string): Promise<void> {
+        params.logger.info('============= START : createSite SiteController ===========');
 
         const siteObj: Site = Site.formatString(inputStr);
         await this.createSiteObj(params, siteObj);
+
+        params.logger.info('=============  END  : createSite SiteController ===========');
     }
+
+
 
     public static async createSiteByReference(
         params: STARParameters,
         dataReference: DataReference): Promise<void> {
+        params.logger.debug('============= START : createSite By Reference SiteController ===========');
 
         await this.createSiteObj(params, dataReference.data, dataReference.collection);
+
+        params.logger.debug('=============  END  : createSite By Reference SiteController ===========');
     }
 
 
@@ -36,7 +42,7 @@ export class SiteController {
         params: STARParameters,
         siteObj: any,
         target: string = ''): Promise<void> {
-        console.debug('============= START : createSiteObj Site ===========');
+        params.logger.debug('============= START : createSiteObj SiteController ===========');
 
         Site.schema.validateSync(
             siteObj,
@@ -71,7 +77,8 @@ export class SiteController {
         siteObj.producerMarketParticipantName = producerObj.producerMarketParticipantName;
 
         await SiteService.write(params, siteObj, target);
-        console.debug('============= END   : createSiteObj %s Site ===========',
+
+        params.logger.debug('============= END   : createSiteObj %s SiteController ===========',
             siteObj.meteringPointMrid,
         );
     }
@@ -83,6 +90,7 @@ export class SiteController {
     public static async updateSite(
         params: STARParameters,
         inputStr: string): Promise<void> {
+        params.logger.info('============= START : updateSite SiteController ===========');
 
         let siteObj: Site;
         try {
@@ -130,7 +138,7 @@ export class SiteController {
             await SiteService.write(params, siteObj, key);
         }
 
-        console.debug('============= END : Update %s Site ===========',
+        params.logger.info('=============  END  : Update %s SiteController ===========',
             siteObj.meteringPointMrid,
         );
     }
@@ -138,18 +146,21 @@ export class SiteController {
 
 
 
+
     public static async querySite(
         params: STARParameters,
         siteId: string): Promise<string> {
+        params.logger.info('============= START : Query %s Site ===========', siteId);
 
-        console.debug('============= START : Query %s Site ===========', siteId);
         const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: siteId});
         const dataReference = result.values().next().value;
 
-        // console.debug(siteId, JSON.stringify(dataReference.data));
-        console.debug('============= END   : Query %s Site ===========', siteId);
+        // params.logger.debug(siteId, JSON.stringify(dataReference.data));
+        params.logger.info('============= END   : Query %s Site ===========', siteId);
+
         return JSON.stringify(dataReference.data);
     }
+
 
 
 
@@ -157,9 +168,12 @@ export class SiteController {
     public static async siteExists(
         params: STARParameters,
         siteId: string): Promise<boolean> {
+        params.logger.info('============= START : siteExists %s Site ===========', siteId);
 
-        console.debug('============= START : Query %s Site ===========', siteId);
         const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: siteId});
+
+        params.logger.info('=============  END  : siteExists %s Site ===========', siteId);
+
         return result && result.values().next().value && result.values().next().value.data && result.values().next().value.collection.length !== 0;
     }
 
@@ -168,6 +182,7 @@ export class SiteController {
     public static async getSiteById(
         params: STARParameters,
         arg: IdArgument): Promise<Site> {
+        params.logger.info('============= START : getSite By Id (%s) ===========', JSON.stringify(arg));
 
         let siteObj: Site;
         arg.docType = DocType.SITE;
@@ -181,6 +196,8 @@ export class SiteController {
             }
         }
 
+        params.logger.info('=============  END  : getSite By Id (%s) ===========', JSON.stringify(arg));
+
         return siteObj;
     }
 
@@ -190,10 +207,12 @@ export class SiteController {
     public static async getSitesBySystemOperator(
         params: STARParameters,
         systemOperatorMarketParticipantMrid: string): Promise<string> {
+        params.logger.info('============= START : getSite By SystemOperator ===========');
 
         const query = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${systemOperatorMarketParticipantMrid}"}}`;
         const allResults = await SiteService.getQueryStringResult(params, query);
 
+        params.logger.info('=============  END  : getSite By SystemOperator ===========');
         return allResults;
     }
 
@@ -203,9 +222,12 @@ export class SiteController {
     public static async getSitesByProducer(
         params: STARParameters,
         producerMarketParticipantMrid: string): Promise<string> {
+        params.logger.info('============= START : getSite By Producer ===========');
 
         const query = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${producerMarketParticipantMrid}"}}`;
         const allResults = await SiteService.getQueryStringResult(params, query);
+
+        params.logger.info('============= START : getSite By Producer ===========');
 
         return allResults;
     }
@@ -216,31 +238,13 @@ export class SiteController {
     public static async getSitesByQuery(
         params: STARParameters,
         query: string): Promise<any> {
-
-        //Implementaition calling QueryResult (without Pagination)
-        // const iterator = await SiteService.getQueryResult(query);
-        // let results = await this.getAllResults(iterator);
+        params.logger.info('============= START : getSite By Query ===========');
 
         let results = await SiteService.getQueryArrayResult(params, query);
 
+        params.logger.info('=============  END  : getSite By Query ===========');
         return results;
     }
 
 
-    // static async getAllResults(iterator: Iterators.StateQueryIterator): Promise<any[]> {
-    //     const allResults = [];
-    //     let result = await iterator.next();
-    //     while (!result.done) {
-    //         const strValue = Buffer.from(result.value.value.toString()).toString('utf8');
-    //         let record;
-    //         try {
-    //             record = JSON.parse(strValue);
-    //         } catch (err) {
-    //             record = strValue;
-    //         }
-    //         allResults.push(record);
-    //         result = await iterator.next();
-    //     }
-    //     return allResults;
-    // }
 }

@@ -39,7 +39,7 @@ export class HistoryController {
         params: STARParameters,
         inputStr: string): Promise<HistoryInformation[]> {
 
-        console.debug('============= START : getHistoryByQuery ===========');
+        params.logger.info('============= START : getHistoryByQuery ===========');
 
 
         let criteriaObj: HistoryCriteria;
@@ -49,7 +49,7 @@ export class HistoryController {
             try {
                 criteriaObj = JSON.parse(inputStr);
             } catch (error) {
-            // console.error('error=', error);
+            // params.logger.error('error=', error);
                 throw new Error(`ERROR HistoriqueActivationDocumentCriteria-> Input string NON-JSON value`);
             }
 
@@ -62,7 +62,7 @@ export class HistoryController {
             criteriaObj = await HistoryController.consolidateCriteria(params, criteriaObj, role);
 
             if (criteriaObj) {
-                const query = await HistoryController.buildActivationDocumentQuery(criteriaObj);
+                const query = await HistoryController.buildActivationDocumentQuery(params, criteriaObj);
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
@@ -81,17 +81,17 @@ export class HistoryController {
 
                 if (allValidActivationDocument && allValidActivationDocument.length > 0) {
                     const informationInBuilding: HistoryInformationInBuilding = await HistoryController.consolidate(params, allValidActivationDocument);
-                    result = await HistoryController.generateOutput(informationInBuilding);
+                    result = await HistoryController.generateOutput(params, informationInBuilding);
 
                 }
             }
         }
 
-        console.debug('============= END : getHistoryByQuery ===========');
+        params.logger.debug("###############################################")
+        params.logger.debug(JSON.stringify(result))
+        params.logger.debug("###############################################")
 
-        // console.debug("###############################################")
-        // console.debug(JSON.stringify(result))
-        // console.debug("###############################################")
+        params.logger.info('============= END  : getHistoryByQuery ===========');
 
         return result;
     }
@@ -107,7 +107,7 @@ export class HistoryController {
         criteriaObj: HistoryCriteria,
         role: string): Promise<HistoryCriteria> {
 
-        console.debug('============= START : consolidateCriteria ===========');
+        params.logger.debug('============= START : consolidateCriteria ===========');
 
         if (criteriaObj.producerMarketParticipantName) {
             criteriaObj.producerMarketParticipantName = criteriaObj.producerMarketParticipantName.trim();
@@ -202,7 +202,7 @@ export class HistoryController {
             criteriaObj.registeredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
         }
 
-        console.debug('============= END : consolidateCriteria ===========');
+        params.logger.debug('=============  END  : consolidateCriteria ===========');
 
         return criteriaObj;
     }
@@ -210,9 +210,9 @@ export class HistoryController {
 
 
 
-    private static async buildActivationDocumentQuery(criteriaObj: HistoryCriteria) : Promise<string> {
+    private static async buildActivationDocumentQuery(params: STARParameters, criteriaObj: HistoryCriteria) : Promise<string> {
 
-        console.debug('============= START : buildActivationDocumentQuery ===========');
+        params.logger.debug('============= START : buildActivationDocumentQuery ===========');
 
         var args: string[] = [];
 
@@ -253,7 +253,7 @@ export class HistoryController {
             }
         }
 
-        console.debug('============= END : buildActivationDocumentQuery ===========');
+        params.logger.debug('=============  END  : buildActivationDocumentQuery ===========');
 
         return await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
     }
@@ -268,15 +268,15 @@ export class HistoryController {
         params: STARParameters,
         allActivationDocument: ActivationDocument[]): Promise<HistoryInformationInBuilding> {
 
-        console.debug('============= START : consolidate ===========');
+        params.logger.debug('============= START : consolidate ===========');
 
         const historyInformationInBuilding: HistoryInformationInBuilding = new HistoryInformationInBuilding();
 
         // if (allActivationDocument && allActivationDocument.length > 0) {
-        //     console.debug("----------------")
-        //     console.debug("history ActivationDocument[0]")
-        //     console.debug(JSON.stringify(allActivationDocument[0]))
-        //     console.debug("----------------")
+        //     params.logger.debug("----------------")
+        //     params.logger.debug("history ActivationDocument[0]")
+        //     params.logger.debug(JSON.stringify(allActivationDocument[0]))
+        //     params.logger.debug("----------------")
         // }
         const yellowPages: YellowPages[] = await YellowPagesController.getAllYellowPagesObject(params);
         const ypRegistered: string[] = [];
@@ -440,7 +440,7 @@ export class HistoryController {
                 historyInformationInBuilding.others.push(key);
             }
         }
-        console.debug('============= END : consolidate ===========');
+        params.logger.debug('=============  END  : consolidate ===========');
 
         return historyInformationInBuilding;
     }
@@ -469,9 +469,10 @@ export class HistoryController {
 
 
     private static async generateOutput(
+        params: STARParameters,
         informationInBuilding : HistoryInformationInBuilding): Promise<HistoryInformation[]> {
 
-        console.debug('============= START : generateOutput ===========');
+        params.logger.debug('============= START : generateOutput ===========');
 
         var finalinformation: HistoryInformation[] = [];
         const embeddedInformation: string[] = [];
@@ -559,7 +560,7 @@ export class HistoryController {
 
         }
 
-        console.debug('============= END : generateOutput ===========');
+        params.logger.debug('=============  END  : generateOutput ===========');
 
         return finalinformation;
     }

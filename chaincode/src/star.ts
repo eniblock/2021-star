@@ -3,11 +3,15 @@
  */
 
 import { Context, Contract } from 'fabric-contract-api';
+
+import { STARParameters } from './model/starParameters';
+
+import { ParametersType } from './enums/ParametersType';
+
 import { ActivationDocumentController } from './controller/activationDocument/ActivationDocumentController';
 import { EnergyAccountController } from './controller/EnergyAccountController';
 import { EnergyAmountController } from './controller/EnergyAmountController';
 import { ParametersController } from './controller/ParametersController';
-import { STARParameters } from './model/starParameters';
 import { ProducerController } from './controller/ProducerController';
 import { ReferenceEnergyAccountController } from './controller/ReferenceEnergyAccountController';
 import { SiteController } from './controller/SiteController';
@@ -15,24 +19,42 @@ import { SystemOperatorController } from './controller/SystemOperatorController'
 import { ViewMarketParticipantController } from './controller/ViewMarketParticipantController';
 import { YellowPagesController } from './controller/YellowPagesController';
 import {HistoryController} from "./controller/activationDocument/HistoryController";
-import { ParametersType } from './enums/ParametersType';
 import { EligibilityController } from './controller/activationDocument/EligibilityController';
 import { StarDataStateController } from './controller/StarDataStateController';
+
+import { HLFServices } from './controller/service/HLFservice';
 
 export class Star extends Contract {
 
     // public async initLedger(ctx: Context) {
-    //     console.debug('============= START : Initialize Ledger ===========');
-    //     // console.debug('Nothing to do');
-    //     console.debug('============= END   : Initialize Ledger ===========');
+    //     params.logger.debug('============= START : Initialize Ledger ===========');
+    //     // params.logger.debug('Nothing to do');
+    //     params.logger.debug('============= END   : Initialize Ledger ===========');
     // }
 
     public async ping(ctx: Context) {
-        console.debug('============= Ping Call ===========');
-
         const params: STARParameters = await ParametersController.getParameterValues(ctx);
         const identity = params.values.get(ParametersType.IDENTITY);
+
         return identity;
+    }
+
+    public async setLogLevel(ctx: Context, inputStr: string) {
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        await HLFServices.setLogLevel(params, inputStr);
+
+        return true;
+    }
+
+    public async testLog(ctx: Context) {
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+
+        params.logger.debug("test log DEBUG");
+        params.logger.info("test log INFO");
+        params.logger.warn("test log WARNING");
+        params.logger.error("test log ERROR");
+
+        return true;
     }
 
     // /*      Parameters          */

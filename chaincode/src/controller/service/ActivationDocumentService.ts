@@ -21,20 +21,22 @@ export class ActivationDocumentService {
         params: STARParameters,
         activationDocumentMrid: string,
         target: string): Promise<void> {
-        console.debug('============= START : Delete %s ActivationDocumentService ===========', activationDocumentMrid);
+        params.logger.debug('============= START : Delete %s ActivationDocumentService ===========', activationDocumentMrid);
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, target);
 
         await params.ctx.stub.deletePrivateData(collection, activationDocumentMrid);
 
-        console.debug('============= END : Delete %s ActivationDocumentService ===========', activationDocumentMrid);
+        params.logger.debug('=============  END  : Delete %s ActivationDocumentService ===========', activationDocumentMrid);
     }
+
+
 
     public static async getQueryArrayResult(
         params: STARParameters,
         query: string,
         target: string[] = []): Promise<any[]>  {
-        console.debug('============= START : getQueryResult ActivationDocumentService ===========');
+        params.logger.debug('============= START : getQueryResult ActivationDocumentService ===========');
 
         const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, target);
         var allResults: any[] = [];
@@ -46,9 +48,10 @@ export class ActivationDocumentService {
             }
         }
 
-        console.debug('============= END : getQueryResult ActivationDocumentService ===========');
+        params.logger.debug('=============  END  : getQueryResult ActivationDocumentService ===========');
         return allResults;
     }
+
 
 
     public static dataReferenceArrayToMap(dataReferenceArray:DataReference[]): Map<string, DataReference> {

@@ -14,6 +14,7 @@ export class ProducerController {
     public static async createProducer(
         params: STARParameters,
         inputStr: string) {
+        params.logger.info('============= START : createProducer ProducerController ===========');
 
         // const identity = params.values.get(ParametersType.IDENTITY);
         // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -24,12 +25,14 @@ export class ProducerController {
 
         await ProducerService.write(params, producerObj);
 
+        params.logger.info('=============  END  : createProducer ProducerController ===========');
     }
 
 
     public static async createProducerList(
         params: STARParameters,
         inputStr: string) {
+        params.logger.info('============= START : createProducerList ProducerController ===========');
 
         // const identity = params.values.get(ParametersType.IDENTITY);
         // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -44,12 +47,14 @@ export class ProducerController {
             }
         }
 
+        params.logger.info('=============  END  : createProducerList ProducerController ===========');
     }
 
 
     public static async updateProducer(
         params: STARParameters,
         inputStr: string) {
+        params.logger.info('============= START : updateProducer ProducerController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -62,12 +67,14 @@ export class ProducerController {
 
         await ProducerService.write(params, producerObj);
 
+        params.logger.info('=============  END  : updateProducer ProducerController ===========');
     }
 
 
     public static async updateProducerList(
         params: STARParameters,
         inputStr: string) {
+        params.logger.info('============= START : updateProducerList ProducerController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -83,6 +90,7 @@ export class ProducerController {
             }
         }
 
+        params.logger.info('=============  END  : updateProducerList ProducerController ===========');
     }
 
 
@@ -92,25 +100,36 @@ export class ProducerController {
     public static async getProducerById(
         params: STARParameters,
         prodId: string): Promise<string> {
+        params.logger.info('============= START : get Producer By Id %s ===========', prodId);
 
-        console.debug('============= START : Query %s Producer Market Participant ===========', prodId);
         const prodObj = await StarDataService.getObj(params, {id: prodId, docType: DocType.PRODUCER});
-        console.debug('============= END   : Query %s Producer Market Participant ===========', prodId);
+
+        params.logger.info('============= END   : get Producer By Id %s ===========', prodId);
+
         return JSON.stringify(prodObj);
     }
 
 
+
+
     public static async getAllProducer( params: STARParameters): Promise<string> {
+        params.logger.info('============= START : getAllProducer ProducerController ===========');
+
         const arrayResult = await QueryStateService.getAllStates(params, DocType.PRODUCER);
+
+        params.logger.info('=============  END  : getAllProducer ProducerController ===========');
+
         return JSON.stringify(arrayResult);
     }
+
+
 
 
     public static async getProducerByName(
         params: STARParameters,
         producerMarketParticipantName: string): Promise<Producer[]> {
+        params.logger.debug('============= START : getProducerByName %s ===========', producerMarketParticipantName);
 
-        console.debug('============= START : getProducerByName %s ===========', producerMarketParticipantName);
         var args: string[] = [];
         args.push(`"producerMarketParticipantName":"${producerMarketParticipantName}"`);
 
@@ -118,7 +137,7 @@ export class ProducerController {
 
         const allResults = await QueryStateService.getQueryArrayResult(params, {query: query});
 
-        console.debug('============= END : getProducerByName %s ===========', producerMarketParticipantName);
+        params.logger.debug('============= END : getProducerByName %s ===========', producerMarketParticipantName);
 
         return allResults;
     }

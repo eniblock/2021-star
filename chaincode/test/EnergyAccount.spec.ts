@@ -22,9 +22,16 @@ import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { HLFServices } from '../src/controller/service/HLFservice';
 
 
+class TestLoggerMgt {
+    public getLogger(arg: string): any {
+        return console;
+    }
+}
+
 class TestContext {
     clientIdentity: any;
     stub: any;
+    logger: TestLoggerMgt= new TestLoggerMgt();
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
@@ -73,7 +80,7 @@ describe('Star Tests EnergyAccount', () => {
         //         // await star.createProducer(transactionContext, '17X000001309745X', 'EolienFR vert Cie', 'A21');
         //         await star.CreateEnergyAccount(transactionContext, '{\"meteringPointMrid\":\"PDL00000000289766\",\"systemOperatorMarketParticipantMrid\":\"17V000000992746D\",\"producerMarketParticipantMrid\":\"17X000001309745X\",\"technologyType\": \"Eolien\",\"siteType\":\"Injection\",\"siteName\":\"Ferme éolienne de Genonville\",\"substationMrid\":\"GDO A4RTD\",\"substationName\":\"CIVRAY\",\"marketEvaluationPointMrid\":\"string\",\"schedulingEntityRegisteredResourceMrid\":\"string\",\"siteAdminMrid\":\"489 981 029\",\"siteLocation\":\"Biscarosse\",\"siteIecCode\":\"S7X0000013077478\",\"systemOperatorEntityFlexibilityDomainMrid\":\"PSC4511\",\"systemOperatorEntityFlexibilityDomainName\":\"Départ 1\",\"systemOperatorCustomerServiceName\":\"DR Nantes Deux-Sèvres\"}');
         //     } catch(err) {
-        //         console.info(err.message)
+        //         params.logger.info(err.message)
         //         expect(err.message).to.equal('failed inserting key');
         //     }
         // });
@@ -83,7 +90,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, 'RTE01EIC');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR '.concat(DocType.ENERGY_ACCOUNT).concat(' -> Input string NON-JSON value'));
             }
         });
@@ -91,7 +98,7 @@ describe('Star Tests EnergyAccount', () => {
         it('should return ERROR CreateEnergyAccount missing energyAccountMarketDocumentMrid', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             // const date = new Date(1634898550000);
-            // console.log("date=", date);
+            // params.logger.log("date=", date);
             const nrj : EnergyAccount = {
                 energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
                 meteringPointMrid: "PRM50012536123456",
@@ -124,7 +131,7 @@ describe('Star Tests EnergyAccount', () => {
                  );
                 // await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('energyAccountMarketDocumentMrid is a compulsory string');
             }
         });
@@ -138,7 +145,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('meteringPointMrid is a compulsory string');
             }
         });
@@ -152,7 +159,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('senderMarketParticipantMrid is a compulsory string');
             }
         });
@@ -166,7 +173,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('senderMarketParticipantRole is a compulsory string');
             }
         });
@@ -180,7 +187,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('receiverMarketParticipantMrid is a compulsory string');
             }
         });
@@ -194,7 +201,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('receiverMarketParticipantRole is a compulsory string');
             }
         });
@@ -208,7 +215,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('createdDateTime is a required field');
             }
         });
@@ -222,7 +229,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('measurementUnitName is a compulsory string');
             }
         });
@@ -236,7 +243,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('timeInterval is a required field');
             }
         });
@@ -250,7 +257,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('resolution is a compulsory string');
             }
         });
@@ -264,7 +271,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('timeSeries is a required field');
             }
         });
@@ -278,7 +285,7 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"position\":3},{\"inQuantity\":7500,\"position\":3}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('timeSeries[0].inQuantity is a required field');
             }
         });
@@ -292,14 +299,14 @@ describe('Star Tests EnergyAccount', () => {
                  `{\"energyAccountMarketDocumentMrid\":\"ea4cef73-ff6b-400b-8957-d34000eb30a3\",\"meteringPointMrid\":\"PRM50012536123456\",\"areaDomain\":\"17X100A100A0001A\",\"senderMarketParticipantMrid\":\"17V0000009927454\",\"senderMarketParticipantRole\":\"A50\",\"receiverMarketParticipantMrid\":\"Producteur1\",\"receiverMarketParticipantRole\":\"A32\",\"createdDateTime\":\"2021-10-22T10:29:10.000Z\",\"measurementUnitName\":\"KW\",\"timeInterval\":\"2021-10-22T10:29:10.000Z\",\"resolution\":\"PT10M\",\"timeSeries\":[{\"inQuantity\":7500,\"position\":3},{\"inQuantity\":7500}],\"revisionNumber\":\"1\",\"businessType\":\"A14 / Z14\",\"docStatus\":\"A02\",\"processType\":\"A05\",\"classificationType\":\"A02\",\"product\":\"Energie active/Réactive\"}`
                  );
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('timeSeries[1].position is a required field');
             }
         });
 
         it('should return ERROR CreateEnergyAccount Wrong MSPID', async () => {
             // const date = new Date(1634898550000);
-            // console.log("date=", date);
+            // params.logger.log("date=", date);
             const nrj : EnergyAccount = {
                 energyAccountMarketDocumentMrid: "ea4cef73-ff6b-400b-8957-d34000eb30a3",
                 meteringPointMrid: "PRM50012536123456",
@@ -327,7 +334,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have write access for Energy Account.`);
             }
         });
@@ -342,7 +349,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR createEnergyAccount : '.concat(DocType.SITE).concat(' : PDLHTA10000289766 does not exist (not found in any collection). for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
@@ -592,17 +599,17 @@ describe('Star Tests EnergyAccount', () => {
             const expected2 = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a4));
             expected2.docType = DocType.ENERGY_ACCOUNT;
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected))
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected2))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected2))
+            // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
                 collections[0],
@@ -631,7 +638,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('System Operator : 17V000000992746D does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.');
             }
         });
@@ -650,7 +657,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Energy Account, sender: enedis does not have write access for ea4cef73-ff6b-400b-8957-d34000eb30a3 creation. (Wrong SystemOperator)');
             }
         });
@@ -667,7 +674,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, JSON.stringify(energyaccount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Energy Account, sender: '.concat('17V000000992746D')
                     .concat(' does is not the same as site.systemOperator: ')
                     .concat('17V0000009927454')
@@ -687,7 +694,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Energy Account, presence of marketEvaluationPointMrid optionnal for HTA but required for HTB in EnergyAccount creation.');
             }
         });
@@ -706,7 +713,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, 'RTE01EIC');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR '.concat(DocType.ENERGY_ACCOUNT).concat(' -> Input string NON-JSON value'));
             }
         });
@@ -723,7 +730,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR createEnergyAccount : ERROR '.concat(DocType.SITE).concat(' -> Input string NON-JSON value for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
@@ -740,7 +747,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR createEnergyAccount : ERROR '.concat(DocType.SYSTEM_OPERATOR).concat(' -> Input string NON-JSON value for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
@@ -751,7 +758,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, JSON.stringify(Values.HTB_EnergyAccount_a3));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access for Energy Account.');
             }
         });
@@ -765,7 +772,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR createEnergyAccount : '.concat(DocType.SITE).concat(' : ').concat(energyaccount.meteringPointMrid).concat(' does not exist (not found in any collection). for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
@@ -783,7 +790,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR createEnergyAccount : '.concat(DocType.SYSTEM_OPERATOR).concat(' : 17V000000992746666 does not exist for Energy Account ea4cef73-ff6b-400b-8957-d34000eb30a3 creation.'));
             }
         });
@@ -802,7 +809,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Energy Account, sender: rte does not have write access for ea4cef73-ff6b-400b-8957-d34000eb30a3 creation. (Wrong SystemOperator)');
             }
         });
@@ -819,7 +826,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Energy Account, missing marketEvaluationPointMrid optionnal for HTA but required for HTB in EnergyAccount.');
             }
         });
@@ -838,7 +845,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.CreateEnergyAccount(transactionContext, JSON.stringify(energyaccount));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Energy Account, sender: '.concat('17V000000992746D')
                     .concat(' is not the same as site.systemOperator: ')
                     .concat('17V0000009927454')
@@ -880,7 +887,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.GetEnergyAccountForSystemOperator(transactionContext, producer, producer, producer);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR getEnergyAccountForSystemOperator : '.concat(DocType.SYSTEM_OPERATOR).concat(' : toto does not exist for Energy Account read.'));
             }
         });
@@ -891,7 +898,7 @@ describe('Star Tests EnergyAccount', () => {
             const producer = 'toto';
             let ret = await star.GetEnergyAccountForSystemOperator(transactionContext, producer, Values.HTA_systemoperator.systemOperatorMarketParticipantMrid, "date");
             ret = JSON.parse(ret);
-            // console.log('retADproducer=', ret)
+            // params.logger.log('retADproducer=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -901,7 +908,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.GetEnergyAccountForSystemOperator(transactionContext, 'titi', 'toto', 'tata');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, '.concat(Values.FakeMSP).concat(' does not have read access for Energy Account.'));
             }
         });
@@ -940,7 +947,7 @@ describe('Star Tests EnergyAccount', () => {
                 Values.HTA_EnergyAccount_a1.senderMarketParticipantMrid,
                 Values.HTA_EnergyAccount_a1.createdDateTime);
             ret = JSON.parse(ret);
-            // console.log('retEmpty=', ret)
+            // params.logger.log('retEmpty=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -977,7 +984,7 @@ describe('Star Tests EnergyAccount', () => {
                     Values.HTB_EnergyAccount_a3.senderMarketParticipantMrid,
                     Values.HTB_EnergyAccount_a3.createdDateTime);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Energy Account, sender: enedis does not provide his own systemOperatorEicCode therefore he does not have read access.');
             }
         });
@@ -1007,7 +1014,7 @@ describe('Star Tests EnergyAccount', () => {
                 Values.HTA_EnergyAccount_a1.senderMarketParticipantMrid,
                 Values.HTA_EnergyAccount_a1.createdDateTime);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
             const expected: EnergyAccount[] = [JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a1))];
@@ -1054,7 +1061,7 @@ describe('Star Tests EnergyAccount', () => {
 
         //     await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj1));
         //     let ret1 = JSON.parse((await transactionContext.stub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
-        //     // console.log("ret1=", ret1);
+        //     // params.logger.log("ret1=", ret1);
         //     expect(ret1).to.eql( Object.assign({docType: 'energyAccount'}, nrj1 ));
 
         //     const nrj2 : EnergyAccount = {
@@ -1081,12 +1088,12 @@ describe('Star Tests EnergyAccount', () => {
 
         //     await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj2));
         //     let ret2 = JSON.parse((await transactionContext.stub.getState(nrj2.energyAccountMarketDocumentMrid)).toString());
-        //     // console.log("ret2=", ret2);
+        //     // params.logger.log("ret2=", ret2);
         //     expect(ret2).to.eql( Object.assign({docType: 'energyAccount'}, nrj2 ));
 
         //     let ret = await star.GetEnergyAccountForSystemOperator(transactionContext, nrj1.meteringPointMrid, nrj1.senderMarketParticipantMrid, nrj1.createdDateTime);
         //     ret = JSON.parse(ret);
-        // //     // console.log('ret=', ret)
+        // //     // params.logger.log('ret=', ret)
         //     expect(ret.length).to.equal(2);
 
         //     const expected = [
@@ -1135,7 +1142,7 @@ describe('Star Tests EnergyAccount', () => {
 
             const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
 
-            // console.info("query : ", query);
+            // params.logger.info("query : ", query);
 
 
             // const query = `{
@@ -1161,7 +1168,7 @@ describe('Star Tests EnergyAccount', () => {
                     Values.HTB_EnergyAccount_a3.senderMarketParticipantMrid,
                     Values.HTB_EnergyAccount_a3.createdDateTime);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR getEnergyAccountForSystemOperator : ERROR '.concat(DocType.SYSTEM_OPERATOR).concat(' -> Input string NON-JSON value for Energy Account read.'));
             }
         });
@@ -1205,7 +1212,7 @@ describe('Star Tests EnergyAccount', () => {
                 Values.HTB_EnergyAccount_a3.senderMarketParticipantMrid,
                 Values.HTB_EnergyAccount_a3.createdDateTime);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
             const expected: EnergyAccount[] = [JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a3)),JSON.parse(JSON.stringify(Values.HTB_EnergyAccount_a4))];
@@ -1219,7 +1226,7 @@ describe('Star Tests EnergyAccount', () => {
             try {
                 await star.GetEnergyAccountByProducer(transactionContext, 'titi', 'toto', 'tata');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have read access for producer\'s Energy Account.`);
             }
         });
@@ -1229,7 +1236,7 @@ describe('Star Tests EnergyAccount', () => {
             const producer = 'toto';
             let ret = await star.GetEnergyAccountByProducer(transactionContext, producer, '17V0000009927454', "date");
             ret = JSON.parse(ret);
-            // console.log('retADproducer=', ret)
+            // params.logger.log('retADproducer=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -1260,7 +1267,7 @@ describe('Star Tests EnergyAccount', () => {
                 Values.HTA_EnergyAccount_a1.receiverMarketParticipantMrid,
                 Values.HTA_EnergyAccount_a1.createdDateTime);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
             const expected: EnergyAccount[] = [JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a1))];
@@ -1306,7 +1313,7 @@ describe('Star Tests EnergyAccount', () => {
 
         //     await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj1));
         //     let ret1 = JSON.parse((await transactionContext.stub.getState(nrj1.energyAccountMarketDocumentMrid)).toString());
-        //     // console.log("ret1=", ret1);
+        //     // params.logger.log("ret1=", ret1);
         //     expect(ret1).to.eql( Object.assign({docType: 'energyAccount'}, nrj1 ));
 
         //     const nrj2 : EnergyAccount = {
@@ -1333,13 +1340,13 @@ describe('Star Tests EnergyAccount', () => {
 
         //     await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj2));
         //     let ret2 = JSON.parse((await transactionContext.stub.getState(nrj2.energyAccountMarketDocumentMrid)).toString());
-        //     // console.log("ret2=", ret2);
+        //     // params.logger.log("ret2=", ret2);
         //     expect(ret2).to.eql( Object.assign({docType: 'energyAccount'}, nrj2 ));
 
         //     transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
         //     let ret = await star.GetEnergyAccountByProducer(transactionContext, nrj1.meteringPointMrid, nrj1.receiverMarketParticipantMrid, nrj1.createdDateTime);
         //     ret = JSON.parse(ret);
-        //     // console.log('ret=', ret)
+        //     // params.logger.log('ret=', ret)
         //     expect(ret.length).to.equal(2);
 
         //     const expected = [

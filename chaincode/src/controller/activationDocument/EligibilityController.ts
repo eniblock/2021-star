@@ -30,7 +30,7 @@ export class EligibilityController {
         params: STARParameters,
         inputStr: string): Promise<ActivationDocument> {
 
-        console.debug('============= START : updateEligibilityStatus EligibilityController ===========');
+        params.logger.debug('============= START : updateEligibilityStatus EligibilityController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -86,7 +86,7 @@ export class EligibilityController {
 
         await ActivationDocumentService.write(params, activationDocument, activationDocumentReference.collection);
 
-        console.debug('============= END   : updateEligibilityStatus EligibilityController ===========');
+        params.logger.debug('=============  END  : updateEligibilityStatus EligibilityController ===========');
         return await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocument);
     }
 
@@ -98,9 +98,9 @@ export class EligibilityController {
         var targetKey: string = '';
         var targetValue: string = '';
 
-        // console.info("------------------")
-        // console.info(JSON.stringify(targetArrayValue))
-        // console.info("------------------")
+        // params.logger.debug("------------------")
+        // params.logger.debug(JSON.stringify(targetArrayValue))
+        // params.logger.debug("------------------")
 
         targetArrayValue = [...new Set(targetArrayValue)];
         if (targetArrayValue && targetArrayValue.length >0 ) {
@@ -114,9 +114,9 @@ export class EligibilityController {
 
         targetKey = targetKey.toLowerCase();
 
-        // console.info("------------------")
-        // console.info(targetKey)
-        // console.info("------------------")
+        // params.logger.debug("------------------")
+        // params.logger.debug(targetKey)
+        // params.logger.debug("------------------")
 
         const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
         if (collectionMap) {
@@ -136,7 +136,7 @@ export class EligibilityController {
         currentTarget:string,
         activationDocumentRefMap:Map<string, DataReference>=null): Promise<string> {
 
-        console.debug('============= START : findDataDestination - EligibilityController ===========');
+        params.logger.debug('============= START : findDataDestination - EligibilityController ===========');
 
         currentTarget = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, currentTarget);
 
@@ -176,7 +176,7 @@ export class EligibilityController {
 
         finalTarget = EligibilityController.generateTarget(params, targetArrayValue);
 
-        console.debug('============= END : findDataDestination - EligibilityController ===========');
+        params.logger.debug('=============  END  : findDataDestination - EligibilityController ===========');
         return finalTarget;
     }
 
@@ -188,7 +188,7 @@ export class EligibilityController {
         referencedDocument: DataReference,
         initialTarget: string): Promise<DataReference[]>  {
 
-        console.debug('============= START : getCreationRequierments - EligibilityController ===========');
+        params.logger.debug('============= START : getCreationRequierments - EligibilityController ===========');
         var requiredReferences: DataReference[] = [];
 
         const activationDocument: ActivationDocument = referencedDocument.data;
@@ -206,7 +206,7 @@ export class EligibilityController {
             }
         }
 
-        console.debug('============= END : getCreationRequierments - EligibilityController ===========');
+        params.logger.debug('=============  END  : getCreationRequierments - EligibilityController ===========');
         return requiredReferences;
     }
 
@@ -218,7 +218,7 @@ export class EligibilityController {
         referencedDocument: DataReference,
         initialTarget: string): Promise<DataReference[]>  {
 
-        console.debug('============= START : getCreationLinkedData - EligibilityController ===========');
+        params.logger.debug('============= START : getCreationLinkedData - EligibilityController ===========');
         var requiredReferences: DataReference[] = [];
 
         const activationDocument: ActivationDocument = referencedDocument.data;
@@ -291,7 +291,7 @@ export class EligibilityController {
             requiredReferences.push(dataReference);
         }
 
-         console.debug('============= END : getCreationLinkedData - EligibilityController ===========');
+         params.logger.debug('============= END  : getCreationLinkedData - EligibilityController ===========');
         return requiredReferences;
     }
 
@@ -302,7 +302,7 @@ export class EligibilityController {
     public static async getEligibilityStatusState(
         params: STARParameters,
         referencedDocuments: DataReference[]): Promise<DataReference[]> {
-        console.debug('============= START : getEligibilityState - EligibilityController ===========');
+        params.logger.debug('============= START : getEligibilityState - EligibilityController ===========');
         var eligibilityReferences: DataReference[] = [];
 
         const activationDocumentRefMap:Map<string, DataReference>= ActivationDocumentService.dataReferenceArrayToMap(referencedDocuments);
@@ -349,7 +349,7 @@ export class EligibilityController {
             }
         }
 
-        console.debug('============= END : getEligibilityState - EligibilityController ===========');
+        params.logger.debug('=============  END  : getEligibilityState - EligibilityController ===========');
         return eligibilityReferences;
     }
 

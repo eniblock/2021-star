@@ -1,4 +1,3 @@
-import { Context } from 'fabric-contract-api';
 import { DocType } from '../enums/DocType';
 
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
@@ -16,7 +15,7 @@ export class SystemOperatorController {
     public static async createSystemOperator(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : Create System Operator Market Participant ===========');
+        params.logger.info('============= START : Create System Operator Market Participant ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -41,7 +40,7 @@ export class SystemOperatorController {
 
         await SystemOperatorService.write(params, systemOperatorObj);
 
-        console.debug('============= END   : Create %s System Operator Market Participant ===========',
+        params.logger.info('============= END   : Create %s System Operator Market Participant ===========',
             systemOperatorObj.systemOperatorMarketParticipantMrid,
         );
     }
@@ -51,12 +50,12 @@ export class SystemOperatorController {
 
 
     public static async getSystemOperatorObjById(params: STARParameters, sompId: string): Promise<SystemOperator> {
-        console.debug('============= START : Query %s System Operator Market Participant ===========', sompId);
+        params.logger.info('============= START : get System Operator Market Participant by id %s ===========', sompId);
 
         const dataObj = await StarDataService.getObj(params, {id:sompId, docType: DocType.SYSTEM_OPERATOR});
-        // console.info(sompId, sompAsBytes.toString());
+        // params.logger.info(sompId, sompAsBytes.toString());
 
-        console.debug('============= END   : Query %s System Operator Market Participant ===========', sompId);
+        params.logger.info('============= END   : get System Operator Market Participant by id %s ===========', sompId);
         return dataObj;
     }
 
@@ -68,7 +67,7 @@ export class SystemOperatorController {
         params: STARParameters,
         inputStr: string) {
 
-        console.debug('============= START : Update System Operator Market Participant ===========');
+        params.logger.info('============= START : Update System Operator Market Participant ===========');
 
             const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -95,7 +94,7 @@ export class SystemOperatorController {
 
         await SystemOperatorService.write(params, systemOperatorObj);
 
-        console.debug('============= END : Update %s System Operator Market Participant ===========',
+        params.logger.info('============= END : Update %s System Operator Market Participant ===========',
             systemOperatorObj.systemOperatorMarketParticipantMrid,
         );
     }
@@ -105,13 +104,21 @@ export class SystemOperatorController {
 
 
     public static async getAllSystemOperator(params: STARParameters): Promise<string> {
+        params.logger.info('============= START : get all System Operator Market Participant ===========');
+
         const arrayResult = await QueryStateService.getAllStates(params, DocType.SYSTEM_OPERATOR);
+
+        params.logger.info('=============  END  : get all System Operator Market Participant ===========');
+
         return JSON.stringify(arrayResult);
     }
 
 
 
     public static async getSystemOperatorByQuery(params: STARParameters, query: string): Promise<string> {
+        params.logger.info('============= START : get System Operator Market Participant by query %s ===========');
+        params.logger.info('=============  END  : get System Operator Market Participant by query %s ===========');
+
         return await QueryStateService.getQueryStringResult(params, {query: query});
     }
 }

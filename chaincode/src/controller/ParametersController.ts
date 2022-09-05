@@ -29,91 +29,36 @@ const role_rte = RoleType.Role_TSO;
 
 export class ParametersController {
     public static targetJoinSeparator = "-";
-    // public static async changeAllParameters(
-    //     ctx: Context,
-    //     inputStr: string) {
-    //     console.debug('============= START : Change All Parameters ===========');
 
-    //     const identity = params.values.get(ParametersType.IDENTITY);
-
-    //     let paramValues: Map<string,string>;
-    //     try {
-    //         paramValues = JSON.parse(inputStr);
-    //     } catch (error) {
-    //         throw new Error(`ERROR paramValues-> Input string NON-JSON value`);
-    //     }
-
-    //     const parameters = new Parameters();
-    //     parameters.values = paramValues;
-
-    //     const parametersInput = Parameters.schema.validateSync(
-    //         parameters,
-    //         {strict: true, abortEarly: false},
-    //     );
-
-    //     parameters.docType = 'parameters';
-
-    //     await ctx.stub.putState(
-    //         identity,
-    //         Buffer.from(JSON.stringify(parameters)),
-    //     );
-    //     console.debug('============= END   : START : Change All Parameters for %s ===========',
-    //         identity,
-    //     );
-    // }
-
-    // public static async getAllParameters(ctx: Context): Promise<Map<string,string>> {
-    //     console.debug('============= START : Get All Parameters ===========');
-
-    //     const identity = params.values.get(ParametersType.IDENTITY);
-
-    //     const parametersAsBytes = await ctx.stub.getState(identity);
-
-    //     if (!parametersAsBytes || parametersAsBytes.length === 0) {
-    //         return new Map<string, string>();
-    //     }
-    //     const parameters: Parameters = JSON.parse(parametersAsBytes.toString());
-
-    //     let returnedValues: Map<string,string>;
-    //     if(parameters!==null && parameters.values!==null && typeof(parameters.values) !== "undefined") {
-    //         returnedValues=parameters.values;
-    //     } else {
-    //         returnedValues= new Map();
-    //     }
-
-
-    //     console.debug('============= END : Get All Parameters ===========');
-    //     return returnedValues;
-    // }
 
     public static async getParameterValues(ctx: Context): Promise<STARParameters> {
-        console.debug('============= START : Get Parameter ===========');
-
-    //     const paramValues: Map<string,string> = await this.getAllParameters(ctx);
-
-    //     console.debug(paramValues);
-
         var parameters: STARParameters;
-    //     if(paramValues[paramName]!==null && typeof(paramValues[paramName]) !== "undefined") {
-    //         value=paramValues[paramName];
-    //     }
 
         parameters = await this.getParameterStatic(ctx);
 
-        console.debug('============= END : Get Parameter ===========');
         return parameters;
     }
 
     private static async getParameterStatic(ctx: Context): Promise<STARParameters> {
-        console.debug('============= START : Get Parameter Static ===========');
-
         const parameters: STARParameters = new STARParameters();
         parameters.ctx = ctx;
+
+        //Sometimes problem in HLF object definition
+        const ctx2:any = ctx;
+        if (ctx2.logging) {
+            parameters.loggerMgt =  ctx2.logging;
+        } else if (ctx2.logger) {
+            parameters.loggerMgt =  ctx2.logger;
+        }
+        if (parameters.loggerMgt) {
+            parameters.logger =  parameters.loggerMgt.getLogger("STAR-LOGGER");
+        }
+
         parameters.values = new Map();
 
         const identity: string = await HLFServices.getMspID(ctx);
 
-        // console.debug("Parameters Identity : %s", identity);
+        // params.logger.debug("Parameters Identity : %s", identity);
 
         parameters.values.set(ParametersType.IDENTITY, identity);
 
@@ -305,7 +250,6 @@ export class ParametersController {
             */
         }
 
-        console.debug('============= END : Get Parameter Static ===========');
         return parameters;
     }
 

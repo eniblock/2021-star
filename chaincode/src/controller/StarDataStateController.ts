@@ -16,8 +16,8 @@ import { SiteController } from "./SiteController";
 export class StarDataStateController {
     public static async getStarDataState(
         params: STARParameters): Promise<string> {
+        params.logger.info('============= START : getStarDataState StarDataStateController ===========');
 
-        console.debug('============= START : getStarDataState StarDataStateController ===========');
         var orderReferences : DataReference[];
 
         orderReferences = await ReconciliationController.getReconciliationState(params);
@@ -28,27 +28,30 @@ export class StarDataStateController {
 
         var state_str = JSON.stringify(orderReferences);
 
-        // console.debug("#######################")
-        // console.debug(state_str)
-        // console.debug("#######################")
+        params.logger.debug("#######################")
+        params.logger.debug(state_str)
+        params.logger.debug("#######################")
 
-        console.debug('============= END : getStarDataState StarDataStateController ===========');
+        params.logger.info('=============  END  : getStarDataState StarDataStateController ===========');
 
         return state_str;
 
     }
 
+
+
+
     public static async executeStarDataOrders(
         params: STARParameters,
         inputStr: string) {
 
-        console.debug('============= START : executeStarDataOrders StarDataStateController ===========');
+        params.logger.info('============= START : executeStarDataOrders StarDataStateController ===========');
 
         let updateOrders: DataReference[];
         try {
             updateOrders = JSON.parse(inputStr);
         } catch (error) {
-        // console.error('error=', error);
+        // params.logger.error('error=', error);
             throw new Error(`ERROR executeStarDataOrders -> Input string NON-JSON value`);
         }
 
@@ -90,6 +93,6 @@ export class StarDataStateController {
             }
         }
 
-        console.debug('============= END : executeStarDataOrders StarDataStateController ===========');
+        params.logger.info('=============  END  : executeStarDataOrders StarDataStateController ===========');
         }
 }

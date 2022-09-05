@@ -17,9 +17,16 @@ import { Values } from './Values';
 import { DocType } from '../src/enums/DocType';
 
 
+class TestLoggerMgt {
+    public getLogger(arg: string): any {
+        return console;
+    }
+}
+
 class TestContext {
     clientIdentity: any;
     stub: any;
+    logger: TestLoggerMgt= new TestLoggerMgt();
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
@@ -59,7 +66,7 @@ describe('Star Tests PRODUCERS', () => {
         //     try {
         //         await star.CreateProducer(transactionContext, '{\"producerMarketParticipantName\": \"EolienFRvert28EIC\",\"producerMarketParticipantRoleType\": \"EolienFR vert Cie\",\"systemOperatorMarketParticipantRoleType\": \"A21\"}');
         //     } catch(err) {
-        //         console.info(err.message)
+        //         params.logger.info(err.message)
         //         expect(err.name).to.equal('failed inserting key');
         //     }
         // });
@@ -69,7 +76,7 @@ describe('Star Tests PRODUCERS', () => {
             try {
                 await star.CreateProducer(transactionContext, JSON.stringify(Values.HTB_Producer));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMspID does not have write access to create a producer');
             }
         });
@@ -79,7 +86,7 @@ describe('Star Tests PRODUCERS', () => {
             try {
                 await star.CreateProducer(transactionContext, 'toto');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR '.concat(DocType.PRODUCER).concat(' -> Input string NON-JSON value'));
             }
         });
@@ -125,22 +132,22 @@ describe('Star Tests PRODUCERS', () => {
             const expected3 = JSON.parse(JSON.stringify(Values.HTB_Producer_3))
             expected3.docType = DocType.PRODUCER;
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putState.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putState.firstCall.args[1].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected))
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putState.secondCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putState.secondCall.args[1].toString()).toString('utf8'));
-            // console.info(JSON.stringify(Values.HTB_Producer_2))
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putState.thirdCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putState.thirdCall.args[1].toString()).toString('utf8'));
-            // console.info(JSON.stringify(Values.HTB_Producer_2))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putState.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putState.firstCall.args[1].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putState.secondCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putState.secondCall.args[1].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(Values.HTB_Producer_2))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putState.thirdCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putState.thirdCall.args[1].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(Values.HTB_Producer_2))
+            // params.logger.info("-----------")
 
             transactionContext.stub.putState.firstCall.should.have.been.calledWithExactly(
                 expected.producerMarketParticipantMrid,
@@ -166,7 +173,7 @@ describe('Star Tests PRODUCERS', () => {
             try {
                 await star.QueryProducer(transactionContext, 'toto');
             } catch (err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(DocType.PRODUCER.concat(' : toto does not exist'));
             }
         });
@@ -189,7 +196,7 @@ describe('Star Tests PRODUCERS', () => {
                 transactionContext.clientIdentity.getMSPID.returns(Values.FakeMSP);
                 await star.UpdateProducer(transactionContext, JSON.stringify(Values.HTB_Producer));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access to update a producer');
             }
         });
@@ -199,7 +206,7 @@ describe('Star Tests PRODUCERS', () => {
             try {
                 await star.UpdateProducer(transactionContext, 'toto');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR '.concat(DocType.PRODUCER).concat(' -> Input string NON-JSON value'));
             }
         });
@@ -237,7 +244,7 @@ describe('Star Tests PRODUCERS', () => {
 
             let ret = await star.GetAllProducer(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -250,9 +257,9 @@ describe('Star Tests PRODUCERS', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
 
             let ret = await star.GetAllProducer(transactionContext);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
             const expected: Producer[] = [
@@ -278,7 +285,7 @@ describe('Star Tests PRODUCERS', () => {
 
         //     let ret = await star.GetAllProducer(transactionContext);
         //     ret = JSON.parse(ret);
-        //     // console.log('ret=', ret)
+        //     // params.logger.log('ret=', ret)
         //     expect(ret.length).to.equal(3);
 
         //     const expected = [

@@ -14,7 +14,7 @@ export class OrderManagerController {
     public static async executeOrder(
         params: STARParameters,
         updateOrder: DataReference) {
-        console.debug('============= START : executeOrder OrderManagerController ===========');
+        params.logger.debug('============= START : executeOrder OrderManagerController ===========');
 
         if (updateOrder.data) {
             ActivationDocument.schema.validateSync(
@@ -31,7 +31,7 @@ export class OrderManagerController {
             }
         }
 
-        console.debug('============= END   : executeOrder OrderManagerController ===========');
+        params.logger.debug('============= END   : executeOrder OrderManagerController ===========');
     }
 
 
@@ -40,7 +40,7 @@ export class OrderManagerController {
         activationDocument:ActivationDocument,
         collection: string) {
 
-        console.debug('============= START : updateByOrders OrderManagerController ===========');
+        params.logger.debug('============= START : updateByOrders OrderManagerController ===========');
         const original:ActivationDocument = await StarPrivateDataService.getObj(params, {id: activationDocument.activationDocumentMrid, docType: DocType.ACTIVATION_DOCUMENT, collection: collection});
 
         const original_order:ActivationDocument = JSON.parse(JSON.stringify(original));
@@ -65,6 +65,6 @@ export class OrderManagerController {
         // }
         activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
         await ActivationDocumentService.write(params, activationDocument, collection);
-        console.debug('============= END : updateByOrders OrderManagerController ===========');
+        params.logger.debug('=============  END  : updateByOrders OrderManagerController ===========');
     }
 }

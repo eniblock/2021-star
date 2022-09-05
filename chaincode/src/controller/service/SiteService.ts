@@ -8,7 +8,6 @@ import { STARParameters } from '../../model/starParameters';
 import { QueryStateService } from "./QueryStateService";
 import { HLFServices } from "./HLFservice";
 import { StarPrivateDataService } from "./StarPrivateDataService";
-import { RoleType } from "../../enums/RoleType";
 
 export class SiteService {
 
@@ -17,9 +16,12 @@ export class SiteService {
         params: STARParameters,
         siteObj: Site,
         target: string = ''): Promise<void> {
+        params.logger.debug('============= START : write SiteService ===========');
 
         siteObj.docType = DocType.SITE;
         await StarPrivateDataService.write(params, {id: siteObj.meteringPointMrid, dataObj: siteObj, collection: target});
+
+        params.logger.debug('=============  END  : write SiteService ===========');
     }
 
 
@@ -27,12 +29,12 @@ export class SiteService {
     public static async getQueryStringResult(
         params: STARParameters,
         query: string): Promise<string>  {
-        console.debug('============= START : getQueryStringResult SiteService ===========');
+        params.logger.debug('============= START : getQueryStringResult SiteService ===========');
 
         const allResults = await SiteService.getQueryArrayResult(params, query);
         const formated = JSON.stringify(allResults);
 
-        console.debug('============= END : getQueryStringResult SiteService ===========');
+        params.logger.debug('=============  END  : getQueryStringResult SiteService ===========');
         return formated;
     }
 
@@ -41,7 +43,7 @@ export class SiteService {
     public static async getQueryArrayResult(
         params: STARParameters,
         query: string): Promise<any>  {
-        console.debug('============= START : getPrivateQueryArrayResult SiteService ===========');
+        params.logger.debug('============= START : getPrivateQueryArrayResult SiteService ===========');
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
         var allResults = [];
@@ -49,9 +51,9 @@ export class SiteService {
 
         if (collections) {
             for (var i=0; i<collections.length; i++) {
-                // console.debug("collection : ", collections[i])
+                // params.logger.debug("collection : ", collections[i])
                 let results: Site[] = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, collection: collections[i]});
-                // console.debug("results :", JSON.stringify(results))
+                // params.logger.debug("results :", JSON.stringify(results))
                 for (var result of results) {
                     if (result
                         && result.meteringPointMrid
@@ -61,12 +63,12 @@ export class SiteService {
                             allResults.push(result);
                         }
                 }
-                // console.debug("allResults :", JSON.stringify(allResults))
-                // console.debug("allResultsId :", JSON.stringify(allResultsId))
+                // params.logger.debug("allResults :", JSON.stringify(allResults))
+                // params.logger.debug("allResultsId :", JSON.stringify(allResultsId))
             }
         }
 
-        console.debug('============= END : getPrivateQueryArrayResult SiteService ===========');
+        params.logger.debug('=============  END  : getPrivateQueryArrayResult SiteService ===========');
         return allResults;
     }
 

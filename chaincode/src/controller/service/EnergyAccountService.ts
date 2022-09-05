@@ -1,6 +1,5 @@
 import { DocType } from "../../enums/DocType";
 import { ParametersType } from "../../enums/ParametersType";
-import { RoleType } from "../../enums/RoleType";
 
 import { EnergyAccount } from "../../model/energyAccount";
 import { STARParameters } from "../../model/starParameters";
@@ -16,18 +15,22 @@ export class EnergyAccountService {
         params: STARParameters,
         energyObj: EnergyAccount,
         target: string = ''): Promise<void> {
+        params.logger.debug('============= START : write EnergyAccountService ===========');
 
         energyObj.docType = DocType.ENERGY_ACCOUNT;
         await StarPrivateDataService.write(params, { id: energyObj.energyAccountMarketDocumentMrid, dataObj: energyObj, collection: target});
+
+        params.logger.debug('=============  END  : write EnergyAccountService ===========');
     }
+
+
 
 
     public static async getQueryArrayResult(
         params: STARParameters,
         query: string,
         target: string = ''): Promise<any[]>  {
-
-        console.debug('============= START : getQueryArrayResult EnergyAccountService ===========');
+        params.logger.debug('============= START : getQueryArrayResult EnergyAccountService ===========');
 
         let collections: string[];
         if (target && target.length > 0) {
@@ -55,7 +58,7 @@ export class EnergyAccountService {
             }
         }
 
-        console.debug('============= END : getQueryArrayResult EnergyAccountService ===========');
+        params.logger.debug('=============  END  : getQueryArrayResult EnergyAccountService ===========');
         return allResults;
     }
 

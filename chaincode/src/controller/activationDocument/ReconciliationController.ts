@@ -21,7 +21,7 @@ import { SystemOperatorController } from '../SystemOperatorController';
 export class ReconciliationController {
     public static async getReconciliationState(
         params: STARParameters): Promise<DataReference[]> {
-        console.debug('============= START : getReconciliationState ReconciliationController ===========');
+        params.logger.debug('============= START : getReconciliationState ReconciliationController ===========');
 
         var reconciliationState: ReconciliationState = new ReconciliationState();
         reconciliationState.remaining = [];
@@ -56,7 +56,7 @@ export class ReconciliationController {
 
         }
 
-        console.debug('============= END : getReconciliationState ReconciliationController ===========');
+        params.logger.debug('=============  END  : getReconciliationState ReconciliationController ===========');
 
         return reconciliationState.updateOrders;
     }
@@ -67,6 +67,7 @@ export class ReconciliationController {
     private static async garbageCleanage(
         params: STARParameters,
         conciliationState: ReconciliationState): Promise<ReconciliationState> {
+        params.logger.debug('============= START : garbageCleanage ReconciliationController ===========');
 
         const remainingDocuments: DataReference[] = [];
 
@@ -107,18 +108,21 @@ export class ReconciliationController {
         }
         conciliationState.remaining = remainingDocuments;
 
+        params.logger.debug('=============  END  : garbageCleanage ReconciliationController ===========');
         return conciliationState;
     }
+
+
 
     private static async searchReconciliation(
         params: STARParameters,
         conciliationState: ReconciliationState): Promise<ReconciliationState> {
 
-        console.debug('============= START : searchReconciliation ReconciliationController ===========');
+        params.logger.debug('============= START : searchReconciliation ReconciliationController ===========');
 
-        // console.info("0.0.0.0.0.0.0.0.0.0.0.0.0")
-        // console.info(JSON.stringify(conciliationState))
-        // console.info("0.0.0.0.0.0.0.0.0.0.0.0.0")
+        // params.logger.info("0.0.0.0.0.0.0.0.0.0.0.0.0")
+        // params.logger.info(JSON.stringify(conciliationState))
+        // params.logger.info("0.0.0.0.0.0.0.0.0.0.0.0.0")
 
         if (conciliationState && conciliationState.remaining) {
             for (const remainingDocument of conciliationState.remaining) {
@@ -152,24 +156,26 @@ export class ReconciliationController {
             conciliationState.remaining = [];
         }
 
-        console.debug('============= END : searchReconciliation ReconciliationController ===========');
+        params.logger.debug('=============  END  : searchReconciliation ReconciliationController ===========');
 
         return conciliationState;
     }
 
+
+
     private static async searchMatchParentWithChild(
         params: STARParameters,
         childReference: DataReference): Promise<DataReference[]> {
-        console.debug('============= START : searchMatchParentWithChild ReconciliationController ===========');
+        params.logger.debug('============= START : searchMatchParentWithChild ReconciliationController ===========');
 
         const yellowPageList: YellowPages[] =
             await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(
                 params,
                 childReference.data.originAutomationRegisteredResourceMrid
             );
-        // console.info("0000000000000000000000000")
-        // console.log('yellowPageList for BB reconciliation=', JSON.stringify(yellowPageList));
-        // console.info("0000000000000000000000000")
+        // params.logger.info("0000000000000000000000000")
+        // params.logger.log('yellowPageList for BB reconciliation=', JSON.stringify(yellowPageList));
+        // params.logger.info("0000000000000000000000000")
 
         var registeredResourceMridList = [];
         for (const yellowPage of yellowPageList){
@@ -200,14 +206,15 @@ export class ReconciliationController {
         args.push(date_criteria);
 
         const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
-        // console.info("0000000000000000000000000")
-        // console.info(query)
-        // console.info("0000000000000000000000000")
+
+        params.logger.debug("0000000000000000000000000")
+        params.logger.debug(query)
+        params.logger.debug("0000000000000000000000000")
 
         const roleTargetQuery = RoleType.Role_TSO;
         const searchResult = await ReconciliationController.searchMatching(params, childReference, query, roleTargetQuery);
 
-        console.debug('============= END : searchMatchParentWithChild ReconciliationController ===========');
+        params.logger.debug('=============  END  : searchMatchParentWithChild ReconciliationController ===========');
         return searchResult;
     }
 
@@ -216,7 +223,7 @@ export class ReconciliationController {
     private static async searchUpdateEndState(
         params: STARParameters,
         childReference: DataReference): Promise<DataReference[]> {
-        console.debug('============= START : searchUpdateEndState ReconciliationController ===========');
+        params.logger.debug('============= START : searchUpdateEndState ReconciliationController ===========');
 
         const senderMarketParticipantMrid: string = childReference.data.senderMarketParticipantMrid;
         const registeredResourceMrid: string = childReference.data.registeredResourceMrid;
@@ -228,8 +235,8 @@ export class ReconciliationController {
         const datetmp = new Date(queryDate);
         datetmp.setUTCHours(0,0,0,0);
         const dateYesterday = new Date(datetmp.getTime() - pcuetmt);
-        // console.log ('dateYesterday=', dateYesterday);
-        // console.log ('dateYesterday=', dateYesterday.toUTCString());
+        // params.logger.log ('dateYesterday=', dateYesterday);
+        // params.logger.log ('dateYesterday=', dateYesterday.toUTCString());
 
         var args: string[] = [];
         args.push(`"orderEnd":false`);
@@ -239,14 +246,15 @@ export class ReconciliationController {
         args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateYesterday)},"$lte":${JSON.stringify(queryDate)}}`);
 
         const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
-        // console.info("0000000000000000000000000")
-        // console.info(query)
-        // console.info("0000000000000000000000000")
+
+        params.logger.debug("0000000000000000000000000")
+        params.logger.debug(query)
+        params.logger.debug("0000000000000000000000000")
 
         const roleTargetQuery = RoleType.Role_Producer;
         const searchResult = await ReconciliationController.searchMatching(params, childReference, query, roleTargetQuery);
 
-        console.debug('============= END : searchUpdateEndState ReconciliationController ===========');
+        params.logger.debug('=============  END  : searchUpdateEndState ReconciliationController ===========');
         return searchResult;
     }
 
@@ -257,6 +265,7 @@ export class ReconciliationController {
         childReference: DataReference,
         query:string,
         roleTargetParent:string): Promise<DataReference[]> {
+        params.logger.debug('============= START : searchMatching ReconciliationController ===========');
 
         const matchResult: DataReference[] = [];
 
@@ -295,6 +304,7 @@ export class ReconciliationController {
             }
         }
 
+        params.logger.debug('=============  END  : searchMatching ReconciliationController ===========');
         return matchResult;
     }
 

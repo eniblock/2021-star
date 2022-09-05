@@ -85,4 +85,15 @@ export class HLFServices {
         return await ctx.clientIdentity.getMSPID();
     }
 
+
+    public static async setLogLevel(params: STARParameters, loglevel: string): Promise<void> {
+        if (!["WARNING", "INFO", "DEBUG"].includes(loglevel)) {
+            throw new Error("defined log level can only be : WARNING or INFO or DEBUG");
+        }
+
+        params.loggerMgt.setLevel(loglevel);
+
+        params.logger.warn("!!! new log level define: ", loglevel);
+    }
+
 }

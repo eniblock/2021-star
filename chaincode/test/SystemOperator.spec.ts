@@ -17,9 +17,16 @@ import { Values } from './Values';
 import { DocType } from '../src/enums/DocType';
 
 
+class TestLoggerMgt {
+    public getLogger(arg: string): any {
+        return console;
+    }
+}
+
 class TestContext {
     clientIdentity: any;
     stub: any;
+    logger: TestLoggerMgt= new TestLoggerMgt();
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
@@ -60,7 +67,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
     //         try {
     //             await star.initLedger(transactionContext);
     //         } catch (err) {
-    //             // console.info(err.message)
+    //             // params.logger.info(err.message)
     //             expect(err.name).to.equal('failed inserting key');
     //         }
     //     });
@@ -81,7 +88,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
         //     try {
         //         await star.CreateSystemOperator(transactionContext, '{\"RTE01EIC\",\"RTE\",\"A49\"}');
         //     } catch(err) {
-        //         console.info(err)
+        //         params.logger.info(err)
         //         expect(err.name).to.equal('failed inserting key');
         //     }
         // });
@@ -91,7 +98,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 const msg = 'Organisation, '.concat(Values.FakeMSP).concat(' does not have write access to create a system operator');
                 expect(err.message).to.equal(msg);
             }
@@ -102,7 +109,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.CreateSystemOperator(transactionContext, 'toto');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR createSystemOperator-> Input string NON-JSON value');
             }
         });
@@ -112,7 +119,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTA_systemoperator));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 const msg = 'Organisation, '.concat(OrganizationTypeMsp.RTE).concat(' does not have write access for ').concat(OrganizationTypeMsp.ENEDIS);
                 expect(err.message).to.equal(msg);
             }
@@ -123,7 +130,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 const msg = 'Organisation, '.concat(OrganizationTypeMsp.ENEDIS).concat(' does not have write access for ').concat(OrganizationTypeMsp.RTE);
                 expect(err.message).to.equal(msg);
             }
@@ -166,7 +173,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.QuerySystemOperator(transactionContext, 'toto');
             } catch (err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('systemOperator : toto does not exist');
             }
         });
@@ -214,7 +221,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 transactionContext.clientIdentity.getMSPID.returns(Values.FakeMSP);
                 await star.UpdateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, FakeMSP does not have write access to update a system operator');
             }
         });
@@ -229,7 +236,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 const msg = 'Organisation, '.concat(OrganizationTypeMsp.RTE).concat(' does not have write access for ').concat(OrganizationTypeMsp.ENEDIS);
                 expect(err.message).to.equal(msg);
             }
@@ -245,7 +252,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
             try {
                 await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 const msg = 'Organisation, '.concat(OrganizationTypeMsp.ENEDIS).concat(' does not have write access for ').concat(OrganizationTypeMsp.RTE);
                 expect(err.message).to.equal(msg);
             }
@@ -271,7 +278,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
 
             let ret = await star.GetAllSystemOperator(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -285,7 +292,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
 
             let ret = await star.GetAllSystemOperator(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
             const expected: SystemOperator[] = [ Values.HTA_systemoperator, Values.HTB_systemoperator2 ];
@@ -308,7 +315,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
 
     //         let ret = await star.GetAllSystemOperator(transactionContext);
     //         ret = JSON.parse(ret);
-    //         // console.log('ret=', ret)
+    //         // params.logger.log('ret=', ret)
     //         expect(ret.length).to.equal(3);
 
     //         const expected = [

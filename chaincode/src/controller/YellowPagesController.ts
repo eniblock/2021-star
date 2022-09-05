@@ -1,4 +1,3 @@
-import { Context } from 'fabric-contract-api';
 import { DocType } from '../enums/DocType';
 
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
@@ -17,8 +16,7 @@ export class YellowPagesController {
     public static async createYellowPages(
         params: STARParameters,
         inputStr: string) {
-
-        console.debug('============= START : Create YellowPages ===========');
+        params.logger.info('============= START : Create YellowPages ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -29,7 +27,7 @@ export class YellowPagesController {
         try {
             yellowPageObj = JSON.parse(inputStr);
         } catch (error) {
-            // console.error('error=', error);
+            // params.logger.error('error=', error);
             throw new Error(`ERROR createYellowPages-> Input string NON-JSON value`);
         }
 
@@ -45,7 +43,8 @@ export class YellowPagesController {
         }
 
         await YellowPagesService.write(params, yellowPageObj);
-        console.debug('============= END   : Create %s YellowPages ===========',
+
+        params.logger.info('============= END   : Create %s YellowPages ===========',
             yellowPageObj.yellowPageMrid,
         );
     }
@@ -54,12 +53,20 @@ export class YellowPagesController {
 
 
     public static async getAllYellowPages(params: STARParameters): Promise<string> {
+        params.logger.info('============= START : getAllYellowPages ===========');
+
         const arrayResult = await this.getAllYellowPagesObject(params);
+
+        params.logger.info('=============  END  : getAllYellowPages ===========');
+
         return JSON.stringify(arrayResult);
     }
 
 
     public static async getAllYellowPagesObject(params: STARParameters): Promise<YellowPages[]> {
+        params.logger.debug('============= START : getAllYellowPages Obj ===========');
+        params.logger.debug('=============  END  : getAllYellowPages Obj ===========');
+
         return await QueryStateService.getAllStates(params, DocType.YELLOW_PAGES);
     }
 
@@ -68,10 +75,13 @@ export class YellowPagesController {
     public static async getYellowPagesByOriginAutomationRegisteredResource(
         params: STARParameters,
         originAutomationRegisteredResourceMrid: string): Promise<YellowPages[]> {
+        params.logger.debug('============= START : getYellowPages By OriginAutomationRegisteredResource ===========');
 
         const query = `{"selector": {"docType": "${DocType.YELLOW_PAGES}", "originAutomationRegisteredResourceMrid": "${originAutomationRegisteredResourceMrid}"}}`;
 
         const allResults  = await QueryStateService.getQueryArrayResult(params, {query: query});
+
+        params.logger.debug('=============  END  : getYellowPages By OriginAutomationRegisteredResource ===========');
 
         return allResults;
     }
@@ -82,6 +92,7 @@ export class YellowPagesController {
     public static async getYellowPagesByRegisteredResourceMrid(
         params: STARParameters,
         registeredResourceMrid: string): Promise<YellowPages[]> {
+        params.logger.debug('============= START : getYellowPages By RegisteredResourceMrid ===========');
 
         const query = `{"selector": {"docType": "${DocType.YELLOW_PAGES}", "registeredResourceMrid": "${registeredResourceMrid}"}}`;
 
@@ -100,6 +111,8 @@ export class YellowPagesController {
         } else {
             allResults = poolValue.values().next().value.data;
         }
+
+        params.logger.debug('============= START : getYellowPages By RegisteredResourceMrid ===========');
 
         return allResults;
     }

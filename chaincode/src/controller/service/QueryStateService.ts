@@ -34,9 +34,10 @@ export class QueryStateService {
 
         query = query.concat(`}}`);
 
-        // console.info("built query :", query)
+        // params.logger.info("built query :", query)
         return query;
     }
+
 
     private static async formatResultToArray(iterator: Iterators.StateQueryIterator): Promise<any[]> {
         const allResults:any[] = [];
@@ -73,6 +74,8 @@ export class QueryStateService {
         params: STARParameters,
         arg: queryArgument): Promise<Iterators.StateQueryIterator>  {
 
+        params.logger.debug("arg.query: ", arg.query);
+
         const iterator = await params.ctx.stub.getQueryResult(arg.query);
 
         return iterator;
@@ -83,7 +86,7 @@ export class QueryStateService {
     public static async getQueryArrayResult(
         params: STARParameters,
         arg: queryArgument): Promise<any[]>  {
-        console.debug('============= START : getQueryStringResult QueryStateService ===========');
+        params.logger.debug('============= START : getQueryStringResult QueryStateService ===========');
 
         var allResults: any[] = [];
 
@@ -110,31 +113,34 @@ export class QueryStateService {
         }
 
 
-        console.debug('============= END : getQueryStringResult QueryStateService ===========');
+        params.logger.debug('=============  END  : getQueryStringResult QueryStateService ===========');
         return allResults;
     }
 
     public static async getQueryStringResult(
         params: STARParameters,
         arg: queryArgument): Promise<string>  {
-        console.debug('============= START : getQueryStringResult QueryStateService ===========');
+        params.logger.debug('============= START : getQueryStringResult QueryStateService ===========');
 
         const allResults = await QueryStateService.getQueryArrayResult(params, arg);
         const formated = JSON.stringify(allResults);
 
-        console.debug('============= END : getQueryStringResult QueryStateService ===========');
+        params.logger.debug('=============  END  : getQueryStringResult QueryStateService ===========');
         return formated;
     }
 
     public static async getAllStates(
         params: STARParameters,
         dataType: string): Promise<any[]> {
-        console.debug('============= START : getAllStates %s QueryStateService ===========', dataType);
+        params.logger.debug('============= START : getAllStates %s QueryStateService ===========', dataType);
 
         const query = `{"selector": {"docType": "${dataType}"}}`;
+
+        params.logger.debug("query: ", query);
+
         const arrayResult = await QueryStateService.getQueryArrayResult(params, {query:query});
 
-        console.debug('============= END : getAllStates %s QueryStateService ===========', dataType);
+        params.logger.debug('=============  END  : getAllStates %s QueryStateService ===========', dataType);
         return arrayResult;
     }
 
@@ -149,15 +155,15 @@ export class QueryStateService {
         params: STARParameters,
         arg: queryArgument): Promise<Iterators.StateQueryIterator>  {
 
-        // console.debug(query);
-        // console.debug(collection);
+        // params.logger.debug(query);
+        // params.logger.debug(collection);
 
         var returned_iterator : any;
 
         const iterator: any = await params.ctx.stub.getPrivateDataQueryResult(arg.collection, arg.query);
 
         //Sometimes iterator is StateQueryResponse object instead of StateQueryIterator object
-        // console.debug("iterator :", iterator)
+        // params.logger.debug("iterator :", iterator)
 
         if (iterator) {
             if (iterator.iterator) {
@@ -166,7 +172,7 @@ export class QueryStateService {
                 returned_iterator = iterator;
             }
         }
-        // console.debug("iterator :", returned_iterator)
+        // params.logger.debug("iterator :", returned_iterator)
 
 
         return returned_iterator;
@@ -176,7 +182,7 @@ export class QueryStateService {
     public static async getPrivateQueryArrayResult(
         params: STARParameters,
         arg: queryArgument): Promise<any[]>  {
-        console.debug('============= START : getPrivateQueryArrayResult QueryStateService ===========');
+        params.logger.debug('============= START : getPrivateQueryArrayResult QueryStateService ===========');
 
         var allResults: any[] = [];
         const poolKey = arg.collection.concat(arg.query);
@@ -196,7 +202,7 @@ export class QueryStateService {
             allResults = poolValue.values().next().value.data;
         }
 
-        console.debug('============= END : getPrivateQueryArrayResult QueryStateService ===========');
+        params.logger.debug('=============  END  : getPrivateQueryArrayResult QueryStateService ===========');
         return allResults;
     }
 

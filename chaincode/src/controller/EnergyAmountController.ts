@@ -22,7 +22,7 @@ export class EnergyAmountController {
     public static async executeOrder(
         params: STARParameters,
         updateOrder: DataReference) {
-        console.debug('============= START : executeOrder EnergyAmountController ===========');
+        params.logger.debug('============= START : executeOrder EnergyAmountController ===========');
 
         if (updateOrder.data) {
             EnergyAmount.schema.validateSync(
@@ -46,7 +46,7 @@ export class EnergyAmountController {
 
         }
 
-        console.debug('============= END   : executeOrder EnergyAmountController ===========');
+        params.logger.debug('============= END   : executeOrder EnergyAmountController ===========');
     }
 
 
@@ -60,6 +60,7 @@ export class EnergyAmountController {
         energyType: EnergyType,
         checkSite: boolean = false,
         target: string = '') : Promise<void> {
+        params.logger.debug('============= START : checkEnergyAmout EnergyAmountController ===========');
 
         let orderObj: ActivationDocument;
         try {
@@ -99,33 +100,35 @@ export class EnergyAmountController {
             }
         }
 
-        // console.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
+        // params.logger.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
         const strSplitted = energyObj.timeInterval.split('/', 2);
         const begin = strSplitted[0];
         const end = strSplitted[1];
-        // console.log('strSplitted=', strSplitted);
+        // params.logger.log('strSplitted=', strSplitted);
 
         const dateBegin = new Date(begin.trim());
-        // console.log('dateBegin=', dateBegin);
+        // params.logger.log('dateBegin=', dateBegin);
         dateBegin.setUTCHours(0,0,0,0);
 
-        // console.log('dateBegin=', dateBegin);
+        // params.logger.log('dateBegin=', dateBegin);
 
 
-        // console.log('dateEnd=', dateEnd);
+        // params.logger.log('dateEnd=', dateEnd);
 
         const orderDateStart = new Date(orderObj.startCreatedDateTime);
         orderDateStart.setUTCHours(0,0,0,0);
-        // console.log('orderDateStart=', orderDateStart);
+        // params.logger.log('orderDateStart=', orderDateStart);
 
         if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
             throw new Error(`ERROR manage EnergyAmount mismatch between ${energyType} : ${CommonService.formatDate(dateBegin)} and Activation Document : ${CommonService.formatDate(orderDateStart)} dates.`);
         }
+
+        params.logger.debug('=============  END  : checkEnergyAmout EnergyAmountController ===========');
     }
 //      ================STAR-425 : Partie du code en commentaire car on utilise pas les clés composites===========================
 
 //         const keySplitted = energyObj.activationDocumentMrid.split('/', 4);
-//         console.log(keySplitted);
+//         params.logger.log(keySplitted);
 //
 //         const query = `{
 //             "selector":
@@ -137,7 +140,7 @@ export class EnergyAmountController {
 //                 "endCreatedDateTime": "${keySplitted[3]}"
 //             }
 //         }`;
-//         console.log(query);
+//         params.logger.log(query);
 //         const allResults = await QueryStateService.getQueryArrayResult(query);
 //         let orderObj: ActivationDocument;
 //         orderObj = allResults[0];
@@ -195,7 +198,7 @@ export class EnergyAmountController {
     public static async createTSOEnergyAmount(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : createTSOEnergyAmount EnergyAmountController ===========');
+        params.logger.info('============= START : createTSOEnergyAmount EnergyAmountController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
@@ -217,10 +220,12 @@ export class EnergyAmountController {
             await EnergyAmountService.write(params, energyObj, key);
         }
 
-        console.debug('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
+        params.logger.info('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
     }
+
+
 
 
 
@@ -228,7 +233,7 @@ export class EnergyAmountController {
         params: STARParameters,
         inputStr: string) {
 
-        console.debug('============= START : createTSOEnergyAmountList EnergyAmountController ===========');
+        params.logger.info('============= START : createTSOEnergyAmountList EnergyAmountController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
@@ -255,15 +260,17 @@ export class EnergyAmountController {
             }
         }
 
-        console.debug('============= END   : createTSOEnergyAmountList EnergyAmountController ===========');
+        params.logger.info('============= END   : createTSOEnergyAmountList EnergyAmountController ===========');
     }
+
+
 
 
 
     public static async createTSOEnergyAmountByReference(
         params: STARParameters,
         dataReference: DataReference) {
-        console.debug('============= START : createTSOEnergyAmount EnergyAmountController ===========');
+        params.logger.debug('============= START : createTSOEnergyAmount EnergyAmountController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
@@ -273,17 +280,19 @@ export class EnergyAmountController {
         await EnergyAmountController.checkEnergyAmout(params, dataReference.data, EnergyType.ENE, false, dataReference.collection);
         await EnergyAmountService.write(params, dataReference.data, dataReference.collection);
 
-        console.debug('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
+        params.logger.debug('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
             dataReference.data.energyAmountMarketDocumentMrid,
         );
     }
 
 
 
+
+
     public static async updateTSOEnergyAmount(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : updateTSOEnergyAmount EnergyAmountController ===========');
+        params.logger.info('============= START : updateTSOEnergyAmount EnergyAmountController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
@@ -305,7 +314,7 @@ export class EnergyAmountController {
             await EnergyAmountService.write(params, energyObj, key);
         }
 
-        console.debug('============= END   : updateTSOEnergyAmount %s EnergyAmountController ===========',
+        params.logger.info('============= END   : updateTSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
     }
@@ -313,10 +322,12 @@ export class EnergyAmountController {
 
 
 
+
+
     public static async updateTSOEnergyAmountList(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : updateTSOEnergyAmountList EnergyAmountController ===========');
+        params.logger.info('============= START : updateTSOEnergyAmountList EnergyAmountController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
@@ -343,15 +354,17 @@ export class EnergyAmountController {
             }
         }
 
-        console.debug('============= END   : updateTSOEnergyAmountList %s EnergyAmountController ===========');
+        params.logger.info('============= END   : updateTSOEnergyAmountList %s EnergyAmountController ===========');
     }
+
+
 
 
 
     public static async createDSOEnergyAmount(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : createDSOEnergyAmount EnergyAmountController ===========');
+        params.logger.debug('============= START : createDSOEnergyAmount EnergyAmountController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
@@ -373,17 +386,19 @@ export class EnergyAmountController {
             await EnergyAmountService.write(params, energyObj, key);
         }
 
-        console.debug('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
+        params.logger.debug('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
     }
 
 
 
+
+
     public static async createDSOEnergyAmountList(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : createDSOEnergyAmountList EnergyAmountController ===========');
+        params.logger.info('============= START : createDSOEnergyAmountList EnergyAmountController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
@@ -410,15 +425,18 @@ export class EnergyAmountController {
             }
         }
 
-        console.debug('============= END   : createDSOEnergyAmountList EnergyAmountController ===========');
+        params.logger.info('============= END   : createDSOEnergyAmountList EnergyAmountController ===========');
     }
+
+
+
 
 
 
     public static async createDSOEnergyAmountByReference(
         params: STARParameters,
         dataReference: DataReference) {
-        console.debug('============= START : createDSOEnergyAmount EnergyAmountController ===========');
+        params.logger.debug('============= START : createDSOEnergyAmount EnergyAmountController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
@@ -428,7 +446,7 @@ export class EnergyAmountController {
         await EnergyAmountController.checkEnergyAmout(params, dataReference.data, EnergyType.ENI, true, dataReference.collection);
         await EnergyAmountService.write(params, dataReference.data, dataReference.collection);
 
-        console.debug('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
+        params.logger.debug('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
         dataReference.data.energyAmountMarketDocumentMrid,
         );
     }
@@ -437,10 +455,12 @@ export class EnergyAmountController {
 
 
 
+
+
     public static async updateDSOEnergyAmountList(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : updateDSOEnergyAmountList EnergyAmountController ===========');
+        params.logger.info('============= START : updateDSOEnergyAmountList EnergyAmountController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
@@ -467,7 +487,7 @@ export class EnergyAmountController {
             }
         }
 
-        console.debug('============= END   : updateDSOEnergyAmountList %s EnergyAmountController ===========');
+        params.logger.info('============= END   : updateDSOEnergyAmountList %s EnergyAmountController ===========');
     }
 
 
@@ -476,7 +496,7 @@ export class EnergyAmountController {
     public static async updateDSOEnergyAmount(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : updateDSOEnergyAmount EnergyAmountController ===========');
+        params.logger.info('============= START : updateDSOEnergyAmount EnergyAmountController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
@@ -499,10 +519,12 @@ export class EnergyAmountController {
         }
 
 
-        console.debug('============= END   : updateDSOEnergyAmount %s EnergyAmountController ===========',
+        params.logger.info('============= END   : updateDSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
     }
+
+
 
 
 
@@ -532,11 +554,14 @@ export class EnergyAmountController {
 
 
 
+
+
     public static async getEnergyAmountForSystemOperator(
         params: STARParameters,
         registeredResourceMrid: string,
         systemOperatorEicCode: string,
         startCreatedDateTime: string): Promise<string> {
+        params.logger.info('============= START : get EnergyAmount For SystemOperator ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -584,6 +609,8 @@ export class EnergyAmountController {
         // }`;
 
         const ret = await QueryStateService.getQueryStringResult(params, {query: query})
+
+        params.logger.info('=============  END  : get EnergyAmount For SystemOperator ===========');
         return ret
     }
 
@@ -595,6 +622,7 @@ export class EnergyAmountController {
         registeredResourceMrid: string,
         producerEicCode: string,
         startCreatedDateTime: string): Promise<string> {
+        params.logger.info('============= START : get EnergyAmount For Producer ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.PRODUCER) {
@@ -628,6 +656,9 @@ export class EnergyAmountController {
         //     }`;
 
         const ret = await QueryStateService.getQueryStringResult(params, {query: query})
+
+        params.logger.info('=============  END  : get EnergyAmount For Producer ===========');
+
         return ret
     }
 
@@ -636,6 +667,8 @@ export class EnergyAmountController {
     public static async getEnergyAmountByQuery(
         params: STARParameters,
         query: string): Promise<any> {
+        params.logger.info('============= START : get EnergyAmount By Query ===========');
+
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Amount.`);
@@ -643,6 +676,7 @@ export class EnergyAmountController {
 
         let results = await EnergyAmountService.getQueryArrayResult(params, {query:query});
 
+        params.logger.info('=============  END  : get EnergyAmount By Query ===========');
         return results;
     }
 
@@ -651,6 +685,7 @@ export class EnergyAmountController {
         params: STARParameters,
         activationDocumentMrid: string,
         target: string = ''): Promise<EnergyAmount> {
+        params.logger.debug('============= START : get EnergyAmount By ActivationDocument ===========');
 
         const query = `{"selector": {"docType": "${DocType.ENERGY_AMOUNT}", "activationDocumentMrid": "${activationDocumentMrid}"}}`;
         const allResults = await EnergyAmountService.getQueryArrayResult(params, {query: query, collection: target});
@@ -659,6 +694,9 @@ export class EnergyAmountController {
         if (allResults && allResults.length >0) {
             energyAmout = allResults[0];
         }
+
+        params.logger.debug('=============  END  : get EnergyAmount By ActivationDocument ===========');
+
         return energyAmout;
     }
 

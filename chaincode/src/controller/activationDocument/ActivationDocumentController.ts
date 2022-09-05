@@ -22,8 +22,10 @@ export class ActivationDocumentController {
     public static async getActivationDocumentByProducer(
         params: STARParameters,
         producerMrid: string): Promise<string> {
+        params.logger.info('============= START : get ActivationDocument By Producer ===========');
 
         const query = `{"selector": {"docType": "activationDocument", "receiverMarketParticipantMrid": "${producerMrid}"}}`;
+        params.logger.debug("query: ", query);
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
@@ -31,6 +33,7 @@ export class ActivationDocumentController {
         const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(params, allResults);
         const formated = JSON.stringify(formatedResults);
 
+        params.logger.info('=============  END  : get ActivationDocument By Producer ===========');
         return formated;
     }
 
@@ -39,8 +42,10 @@ export class ActivationDocumentController {
     public static async getActivationDocumentBySystemOperator(
         params: STARParameters,
         systemOperatorMrid: string): Promise<string> {
+        params.logger.info('============= START : get ActivationDocument By SystemOperator ===========');
 
         const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${systemOperatorMrid}"}}`;
+        params.logger.debug("query: ", query);
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
@@ -48,6 +53,7 @@ export class ActivationDocumentController {
         const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(params, allResults);
         const formated = JSON.stringify(formatedResults);
 
+        params.logger.info('=============  END  : get ActivationDocument By SystemOperator ===========');
         return formated;
     }
 
@@ -56,6 +62,7 @@ export class ActivationDocumentController {
         params: STARParameters,
         activationDocumentMrid: string,
         target: string = ''): Promise<ActivationDocument> {
+        params.logger.debug('============= START : get ActivationDocument By Id ===========');
 
         let orderObj: ActivationDocument;
         if (target && target.length > 0) {
@@ -73,6 +80,7 @@ export class ActivationDocumentController {
             formatedResult = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, orderObj);
         }
 
+        params.logger.debug('=============  END  : get ActivationDocument By Id ===========');
         return formatedResult;
     }
 
@@ -81,14 +89,17 @@ export class ActivationDocumentController {
     public static async getActivationDocumentByQuery(
         params: STARParameters,
         query: string): Promise<string> {
+        params.logger.info('============= START : get ActivationDocument By Query ===========');
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
+        params.logger.debug("query: ", query);
         const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(params, query, collections);
         const formatedResults: ActivationDocument[] = await ActivationDocumentEligibilityService.formatActivationDocuments(params, allResults);
 
         const formated = JSON.stringify(formatedResults);
 
+        params.logger.info('=============  END  : get ActivationDocument By Query ===========');
         return formated;
     }
 
@@ -97,7 +108,7 @@ export class ActivationDocumentController {
     public static async createActivationDocument(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : Create ActivationDocumentController ===========');
+        params.logger.info('============= START : Create ActivationDocumentController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -107,7 +118,7 @@ export class ActivationDocumentController {
         const activationDocumentObj: ActivationDocument =ActivationDocument.formatString(inputStr);
         await ActivationDocumentController.createActivationDocumentObj(params, activationDocumentObj);
 
-        console.debug('============= END : Create ActivationDocumentController ===========');
+        params.logger.info('=============  END  : Create ActivationDocumentController ===========');
     }
 
 
@@ -115,7 +126,7 @@ export class ActivationDocumentController {
     public static async createActivationDocumentByReference(
         params: STARParameters,
         dataReference: DataReference) {
-        console.debug('============= START : create ByReference ActivationDocumentController ===========');
+        params.logger.debug('============= START : create ByReference ActivationDocumentController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -129,7 +140,7 @@ export class ActivationDocumentController {
 
         await ActivationDocumentController.createActivationDocumentObj(params, dataReference.data, dataReference.collection);
 
-        console.debug('============= END : create ByReference ActivationDocumentController ===========');
+        params.logger.debug('=============  END  : create ByReference ActivationDocumentController ===========');
     }
 
 
@@ -137,7 +148,7 @@ export class ActivationDocumentController {
     public static async createActivationDocumentList(
         params: STARParameters,
         inputStr: string) {
-        console.debug('============= START : Create List ActivationDocumentController ===========');
+        params.logger.info('============= START : Create List ActivationDocumentController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -152,7 +163,7 @@ export class ActivationDocumentController {
             }
         }
 
-        console.debug('============= END : Create List ActivationDocumentController ===========');
+        params.logger.info('=============  END  : Create List ActivationDocumentController ===========');
     }
 
 
@@ -161,7 +172,7 @@ export class ActivationDocumentController {
         params: STARParameters,
         activationDocumentObj: ActivationDocument,
         definedTarget: string = '') {
-        console.debug('============= START : Create createActivationDocumentObj ===========');
+        params.logger.debug('============= START : Create createActivationDocumentObj ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
 
@@ -312,7 +323,7 @@ export class ActivationDocumentController {
 
         await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);
 
-        console.debug('============= END   : Create %s createActivationDocumentObj ===========',
+        params.logger.debug('=============  END  : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,
         );
     }

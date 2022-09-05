@@ -24,9 +24,16 @@ import { EligibilityStatus } from '../src/model/activationDocument/eligibilitySt
 import { EligibilityStatusType } from '../src/enums/EligibilityStatusType';
 import { HLFServices } from '../src/controller/service/HLFservice';
 
+class TestLoggerMgt {
+    public getLogger(arg: string): any {
+        return console;
+    }
+}
+
 class TestContext {
     clientIdentity: any;
     stub: any;
+    logger: TestLoggerMgt= new TestLoggerMgt();
 
     constructor() {
         this.clientIdentity = sinon.createStubInstance(ClientIdentity);
@@ -82,7 +89,7 @@ describe('Star Tests ActivationDocument', () => {
 
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('failed inserting key');
             }
         });
@@ -92,7 +99,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, 'XXXXXX');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR '.concat(DocType.ACTIVATION_DOCUMENT).concat(' -> Input string NON-JSON value'));
             }
         });
@@ -114,7 +121,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, ad_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('originAutomationRegisteredResourceMrid is required');
             }
         });
@@ -128,7 +135,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('registeredResourceMrid is required');
             }
         });
@@ -142,7 +149,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('measurementUnitName is required');
             }
         });
@@ -156,7 +163,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('messageType is required');
             }
         });
@@ -170,7 +177,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('businessType is required');
             }
         });
@@ -185,7 +192,7 @@ describe('Star Tests ActivationDocument', () => {
         //     try {
         //         await star.CreateActivationDocument(transactionContext, input);
         //     } catch(err) {
-        //         // console.info(err.message)
+        //         // params.logger.info(err.message)
         //         expect(err.message).to.equal('orderEnd is required');
         //     }
         // });
@@ -199,7 +206,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('senderMarketParticipantMrid is required');
             }
         });
@@ -213,7 +220,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('receiverMarketParticipantMrid is required');
             }
         });
@@ -225,7 +232,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, '
                     .concat(Values.FakeMSP)
                     .concat(' does not have write access for Activation Document'));
@@ -240,7 +247,7 @@ describe('Star Tests ActivationDocument', () => {
         //     try {
         //         await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
         //     } catch(err) {
-        //         console.info(err.message)
+        //         params.logger.info(err.message)
         //         expect(err.message).to.equal('Organisation, enedis does not have write access for MW orders');
         //     }
         // });
@@ -258,7 +265,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR createActivationDocument : '.concat(DocType.SYSTEM_OPERATOR).concat(' : ')
                     .concat(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid)
                     .concat(' does not exist for Activation Document ')
@@ -280,7 +287,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Producer : '
                     .concat(Values.HTA_Producer.producerMarketParticipantMrid)
                     .concat(' does not exist for Activation Document ')
@@ -306,7 +313,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Order must have a limitation value');
             }
         });
@@ -325,7 +332,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`Incoherency between messageType, businessType and reason code for Activation Document ${activationDocument.activationDocumentMrid} creation.`);
             }
 
@@ -355,12 +362,12 @@ describe('Star Tests ActivationDocument', () => {
             expected.eligibilityStatusEditable = false;
             expected.docType = DocType.ACTIVATION_DOCUMENT;
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
 
 
             transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(
@@ -409,17 +416,17 @@ describe('Star Tests ActivationDocument', () => {
             expected2.eligibilityStatus = '';
             expected2.docType = DocType.ACTIVATION_DOCUMENT;
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected))
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected2))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected2))
+            // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
                 "enedis-producer",
@@ -446,7 +453,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, 'XXXXXX');
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('ERROR '.concat(DocType.ACTIVATION_DOCUMENT).concat(' -> Input string NON-JSON value'));
             }
         });
@@ -477,7 +484,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                // console.info(err)
+                // params.logger.info(err)
                 expect(err.errors[0]).to.equal(errors[0]);
                 expect(err.errors[1]).to.equal(errors[1]);
                 expect(err.errors[2]).to.equal(errors[2]);
@@ -499,7 +506,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, input);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('activationDocumentMrid is a compulsory string');
             }
         });
@@ -517,7 +524,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} cannot send Activation Document for sender ${OrganizationTypeMsp.ENEDIS}`);
             }
         });
@@ -535,7 +542,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(DocType.SITE.concat(' : ')
                     .concat(Values.HTB_site_valid.meteringPointMrid)
                     .concat(' does not exist (not found in any collection). for Activation Document ')
@@ -557,7 +564,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal('Producer : '
                     .concat(Values.HTB_Producer.producerMarketParticipantMrid)
                     .concat(' does not exist for Activation Document ')
@@ -585,12 +592,12 @@ describe('Star Tests ActivationDocument', () => {
             expected.eligibilityStatus = '';
             expected.docType = DocType.ACTIVATION_DOCUMENT;
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(expected))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
 
 
             transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(
@@ -612,7 +619,7 @@ describe('Star Tests ActivationDocument', () => {
             const producer = 'toto';
             let ret = await star.GetActivationDocumentByProducer(transactionContext, producer);
             ret = JSON.parse(ret);
-            // console.log('retADproducer=', ret)
+            // params.logger.log('retADproducer=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -627,7 +634,7 @@ describe('Star Tests ActivationDocument', () => {
 
             let ret = await star.GetActivationDocumentByProducer(transactionContext, Values.HTA_Producer.producerMarketParticipantMrid);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(2);
 
             const expectedDoc1 = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
@@ -714,7 +721,7 @@ describe('Star Tests ActivationDocument', () => {
 
         //     let retB = await star.GetActivationDocumentByProducer(transactionContext, orderB.receiverMarketParticipantMrid);
         //     retB = JSON.parse(retB);
-        //     // console.log('retB=', retB)
+        //     // params.logger.log('retB=', retB)
         //     expect(retB.length).to.equal(2);
 
         //     const expected = [
@@ -749,7 +756,7 @@ describe('Star Tests ActivationDocument', () => {
             const producer = 'toto';
             let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, producer);
             ret = JSON.parse(ret);
-            // console.log('retADproducer=', ret)
+            // params.logger.log('retADproducer=', ret)
             expect(ret.length).to.equal(0);
             expect(ret).to.eql([]);
         });
@@ -766,7 +773,7 @@ describe('Star Tests ActivationDocument', () => {
 
             let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid as string);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);
 
             const expectedDoc1 = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
@@ -851,7 +858,7 @@ describe('Star Tests ActivationDocument', () => {
 
         //     let retB = await star.GetActivationDocumentBySystemOperator(transactionContext, orderB.senderMarketParticipantMrid);
         //     retB = JSON.parse(retB);
-        //     // console.log('retB=', retB)
+        //     // params.logger.log('retB=', retB)
         //     expect(retB.length).to.equal(3);
 
         //     const expected = [
@@ -936,7 +943,7 @@ describe('Star Tests ActivationDocument', () => {
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
 
             activationDocument01_garbage.orderEnd = true;
             activationDocument01_garbage.potentialParent = false;
@@ -949,7 +956,7 @@ describe('Star Tests ActivationDocument', () => {
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
 
             const expected = JSON.parse(JSON.stringify(updateOrders));
-            // console.log('expected=', expected)
+            // params.logger.log('expected=', expected)
 
             expect(ret).to.eql(expected);
         });
@@ -991,7 +998,7 @@ describe('Star Tests ActivationDocument', () => {
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
 
             activationDocument01_garbage.orderEnd = true;
             activationDocument01_garbage.potentialParent = false;
@@ -1004,7 +1011,7 @@ describe('Star Tests ActivationDocument', () => {
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
 
             const expected = JSON.parse(JSON.stringify(updateOrders));
-            // console.log('expected=', expected)
+            // params.logger.log('expected=', expected)
 
             expect(ret).to.eql(expected);
         });
@@ -1066,7 +1073,7 @@ describe('Star Tests ActivationDocument', () => {
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
 
 
             parentStartDocument.orderEnd = true;
@@ -1081,7 +1088,7 @@ describe('Star Tests ActivationDocument', () => {
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childEndDocument});
 
             const expected = JSON.parse(JSON.stringify(updateOrders));
-            // console.log('expected=', expected)
+            // params.logger.log('expected=', expected)
 
             expect(ret).to.eql(expected);
         });
@@ -1142,9 +1149,9 @@ describe('Star Tests ActivationDocument', () => {
             args.push(`"messageType":{"$in":["A54","A98"]}`);
             args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateYesterday)},"$lte":${JSON.stringify(queryDate)}}`);
 
-            // console.info("** Query TEST **");
+            // params.logger.info("** Query TEST **");
             const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
-            // console.info("** Query TEST - END **");
+            // params.logger.info("** Query TEST - END **");
 
             const iterator = Values.getActivationDocumentQueryMock2Values(parentStartDocumentOldest, parentStartDocument, mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, query).resolves(iterator);
@@ -1155,7 +1162,7 @@ describe('Star Tests ActivationDocument', () => {
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
 
 
             parentStartDocument.orderEnd = true;
@@ -1171,7 +1178,7 @@ describe('Star Tests ActivationDocument', () => {
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childEndDocument});
 
             const expected = JSON.parse(JSON.stringify(updateOrders));
-            // console.log('expected=', expected)
+            // params.logger.log('expected=', expected)
 
             expect(ret).to.eql(expected);
         });
@@ -1244,7 +1251,7 @@ describe('Star Tests ActivationDocument', () => {
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
 
 
             parentDocument.orderEnd = true;
@@ -1259,7 +1266,7 @@ describe('Star Tests ActivationDocument', () => {
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childDocument_Reconciliation});
 
             const expected = JSON.parse(JSON.stringify(updateOrders));
-            // console.log('expected=', expected)
+            // params.logger.log('expected=', expected)
 
             expect(ret).to.eql(expected);
         });
@@ -1342,7 +1349,7 @@ describe('Star Tests ActivationDocument', () => {
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
             ret = JSON.parse(ret);
-            // console.log('ret=', ret)
+            // params.logger.log('ret=', ret)
 
 
             parentDocument.orderEnd = true;
@@ -1356,7 +1363,7 @@ describe('Star Tests ActivationDocument', () => {
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childDocument_Reconciliation});
 
             const expected = JSON.parse(JSON.stringify(updateOrders));
-            // console.log('expected=', expected)
+            // params.logger.log('expected=', expected)
 
             expect(ret).to.eql(expected);
         });
@@ -1397,7 +1404,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`ERROR cannot find reference to Activation Document ${activationDocument_Producer.activationDocumentMrid} for status Update.`);
             }
         });
@@ -1420,7 +1427,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`ERROR cannot find reference to Activation Document ${activationDocument_Producer.activationDocumentMrid} for status Update.`);
             }
         });
@@ -1451,12 +1458,12 @@ describe('Star Tests ActivationDocument', () => {
 
             await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_garbageProducer))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(activationDocument_garbageProducer))
+            // params.logger.info("-----------")
 
             const expectedValue_Producer = JSON.parse(JSON.stringify(activationDocument_Producer));
             expectedValue_Producer.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
@@ -1497,12 +1504,12 @@ describe('Star Tests ActivationDocument', () => {
 
             await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_garbageProducer))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(activationDocument_garbageProducer))
+            // params.logger.info("-----------")
 
             const expectedValue_Producer = JSON.parse(JSON.stringify(activationDocument_Producer));
             expectedValue_Producer.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
@@ -1544,12 +1551,12 @@ describe('Star Tests ActivationDocument', () => {
 
             await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_garbageTSO))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(activationDocument_garbageTSO))
+            // params.logger.info("-----------")
 
             const expectedValue_TSO = JSON.parse(JSON.stringify(activationDocument_TSO));
             expectedValue_TSO.eligibilityStatus = EligibilityStatusType.EligibilityRefused;
@@ -1599,7 +1606,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`${DocType.ACTIVATION_DOCUMENT} : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
             }
         });
@@ -1623,7 +1630,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`${DocType.ACTIVATION_DOCUMENT} : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
             }
         });
@@ -1656,7 +1663,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`Error on document ${activationDocument_Producer.activationDocumentMrid} all modified data cannot be updated by orders.`);
             }
         });
@@ -1692,7 +1699,7 @@ describe('Star Tests ActivationDocument', () => {
             try {
                 await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
             } catch(err) {
-                // console.info(err.message)
+                // params.logger.info(err.message)
                 expect(err.message).to.equal(`Error on document ${activationDocument_Producer.activationDocumentMrid} ids can only be added to subOrderList.`);
             }
         });
@@ -1738,17 +1745,17 @@ describe('Star Tests ActivationDocument', () => {
 
             await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
 
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_garbageProducer))
-            // console.info("-----------")
-            // console.info(transactionContext.stub.putPrivateData.secondCall.args);
-            // console.info("ooooooooo")
-            // console.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // console.info(JSON.stringify(activationDocument_garbageTSO))
-            // console.info("-----------")
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(activationDocument_garbageProducer))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(activationDocument_garbageTSO))
+            // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
                 collectionProducer,

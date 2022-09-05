@@ -120,7 +120,8 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         measurementUnitName: MeasurementUnitName.MW,
         senderMarketParticipantMrid: '10XFR-RTE------Q', // 10XFR-RTE------Q    17X100A100A0001A
       },
-      subOrderList: []
+      subOrderList: [],
+      displayedSourceName: "displayedSourceName1"
     },
 
     {
@@ -195,7 +196,8 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
         }
-      ]
+      ],
+      displayedSourceName: "displayedSourceName2"
     },
   ]);
 };

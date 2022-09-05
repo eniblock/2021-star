@@ -18,4 +18,5 @@ export interface RechercheHistoriqueLimitationEntite {
   energyAmount: EnergyAmount | null,
   activationDocument: OrdreLimitation,
   subOrderList: OrdreLimitation[],
+  displayedSourceName: string,
 }

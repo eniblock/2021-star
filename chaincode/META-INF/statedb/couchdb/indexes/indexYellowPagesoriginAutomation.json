@@ -1,0 +1,8 @@
+{
+   "index":{
+      "fields":["docType","originAutomationRegisteredResourceMrid"]
+   },
+   "ddoc":"indexYellowPagesoriginAutomationDoc",
+   "name":"indexYellowPagesoriginAutomation",
+   "type":"json"
+}

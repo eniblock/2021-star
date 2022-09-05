@@ -285,6 +285,5 @@ class SiteServiceTest extends AbstractTest {
 
         String queryValue = queryCaptor.getValue();
         assertThat(queryValue).contains("meteringPointMrid", Site.CODE_SITE_HTA);
-        assertThat(queryValue).doesNotContain(Site.CODE_SITE_HTB_PDL, Site.CODE_SITE_HTB_CART);
     }
 }

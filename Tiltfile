@@ -32,7 +32,7 @@ if cfg.get('dev-frontend'):
     target='dev'
     extra_front_opts.update(dict(
         live_update=[
-            sync('frontend', '/usr/src/app'),
+            sync('frontend', '/app'),
             run('cd /usr/src/app && npm ci',
                 trigger=['./package.json', './package.lock']),
         ]

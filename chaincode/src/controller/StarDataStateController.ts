@@ -28,9 +28,9 @@ export class StarDataStateController {
 
         var state_str = JSON.stringify(orderReferences);
 
-        params.logger.debug("#######################")
-        params.logger.debug(state_str)
-        params.logger.debug("#######################")
+        params.logger.info("#######################")
+        params.logger.info(state_str)
+        params.logger.info("#######################")
 
         params.logger.info('=============  END  : getStarDataState StarDataStateController ===========');
 

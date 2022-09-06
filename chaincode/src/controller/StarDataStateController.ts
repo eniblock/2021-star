@@ -64,11 +64,17 @@ export class StarDataStateController {
                 );
                 if (updateOrder.docType === DocType.ACTIVATION_DOCUMENT) {
                     const data: ActivationDocument = updateOrder.data;
-                    params.addInMemoryPool(data.activationDocumentMrid, updateOrder);
+
+                    const poolKey = updateOrder.collection.concat(data.activationDocumentMrid);
+
+                    params.addInMemoryPool(poolKey, updateOrder);
 
                 } else if (updateOrder.docType === DocType.SITE) {
                     const data: Site = updateOrder.data;
-                    params.addInMemoryPool(data.meteringPointMrid, updateOrder);
+
+                    const poolKey = updateOrder.collection.concat(data.meteringPointMrid);
+
+                    params.addInMemoryPool(poolKey, updateOrder);
 
                 }
                 //  else if (updateOrder.docType === DocType.ENERGY_ACCOUNT) {

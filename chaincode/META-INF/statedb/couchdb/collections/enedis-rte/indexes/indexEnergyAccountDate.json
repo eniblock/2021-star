@@ -1,0 +1,9 @@
+{
+   "index":{
+      "fields":[
+         "docType", "meteringPointMrid", "startCreatedDateTime", "endCreatedDateTime"]
+   },
+   "ddoc":"indexEnergyAccountDateDoc",
+   "name":"indexEnergyAccountDate",
+   "type":"json"
+}

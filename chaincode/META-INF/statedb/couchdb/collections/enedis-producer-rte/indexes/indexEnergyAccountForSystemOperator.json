@@ -1,0 +1,9 @@
+{
+   "index":{
+      "fields":[
+         "docType", "meteringPointMrid", "senderMarketParticipantMrid", "createdDateTime"]
+   },
+   "ddoc":"indexEnergyAccountForSystemOperatorDoc",
+   "name":"indexEnergyAccountForSystemOperator",
+   "type":"json"
+}

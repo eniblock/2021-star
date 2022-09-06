@@ -169,7 +169,7 @@ export class ReferenceEnergyAccountController {
         var args: string[] = [];
         args.push(`"meteringPointMrid": "${meteringPointMrid}"`);
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-        const query = await QueryStateService.buildQuery(DocType.REFERENCE_ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+        const query = await QueryStateService.buildQuery({documentType: DocType.REFERENCE_ENERGY_ACCOUNT,  queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
         const allResults = await ReferenceEnergyAccountService.getQueryArrayResult(params, query, target);
 
@@ -203,7 +203,7 @@ export class ReferenceEnergyAccountController {
         args.push(`"meteringPointMrid": "${meteringPointMrid}"`);
         args.push(`"receiverMarketParticipantMrid": "${producerEicCode}"`);
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-        const query = await QueryStateService.buildQuery(DocType.REFERENCE_ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+        const query = await QueryStateService.buildQuery({documentType:DocType.REFERENCE_ENERGY_ACCOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
         const allResults = await ReferenceEnergyAccountService.getQueryStringResult(params, query);
 

@@ -778,7 +778,7 @@ describe('Star Tests EnergyAmount', () => {
             args.push(`"registeredResourceMrid":"${Values.HTB_EnergyAmount.registeredResourceMrid}"`);
             args.push(`"senderMarketParticipantMrid":"${Values.HTB_EnergyAmount.senderMarketParticipantMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+            const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_AMOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
         //     const query = `{
         //     "selector":
@@ -945,7 +945,7 @@ describe('Star Tests EnergyAmount', () => {
             args.push(`"registeredResourceMrid":"${Values.HTB_EnergyAmount.registeredResourceMrid}"`);
             args.push(`"receiverMarketParticipantMrid":"${Values.HTB_EnergyAmount.receiverMarketParticipantMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+            const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_AMOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
             // const query = `{
             //     "selector":
@@ -1092,7 +1092,7 @@ describe('Star Tests EnergyAmount', () => {
             args.push(`"registeredResourceMrid":"${Values.HTA_EnergyAmount.registeredResourceMrid}"`);
             args.push(`"senderMarketParticipantMrid":"${Values.HTA_EnergyAmount.senderMarketParticipantMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+            const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_AMOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
         //     const query = `{
         //     "selector":
@@ -1143,7 +1143,7 @@ describe('Star Tests EnergyAmount', () => {
             args.push(`"registeredResourceMrid":"${Values.HTA_EnergyAmount.registeredResourceMrid}"`);
             args.push(`"receiverMarketParticipantMrid":"${Values.HTA_EnergyAmount.receiverMarketParticipantMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+            const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_AMOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
             // const query = `{
             //     "selector":

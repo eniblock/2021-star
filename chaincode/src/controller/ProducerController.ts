@@ -133,7 +133,7 @@ export class ProducerController {
         var args: string[] = [];
         args.push(`"producerMarketParticipantName":"${producerMarketParticipantName}"`);
 
-        const query = await QueryStateService.buildQuery(DocType.PRODUCER, args);
+        const query = await QueryStateService.buildQuery({documentType: DocType.PRODUCER, queryArgs: args});
 
         const allResults = await QueryStateService.getQueryArrayResult(params, {query: query});
 

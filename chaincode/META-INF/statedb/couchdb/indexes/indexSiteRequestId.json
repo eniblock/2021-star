@@ -1,0 +1,9 @@
+{
+   "index":{
+      "fields":[
+         "docType", "meteringPointMrid"]
+   },
+   "ddoc":"indexSiteRequestIdDoc",
+   "name":"indexSiteRequestId",
+   "type":"json"
+}

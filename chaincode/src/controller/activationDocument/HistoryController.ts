@@ -158,7 +158,7 @@ export class HistoryController {
         criteriaObj.originAutomationRegisteredResourceList = [];
         criteriaObj.registeredResourceList = [];
         if (args.length > 0) {
-            const querySite = await QueryStateService.buildQuery(DocType.SITE, args);
+            const querySite = await QueryStateService.buildQuery({documentType: DocType.SITE, queryArgs: args});
             const siteList: any[] = await SiteService.getQueryArrayResult(params, querySite);
 
             if (siteList.length == 0) {
@@ -255,7 +255,7 @@ export class HistoryController {
 
         params.logger.debug('=============  END  : buildActivationDocumentQuery ===========');
 
-        return await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
+        return await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
     }
 
 

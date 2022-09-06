@@ -302,7 +302,26 @@ export class ActivationDocumentController {
             activationDocumentObj.orderEnd = false;
         }
 
-        activationDocumentObj.potentialParent =  (RoleType.Role_TSO === role_systemOperator && RoleType.Role_DSO === role_producer && activationDocumentObj.startCreatedDateTime !== "");
+        if (RoleType.Role_DSO === role_producer) {
+            activationDocumentObj.receiverRole = RoleType.Role_DSO;
+        } else {
+            activationDocumentObj.receiverRole = RoleType.Role_Producer;
+        }
+
+        const tsoToDsoParent: boolean = (
+            RoleType.Role_TSO === role_systemOperator
+            && RoleType.Role_DSO === role_producer
+            && activationDocumentObj.startCreatedDateTime !== "");
+
+        const tsoEndState: boolean = (
+            RoleType.Role_TSO === role_systemOperator
+            && RoleType.Role_DSO !== role_producer
+            && activationDocumentObj.startCreatedDateTime !== ""
+            && activationDocumentObj.orderEnd === false
+            && ["A54","A98"].includes(activationDocumentObj.messageType));
+
+        activationDocumentObj.potentialParent = tsoToDsoParent || tsoEndState;
+
         const dsoChild : boolean = (RoleType.Role_DSO === role_systemOperator && activationDocumentObj.startCreatedDateTime !== "");
         const tsoChild : boolean = (RoleType.Role_TSO === role_systemOperator && activationDocumentObj.orderEnd === true && !activationDocumentObj.startCreatedDateTime);
         activationDocumentObj.potentialChild = dsoChild || tsoChild;

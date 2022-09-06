@@ -1003,7 +1003,7 @@ describe('Star Tests EnergyAccount', () => {
             args.push(`"meteringPointMrid": "${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
             args.push(`"senderMarketParticipantMrid": "${Values.HTA_EnergyAccount_a1.senderMarketParticipantMrid}"`);
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
+            const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
@@ -1140,7 +1140,7 @@ describe('Star Tests EnergyAccount', () => {
             args.push(`"meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
 
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
+            const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
             // params.logger.info("query : ", query);
 
@@ -1187,7 +1187,7 @@ describe('Star Tests EnergyAccount', () => {
             args.push(`"meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
 
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
+            const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
             // const query = `{
             //     "selector":
@@ -1254,7 +1254,7 @@ describe('Star Tests EnergyAccount', () => {
             args.push(`"meteringPointMrid":"${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
             args.push(`"receiverMarketParticipantMrid":"${Values.HTA_EnergyAccount_a1.receiverMarketParticipantMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-            const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
+            const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);

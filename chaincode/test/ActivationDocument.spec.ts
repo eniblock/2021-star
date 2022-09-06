@@ -356,6 +356,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const expected: ActivationDocument = activationDocument;
             expected.orderEnd = true;
+            expected.receiverRole = RoleType.Role_Producer;
             expected.potentialParent = false;
             expected.potentialChild = true;
             expected.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
@@ -404,6 +405,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const expected: ActivationDocument = activationDocument;
             expected.orderEnd = true;
+            expected.receiverRole = RoleType.Role_Producer;
             expected.potentialParent = false;
             expected.potentialChild = true;
             expected.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
@@ -411,6 +413,7 @@ describe('Star Tests ActivationDocument', () => {
             expected.docType = DocType.ACTIVATION_DOCUMENT;
             const expected2: ActivationDocument = activationDocument2;
             expected2.orderEnd = true;
+            expected2.receiverRole = RoleType.Role_Producer;
             expected2.potentialParent = false;
             expected2.potentialChild = true;
             expected2.eligibilityStatus = '';
@@ -587,7 +590,8 @@ describe('Star Tests ActivationDocument', () => {
 
             const expected: ActivationDocument = activationDocument;
             expected.orderEnd = false;
-            expected.potentialParent = false;
+            expected.receiverRole = RoleType.Role_Producer;
+            expected.potentialParent = true;
             expected.potentialChild = false;
             expected.eligibilityStatus = '';
             expected.docType = DocType.ACTIVATION_DOCUMENT;
@@ -952,8 +956,8 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument02_garbage.potentialChild = false;
 
             const updateOrders: DataReference[] = [];
-            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
 
             const expected = JSON.parse(JSON.stringify(updateOrders));
             // params.logger.log('expected=', expected)
@@ -1007,8 +1011,8 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument02_garbage.potentialChild = false;
 
             const updateOrders: DataReference[] = [];
-            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
 
             const expected = JSON.parse(JSON.stringify(updateOrders));
             // params.logger.log('expected=', expected)
@@ -1062,7 +1066,7 @@ describe('Star Tests ActivationDocument', () => {
             args.push(`"messageType":{"$in":["A54","A98"]}`);
             args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateYesterday)},"$lte":${JSON.stringify(queryDate)}}`);
 
-            const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
+            const query = await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
 
             const iterator = Values.getActivationDocumentQueryMock(parentStartDocument, mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, query).resolves(iterator);
@@ -1150,7 +1154,7 @@ describe('Star Tests ActivationDocument', () => {
             args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateYesterday)},"$lte":${JSON.stringify(queryDate)}}`);
 
             // params.logger.info("** Query TEST **");
-            const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
+            const query = await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
             // params.logger.info("** Query TEST - END **");
 
             const iterator = Values.getActivationDocumentQueryMock2Values(parentStartDocumentOldest, parentStartDocument, mockHandler);
@@ -1200,6 +1204,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const parentDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
             parentDocument.docType=DocType.ACTIVATION_DOCUMENT;
+            parentDocument.receiverRole = RoleType.Role_DSO;
             parentDocument.potentialParent= true;
             parentDocument.potentialChild= false;
             parentDocument.orderEnd = true;
@@ -1215,39 +1220,15 @@ describe('Star Tests ActivationDocument', () => {
                 childDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
 
-            const orderType = childDocument_Reconciliation.businessType;
-
-            const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
-
-            const queryDate: string = JSON.parse(JSON.stringify(childDocument_Reconciliation.startCreatedDateTime));
-            const datetmp = new Date(queryDate);
-            datetmp.setUTCSeconds(0,0);
-            const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
-            const datePlusPCTMT = new Date(datetmp.getTime() - pctmt);
-
-            const registeredResourceMridList_str = JSON.stringify([Values.HTA_yellowPage.registeredResourceMrid]);
-            var args: string[] = [];
-            args.push(`"potentialParent":true`);
-            args.push(`"registeredResourceMrid":{"$in":${registeredResourceMridList_str}}`);
-            // args.push(`"businessType":"${orderType}"`);
-            const date_criteria: string = `"$or":[`
-            .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(queryDate)},"$lte":${JSON.stringify(datePlusPCTMT)}}},`)
-            .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(queryDate)}}}`)
-            .concat(`]`);
-            args.push(date_criteria);
-
-            const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
-
-            const iterator = Values.getActivationDocumentQueryMock(parentDocument,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, query).resolves(iterator);
-
             const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${childDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
             const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
             transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
 
             const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
-            const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentDocument, childDocument_Reconciliation, mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
+            const iteratorReconciliationParent = Values.getActivationDocumentQueryMock(parentDocument, mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorReconciliationParent);
+            const iteratorReconciliationChild = Values.getActivationDocumentQueryMock(childDocument_Reconciliation, mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliationChild);
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
             ret = JSON.parse(ret);
@@ -1288,15 +1269,17 @@ describe('Star Tests ActivationDocument', () => {
 
             const parentDocumentOldest: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
             parentDocumentOldest.docType=DocType.ACTIVATION_DOCUMENT;
+            parentDocumentOldest.receiverRole=RoleType.Role_DSO;
             parentDocumentOldest.potentialParent= true;
             parentDocumentOldest.potentialChild= false;
             parentDocumentOldest.orderEnd = true;
             var dateoldest = new Date(parentDocumentOldest.startCreatedDateTime as string);
             dateoldest = new Date(dateoldest.getTime() - 2);
-            parentDocumentOldest.startCreatedDateTime = JSON.stringify(dateoldest);
+            parentDocumentOldest.startCreatedDateTime = dateoldest.toISOString();
 
             const parentDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
             parentDocument.docType=DocType.ACTIVATION_DOCUMENT;
+            parentDocument.receiverRole=RoleType.Role_DSO;
             parentDocument.potentialParent= true;
             parentDocument.potentialChild= false;
             parentDocument.orderEnd = true;
@@ -1312,40 +1295,15 @@ describe('Star Tests ActivationDocument', () => {
                 childDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
 
-            const orderType = childDocument_Reconciliation.businessType;
-
-            const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
-
-            const queryDate: string = childDocument_Reconciliation.startCreatedDateTime as string;
-            const datetmp = new Date(queryDate);
-            datetmp.setUTCMilliseconds(0);
-            datetmp.setUTCSeconds(0);
-            const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
-            const datePlusPCTMT = new Date(datetmp.getTime() - pctmt);
-
-            const registeredResourceMridList_str = JSON.stringify([Values.HTA_yellowPage.registeredResourceMrid]);
-            var args: string[] = [];
-            args.push(`"potentialParent":true`);
-            args.push(`"registeredResourceMrid":{"$in":${registeredResourceMridList_str}}`);
-            // args.push(`"businessType":"${orderType}"`);
-            const date_criteria: string = `"$or":[`
-            .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(queryDate)},"$lte":${JSON.stringify(datePlusPCTMT)}}},`)
-            .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(queryDate)}}}`)
-            .concat(`]`);
-            args.push(date_criteria);
-
-            const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
-
-            const iterator = Values.getActivationDocumentQueryMock2Values(parentDocumentOldest, parentDocument,mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, query).resolves(iterator);
-
             const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${childDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
             const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
             transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
 
             const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
-            const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentDocument, childDocument_Reconciliation, mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
+            const iteratorReconciliationParents = Values.getActivationDocumentQueryMockArrayValues([parentDocument, parentDocumentOldest], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorReconciliationParents);
+            const iteratorReconciliationChilds = Values.getActivationDocumentQueryMockArrayValues([ childDocument_Reconciliation], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliationChilds);
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
             ret = JSON.parse(ret);

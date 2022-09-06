@@ -88,7 +88,6 @@ export class YellowPagesController {
 
 
 
-
     public static async getYellowPagesByRegisteredResourceMrid(
         params: STARParameters,
         registeredResourceMrid: string): Promise<YellowPages[]> {

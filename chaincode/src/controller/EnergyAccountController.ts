@@ -376,7 +376,7 @@ export class EnergyAccountController {
         }
 
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
-        const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
+        const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
         params.logger.debug('=============  END  : get EnergyAccount Obj For SystemOperator ===========');
         return await EnergyAccountService.getQueryArrayResult(params, query, target);
@@ -430,7 +430,7 @@ export class EnergyAccountController {
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
 
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
-        const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args);
+        const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
         const allResults = await EnergyAccountService.getQueryArrayResult(params, query);
         const formated = JSON.stringify(allResults);

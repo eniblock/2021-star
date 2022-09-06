@@ -45,7 +45,7 @@ do
         kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
             peer chaincode invoke \
                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $ENEDIS_TLSOPT $PRODUCER_TLSOPT $RTE_TLSOPT \
+                --tls $PRODUCER_TLSOPT $RTE_TLSOPT \
                 -c '{"Args":["CreateProducer","'$RTE_PRODUCERS_VALUE_STR'"]}'
     fi
 
@@ -76,7 +76,7 @@ do
         kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
             peer chaincode invoke \
                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $ENEDIS_TLSOPT $PRODUCER_TLSOPT $RTE_TLSOPT \
+                --tls $ENEDIS_TLSOPT $PRODUCER_TLSOPT \
                 -c '{"Args":["CreateProducer","'$ENEDIS_PRODUCERS_VALUE_STR'"]}'
     fi
 done
@@ -106,7 +106,7 @@ do
         kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
             peer chaincode invoke \
                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $ENEDIS_TLSOPT $PRODUCER_TLSOPT $RTE_TLSOPT \
+                --tls $PRODUCER_TLSOPT $RTE_TLSOPT \
                 -c '{"Args":["CreateSystemOperator","'$RTE_SYSTEMOPERATORS_VALUE_STR'"]}'
     fi
 done
@@ -136,7 +136,7 @@ do
         kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
             peer chaincode invoke \
                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $ENEDIS_TLSOPT $PRODUCER_TLSOPT $RTE_TLSOPT \
+                --tls $ENEDIS_TLSOPT $PRODUCER_TLSOPT \
                 -c '{"Args":["CreateSystemOperator","'$ENEDIS_SYSTEMOPERATORS_VALUE_STR'"]}'
     fi
 
@@ -179,7 +179,7 @@ do
         kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
             peer chaincode invoke \
                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $ENEDIS_TLSOPT $PRODUCER_TLSOPT $RTE_TLSOPT \
+                --tls $PRODUCER_TLSOPT $RTE_TLSOPT \
                 -c '{"Args":["CreateSite","'$RTE_SITES_VALUE_STR'"]}'
     fi
 
@@ -210,7 +210,7 @@ do
         kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
             peer chaincode invoke \
                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $ENEDIS_TLSOPT $PRODUCER_TLSOPT $RTE_TLSOPT \
+                --tls $ENEDIS_TLSOPT $PRODUCER_TLSOPT \
                 -c '{"Args":["CreateSite","'$ENEDIS_SITES_VALUE_STR'"]}'
     fi
 

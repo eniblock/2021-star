@@ -1,6 +1,7 @@
 import { Iterators } from "fabric-shim";
 
 import { DocType } from "../../enums/DocType";
+import { buildQueryArgument } from "../../model/arguments/buildQueryArgument";
 
 import { queryArgument } from "../../model/arguments/queryArgument";
 import { DataReference } from "../../model/dataReference";
@@ -13,26 +14,45 @@ export class QueryStateService {
      *                             *
      *******************************/
 
-    public static async buildQuery(documentType: string, args: string[], sort: string[] = []): Promise<string> {
-        var query = `{"selector": { "$and": [ {"docType":"${documentType}"}`;
-        for (var arg of args) {
+    public static async buildQuery(args: buildQueryArgument): Promise<string> {
+        var query = `{"selector": { "$and": [ {"docType":"${args.documentType}"}`;
+        for (var arg of args.queryArgs) {
             if (arg) {
                 query = query.concat(`,{${arg}}`);
             }
         }
-        query = query.concat(`]`);
-        if (sort && sort.length > 0) {
+        query = query.concat(`]}`);
+
+        //If Sort given
+        if (args.sort && args.sort.length > 0) {
             query = query.concat(`,"sort":[`);
-            for (var i =0; i < sort.length; i++) {
-                if (i>0) {
-                    query = query.concat(`,`);
+            for (var i =0; i < args.sort.length; i++) {
+                if(args.sort[i] && args.sort[i].length > 0) {
+                    if (i>0) {
+                        query = query.concat(`,`);
+                    }
+                    query = query.concat(`{${args.sort[i]}}`);
                 }
-                query = query.concat(`{${sort[i]}}`);
             }
             query = query.concat(`]`);
         }
 
-        query = query.concat(`}}`);
+        //If index given
+        if (args.index && args.index.length > 0) {
+            query = query.concat(`,"use_index":[`);
+            for (var i =0; i < args.index.length; i++) {
+                if(args.index[i] && args.index[i].length > 0) {
+                    if (i>0) {
+                        query = query.concat(`,`);
+                    }
+                    query = query.concat(`${args.index[i]}`);
+                }
+            }
+            query = query.concat(`]`);
+        }
+
+
+        query = query.concat(`}`);
 
         // params.logger.info("built query :", query)
         return query;

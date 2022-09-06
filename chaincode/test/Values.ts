@@ -385,6 +385,23 @@ export class Values {
         return new StateQueryIterator(mockHandler, 'TestChannelID','txId', response);
     }
 
+    public static async getActivationDocumentQueryMockArrayValues(
+        activationdocuments:ActivationDocument[],
+        mockHandler:any): Promise<StateQueryIterator> {
+
+        var messageList: any[] = [];
+        for (var activationDocument of activationdocuments) {
+            const input_str = JSON.stringify(activationDocument);
+            const key = activationDocument.activationDocumentMrid
+            var mockValue = [10,1,"",20,1,key,30,1,Buffer.from(input_str)]
+            const message = {resultBytes:mockValue};
+            messageList.push(message);
+        }
+
+        const response = {results: messageList, hasMore: false};
+        return new StateQueryIterator(mockHandler, 'TestChannelID','txId', response);
+    }
+
     public static HTA_ActivationDocument_Valid: ActivationDocument = {
         activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f1', // PK
         originAutomationRegisteredResourceMrid: Values.HTA_yellowPage.originAutomationRegisteredResourceMrid, // FK1

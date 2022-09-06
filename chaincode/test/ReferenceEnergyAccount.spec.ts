@@ -333,7 +333,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             var args: string[] = [];
             args.push(`"meteringPointMrid": "${energy_account.meteringPointMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-            const query = await QueryStateService.buildQuery(DocType.REFERENCE_ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+            const query = await QueryStateService.buildQuery({documentType: DocType.REFERENCE_ENERGY_ACCOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
             const iterator = Values.getEnergyAccountQueryMock2Values(energy_account, Values.HTB_EnergyAccount_a4, mockHandler);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
@@ -489,7 +489,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             args.push(`"meteringPointMrid": "${energy_account.meteringPointMrid}"`);
             args.push(`"receiverMarketParticipantMrid": "${energy_account.receiverMarketParticipantMrid}"`);
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-            const query = await QueryStateService.buildQuery(DocType.REFERENCE_ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+            const query = await QueryStateService.buildQuery({documentType: DocType.REFERENCE_ENERGY_ACCOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
             // const query = `{
             //     "selector":

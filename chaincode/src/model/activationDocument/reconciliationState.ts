@@ -8,5 +8,11 @@ export class ReconciliationState {
     });
 
     public updateOrders: DataReference[];
-    public remaining?: DataReference[];
+    public remainingParents?: DataReference[];
+
+    public remainingParentsMap?: Map<string,DataReference[]>;
+    public remainingChilds?: DataReference[];
+
+    public endStateRefsMap?: Map<string,DataReference[]>;
+
 }

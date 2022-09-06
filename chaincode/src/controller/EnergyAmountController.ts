@@ -590,7 +590,7 @@ export class EnergyAmountController {
         args.push(`"registeredResourceMrid":"${registeredResourceMrid}"`);
         args.push(`"senderMarketParticipantMrid":"${systemOperatorEicCode}"`);
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-        const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+        const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_AMOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
         // const query = `{
         //     "selector":
@@ -637,7 +637,7 @@ export class EnergyAmountController {
         args.push(`"registeredResourceMrid":"${registeredResourceMrid}"`);
         args.push(`"receiverMarketParticipantMrid":"${producerEicCode}"`);
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-        const query = await QueryStateService.buildQuery(DocType.ENERGY_AMOUNT, args, [`"createdDateTime":"desc"`]);
+        const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_AMOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
         // const query = `{
         //         "selector":

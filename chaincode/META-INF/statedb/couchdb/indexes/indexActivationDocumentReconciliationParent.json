@@ -1,8 +1,17 @@
 {
-  "index":{
-    "fields":["docType","potentialParent", "registeredResourceMrid", "startCreatedDateTime"]
+  "index": {
+      "partial_filter_selector": {
+          "docType": {
+              "$eq": "activationDocument"
+          }
+      },
+      "fields": [
+          "docType",
+          "potentialParent",
+          "potentialChild"
+      ]
   },
-  "ddoc":"indexActivationDocumentReconciliationParentDoc",
-  "name":"indexActivationDocumentReconciliationParent",
-  "type":"json"
+  "ddoc": "indexActivationDocumentReconciliationParentDoc",
+  "name": "indexActivationDocumentReconciliationParent",
+  "type": "json"
 }

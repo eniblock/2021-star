@@ -193,17 +193,18 @@ export class ReconciliationController {
         datetmp.setUTCMilliseconds(0);
         datetmp.setUTCSeconds(0);
         const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
-        const datePlusPCTMT = new Date(datetmp.getTime() - pctmt);
+        const datePlusPCTMT = new Date(datetmp.getTime() + pctmt);
 
         var args: string[] = [];
         args.push(`"potentialParent":true`);
         args.push(`"registeredResourceMrid":{"$in":${registeredResourceMridList_str}}`);
         // args.push(`"businessType":"${orderType}"`);
-        const date_criteria: string = `"$or":[`
-        .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(queryDate)},"$lte":${JSON.stringify(datePlusPCTMT)}}},`)
-        .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(queryDate)}}}`)
-        .concat(`]`);
-        args.push(date_criteria);
+        // const date_criteria: string = `"$or":[`
+        // .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(queryDate)},"$lte":${JSON.stringify(datePlusPCTMT)}}},`)
+        // .concat(`{"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(queryDate)}}}`)
+        // .concat(`]`);
+        // args.push(date_criteria);
+        args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateMinusPCTMT)},"$lte":${JSON.stringify(datePlusPCTMT)}}`);
 
         const query = await QueryStateService.buildQuery(DocType.ACTIVATION_DOCUMENT, args);
 

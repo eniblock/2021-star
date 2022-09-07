@@ -390,8 +390,6 @@ export class HistoryController {
                             displayedSourceName = activationDocument.registeredResourceMrid;
                         }
 
-                    displayedSourceName = subOrderList[0].registeredResourceMrid;
-
                 } else if (siteRegistered) {
                     displayedSourceName = siteRegistered.substationMrid;
                 }

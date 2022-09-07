@@ -346,7 +346,13 @@ export class HistoryController {
             if (roleUser === RoleType.Role_TSO
                 && displayedSourceName === activationDocument.originAutomationRegisteredResourceMrid
                 && !ypAutomation.includes(displayedSourceName)) {
-                displayedSourceName = activationDocument.registeredResourceMrid;
+
+                if(activationDocument.receiverRole === RoleType.Role_DSO) {
+                    displayedSourceName = activationDocument.registeredResourceMrid;
+                } else if (subOrderList && subOrderList.length > 0 && subOrderList[0].receiverRole === RoleType.Role_DSO) {
+                    displayedSourceName = subOrderList[0].registeredResourceMrid;
+                }
+
             }
 
             var producer: Producer = null;

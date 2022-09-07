@@ -23,7 +23,7 @@ export class EnergyAccountService {
     endCreatedDateTime: string
   ): Observable<EnergyAccount[]> {
     if (MOCK) {
-      return getEmptyMock();
+      return getMocks();
     }
 
     const data = {
@@ -61,7 +61,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
   return of([
     {
       processType: ProcessType.A05,
-      timeInterval: '2020-01-01T00:00:00Z/2020-01-01T23:59:59Z',
+      timeInterval: '2019-09-08T00:00:00Z/2019-09-08T23:59:59Z',
       resolution: 'PT10M',
       measurementUnitName: MeasurementUnitName.MW,
       timeSeries: [
@@ -74,7 +74,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
     },
     {
       processType: 'unkhown' as any, // an unkonwn processType
-      timeInterval: '2020-01-01T00:00:00Z/2020-01-02T23:59:59Z',
+      timeInterval: '2019-09-09T00:00:00Z/2019-09-09T23:59:59Z',
       resolution: 'PT10M',
       measurementUnitName: MeasurementUnitName.MW,
       timeSeries: [
@@ -84,7 +84,7 @@ const getMocks = (): Observable<EnergyAccount[]> => {
     },
     {
       processType: ProcessType.A05,
-      timeInterval: '2020-01-02T00:00:00Z/2020-01-02T23:59:59Z',
+      timeInterval: '2019-09-09T00:00:00Z/2019-09-09T23:59:59Z',
       resolution: 'PT5M',
       measurementUnitName: MeasurementUnitName.MW,
       timeSeries: [

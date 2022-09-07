@@ -329,7 +329,6 @@ export class HistoryController {
                     const siteObjRef = existingSitesRef.values().next().value;
                     if (siteObjRef && siteObjRef.docType === DocType.SITE) {
                         siteRegistered = siteObjRef.data;
-                        displayedSourceName = activationDocumentForInformation.registeredResourceMrid;
                     }
                 } catch (error) {
                     //DO nothing except "Not accessible information"
@@ -340,7 +339,9 @@ export class HistoryController {
                 activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
             }
 
-
+            if(activationDocument.receiverRole === RoleType.Role_DSO) {
+                displayedSourceName = activationDocument.registeredResourceMrid;
+            }
 
             var producer: Producer = null;
             try {

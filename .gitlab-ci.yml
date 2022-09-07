@@ -274,8 +274,36 @@ deploy-enedis-prod:
   only:
     - prod
 
+deploy-enedis-prod-gra:
+  extends: .deploy_star_gra
+  environment:
+    name: enedis-prod
+  only:
+    - prod
+
+deploy-rte-prod:
+  extends: .deploy_star
+  environment:
+    name: rte-prod
+  only:
+    - prod
+
+deploy-rte-prod-gra:
+  extends: .deploy_star_gra
+  environment:
+    name: rte-prod
+  only:
+    - prod
+
 deploy-producer-prod:
   extends: .deploy_star
+  environment:
+    name: producer-prod
+  only:
+    - prod
+
+deploy-producer-prod-gra:
+  extends: .deploy_star_gra
   environment:
     name: producer-prod
   only:
@@ -285,12 +313,5 @@ deploy-orderer-prod:
   extends: .deploy_orderer
   environment:
     name: orderer-prod
-  only:
-    - prod
-
-deploy-rte-prod:
-  extends: .deploy_star
-  environment:
-    name: rte-prod
   only:
     - prod

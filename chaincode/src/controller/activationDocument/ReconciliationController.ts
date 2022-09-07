@@ -23,9 +23,6 @@ export class ReconciliationController {
         params.logger.debug('============= START : getReconciliationState ReconciliationController ===========');
 
         var reconciliationState: ReconciliationState = new ReconciliationState();
-        reconciliationState.remainingChilds = [];
-        reconciliationState.remainingParents = [];
-        reconciliationState.updateOrders = [];
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity === OrganizationTypeMsp.RTE || identity === OrganizationTypeMsp.ENEDIS) {
@@ -40,33 +37,18 @@ export class ReconciliationController {
 
                         if (allResults.length > 0) {
                             for (var result of allResults) {
-                                if (result.potentialChild) {
-                                    reconciliationState.remainingChilds.push({docType:DocType.ACTIVATION_DOCUMENT, collection:collection, data:result});
-                                }
-                                if (result.potentialParent) {
-                                    reconciliationState.remainingParents.push({docType:DocType.ACTIVATION_DOCUMENT, collection:collection, data:result});
-                                }
+                                reconciliationState = await this.filterDocument(params, {docType:DocType.ACTIVATION_DOCUMENT, collection:collection, data:result}, reconciliationState);
                             }
                         }
                     }
                 }
             }
 
-            console.debug("reconciliationState - initial: ", JSON.stringify(reconciliationState))
-
-            if (reconciliationState &&
-                ((reconciliationState.remainingChilds && reconciliationState.remainingChilds.length >0 )
-                || (reconciliationState.remainingParents && reconciliationState.remainingParents.length >0 ))) {
-                reconciliationState = await ReconciliationController.filterDocuments(params, reconciliationState);
+            if (reconciliationState && reconciliationState.remainingChilds && reconciliationState.remainingChilds.length > 0) {
+                reconciliationState = await ReconciliationController.searchMatchParentWithChild(params, reconciliationState);
             }
-
-            console.debug("reconciliationState - filtered Parents: ", JSON.stringify([...reconciliationState.remainingParentsMap]))
-            console.debug("reconciliationState - filtered EndStates: ", JSON.stringify([...reconciliationState.endStateRefsMap]))
-
-            if (reconciliationState &&
-                ((reconciliationState.remainingChilds && reconciliationState.remainingChilds.length >0 )
-                || (reconciliationState.remainingParents && reconciliationState.remainingParents.length >0 ))) {
-                reconciliationState = await ReconciliationController.searchReconciliation(params, reconciliationState);
+            if (reconciliationState && reconciliationState.startState && reconciliationState.startState.length > 0) {
+                reconciliationState = await ReconciliationController.searchUpdateEndState(params, reconciliationState);
             }
 
         }
@@ -77,195 +59,145 @@ export class ReconciliationController {
     }
 
 
-
-
     //Garbage and Map Creation for matching
-    private static async filterDocuments(
+    private static async filterDocument(
         params: STARParameters,
+        dataReference: DataReference,
         conciliationState: ReconciliationState): Promise<ReconciliationState> {
-        params.logger.debug('============= START : filterDocuments ReconciliationController ===========');
+        params.logger.debug('============= START : filterDocument ReconciliationController ===========');
 
+        if (dataReference.data) {
+            const garbage = await this.testGarbage(params, dataReference);
+
+            if (garbage) {
+                dataReference.data.potentialParent =  false;
+                dataReference.data.potentialChild = false;
+                dataReference.data.orderEnd = true;
+                conciliationState.updateOrders.push(dataReference);
+            }
+            if (dataReference.data.potentialChild) {
+                conciliationState = await this.filterChild(params, dataReference, conciliationState);
+            }
+            if (dataReference.data.potentialParent) {
+                conciliationState = await this.filterParent(params, dataReference, conciliationState);
+            }
+        }
+
+        params.logger.debug('=============  END  : filterDocument ReconciliationController ===========');
+        return conciliationState;
+    }
+
+
+
+
+
+    private static async testGarbage(
+        params: STARParameters,
+        dataReference: DataReference): Promise<boolean> {
+        params.logger.debug('============= START : testGarbage ReconciliationController ===========');
+
+        var garbage: boolean = false;
 
         const ppcott:number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
         const ppcott_date = new Date((new Date()).getTime() - ppcott);
 
-        const remainingChildDocuments: DataReference[] = [];
-        if (conciliationState && conciliationState.remainingChilds) {
-            for (var document of conciliationState.remainingChilds) {
-                if (document.data) {
-                    var garbage: boolean = false;
 
-                    if (document.data.startCreatedDateTime) {
-                        const sto_str: string = document.data.startCreatedDateTime;
-                        const sto_date: Date = new Date(sto_str);
-                        if (ppcott_date.getTime() >= sto_date.getTime()) {
-                            garbage = true;
-                        }
-                    }
-
-                    if (!garbage && document.data.endCreatedDateTime) {
-                        const eto_str: string = document.data.endCreatedDateTime;
-                        const eto_date: Date = new Date(eto_str);
-                        if (ppcott_date.getTime() >= eto_date.getTime()) {
-                            garbage = true;
-                        }
-                    }
-
-                    if (garbage) {
-                        document.data.potentialParent =  false;
-                        document.data.potentialChild = false;
-                        document.data.orderEnd = true;
-                        conciliationState.updateOrders.push(document);
-                    } else {
-                        remainingChildDocuments.push(document);
-                    }
-                }
+        if (dataReference.data.startCreatedDateTime) {
+            const sto_str: string = dataReference.data.startCreatedDateTime;
+            const sto_date: Date = new Date(sto_str);
+            if (ppcott_date.getTime() >= sto_date.getTime()) {
+                garbage = true;
             }
         }
-        conciliationState.remainingChilds = remainingChildDocuments;
 
-
-        const remainingParentDocumentsMap: Map<string, DataReference[]> = new Map();
-        const endStateRefsMap: Map<string,DataReference[]> = new Map();
-        if (conciliationState && conciliationState.remainingParents) {
-            for (var document of conciliationState.remainingParents) {
-                if (document.data) {
-                    var garbage: boolean = false;
-
-                    if (document.data.startCreatedDateTime) {
-                        const sto_str: string = document.data.startCreatedDateTime;
-                        const sto_date: Date = new Date(sto_str);
-                        if (ppcott_date.getTime() >= sto_date.getTime()) {
-                            garbage = true;
-                        }
-                    }
-
-                    if (!garbage && document.data.endCreatedDateTime) {
-                        const eto_str: string = document.data.endCreatedDateTime;
-                        const eto_date: Date = new Date(eto_str);
-                        if (ppcott_date.getTime() >= eto_date.getTime()) {
-                            garbage = true;
-                        }
-                    }
-
-                    if (garbage) {
-                        document.data.potentialParent =  false;
-                        document.data.potentialChild = false;
-                        document.data.orderEnd = true;
-                        conciliationState.updateOrders.push(document);
-                    } else {
-                        if (RoleType.Role_DSO === document.data.receiverRole) {
-                            var refs:DataReference[] = remainingParentDocumentsMap.get(document.data.registeredResourceMrid);
-                            if (!refs) {
-                                refs = [];
-                            }
-                            refs.push(document);
-
-                            remainingParentDocumentsMap.set(document.data.registeredResourceMrid, refs);
-                        } else {
-                            const senderMarketParticipantMrid: string = document.data.senderMarketParticipantMrid;
-                            const registeredResourceMrid: string = document.data.registeredResourceMrid;
-                            const key:string = senderMarketParticipantMrid.concat("XZYZX").concat(registeredResourceMrid);
-
-                            var refs:DataReference[] = endStateRefsMap.get(key);
-                            if (!refs) {
-                                refs = [];
-                            }
-                            refs.push(document);
-
-                            endStateRefsMap.set(key, refs);
-                        }
-                    }
-                }
+        if (!garbage && dataReference.data.endCreatedDateTime) {
+            const eto_str: string = dataReference.data.endCreatedDateTime;
+            const eto_date: Date = new Date(eto_str);
+            if (ppcott_date.getTime() >= eto_date.getTime()) {
+                garbage = true;
             }
         }
-        conciliationState.remainingParentsMap = remainingParentDocumentsMap;
-        conciliationState.endStateRefsMap = endStateRefsMap;
-        conciliationState.remainingParents = [];
 
-        params.logger.debug('=============  END  : filterDocuments ReconciliationController ===========');
-        return conciliationState;
+        params.logger.debug(`=============  END  : testGarbage (${JSON.stringify(garbage)}) ReconciliationController =========== `);
+        return garbage;
     }
 
 
 
-
-
-
-
-
-
-    private static async searchReconciliation(
+    private static async filterChild(
         params: STARParameters,
+        dataReference: DataReference,
         conciliationState: ReconciliationState): Promise<ReconciliationState> {
+        params.logger.debug('============= START : filterChild ReconciliationController ===========');
 
-        params.logger.debug('============= START : searchReconciliation ReconciliationController ===========');
+        if (dataReference.data.startCreatedDateTime
+            && dataReference.data.endCreatedDateTime
+        ) {
+            conciliationState.remainingChilds.push(dataReference);
 
-        // params.logger.debug("0.0.0.0.0.0.0.0.0.0.0.0.0")
-        // params.logger.debug(JSON.stringify(conciliationState))
-        // params.logger.debug("0.0.0.0.0.0.0.0.0.0.0.0.0")
+        } else if (!dataReference.data.startCreatedDateTime
+                && dataReference.data.endCreatedDateTime) {
 
-        if (conciliationState && conciliationState.remainingChilds) {
-            const searchMatchParentWithChildList: DataReference[] = [];
-            const searchUpdateEndStateList: DataReference[] = [];
+            const senderMarketParticipant: SystemOperator =
+                await SystemOperatorController.getSystemOperatorObjById(params, dataReference.data.senderMarketParticipantMrid);
 
-            for (const remainingDocument of conciliationState.remainingChilds) {
-                if (remainingDocument.data) {
-
-                    if (remainingDocument.data.startCreatedDateTime
-                        && remainingDocument.data.endCreatedDateTime
-                    ) {
-                        searchMatchParentWithChildList.push(remainingDocument);
-
-                    } else if (!remainingDocument.data.startCreatedDateTime
-                            && remainingDocument.data.endCreatedDateTime) {
-
-                        const senderMarketParticipant: SystemOperator =
-                            await SystemOperatorController.getSystemOperatorObjById(params, remainingDocument.data.senderMarketParticipantMrid);
-
-                        if (senderMarketParticipant.systemOperatorMarketParticipantName.toLocaleLowerCase() === OrganizationTypeMsp.RTE.toLocaleLowerCase()) {
-                            searchUpdateEndStateList.push(remainingDocument);
-                        }
-
-                    }
-                }
+            if (senderMarketParticipant.systemOperatorMarketParticipantName.toLocaleLowerCase() === OrganizationTypeMsp.RTE.toLocaleLowerCase()) {
+                conciliationState.startState.push(dataReference);
             }
-            const matchResultParentWithChild: DataReference[] =
-                await ReconciliationController.searchMatchParentWithChild(params, searchMatchParentWithChildList, conciliationState.remainingParentsMap);
-
-            if (matchResultParentWithChild && matchResultParentWithChild.length > 0) {
-                for (const result of matchResultParentWithChild) {
-                    conciliationState.updateOrders.push(result);
-                }
-            }
-            const matchResultEndState: DataReference[] = await ReconciliationController.searchUpdateEndState(params, searchUpdateEndStateList, conciliationState.endStateRefsMap);
-            if (matchResultEndState && matchResultEndState.length > 0) {
-                for (const result of matchResultEndState) {
-                    conciliationState.updateOrders.push(result);
-                }
-            }
-            conciliationState.remainingChilds = [];
-            conciliationState.remainingParentsMap = null;
-            conciliationState.endStateRefsMap = null;
         }
 
-        params.logger.debug('=============  END  : searchReconciliation ReconciliationController ===========');
 
+        params.logger.debug('=============  END  : filterChild ReconciliationController ===========');
         return conciliationState;
     }
+
+
+
+    private static async filterParent(
+        params: STARParameters,
+        dataReference: DataReference,
+        conciliationState: ReconciliationState): Promise<ReconciliationState> {
+        params.logger.debug('============= START : filterParent ReconciliationController ===========');
+
+        if (RoleType.Role_DSO === dataReference.data.receiverRole) {
+            var refs:DataReference[] = conciliationState.remainingParentsMap.get(dataReference.data.registeredResourceMrid);
+            if (!refs) {
+                refs = [];
+            }
+            refs.push(dataReference);
+
+            conciliationState.remainingParentsMap.set(dataReference.data.registeredResourceMrid, refs);
+        } else {
+            const senderMarketParticipantMrid: string = dataReference.data.senderMarketParticipantMrid;
+            const registeredResourceMrid: string = dataReference.data.registeredResourceMrid;
+            const key:string = senderMarketParticipantMrid.concat("XZYZX").concat(registeredResourceMrid);
+
+            var refs:DataReference[] = conciliationState.endStateRefsMap.get(key);
+            if (!refs) {
+                refs = [];
+            }
+            refs.push(dataReference);
+
+            conciliationState.endStateRefsMap.set(key, refs);
+        }
+
+        params.logger.debug('=============  END  : filterParent ReconciliationController ===========');
+        return conciliationState;
+    }
+
+
+
 
 
 
     private static async searchMatchParentWithChild(
         params: STARParameters,
-        childReferenceList: DataReference[],
-        remainingParentsMap: Map<string,DataReference[]>): Promise<DataReference[]> {
+        reconciliationState: ReconciliationState): Promise<ReconciliationState> {
         params.logger.debug('============= START : searchMatchParentWithChild ReconciliationController ===========');
 
-        const matchResult: DataReference[] = [];
         const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-        for (var childReference of childReferenceList) {
+        for (var childReference of reconciliationState.remainingChilds) {
             const queryDate: string = childReference.data.startCreatedDateTime;
             const datetmp = new Date(queryDate);
 
@@ -287,7 +219,7 @@ export class ReconciliationController {
 
             var possibleParents: DataReference[] = [];
             for (const yellowPage of yellowPageList){
-                var linkedParents: DataReference[] = remainingParentsMap.get(yellowPage.registeredResourceMrid);
+                var linkedParents: DataReference[] = reconciliationState.remainingParentsMap.get(yellowPage.registeredResourceMrid);
                 if (linkedParents) {
                     for (var linkedParent of linkedParents) {
                         const activationDocument: ActivationDocument = linkedParent.data;
@@ -310,33 +242,31 @@ export class ReconciliationController {
                         parentStartDocument.orderEnd = true;
                     }
                     parentStartDocument.subOrderList = await ReconciliationController.fillList(parentStartDocument.subOrderList, childReference.data.activationDocumentMrid);
-                    matchResult.push({docType:DocType.ACTIVATION_DOCUMENT, collection:possibleParents[index].collection, data:parentStartDocument});
+                    reconciliationState.updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection:possibleParents[index].collection, data:parentStartDocument});
 
                     childReference.data.subOrderList = await ReconciliationController.fillList(childReference.data.subOrderList, parentStartDocument.activationDocumentMrid);
                     childReference.data.potentialChild = false;
                     childReference.docType = DocType.ACTIVATION_DOCUMENT;
-                    matchResult.push(childReference);
+                    reconciliationState.updateOrders.push(childReference);
                 }
             }
 
         }
 
         params.logger.debug('=============  END  : searchMatchParentWithChild ReconciliationController ===========');
-        return matchResult;
+        return reconciliationState;
     }
 
 
 
     private static async searchUpdateEndState(
         params: STARParameters,
-        childReferenceList: DataReference[],
-        remainingParentsMap: Map<string,DataReference[]>): Promise<DataReference[]> {
+        reconciliationState: ReconciliationState): Promise<ReconciliationState> {
         params.logger.debug('============= START : searchUpdateEndState ReconciliationController ===========');
 
-        const matchResult: DataReference[] = [];
         const pcuetmt:number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
 
-        for (var childReference of childReferenceList) {
+        for (var childReference of reconciliationState.startState) {
             const senderMarketParticipantMrid: string = childReference.data.senderMarketParticipantMrid;
             const registeredResourceMrid: string = childReference.data.registeredResourceMrid;
             const key:string = senderMarketParticipantMrid.concat("XZYZX").concat(registeredResourceMrid);
@@ -348,7 +278,7 @@ export class ReconciliationController {
             const dateYesterday = new Date(datetmp.getTime() - pcuetmt);
 
             var possibleParents: DataReference[] = [];
-            var linkedParents: DataReference[] = remainingParentsMap.get(key);
+            var linkedParents: DataReference[] = reconciliationState.endStateRefsMap.get(key);
             if (linkedParents) {
                 for (var linkedParent of linkedParents) {
                     const activationDocument: ActivationDocument = linkedParent.data;
@@ -370,18 +300,18 @@ export class ReconciliationController {
                         parentStartDocument.orderEnd = true;
                     }
                     parentStartDocument.subOrderList = await ReconciliationController.fillList(parentStartDocument.subOrderList, childReference.data.activationDocumentMrid);
-                    matchResult.push({docType:DocType.ACTIVATION_DOCUMENT, collection:possibleParents[index].collection, data:parentStartDocument});
+                    reconciliationState.updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection:possibleParents[index].collection, data:parentStartDocument});
 
                     childReference.data.subOrderList = await ReconciliationController.fillList(childReference.data.subOrderList, parentStartDocument.activationDocumentMrid);
                     childReference.data.potentialChild = false;
                     childReference.docType = DocType.ACTIVATION_DOCUMENT;
-                    matchResult.push(childReference);
+                    reconciliationState.updateOrders.push(childReference);
                 }
             }
         }
 
         params.logger.debug('=============  END  : searchUpdateEndState ReconciliationController ===========');
-        return matchResult;
+        return reconciliationState;
     }
 
 

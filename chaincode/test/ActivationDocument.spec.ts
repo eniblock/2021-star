@@ -956,8 +956,8 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument02_garbage.potentialChild = false;
 
             const updateOrders: DataReference[] = [];
-            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
 
             const expected = JSON.parse(JSON.stringify(updateOrders));
             // params.logger.log('expected=', expected)
@@ -1011,8 +1011,8 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument02_garbage.potentialChild = false;
 
             const updateOrders: DataReference[] = [];
-            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
             updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
+            updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
 
             const expected = JSON.parse(JSON.stringify(updateOrders));
             // params.logger.log('expected=', expected)

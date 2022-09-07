@@ -127,8 +127,7 @@ export class SquareGraphComponent implements OnInit, OnChanges {
           },
         },
         xAxis: {
-          type: 'value',
-          //////////////minInterval: 1,
+          type: 'time',
           min: minTimestamp,
           max: maxTimestamp,
           name: graphData.xTitle,
@@ -147,7 +146,6 @@ export class SquareGraphComponent implements OnInit, OnChanges {
               }
             },
           },
-
           splitLine: {show: false},
         },
         yAxis: {

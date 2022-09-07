@@ -278,6 +278,10 @@ export class HistoryController {
         //     params.logger.debug(JSON.stringify(allActivationDocument[0]))
         //     params.logger.debug("----------------")
         // }
+        const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
+        const identity: string = params.values.get(ParametersType.IDENTITY);
+        const roleUser: string = roleTable.get(identity.toLowerCase());
+
         const yellowPages: YellowPages[] = await YellowPagesController.getAllYellowPagesObject(params);
         const ypRegistered: string[] = [];
         const ypAutomation: string[] = [];
@@ -314,7 +318,7 @@ export class HistoryController {
                 const siteObjRef:DataReference = existingSitesRef.values().next().value;
                 if (siteObjRef && siteObjRef.docType === DocType.SITE) {
                     siteRegistered = siteObjRef.data;
-                    if (!ypAutomation.includes(activationDocumentForInformation.originAutomationRegisteredResourceMrid)) {
+                    if (!ypAutomation.includes(activationDocument.originAutomationRegisteredResourceMrid)) {
                         displayedSourceName = siteRegistered.substationMrid;
                     }
                 }
@@ -339,7 +343,8 @@ export class HistoryController {
                 activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
             }
 
-            if(displayedSourceName === activationDocument.originAutomationRegisteredResourceMrid
+            if (roleUser === RoleType.Role_TSO
+                && displayedSourceName === activationDocument.originAutomationRegisteredResourceMrid
                 && !ypAutomation.includes(displayedSourceName)) {
                 displayedSourceName = activationDocument.registeredResourceMrid;
             }

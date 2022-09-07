@@ -252,7 +252,9 @@ export class ActivationDocumentController {
 
         //Define target collection
         var targetDocument: string = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, definedTarget);
-        if (producerSystemOperatorObj && roleTable.has(producerSystemOperatorObj.systemOperatorMarketParticipantName)) {
+        if (producerSystemOperatorObj
+            && producerSystemOperatorObj.systemOperatorMarketParticipantName
+            && roleTable.has(producerSystemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
 
             const target = producerSystemOperatorObj.systemOperatorMarketParticipantName.toLowerCase();

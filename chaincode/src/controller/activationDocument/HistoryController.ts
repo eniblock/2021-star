@@ -314,6 +314,9 @@ export class HistoryController {
                 const siteObjRef:DataReference = existingSitesRef.values().next().value;
                 if (siteObjRef && siteObjRef.docType === DocType.SITE) {
                     siteRegistered = siteObjRef.data;
+                    if (!ypAutomation.includes(activationDocumentForInformation.originAutomationRegisteredResourceMrid)) {
+                        displayedSourceName = siteRegistered.substationMrid;
+                    }
                 }
             } catch (error) {
                 //DO nothing except "Not accessible information"
@@ -321,22 +324,20 @@ export class HistoryController {
             if (!siteRegistered && subOrderList && subOrderList.length > 0) {
                 //If no site found, search information by SubOrder Id
                 activationDocumentForInformation = JSON.parse(JSON.stringify(subOrderList[0]));
-            }
-            try {
-                const existingSitesRef =await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
-                const siteObjRef = existingSitesRef.values().next().value;
-                if (siteObjRef && siteObjRef.docType === DocType.SITE) {
-                    siteRegistered = siteObjRef.data;
+                try {
+                    const existingSitesRef =await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
+                    const siteObjRef = existingSitesRef.values().next().value;
+                    if (siteObjRef && siteObjRef.docType === DocType.SITE) {
+                        siteRegistered = siteObjRef.data;
+                        displayedSourceName = activationDocumentForInformation.registeredResourceMrid;
+                    }
+                } catch (error) {
+                    //DO nothing except "Not accessible information"
                 }
-            } catch (error) {
-                //DO nothing except "Not accessible information"
             }
             if (!siteRegistered) {
                 //If still no site found, back to initial value
                 activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
-            }
-            if (siteRegistered && !ypAutomation.includes(activationDocumentForInformation.originAutomationRegisteredResourceMrid)) {
-                displayedSourceName = siteRegistered.substationMrid;
             }
 
 
@@ -361,9 +362,8 @@ export class HistoryController {
                                     producerMarketParticipantName: prod.producerMarketParticipantName,
                                     producerMarketParticipantRoleType: prod.producerMarketParticipantRoleType
                                 }
-                            } else if (untypedValue && untypedValue.systemOperatorMarketParticipantMrid) {
-                                //In case of TSO -> DSO, then displayed Name is registeredResourceMrid
-                                displayedSourceName = activationDocumentForInformation.registeredResourceMrid;
+                            // } else if (untypedValue && untypedValue.systemOperatorMarketParticipantMrid) {
+
                             //     producer = {
                             //         producerMarketParticipantMrid: untypedValue.systemOperatorMarketParticipantMrid,
                             //         producerMarketParticipantName: untypedValue.systemOperatorMarketParticipantName,

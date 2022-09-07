@@ -1,6 +1,6 @@
 [
   {
-    "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_2",
+    "originAutomationRegisteredResourceMrid": "EndReconciliation",
     "registeredResourceMrid": "PDL_SITE_RTE_AD_2",
     "orderValue": "RTEtoRTE_EndReconciliation",
     "measurementUnitName": "MW",

@@ -1,6 +1,6 @@
 [
   {
-    "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_4",
+    "originAutomationRegisteredResourceMrid": "NoooooReconciliation",
     "registeredResourceMrid": "SUB_RTE4ENEDIS_3",
     "orderValue": "RTEtoEnedis_NoooooReconciliation",
     "measurementUnitName": "MW",
@@ -14,7 +14,7 @@
     "receiverMarketParticipantMrid": "SYSOP_ENEDIS_AD_4"
   },
   {
-    "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_5",
+    "originAutomationRegisteredResourceMrid": "NoooooReconciliation",
     "registeredResourceMrid": "SUB_RTE4ENEDIS_3",
     "orderValue": "RTEtoEnedis_NoooooReconciliation",
     "measurementUnitName": "MW",
@@ -28,9 +28,9 @@
     "receiverMarketParticipantMrid": "SYSOP_ENEDIS_AD_5"
   },
   {
-    "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_4",
+    "originAutomationRegisteredResourceMrid": "Reconciliation_INCIDENTRTE",
     "registeredResourceMrid": "SUB_RTE4ENEDIS_4",
-    "orderValue": "RTEtoEnedis_Reconciliation_Reconciliation_INCIDENTRTE",
+    "orderValue": "RTEtoEnedis_Reconciliation_INCIDENTRTE",
     "measurementUnitName": "MW",
     "startCreatedDateTime": "2026-01-01T01:01:01Z",
     "revisionNumber": "",
@@ -42,9 +42,9 @@
     "receiverMarketParticipantMrid": "SYSOP_ENEDIS_AD_5"
   },
   {
-    "originAutomationRegisteredResourceMrid": "SUBSTATION_RTE_AD_4",
+    "originAutomationRegisteredResourceMrid": "Reconciliation_INCIDENTRTE",
     "registeredResourceMrid": "SUB_RTE4ENEDIS_4",
-    "orderValue": "RTEtoEnedis_Reconciliation_Reconciliation_INCIDENTRTE",
+    "orderValue": "RTEtoEnedis_Reconciliation_INCIDENTRTE",
     "measurementUnitName": "MW",
     "startCreatedDateTime": "2026-02-02T02:02:02Z",
     "revisionNumber": "",

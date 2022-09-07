@@ -36,6 +36,6 @@ export interface RechercheSitesProductionEntite {
   systemOperatorEntityFlexibilityDomainMrid: string;
   systemOperatorEntityFlexibilityDomainName: string;
   systemOperatorCustomerServiceName: string;
-  systemOperatorMarketParticipantName?: string; // Seulement pour les site HTB
+  systemOperatorMarketParticipantName?: string;
   siteIecCode?: string; // Seulement pour les site HTB
 }

@@ -339,7 +339,8 @@ export class HistoryController {
                 activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
             }
 
-            if(activationDocument.receiverRole === RoleType.Role_DSO) {
+            if(displayedSourceName === activationDocument.originAutomationRegisteredResourceMrid
+                && !ypAutomation.includes(displayedSourceName)) {
                 displayedSourceName = activationDocument.registeredResourceMrid;
             }
 

@@ -288,13 +288,6 @@ deploy-rte-prod:
   only:
     - prod
 
-deploy-rte-prod-gra:
-  extends: .deploy_star_gra
-  environment:
-    name: rte-prod
-  only:
-    - prod
-
 deploy-producer-prod:
   extends: .deploy_star
   environment:

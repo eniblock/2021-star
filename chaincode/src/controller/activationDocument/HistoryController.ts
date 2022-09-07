@@ -339,28 +339,6 @@ export class HistoryController {
                 activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
             }
 
-            var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
-
-            if (roleUser === RoleType.Role_TSO) {
-                if(activationDocument.receiverRole === RoleType.Role_DSO) {
-                    displayedSourceName = activationDocument.registeredResourceMrid;
-
-                } else if (subOrderList
-                    && subOrderList.length > 0
-                    && subOrderList[0].receiverRole === RoleType.Role_DSO) {
-
-                    displayedSourceName = subOrderList[0].registeredResourceMrid;
-
-                } else if (siteRegistered) {
-                    displayedSourceName = siteRegistered.substationMrid;
-                }
-            } else if (roleUser === RoleType.Role_DSO
-                && activationDocument.receiverRole === RoleType.Role_DSO
-                && !siteRegistered) {
-
-                displayedSourceName = activationDocument.registeredResourceMrid;
-            }
-
             var producer: Producer = null;
             try {
                 if (siteRegistered && siteRegistered.producerMarketParticipantMrid) {
@@ -396,6 +374,34 @@ export class HistoryController {
                     //DO nothing except "Not accessible information"
                 }
             }
+
+            var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
+
+            if (roleUser === RoleType.Role_TSO) {
+                if(!producer) {
+                    displayedSourceName = activationDocument.registeredResourceMrid;
+
+                } else if (subOrderList
+                    && subOrderList.length > 0) {
+
+                        if (activationDocument.receiverMarketParticipantMrid === producer.producerMarketParticipantMrid) {
+                            displayedSourceName = subOrderList[0].registeredResourceMrid;
+                        } else {
+                            displayedSourceName = activationDocument.registeredResourceMrid;
+                        }
+
+                    displayedSourceName = subOrderList[0].registeredResourceMrid;
+
+                } else if (siteRegistered) {
+                    displayedSourceName = siteRegistered.substationMrid;
+                }
+            } else if (roleUser === RoleType.Role_DSO
+                && !producer
+                && !siteRegistered) {
+
+                displayedSourceName = activationDocument.registeredResourceMrid;
+            }
+
             // if (!producer) {
             //     try {
             //         if (activationDocument.receiverMarketParticipantMrid) {

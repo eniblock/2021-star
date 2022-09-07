@@ -294,7 +294,6 @@ export class HistoryController {
             const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocumentQueryValue);
 
             var activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
-            var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
 
             var subOrderList: ActivationDocument[] = [];
             if (activationDocument && activationDocument.subOrderList) {
@@ -318,9 +317,6 @@ export class HistoryController {
                 const siteObjRef:DataReference = existingSitesRef.values().next().value;
                 if (siteObjRef && siteObjRef.docType === DocType.SITE) {
                     siteRegistered = siteObjRef.data;
-                    if (!ypAutomation.includes(activationDocument.originAutomationRegisteredResourceMrid)) {
-                        displayedSourceName = siteRegistered.substationMrid;
-                    }
                 }
             } catch (error) {
                 //DO nothing except "Not accessible information"
@@ -343,16 +339,26 @@ export class HistoryController {
                 activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
             }
 
-            if (roleUser === RoleType.Role_TSO
-                && displayedSourceName === activationDocument.originAutomationRegisteredResourceMrid
-                && !ypAutomation.includes(displayedSourceName)) {
+            var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
 
+            if (roleUser === RoleType.Role_TSO) {
                 if(activationDocument.receiverRole === RoleType.Role_DSO) {
                     displayedSourceName = activationDocument.registeredResourceMrid;
-                } else if (subOrderList && subOrderList.length > 0 && subOrderList[0].receiverRole === RoleType.Role_DSO) {
-                    displayedSourceName = subOrderList[0].registeredResourceMrid;
-                }
 
+                } else if (subOrderList
+                    && subOrderList.length > 0
+                    && subOrderList[0].receiverRole === RoleType.Role_DSO) {
+
+                    displayedSourceName = subOrderList[0].registeredResourceMrid;
+
+                } else if (siteRegistered) {
+                    displayedSourceName = siteRegistered.substationMrid;
+                }
+            } else if (roleUser === RoleType.Role_DSO
+                && activationDocument.receiverRole === RoleType.Role_DSO
+                && !siteRegistered) {
+
+                displayedSourceName = activationDocument.registeredResourceMrid;
             }
 
             var producer: Producer = null;

@@ -94,7 +94,7 @@ export class ActivationDocument {
     public receiverRole?: string;
     public potentialParent?: boolean;
     public potentialChild?: boolean;
-    public instance?: boolean;
+    public instance?: string;
     public subOrderList?: string[];
     public eligibilityStatus?: string;
     public eligibilityStatusEditable: boolean;

@@ -21,11 +21,11 @@ peers:
     tlsCACerts:
       pem: |
           ${PEERPEM}
-  peer2.${ORG}:
-    url: grpcs://peer2-hlf-peer.${ORG}-prod:${P0PORT}
-    tlsCACerts:
-      pem: |
-          ${PEERPEM}
+  # peer2.${ORG}:
+  #   url: grpcs://peer2-hlf-peer.${ORG}-prod:${P0PORT}
+  #   tlsCACerts:
+  #     pem: |
+  #         ${PEERPEM}
 certificateAuthorities:
   ca.${ORG}:
     caName: ca.${ORG}

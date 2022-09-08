@@ -326,7 +326,7 @@ export class HistoryController {
                                                     && subOrderList.length > 0
                                                     && subOrderList[0].registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
 
-                const keepInformationSubstration = (siteRegistered.substationMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+                const keepInformationSubstration = (siteRegistered && siteRegistered.substationMrid === criteriaObj.originAutomationRegisteredResourceMrid);
 
                 keepInformation = keepInformationOrigin1
                                 || keepInformationOrigin2
@@ -338,9 +338,17 @@ export class HistoryController {
                 keepInformation = keepInformation || criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
             }
 
+
+            //END OF FILTER
+            //If information doesn't to be kept
+            //the process doesn't care about this document
             if (!keepInformation) {
                 break;
             }
+
+
+
+
 
             var producer: Producer = null;
             try {

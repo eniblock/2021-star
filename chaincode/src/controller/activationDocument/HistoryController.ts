@@ -113,46 +113,51 @@ export class HistoryController {
             criteriaObj.producerMarketParticipantName = criteriaObj.producerMarketParticipantName.trim();
         }
 
-        const prodIdList: string[] = [];
+        const producerMarketParticipantList: string[] = [];
         if (criteriaObj.producerMarketParticipantMrid) {
-            prodIdList.push(criteriaObj.producerMarketParticipantMrid);
+            producerMarketParticipantList.push(criteriaObj.producerMarketParticipantMrid);
         }
         if (criteriaObj.producerMarketParticipantName) {
-            prodIdList.push(criteriaObj.producerMarketParticipantName);
+            producerMarketParticipantList.push(criteriaObj.producerMarketParticipantName);
             const allProdId = await ProducerController.getProducerByName(params, criteriaObj.producerMarketParticipantName);
             if (allProdId) {
                 for (var prodId of allProdId) {
                     if (prodId && prodId.producerMarketParticipantMrid) {
-                        prodIdList.push(prodId.producerMarketParticipantMrid);
+                        producerMarketParticipantList.push(prodId.producerMarketParticipantMrid);
 
                         params.addInMemoryPool(prodId.producerMarketParticipantMrid, {docType: DocType.PRODUCER, data: prodId, collection:''});
                     }
                 }
             }
         }
-        criteriaObj.producerMarketParticipantList = prodIdList;
+
+
+        //build meteringPointMrid List by substration
+        // to check if originAutomationRegisteredResourceMrid defines a substration value
+        const substrationMeteringPointMridList: string[] = [];
+        if (criteriaObj.originAutomationRegisteredResourceMrid) {
+            var substation_args: string[] = [];
+            substation_args.push(`"substationMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
+            const substation_querySite = await QueryStateService.buildQuery({documentType: DocType.SITE, queryArgs: substation_args});
+            const substation_siteList: Site[] = await SiteService.getQueryArrayResult(params, substation_querySite);
+            for (var substation_site of substation_siteList) {
+                substrationMeteringPointMridList.push(substation_site.meteringPointMrid);
+            }
+        }
+
 
         var args: string[] = [];
 
-        if (criteriaObj) {
-            if (criteriaObj.meteringPointMrid) {
-                args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
-            }
-            // //Never used registeredResourceMrid is never filled
-            // if (criteriaObj.registeredResourceMrid) {
-            //     args.push(`"meteringPointMrid":"${criteriaObj.registeredResourceMrid}"`);
-            // }
-            // if (criteriaObj.originAutomationRegisteredResourceMrid) {
-            //     args.push(`"substationMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
-            // }
-            if (criteriaObj.producerMarketParticipantList && criteriaObj.producerMarketParticipantList.length > 0) {
-                const producerMarketParticipantList_str = JSON.stringify(criteriaObj.producerMarketParticipantList);
-                args.push(`"producerMarketParticipantMrid": { "$in" : ${producerMarketParticipantList_str} }`);
-            }
-            if (criteriaObj.siteName
-                && (role === RoleType.Role_Producer) ) {
-                args.push(`"siteName":"${criteriaObj.siteName}"`);
-            }
+        if (criteriaObj.meteringPointMrid) {
+            args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
+        }
+        if (producerMarketParticipantList && producerMarketParticipantList.length > 0) {
+            const producerMarketParticipantList_str = JSON.stringify(producerMarketParticipantList);
+            args.push(`"producerMarketParticipantMrid": { "$in" : ${producerMarketParticipantList_str} }`);
+        }
+        if (criteriaObj.siteName
+            && (role === RoleType.Role_Producer) ) {
+            args.push(`"siteName":"${criteriaObj.siteName}"`);
         }
 
 
@@ -160,22 +165,16 @@ export class HistoryController {
         criteriaObj.registeredResourceList = [];
         if (args.length > 0) {
             const querySite = await QueryStateService.buildQuery({documentType: DocType.SITE, queryArgs: args});
-            const siteList: any[] = await SiteService.getQueryArrayResult(params, querySite);
+            const siteList: Site[] = await SiteService.getQueryArrayResult(params, querySite);
 
-            if (siteList.length == 0) {
-                return null;
-            }
             for (var site of siteList) {
-                if (site.meteringPointMrid === criteriaObj.meteringPointMrid
-                    // || site.meteringPointMrid === criteriaObj.originAutomationRegisteredResourceMrid
-                    || criteriaObj.producerMarketParticipantList.includes(site.producerMarketParticipantMrid)
-                    || site.siteName == criteriaObj.siteName) {
+                if (substrationMeteringPointMridList.length == 0
+                    || substrationMeteringPointMridList.includes(site.meteringPointMrid)) {
 
                     criteriaObj.registeredResourceList.push(site.substationMrid);
                     criteriaObj.registeredResourceList.push(site.meteringPointMrid);
-
-                    params.addInMemoryPool(site.meteringPointMrid, {docType: DocType.SITE, data: site, collection:''});
                 }
+                params.addInMemoryPool(site.meteringPointMrid, {docType: DocType.SITE, data: site, collection:''});
             }
         }
 

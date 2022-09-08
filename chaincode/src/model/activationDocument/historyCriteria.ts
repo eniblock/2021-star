@@ -16,7 +16,6 @@ export class HistoryCriteria {
 
     public originAutomationRegisteredResourceMrid?: string;
     public originAutomationRegisteredResourceList?: string[];
-    public producerMarketParticipantList?: string[];
     public producerMarketParticipantMrid?: string;
     public producerMarketParticipantName?: string;
     public meteringPointMrid?: string;

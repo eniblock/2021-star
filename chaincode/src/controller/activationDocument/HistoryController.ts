@@ -63,9 +63,9 @@ export class HistoryController {
 
             if (criteriaObj) {
                 const query = await HistoryController.buildActivationDocumentQuery(params, criteriaObj);
-                params.logger.info('**********************************************');
-                params.logger.info('criteriaObj :', JSON.stringify(criteriaObj));
-                params.logger.info("History query: ", query);
+                params.logger.debug('**********************************************');
+                params.logger.debug('criteriaObj :', JSON.stringify(criteriaObj));
+                params.logger.debug("History query: ", query);
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
@@ -81,8 +81,8 @@ export class HistoryController {
                         }
                     }
                 }
-                params.logger.info("allValidActivationDocument: ", JSON.stringify(allValidActivationDocument));
-                params.logger.info('**********************************************');
+                params.logger.debug("allValidActivationDocument: ", JSON.stringify(allValidActivationDocument));
+                params.logger.debug('**********************************************');
 
                 if (allValidActivationDocument && allValidActivationDocument.length > 0) {
                     const informationInBuilding: HistoryInformationInBuilding = await HistoryController.consolidate(params, allValidActivationDocument, criteriaObj);
@@ -338,8 +338,6 @@ export class HistoryController {
             //Build a filtrer to check if it needs to go further in consolidation
             var keepInformation = true;
 
-            params.logger.info('##############################################');
-
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 const keepInformationOrigin1 = (activationDocument.originAutomationRegisteredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
                 const keepInformationOrigin2 = (subOrderList
@@ -359,25 +357,6 @@ export class HistoryController {
                                 || keepInformationRegistered2
                                 || keepInformationSubstration;
 
-                params.logger.info("activationDocument.originAutomationRegisteredResourceMrid : ", activationDocument.originAutomationRegisteredResourceMrid);
-                params.logger.info("activationDocument.registeredResourceMrid : ", activationDocument.registeredResourceMrid);
-                if (subOrderList && subOrderList.length > 0) {
-                    params.logger.info("subOrderList[0].originAutomationRegisteredResourceMrid : ", subOrderList[0].originAutomationRegisteredResourceMrid);
-                    params.logger.info("subOrderList[0].registeredResourceMrid : ", subOrderList[0].registeredResourceMrid);
-                } else {
-                    params.logger.info("No subOrderList[0] !!!");
-                }
-                if (siteRegistered) {
-                    params.logger.info("siteRegistered.substationMrid : ", siteRegistered.substationMrid);
-                } else {
-                    params.logger.info("No siteRegistered !!!");
-                }
-                params.logger.info("keepInformationOrigin1 : ", JSON.stringify(keepInformationOrigin1));
-                params.logger.info("keepInformationOrigin2 : ", JSON.stringify(keepInformationOrigin2));
-                params.logger.info("keepInformationRegistered1 : ", JSON.stringify(keepInformationRegistered1));
-                params.logger.info("keepInformationRegistered2 : ", JSON.stringify(keepInformationRegistered2));
-                params.logger.info("keepInformationSubstration : ", JSON.stringify(keepInformationSubstration));
-                params.logger.info("keepInformation : ", JSON.stringify(keepInformation));
             }
 
             if (criteriaObj.producerMarketParticipantName
@@ -386,13 +365,6 @@ export class HistoryController {
                 || criteriaObj.siteName) {
 
                 keepInformation = keepInformation && siteRegistered && criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
-
-                if (siteRegistered) {
-                    params.logger.info("siteRegistered.meteringPointMrid : ", siteRegistered.meteringPointMrid);
-                } else {
-                    params.logger.info("No siteRegistered !!!");
-                }
-                params.logger.info("keepInformation : ", JSON.stringify(keepInformation));
             }
 
             if (subOrderList && subOrderList.length > 0) {
@@ -406,7 +378,6 @@ export class HistoryController {
                                     && subOrderList[0].subOrderList.includes(activationDocument.activationDocumentMrid);
             }
 
-            params.logger.info('##############################################');
 
 
             //END OF FILTER

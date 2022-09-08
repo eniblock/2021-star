@@ -207,10 +207,21 @@ export class HistoryController {
 
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 criteriaPlaceList.push(`"originAutomationRegisteredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
-                criteriaPlaceList.push(`"registeredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
-            }
 
-            if (criteriaObj.producerMarketParticipantName
+                if (criteriaObj.producerMarketParticipantName
+                    || criteriaObj.producerMarketParticipantMrid
+                    || criteriaObj.meteringPointMrid
+                    || criteriaObj.siteName) {
+
+                    const listId: string[] = JSON.parse(JSON.stringify(criteriaObj.registeredResourceList));
+                    listId.push(criteriaObj.originAutomationRegisteredResourceMrid);
+                    const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);
+                    criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
+
+                } else {
+                    criteriaPlaceList.push(`"registeredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
+                }
+            } else if (criteriaObj.producerMarketParticipantName
                 || criteriaObj.producerMarketParticipantMrid
                 || criteriaObj.meteringPointMrid
                 || criteriaObj.siteName) {

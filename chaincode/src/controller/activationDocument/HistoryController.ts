@@ -335,7 +335,7 @@ export class HistoryController {
                                 || keepInformationSubstration;
             }
             if (criteriaObj.registeredResourceList && criteriaObj.registeredResourceList.length > 0) {
-                keepInformation = keepInformation || criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
+                keepInformation = keepInformation && criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
             }
 
 

@@ -205,15 +205,19 @@ export class HistoryController {
 
             const criteriaPlaceList: string[] = [];
 
-            var registeredResourceMridList: string[] = [];
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 criteriaPlaceList.push(`"originAutomationRegisteredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
-                registeredResourceMridList.push(criteriaObj.originAutomationRegisteredResourceMrid);
+                criteriaPlaceList.push(`"registeredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
             }
-            registeredResourceMridList = registeredResourceMridList.concat(criteriaObj.registeredResourceList);
 
-            const registeredResourceList_str = JSON.stringify(registeredResourceMridList);
-            criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
+            if (criteriaObj.producerMarketParticipantName
+                || criteriaObj.producerMarketParticipantMrid
+                || criteriaObj.meteringPointMrid
+                || criteriaObj.siteName) {
+
+                const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);
+                criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
+            }
 
             const criteriaPlace = await QueryStateService.buildORCriteria(criteriaPlaceList);
             args.push(criteriaPlace);
@@ -265,7 +269,8 @@ export class HistoryController {
         // }
 
         for (const activationDocumentQueryValue of allActivationDocument) {
-            params.logger.info("ooo activationDocumentQueryValue.activationDocumentMrid : ", activationDocumentQueryValue.activationDocumentMrid);
+            params.logger.debug("ooo activationDocumentQueryValue.activationDocumentMrid : ", activationDocumentQueryValue.activationDocumentMrid);
+
             const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocumentQueryValue);
 
             var activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
@@ -288,7 +293,8 @@ export class HistoryController {
             //Manage Yello Page to get Site Information
             var siteRegistered: Site = null;
             try {
-                params.logger.info("ooo search site activationDocumentForInformation.registeredResourceMrid : ", activationDocumentForInformation.registeredResourceMrid);
+                params.logger.debug("ooo search site activationDocumentForInformation.registeredResourceMrid : ", activationDocumentForInformation.registeredResourceMrid);
+
                 const existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
                 const siteObjRef:DataReference = existingSitesRef.values().next().value;
                 if (siteObjRef && siteObjRef.docType === DocType.SITE) {
@@ -301,8 +307,9 @@ export class HistoryController {
                 //If no site found, search information by SubOrder Id
                 activationDocumentForInformation = JSON.parse(JSON.stringify(subOrderList[0]));
                 try {
-                    params.logger.info("ooo search site by subOrderList[0]");
-                    params.logger.info("ooo search site activationDocumentForInformation.registeredResourceMrid : ", activationDocumentForInformation.registeredResourceMrid);
+                    params.logger.debug("ooo search site by subOrderList[0]");
+                    params.logger.debug("ooo search site activationDocumentForInformation.registeredResourceMrid : ", activationDocumentForInformation.registeredResourceMrid);
+
                     const existingSitesRef =await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
                     const siteObjRef = existingSitesRef.values().next().value;
                     if (siteObjRef && siteObjRef.docType === DocType.SITE) {

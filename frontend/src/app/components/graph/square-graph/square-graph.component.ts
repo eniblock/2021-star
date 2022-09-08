@@ -14,6 +14,8 @@ export interface Point {
 }
 
 export interface GraphData {
+  title?: string,
+  subtitle?: string,
   xTitle?: string;
   yTitle?: string;
   serieNames: string[];
@@ -94,6 +96,10 @@ export class SquareGraphComponent implements OnInit, OnChanges {
 
       // We init Echarts data
       let echartsData: EChartsOption = {
+        title: {
+          text: this.graphData.title,
+          subtext: this.graphData.subtitle,
+        },
         tooltip: {
           show: true,
           trigger: 'axis',

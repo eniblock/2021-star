@@ -265,6 +265,7 @@ export class HistoryController {
         // }
 
         for (const activationDocumentQueryValue of allActivationDocument) {
+            params.logger.info("ooo activationDocumentQueryValue.activationDocumentMrid : ", activationDocumentQueryValue.activationDocumentMrid);
             const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocumentQueryValue);
 
             var activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
@@ -287,6 +288,7 @@ export class HistoryController {
             //Manage Yello Page to get Site Information
             var siteRegistered: Site = null;
             try {
+                params.logger.info("ooo search site activationDocumentForInformation.registeredResourceMrid : ", activationDocumentForInformation.registeredResourceMrid);
                 const existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
                 const siteObjRef:DataReference = existingSitesRef.values().next().value;
                 if (siteObjRef && siteObjRef.docType === DocType.SITE) {
@@ -299,6 +301,8 @@ export class HistoryController {
                 //If no site found, search information by SubOrder Id
                 activationDocumentForInformation = JSON.parse(JSON.stringify(subOrderList[0]));
                 try {
+                    params.logger.info("ooo search site by subOrderList[0]");
+                    params.logger.info("ooo search site activationDocumentForInformation.registeredResourceMrid : ", activationDocumentForInformation.registeredResourceMrid);
                     const existingSitesRef =await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
                     const siteObjRef = existingSitesRef.values().next().value;
                     if (siteObjRef && siteObjRef.docType === DocType.SITE) {

@@ -138,12 +138,13 @@ export class HistoryController {
             if (criteriaObj.meteringPointMrid) {
                 args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
             }
-            if (criteriaObj.registeredResourceMrid) {
-                args.push(`"meteringPointMrid":"${criteriaObj.registeredResourceMrid}"`);
-            }
-            if (criteriaObj.originAutomationRegisteredResourceMrid) {
-                args.push(`"substationMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
-            }
+            // //Never used registeredResourceMrid is never filled
+            // if (criteriaObj.registeredResourceMrid) {
+            //     args.push(`"meteringPointMrid":"${criteriaObj.registeredResourceMrid}"`);
+            // }
+            // if (criteriaObj.originAutomationRegisteredResourceMrid) {
+            //     args.push(`"substationMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
+            // }
             if (criteriaObj.producerMarketParticipantList && criteriaObj.producerMarketParticipantList.length > 0) {
                 const producerMarketParticipantList_str = JSON.stringify(criteriaObj.producerMarketParticipantList);
                 args.push(`"producerMarketParticipantMrid": { "$in" : ${producerMarketParticipantList_str} }`);
@@ -166,11 +167,11 @@ export class HistoryController {
             }
             for (var site of siteList) {
                 if (site.meteringPointMrid === criteriaObj.meteringPointMrid
-                    || site.meteringPointMrid === criteriaObj.originAutomationRegisteredResourceMrid
+                    // || site.meteringPointMrid === criteriaObj.originAutomationRegisteredResourceMrid
                     || criteriaObj.producerMarketParticipantList.includes(site.producerMarketParticipantMrid)
                     || site.siteName == criteriaObj.siteName) {
 
-                    criteriaObj.originAutomationRegisteredResourceList.push(site.substationMrid);
+                    criteriaObj.registeredResourceList.push(site.substationMrid);
                     criteriaObj.registeredResourceList.push(site.meteringPointMrid);
 
                     params.addInMemoryPool(site.meteringPointMrid, {docType: DocType.SITE, data: site, collection:''});
@@ -178,29 +179,30 @@ export class HistoryController {
             }
         }
 
-        if (criteriaObj.originAutomationRegisteredResourceMrid) {
-            const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(params, criteriaObj.originAutomationRegisteredResourceMrid);
-            if (yellowPages) {
-                for (var yellowPage of yellowPages) {
-                    criteriaObj.registeredResourceList.push(yellowPage.registeredResourceMrid);
+        // if (criteriaObj.originAutomationRegisteredResourceMrid) {
+        //     const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(params, criteriaObj.originAutomationRegisteredResourceMrid);
+        //     if (yellowPages) {
+        //         for (var yellowPage of yellowPages) {
+        //             criteriaObj.registeredResourceList.push(yellowPage.registeredResourceMrid);
 
-                    params.addInMemoryPool(yellowPage.yellowPageMrid, {docType: DocType.YELLOW_PAGES, data: yellowPage, collection:''});
-                }
-            }
-            criteriaObj.originAutomationRegisteredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
-        }
-        if (criteriaObj.registeredResourceMrid) {
-            const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByRegisteredResourceMrid(params, criteriaObj.registeredResourceMrid);
-            if (yellowPages) {
-                for (var yellowPage of yellowPages) {
-                    criteriaObj.originAutomationRegisteredResourceList.push(yellowPage.originAutomationRegisteredResourceMrid);
+        //             params.addInMemoryPool(yellowPage.yellowPageMrid, {docType: DocType.YELLOW_PAGES, data: yellowPage, collection:''});
+        //         }
+        //     }
+        //     criteriaObj.originAutomationRegisteredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
+        // }
+        // //Never used registeredResourceMrid is never filled
+        // if (criteriaObj.registeredResourceMrid) {
+        //     const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByRegisteredResourceMrid(params, criteriaObj.registeredResourceMrid);
+        //     if (yellowPages) {
+        //         for (var yellowPage of yellowPages) {
+        //             criteriaObj.originAutomationRegisteredResourceList.push(yellowPage.originAutomationRegisteredResourceMrid);
 
-                    params.addInMemoryPool(yellowPage.yellowPageMrid, {docType: DocType.YELLOW_PAGES, data: yellowPage, collection:''});
-                }
-            }
-            criteriaObj.registeredResourceList.push(criteriaObj.registeredResourceMrid);
-            criteriaObj.registeredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
-        }
+        //             params.addInMemoryPool(yellowPage.yellowPageMrid, {docType: DocType.YELLOW_PAGES, data: yellowPage, collection:''});
+        //         }
+        //     }
+        //     criteriaObj.registeredResourceList.push(criteriaObj.registeredResourceMrid);
+        //     criteriaObj.registeredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
+        // }
 
         params.logger.debug('=============  END  : consolidateCriteria ===========');
 
@@ -218,14 +220,14 @@ export class HistoryController {
 
         if (criteriaObj) {
             const criteriaPlace: string[] = [];
-            if (criteriaObj.originAutomationRegisteredResourceList
-                && criteriaObj.originAutomationRegisteredResourceList.length > 0) {
+            // if (criteriaObj.originAutomationRegisteredResourceList
+            //     && criteriaObj.originAutomationRegisteredResourceList.length > 0) {
 
-                const originAutomationRegisteredResourceList_str = JSON.stringify(criteriaObj.originAutomationRegisteredResourceList);
-                criteriaPlace.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
-                criteriaPlace.push(`"registeredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
-                // args.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
-            }
+            //     const originAutomationRegisteredResourceList_str = JSON.stringify(criteriaObj.originAutomationRegisteredResourceList);
+            //     criteriaPlace.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
+            //     criteriaPlace.push(`"registeredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
+            //     // args.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
+            // }
             if (criteriaObj.registeredResourceList
                 && criteriaObj.registeredResourceList.length > 0) {
                 const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);

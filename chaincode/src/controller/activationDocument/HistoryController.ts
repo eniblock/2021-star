@@ -59,7 +59,7 @@ export class HistoryController {
             );
 
             const role: string = params.values.get(ParametersType.ROLE);
-            criteriaObj = await HistoryController.consolidateCriteria(params, criteriaObj, role);
+            criteriaObj = await HistoryController.consolidateRegisteredResourceListCriteria(params, criteriaObj, role);
 
             if (criteriaObj) {
                 const query = await HistoryController.buildActivationDocumentQuery(params, criteriaObj);
@@ -80,7 +80,7 @@ export class HistoryController {
                 }
 
                 if (allValidActivationDocument && allValidActivationDocument.length > 0) {
-                    const informationInBuilding: HistoryInformationInBuilding = await HistoryController.consolidate(params, allValidActivationDocument);
+                    const informationInBuilding: HistoryInformationInBuilding = await HistoryController.consolidate(params, allValidActivationDocument, criteriaObj);
                     result = await HistoryController.generateOutput(params, informationInBuilding);
 
                 }
@@ -102,12 +102,12 @@ export class HistoryController {
 
 
 
-    private static async consolidateCriteria(
+    private static async consolidateRegisteredResourceListCriteria(
         params: STARParameters,
         criteriaObj: HistoryCriteria,
         role: string): Promise<HistoryCriteria> {
 
-        params.logger.debug('============= START : consolidateCriteria ===========');
+        params.logger.debug('============= START : consolidateRegisteredResourceListCriteria ===========');
 
         if (criteriaObj.producerMarketParticipantName) {
             criteriaObj.producerMarketParticipantName = criteriaObj.producerMarketParticipantName.trim();
@@ -182,7 +182,7 @@ export class HistoryController {
             }
         }
 
-        params.logger.debug('=============  END  : consolidateCriteria ===========');
+        params.logger.debug('=============  END  : consolidateRegisteredResourceListCriteria ===========');
 
         return criteriaObj;
     }
@@ -197,21 +197,23 @@ export class HistoryController {
         var args: string[] = [];
 
         if (criteriaObj) {
-            if (criteriaObj.originAutomationRegisteredResourceMrid) {
-                const criteriaPlaceList: string[] = [];
 
+            const criteriaPlaceList: string[] = [];
+
+            if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 criteriaPlaceList.push(`"originAutomationRegisteredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
                 criteriaPlaceList.push(`"registeredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
-
-                const criteriaPlace = await QueryStateService.buildORCriteria(criteriaPlaceList);
-                args.push(criteriaPlace);
             }
 
             if (criteriaObj.registeredResourceList
                 && criteriaObj.registeredResourceList.length > 0) {
+
                 const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);
-                args.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
+                criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
             }
+
+            const criteriaPlace = await QueryStateService.buildORCriteria(criteriaPlaceList);
+            args.push(criteriaPlace);
 
             if (criteriaObj.endCreatedDateTime) {
                 args.push(`"$or":[{"startCreatedDateTime":{"$lte": ${JSON.stringify(criteriaObj.endCreatedDateTime)}}},{"startCreatedDateTime":""},{"startCreatedDateTime":{"$exists": false}}]`);
@@ -234,7 +236,8 @@ export class HistoryController {
 
     private static async consolidate(
         params: STARParameters,
-        allActivationDocument: ActivationDocument[]): Promise<HistoryInformationInBuilding> {
+        allActivationDocument: ActivationDocument[],
+        criteriaObj: HistoryCriteria): Promise<HistoryInformationInBuilding> {
 
         params.logger.debug('============= START : consolidate ===========');
 
@@ -305,6 +308,38 @@ export class HistoryController {
             if (!siteRegistered) {
                 //If still no site found, back to initial value
                 activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
+            }
+
+            //
+            // FILTER
+            //
+            //Build a filtrer to check if it needs to go further in consolidation
+            var keepInformation = true;
+            if (criteriaObj.originAutomationRegisteredResourceMrid) {
+                const keepInformationOrigin1 = (activationDocument.originAutomationRegisteredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+                const keepInformationOrigin2 = (subOrderList
+                                                && subOrderList.length > 0
+                                                && subOrderList[0].originAutomationRegisteredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+
+                const keepInformationRegistered1 = (activationDocument.registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+                const keepInformationRegistered2 = (subOrderList
+                                                    && subOrderList.length > 0
+                                                    && subOrderList[0].registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+
+                const keepInformationSubstration = (siteRegistered.substationMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+
+                keepInformation = keepInformationOrigin1
+                                || keepInformationOrigin2
+                                || keepInformationRegistered1
+                                || keepInformationRegistered2
+                                || keepInformationSubstration;
+            }
+            if (criteriaObj.registeredResourceList && criteriaObj.registeredResourceList.length > 0) {
+                keepInformation = keepInformation || criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
+            }
+
+            if (!keepInformation) {
+                break;
             }
 
             var producer: Producer = null;
@@ -395,6 +430,8 @@ export class HistoryController {
             } catch (error) {
                 //DO nothing except "Not accessible information"
             }
+
+
 
             const information: HistoryInformation = {
                 activationDocument: JSON.parse(JSON.stringify(activationDocument)),

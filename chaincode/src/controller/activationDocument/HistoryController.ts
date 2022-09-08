@@ -176,6 +176,11 @@ export class HistoryController {
                 }
                 params.addInMemoryPool(site.meteringPointMrid, {docType: DocType.SITE, data: site, collection:''});
             }
+        } else if (substrationMeteringPointMridList.length > 0) {
+            for (var id of substrationMeteringPointMridList) {
+                criteriaObj.registeredResourceList.push(id);
+                criteriaObj.registeredResourceList.push(id);
+            }
         }
 
         // if (criteriaObj.originAutomationRegisteredResourceMrid) {

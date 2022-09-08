@@ -175,6 +175,7 @@ export class LimitationsGraphComponent implements OnInit {
 
     // Final : the graph data
     this.graphData = {
+      title: this.bottomSheetParams.meteringPointMrid,
       yTitle: `Puissance ${globalMeasurementUnitName}`,
       serieNames: serieNames,
       data: points,

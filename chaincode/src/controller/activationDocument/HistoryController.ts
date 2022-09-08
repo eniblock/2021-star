@@ -205,8 +205,10 @@ export class HistoryController {
                 criteriaPlaceList.push(`"registeredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
             }
 
-            if (criteriaObj.registeredResourceList
-                && criteriaObj.registeredResourceList.length > 0) {
+            if (criteriaObj.producerMarketParticipantName
+                || criteriaObj.producerMarketParticipantMrid
+                || criteriaObj.meteringPointMrid
+                || criteriaObj.siteName) {
 
                 const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);
                 criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
@@ -334,8 +336,13 @@ export class HistoryController {
                                 || keepInformationRegistered2
                                 || keepInformationSubstration;
             }
-            if (criteriaObj.registeredResourceList && criteriaObj.registeredResourceList.length > 0) {
-                keepInformation = keepInformation && criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
+
+            if (criteriaObj.producerMarketParticipantName
+                || criteriaObj.producerMarketParticipantMrid
+                || criteriaObj.meteringPointMrid
+                || criteriaObj.siteName) {
+
+                keepInformation = keepInformation && siteRegistered && criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
             }
 
 

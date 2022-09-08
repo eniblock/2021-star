@@ -161,7 +161,6 @@ export class HistoryController {
         }
 
 
-        criteriaObj.originAutomationRegisteredResourceList = [];
         criteriaObj.registeredResourceList = [];
         if (args.length > 0) {
             const querySite = await QueryStateService.buildQuery({documentType: DocType.SITE, queryArgs: args});
@@ -183,31 +182,6 @@ export class HistoryController {
             }
         }
 
-        // if (criteriaObj.originAutomationRegisteredResourceMrid) {
-        //     const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(params, criteriaObj.originAutomationRegisteredResourceMrid);
-        //     if (yellowPages) {
-        //         for (var yellowPage of yellowPages) {
-        //             criteriaObj.registeredResourceList.push(yellowPage.registeredResourceMrid);
-
-        //             params.addInMemoryPool(yellowPage.yellowPageMrid, {docType: DocType.YELLOW_PAGES, data: yellowPage, collection:''});
-        //         }
-        //     }
-        //     criteriaObj.originAutomationRegisteredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
-        // }
-        // //Never used registeredResourceMrid is never filled
-        // if (criteriaObj.registeredResourceMrid) {
-        //     const yellowPages: YellowPages[] = await YellowPagesController.getYellowPagesByRegisteredResourceMrid(params, criteriaObj.registeredResourceMrid);
-        //     if (yellowPages) {
-        //         for (var yellowPage of yellowPages) {
-        //             criteriaObj.originAutomationRegisteredResourceList.push(yellowPage.originAutomationRegisteredResourceMrid);
-
-        //             params.addInMemoryPool(yellowPage.yellowPageMrid, {docType: DocType.YELLOW_PAGES, data: yellowPage, collection:''});
-        //         }
-        //     }
-        //     criteriaObj.registeredResourceList.push(criteriaObj.registeredResourceMrid);
-        //     criteriaObj.registeredResourceList.push(criteriaObj.originAutomationRegisteredResourceMrid);
-        // }
-
         params.logger.debug('=============  END  : consolidateCriteria ===========');
 
         return criteriaObj;
@@ -223,34 +197,22 @@ export class HistoryController {
         var args: string[] = [];
 
         if (criteriaObj) {
-            const criteriaPlace: string[] = [];
-            // if (criteriaObj.originAutomationRegisteredResourceList
-            //     && criteriaObj.originAutomationRegisteredResourceList.length > 0) {
+            if (criteriaObj.originAutomationRegisteredResourceMrid) {
+                const criteriaPlaceList: string[] = [];
 
-            //     const originAutomationRegisteredResourceList_str = JSON.stringify(criteriaObj.originAutomationRegisteredResourceList);
-            //     criteriaPlace.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
-            //     criteriaPlace.push(`"registeredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
-            //     // args.push(`"originAutomationRegisteredResourceMrid": { "$in" : ${originAutomationRegisteredResourceList_str} }`);
-            // }
+                criteriaPlaceList.push(`"originAutomationRegisteredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
+                criteriaPlaceList.push(`"registeredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
+
+                const criteriaPlace = await QueryStateService.buildORCriteria(criteriaPlaceList);
+                args.push(criteriaPlace);
+            }
+
             if (criteriaObj.registeredResourceList
                 && criteriaObj.registeredResourceList.length > 0) {
                 const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);
-                criteriaPlace.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
-                // args.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
+                args.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
             }
-            if (criteriaPlace.length == 1) {
-                args.push(criteriaPlace[0]);
-            } else if (criteriaPlace.length > 1) {
-                var criteriaPlace_str: string = `"$or":[`;
-                for (var i=0; i<criteriaPlace.length; i++) {
-                    if (i>0) {
-                        criteriaPlace_str = criteriaPlace_str.concat(`,`);
-                    }
-                    criteriaPlace_str = criteriaPlace_str.concat(`{`).concat(criteriaPlace[i]).concat(`}`);
-                }
-                criteriaPlace_str = criteriaPlace_str.concat(`]`);
-                args.push(criteriaPlace_str);
-            }
+
             if (criteriaObj.endCreatedDateTime) {
                 args.push(`"$or":[{"startCreatedDateTime":{"$lte": ${JSON.stringify(criteriaObj.endCreatedDateTime)}}},{"startCreatedDateTime":""},{"startCreatedDateTime":{"$exists": false}}]`);
             }

@@ -59,6 +59,24 @@ export class QueryStateService {
     }
 
 
+
+
+
+    public static async buildORCriteria(criteriaList: string[]): Promise<string> {
+        var ORCriteria: string = `"$or":[`;
+        for (var i=0; i<criteriaList.length; i++) {
+            if (i>0) {
+                ORCriteria = ORCriteria.concat(`,`);
+            }
+            ORCriteria = ORCriteria.concat(`{`).concat(criteriaList[i]).concat(`}`);
+        }
+        ORCriteria = ORCriteria.concat(`]`);
+        return ORCriteria;
+    }
+
+
+
+
     private static async formatResultToArray(iterator: Iterators.StateQueryIterator): Promise<any[]> {
         const allResults:any[] = [];
         try {

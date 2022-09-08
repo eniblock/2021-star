@@ -208,10 +208,7 @@ export class HistoryController {
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 criteriaPlaceList.push(`"originAutomationRegisteredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
 
-                if (criteriaObj.producerMarketParticipantName
-                    || criteriaObj.producerMarketParticipantMrid
-                    || criteriaObj.meteringPointMrid
-                    || criteriaObj.siteName) {
+                if (criteriaObj.registeredResourceList && criteriaObj.registeredResourceList.length > 0) {
 
                     const listId: string[] = JSON.parse(JSON.stringify(criteriaObj.registeredResourceList));
                     listId.push(criteriaObj.originAutomationRegisteredResourceMrid);

@@ -21,7 +21,7 @@ peer:
       enabled: true
   mspID: producer
   gossip:
-    bootstrap: peer2-hlf-peer.producer-staging:7051
+    bootstrap: peer2.producer.staging.star.eniblock.fr:443
     endpoint: peer1-hlf-peer.producer-staging:7051
     externalEndpoint: peer1.producer.staging.star.eniblock.fr:443
   chaincodes:

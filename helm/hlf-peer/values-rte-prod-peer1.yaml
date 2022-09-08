@@ -12,7 +12,7 @@ peer:
       enabled: true
   mspID: rte
   gossip:
-    # bootstrap: peer2-hlf-peer.rte-prod:7051
+    bootstrap: peer2.star.cloud-rte-france.com:443
     endpoint: peer1-hlf-peer.rte-prod:7051
     externalEndpoint: peer1.star.cloud-rte-france.com:443
   chaincodes:

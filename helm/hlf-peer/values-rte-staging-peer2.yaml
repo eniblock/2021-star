@@ -21,7 +21,7 @@ peer:
       enabled: true
   mspID: rte
   gossip:
-    bootstrap: peer1-hlf-peer.rte-staging:7051
+    bootstrap: peer1.rte.staging.star.eniblock.fr:443
     endpoint: peer2-hlf-peer.rte-staging:7051
     externalEndpoint: peer2.rte.staging.star.eniblock.fr:443
   chaincodes:

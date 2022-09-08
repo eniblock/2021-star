@@ -11,7 +11,7 @@ ingress:
     namespaceSelector:
       matchLabels:
         kubernetes.io/metadata.name: istio-system
-        
+
 ##################################
 ## Peer configuration options    #
 ##################################
@@ -21,7 +21,7 @@ peer:
       enabled: true
   mspID: enedis
   gossip:
-    bootstrap: peer2-hlf-peer.enedis-testing:7051
+    bootstrap: peer2.enedis.testing.star.eniblock.fr:443
     endpoint: peer1-hlf-peer.enedis-testing:7051
     externalEndpoint: peer1.enedis.testing.star.eniblock.fr:443
   chaincodes:

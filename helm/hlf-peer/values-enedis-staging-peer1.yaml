@@ -21,7 +21,7 @@ peer:
       enabled: true
   mspID: enedis
   gossip:
-    bootstrap: peer2-hlf-peer.enedis-staging:7051
+    bootstrap: peer2.enedis.staging.star.eniblock.fr:443
     endpoint: peer1-hlf-peer.enedis-staging:7051
     externalEndpoint: peer1.enedis.staging.star.eniblock.fr:443
   chaincodes:

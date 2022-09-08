@@ -205,19 +205,15 @@ export class HistoryController {
 
             const criteriaPlaceList: string[] = [];
 
+            var registeredResourceMridList: string[] = [];
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 criteriaPlaceList.push(`"originAutomationRegisteredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
-                criteriaPlaceList.push(`"registeredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
+                registeredResourceMridList.push(criteriaObj.originAutomationRegisteredResourceMrid);
             }
+            registeredResourceMridList = registeredResourceMridList.concat(criteriaObj.registeredResourceList);
 
-            if (criteriaObj.producerMarketParticipantName
-                || criteriaObj.producerMarketParticipantMrid
-                || criteriaObj.meteringPointMrid
-                || criteriaObj.siteName) {
-
-                const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);
-                criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
-            }
+            const registeredResourceList_str = JSON.stringify(registeredResourceMridList);
+            criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
 
             const criteriaPlace = await QueryStateService.buildORCriteria(criteriaPlaceList);
             args.push(criteriaPlace);

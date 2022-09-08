@@ -9,13 +9,11 @@ locals {
         project_fqdn_testing   = [
             "enedis.testing.star.eniblock.fr",
             "producer.testing.star.eniblock.fr",
-            "rte.testing.star.eniblock.fr",
             "orderer1.orderer.testing.star.eniblock.fr",
             "orderer2.orderer.testing.star.eniblock.fr",
-            "orderer3.orderer.testing.star.eniblock.fr",
             "peer1.enedis.testing.star.eniblock.fr",
             "peer1.producer.testing.star.eniblock.fr",
-            "peer1.rte.testing.star.eniblock.fr",
+            "peer2.rte.testing.star.eniblock.fr",
         ]
         project_fqdn_staging   = [
             "enedis.staging.star.eniblock.fr",
@@ -40,13 +38,14 @@ locals {
         s3_container_region    = "sbg"
       }
 
-
       gra7 = {
         monitoring_domain      = "obs.${local.env}.star.eniblock.fr"
          project_fqdn_testing = [
             "peer2.enedis.testing.star.eniblock.fr",
             "peer2.producer.testing.star.eniblock.fr",
-            "peer2.rte.testing.star.eniblock.fr"
+            "rte.testing.star.eniblock.fr",
+            "peer1.rte.testing.star.eniblock.fr",
+            "orderer3.orderer.testing.star.eniblock.fr",
         ]
          project_fqdn_staging = [
             "peer2.enedis.staging.star.eniblock.fr",

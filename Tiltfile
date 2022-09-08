@@ -178,13 +178,15 @@ k8s_yaml(read_file(secret_path))
 
 #### orderers ####
 
-for orderer in ['orderer1', 'orderer2', 'orderer3']:
+for org in ['enedis', 'producer', 'rte']:
+    values = 'helm/hlf-ord/values-' + org + '-dev.yaml'
+    orderer = read_yaml(values)['releaseName']
     helm_remote('hlf-ord',
         repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
         version="0.1.0-develop.44",
         namespace='orderer',
         release_name=orderer,
-        values=['helm/hlf-ord/values-orderer-' + env + '-' + orderer + '.yaml'],
+        values=[values],
     )
 
     k8s_resource(orderer + '-hlf-ord', labels=['orderer'])

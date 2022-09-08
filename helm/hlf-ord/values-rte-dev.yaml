@@ -12,7 +12,4 @@ secrets:
     tls: hlf--orderer3-tls
     tlsRootCert: hlf--orderer3-tlsrootcert
 
-podLabels:
-  orderer1-hlf-ord-client: "true"
-  orderer2-hlf-ord-client: "true"
-  orderer3-hlf-ord-client: "true"
+releaseName: orderer3

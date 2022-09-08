@@ -265,22 +265,16 @@ Orderer: &OrdererDefaults
 
     EtcdRaft:
         Consenters:
-        - Host: orderer1-hlf-ord.orderer-testing
-          Port: 7050
-        # - Host: orderer1.orderer.testing.star.eniblock.fr
-        #   Port: 443
+        - Host: orderer1.orderer.testing.star.eniblock.fr
+          Port: 443
           ClientTLSCert: ./generated/crypto-config//ordererOrganizations/orderer/orderers/orderer1.orderer/tls/server.crt
           ServerTLSCert: ./generated/crypto-config//ordererOrganizations/orderer/orderers/orderer1.orderer/tls/server.crt
-        - Host: orderer2-hlf-ord.orderer-testing
-          Port: 7050
-        # - Host: orderer2.orderer.testing.star.eniblock.fr
-        #   Port: 443
+        - Host: orderer2.orderer.testing.star.eniblock.fr
+          Port: 443
           ClientTLSCert: ./generated/crypto-config//ordererOrganizations/orderer/orderers/orderer2.orderer/tls/server.crt
           ServerTLSCert: ./generated/crypto-config//ordererOrganizations/orderer/orderers/orderer2.orderer/tls/server.crt
-        - Host: orderer3-hlf-ord.orderer-testing
-          Port: 7050
-        # - Host: orderer3.orderer.testing.star.eniblock.fr
-        #   Port: 443
+        - Host: orderer3.orderer.testing.star.eniblock.fr
+          Port: 443
           ClientTLSCert: ./generated/crypto-config//ordererOrganizations/orderer/orderers/orderer3.orderer/tls/server.crt
           ServerTLSCert: ./generated/crypto-config//ordererOrganizations/orderer/orderers/orderer3.orderer/tls/server.crt
 

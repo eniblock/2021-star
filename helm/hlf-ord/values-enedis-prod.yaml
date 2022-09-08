@@ -1,6 +1,6 @@
 ingress:
   enabled: true
-  host: orderer1.orderer.localhost
+  host: orderer1.orderer.prod.star.eniblock.fr
   secretName: hlf--orderer1-tls
 
 secrets:
@@ -12,7 +12,4 @@ secrets:
     tls: hlf--orderer1-tls
     tlsRootCert: hlf--orderer1-tlsrootcert
 
-podLabels:
-  orderer1-hlf-ord-client: "true"
-  orderer2-hlf-ord-client: "true"
-  orderer3-hlf-ord-client: "true"
+releaseName: orderer1

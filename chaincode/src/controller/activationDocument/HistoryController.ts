@@ -260,13 +260,13 @@ export class HistoryController {
         const identity: string = params.values.get(ParametersType.IDENTITY);
         const roleUser: string = roleTable.get(identity.toLowerCase());
 
-        const yellowPages: YellowPages[] = await YellowPagesController.getAllYellowPagesObject(params);
-        const ypRegistered: string[] = [];
-        const ypAutomation: string[] = [];
-        for (var yp of yellowPages) {
-            ypRegistered.push(yp.registeredResourceMrid);
-            ypAutomation.push(yp.originAutomationRegisteredResourceMrid);
-        }
+        // const yellowPages: YellowPages[] = await YellowPagesController.getAllYellowPagesObject(params);
+        // const ypRegistered: string[] = [];
+        // const ypAutomation: string[] = [];
+        // for (var yp of yellowPages) {
+        //     ypRegistered.push(yp.registeredResourceMrid);
+        //     ypAutomation.push(yp.originAutomationRegisteredResourceMrid);
+        // }
 
         for (const activationDocumentQueryValue of allActivationDocument) {
             const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocumentQueryValue);
@@ -378,6 +378,17 @@ export class HistoryController {
                     params.logger.info("No siteRegistered !!!");
                 }
                 params.logger.info("keepInformation : ", JSON.stringify(keepInformation));
+            }
+
+            if (subOrderList && subOrderList.length > 0) {
+                //Keep only if it's a perfect match
+                keepInformation = keepInformation
+                                    && activationDocument.subOrderList
+                                    && activationDocument.subOrderList.length > 0
+                                    && activationDocument.subOrderList.includes(subOrderList[0].activationDocumentMrid)
+                                    && subOrderList[0].subOrderList
+                                    && subOrderList[0].subOrderList.length > 0
+                                    && subOrderList[0].subOrderList.includes(activationDocument.activationDocumentMrid);
             }
 
             params.logger.info('##############################################');

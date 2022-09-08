@@ -214,16 +214,31 @@ export class ReconciliationController {
             );
 
             params.logger.debug("0000000000000000000000000")
+            params.logger.debug('childReference=', JSON.stringify(childReference));
+            params.logger.debug('remainingParentsMap=', JSON.stringify([...reconciliationState.remainingParentsMap]));
             params.logger.debug('yellowPageList for BB reconciliation=', JSON.stringify(yellowPageList));
             params.logger.debug("0000000000000000000000000")
 
+            params.logger.debug("1111111111111111111111111")
+
             var possibleParents: DataReference[] = [];
             for (const yellowPage of yellowPageList){
+
+                params.logger.debug("yellowPage.registeredResourceMrid: ", yellowPage.registeredResourceMrid)
+
                 var linkedParents: DataReference[] = reconciliationState.remainingParentsMap.get(yellowPage.registeredResourceMrid);
+
+                params.logger.debug("linkedParents: ", JSON.stringify(linkedParents))
+
                 if (linkedParents) {
                     for (var linkedParent of linkedParents) {
                         const activationDocument: ActivationDocument = linkedParent.data;
                         const dateActivationDocument = new Date(activationDocument.startCreatedDateTime);
+
+                        params.logger.debug("dateMinusPCTMT: ", dateMinusPCTMT)
+                        params.logger.debug("dateActivationDocument: ", dateActivationDocument)
+                        params.logger.debug("datePlusPCTMT: ", datePlusPCTMT)
+
                         if (dateMinusPCTMT <= dateActivationDocument
                             && dateActivationDocument <= datePlusPCTMT) {
                                 possibleParents.push(linkedParent);
@@ -232,7 +247,11 @@ export class ReconciliationController {
                 }
             }
 
+            params.logger.debug("possibleParents: ", JSON.stringify(possibleParents))
+            params.logger.debug("1111111111111111111111111")
+
             const index = await ReconciliationController.findIndexofClosestEndDateRef(childReference.data, possibleParents);
+
 
             // If a parent document is found
             if ( index !== -1 ) {

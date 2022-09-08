@@ -13,3 +13,4 @@ secrets:
     tlsRootCert: hlf--orderer3-tlsrootcert
 
 releaseName: orderer3
+namespace: orderer

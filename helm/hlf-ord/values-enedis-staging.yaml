@@ -13,3 +13,4 @@ secrets:
     tlsRootCert: hlf--orderer1-tlsrootcert
 
 releaseName: orderer1
+namespace: orderer-staging

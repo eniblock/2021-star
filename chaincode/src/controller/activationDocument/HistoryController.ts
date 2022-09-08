@@ -64,8 +64,8 @@ export class HistoryController {
             if (criteriaObj) {
                 const query = await HistoryController.buildActivationDocumentQuery(params, criteriaObj);
                 params.logger.info('**********************************************');
+                params.logger.info('criteriaObj :', JSON.stringify(criteriaObj));
                 params.logger.info("History query: ", query);
-                params.logger.info('**********************************************');
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
@@ -81,6 +81,8 @@ export class HistoryController {
                         }
                     }
                 }
+                params.logger.info("allValidActivationDocument: ", JSON.stringify(allValidActivationDocument));
+                params.logger.info('**********************************************');
 
                 if (allValidActivationDocument && allValidActivationDocument.length > 0) {
                     const informationInBuilding: HistoryInformationInBuilding = await HistoryController.consolidate(params, allValidActivationDocument, criteriaObj);
@@ -322,7 +324,6 @@ export class HistoryController {
             var keepInformation = true;
 
             params.logger.info('##############################################');
-            params.logger.info('criteriaObj :', JSON.stringify(criteriaObj));
 
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 const keepInformationOrigin1 = (activationDocument.originAutomationRegisteredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);

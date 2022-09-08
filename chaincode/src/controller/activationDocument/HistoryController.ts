@@ -63,6 +63,9 @@ export class HistoryController {
 
             if (criteriaObj) {
                 const query = await HistoryController.buildActivationDocumentQuery(params, criteriaObj);
+                params.logger.info('**********************************************');
+                params.logger.info("History query: ", query);
+                params.logger.info('**********************************************');
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 

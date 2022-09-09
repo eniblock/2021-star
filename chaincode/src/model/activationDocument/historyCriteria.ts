@@ -1,5 +1,11 @@
 import * as Yup from 'yup';
 
+export class TypeCriteria {
+    public messageType?: string;
+    public businessType?: string;
+    public reasonCode?: string;
+}
+
 export class HistoryCriteria {
 
     public static readonly schema = Yup.object().shape({
@@ -11,6 +17,21 @@ export class HistoryCriteria {
         siteName: Yup.string().notRequired().typeError('siteName must be a string'),
         startCreatedDateTime: Yup.string().notRequired().typeError('startCreatedDateTime must be a string'),
         endCreatedDateTime: Yup.string().notRequired().typeError('endCreatedDateTime must be a string'),
+
+        activationReasonList: Yup.array().of(Yup.object().shape(
+            {
+                messageType: Yup.string().required(),
+                businessType: Yup.string().required(),
+                reasonCode: Yup.string().required(),
+            },
+        )).notRequired(),
+        activationType: Yup.object().shape(
+            {
+                messageType: Yup.string().required(),
+                businessType: Yup.string().required(),
+                reasonCode: Yup.string().required(),
+            },
+        ).notRequired(),
     });
 
     public originAutomationRegisteredResourceMrid?: string;
@@ -21,4 +42,9 @@ export class HistoryCriteria {
     public registeredResourceList?: string[];
     public startCreatedDateTime?: string;
     public endCreatedDateTime?: string;
+
+    public activationReasonList?: TypeCriteria[];
+    public activationType?: TypeCriteria;
+
+
 }

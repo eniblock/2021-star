@@ -4,7 +4,7 @@ import { RoleType } from "../../enums/RoleType";
 
 import { ActivationDocument } from "../../model/activationDocument/activationDocument";
 import { EnergyAmount } from "../../model/energyAmount";
-import { HistoryCriteria } from "../../model/activationDocument/historyCriteria";
+import { HistoryCriteria, TypeCriteria } from "../../model/activationDocument/historyCriteria";
 import { HistoryInformation } from "../../model/activationDocument/historyInformation";
 import { Producer } from "../../model/producer";
 import { Site } from "../../model/site";
@@ -236,11 +236,52 @@ export class HistoryController {
             if (criteriaObj.startCreatedDateTime) {
                 args.push(`"$or":[{"endCreatedDateTime":{"$gte": ${JSON.stringify(criteriaObj.startCreatedDateTime)}}},{"endCreatedDateTime":""},{"endCreatedDateTime":{"$exists": false}}]`);
             }
+
+            const criteriaActivationType = await HistoryController.prepareTypeCriteriaArg(criteriaObj.activationType);
+            if (criteriaActivationType && criteriaActivationType.length > 0) {
+                args.push(criteriaActivationType);
+            }
+
+
+            if (criteriaObj.activationReasonList
+                && criteriaObj.activationReasonList.length > 0) {
+
+                const activationReasonCriteriaList: string[] = [];
+                for (var activationReason of criteriaObj.activationReasonList) {
+                    const criteriaReason = await HistoryController.prepareTypeCriteriaArg(activationReason);
+                    if (criteriaReason && criteriaReason.length > 0) {
+                        activationReasonCriteriaList.push(criteriaReason);
+                    }
+                }
+                if (activationReasonCriteriaList && activationReasonCriteriaList.length > 0) {
+                    const activationReasonCriteria = await QueryStateService.buildORCriteria(activationReasonCriteriaList);
+                    args.push(activationReasonCriteria);
+                }
+            }
+
+
         }
 
         params.logger.debug('=============  END  : buildActivationDocumentQuery ===========');
 
         return await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
+    }
+
+
+    private static async prepareTypeCriteriaArg(typeCriteria : TypeCriteria): Promise<string> {
+        if (typeCriteria
+            && typeCriteria.businessType && typeCriteria.businessType.length > 0
+            && typeCriteria.messageType && typeCriteria.messageType.length > 0
+            && typeCriteria.reasonCode && typeCriteria.reasonCode.length > 0) {
+
+            const activationTypeList: string[] = [];
+            activationTypeList.push(`"businessType":"${typeCriteria.businessType}"`)
+            activationTypeList.push(`"messageType":"${typeCriteria.messageType}"`)
+            activationTypeList.push(`"reasonCode":"${typeCriteria.reasonCode}"`)
+
+            return await QueryStateService.buildANDCriteria(activationTypeList);
+        }
+        return "";
     }
 
 

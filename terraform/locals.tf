@@ -18,13 +18,11 @@ locals {
         project_fqdn_staging   = [
             "enedis.staging.star.eniblock.fr",
             "producer.staging.star.eniblock.fr",
-            "rte.staging.star.eniblock.fr",
             "orderer1.orderer.staging.star.eniblock.fr",
             "orderer2.orderer.staging.star.eniblock.fr",
-            "orderer3.orderer.staging.star.eniblock.fr",
             "peer1.enedis.staging.star.eniblock.fr",
             "peer1.producer.staging.star.eniblock.fr",
-            "peer1.rte.staging.star.eniblock.fr",
+            "peer2.rte.staging.star.eniblock.fr",
         ]
         project_fqdn_prod      = [
             "enedis.star.eniblock.fr",
@@ -50,7 +48,9 @@ locals {
          project_fqdn_staging = [
             "peer2.enedis.staging.star.eniblock.fr",
             "peer2.producer.staging.star.eniblock.fr",
-            "peer2.rte.staging.star.eniblock.fr"
+            "rte.staging.star.eniblock.fr",
+            "orderer3.orderer.staging.star.eniblock.fr",
+            "peer1.rte.staging.star.eniblock.fr",
         ]
         project_fqdn_prod      = [
             "peer2.enedis.prod.star.eniblock.fr",

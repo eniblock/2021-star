@@ -82,8 +82,8 @@ public class HistoriqueLimitationController {
             @RequestParam(required = false, defaultValue = "") String activationDocumentMrid,
             @Parameter(description = "meteringPointMrid search criteria")
             @RequestParam(required = false, defaultValue = "") String meteringPointMrid,
-            @Parameter(description = "motif search criteria")
-            @RequestParam(required = false, defaultValue = "") String motif,
+            @Parameter(description = "reasonCode search criteria")
+            @RequestParam(required = false, defaultValue = "") String reasonCode,
             @Parameter(description = "motif search criteria")
             @RequestParam(required = false, defaultValue = "") String typeLimitation
     ) throws TechnicalException {
@@ -96,7 +96,7 @@ public class HistoriqueLimitationController {
                 .endCreatedDateTime(endCreatedDateTime)
                 .activationDocumentMrid(activationDocumentMrid)
                 .meteringPointMrid(meteringPointMrid)
-                .motif(motif)
+                .reasonCode(reasonCode)
                 .typeLimitation(typeLimitation)
                 .instance(instance)
                 .build();

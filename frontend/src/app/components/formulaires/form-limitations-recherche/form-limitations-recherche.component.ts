@@ -10,6 +10,7 @@ import {ProducerService} from "../../../services/api/producer.service";
 import {SiteService} from "../../../services/api/site.service";
 import {SortHelper} from "../../../helpers/sort.helper";
 import {environment} from "../../../../environments/environment";
+import {MotifCode} from "../../../models/Motifs";
 
 @Component({
   selector: 'app-form-limitations-recherche',
@@ -22,13 +23,14 @@ export class FormLimitationsRechercheComponent implements OnInit {
 
   InstanceEnum = Instance;
   typeInstance?: Instance;
+  reasonCodes: MotifCode[] | null = null;
 
   form: FormGroup = this.formBuilder.group({
       originAutomationRegisteredResourceMrid: [''],
       producerMarketParticipantName: [''],
       siteName: [''],
       meteringPointMrid: [''],
-      motif: [''],
+      reasonCode: [''],
       typeLimitation: [''],
       startCreatedDateTime: [''],
       endCreatedDateTime: [''],
@@ -96,6 +98,10 @@ export class FormLimitationsRechercheComponent implements OnInit {
         );
       }
     )
+
+    // Initialisation des motifs : TODO : à confirmer avec Jean-René et Jean-François
+    // this.reasonCodes = getReasonCodexxxxxx();
+    // TODO : confirmer aussi le type de Limitation avec Jean-René et Jean-François
   }
 
   onSubmit() {

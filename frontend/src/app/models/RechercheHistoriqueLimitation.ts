@@ -7,6 +7,8 @@ export interface FormulaireRechercheHistoriqueLimitation {
   originAutomationRegisteredResourceName: string;
   producerMarketParticipantMrid: string;
   siteName: string;
+  meteringPointMrid: string;
+  reasonCode: string;
   startCreatedDateTime: string; // JSON
   endCreatedDateTime: string; // JSON
 }

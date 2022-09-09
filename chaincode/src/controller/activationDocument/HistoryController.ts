@@ -63,9 +63,9 @@ export class HistoryController {
 
             if (criteriaObj) {
                 const query = await HistoryController.buildActivationDocumentQuery(params, criteriaObj);
-                params.logger.info('**********************************************');
-                params.logger.info('criteriaObj :', JSON.stringify(criteriaObj));
-                params.logger.info("History query: ", query);
+                params.logger.debug('**********************************************');
+                params.logger.debug('criteriaObj :', JSON.stringify(criteriaObj));
+                params.logger.debug("History query: ", query);
 
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
@@ -81,8 +81,8 @@ export class HistoryController {
                         }
                     }
                 }
-                params.logger.info("allValidActivationDocument: ", JSON.stringify(allValidActivationDocument));
-                params.logger.info('**********************************************');
+                params.logger.debug("allValidActivationDocument: ", JSON.stringify(allValidActivationDocument));
+                params.logger.debug('**********************************************');
 
                 if (allValidActivationDocument && allValidActivationDocument.length > 0) {
                     const informationInBuilding: HistoryInformationInBuilding = await HistoryController.consolidate(params, allValidActivationDocument, criteriaObj);
@@ -207,10 +207,18 @@ export class HistoryController {
 
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 criteriaPlaceList.push(`"originAutomationRegisteredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
-                criteriaPlaceList.push(`"registeredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
-            }
 
-            if (criteriaObj.producerMarketParticipantName
+                if (criteriaObj.registeredResourceList && criteriaObj.registeredResourceList.length > 0) {
+
+                    const listId: string[] = JSON.parse(JSON.stringify(criteriaObj.registeredResourceList));
+                    listId.push(criteriaObj.originAutomationRegisteredResourceMrid);
+                    const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);
+                    criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
+
+                } else {
+                    criteriaPlaceList.push(`"registeredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
+                }
+            } else if (criteriaObj.producerMarketParticipantName
                 || criteriaObj.producerMarketParticipantMrid
                 || criteriaObj.meteringPointMrid
                 || criteriaObj.siteName) {
@@ -248,7 +256,7 @@ export class HistoryController {
 
         params.logger.debug('============= START : consolidate ===========');
 
-        const historyInformationInBuilding: HistoryInformationInBuilding = new HistoryInformationInBuilding();
+        var historyInformationInBuilding: HistoryInformationInBuilding = new HistoryInformationInBuilding();
 
         // if (allActivationDocument && allActivationDocument.length > 0) {
         //     params.logger.debug("----------------")
@@ -269,6 +277,8 @@ export class HistoryController {
         // }
 
         for (const activationDocumentQueryValue of allActivationDocument) {
+            params.logger.debug("ooo activationDocumentQueryValue.activationDocumentMrid : ", activationDocumentQueryValue.activationDocumentMrid);
+
             const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocumentQueryValue);
 
             var activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
@@ -291,6 +301,8 @@ export class HistoryController {
             //Manage Yello Page to get Site Information
             var siteRegistered: Site = null;
             try {
+                params.logger.debug("ooo search site activationDocumentForInformation.registeredResourceMrid : ", activationDocumentForInformation.registeredResourceMrid);
+
                 const existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
                 const siteObjRef:DataReference = existingSitesRef.values().next().value;
                 if (siteObjRef && siteObjRef.docType === DocType.SITE) {
@@ -303,6 +315,9 @@ export class HistoryController {
                 //If no site found, search information by SubOrder Id
                 activationDocumentForInformation = JSON.parse(JSON.stringify(subOrderList[0]));
                 try {
+                    params.logger.debug("ooo search site by subOrderList[0]");
+                    params.logger.debug("ooo search site activationDocumentForInformation.registeredResourceMrid : ", activationDocumentForInformation.registeredResourceMrid);
+
                     const existingSitesRef =await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
                     const siteObjRef = existingSitesRef.values().next().value;
                     if (siteObjRef && siteObjRef.docType === DocType.SITE) {
@@ -323,8 +338,6 @@ export class HistoryController {
             //Build a filtrer to check if it needs to go further in consolidation
             var keepInformation = true;
 
-            params.logger.info('##############################################');
-
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
                 const keepInformationOrigin1 = (activationDocument.originAutomationRegisteredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
                 const keepInformationOrigin2 = (subOrderList
@@ -344,25 +357,6 @@ export class HistoryController {
                                 || keepInformationRegistered2
                                 || keepInformationSubstration;
 
-                params.logger.info("activationDocument.originAutomationRegisteredResourceMrid : ", activationDocument.originAutomationRegisteredResourceMrid);
-                params.logger.info("activationDocument.registeredResourceMrid : ", activationDocument.registeredResourceMrid);
-                if (subOrderList && subOrderList.length > 0) {
-                    params.logger.info("subOrderList[0].originAutomationRegisteredResourceMrid : ", subOrderList[0].originAutomationRegisteredResourceMrid);
-                    params.logger.info("subOrderList[0].registeredResourceMrid : ", subOrderList[0].registeredResourceMrid);
-                } else {
-                    params.logger.info("No subOrderList[0] !!!");
-                }
-                if (siteRegistered) {
-                    params.logger.info("siteRegistered.substationMrid : ", siteRegistered.substationMrid);
-                } else {
-                    params.logger.info("No siteRegistered !!!");
-                }
-                params.logger.info("keepInformationOrigin1 : ", JSON.stringify(keepInformationOrigin1));
-                params.logger.info("keepInformationOrigin2 : ", JSON.stringify(keepInformationOrigin2));
-                params.logger.info("keepInformationRegistered1 : ", JSON.stringify(keepInformationRegistered1));
-                params.logger.info("keepInformationRegistered2 : ", JSON.stringify(keepInformationRegistered2));
-                params.logger.info("keepInformationSubstration : ", JSON.stringify(keepInformationSubstration));
-                params.logger.info("keepInformation : ", JSON.stringify(keepInformation));
             }
 
             if (criteriaObj.producerMarketParticipantName
@@ -371,13 +365,6 @@ export class HistoryController {
                 || criteriaObj.siteName) {
 
                 keepInformation = keepInformation && siteRegistered && criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
-
-                if (siteRegistered) {
-                    params.logger.info("siteRegistered.meteringPointMrid : ", siteRegistered.meteringPointMrid);
-                } else {
-                    params.logger.info("No siteRegistered !!!");
-                }
-                params.logger.info("keepInformation : ", JSON.stringify(keepInformation));
             }
 
             if (subOrderList && subOrderList.length > 0) {
@@ -391,150 +378,175 @@ export class HistoryController {
                                     && subOrderList[0].subOrderList.includes(activationDocument.activationDocumentMrid);
             }
 
-            params.logger.info('##############################################');
 
 
             //END OF FILTER
             //If information doesn't to be kept
             //the process doesn't care about this document
-            if (!keepInformation) {
-                break;
+            if (keepInformation) {
+                historyInformationInBuilding =
+                    await this.consolidateFiltered(
+                        params,
+                        roleUser,
+                        historyInformationInBuilding,
+                        activationDocument,
+                        activationDocumentForInformation,
+                        subOrderList,
+                        siteRegistered);
             }
 
-
-
-
-
-            var producer: Producer = null;
-            try {
-                if (siteRegistered && siteRegistered.producerMarketParticipantMrid) {
-                    producer = await StarDataService.getObj(params, {id: siteRegistered.producerMarketParticipantMrid, docType: DocType.PRODUCER});
-                }
-            } catch (error) {
-                //DO nothing except "Not accessible information"
-            }
-            if (!producer) {
-                try {
-                    if (activationDocumentForInformation.receiverMarketParticipantMrid) {
-                        const prod = await StarDataService.getObj(params, {id: activationDocumentForInformation.receiverMarketParticipantMrid});
-                        if (prod) {
-                            const untypedValue = JSON.parse(JSON.stringify(prod))
-                            if (untypedValue && untypedValue.producerMarketParticipantMrid) {
-                                producer = {
-                                    producerMarketParticipantMrid: prod.producerMarketParticipantMrid,
-                                    producerMarketParticipantName: prod.producerMarketParticipantName,
-                                    producerMarketParticipantRoleType: prod.producerMarketParticipantRoleType
-                                }
-                            // } else if (untypedValue && untypedValue.systemOperatorMarketParticipantMrid) {
-
-                            //     producer = {
-                            //         producerMarketParticipantMrid: untypedValue.systemOperatorMarketParticipantMrid,
-                            //         producerMarketParticipantName: untypedValue.systemOperatorMarketParticipantName,
-                            //         producerMarketParticipantRoleType: untypedValue.systemOperatorMarketParticipantRoleType
-                            //     }
-                            }
-                        }
-
-                    }
-                } catch (error) {
-                    //DO nothing except "Not accessible information"
-                }
-            }
-
-            var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
-
-            if (roleUser === RoleType.Role_TSO) {
-                if(!producer) {
-                    displayedSourceName = activationDocument.registeredResourceMrid;
-
-                } else if (subOrderList
-                    && subOrderList.length > 0) {
-
-                        if (activationDocument.receiverMarketParticipantMrid === producer.producerMarketParticipantMrid) {
-                            displayedSourceName = subOrderList[0].registeredResourceMrid;
-                        } else {
-                            displayedSourceName = activationDocument.registeredResourceMrid;
-                        }
-
-                } else if (siteRegistered) {
-                    displayedSourceName = siteRegistered.substationMrid;
-                }
-            } else if (roleUser === RoleType.Role_DSO
-                && !producer
-                && !siteRegistered) {
-
-                displayedSourceName = activationDocument.registeredResourceMrid;
-            }
-
-            // if (!producer) {
-            //     try {
-            //         if (activationDocument.receiverMarketParticipantMrid) {
-            //             var so = await SystemOperatorService.getObj(activationDocument.receiverMarketParticipantMrid);
-            //             if (so) {
-            //                 producer = {
-            //                     producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
-            //                     producerMarketParticipantName: so.systemOperatorMarketParticipantName,
-            //                     producerMarketParticipantRoleType: so.systemOperatorMarketParticipantRoleType
-            //                 }
-            //             }
-            //         }
-            //     } catch (error) {
-            //         //DO nothing except "Not accessible information"
-            //     }
-            // }
-
-
-            var energyAmount: EnergyAmount = null;
-            try {
-                if (activationDocumentForInformation && activationDocumentForInformation.activationDocumentMrid) {
-                    energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(params, activationDocumentForInformation.activationDocumentMrid);
-                }
-
-            } catch (error) {
-                //DO nothing except "Not accessible information"
-            }
-
-
-
-            const information: HistoryInformation = {
-                activationDocument: JSON.parse(JSON.stringify(activationDocument)),
-                subOrderList: JSON.parse(JSON.stringify(subOrderList)),
-                site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
-                producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
-                energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
-                displayedSourceName: displayedSourceName
-            };
-
-            historyInformationInBuilding.historyInformation.set(information.activationDocument.activationDocumentMrid, information);
-
-            siteRegistered = null;
-            producer = null;
-            energyAmount = null;
-
-            const key = this.buildKey(information.activationDocument);
-
-            if (information.site
-                && information.producer
-                && information.activationDocument
-                && information.activationDocument.eligibilityStatusEditable) {
-
-                historyInformationInBuilding.eligibilityToDefine.push(key);
-            } else if (information.activationDocument.eligibilityStatus
-                && information.activationDocument.eligibilityStatus !== "") {
-
-                historyInformationInBuilding.eligibilityDefined.push(key);
-            } else if (information.subOrderList
-                && information.subOrderList.length > 0) {
-
-                historyInformationInBuilding.reconciliated.push(key);
-            } else {
-                historyInformationInBuilding.others.push(key);
-            }
         }
         params.logger.debug('=============  END  : consolidate ===========');
 
         return historyInformationInBuilding;
     }
+
+
+
+
+
+
+    private static async consolidateFiltered(
+        params: STARParameters,
+        roleUser: string,
+        historyInformationInBuilding: HistoryInformationInBuilding,
+        activationDocument: ActivationDocument,
+        activationDocumentForInformation: ActivationDocument,
+        subOrderList: ActivationDocument[],
+        siteRegistered: Site,): Promise<HistoryInformationInBuilding> {
+
+        var producer: Producer = null;
+        try {
+            if (siteRegistered && siteRegistered.producerMarketParticipantMrid) {
+                producer = await StarDataService.getObj(params, {id: siteRegistered.producerMarketParticipantMrid, docType: DocType.PRODUCER});
+            }
+        } catch (error) {
+            //DO nothing except "Not accessible information"
+        }
+        if (!producer) {
+            try {
+                if (activationDocumentForInformation.receiverMarketParticipantMrid) {
+                    const prod = await StarDataService.getObj(params, {id: activationDocumentForInformation.receiverMarketParticipantMrid});
+                    if (prod) {
+                        const untypedValue = JSON.parse(JSON.stringify(prod))
+                        if (untypedValue && untypedValue.producerMarketParticipantMrid) {
+                            producer = {
+                                producerMarketParticipantMrid: prod.producerMarketParticipantMrid,
+                                producerMarketParticipantName: prod.producerMarketParticipantName,
+                                producerMarketParticipantRoleType: prod.producerMarketParticipantRoleType
+                            }
+                        // } else if (untypedValue && untypedValue.systemOperatorMarketParticipantMrid) {
+
+                        //     producer = {
+                        //         producerMarketParticipantMrid: untypedValue.systemOperatorMarketParticipantMrid,
+                        //         producerMarketParticipantName: untypedValue.systemOperatorMarketParticipantName,
+                        //         producerMarketParticipantRoleType: untypedValue.systemOperatorMarketParticipantRoleType
+                        //     }
+                        }
+                    }
+
+                }
+            } catch (error) {
+                //DO nothing except "Not accessible information"
+            }
+        }
+
+        var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
+
+        if (roleUser === RoleType.Role_TSO) {
+            if(!producer) {
+                displayedSourceName = activationDocument.registeredResourceMrid;
+
+            } else if (subOrderList
+                && subOrderList.length > 0) {
+
+                    if (activationDocument.receiverMarketParticipantMrid === producer.producerMarketParticipantMrid) {
+                        displayedSourceName = subOrderList[0].registeredResourceMrid;
+                    } else {
+                        displayedSourceName = activationDocument.registeredResourceMrid;
+                    }
+
+            } else if (siteRegistered) {
+                displayedSourceName = siteRegistered.substationMrid;
+            }
+        } else if (roleUser === RoleType.Role_DSO
+            && !producer
+            && !siteRegistered) {
+
+            displayedSourceName = activationDocument.registeredResourceMrid;
+        }
+
+        // if (!producer) {
+        //     try {
+        //         if (activationDocument.receiverMarketParticipantMrid) {
+        //             var so = await SystemOperatorService.getObj(activationDocument.receiverMarketParticipantMrid);
+        //             if (so) {
+        //                 producer = {
+        //                     producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
+        //                     producerMarketParticipantName: so.systemOperatorMarketParticipantName,
+        //                     producerMarketParticipantRoleType: so.systemOperatorMarketParticipantRoleType
+        //                 }
+        //             }
+        //         }
+        //     } catch (error) {
+        //         //DO nothing except "Not accessible information"
+        //     }
+        // }
+
+
+        var energyAmount: EnergyAmount = null;
+        try {
+            if (activationDocumentForInformation && activationDocumentForInformation.activationDocumentMrid) {
+                energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(params, activationDocumentForInformation.activationDocumentMrid);
+            }
+
+        } catch (error) {
+            //DO nothing except "Not accessible information"
+        }
+
+
+
+        const information: HistoryInformation = {
+            activationDocument: JSON.parse(JSON.stringify(activationDocument)),
+            subOrderList: JSON.parse(JSON.stringify(subOrderList)),
+            site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
+            producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
+            energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
+            displayedSourceName: displayedSourceName
+        };
+
+        historyInformationInBuilding.historyInformation.set(information.activationDocument.activationDocumentMrid, information);
+
+        siteRegistered = null;
+        producer = null;
+        energyAmount = null;
+
+        const key = this.buildKey(information.activationDocument);
+
+        if (information.site
+            && information.producer
+            && information.activationDocument
+            && information.activationDocument.eligibilityStatusEditable) {
+
+            historyInformationInBuilding.eligibilityToDefine.push(key);
+        } else if (information.activationDocument.eligibilityStatus
+            && information.activationDocument.eligibilityStatus !== "") {
+
+            historyInformationInBuilding.eligibilityDefined.push(key);
+        } else if (information.subOrderList
+            && information.subOrderList.length > 0) {
+
+            historyInformationInBuilding.reconciliated.push(key);
+        } else {
+            historyInformationInBuilding.others.push(key);
+        }
+
+        return historyInformationInBuilding;
+    }
+
+
+
+
 
 
 
@@ -548,6 +560,9 @@ export class HistoryController {
         return key;
     }
 
+
+
+
     private static getActivationDocumentMridFromKey(key: string) : string {
         var activationDocumentMrid: string = "";
 
@@ -556,6 +571,8 @@ export class HistoryController {
 
         return activationDocumentMrid;
     }
+
+
 
 
 

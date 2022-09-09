@@ -21,6 +21,10 @@ RUN --mount=type=cache,target=/root/.m2 \
 
 
 FROM openjdk:11 as dev
+# required to validate rte certificates
+RUN cd /usr/local/share/ca-certificates/ \
+  && wget https://globalsign.tbs-certificats.com/gsrsaovsslca2018.crt \
+  && update-ca-certificates
 VOLUME /tmp
 COPY --from=build  /workspace/app/api/target/api*.jar /app/api.jar
 ENTRYPOINT ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005","-jar","/app/api.jar"]

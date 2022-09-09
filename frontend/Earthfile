@@ -4,6 +4,7 @@ ARG repository=registry.gitlab.com/xdev-tech/star/frontend
 
 deps:
     FROM node:16-alpine
+    RUN apk add fd
     WORKDIR /app
     COPY package.json package-lock.json ./
     RUN --mount=type=cache,target=/root/.npm \
@@ -20,6 +21,7 @@ dev:
 build:
     FROM +dev
     RUN npm run build-prod
+    RUN fd '.*\.(js|css|html|svg|txt|gif|wasm)$' dist -x gzip -k
     SAVE ARTIFACT /app/dist
     # cache this target (including the layers from the target dependencies)
     ARG tag=latest

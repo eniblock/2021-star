@@ -17,7 +17,7 @@ function install_velero {
 
 function create_schedules {
     ENV=$1
-    velero schedule create ${ENV}-1h --ttl 24h --include-namespaces ${ENV} --default-volumes-to-restic --schedule="@every 1h"
+    # velero schedule create ${ENV}-1h --ttl 24h --include-namespaces ${ENV} --default-volumes-to-restic --schedule="@every 1h"
     velero schedule create ${ENV}-6h --ttl 168h --include-namespaces ${ENV} --default-volumes-to-restic --schedule="@every 6h"
     velero schedule create ${ENV}-24h --include-namespaces ${ENV} --default-volumes-to-restic --schedule="@every 24h"
 }

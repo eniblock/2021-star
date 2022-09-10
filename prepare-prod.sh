@@ -96,6 +96,10 @@ function generate_secrets_producer {
 
     # orderer2
     echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--genesis --from-file=./hlf/prod/generated/genesis.block
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--ord-admincert --from-file=cert.pem=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/users/Admin@orderer/msp/signcerts/Admin@orderer-cert.pem
+    echo ---
     kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer2-idcert --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/msp/signcerts/orderer2.orderer-cert.pem
     echo ---
     kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer2-idkey --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/msp/keystore/priv_sk
@@ -163,6 +167,10 @@ function generate_secrets_rte {
     kubectl create  --dry-run=client -o yaml namespace orderer-prod
 
     # orderer3
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--genesis --from-file=./hlf/prod/generated/genesis.block
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--ord-admincert --from-file=cert.pem=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/users/Admin@orderer/msp/signcerts/Admin@orderer-cert.pem
     echo ---
     kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer3-idcert --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/msp/signcerts/orderer3.orderer-cert.pem
     echo ---

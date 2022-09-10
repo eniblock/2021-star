@@ -17,10 +17,12 @@ docker run --rm -u $(id -u):$(id -g) -v $PWD/hlf/prod:/hlf/prod hyperledger/fabr
 ./hlf/prod/user-generate.sh producer
 ./hlf/prod/user-generate.sh rte
 
-function generate_secrets {
+function generate_secrets_enedis {
     # orderer
     echo ---
     kubectl create  --dry-run=client -o yaml namespace orderer-prod
+
+    # orderer1
     echo ---
     kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--genesis --from-file=./hlf/prod/generated/genesis.block
     echo ---
@@ -35,26 +37,6 @@ function generate_secrets {
     kubectl create secret --dry-run=client -o yaml -n orderer-prod tls hlf--orderer1-tls --key=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/server.key --cert=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/server.crt
     echo ---
     kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer1-tlsrootcert --from-file=cacert.pem=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer1.orderer/tls/ca.crt
-    echo ---
-    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer2-idcert --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/msp/signcerts/orderer2.orderer-cert.pem
-    echo ---
-    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer2-idkey --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/msp/keystore/priv_sk
-    echo ---
-    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer2-cacert --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/msp/cacerts/ca.orderer-cert.pem
-    echo ---
-    kubectl create secret --dry-run=client -o yaml -n orderer-prod tls hlf--orderer2-tls --key=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/tls/server.key --cert=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/tls/server.crt
-    echo ---
-    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer2-tlsrootcert --from-file=cacert.pem=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/tls/ca.crt
-    echo ---
-    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer3-idcert --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/msp/signcerts/orderer3.orderer-cert.pem
-    echo ---
-    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer3-idkey --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/msp/keystore/priv_sk
-    echo ---
-    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer3-cacert --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/msp/cacerts/ca.orderer-cert.pem
-    echo ---
-    kubectl create secret --dry-run=client -o yaml -n orderer-prod tls hlf--orderer3-tls --key=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/tls/server.key --cert=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/tls/server.crt
-    echo ---
-    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer3-tlsrootcert --from-file=cacert.pem=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/tls/ca.crt
 
     # enedis
     echo ---
@@ -105,6 +87,24 @@ function generate_secrets {
     kubectl create secret --dry-run=client -o yaml -n enedis-prod generic star-peer-connection --from-file=connection.yaml=./hlf/prod/generated/crypto-config/peerOrganizations/enedis/connection-enedis.yaml
     echo ---
     kubectl create secret --dry-run=client -o yaml -n enedis-prod generic star-user-id --from-file=User1.id=./hlf/prod/generated/crypto-config/peerOrganizations/enedis/User1.id
+}
+
+function generate_secrets_producer {
+    # orderer
+    echo ---
+    kubectl create  --dry-run=client -o yaml namespace orderer-prod
+
+    # orderer2
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer2-idcert --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/msp/signcerts/orderer2.orderer-cert.pem
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer2-idkey --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/msp/keystore/priv_sk
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer2-cacert --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/msp/cacerts/ca.orderer-cert.pem
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod tls hlf--orderer2-tls --key=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/tls/server.key --cert=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/tls/server.crt
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer2-tlsrootcert --from-file=cacert.pem=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer2.orderer/tls/ca.crt
 
     # producer
     echo ---
@@ -158,6 +158,22 @@ function generate_secrets {
 }
 
 function generate_secrets_rte {
+    # orderer
+    echo ---
+    kubectl create  --dry-run=client -o yaml namespace orderer-prod
+
+    # orderer3
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer3-idcert --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/msp/signcerts/orderer3.orderer-cert.pem
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer3-idkey --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/msp/keystore/priv_sk
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer3-cacert --from-file=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/msp/cacerts/ca.orderer-cert.pem
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod tls hlf--orderer3-tls --key=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/tls/server.key --cert=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/tls/server.crt
+    echo ---
+    kubectl create secret --dry-run=client -o yaml -n orderer-prod generic hlf--orderer3-tlsrootcert --from-file=cacert.pem=./hlf/prod/generated/crypto-config/ordererOrganizations/orderer/orderers/orderer3.orderer/tls/ca.crt
+
     # rte
     echo ---
     kubectl create  --dry-run=client -o yaml namespace rte-prod
@@ -210,5 +226,6 @@ function generate_secrets_rte {
     kubectl create secret --dry-run=client -o yaml -n rte-prod generic star-user-id --from-file=User1.id=./hlf/prod/generated/crypto-config/peerOrganizations/rte/User1.id
 }
 
-generate_secrets > secrets-prod.yaml
+generate_secrets_enedis > secrets-prod-enedis.yaml
+generate_secrets_producer > secrets-prod-producer.yaml
 generate_secrets_rte > secrets-prod-rte.yaml

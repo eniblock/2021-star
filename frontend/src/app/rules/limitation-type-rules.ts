@@ -16,7 +16,7 @@ const marketParticipantMridToManualLimitationMotifs = (marketParticipantMrdi: st
   if (isRte(marketParticipantMrdi)) {
     return manualLimitationRte;
   } else if (isEnedis(marketParticipantMrdi)) {
-    return manualLimitationRte;
+    return manualLimitationEnedis;
   }
   throw 'Unknown marketParticipantMrdi';
 }

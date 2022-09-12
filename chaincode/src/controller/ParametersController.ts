@@ -89,6 +89,15 @@ export class ParametersController {
         valueRoleTable.set(OrganizationTypeMsp.RTE, role_rte);
         parameters.values.set(ParametersType.ROLE_TABLE, valueRoleTable);
 
+
+
+        const processTypeComptage: string[] = ["A05"];
+        parameters.values.set(ParametersType.PROCESS_TYPE_COMPTAGE, processTypeComptage);
+        const processTypeRefrence: string[] = ["A14", "Z99"];
+        parameters.values.set(ParametersType.PROCESS_TYPE_REFERENCE, processTypeRefrence);
+
+
+
         if (identity === OrganizationTypeMsp.ENEDIS) {
             /*
             * ENEDIS

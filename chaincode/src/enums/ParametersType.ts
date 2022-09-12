@@ -29,4 +29,6 @@
     ENERGY_ACCOUNT_TIME_INTERVAL_SECONDS = 'energyAccount_TimeInterval_Seconds',
 
     REFERENCE_ENERGY_ACCOUNT = 'referenceEnergyAccount',
+    PROCESS_TYPE_COMPTAGE = "comptage",
+    PROCESS_TYPE_REFERENCE = "reference"
   }

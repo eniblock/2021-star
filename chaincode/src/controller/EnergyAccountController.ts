@@ -160,14 +160,19 @@ export class EnergyAccountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Account.`);
         }
 
-        try {
-            const nbExpectedPoints = await this.getExpectedNumberPoints(params, energyObj);
-            if (nbExpectedPoints != energyObj.timeSeries.length) {
-                throw new Error(`timeSeries[${energyObj.timeSeries.length}] does not respect the expected number of points ${nbExpectedPoints}`);
+        const processTypeComptage: string[] = params.values.get(ParametersType.PROCESS_TYPE_COMPTAGE);
+        //If processType is "Comptage" then check the number of points
+        //The number points is not checked when the processType is "Reference"
+        if (processTypeComptage.includes(energyObj.processType)) {
+            try {
+                const nbExpectedPoints = await this.getExpectedNumberPoints(params, energyObj);
+                if (nbExpectedPoints != energyObj.timeSeries.length) {
+                    throw new Error(`timeSeries[${energyObj.timeSeries.length}] does not respect the expected number of points ${nbExpectedPoints}`);
+                }
             }
-        }
-        catch (error) {
-            throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
+            catch (error) {
+                throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
+            }
         }
 
         let siteObj: Site;

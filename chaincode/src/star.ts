@@ -693,7 +693,7 @@ export class Star extends Contract {
         inputStr : string
         output : File
     */
-    public async getFile(
+    public async GetFile(
         ctx: Context, inputStr: string) {
         try {
             /* TODO */
@@ -708,6 +708,30 @@ export class Star extends Contract {
         inputStr : reserveBidMarketDocument
     */
     public async CreateReserveBidMarketDocument(
+        ctx: Context, inputStr: string) {
+        try {
+            /* TODO */
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : ???
+    */
+    public async AddFileToReserveBidMarketDocument(
+        ctx: Context, inputStr: string) {
+        try {
+            /* TODO */
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : ???
+    */
+    public async RemoveFileFromReserveBidMarketDocument(
         ctx: Context, inputStr: string) {
         try {
             /* TODO */

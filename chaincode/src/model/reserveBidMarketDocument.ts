@@ -22,7 +22,9 @@ export class ReserveBidMarketDocument {
         flowDirection: Yup.string().notRequired().typeError('flowDirection must be a string'),
         energyPriceAmount: Yup.number().required('energyPriceAmount is a compulsory number.').typeError('energyPriceAmount must be a number'),
 
-        attachments: Yup.array().notRequired(),
+        attachments: Yup.array().of(Yup.string()).notRequired(),
+
+        attachmentsWithStatus: Yup.array().notRequired(),
     });
 
     public docType?: string;
@@ -44,5 +46,6 @@ export class ReserveBidMarketDocument {
     public flowDirection?: string;
     public energyPriceAmount: number;
 
-    public attachments?: FileWithStatus[];
+    public attachments?: string[];
+    public attachmentsWithStatus?: FileWithStatus[];
 }

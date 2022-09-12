@@ -1,14 +1,15 @@
 import {TypeLimitation} from '../models/enum/TypeLimitation.enum';
-import {Motif, motifIsEqualTo, motifsAreEqual} from '../models/Motifs';
+import {Motif, motifsAreEqual, toMotif} from '../models/Motifs';
 import {RechercheHistoriqueLimitationEntite} from "../models/RechercheHistoriqueLimitation";
 import {isEnedis} from "./marketParticipantMrid-rules";
+import {MotifEnedisToName, MotifRteToName} from "./motif-rules";
 
 const manualLimitationRte: Motif[] = [];
 
 const manualLimitationEnedis: Motif[] = [
-  {messageType: 'D01', businessType: 'Z02', reasonCode: 'A70'},
-  {messageType: 'D01', businessType: 'Z03', reasonCode: 'Y98'},
-  {messageType: 'D01', businessType: 'Z04', reasonCode: 'Y99'},
+  toMotif('D01', 'Z02', 'A70'),
+  toMotif('D01', 'Z03', 'Y98'),
+  toMotif('D01', 'Z04', 'Y99'),
 ];
 
 export const getLimitationType = (rhl: RechercheHistoriqueLimitationEntite): TypeLimitation => {
@@ -20,12 +21,19 @@ export const getLimitationType = (rhl: RechercheHistoriqueLimitationEntite): Typ
 };
 
 export const typeLimitationToMotifs = (typeLimitation: TypeLimitation, marketParticipantMrid: string): Motif[] => {
-  const enedis = isEnedis(marketParticipantMrid);
-  const manualLimitations = enedis ? manualLimitationEnedis : manualLimitationRte;
-  switch (typeLimitation) {
-    case TypeLimitation.MANUELLE:
-      return manualLimitations;
-    case TypeLimitation.AUTOMATIQUE:
-      return []; // TODO !!!!!!!!!!!!!!!!
+  if (typeLimitation == TypeLimitation.MANUELLE) {
+    // Manual limitation
+    return isEnedis(marketParticipantMrid) ? manualLimitationEnedis : manualLimitationRte;
+  } else {
+    // Automatic limitation
+    const motifsToNames = isEnedis(marketParticipantMrid) ? MotifEnedisToName : MotifRteToName;
+    const manualLimitations = isEnedis(marketParticipantMrid) ? manualLimitationEnedis : manualLimitationRte;
+    let automaticMotifs: Motif[] = [];
+    for (let key of motifsToNames.keys()) {
+      if (manualLimitations.find(motif => motifsAreEqual(motif, key)) === undefined) {
+        automaticMotifs.push(key);
+      }
+    }
+    return automaticMotifs;
   }
 }

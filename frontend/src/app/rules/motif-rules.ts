@@ -111,7 +111,7 @@ export const ReasonCodes: MotifCode[] = [
 ////////////// MOTIF NAMES //////////////
 /////////////////////////////////////////
 
-const MotifRteToName = new Map<Motif, string>([
+export const MotifRteToName = new Map<Motif, string>([
   [toMotif('A98', 'C55', 'A70'), 'Réseau complet'],
   [toMotif('A98', 'C55', 'A98'), 'Aléa'],
   [toMotif('A54', 'C55', 'A70'), 'Réseau complet'],
@@ -142,7 +142,7 @@ const MotifRteToName = new Map<Motif, string>([
   [toMotif('A54', 'C55', 'Z92'), 'Aléa - Réseau Amont'],
 ]);
 
-const MotifEnedisToName = new Map<Motif, string>([
+export const MotifEnedisToName = new Map<Motif, string>([
   [toMotif('D01', 'Z01', 'A70'), 'Contrainte RPT avec ASR'],
   [toMotif('D01', 'Z02', 'A70'), 'Contrainte RPT sans ASR'],
   [toMotif('D01', 'Z03', 'Y98'), 'Incident RTE'],
@@ -207,9 +207,9 @@ const motifRteToString = (motif?: Motif | OrdreLimitation): string => {
   ) {
     return '';
   }
-  for (let entry of MotifRteToName.entries()) {
-    if (motifsAreEqual(motif, entry[0])) {
-      return entry[1];
+  for (let [key, value] of MotifRteToName.entries()) {
+    if (motifsAreEqual(motif, key)) {
+      return value;
     }
   }
   return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;
@@ -224,9 +224,9 @@ const motifEnedisToString = (motif?: Motif | OrdreLimitation): string => {
   ) {
     return '';
   }
-  for (let entry of MotifEnedisToName.entries()) {
-    if (motifsAreEqual(motif, entry[0])) {
-      return entry[1];
+  for (let [key, value] of MotifEnedisToName.entries()) {
+    if (motifsAreEqual(motif, key)) {
+      return value;
     }
   }
   return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;

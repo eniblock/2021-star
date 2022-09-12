@@ -32,7 +32,7 @@ resource "keycloak_realm" "main" {
 
   reset_password_allowed   = true
   login_with_email_allowed = true
-  password_policy          = "length(8) and specialCharacters(1) and digits(1)"
+  password_policy          = "length(8) and specialChars(1) and digits(1)"
 }
 
 resource "keycloak_openid_client" "frontend" {

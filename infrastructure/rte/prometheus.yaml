@@ -13,19 +13,9 @@ grafana:
   grafana.ini:
     server:
       enable_gzip: true
-      root_url: https://obs.star.cloud-rte-france.com/grafana
       serve_from_sub_path: true
   ingress:
-    annotations:
-      kubernetes.io/tls-acme: "true"
-    enabled: true
-    hosts:
-    - obs.star.cloud-rte-france.com
-    pathType: ImplementationSpecific
-    tls:
-    - hosts:
-      - obs.star.cloud-rte-france.com
-      secretName: star-cluster-grafana-cert
+    enabled: false
   persistence:
     accessModes:
     - ReadWriteOnce

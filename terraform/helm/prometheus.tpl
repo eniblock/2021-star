@@ -83,22 +83,12 @@ grafana:
   podAnnotations:
     "cluster-autoscaler.kubernetes.io/safe-to-evict": "true"
   ingress:
-    enabled: true
-    pathType: ImplementationSpecific
-    annotations:
-      kubernetes.io/tls-acme: "true"
-    hosts:
-      - ${domain}
-    tls:
-      - hosts:
-        - ${domain}
-        secretName: ${app_name}-${environment}-grafana-cert
+    enabled: false
   service:
     type: NodePort
   adminPassword: "${grafana_admin_password}"
   grafana.ini:
     server:
-      root_url: https://${domain}/grafana
       serve_from_sub_path: true
       enable_gzip: true
   persistence:

@@ -1,7 +1,50 @@
 import * as Yup from 'yup';
+import { DocType } from '../enums/DocType';
 import { AttachmentFileWithStatus } from './attachmentFile';
 
 export class ReserveBidMarketDocument {
+    public static formatString(inputString: string) : ReserveBidMarketDocument {
+        let reserveBidObj: ReserveBidMarketDocument;
+        try {
+            reserveBidObj = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR ${DocType.RESERVE_BID_MARKET_DOCUMENT} -> Input string NON-JSON value`);
+        }
+
+        try {
+            ReserveBidMarketDocument.schema.validateSync(
+                reserveBidObj,
+                {strict: true, abortEarly: false},
+            );
+        } catch (error) {
+            throw error;
+        }
+        return reserveBidObj;
+    }
+
+    public static formatListString(inputString: string) : ReserveBidMarketDocument[] {
+        let reserveBidList: ReserveBidMarketDocument[] = [];
+        try {
+            reserveBidList = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR ${DocType.RESERVE_BID_MARKET_DOCUMENT} by list -> Input string NON-JSON value`);
+        }
+
+        if (reserveBidList && reserveBidList.length > 0) {
+            for (var reserveBidObj of reserveBidList) {
+                try {
+                    ReserveBidMarketDocument.schema.validateSync(
+                        reserveBidObj,
+                        {strict: true, abortEarly: false},
+                    );
+                } catch (error) {
+                    throw error;
+                }
+            }
+        }
+        return reserveBidList;
+    }
+
     public static readonly schema = Yup.object().shape({
         docType: Yup.string().notRequired().typeError('docType must be a string'),
 

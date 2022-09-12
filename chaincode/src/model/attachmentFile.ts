@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { DocType } from '../enums/DocType';
 
 export class AttachmentFileWithStatus {
-    public file: AttachmentFile;
+    public fileId: string;
     public status: string;
 }
 
@@ -12,7 +12,7 @@ export class AttachmentFile {
         try {
             fileObj = JSON.parse(inputString);
         } catch (error) {
-            throw new Error(`ERROR ${DocType.FILE} -> Input string NON-JSON value`);
+            throw new Error(`ERROR ${DocType.ATTACHMENT_FILE} -> Input string NON-JSON value`);
         }
 
         try {
@@ -31,7 +31,7 @@ export class AttachmentFile {
         try {
             fileList = JSON.parse(inputString);
         } catch (error) {
-            throw new Error(`ERROR ${DocType.FILE} by list -> Input string NON-JSON value`);
+            throw new Error(`ERROR ${DocType.ATTACHMENT_FILE} by list -> Input string NON-JSON value`);
         }
 
         if (fileList && fileList.length > 0) {

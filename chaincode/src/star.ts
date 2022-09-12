@@ -674,4 +674,113 @@ export class Star extends Contract {
             throw error;
         }
     }
+
+    /* FILES */
+
+    /*
+        inputStr : file[]
+    */
+    public async CreateFiles(
+        ctx: Context, inputStr: string) {
+        try {
+            /* TODO */
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : string
+        output : File
+    */
+    public async getFile(
+        ctx: Context, inputStr: string) {
+        try {
+            /* TODO */
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /* RESERVE BID MARKET DOCUMENT */
+
+    /*
+        inputStr : reserveBidMarketDocument
+    */
+    public async CreateReserveBidMarketDocument(
+        ctx: Context, inputStr: string) {
+        try {
+            /* TODO */
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : reserveBidMarketDocument[]
+    */
+    public async CreateReserveBidMarketDocumentList(
+        ctx: Context, inputStr: string) {
+        try {
+            /* TODO */
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : ReserveBidMrid
+        output : ReserveBidMarketDocument
+    */
+        public async getReserveBidMarketDocumentById(
+            ctx: Context, inputStr: string) {
+            try {
+                /* TODO */
+            } catch (error) {
+                throw error;
+            }
+        }
+
+    /*
+        inputStr : ReserveBidMrid[]
+        output : ReserveBidMarketDocument[]
+    */
+        public async getReserveBidMarketDocumentListById(
+            ctx: Context, inputStr: string) {
+            try {
+                /* TODO */
+            } catch (error) {
+                throw error;
+            }
+        }
+
+
+    /*
+        inputStr : meteringPointMrid
+        output : ReserveBidMarketDocument[]
+    */
+        public async getReserveBidMarketDocumentBySite(
+            ctx: Context, inputStr: string) {
+            try {
+                /* TODO */
+            } catch (error) {
+                throw error;
+            }
+        }
+
+
+    /*
+        inputStr : meteringPointMrid
+        output : ReserveBidMarketDocument[]
+        //Only current and next reserve bid market document
+    */
+        public async getValidReserveBidMarketDocumentBySite(
+            ctx: Context, inputStr: string) {
+            try {
+                /* TODO */
+            } catch (error) {
+                throw error;
+            }
+        }
+
 }

@@ -1,10 +1,11 @@
 export enum DocType {
     ACTIVATION_DOCUMENT = 'activationDocument',
+    ATTACHMENT_FILE = "attachmentFile",
     ENERGY_ACCOUNT = 'energyAccount',
     ENERGY_AMOUNT = 'energyAmount',
-    FILE = "file",
     PRODUCER = "producer",
     REFERENCE_ENERGY_ACCOUNT = 'referenceEnergyAccount',
+    RESERVE_BID_MARKET_DOCUMENT = 'ReserveBidMarketDocument',
     SITE = 'site',
     SYSTEM_OPERATOR = "systemOperator",
     YELLOW_PAGES = 'yellowPages',

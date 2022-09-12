@@ -12,7 +12,19 @@ export interface Motif {
   reasonCode: string;
 }
 
-export const motifIsEqualTo = (
+export const toMotif = (
+  messageType: string,
+  businessType: string,
+  reasonCode: string,
+): Motif => {
+  return {
+    messageType: messageType,
+    businessType: businessType,
+    reasonCode: reasonCode,
+  };
+};
+
+export const motifIsEqualTo = ( // TODO : supprimer !!!
   motif1: Motif | OrdreLimitation,
   messageType: string,
   businessType: string,

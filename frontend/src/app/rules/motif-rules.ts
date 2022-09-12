@@ -1,6 +1,7 @@
-import {Motif, MotifCode, motifIsEqualTo} from '../models/Motifs';
+import {Motif, MotifCode, motifIsEqualTo, motifsAreEqual, toMotif} from '../models/Motifs';
 import {OrdreLimitation} from "../models/OrdreLimitation";
 import {isEnedis, isRte} from "./marketParticipantMrid-rules";
+
 
 /////////////////////////////////////////
 ////////////// MOTIF CODES //////////////
@@ -105,6 +106,55 @@ export const ReasonCodes: MotifCode[] = [
   },
 ];
 
+
+/////////////////////////////////////////
+////////////// MOTIF NAMES //////////////
+/////////////////////////////////////////
+
+const MotifRteToName = new Map<Motif, string>([
+  [toMotif('A98', 'C55', 'A70'), 'Réseau complet'],
+  [toMotif('A98', 'C55', 'A98'), 'Aléa'],
+  [toMotif('A54', 'C55', 'A70'), 'Réseau complet'],
+  [toMotif('A54', 'C55', 'A98'), 'Aléa'],
+  [toMotif('A98', 'C55', 'Z71'), 'Réseau complet - IST min'],
+  [toMotif('A98', 'C55', 'Z72'), 'Réseau complet - ORA'],
+  [toMotif('A98', 'C55', 'Z73'), 'Réseau complet - Dim Optimal'],
+  [toMotif('A98', 'C55', 'Z74'), 'Réseau complet - Contrat Amont'],
+  [toMotif('A98', 'C53', 'ZB1'), 'Travaux Programmés - CART'],
+  [toMotif('A98', 'C53', 'ZB2'), 'Travaux Programmés - CART-RU'],
+  [toMotif('A98', 'C53', 'ZB3'), 'Travaux Programmés - CART-RII'],
+  [toMotif('A98', 'C53', 'ZB4'), 'Travaux Programmés - CART-RVU'],
+  [toMotif('A98', 'C53', 'ZB5'), 'Travaux Programmés - Contrat Amont'],
+  [toMotif('A98', 'C53', 'ZB6'), 'Travaux Programmés - Contrat GP'],
+  [toMotif('A98', 'C55', 'Z91'), 'Aléa - Réseau Evacuation'],
+  [toMotif('A98', 'C55', 'Z92'), 'Aléa - Réseau Amont'],
+  [toMotif('A54', 'C55', 'Z71'), 'Réseau complet - IST min'],
+  [toMotif('A54', 'C55', 'Z72'), 'Réseau complet - ORA'],
+  [toMotif('A54', 'C55', 'Z73'), 'Réseau complet - Dim Optimal'],
+  [toMotif('A54', 'C55', 'Z74'), 'Réseau complet - Contrat Amont'],
+  [toMotif('A98', 'A53', 'ZB1'), 'Travaux Programmés - CART'],
+  [toMotif('A98', 'A53', 'ZB2'), 'Travaux Programmés - CART-RU'],
+  [toMotif('A98', 'A53', 'ZB3'), 'Travaux Programmés - CART-RII'],
+  [toMotif('A98', 'A53', 'ZB4'), 'Travaux Programmés - CART-RVU'],
+  [toMotif('A98', 'A53', 'ZB5'), 'Travaux Programmés - Contrat Amont'],
+  [toMotif('A98', 'A53', 'ZB6'), 'Travaux Programmés - Contrat GP'],
+  [toMotif('A54', 'C55', 'Z91'), 'Aléa - Réseau Evacuation'],
+  [toMotif('A54', 'C55', 'Z92'), 'Aléa - Réseau Amont'],
+]);
+
+const MotifEnedisToName = new Map<Motif, string>([
+  [toMotif('D01', 'Z01', 'A70'), 'Contrainte RPT avec ASR'],
+  [toMotif('D01', 'Z02', 'A70'), 'Contrainte RPT sans ASR'],
+  [toMotif('D01', 'Z03', 'Y98'), 'Incident RTE'],
+  [toMotif('D01', 'Z04', 'Y99'), 'Incident Enedis'],
+]);
+
+
+//////////////////////////////////////
+////////////// METHODES //////////////
+//////////////////////////////////////
+
+
 export const getMessageTypeByCode = (code: string): MotifCode => {
   const t = MessageTypes.filter((mt) => mt.code == code);
   return t[0];
@@ -138,10 +188,6 @@ export const getAllReasonCodeByBusinessTypeCode = (
   );
 };
 
-/////////////////////////////////////////
-////////////// MOTIF NAMES //////////////
-/////////////////////////////////////////
-
 export const motifToString = (ordreLimitation: OrdreLimitation): string => {
   if (isRte(ordreLimitation.senderMarketParticipantMrid)) {
     return motifRteToString(ordreLimitation);
@@ -160,62 +206,11 @@ const motifRteToString = (motif?: Motif | OrdreLimitation): string => {
     motif.reasonCode == null
   ) {
     return '';
-  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'A70')) {
-    return 'Réseau complet';
-  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'A98')) {
-    return 'Aléa';
-  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'A70')) {
-    return 'Réseau complet';
-  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'A98')) {
-    return 'Aléa';
-  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z71')) {
-    return 'Réseau complet - IST min';
-  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z72')) {
-    return 'Réseau complet - ORA';
-  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z73')) {
-    return 'Réseau complet - Dim Optimal';
-  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z74')) {
-    return 'Réseau complet - Contrat Amont';
-  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB1')) {
-    return 'Travaux Programmés - CART';
-  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB2')) {
-    return 'Travaux Programmés - CART-RU';
-  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB3')) {
-    return 'Travaux Programmés - CART-RII';
-  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB4')) {
-    return 'Travaux Programmés - CART-RVU';
-  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB5')) {
-    return 'Travaux Programmés - Contrat Amont';
-  } else if (motifIsEqualTo(motif, 'A98', 'C53', 'ZB6')) {
-    return 'Travaux Programmés - Contrat GP';
-  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z91')) {
-    return 'Aléa - Réseau Evacuation';
-  } else if (motifIsEqualTo(motif, 'A98', 'C55', 'Z92')) {
-    return 'Aléa - Réseau Amont';
-  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z71')) {
-    return 'Réseau complet - IST min';
-  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z72')) {
-    return 'Réseau complet - ORA';
-  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z73')) {
-    return 'Réseau complet - Dim Optimal';
-  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z74')) {
-    return 'Réseau complet - Contrat Amont';
-  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB1')) {
-    return 'Travaux Programmés - CART';
-  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB2')) {
-    return 'Travaux Programmés - CART-RU';
-  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB3')) {
-    return 'Travaux Programmés - CART-RII';
-  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB4')) {
-    return 'Travaux Programmés - CART-RVU';
-  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB5')) {
-    return 'Travaux Programmés - Contrat Amont';
-  } else if (motifIsEqualTo(motif, 'A98', 'A53', 'ZB6')) {
-    return 'Travaux Programmés - Contrat GP';
-  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z91')) {
-    return 'Aléa - Réseau Evacuation';
-  } else if (motifIsEqualTo(motif, 'A54', 'C55', 'Z92')) {
-    return 'Aléa - Réseau Amont';
+  }
+  for (let entry of MotifRteToName.entries()) {
+    if (motifsAreEqual(motif, entry[0])) {
+      return entry[1];
+    }
   }
   return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;
 };
@@ -228,14 +223,11 @@ const motifEnedisToString = (motif?: Motif | OrdreLimitation): string => {
     motif.reasonCode == null
   ) {
     return '';
-  } else if (motifIsEqualTo(motif, 'D01', 'Z01', 'A70')) {
-    return 'Contrainte RPT avec ASR';
-  } else if (motifIsEqualTo(motif, 'D01', 'Z02', 'A70')) {
-    return 'Contrainte RPT sans ASR';
-  } else if (motifIsEqualTo(motif, 'D01', 'Z03', 'Y98')) {
-    return 'Incident RTE';
-  } else if (motifIsEqualTo(motif, 'D01', 'Z04', 'Y99')) {
-    return 'Incident Enedis';
+  }
+  for (let entry of MotifEnedisToName.entries()) {
+    if (motifsAreEqual(motif, entry[0])) {
+      return entry[1];
+    }
   }
   return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;
 };

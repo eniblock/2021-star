@@ -82,4 +82,17 @@ public class InstanceController {
         }
     }
 
+    /**
+     * API indiquant le participantMrdi contenu dans le token Keycloak
+     *
+     * @return
+     */
+    @Operation(summary = "Get the participant mrid")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get the participant mrid",
+            content = {@Content(mediaType = "application/json")})})
+    @GetMapping("/participantMrid")
+    public ResponseEntity<String> getParticipantMrid() {
+        return ResponseEntity.ok(securityComponent.getSystemOperatorMarketParticipantMrid(false));
+    }
+
 }

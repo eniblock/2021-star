@@ -1,6 +1,7 @@
 import {Motif, MotifCode, motifIsEqualTo, motifsAreEqual, toMotif} from '../models/Motifs';
 import {OrdreLimitation} from "../models/OrdreLimitation";
 import {isEnedis, isRte} from "./marketParticipantMrid-rules";
+import {SortHelper} from "../helpers/sort.helper";
 
 
 /////////////////////////////////////////
@@ -154,6 +155,14 @@ export const MotifEnedisToName = new Map<Motif, string>([
 ////////////// METHODES //////////////
 //////////////////////////////////////
 
+export const marketParticipantMridToMapMotifName = (marketParticipantMrdi: string): Map<Motif, string> => {
+  if (isRte(marketParticipantMrdi)) {
+    return MotifRteToName;
+  } else if (isEnedis(marketParticipantMrdi)) {
+    return MotifEnedisToName;
+  }
+  throw 'Unknown marketParticipantMrdi';
+}
 
 export const getMessageTypeByCode = (code: string): MotifCode => {
   const t = MessageTypes.filter((mt) => mt.code == code);
@@ -189,45 +198,37 @@ export const getAllReasonCodeByBusinessTypeCode = (
 };
 
 export const motifToString = (ordreLimitation: OrdreLimitation): string => {
-  if (isRte(ordreLimitation.senderMarketParticipantMrid)) {
-    return motifRteToString(ordreLimitation);
-  } else if (isEnedis(ordreLimitation.senderMarketParticipantMrid)) {
-    return motifEnedisToString(ordreLimitation);
-  } else {
-    return "ERROR !";
+  if (
+    ordreLimitation == null ||
+    ordreLimitation.messageType == null ||
+    ordreLimitation.businessType == null ||
+    ordreLimitation.reasonCode == null
+  ) {
+    return '';
   }
+  const map = marketParticipantMridToMapMotifName(ordreLimitation.senderMarketParticipantMrid);
+  for (let [key, value] of map.entries()) {
+    if (motifsAreEqual(ordreLimitation, key)) {
+      return value;
+    }
+  }
+  return `Inconnu (${ordreLimitation.messageType},${ordreLimitation.businessType},${ordreLimitation.reasonCode})`;
 }
 
-const motifRteToString = (motif?: Motif | OrdreLimitation): string => {
-  if (
-    motif == null ||
-    motif.messageType == null ||
-    motif.businessType == null ||
-    motif.reasonCode == null
-  ) {
-    return '';
-  }
-  for (let [key, value] of MotifRteToName.entries()) {
-    if (motifsAreEqual(motif, key)) {
-      return value;
-    }
-  }
-  return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;
-};
+// Use InstanceService.getParticipantMrid() to get the marketParticipantMrid
+export const getAllMotifsNames = (marketParticipantMrid: string): string[] => {
+  const motifsToNames = marketParticipantMridToMapMotifName(marketParticipantMrid);
+  return Array.from(motifsToNames.values()).sort(SortHelper.caseInsensitive);
+}
 
-const motifEnedisToString = (motif?: Motif | OrdreLimitation): string => {
-  if (
-    motif == null ||
-    motif.messageType == null ||
-    motif.businessType == null ||
-    motif.reasonCode == null
-  ) {
-    return '';
-  }
-  for (let [key, value] of MotifEnedisToName.entries()) {
-    if (motifsAreEqual(motif, key)) {
-      return value;
+// Use InstanceService.getParticipantMrid() to get the marketParticipantMrid
+export const nameToMotif = (name: string, marketParticipantMrid: string): Motif[] => {
+  const motifsToNames = marketParticipantMridToMapMotifName(marketParticipantMrid);
+  let result: Motif[] = [];
+  for (let [key, value] of motifsToNames.entries()) {
+    if (value == name) {
+      result.push(key);
     }
   }
-  return `Inconnu (${motif.messageType},${motif.businessType},${motif.reasonCode})`;
-};
+  return result;
+}

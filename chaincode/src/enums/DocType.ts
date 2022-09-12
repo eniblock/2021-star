@@ -2,6 +2,7 @@ export enum DocType {
     ACTIVATION_DOCUMENT = 'activationDocument',
     ENERGY_ACCOUNT = 'energyAccount',
     ENERGY_AMOUNT = 'energyAmount',
+    FILE = "file",
     PRODUCER = "producer",
     REFERENCE_ENERGY_ACCOUNT = 'referenceEnergyAccount',
     SITE = 'site',

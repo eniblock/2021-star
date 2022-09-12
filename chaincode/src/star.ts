@@ -23,6 +23,7 @@ import { EligibilityController } from './controller/activationDocument/Eligibili
 import { StarDataStateController } from './controller/StarDataStateController';
 
 import { HLFServices } from './controller/service/HLFservice';
+import { AttachmentFileController } from './controller/AttachmentFileController';
 
 export class Star extends Contract {
 
@@ -683,20 +684,22 @@ export class Star extends Contract {
     public async CreateFiles(
         ctx: Context, inputStr: string) {
         try {
-            /* TODO */
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await AttachmentFileController.CreateFiles(params, inputStr));
         } catch (error) {
             throw error;
         }
     }
 
     /*
-        inputStr : string
+        inputStr : file id - string
         output : File
     */
-    public async GetFile(
+    public async GetFileById(
         ctx: Context, inputStr: string) {
         try {
-            /* TODO */
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await AttachmentFileController.GetFileById(params, inputStr));
         } catch (error) {
             throw error;
         }

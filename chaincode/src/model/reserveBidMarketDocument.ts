@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { FileWithStatus } from './file';
+import { AttachmentFileWithStatus } from './attachmentFile';
 
 export class ReserveBidMarketDocument {
     public static readonly schema = Yup.object().shape({
@@ -47,5 +47,5 @@ export class ReserveBidMarketDocument {
     public energyPriceAmount: number;
 
     public attachments?: string[];
-    public attachmentsWithStatus?: FileWithStatus[];
+    public attachmentsWithStatus?: AttachmentFileWithStatus[];
 }

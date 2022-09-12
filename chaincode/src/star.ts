@@ -24,6 +24,7 @@ import { StarDataStateController } from './controller/StarDataStateController';
 
 import { HLFServices } from './controller/service/HLFservice';
 import { AttachmentFileController } from './controller/AttachmentFileController';
+import { ReserveBidMarketDocumentController } from './controller/ReserveBidMarketDocumentController';
 
 export class Star extends Contract {
 
@@ -713,31 +714,35 @@ export class Star extends Contract {
     public async CreateReserveBidMarketDocument(
         ctx: Context, inputStr: string) {
         try {
-            /* TODO */
-        } catch (error) {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.Create(params, inputStr));
+    } catch (error) {
             throw error;
         }
     }
 
     /*
-        inputStr : ???
+        inputStr : ReserveBidMarketDocumentFileList
+        output : reserveBidMarketDocument
     */
     public async AddFileToReserveBidMarketDocument(
         ctx: Context, inputStr: string) {
         try {
-            /* TODO */
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.AddFile(params, inputStr));
         } catch (error) {
             throw error;
         }
     }
 
     /*
-        inputStr : ???
+        inputStr : ReserveBidMarketDocumentFileList
     */
     public async RemoveFileFromReserveBidMarketDocument(
         ctx: Context, inputStr: string) {
         try {
-            /* TODO */
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.RemoveFile(params, inputStr));
         } catch (error) {
             throw error;
         }
@@ -749,33 +754,36 @@ export class Star extends Contract {
     public async CreateReserveBidMarketDocumentList(
         ctx: Context, inputStr: string) {
         try {
-            /* TODO */
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.CreateList(params, inputStr));
         } catch (error) {
             throw error;
         }
     }
 
     /*
-        inputStr : ReserveBidMrid
+        inputStr : ReserveBidMrid - string
         output : ReserveBidMarketDocument
     */
         public async getReserveBidMarketDocumentById(
             ctx: Context, inputStr: string) {
             try {
-                /* TODO */
+                const params: STARParameters = await ParametersController.getParameterValues(ctx);
+                return (await ReserveBidMarketDocumentController.getById(params, inputStr));
             } catch (error) {
                 throw error;
             }
         }
 
     /*
-        inputStr : ReserveBidMrid[]
+        inputStr : ReserveBidMrid[] - string[]
         output : ReserveBidMarketDocument[]
     */
         public async getReserveBidMarketDocumentListById(
             ctx: Context, inputStr: string) {
             try {
-                /* TODO */
+                const params: STARParameters = await ParametersController.getParameterValues(ctx);
+                return (await ReserveBidMarketDocumentController.getListById(params, inputStr));
             } catch (error) {
                 throw error;
             }
@@ -783,13 +791,14 @@ export class Star extends Contract {
 
 
     /*
-        inputStr : meteringPointMrid
+        inputStr : meteringPointMrid - string
         output : ReserveBidMarketDocument[]
     */
         public async getReserveBidMarketDocumentBySite(
             ctx: Context, inputStr: string) {
             try {
-                /* TODO */
+                const params: STARParameters = await ParametersController.getParameterValues(ctx);
+                return (await ReserveBidMarketDocumentController.getByMeteringPointMrid(params, inputStr));
             } catch (error) {
                 throw error;
             }
@@ -797,14 +806,30 @@ export class Star extends Contract {
 
 
     /*
-        inputStr : meteringPointMrid
+        inputStr : meteringPointMrid - string
         output : ReserveBidMarketDocument[]
         //Only current and next reserve bid market document
     */
         public async getValidReserveBidMarketDocumentBySite(
             ctx: Context, inputStr: string) {
             try {
-                /* TODO */
+                const params: STARParameters = await ParametersController.getParameterValues(ctx);
+                return (await ReserveBidMarketDocumentController.getValidByMeteringPointMrid(params, inputStr));
+            } catch (error) {
+                throw error;
+            }
+        }
+
+    /*
+        inputStr : reserveBidMarketDocumentSiteDate
+        output : ReserveBidMarketDocument[]
+        //Only valid
+    */
+        public async getAtDateReserveBidMarketDocumentBySite(
+            ctx: Context, inputStr: string) {
+            try {
+                const params: STARParameters = await ParametersController.getParameterValues(ctx);
+                return (await ReserveBidMarketDocumentController.getAtDateByMeteringPointMrid(params, inputStr));
             } catch (error) {
                 throw error;
             }

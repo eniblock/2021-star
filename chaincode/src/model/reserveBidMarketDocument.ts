@@ -48,7 +48,7 @@ export class ReserveBidMarketDocument {
     public static readonly schema = Yup.object().shape({
         docType: Yup.string().notRequired().typeError('docType must be a string'),
 
-        ReserveBidMrid: Yup.string().required('ReserveBidMrid is a compulsory string.').typeError('ReserveBidMrid must be a string'),
+        reserveBidMrid: Yup.string().required('reserveBidMrid is a compulsory string.').typeError('reserveBidMrid must be a string'),
         meteringPointMrid: Yup.string().required('meteringPointMrid is a compulsory string.').typeError('meteringPointMrid must be a string'),
         revisionNumber: Yup.string().notRequired().typeError('revisionNumber must be a string'),
         messageType: Yup.string().required('messageType is a compulsory string.').typeError('messageType must be a string'),
@@ -72,7 +72,7 @@ export class ReserveBidMarketDocument {
 
     public docType?: string;
 
-    public ReserveBidMrid: string;
+    public reserveBidMrid: string;
     public meteringPointMrid: string;
     public revisionNumber?: string;
     public messageType: string;

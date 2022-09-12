@@ -57,7 +57,7 @@ public class InstanceController {
     }
 
     /**
-     * API indiquant l'instance (TSO ou DSO) du backend
+     * API indiquant le nom du participant
      *
      * @return
      */

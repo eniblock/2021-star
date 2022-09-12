@@ -24,3 +24,14 @@ export const motifIsEqualTo = (
     motif1.reasonCode == reasonCode
   );
 };
+
+export const motifsAreEqual = (
+  motif1: Motif | OrdreLimitation,
+  motif2: Motif | OrdreLimitation,
+): boolean => {
+  return (
+    motif1.messageType == motif2.messageType &&
+    motif1.businessType == motif2.businessType &&
+    motif1.reasonCode == motif2.reasonCode
+  );
+};

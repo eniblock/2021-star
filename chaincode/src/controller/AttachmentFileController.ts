@@ -71,12 +71,12 @@ export class AttachmentFileController {
         inputStr : file id - string
         output : File
     */
-        public static async GetFileById(params: STARParameters, arg: IdArgument): Promise<string> {
-        params.logger.info('============= START : get File By Id (%s) ===========', JSON.stringify(arg));
+        public static async GetFileById(params: STARParameters, fileId: string): Promise<string> {
+        params.logger.info('============= START : get File By Id (%s) ===========', JSON.stringify(fileId));
 
-        const fileObj = await this.GetFileObjById(params, arg);
+        const fileObj = await this.GetFileObjById(params, {docType: DocType.ATTACHMENT_FILE, id: fileId});
 
-        params.logger.info('============= END   : get File By Id (%s) ===========', JSON.stringify(arg));
+        params.logger.info('============= END   : get File By Id (%s) ===========', JSON.stringify(fileId));
 
         return JSON.stringify(fileObj);
     }

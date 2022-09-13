@@ -6,15 +6,19 @@ import { ParametersType } from '../../enums/ParametersType';
 
 import { ActivationDocument } from '../../model/activationDocument/activationDocument';
 import { EligibilityStatus } from '../../model/activationDocument/eligibilityStatus';
+import { AttachmentFile } from '../../model/attachmentFile';
 import { DataReference } from '../../model/dataReference';
 import { EnergyAmount } from '../../model/energyAmount';
+import { ReserveBidMarketDocument } from '../../model/reserveBidMarketDocument';
 import { STARParameters } from '../../model/starParameters';
 import { SystemOperator } from '../../model/systemOperator';
+import { AttachmentFileController } from '../AttachmentFileController';
 
 import { EnergyAccountController } from '../EnergyAccountController';
 import { EnergyAmountController } from '../EnergyAmountController';
 import { ParametersController } from '../ParametersController';
 import { ReferenceEnergyAccountController } from '../ReferenceEnergyAccountController';
+import { ReserveBidMarketDocumentController } from '../ReserveBidMarketDocumentController';
 
 import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
 import { ActivationDocumentService } from '../service/ActivationDocumentService';
@@ -291,6 +295,51 @@ export class EligibilityController {
             requiredReferences.push(dataReference);
         }
 
+
+        /*****************
+         * RESERVE BID MARKET DOCUMENT
+         ****************/
+        const reserveBidList: ReserveBidMarketDocument[] = await ReserveBidMarketDocumentController.getObjByMeteringPointMrid(
+            params,
+            activationDocument.registeredResourceMrid,
+            initialTarget);
+
+        var fileIdList: string[] = [];
+
+        if (reserveBidList && reserveBidList.length > 0) {
+            for (var reserveBidObj of reserveBidList) {
+                if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
+                    fileIdList = fileIdList.concat(reserveBidObj.attachments);
+                }
+
+                const existing = await ReserveBidMarketDocumentController.dataExists(
+                    params, reserveBidObj.reserveBidMrid, referencedDocument.collection);
+                if (!existing) {
+                    requiredReferences.push({docType:DocType.RESERVE_BID_MARKET_DOCUMENT, collection:referencedDocument.collection, data: reserveBidObj})
+                }
+            }
+        }
+
+
+        /*****************
+         * FILES
+         ****************/
+        const FileList: AttachmentFile[] = await AttachmentFileController.getObjsByIdList(params, fileIdList, initialTarget);
+
+        if (FileList && FileList.length > 0) {
+
+            for (var attachmentFile of FileList) {
+
+                const existing = await AttachmentFileController.dataExists(params, attachmentFile.fileId, referencedDocument.collection);
+                if (!existing) {
+                    requiredReferences.push({docType:DocType.ATTACHMENT_FILE, collection:referencedDocument.collection, data: attachmentFile})
+                }
+            }
+
+        }
+
+
+
          params.logger.debug('============= END  : getCreationLinkedData - EligibilityController ===========');
         return requiredReferences;
     }
@@ -342,10 +391,7 @@ export class EligibilityController {
 
                 //After creation in new collection, it is needed to create linked data
                 const linkedData = await EligibilityController.getCreationLinkedData(params, referencedDocument, initialTarget);
-                for (var data of linkedData) {
-                    eligibilityReferences.push(data);
-                }
-
+                eligibilityReferences = eligibilityReferences.concat(linkedData);
             }
         }
 

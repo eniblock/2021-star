@@ -1,10 +1,11 @@
 import { DocType } from "../../enums/DocType";
 import { ParametersType } from "../../enums/ParametersType";
+
 import { ReserveBidMarketDocument } from "../../model/reserveBidMarketDocument";
 import { STARParameters } from "../../model/starParameters";
+
 import { HLFServices } from "./HLFservice";
 import { QueryStateService } from "./QueryStateService";
-import { StarDataService } from "./StarDataService";
 import { StarPrivateDataService } from "./StarPrivateDataService";
 
 export class ReserveBidMarketDocumentService {
@@ -25,10 +26,12 @@ export class ReserveBidMarketDocumentService {
 
     public static async getQueryStringResult(
         params: STARParameters,
-        query: string): Promise<string>  {
+        query: string,
+        target: string = ''): Promise<string>  {
+
         params.logger.debug('============= START : getQueryStringResult ReserveBidMarketDocumentService ===========');
 
-        const allResults = await this.getQueryArrayResult(params, query);
+        const allResults = await this.getQueryArrayResult(params, query, target);
         const formated = JSON.stringify(allResults);
 
         params.logger.debug('=============  END  : getQueryStringResult ReserveBidMarketDocumentService ===========');
@@ -39,10 +42,18 @@ export class ReserveBidMarketDocumentService {
 
     public static async getQueryArrayResult(
         params: STARParameters,
-        query: string): Promise<ReserveBidMarketDocument[]>  {
+        query: string,
+        target: string = ''): Promise<ReserveBidMarketDocument[]>  {
+
         params.logger.debug('============= START : getPrivateQueryArrayResult ReserveBidMarketDocumentService ===========');
 
-        const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        let collections: string[];
+        if (target && target.length > 0) {
+            collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
+        } else {
+            collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        }
+
         var allResults:ReserveBidMarketDocument[] = [];
         var allResultsId: string[] = [];
 

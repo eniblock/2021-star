@@ -686,7 +686,7 @@ export class Star extends Contract {
         ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await AttachmentFileController.CreateFiles(params, inputStr));
+            return (await AttachmentFileController.createByList(params, inputStr));
         } catch (error) {
             throw error;
         }
@@ -700,7 +700,7 @@ export class Star extends Contract {
         ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await AttachmentFileController.GetFileById(params, inputStr));
+            return (await AttachmentFileController.getById(params, inputStr));
         } catch (error) {
             throw error;
         }
@@ -715,7 +715,7 @@ export class Star extends Contract {
         ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.Create(params, inputStr));
+            return (await ReserveBidMarketDocumentController.create(params, inputStr));
     } catch (error) {
             throw error;
         }
@@ -729,7 +729,7 @@ export class Star extends Contract {
         ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.AddFile(params, inputStr));
+            return (await ReserveBidMarketDocumentController.addFile(params, inputStr));
         } catch (error) {
             throw error;
         }
@@ -742,7 +742,7 @@ export class Star extends Contract {
         ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.RemoveFile(params, inputStr));
+            return (await ReserveBidMarketDocumentController.removeFile(params, inputStr));
         } catch (error) {
             throw error;
         }
@@ -755,7 +755,7 @@ export class Star extends Contract {
         ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.CreateList(params, inputStr));
+            return (await ReserveBidMarketDocumentController.createList(params, inputStr));
         } catch (error) {
             throw error;
         }

@@ -52,7 +52,7 @@ export class ReserveBidMarketDocument {
         meteringPointMrid: Yup.string().required('meteringPointMrid is a compulsory string.').typeError('meteringPointMrid must be a string'),
         revisionNumber: Yup.string().notRequired().typeError('revisionNumber must be a string'),
         messageType: Yup.string().required('messageType is a compulsory string.').typeError('messageType must be a string'),
-        processsType: Yup.string().required('processsType is a compulsory string.').typeError('processsType must be a string'),
+        processType: Yup.string().required('processType is a compulsory string.').typeError('processType must be a string'),
         senderMarketParticipantMrid: Yup.string().required('senderMarketParticipantMrid is a compulsory string.').typeError('senderMarketParticipantMrid must be a string'),
         receiverMarketParticipantMrid: Yup.string().required('receiverMarketParticipantMrid is a compulsory string.').typeError('receiverMarketParticipantMrid must be a string'),
         createdDateTime: Yup.string().required('createdDateTime is a compulsory string.').typeError('createdDateTime must be a string'),
@@ -76,7 +76,7 @@ export class ReserveBidMarketDocument {
     public meteringPointMrid: string;
     public revisionNumber?: string;
     public messageType: string;
-    public processsType: string;
+    public processType: string;
     public senderMarketParticipantMrid: string;
     public receiverMarketParticipantMrid: string;
     public createdDateTime: string;

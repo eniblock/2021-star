@@ -1,0 +1,18 @@
+{
+    "reserveBidMrid": "039d2b4b-2396-4731-900d-77e84d5e329e",
+    "meteringPointMrid": "CART112861",
+    "revisionNumber": "1",
+    "messageType": "A44",
+    "processType": "Z27",
+    "senderMarketParticipantMrid": "17X000000031065W",
+    "receiverMarketParticipantMrid": "10XFR-RTE------Q",
+    "createdDateTime": "2022-09-02T17:01:00Z",
+    "validityPeriodStartDateTime": "2023-01-01T00:00:00Z",
+    "validityPeriodEndDateTime": "",
+    "businessType": "B74",
+    "quantityMeasureUnitName": "MWh",
+    "priceMeasureUnitName": "€/MWh",
+    "currencyUnitName": "€",
+    "flowDirection": "Offre à la baisse",
+    "energyPriceAmount": 75.55
+}

@@ -1,20 +1,10 @@
 #!/bin/bash
 
 ONLINE_MODE=true
-PAUSE_TIME=0s
-if $ONLINE_MODE
-then
-    PAUSE_TIME=5s
-fi
 
-if $ONLINE_MODE
-then
-    OLD_IFS=$IFS
-    source ../config/config.sh
-    IFS=$OLD_IFS
-fi
-
-DATA_PATH=../data/ActivationDocuments
+OLD_IFS=$IFS
+source ./zzz-config.sh
+IFS=$OLD_IFS
 
 echo "***************************************"
 echo "Start of invoke command"
@@ -26,7 +16,7 @@ echo
 echo "** ENEDIS - ENERGY ACCOUNT CREATION"
 echo
 
-ENEDIS_ENERGYACCOUNTS=$(cat $DATA_PATH/51-HTA-EnergyAccount.json | jq '.')
+ENEDIS_ENERGYACCOUNTS=$(cat $DATA_PATH/02-EnergyAccount/51-HTA-EnergyAccount.json | jq '.')
 ENEDIS_ENERGYACCOUNTS_NB=$(echo $ENEDIS_ENERGYACCOUNTS | jq 'length')
 
 for i in `seq $ENEDIS_ENERGYACCOUNTS_NB`
@@ -60,7 +50,7 @@ echo
 echo "** RTE - ENERGY ACCOUNT CREATION"
 echo
 
-RTE_ENERGYACCOUNTS=$(cat $DATA_PATH/52-HTB-EnergyAccount.json | jq '.')
+RTE_ENERGYACCOUNTS=$(cat $DATA_PATH/02-EnergyAccount/52-HTB-EnergyAccount.json | jq '.')
 RTE_ENERGYACCOUNTS_NB=$(echo $RTE_ENERGYACCOUNTS | jq 'length')
 
 for i in `seq $RTE_ENERGYACCOUNTS_NB`

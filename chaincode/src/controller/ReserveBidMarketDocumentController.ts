@@ -71,7 +71,35 @@ export class ReserveBidMarketDocumentController {
         );
 
         const identity = params.values.get(ParametersType.IDENTITY);
-        if (identity !== OrganizationTypeMsp.PRODUCER) {
+
+        var isRecopy = false;
+        var existingReserveBidRef:Map<string, DataReference> = null;
+        try {
+            existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidObj.reserveBidMrid});
+        } catch (err) {
+            isRecopy = false;
+        }
+
+        console.info("############################################")
+
+        if (existingReserveBidRef
+            && existingReserveBidRef.values().next().value) {
+
+            console.info("existingReserveBidRef: ", JSON.stringify([...existingReserveBidRef]))
+
+            const reserveBidRef: ReserveBidMarketDocument = JSON.parse(JSON.stringify(existingReserveBidRef.values().next().value.data));
+            const currentReserveBidObj: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
+
+            isRecopy = (JSON.stringify(reserveBidRef) === JSON.stringify(currentReserveBidObj));
+
+            console.info("reserveBidRef: ", JSON.stringify(reserveBidRef))
+            console.info("currentReserveBidObj: ", JSON.stringify(currentReserveBidObj))
+            console.info("isRecopy: ", JSON.stringify(isRecopy))
+
+        }
+        console.info("############################################")
+
+        if (!isRecopy && identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have write access to create a reserve bid market document`);
         }
 

@@ -61,4 +61,8 @@ export class AttachmentFile {
     public docType?: string;
     public fileId: string;
     public fileContent: string;
+
+    //Currently attachement files are only used for Reserve Bid Market Participant
+    //If it's needed to be used for any other data, it's needed to add a field linkedData.
+    //linkedData wille have to refer to a DocType (enum) value.
 }

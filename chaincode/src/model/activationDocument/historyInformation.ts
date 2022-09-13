@@ -11,7 +11,7 @@ export class HistoryInformation {
     public producer: Producer;
     public energyAmount: EnergyAmount;
 
-    public reserveBidMarketDocument: ReserveBidMarketDocument;
+    public reserveBidMarketDocument?: ReserveBidMarketDocument;
 
     //additionnal properties
     public displayedSourceName: string;

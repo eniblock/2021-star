@@ -1,3 +1,14 @@
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: "app.kubernetes.io/component"
+          operator: In
+          values:
+          - "peer"
+      topologyKey: "kubernetes.io/hostname"
+
 ingress:
   enabled: true
   host: peer2.enedis.testing.star.eniblock.fr

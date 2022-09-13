@@ -1,6 +1,6 @@
 import {Instance} from 'src/app/models/enum/Instance.enum';
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from '@angular/forms';
 import {InstanceService} from 'src/app/services/api/instance.service';
 import {FormulaireRechercheHistoriqueLimitation} from 'src/app/models/RechercheHistoriqueLimitation';
 import {HistoriqueLimitationService} from 'src/app/services/api/historique-limitation.service';

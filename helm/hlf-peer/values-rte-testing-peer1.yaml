@@ -36,7 +36,17 @@ peer:
         - -c
         - '/app/node_modules/.bin/fabric-chaincode-node server --chaincode-address $CHAINCODE_ADDRESS --chaincode-id $CHAINCODE_ID'
       metaInf: true
-
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: "app.kubernetes.io/component"
+            operator: In
+            values:
+            - "peer"
+        topologyKey: "kubernetes.io/hostname"
+        
 # Secrets references, empty by default, fill in with your secrets (particularly adminCert) or add Peer Admin certificate manually after launching chart.
 secrets:
   ## These secrets should contain the Orderer crypto materials and credentials

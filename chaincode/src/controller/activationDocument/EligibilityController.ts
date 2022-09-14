@@ -304,6 +304,10 @@ export class EligibilityController {
             activationDocument.registeredResourceMrid,
             initialTarget);
 
+        params.logger.debug("************************");
+        params.logger.debug(JSON.stringify(reserveBidList));
+        params.logger.debug("************************");
+
         var fileIdList: string[] = [];
 
         if (reserveBidList && reserveBidList.length > 0) {
@@ -314,6 +318,12 @@ export class EligibilityController {
 
                 const existing = await ReserveBidMarketDocumentController.dataExists(
                     params, reserveBidObj.reserveBidMrid, referencedDocument.collection);
+
+                params.logger.debug("oooooooooooooooooooooooo");
+                params.logger.debug("reserveBidObj: ", JSON.stringify(reserveBidObj));
+                params.logger.debug("oooo");
+                params.logger.debug("existing: ", JSON.stringify(existing));
+                params.logger.debug("oooooooooooooooooooooooo");
                 if (!existing) {
                     requiredReferences.push({docType:DocType.RESERVE_BID_MARKET_DOCUMENT, collection:referencedDocument.collection, data: reserveBidObj})
                 }

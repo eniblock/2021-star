@@ -64,11 +64,11 @@ export class ReserveBidMarketDocumentService {
                 params.logger.debug("results :", JSON.stringify(results))
                 for (var result of results) {
                     if (result
-                        && result.meteringPointMrid
-                        && result.meteringPointMrid !== ""
-                        && !allResultsId.includes(result.meteringPointMrid)) {
+                        && result.reserveBidMrid
+                        && result.reserveBidMrid !== ""
+                        && !allResultsId.includes(result.reserveBidMrid)) {
 
-                            allResultsId.push(result.meteringPointMrid);
+                            allResultsId.push(result.reserveBidMrid);
                             allResults.push(result);
                         }
                 }

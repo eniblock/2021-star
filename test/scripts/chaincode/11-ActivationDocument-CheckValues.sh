@@ -221,7 +221,12 @@ OUTPUT_RTE=$(
 
 echo "--- process end   $(date +"%T.%3N") ---"
 
+OUTPUT_RTE=$(echo $OUTPUT_RTE | grep -o -P '(?<=").*(?=")')
+OUTPUT_RTE=$(printf "%b" $OUTPUT_RTE)
 
+OUTPUT_ENEDIS_TOPRINT=$(echo $OUTPUT_RTE | sed "s/\\\\\"/\"/g")
+
+echo $OUTPUT_ENEDIS_TOPRINT
 
 
 # echo

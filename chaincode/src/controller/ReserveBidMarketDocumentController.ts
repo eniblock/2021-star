@@ -397,6 +397,9 @@ export class ReserveBidMarketDocumentController {
         params.logger.debug('============= START : get Obj ByMeteringPointMrid ReserveBidMarketDocumentController ===========');
 
         const query = `{"selector": {"docType": "${DocType.RESERVE_BID_MARKET_DOCUMENT}", "meteringPointMrid": "${meteringPointMrid}"}}`;
+
+        params.logger.debug("query: ", query);
+
         const allResults = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query, target);
 
         params.logger.debug('=============  END  : get Obj ByMeteringPointMridSite ReserveBidMarketDocumentController ===========');
@@ -413,13 +416,13 @@ export class ReserveBidMarketDocumentController {
         params.logger.info('============= START : getValidByMeteringPointMrid ReserveBidMarketDocumentController ===========');
 
         const criteriaDate = (new Date()).toISOString();
-        const criteriaObj: reserveBidMarketDocumentSiteDate = {meteringPointMrid: meteringPointMrid, referenceDateTime: criteriaDate};
+        const criteriaObj: reserveBidMarketDocumentSiteDate = {meteringPointMrid: meteringPointMrid, referenceDateTime: criteriaDate, includeNext: true};
 
         const allResults = await this.getBySiteAndDate(params, criteriaObj);
 
         params.logger.info('=============  END  : getValidByMeteringPointMrid ReserveBidMarketDocumentController ===========');
 
-        return allResults;
+        return JSON.stringify(allResults);
     }
 
 
@@ -436,13 +439,13 @@ export class ReserveBidMarketDocumentController {
         const allResults = await this.getBySiteAndDate(params, criteriaObj);
 
         params.logger.info('=============  END  : getAtDateByMeteringPointMrid ReserveBidMarketDocumentController ===========');
-        return allResults;
+        return JSON.stringify(allResults);
     }
 
 
 
 
-    private static async getBySiteAndDate(params: STARParameters, criteriaObj: reserveBidMarketDocumentSiteDate): Promise<string> {
+    public static async getBySiteAndDate(params: STARParameters, criteriaObj: reserveBidMarketDocumentSiteDate): Promise<ReserveBidMarketDocument[]> {
         params.logger.debug('============= START : getBySiteAndDate ReserveBidMarketDocumentController ===========');
 
         var args: string[] = [];
@@ -450,21 +453,21 @@ export class ReserveBidMarketDocumentController {
 
         var argOrStart: string[] = [];
         argOrStart.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
-        argOrStart.push(`"validityPeriodStartDateTime":""}`);
+        argOrStart.push(`"validityPeriodStartDateTime":""`);
         argOrStart.push(`"validityPeriodStartDateTime":{"$exists": false}`);
         args.push(await QueryStateService.buildORCriteria(argOrStart));
 
 
-        if (criteriaObj.includeNext) {
+        if (!criteriaObj.includeNext) {
             var argOrEnd: string[] = [];
             argOrEnd.push(`"validityPeriodEndDateTime":{"$gte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
-            argOrEnd.push(`"validityPeriodEndDateTime":""}`);
+            argOrEnd.push(`"validityPeriodEndDateTime":""`);
             argOrEnd.push(`"validityPeriodEndDateTime":{"$exists": false}`);
             args.push(await QueryStateService.buildORCriteria(argOrEnd));
         }
 
         const query = await QueryStateService.buildQuery({documentType: DocType.RESERVE_BID_MARKET_DOCUMENT, queryArgs: args, sort: [`"validityPeriodStartDateTime":"asc"`]});
-        const allResults = await ReserveBidMarketDocumentService.getQueryStringResult(params, query);
+        const allResults = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query);
 
         params.logger.debug('=============  END  : getBySiteAndDate ReserveBidMarketDocumentController ===========');
         return allResults;
@@ -478,7 +481,7 @@ export class ReserveBidMarketDocumentController {
         params.logger.debug('============= START : dataExists ReserveBidMarketDocumentController ===========');
 
         let existing: boolean = false;
-        const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: id});
+        const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: id, collection: target});
 
         if (target && target.length > 0) {
             const dataReference: DataReference = result.get(target);

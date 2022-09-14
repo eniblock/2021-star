@@ -35,7 +35,7 @@ echo
 
 OUTPUT_ENEDIS_TOPRINT=$(echo $OUTPUT_ENEDIS | sed "s/\\\\\"/\"/g")
 
-echo $OUTPUT_ENEDIS_TOPRINT
+# echo $OUTPUT_ENEDIS_TOPRINT
 
 echo
 echo

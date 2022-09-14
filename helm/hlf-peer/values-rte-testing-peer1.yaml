@@ -9,6 +9,10 @@ affinity:
           - "peer"
       topologyKey: "kubernetes.io/hostname"
 
+couchdb:
+  affinity: {}
+  enabled: true
+
 ingress:
   enabled: true
   host: peer1.rte.testing.star.eniblock.fr

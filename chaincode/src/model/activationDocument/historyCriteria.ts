@@ -18,20 +18,20 @@ export class HistoryCriteria {
         startCreatedDateTime: Yup.string().notRequired().typeError('startCreatedDateTime must be a string'),
         endCreatedDateTime: Yup.string().notRequired().typeError('endCreatedDateTime must be a string'),
 
-        activationReasonList: Yup.array().of(Yup.object().shape(
-            {
-                messageType: Yup.string().required(),
-                businessType: Yup.string().required(),
-                reasonCode: Yup.string().required(),
-            },
-        )).notRequired(),
-        activationType: Yup.object().shape(
-            {
-                messageType: Yup.string().required(),
-                businessType: Yup.string().required(),
-                reasonCode: Yup.string().required(),
-            },
-        ).notRequired(),
+        // activationReasonList: Yup.array().of(Yup.object().shape(
+        //     {
+        //         messageType: Yup.string().required(),
+        //         businessType: Yup.string().required(),
+        //         reasonCode: Yup.string().required(),
+        //     },
+        // )).notRequired(),
+        // activationType: Yup.object().shape(
+        //     {
+        //         messageType: Yup.string().required(),
+        //         businessType: Yup.string().required(),
+        //         reasonCode: Yup.string().required(),
+        //     },
+        // ).notRequired(),
     });
 
     public originAutomationRegisteredResourceMrid?: string;

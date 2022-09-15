@@ -1,11 +1,14 @@
 package com.star.rest;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.enums.InstanceEnum;
 import com.star.exception.TechnicalException;
 import com.star.mapper.historiquelimitation.HistoriqueLimitationMapper;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
+import com.star.models.historiquelimitation.TypeCriteria;
 import com.star.security.SecurityComponent;
 import com.star.service.HistoriqueLimitationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.star.enums.InstanceEnum.PRODUCER;
 
@@ -46,6 +52,9 @@ public class HistoriqueLimitationController {
 
     @Autowired
     private SecurityComponent securityComponent;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * API de recherche multi-critères des historiques de limitation
@@ -82,11 +91,19 @@ public class HistoriqueLimitationController {
             @RequestParam(required = false, defaultValue = "") String activationDocumentMrid,
             @Parameter(description = "meteringPointMrid search criteria")
             @RequestParam(required = false, defaultValue = "") String meteringPointMrid,
-            @Parameter(description = "reasonCode search criteria")
-            @RequestParam(required = false, defaultValue = "") String reasonCode,
-            @Parameter(description = "motif search criteria")
-            @RequestParam(required = false, defaultValue = "") String typeLimitation
-    ) throws TechnicalException {
+            @Parameter(description = "typeCriteria search criteria")
+            @RequestParam(required = false, defaultValue = "") String typeCriteria,
+            @Parameter(description = "activationReasonList search criteria")
+            @RequestParam(required = false, defaultValue = "") String activationReasonList
+    ) throws TechnicalException, JsonProcessingException {
+        TypeCriteria activationType = null;
+        List<TypeCriteria> typeCriteriaList = new ArrayList<>();
+        if (StringUtils.isNotBlank(typeCriteria)) {
+            activationType = objectMapper.readValue(typeCriteria, TypeCriteria.class);
+        }
+        if (StringUtils.isNotBlank(activationReasonList)) {
+            typeCriteriaList = objectMapper.readValue(activationReasonList, objectMapper.getTypeFactory().constructCollectionType(List.class, TypeCriteria.class));
+        }
         var criteria = HistoriqueLimitationCriteria.builder()
                 .originAutomationRegisteredResourceMrid(originAutomationRegisteredResourceMrid)
                 .producerMarketParticipantName(producerMarketParticipantName)
@@ -96,8 +113,8 @@ public class HistoriqueLimitationController {
                 .endCreatedDateTime(endCreatedDateTime)
                 .activationDocumentMrid(activationDocumentMrid)
                 .meteringPointMrid(meteringPointMrid)
-                .reasonCode(reasonCode)
-                .typeLimitation(typeLimitation)
+                .activationType(activationType)
+                .activationReasonList(typeCriteriaList)
                 .instance(instance)
                 .build();
         log.debug("Recherche des historique de limitation avec les critères : {}", criteria);

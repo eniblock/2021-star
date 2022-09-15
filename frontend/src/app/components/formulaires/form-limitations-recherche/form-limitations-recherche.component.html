@@ -30,18 +30,18 @@
       <input matInput placeholder="Code site" type="text" formControlName="meteringPointMrid">
     </mat-form-field>
 
-    <mat-form-field class="col-12 col-lg-4" appearance="outline">
-      <mat-label>Motif</mat-label>
-      <mat-select formControlName="reasonCode">
-        <mat-option *ngFor="let reasonCode of reasonCodes" [value]="reasonCode.code">{{ reasonCode.label }}</mat-option>
+    <mat-form-field class="col-12" appearance="outline">
+      <mat-label>Type de limitation</mat-label>
+      <mat-select formControlName="typeLimitation" (selectionChange)="selectionTypeLimitation()">
+        <mat-option [value]="TypeLimitationEnum.MANUELLE">Manuelle</mat-option>
+        <mat-option [value]="TypeLimitationEnum.AUTOMATIQUE">Automatique</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="col-12" appearance="outline">
-      <mat-label>Type de limitation</mat-label>
-      <mat-select formControlName="typeLimitation">
-        <mat-option [value]="'Manuelle'">Manuelle</mat-option>
-        <mat-option [value]="'Automatique'">Automatique</mat-option>
+    <mat-form-field class="col-12 col-lg-4" appearance="outline">
+      <mat-label>Motif</mat-label>
+      <mat-select formControlName="motifName">
+        <mat-option *ngFor="let motifName of motifNames" [value]="motifName">{{ motifName }}</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -99,18 +99,18 @@
       <input matInput placeholder="Code site" type="text" formControlName="meteringPointMrid">
     </mat-form-field>
 
-    <mat-form-field class="col-12 col-lg-4" appearance="outline">
-      <mat-label>Motif</mat-label>
-      <mat-select formControlName="reasonCode">
-        <mat-option *ngFor="let reasonCode of reasonCodes" [value]="reasonCode.code">{{ reasonCode.label }}</mat-option>
+    <mat-form-field class="col-12" appearance="outline">
+      <mat-label>Type de limitation</mat-label>
+      <mat-select formControlName="typeLimitation" (selectionChange)="selectionTypeLimitation()">
+        <mat-option [value]="TypeLimitationEnum.MANUELLE">Manuelle</mat-option>
+        <mat-option [value]="TypeLimitationEnum.AUTOMATIQUE">Automatique</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="col-12" appearance="outline">
-      <mat-label>Type de limitation</mat-label>
-      <mat-select formControlName="typeLimitation">
-        <mat-option [value]="'Manuelle'">Manuelle</mat-option>
-        <mat-option [value]="'Automatique'">Automatique</mat-option>
+    <mat-form-field class="col-12 col-lg-4" appearance="outline">
+      <mat-label>Motif</mat-label>
+      <mat-select formControlName="motifName">
+        <mat-option *ngFor="let motifName of motifNames" [value]="motifName">{{ motifName }}</mat-option>
       </mat-select>
     </mat-form-field>
 

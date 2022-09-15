@@ -2,7 +2,7 @@ import {Instance} from 'src/app/models/enum/Instance.enum';
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, ValidationErrors} from '@angular/forms';
 import {InstanceService} from 'src/app/services/api/instance.service';
-import {FormulaireRechercheHistoriqueLimitation} from 'src/app/models/RechercheHistoriqueLimitation';
+import {FormulaireRechercheHistoriqueLimitation, TypeCriteria} from 'src/app/models/RechercheHistoriqueLimitation';
 import {HistoriqueLimitationService} from 'src/app/services/api/historique-limitation.service';
 import {Observable} from "rxjs";
 import {map, startWith} from "rxjs/operators";
@@ -10,7 +10,10 @@ import {ProducerService} from "../../../services/api/producer.service";
 import {SiteService} from "../../../services/api/site.service";
 import {SortHelper} from "../../../helpers/sort.helper";
 import {environment} from "../../../../environments/environment";
-import {MotifCode} from "../../../models/Motifs";
+import {Motif} from "../../../models/Motifs";
+import {typeLimitationToMotifs} from "../../../rules/limitation-type-rules";
+import {getAllMotifsNames, getMotifsNames, nameToMotif} from "../../../rules/motif-rules";
+import {TypeLimitation} from "../../../models/enum/TypeLimitation.enum";
 
 @Component({
   selector: 'app-form-limitations-recherche',
@@ -22,15 +25,18 @@ export class FormLimitationsRechercheComponent implements OnInit {
     new EventEmitter<FormulaireRechercheHistoriqueLimitation>();
 
   InstanceEnum = Instance;
+  TypeLimitationEnum = TypeLimitation;
   typeInstance?: Instance;
-  reasonCodes: MotifCode[] | null = null;
+  marketParticipantMrid: string = '';
+  motifNames: string [] | null = null;
+  motifs: Motif [] | null = null;
 
   form: FormGroup = this.formBuilder.group({
       originAutomationRegisteredResourceMrid: [''],
       producerMarketParticipantName: [''],
       siteName: [''],
       meteringPointMrid: [''],
-      reasonCode: [''],
+      motifName: [''],
       typeLimitation: [''],
       startCreatedDateTime: [''],
       endCreatedDateTime: [''],
@@ -59,6 +65,10 @@ export class FormLimitationsRechercheComponent implements OnInit {
       this.typeInstance = typeInstance;
     });
 
+    this.instanceService.getParticipantMrid().subscribe((participantMrid) => {
+      this.marketParticipantMrid = participantMrid;
+      this.motifNames = getAllMotifsNames(this.marketParticipantMrid);
+    });
     // On charge le formulaire en cache si y'en a un
     const formSauvegardeDansStorage: FormulaireRechercheHistoriqueLimitation =
       this.historiqueLimitationService.popFormulaireRecherche();
@@ -98,10 +108,6 @@ export class FormLimitationsRechercheComponent implements OnInit {
         );
       }
     )
-
-    // Initialisation des motifs : TODO : à confirmer avec Jean-René et Jean-François
-    // this.reasonCodes = getReasonCodexxxxxx();
-    // TODO : confirmer aussi le type de Limitation avec Jean-René et Jean-François
   }
 
   onSubmit() {
@@ -115,7 +121,39 @@ export class FormLimitationsRechercheComponent implements OnInit {
         ? null
         : f.endCreatedDateTime.toJSON().split('.')[0] + 'Z',
     };
+    form.activationReasonList = null;
+    form.activationType = null;
+    if (this.form.value.motifName) {
+      const selectedMotifs = nameToMotif(this.form.value.motifName, this.marketParticipantMrid);
+      if (selectedMotifs) {
+          if (selectedMotifs.length === 1) {
+           const typeCriteria : TypeCriteria = {
+             businessType: selectedMotifs[0].businessType,
+             messageType: selectedMotifs[0].messageType,
+             reasonCode: selectedMotifs[0].reasonCode,
+           };
+           form.activationType = JSON.stringify(typeCriteria);
+          } else if (selectedMotifs.length > 1) {
+            const activationReasonList: TypeCriteria [] = [];
+            selectedMotifs.forEach(selectedMotif => {
+              const typeCriteria : TypeCriteria = {
+                businessType: selectedMotif.businessType,
+                messageType: selectedMotif.messageType,
+                reasonCode: selectedMotif.reasonCode,
+              };
+              activationReasonList.push(typeCriteria);
+            });
+            form.activationReasonList = JSON.stringify(activationReasonList);
+          }
+      }
+    }
     this.formSubmit.emit(form);
+  }
+
+  selectionTypeLimitation() {
+    this.motifs = typeLimitationToMotifs(this.form.value.typeLimitation, this.marketParticipantMrid);
+    this.motifNames = getMotifsNames(this.marketParticipantMrid, this.motifs);
+    this.form.get('motifName')?.setValue('');
   }
 
   private filter(value: string, options: string[]): string[] {

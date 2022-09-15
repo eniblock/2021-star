@@ -155,10 +155,10 @@ export const MotifEnedisToName = new Map<Motif, string>([
 ////////////// METHODES //////////////
 //////////////////////////////////////
 
-export const marketParticipantMridToMapMotifName = (marketParticipantMrdi: string): Map<Motif, string> => {
-  if (isRte(marketParticipantMrdi)) {
+export const marketParticipantMridToMapMotifName = (marketParticipantMrid: string): Map<Motif, string> => {
+  if (isRte(marketParticipantMrid)) {
     return MotifRteToName;
-  } else if (isEnedis(marketParticipantMrdi)) {
+  } else if (isEnedis(marketParticipantMrid)) {
     return MotifEnedisToName;
   }
   throw 'Unknown marketParticipantMrdi';
@@ -219,6 +219,20 @@ export const motifToString = (ordreLimitation: OrdreLimitation): string => {
 export const getAllMotifsNames = (marketParticipantMrid: string): string[] => {
   const motifsToNames = marketParticipantMridToMapMotifName(marketParticipantMrid);
   return Array.from(motifsToNames.values()).sort(SortHelper.caseInsensitive);
+}
+
+export const getMotifsNames = (marketParticipantMrid: string, motifs: Motif []): string[] => {
+  const motifsToNames = marketParticipantMridToMapMotifName(marketParticipantMrid);
+  // Il faut parcourir cette map et la filtrer avec la liste des motifs passés en paramètres.
+  const filteredMotifToName = new Map<Motif, string>();
+  motifs.forEach(motif => {
+    for (let [key, value] of motifsToNames.entries()) {
+      if (key.businessType == motif.businessType && key.messageType == motif.messageType && key.reasonCode == motif.reasonCode) {
+        filteredMotifToName.set(motif, value);
+      }
+    }
+  });
+  return Array.from(filteredMotifToName.values()).sort(SortHelper.caseInsensitive);
 }
 
 // Use InstanceService.getParticipantMrid() to get the marketParticipantMrid

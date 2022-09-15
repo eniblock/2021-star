@@ -3,9 +3,12 @@ import { DocType } from "../enums/DocType";
 import { OrganizationTypeMsp } from "../enums/OrganizationMspType";
 import { ParametersType } from "../enums/ParametersType";
 import { IdArgument } from "../model/arguments/idArgument";
-import { AttachmentFileWithStatus } from "../model/attachmentFile";
+import { AttachmentFile, AttachmentFileWithStatus } from "../model/attachmentFile";
 import { DataReference } from "../model/dataReference";
 import { ReserveBidMarketDocument } from "../model/reserveBidMarketDocument";
+import { ReserveBidMarketDocumentCreation } from "../model/reserveBidMarketDocumentCreation";
+import { ReserveBidMarketDocumentCreationList } from "../model/reserveBidMarketDocumentCreationList";
+import { reserveBidMarketDocumentFileIdList } from "../model/reserveBidMarketDocumentFileIdList";
 import { ReserveBidMarketDocumentFileList } from "../model/reserveBidMarketDocumentFileList";
 import { reserveBidMarketDocumentSiteDate } from "../model/reserveBidMarketDocumentSiteDate";
 import { STARParameters } from "../model/starParameters";
@@ -21,49 +24,52 @@ export class ReserveBidMarketDocumentController {
     /*
         inputStr : reserveBidMarketDocument
     */
-    public static async create(params: STARParameters, inputStr: string) {
-        params.logger.info('============= START : Create ReserveBidMarketDocumentController ===========');
+        public static async create(params: STARParameters, inputStr: string) {
+            params.logger.info('============= START : Create ReserveBidMarketDocumentController ===========');
 
-        const reserveBidObj = ReserveBidMarketDocument.formatString(inputStr);
-        await this.createObj(params, reserveBidObj);
+            const reserveBidCreationObj = ReserveBidMarketDocumentCreation.formatString(inputStr);
+            if (reserveBidCreationObj && reserveBidCreationObj.reserveBid) {
+                await this.createObj(params, reserveBidCreationObj);
+            }
 
-        params.logger.info('=============  END  : Create ReserveBidMarketDocumentController ===========');
+
+            params.logger.info('=============  END  : Create ReserveBidMarketDocumentController ===========');
+        }
+
+    /*
+        inputStr : reserveBidMarketDocument
+    */
+    public static async createList(params: STARParameters, inputStr: string) {
+        params.logger.info('============= START : Create by List ReserveBidMarketDocumentController ===========');
+
+        const reserveBidCreationObj = ReserveBidMarketDocumentCreationList.formatString(inputStr);
+        if (reserveBidCreationObj && reserveBidCreationObj.reserveBidList) {
+            for (var reserveBidObj of reserveBidCreationObj.reserveBidList) {
+                await this.createObj(params, {reserveBid:reserveBidObj, attachmentFileList:reserveBidCreationObj.attachmentFileList});
+            }
+        }
+
+
+        params.logger.info('=============  END  : Create by List ReserveBidMarketDocumentController ===========');
     }
 
     public static async createByReference   (params: STARParameters, dataReference: DataReference) {
         params.logger.debug('============= START : Create by Reference ReserveBidMarketDocumentController ===========');
 
-        await this.createObj(params, dataReference.data, dataReference.collection);
+        await this.createObj(params, {reserveBid:dataReference.data}, dataReference.collection);
 
         params.logger.debug('=============  END  : Create by Reference ReserveBidMarketDocumentController ===========');
     }
 
-    /*
-        inputStr : reserveBidMarketDocument[]
-    */
-    public static async createList(params: STARParameters, inputStr: string) {
-        params.logger.info('============= START : CreateList ReserveBidMarketDocumentController ===========');
-
-        const reserveBidList = ReserveBidMarketDocument.formatListString(inputStr);
-
-        if (reserveBidList) {
-            for (var reserveBidObj of reserveBidList) {
-                await this.createObj(params, reserveBidObj);
-            }
-        }
-
-        params.logger.info('=============  END  : CreateList ReserveBidMarketDocumentController ===========');
-    }
-
-
-
 
     public static async createObj(
         params: STARParameters,
-        reserveBidObj: ReserveBidMarketDocument,
+        reserveBidCreationObj: ReserveBidMarketDocumentCreation,
         target: string = '') {
 
         params.logger.debug('============= START : CreateObj ReserveBidMarketDocumentController ===========');
+
+        const reserveBidObj = reserveBidCreationObj.reserveBid;
 
         ReserveBidMarketDocument.schema.validateSync(
             reserveBidObj,
@@ -80,24 +86,14 @@ export class ReserveBidMarketDocumentController {
             isRecopy = false;
         }
 
-        console.info("############################################")
-
         if (existingReserveBidRef
             && existingReserveBidRef.values().next().value) {
-
-            console.info("existingReserveBidRef: ", JSON.stringify([...existingReserveBidRef]))
 
             const reserveBidRef: ReserveBidMarketDocument = JSON.parse(JSON.stringify(existingReserveBidRef.values().next().value.data));
             const currentReserveBidObj: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
 
             isRecopy = (JSON.stringify(reserveBidRef) === JSON.stringify(currentReserveBidObj));
-
-            console.info("reserveBidRef: ", JSON.stringify(reserveBidRef))
-            console.info("currentReserveBidObj: ", JSON.stringify(currentReserveBidObj))
-            console.info("isRecopy: ", JSON.stringify(isRecopy))
-
         }
-        console.info("############################################")
 
         if (!isRecopy && identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have write access to create a reserve bid market document`);
@@ -129,9 +125,17 @@ export class ReserveBidMarketDocumentController {
         }
 
         if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
+            reserveBidObj.attachmentsWithStatus = [];
             for (var attachmentFileId of reserveBidObj.attachments) {
+                const fileIdList: string[] = [];
+                if (reserveBidCreationObj.attachmentFileList && reserveBidCreationObj.attachmentFileList.length > 0) {
+                    for (var attachmentFile of reserveBidCreationObj.attachmentFileList) {
+                        fileIdList.push(attachmentFile.fileId);
+                    }
+                }
+
                 try {
-                    const attachmentFile = await this.prepareNewFile(params, attachmentFileId);
+                    const attachmentFile = await this.prepareNewFile(params, attachmentFileId, fileIdList);
                     reserveBidObj.attachmentsWithStatus.push(attachmentFile);
                 } catch(error) {
                     throw new Error(error.message.concat(' for reserve bid creation'));
@@ -141,6 +145,7 @@ export class ReserveBidMarketDocumentController {
 
         for (var [key, ] of existingSitesRef) {
             await ReserveBidMarketDocumentService.write(params, reserveBidObj, key);
+            await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, key);
         }
 
 
@@ -160,12 +165,12 @@ export class ReserveBidMarketDocumentController {
         var reserveBidObj:ReserveBidMarketDocument = null;
 
         //Do something only if there are file ids in the list
-        if (reserveBidFileObj.attachments && reserveBidFileObj.attachments.length > 0) {
+        if (reserveBidFileObj.attachmentFileList && reserveBidFileObj.attachmentFileList.length > 0) {
 
             //Get every reference to Bid Market Document in every Collection
             var existingReserveBidRef:Map<string, DataReference>;
             try {
-                existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidFileObj.ReserveBidMrid});
+                existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidFileObj.reserveBidMrid});
             } catch(error) {
                 throw new Error(error.message.concat(' to add file'));
             }
@@ -173,13 +178,18 @@ export class ReserveBidMarketDocumentController {
             reserveBidObj = existingReserveBidRef.values().next().value;
 
             //Only do somehting if the found reference is the asekd one
-            if (reserveBidObj && reserveBidObj.reserveBidMrid === reserveBidFileObj.ReserveBidMrid) {
+            if (reserveBidObj && reserveBidObj.reserveBidMrid === reserveBidFileObj.reserveBidMrid) {
+                const fileIdList: string[] = [];
+                for (var attachmentFile of reserveBidFileObj.attachmentFileList) {
+                    fileIdList.push(attachmentFile.fileId);
+                }
+
                 var idAdded = false;
-                for (var attachmentFileId of reserveBidFileObj.attachments) {
+                for (var attachmentFileId of fileIdList) {
                     //Only add if not already added
                     if (!reserveBidObj.attachments.includes(attachmentFileId)) {
                         try {
-                            const attachmentFile = await this.prepareNewFile(params, attachmentFileId);
+                            const attachmentFile = await this.prepareNewFile(params, attachmentFileId, fileIdList);
                             reserveBidObj.attachmentsWithStatus.push(attachmentFile);
                             reserveBidObj.attachments.push(attachmentFileId);
                             idAdded = true;
@@ -193,6 +203,7 @@ export class ReserveBidMarketDocumentController {
                 if (idAdded) {
                     for (var [key, ] of existingReserveBidRef) {
                         await ReserveBidMarketDocumentService.write(params, reserveBidObj, key);
+                        await AttachmentFileController.createObjByList(params, reserveBidFileObj.attachmentFileList, key);
                     }
                 }
 
@@ -206,13 +217,16 @@ export class ReserveBidMarketDocumentController {
 
 
 
-    private static async prepareNewFile(params: STARParameters, fileId: string): Promise<AttachmentFileWithStatus> {
+    private static async prepareNewFile(params: STARParameters, fileId: string, fileIdListToCreate: string[]): Promise<AttachmentFileWithStatus> {
         params.logger.debug('============= START : PrepareNewFile ReserveBidMarketDocumentController ===========');
 
         var attachmentFile : AttachmentFileWithStatus = null;
 
         if (fileId && fileId.length > 0) {
-            await AttachmentFileController.getById(params, fileId);
+            var fileToFind = !fileIdListToCreate.includes(fileId);
+            if (fileToFind) {
+                await AttachmentFileController.getById(params, fileId);
+            }
             attachmentFile = {fileId: fileId, status: AttachmentFileStatus.ACTIVE};
         }
 
@@ -229,16 +243,16 @@ export class ReserveBidMarketDocumentController {
     public static async removeFile(params: STARParameters, inputStr: string) {
         params.logger.info('============= START : RemoveFile ReserveBidMarketDocumentController ===========');
 
-        const reserveBidFileObj = ReserveBidMarketDocumentFileList.formatString(inputStr);
+        const reserveBidFileObj = reserveBidMarketDocumentFileIdList.formatString(inputStr);
         var reserveBidObj:ReserveBidMarketDocument = null;
 
         //Do something only if there are file ids in the list
-        if (reserveBidFileObj.attachments && reserveBidFileObj.attachments.length > 0) {
+        if (reserveBidFileObj.attachmentFileIdList && reserveBidFileObj.attachmentFileIdList.length > 0) {
 
             //Get every reference to Bid Market Document in every Collection
             var existingReserveBidRef:Map<string, DataReference>;
             try {
-                existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidFileObj.ReserveBidMrid});
+                existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidFileObj.reserveBidMrid});
             } catch(error) {
                 throw new Error(error.message.concat(' to remove file'));
             }
@@ -246,13 +260,13 @@ export class ReserveBidMarketDocumentController {
             reserveBidObj = existingReserveBidRef.values().next().value;
 
             //Only do somehting if the found reference is the asekd one
-            if (reserveBidObj && reserveBidObj.reserveBidMrid === reserveBidFileObj.ReserveBidMrid) {
+            if (reserveBidObj && reserveBidObj.reserveBidMrid === reserveBidFileObj.reserveBidMrid) {
                 var idRemoved = false;
                 //Check every file already present in document
                 const newFileList: AttachmentFileWithStatus[] = [];
                 for (var attachmentFile of reserveBidObj.attachmentsWithStatus) {
                     if (attachmentFile.status !== AttachmentFileStatus.REMOVED
-                        && reserveBidFileObj.attachments.includes(attachmentFile.fileId)) {
+                        && reserveBidFileObj.attachmentFileIdList.includes(attachmentFile.fileId)) {
 
                         attachmentFile.status = AttachmentFileStatus.REMOVED;
                         idRemoved = true;

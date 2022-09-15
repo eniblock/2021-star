@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { AttachmentFile } from './attachmentFile';
 
 export class ReserveBidMarketDocumentFileList {
     public static formatString(inputString: string) : ReserveBidMarketDocumentFileList {
@@ -14,42 +15,27 @@ export class ReserveBidMarketDocumentFileList {
                 reserveBidObj,
                 {strict: true, abortEarly: false},
             );
+            if (reserveBidObj.attachmentFileList) {
+                for (var attachmentFile of reserveBidObj.attachmentFileList) {
+                    AttachmentFile.schema.validateSync(
+                        attachmentFile,
+                        {strict: true, abortEarly: false},
+                    )
+                }
+            }
         } catch (error) {
             throw error;
         }
         return reserveBidObj;
     }
 
-    public static formatListString(inputString: string) : ReserveBidMarketDocumentFileList[] {
-        let reserveBidList: ReserveBidMarketDocumentFileList[] = [];
-        try {
-            reserveBidList = JSON.parse(inputString);
-        } catch (error) {
-            throw new Error(`ERROR -> Input string NON-JSON value`);
-        }
-
-        if (reserveBidList && reserveBidList.length > 0) {
-            for (var reserveBidObj of reserveBidList) {
-                try {
-                    ReserveBidMarketDocumentFileList.schema.validateSync(
-                        reserveBidObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
-            }
-        }
-        return reserveBidList;
-    }
-
     public static readonly schema = Yup.object().shape({
-        ReserveBidMrid: Yup.string().required('ReserveBidMrid is a compulsory string.').typeError('ReserveBidMrid must be a string'),
-        attachments: Yup.array().of(Yup.string()).notRequired(),
+        reserveBidMrid: Yup.string().required('reserveBidMrid is a compulsory string.').typeError('reserveBidMrid must be a string'),
+        attachmentFileList: Yup.array().notRequired(),
     });
 
 
-    public ReserveBidMrid: string;
+    public reserveBidMrid: string;
 
-    public attachments?: string[];
+    public attachmentFileList?: AttachmentFile[];
 }

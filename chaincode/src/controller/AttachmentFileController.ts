@@ -14,14 +14,28 @@ export class AttachmentFileController {
     /*
     inputStr : file[]
     */
-    public static async createByList(params: STARParameters, inputStr: string) {
+    public static async createByList(params: STARParameters, inputStr: string, target: string = '') {
         params.logger.info('============= START : AttachmentFileController - Create By List ===========');
 
         const fileList = AttachmentFile.formatListString(inputStr);
 
         if (fileList) {
             for (var fileObj of fileList) {
-                await AttachmentFileService.write(params, fileObj);
+                await AttachmentFileService.write(params, fileObj, target);
+            }
+        }
+
+        params.logger.info('=============  END  : AttachmentFileController - Create By List ===========');
+    }
+
+
+
+    public static async createObjByList(params: STARParameters, fileList: AttachmentFile[], target: string = '') {
+        params.logger.info('============= START : AttachmentFileController - Create By List ===========');
+
+        if (fileList) {
+            for (var fileObj of fileList) {
+                await AttachmentFileService.write(params, fileObj, target);
             }
         }
 

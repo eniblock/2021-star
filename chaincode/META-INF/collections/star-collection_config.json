@@ -3,7 +3,7 @@
     "name": "enedis-producer",
     "policy": "OR('enedis.member', 'producer.member')",
     "requiredPeerCount": 1,
-    "maxPeerCount": 3,
+    "maxPeerCount": 2,
     "blockToLive":1000000,
     "memberOnlyRead": true,
     "memberOnlyWrite": true
@@ -21,7 +21,7 @@
     "name": "producer-rte",
     "policy": "OR('producer.member', 'rte.member')",
     "requiredPeerCount": 1,
-    "maxPeerCount": 3,
+    "maxPeerCount": 2,
     "blockToLive":1000000,
     "memberOnlyRead": true,
     "memberOnlyWrite": true

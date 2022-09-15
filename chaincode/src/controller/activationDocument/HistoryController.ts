@@ -521,15 +521,6 @@ export class HistoryController {
                     referenceDateTime: referenceDateTime,
                     includeNext: false}
 
-                console.info("##################################")
-                console.info(JSON.stringify(activationDocument.activationDocumentMrid))
-                console.info("###")
-                console.info(JSON.stringify(referenceDateTime))
-                console.info("###")
-                console.info(JSON.stringify(criteriaObj))
-                console.info("##################################")
-
-
                 if (referenceDateTime && referenceDateTime.length > 0) {
                     const reserveBidList = await ReserveBidMarketDocumentController.getBySiteAndDate(params, criteriaObj);
                     if (reserveBidList && reserveBidList.length > 0) {

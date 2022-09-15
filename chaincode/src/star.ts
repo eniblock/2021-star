@@ -679,18 +679,18 @@ export class Star extends Contract {
 
     /* FILES */
 
-    /*
-        inputStr : file[]
-    */
-    public async CreateFiles(
-        ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await AttachmentFileController.createByList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
-    }
+    // /*
+    //     inputStr : file[]
+    // */
+    // public async CreateFiles(
+    //     ctx: Context, inputStr: string) {
+    //     try {
+    //         const params: STARParameters = await ParametersController.getParameterValues(ctx);
+    //         return (await AttachmentFileController.createByList(params, inputStr));
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
 
     /*
         inputStr : file id - string
@@ -709,7 +709,7 @@ export class Star extends Contract {
     /* RESERVE BID MARKET DOCUMENT */
 
     /*
-        inputStr : reserveBidMarketDocument
+        inputStr : reserveBidMarketDocumentCreation
     */
     public async CreateReserveBidMarketDocument(
         ctx: Context, inputStr: string) {
@@ -749,7 +749,7 @@ export class Star extends Contract {
     }
 
     /*
-        inputStr : reserveBidMarketDocument[]
+        inputStr : reserveBidMarketDocumentCreationList
     */
     public async CreateReserveBidMarketDocumentList(
         ctx: Context, inputStr: string) {

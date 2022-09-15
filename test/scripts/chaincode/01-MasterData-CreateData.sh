@@ -209,13 +209,6 @@ done
 
 
 
-echo
-echo "wait $PAUSE_TIME"
-sleep $PAUSE_TIME
-
-
-
-
 
 
 echo "***********************************"
@@ -230,7 +223,7 @@ for i in `seq $RTE_YELLOWPAGES_NB`
 do
     tabindex=$(echo ".["$i-1"]")
     yellowPageMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    RTE_YELLOWPAGES_VALUE=$(echo $RTE_YELLOWPAGES | jq $tabindex | jq --arg value $yellowPageMrid '. + {yellowPageMrid: $value}')
+    RTE_YELLOWPAGES_VALUE=$(echo $RTE_YELLOWPAGES | jq $tabindex | jq --arg value "YP_"$yellowPageMrid '. + {yellowPageMrid: $value}')
     RTE_YELLOWPAGES_VALUE_STR=$(echo $RTE_YELLOWPAGES_VALUE | sed "s/\"/\\\\\"/g")
     RTE_YELLOWPAGES_VALUE_STR=${RTE_YELLOWPAGES_VALUE_STR//[$'\t\r\n ']}
 

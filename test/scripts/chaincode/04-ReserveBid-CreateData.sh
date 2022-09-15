@@ -14,8 +14,18 @@ echo "***************************************"
 echo "Start of invoke command"
 echo ""
 
-
+FILE_CONTENT=$(echo "Exemple Of Very Short File Content")
+FILE_CONTENT=${FILE_CONTENT//[$'\t\r\n ']}
+echo $FILE_CONTENT
 START_DATE=$(date -d $INIT_YEAR"-01-01" -I)
+
+RTE_RESERVE_BID=$(cat $DATA_PATH/04-ReserveBid/72-HTB-ReserveBid.json | jq '.')
+RTE_SITES=$(csvtojson < $DATA_PATH/01-MasterData/13-rte-Site.csv --delimiter=';')
+RTE_SITES_NB=$(echo $RTE_SITES | jq 'length')
+
+ENEDIS_RESERVE_BID=$(cat $DATA_PATH/04-ReserveBid/71-HTA-ReserveBid.json | jq '.')
+ENEDIS_SITES=$(csvtojson < $DATA_PATH/01-MasterData/03-enedis-Site.csv --delimiter=';')
+ENEDIS_SITES_NB=$(echo $ENEDIS_SITES | jq 'length')
 
 
 echo "***********************************"
@@ -23,18 +33,15 @@ echo
 echo "** RTE - RESERVE BID DATA CREATION"
 echo
 
-RTE_RESERVE_BID=$(cat $DATA_PATH/04-ReserveBid/72-HTB-ReserveBid.json | jq '.')
-RTE_SITES=$(csvtojson < $DATA_PATH/01-MasterData/13-rte-Site.csv --delimiter=';')
-RTE_SITES_NB=$(echo $RTE_SITES | jq 'length')
 
-RTE_RESERVE_BID_LIST_VALUE=$(echo "[]" | jq '.')
+RTE_RESERVE_BID_LIST_VALUE=$(echo "{\"reserveBidList\":[], \"attachmentFileList\":[]}" | jq '.')
 
 echo
 echo "//Generate data"
 echo
 
 indexfinal=0
-
+indexfiles=0
 for i in `seq $RTE_SITES_NB`
 do
     index=$(($i-1))
@@ -48,9 +55,16 @@ do
 
     for y in `seq $NB_YEARS`
     do
+        fileId=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
+        fileId=$(echo "File_"$fileId)
+        FILE_VALUE=$(echo "{}" | jq '.' | jq --arg fileId $fileId --arg fileContent $FILE_CONTENT"_"$indexfiles '. + {fileId: $fileId, fileContent: $fileContent}')
+        FILE_VALUE=${FILE_VALUE//[$'\t\r\n ']}
+        RTE_RESERVE_BID_LIST_VALUE=$(echo $RTE_RESERVE_BID_LIST_VALUE | jq --argjson index $indexfiles --argjson ELEMENT_VALUE $FILE_VALUE '.attachmentFileList[$index] |= . + $ELEMENT_VALUE' )
+
         reserveBidMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
         reserveBidMrid=$(echo "Bid_"$METERING_POINT_MRID_VALUE"_"$reserveBidMrid)
         validityPeriodStartDateTime=$(date -d $START_DATE' + '$y' year' -Iseconds)
+        echo -ne "\r"$validityPeriodStartDateTime
         validityPeriodStartDateTime=$(echo $validityPeriodStartDateTime"Z")
         validityPeriodEndDateTime=$(date -d $START_DATE' + '$y' year + 1 year - 1 day' -Iseconds)
         validityPeriodEndDateTime=$(echo $validityPeriodEndDateTime"Z")
@@ -59,14 +73,27 @@ do
         energyPriceAmount_LOWER=$(($energyPriceAmount % 100))
         energyPriceAmount=$(echo $energyPriceAmount_UPPER"."$energyPriceAmount_LOWER)
 
-        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID | jq '.' | jq --arg reserveBidMrid $reserveBidMrid --arg meteringPointMrid $METERING_POINT_MRID_VALUE --argjson senderMarketParticipantMrid $SENDER_MARKET_PARTICIPANT_MRID_VALUE --argjson receiverMarketParticipantMrid $RECEIVER_MARKET_PARTICIPANT_MRID_VALUE --arg validityPeriodStartDateTime $validityPeriodStartDateTime --arg validityPeriodEndDateTime $validityPeriodEndDateTime --argjson energyPriceAmount $energyPriceAmount '. + {reserveBidMrid: $reserveBidMrid, meteringPointMrid: $meteringPointMrid, senderMarketParticipantMrid: $senderMarketParticipantMrid, receiverMarketParticipantMrid: $receiverMarketParticipantMrid, validityPeriodStartDateTime: $validityPeriodStartDateTime, validityPeriodEndDateTime: $validityPeriodEndDateTime, energyPriceAmount: $energyPriceAmount}')
+        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID | jq '.' | jq --arg reserveBidMrid $reserveBidMrid '. + {reserveBidMrid: $reserveBidMrid}')
+        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg meteringPointMrid $METERING_POINT_MRID_VALUE '. + {meteringPointMrid: $meteringPointMrid}')
+        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson senderMarketParticipantMrid $SENDER_MARKET_PARTICIPANT_MRID_VALUE '. + {senderMarketParticipantMrid: $senderMarketParticipantMrid}')
+        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson receiverMarketParticipantMrid $RECEIVER_MARKET_PARTICIPANT_MRID_VALUE '. + {receiverMarketParticipantMrid: $receiverMarketParticipantMrid}')
+        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodStartDateTime $validityPeriodStartDateTime '. + {validityPeriodStartDateTime: $validityPeriodStartDateTime}')
+        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodEndDateTime $validityPeriodEndDateTime '. + {validityPeriodEndDateTime: $validityPeriodEndDateTime}')
+        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson energyPriceAmount $energyPriceAmount '. + {energyPriceAmount: $energyPriceAmount}')
+        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg fileId $fileId '.attachments? += [$fileId]')
         RTE_RESERVE_BID_VALUE=${RTE_RESERVE_BID_VALUE//[$'\t\r\n ']}
-        RTE_RESERVE_BID_LIST_VALUE=$(echo $RTE_RESERVE_BID_LIST_VALUE | jq --argjson index $indexfinal --argjson ELEMENT_VALUE $RTE_RESERVE_BID_VALUE '.[$index] |= . + $ELEMENT_VALUE' )
+        RTE_RESERVE_BID_LIST_VALUE=$(echo $RTE_RESERVE_BID_LIST_VALUE | jq --argjson index $indexfinal --argjson ELEMENT_VALUE $RTE_RESERVE_BID_VALUE '.reserveBidList[$index] |= . + $ELEMENT_VALUE' )
+
         indexfinal=$(($indexfinal+1))
+        indexfiles=$(($indexfiles+1))
     done
+    echo
+    echo
 done
 RTE_RESERVE_BID_LIST_VALUE_STR=$(echo $RTE_RESERVE_BID_LIST_VALUE | sed "s/\"/\\\\\"/g")
 RTE_RESERVE_BID_LIST_VALUE_STR=${RTE_RESERVE_BID_LIST_VALUE_STR//[$'\t\r\n ']}
+
+# echo $RTE_RESERVE_BID_LIST_VALUE_STR
 
 echo
 echo "//Call chaincode"
@@ -87,18 +114,14 @@ echo
 echo "** ENEDIS - RESERVE BID DATA CREATION"
 echo
 
-ENEDIS_RESERVE_BID=$(cat $DATA_PATH/04-ReserveBid/71-HTA-ReserveBid.json | jq '.')
-ENEDIS_SITES=$(csvtojson < $DATA_PATH/01-MasterData/03-enedis-Site.csv --delimiter=';')
-ENEDIS_SITES_NB=$(echo $ENEDIS_SITES | jq 'length')
-
-ENEDIS_RESERVE_BID_LIST_VALUE=$(echo "[]" | jq '.')
+ENEDIS_RESERVE_BID_LIST_VALUE=$(echo "{\"reserveBidList\":[], \"attachmentFileList\":[]}" | jq '.')
 
 echo
 echo "//Generate data"
 echo
 
 indexfinal=0
-
+indexfiles=0
 for i in `seq $ENEDIS_SITES_NB`
 do
     index=$(($i-1))
@@ -113,9 +136,16 @@ do
 
     for y in `seq $NB_YEARS`
     do
+        fileId=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
+        fileId=$(echo "File_"$fileId)
+        FILE_VALUE=$(echo "{}" | jq '.' | jq --arg fileId $fileId --arg fileContent $FILE_CONTENT"_"$indexfiles '. + {fileId: $fileId, fileContent: $fileContent}')
+        FILE_VALUE=${FILE_VALUE//[$'\t\r\n ']}
+        ENEDIS_RESERVE_BID_LIST_VALUE=$(echo $ENEDIS_RESERVE_BID_LIST_VALUE | jq --argjson index $indexfiles --argjson ELEMENT_VALUE $FILE_VALUE '.attachmentFileList[$index] |= . + $ELEMENT_VALUE' )
+
         reserveBidMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
         reserveBidMrid=$(echo "Bid_"$METERING_POINT_MRID_VALUE"_"$reserveBidMrid)
         validityPeriodStartDateTime=$(date -d $START_DATE' + '$y' year' -Iseconds)
+        echo -ne "\r"$validityPeriodStartDateTime
         validityPeriodStartDateTime=$(echo $validityPeriodStartDateTime"Z")
         validityPeriodEndDateTime=$(date -d $START_DATE' + '$y' year + 1 year - 1 day' -Iseconds)
         validityPeriodEndDateTime=$(echo $validityPeriodEndDateTime"Z")
@@ -124,14 +154,28 @@ do
         energyPriceAmount_LOWER=$(($energyPriceAmount % 100))
         energyPriceAmount=$(echo $energyPriceAmount_UPPER"."$energyPriceAmount_LOWER)
 
-        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID | jq '.' | jq --arg reserveBidMrid $reserveBidMrid --arg meteringPointMrid $METERING_POINT_MRID_VALUE --argjson senderMarketParticipantMrid $SENDER_MARKET_PARTICIPANT_MRID_VALUE --argjson receiverMarketParticipantMrid $RECEIVER_MARKET_PARTICIPANT_MRID_VALUE --arg validityPeriodStartDateTime $validityPeriodStartDateTime --arg validityPeriodEndDateTime $validityPeriodEndDateTime --argjson energyPriceAmount $energyPriceAmount '. + {reserveBidMrid: $reserveBidMrid, meteringPointMrid: $meteringPointMrid, senderMarketParticipantMrid: $senderMarketParticipantMrid, receiverMarketParticipantMrid: $receiverMarketParticipantMrid, validityPeriodStartDateTime: $validityPeriodStartDateTime, validityPeriodEndDateTime: $validityPeriodEndDateTime, energyPriceAmount: $energyPriceAmount}')
+        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID | jq '.' | jq --arg reserveBidMrid $reserveBidMrid '. + {reserveBidMrid: $reserveBidMrid}')
+        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg meteringPointMrid $METERING_POINT_MRID_VALUE '. + {meteringPointMrid: $meteringPointMrid}')
+        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson senderMarketParticipantMrid $SENDER_MARKET_PARTICIPANT_MRID_VALUE '. + {senderMarketParticipantMrid: $senderMarketParticipantMrid}')
+        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson receiverMarketParticipantMrid $RECEIVER_MARKET_PARTICIPANT_MRID_VALUE '. + {receiverMarketParticipantMrid: $receiverMarketParticipantMrid}')
+        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodStartDateTime $validityPeriodStartDateTime '. + {validityPeriodStartDateTime: $validityPeriodStartDateTime}')
+        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodEndDateTime $validityPeriodEndDateTime '. + {validityPeriodEndDateTime: $validityPeriodEndDateTime}')
+        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson energyPriceAmount $energyPriceAmount '. + {energyPriceAmount: $energyPriceAmount}')
+        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg fileId $fileId '.attachments? += [$fileId]')
+
         ENEDIS_RESERVE_BID_VALUE=${ENEDIS_RESERVE_BID_VALUE//[$'\t\r\n ']}
-        ENEDIS_RESERVE_BID_LIST_VALUE=$(echo $ENEDIS_RESERVE_BID_LIST_VALUE | jq --argjson index $indexfinal --argjson ELEMENT_VALUE $ENEDIS_RESERVE_BID_VALUE '.[$index] |= . + $ELEMENT_VALUE' )
+        ENEDIS_RESERVE_BID_LIST_VALUE=$(echo $ENEDIS_RESERVE_BID_LIST_VALUE | jq --argjson index $indexfinal --argjson ELEMENT_VALUE $ENEDIS_RESERVE_BID_VALUE '.reserveBidList[$index] |= . + $ELEMENT_VALUE' )
+
         indexfinal=$(($indexfinal+1))
+        indexfiles=$(($indexfiles+1))
     done
+    echo
+    echo
 done
 ENEDIS_RESERVE_BID_LIST_VALUE_STR=$(echo $ENEDIS_RESERVE_BID_LIST_VALUE | sed "s/\"/\\\\\"/g")
 ENEDIS_RESERVE_BID_LIST_VALUE_STR=${ENEDIS_RESERVE_BID_LIST_VALUE_STR//[$'\t\r\n ']}
+
+# echo $ENEDIS_RESERVE_BID_LIST_VALUE_STR
 
 
 echo

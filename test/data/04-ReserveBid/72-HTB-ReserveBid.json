@@ -14,5 +14,6 @@
     "priceMeasureUnitName": "€/MWh",
     "currencyUnitName": "€",
     "flowDirection": "Offre à la baisse",
-    "energyPriceAmount": 75.55
+    "energyPriceAmount": 75.55,
+    "attachments" : []
 }

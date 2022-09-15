@@ -15,6 +15,9 @@ export class InstanceService {
   private readonly CACHE_KEY_PARTICIPANT_NAME = 'participantName';
   private readonly CACHE_LIFETIME_PARTICIPANT_NAME = 24 * 3600 * 1000; // In milliseconds
 
+  private readonly CACHE_KEY_PARTICIPANT_MRID = 'participantMrid';
+  private readonly CACHE_LIFETIME_PARTICIPANT_MRID = 24 * 3600 * 1000; // In milliseconds
+
   constructor(
     private httpClient: HttpClient,
     private cacheService: CacheService
@@ -42,6 +45,20 @@ export class InstanceService {
       return this.cacheService.getValueInCacheOrLoadIt<string>(
         this.CACHE_KEY_PARTICIPANT_NAME,
         this.CACHE_LIFETIME_PARTICIPANT_NAME,
+        req
+      );
+    } else {
+      return req;
+    }
+  }
+
+  getParticipantMrid(): Observable<string> {
+    const req: any = this.httpClient.get<string>(`${environment.serverUrl}/instance/participantMrid`, {responseType: 'text'} as any);
+    if (environment.production) {
+      // We use a cache in production
+      return this.cacheService.getValueInCacheOrLoadIt<string>(
+        this.CACHE_KEY_PARTICIPANT_MRID,
+        this.CACHE_LIFETIME_PARTICIPANT_MRID,
         req
       );
     } else {

@@ -80,6 +80,23 @@ export class QueryStateService {
         return ORCriteria;
     }
 
+    public static async buildANDCriteria(criteriaList: string[]): Promise<string> {
+        var ORCriteria: string = ``;
+
+        if (criteriaList.length == 1) {
+            ORCriteria = criteriaList[0];
+        } else if (criteriaList.length > 1) {
+            ORCriteria = `"$and":[`;
+            for (var i=0; i<criteriaList.length; i++) {
+                if (i>0) {
+                    ORCriteria = ORCriteria.concat(`,`);
+                }
+                ORCriteria = ORCriteria.concat(`{`).concat(criteriaList[i]).concat(`}`);
+            }
+            ORCriteria = ORCriteria.concat(`]`);
+        }
+        return ORCriteria;
+    }
 
 
 

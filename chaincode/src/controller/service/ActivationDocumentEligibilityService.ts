@@ -13,7 +13,8 @@ export class ActivationDocumentEligibilityService {
         activationDocumentObj:ActivationDocument): string {
 
         let newStatus: string;
-        if (activationDocumentObj.eligibilityStatus !== EligibilityStatusType.EligibilityERROR) {
+        if (activationDocumentObj.eligibilityStatus !== EligibilityStatusType.EligibilityERROR
+            && activationDocumentObj.eligibilityStatus !== EligibilityStatusType.EligibilityAccepted) {
             const eligibilityTable:string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_ELIGIBILITY);
 
             const pattern = activationDocumentObj.messageType + "-" + activationDocumentObj.businessType + "-" + activationDocumentObj.reasonCode;

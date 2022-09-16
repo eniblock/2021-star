@@ -8,9 +8,9 @@ import { DataReference } from "../model/dataReference";
 import { ReserveBidMarketDocument } from "../model/reserveBidMarketDocument";
 import { ReserveBidMarketDocumentCreation } from "../model/reserveBidMarketDocumentCreation";
 import { ReserveBidMarketDocumentCreationList } from "../model/reserveBidMarketDocumentCreationList";
-import { reserveBidMarketDocumentFileIdList } from "../model/reserveBidMarketDocumentFileIdList";
+import { ReserveBidMarketDocumentFileIdList } from "../model/reserveBidMarketDocumentFileIdList";
 import { ReserveBidMarketDocumentFileList } from "../model/reserveBidMarketDocumentFileList";
-import { reserveBidMarketDocumentSiteDate } from "../model/reserveBidMarketDocumentSiteDate";
+import { ReserveBidMarketDocumentSiteDate } from "../model/reserveBidMarketDocumentSiteDate";
 import { STARParameters } from "../model/starParameters";
 import { AttachmentFileController } from "./AttachmentFileController";
 import { QueryStateService } from "./service/QueryStateService";
@@ -243,7 +243,7 @@ export class ReserveBidMarketDocumentController {
     public static async removeFile(params: STARParameters, inputStr: string) {
         params.logger.info('============= START : RemoveFile ReserveBidMarketDocumentController ===========');
 
-        const reserveBidFileObj = reserveBidMarketDocumentFileIdList.formatString(inputStr);
+        const reserveBidFileObj = ReserveBidMarketDocumentFileIdList.formatString(inputStr);
         var reserveBidObj:ReserveBidMarketDocument = null;
 
         //Do something only if there are file ids in the list
@@ -430,7 +430,7 @@ export class ReserveBidMarketDocumentController {
         params.logger.info('============= START : getValidByMeteringPointMrid ReserveBidMarketDocumentController ===========');
 
         const criteriaDate = (new Date()).toISOString();
-        const criteriaObj: reserveBidMarketDocumentSiteDate = {meteringPointMrid: meteringPointMrid, referenceDateTime: criteriaDate, includeNext: true};
+        const criteriaObj: ReserveBidMarketDocumentSiteDate = {meteringPointMrid: meteringPointMrid, referenceDateTime: criteriaDate, includeNext: true};
 
         const allResults = await this.getBySiteAndDate(params, criteriaObj);
 
@@ -449,7 +449,7 @@ export class ReserveBidMarketDocumentController {
     public static async getAtDateByMeteringPointMrid(params: STARParameters, inputStr: string): Promise<string> {
         params.logger.info('============= START : getAtDateByMeteringPointMrid ReserveBidMarketDocumentController ===========');
 
-        const criteriaObj = reserveBidMarketDocumentSiteDate.formatString(inputStr);
+        const criteriaObj = ReserveBidMarketDocumentSiteDate.formatString(inputStr);
         const allResults = await this.getBySiteAndDate(params, criteriaObj);
 
         params.logger.info('=============  END  : getAtDateByMeteringPointMrid ReserveBidMarketDocumentController ===========');
@@ -459,7 +459,7 @@ export class ReserveBidMarketDocumentController {
 
 
 
-    public static async getBySiteAndDate(params: STARParameters, criteriaObj: reserveBidMarketDocumentSiteDate): Promise<ReserveBidMarketDocument[]> {
+    public static async getBySiteAndDate(params: STARParameters, criteriaObj: ReserveBidMarketDocumentSiteDate): Promise<ReserveBidMarketDocument[]> {
         params.logger.debug('============= START : getBySiteAndDate ReserveBidMarketDocumentController ===========');
 
         var args: string[] = [];

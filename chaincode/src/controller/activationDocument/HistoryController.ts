@@ -26,7 +26,7 @@ import { StarDataService } from "../service/StarDataService";
 import { DataReference } from "../../model/dataReference";
 import { ReserveBidMarketDocument } from "../../model/reserveBidMarketDocument";
 import { ReserveBidMarketDocumentController } from "../ReserveBidMarketDocumentController";
-import { reserveBidMarketDocumentSiteDate } from "../../model/reserveBidMarketDocumentSiteDate";
+import { ReserveBidMarketDocumentSiteDate } from "../../model/reserveBidMarketDocumentSiteDate";
 
 export class HistoryInformationInBuilding {
     public historyInformation: Map<string, HistoryInformation> = new Map();
@@ -516,7 +516,7 @@ export class HistoryController {
                         referenceDateTime = subOrderList[0].startCreatedDateTime;
                     }
                 }
-                const criteriaObj: reserveBidMarketDocumentSiteDate = {
+                const criteriaObj: ReserveBidMarketDocumentSiteDate = {
                     meteringPointMrid: siteRegistered.meteringPointMrid,
                     referenceDateTime: referenceDateTime,
                     includeNext: false}

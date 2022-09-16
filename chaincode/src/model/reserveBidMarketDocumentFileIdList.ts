@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
 
-export class reserveBidMarketDocumentFileIdList {
-    public static formatString(inputString: string) : reserveBidMarketDocumentFileIdList {
-        let reserveBidObj: reserveBidMarketDocumentFileIdList;
+export class ReserveBidMarketDocumentFileIdList {
+    public static formatString(inputString: string) : ReserveBidMarketDocumentFileIdList {
+        let reserveBidObj: ReserveBidMarketDocumentFileIdList;
         try {
             reserveBidObj = JSON.parse(inputString);
         } catch (error) {
@@ -10,7 +10,7 @@ export class reserveBidMarketDocumentFileIdList {
         }
 
         try {
-            reserveBidMarketDocumentFileIdList.schema.validateSync(
+            ReserveBidMarketDocumentFileIdList.schema.validateSync(
                 reserveBidObj,
                 {strict: true, abortEarly: false},
             );

@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
 
-export class reserveBidMarketDocumentSiteDate {
-    public static formatString(inputString: string) : reserveBidMarketDocumentSiteDate {
-        let reserveBidObj: reserveBidMarketDocumentSiteDate;
+export class ReserveBidMarketDocumentSiteDate {
+    public static formatString(inputString: string) : ReserveBidMarketDocumentSiteDate {
+        let reserveBidObj: ReserveBidMarketDocumentSiteDate;
         try {
             reserveBidObj = JSON.parse(inputString);
         } catch (error) {
@@ -10,7 +10,7 @@ export class reserveBidMarketDocumentSiteDate {
         }
 
         try {
-            reserveBidMarketDocumentSiteDate.schema.validateSync(
+            ReserveBidMarketDocumentSiteDate.schema.validateSync(
                 reserveBidObj,
                 {strict: true, abortEarly: false},
             );
@@ -20,8 +20,8 @@ export class reserveBidMarketDocumentSiteDate {
         return reserveBidObj;
     }
 
-    public static formatListString(inputString: string) : reserveBidMarketDocumentSiteDate[] {
-        let reserveBidList: reserveBidMarketDocumentSiteDate[] = [];
+    public static formatListString(inputString: string) : ReserveBidMarketDocumentSiteDate[] {
+        let reserveBidList: ReserveBidMarketDocumentSiteDate[] = [];
         try {
             reserveBidList = JSON.parse(inputString);
         } catch (error) {
@@ -31,7 +31,7 @@ export class reserveBidMarketDocumentSiteDate {
         if (reserveBidList && reserveBidList.length > 0) {
             for (var reserveBidObj of reserveBidList) {
                 try {
-                    reserveBidMarketDocumentSiteDate.schema.validateSync(
+                    ReserveBidMarketDocumentSiteDate.schema.validateSync(
                         reserveBidObj,
                         {strict: true, abortEarly: false},
                     );

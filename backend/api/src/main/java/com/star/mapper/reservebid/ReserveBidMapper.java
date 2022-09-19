@@ -12,6 +12,7 @@ import org.mapstruct.ReportingPolicy;
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface ReserveBidMapper {
+    @Mapping(target = "docType", ignore = true)
     @Mapping(target = "attachments", ignore = true)
     @Mapping(target = "attachmentsWithStatus", ignore = true)
     ReserveBid dtoToBean(ReserveBidDTO reserveBidDTO);

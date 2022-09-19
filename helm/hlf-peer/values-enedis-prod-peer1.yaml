@@ -1,5 +1,7 @@
 ingress:
   enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rps: "25"
   host: peer1.enedis.prod.star.eniblock.fr
   secretName: hlf--peer1-tls
   from:

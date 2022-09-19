@@ -11,6 +11,8 @@ affinity:
 
 ingress:
   enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rps: "25"
   host: peer2.star.cloud-rte-france.com
   secretName: hlf--peer2-tls
 

@@ -78,7 +78,7 @@
   <!-- Recherche Producteur -->
   <div class="row mt-3" *ngIf="typeInstance == InstanceEnum.PRODUCER" [formGroup]="form">
 
-    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+    <mat-form-field class="col-12 col-lg-4" appearance="outline">
       <mat-label>Poste Source</mat-label>
       <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid"
              [matAutocomplete]="substationMridAutocomplete">
@@ -89,17 +89,17 @@
       </mat-autocomplete>
     </mat-form-field>
 
-    <mat-form-field class="col-12 col-lg-6" appearance="outline">
-      <mat-label>Nom du site</mat-label>
-      <input matInput placeholder="Nom du site" type="text" formControlName="siteName">
-    </mat-form-field>
-
-    <mat-form-field class="col-12" appearance="outline">
+    <mat-form-field class="col-12 col-lg-4" appearance="outline">
       <mat-label>Code site</mat-label>
       <input matInput placeholder="Code site" type="text" formControlName="meteringPointMrid">
     </mat-form-field>
 
-    <mat-form-field class="col-12" appearance="outline">
+    <mat-form-field class="col-12 col-lg-4" appearance="outline">
+      <mat-label>Nom du site</mat-label>
+      <input matInput placeholder="Nom du site" type="text" formControlName="siteName">
+    </mat-form-field>
+
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Type de limitation</mat-label>
       <mat-select formControlName="typeLimitation" (selectionChange)="selectionTypeLimitation()">
         <mat-option [value]="TypeLimitationEnum.MANUELLE">Manuelle</mat-option>
@@ -107,7 +107,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field class="col-12 col-lg-4" appearance="outline">
+    <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Motif</mat-label>
       <mat-select formControlName="motifName">
         <mat-option *ngFor="let motifName of motifNames" [value]="motifName">{{ motifName }}</mat-option>

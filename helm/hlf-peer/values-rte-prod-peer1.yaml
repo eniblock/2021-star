@@ -89,3 +89,12 @@ secrets:
 
   ## This should include the Orderer TLS 'cacert.pem'
   ordTlsRootCert: hlf--ord-tlsrootcert
+
+persistence:
+  enabled: true
+  size: 64Gi
+
+couchdb:
+  enabled: true
+  persistence:
+    size: 64Gi

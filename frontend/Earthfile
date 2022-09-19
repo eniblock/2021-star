@@ -28,7 +28,7 @@ build:
     SAVE IMAGE --cache-from=${repository}:cache-build-develop --push ${repository}:cache-build-${tag}
 
 docker:
-    FROM nginx:1.19.2-alpine
+    FROM nginx:1-alpine
     COPY nginx.conf /etc/nginx/templates/default.conf.template
     COPY +build/dist/frontend /usr/share/nginx/html
     ARG tag=latest

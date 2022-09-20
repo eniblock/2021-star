@@ -20,7 +20,7 @@ keycloak:
           first_name: user
           last_name: rte
           email: userrte@star.com
-          initial_password: kcuserrte
+          initial_password: kcuserrte1!
           systemOperatorMarketParticipantMrid: 10XFR-RTE------Q
 
 mail:

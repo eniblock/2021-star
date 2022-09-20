@@ -1,5 +1,7 @@
 ingress:
   enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rps: "25"
   host: peer2.producer.prod.star.eniblock.fr
   secretName: hlf--peer2-tls
   from:
@@ -87,3 +89,12 @@ secrets:
 
   ## This should include the Orderer TLS 'cacert.pem'
   ordTlsRootCert: hlf--ord-tlsrootcert
+
+persistence:
+  enabled: true
+  size: 64Gi
+
+couchdb:
+  enabled: true
+  persistence:
+    size: 64Gi

@@ -1,5 +1,18 @@
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: "app.kubernetes.io/component"
+          operator: In
+          values:
+          - "peer"
+      topologyKey: "kubernetes.io/hostname"
+
 ingress:
   enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rps: "25"
   host: peer1.star.cloud-rte-france.com
   secretName: hlf--peer1-tls
 
@@ -78,3 +91,12 @@ secrets:
 
   ## This should include the Orderer TLS 'cacert.pem'
   ordTlsRootCert: hlf--ord-tlsrootcert
+
+persistence:
+  enabled: true
+  size: 64Gi
+
+couchdb:
+  enabled: true
+  persistence:
+    size: 64Gi

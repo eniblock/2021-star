@@ -330,6 +330,7 @@ export class ActivationDocumentController {
 
 
 
+        activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.statusInternationalValue(activationDocumentObj.eligibilityStatus);
         activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.checkEligibilityStatus(params, activationDocumentObj);
 
         if (activationDocumentObj.eligibilityStatus === EligibilityStatusType.EligibilityAccepted
@@ -339,8 +340,6 @@ export class ActivationDocumentController {
         } else {
             activationDocumentObj.eligibilityStatusEditable = true;
         }
-
-        activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.statusInternationalValue(activationDocumentObj.eligibilityStatus);
 
         await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);
 

@@ -19,7 +19,7 @@ keycloak:
           first_name: user
           last_name: producer
           email: userproducer@star.com
-          initial_password: kcuserproducer
+          initial_password: kcuserproducer1!
 
 mail:
   dev: true

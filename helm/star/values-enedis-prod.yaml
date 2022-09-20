@@ -1,5 +1,7 @@
 ingress:
   enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rps: "25"
   host: "enedis.star.eniblock.fr"
 backend:
   peerConnectionOrganization: enedis

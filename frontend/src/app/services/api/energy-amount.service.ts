@@ -1,4 +1,3 @@
-import {UrlService} from './../common/url.service';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {FormulaireEnergyAmount, FormulaireEnergyAmountFile} from "../../models/EnergyAmount";
@@ -11,7 +10,7 @@ import {FormDataHelper} from "./helpers/formData-helper";
 })
 export class EnergyAmountService {
 
-  constructor(private httpClient: HttpClient, private urlService: UrlService) {
+  constructor(private httpClient: HttpClient) {
   }
 
   createWithFile(form: FormulaireEnergyAmountFile): Observable<void> {

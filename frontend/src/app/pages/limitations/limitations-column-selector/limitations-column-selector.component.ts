@@ -87,7 +87,7 @@ export class LimitationsColumnSelectorComponent implements OnInit {
     // Select initialisation
     this.form
       .get('columns')
-      ?.setValue(this.allColumns.slice(0, this.allColumns.length - 3));
+      ?.setValue(this.allColumns.slice(0, this.allColumns.length));
 
     // Update table columns
     this.formChange();

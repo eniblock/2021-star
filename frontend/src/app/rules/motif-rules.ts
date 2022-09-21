@@ -161,7 +161,7 @@ export const marketParticipantMridToMapMotifName = (marketParticipantMrid: strin
   } else if (isEnedis(marketParticipantMrid)) {
     return MotifEnedisToName;
   }
-  throw 'Unknown marketParticipantMrdi';
+  throw 'Unknown marketParticipantMrid';
 }
 
 export const getMessageTypeByCode = (code: string): MotifCode => {

@@ -204,12 +204,14 @@ export class ReserveBidMarketDocumentController {
             }
         }
 
-        const reserveBidObjToClose: ReserveBidMarketDocument = await this.getClosedPreviousReserveBid(params, reserveBidObj);
+        // Cannot find the reserveBid to Close and close it before creation
+        // unsuppored transaction. Transaction has already performed queries on pvt data. Writes are not allowed
+        // const reserveBidObjToClose: ReserveBidMarketDocument = await this.getClosedPreviousReserveBid(params, reserveBidObj);
 
         for (var [key, ] of existingSitesRef) {
-            if (reserveBidObjToClose && reserveBidObjToClose !== null) {
-                await ReserveBidMarketDocumentService.write(params, reserveBidObjToClose, key);
-            }
+            // if (reserveBidObjToClose && reserveBidObjToClose !== null) {
+            //     await ReserveBidMarketDocumentService.write(params, reserveBidObjToClose, key);
+            // }
             await ReserveBidMarketDocumentService.write(params, reserveBidObj, key);
             await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, key);
         }

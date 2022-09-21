@@ -66,8 +66,8 @@ do
         validityPeriodStartDateTime=$(date -d $START_DATE' + '$y' year' -Iseconds)
         echo -ne "\r"$validityPeriodStartDateTime
         validityPeriodStartDateTime=$(echo $validityPeriodStartDateTime"Z")
-        validityPeriodEndDateTime=$(date -d $START_DATE' + '$y' year + 1 year - 1 day' -Iseconds)
-        validityPeriodEndDateTime=$(echo $validityPeriodEndDateTime"Z")
+        # validityPeriodEndDateTime=$(date -d $START_DATE' + '$y' year + 1 year - 1 day' -Iseconds)
+        # validityPeriodEndDateTime=$(echo $validityPeriodEndDateTime"Z")
         energyPriceAmount=$RANDOM
         energyPriceAmount_UPPER=$(($energyPriceAmount / 100))
         energyPriceAmount_LOWER=$(($energyPriceAmount % 100))
@@ -78,7 +78,7 @@ do
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson senderMarketParticipantMrid $SENDER_MARKET_PARTICIPANT_MRID_VALUE '. + {senderMarketParticipantMrid: $senderMarketParticipantMrid}')
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson receiverMarketParticipantMrid $RECEIVER_MARKET_PARTICIPANT_MRID_VALUE '. + {receiverMarketParticipantMrid: $receiverMarketParticipantMrid}')
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodStartDateTime $validityPeriodStartDateTime '. + {validityPeriodStartDateTime: $validityPeriodStartDateTime}')
-        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodEndDateTime $validityPeriodEndDateTime '. + {validityPeriodEndDateTime: $validityPeriodEndDateTime}')
+        # RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodEndDateTime $validityPeriodEndDateTime '. + {validityPeriodEndDateTime: $validityPeriodEndDateTime}')
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson energyPriceAmount $energyPriceAmount '. + {energyPriceAmount: $energyPriceAmount}')
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg fileId $fileId '.attachments? += [$fileId]')
         RTE_RESERVE_BID_VALUE=${RTE_RESERVE_BID_VALUE//[$'\t\r\n ']}
@@ -147,8 +147,8 @@ do
         validityPeriodStartDateTime=$(date -d $START_DATE' + '$y' year' -Iseconds)
         echo -ne "\r"$validityPeriodStartDateTime
         validityPeriodStartDateTime=$(echo $validityPeriodStartDateTime"Z")
-        validityPeriodEndDateTime=$(date -d $START_DATE' + '$y' year + 1 year - 1 day' -Iseconds)
-        validityPeriodEndDateTime=$(echo $validityPeriodEndDateTime"Z")
+        # validityPeriodEndDateTime=$(date -d $START_DATE' + '$y' year + 1 year - 1 day' -Iseconds)
+        # validityPeriodEndDateTime=$(echo $validityPeriodEndDateTime"Z")
         energyPriceAmount=$RANDOM
         energyPriceAmount_UPPER=$(($energyPriceAmount / 100))
         energyPriceAmount_LOWER=$(($energyPriceAmount % 100))
@@ -159,7 +159,7 @@ do
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson senderMarketParticipantMrid $SENDER_MARKET_PARTICIPANT_MRID_VALUE '. + {senderMarketParticipantMrid: $senderMarketParticipantMrid}')
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson receiverMarketParticipantMrid $RECEIVER_MARKET_PARTICIPANT_MRID_VALUE '. + {receiverMarketParticipantMrid: $receiverMarketParticipantMrid}')
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodStartDateTime $validityPeriodStartDateTime '. + {validityPeriodStartDateTime: $validityPeriodStartDateTime}')
-        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodEndDateTime $validityPeriodEndDateTime '. + {validityPeriodEndDateTime: $validityPeriodEndDateTime}')
+        # ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodEndDateTime $validityPeriodEndDateTime '. + {validityPeriodEndDateTime: $validityPeriodEndDateTime}')
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson energyPriceAmount $energyPriceAmount '. + {energyPriceAmount: $energyPriceAmount}')
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg fileId $fileId '.attachments? += [$fileId]')
 

@@ -12,14 +12,16 @@
                 <h3>
                     {{ resultat?.siteName }}
                 </h3>
-                <div class="text-center mt-4 text-white">
-                  <strong>{{ resultat?.producerMarketParticipantName }}</strong>
+                <div class="text-center my-4 text-white">
+                  {{ resultat?.producerMarketParticipantName }}
                 </div>
-                <div class="text-center mt-5 text-white" *ngIf="typeInstance == InstanceEnum.PRODUCER">
+                <div class="text-center mt-5 pt-5 text-white" *ngIf="typeInstance == InstanceEnum.PRODUCER">
                   <strong>Aucun tarif unitaire de valorisation</strong>
                 </div>
-                <div class="text-center mt-3 text-white" *ngIf="typeInstance == InstanceEnum.PRODUCER">
-                  tarifs !!!
+                <div class="text-center mt-4" *ngIf="typeInstance == InstanceEnum.PRODUCER">
+                  <a class="boutonNavigation-white" (click)="ajoutTarif()">
+                    <span>Ajouter un tarif</span>
+                  </a>
                 </div>
             </div>
         </div>

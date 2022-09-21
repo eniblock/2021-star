@@ -37,4 +37,9 @@ export class SitesProductionResultatComponent implements OnInit {
   close() {
     this.showDetails = false;
   }
+
+  ajoutTarif() {
+    console.log("ajout tarif !")
+  }
+
 }

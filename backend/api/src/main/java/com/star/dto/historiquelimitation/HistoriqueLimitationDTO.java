@@ -1,6 +1,7 @@
 package com.star.dto.historiquelimitation;
 
 import com.star.dto.energyamount.EnergyAmountDTO;
+import com.star.dto.reservebid.ReserveBidDTO;
 import com.star.dto.site.SiteDTO;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.producer.Producer;
@@ -20,4 +21,5 @@ public class HistoriqueLimitationDTO {
     private EnergyAmountDTO energyAmount;
     private OrdreLimitation activationDocument;
     private OrdreLimitation[] subOrderList;
+    private ReserveBidDTO reserveBidMarketDocument;
 }

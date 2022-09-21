@@ -3,6 +3,7 @@ package com.star.models.historiquelimitation;
 import com.star.models.energyamount.EnergyAmount;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.producer.Producer;
+import com.star.models.reservebid.ReserveBid;
 import com.star.models.site.Site;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,4 +25,5 @@ public class HistoriqueLimitation {
     private EnergyAmount energyAmount;
     private OrdreLimitation activationDocument;
     private OrdreLimitation[] subOrderList;
+    private ReserveBid reserveBidMarketDocument;
 }

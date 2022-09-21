@@ -19,15 +19,6 @@ public enum TechnologyTypeEnum {
         this.label = label;
     }
 
-    public String getLabel() {
-        return this.label;
-    }
-
-    @Override
-    public String toString() {
-        return this.name();
-    }
-
     public static TechnologyTypeEnum fromValue(String value) {
         String element = StringUtils.upperCase(StringUtils.stripAccents(value));
         for (TechnologyTypeEnum technologyTypeEnum : TechnologyTypeEnum.values()) {
@@ -36,5 +27,14 @@ public enum TechnologyTypeEnum {
             }
         }
         throw new IllegalArgumentException("Unkown enum " + value + " , only allowed values are " + Arrays.toString(values()));
+    }
+
+    public String getLabel() {
+        return this.label;
+    }
+
+    @Override
+    public String toString() {
+        return this.name();
     }
 }

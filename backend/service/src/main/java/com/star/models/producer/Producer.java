@@ -23,22 +23,25 @@ import java.util.List;
 public class Producer implements ImportCSV {
 
     @JsonIgnore
-    private String docType;
-
-    @NotBlank(message = "Le champ producerMarketParticipantMrid est obligatoire")
-    private String producerMarketParticipantMrid;
-
-    @NotBlank(message = "Le champ producerMarketParticipantName est obligatoire")
-    private String producerMarketParticipantName;
-
-    @NotBlank(message = "Le champ producerMarketParticipantRoleType est obligatoire")
-    private String producerMarketParticipantRoleType;
-    @JsonIgnore
     private final List<String> headers = Arrays.asList(
             "producerMarketParticipantMrid",
             "producerMarketParticipantName",
             "producerMarketParticipantRoleType"
     );
+    @JsonIgnore
+    private String docType;
+    @NotBlank(message = "Le champ producerMarketParticipantMrid est obligatoire")
+    private String producerMarketParticipantMrid;
+    @NotBlank(message = "Le champ producerMarketParticipantName est obligatoire")
+    private String producerMarketParticipantName;
+    @NotBlank(message = "Le champ producerMarketParticipantRoleType est obligatoire")
+    private String producerMarketParticipantRoleType;
+    @JsonIgnore
+    private String systemOperatorMarketParticipantMrid;
+    @JsonIgnore
+    private String systemOperatorMarketParticipantName;
+    @JsonIgnore
+    private String systemOperatorMarketParticipantRoleType;
 
     @Override
     public List<String> getHeaders() {
@@ -54,11 +57,4 @@ public class Producer implements ImportCSV {
         this.producerMarketParticipantName = csvRecord.get(headers.get(1));
         this.producerMarketParticipantRoleType = csvRecord.get(headers.get(2));
     }
-
-    @JsonIgnore
-    private String systemOperatorMarketParticipantMrid;
-    @JsonIgnore
-    private String systemOperatorMarketParticipantName;
-    @JsonIgnore
-    private String systemOperatorMarketParticipantRoleType;
 }

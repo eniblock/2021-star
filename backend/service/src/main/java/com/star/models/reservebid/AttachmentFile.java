@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AttachmentFile {
-    private String fileId;
     public String fileContent;
+    private String fileId;
 }

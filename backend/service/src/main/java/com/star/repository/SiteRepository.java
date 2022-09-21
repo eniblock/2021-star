@@ -63,8 +63,13 @@ public class SiteRepository {
             if (site != null) {
                 try {
                     contract.submitTransaction(bcApiName, objectMapper.writeValueAsString(site));
-                } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur technique lors de création du site ", exception);
+                } catch (TimeoutException timeoutException) {
+                    throw new TechnicalException("Erreur technique (Timeout exception) lors de création du site ", timeoutException);
+                } catch (InterruptedException interruptedException) {
+                    log.error("Erreur technique (Interrupted Exception) lors de création du site ", interruptedException);
+                    Thread.currentThread().interrupt();
+                } catch (JsonProcessingException jsonProcessingException) {
+                    throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de création du site ", jsonProcessingException);
                 } catch (ContractException contractException) {
                     throw new BusinessException(contractException.getMessage());
                 }

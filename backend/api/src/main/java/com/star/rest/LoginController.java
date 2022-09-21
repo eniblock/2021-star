@@ -31,9 +31,8 @@ import java.util.Map;
 @RestController
 @RequestMapping(LoginController.PATH)
 public class LoginController {
-    private static final String SECRET = "secret";
     public static final String PATH = ApiRestVersion.VERSION + "/login";
-
+    private static final String SECRET = "secret";
     @Value("${keycloak.auth-server-url}")
     private String serverUrl;
 

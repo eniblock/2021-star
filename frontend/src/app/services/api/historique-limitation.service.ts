@@ -121,7 +121,8 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         senderMarketParticipantMrid: '10XFR-RTE------Q', // 10XFR-RTE------Q    17X100A100A0001A
       },
       subOrderList: [],
-      displayedSourceName: "displayedSourceName1"
+      displayedSourceName: "displayedSourceName1",
+      reserveBidMarketDocument: null,
     },
 
     {
@@ -197,7 +198,8 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           senderMarketParticipantMrid: '10XFR-RTE------Q',
         }
       ],
-      displayedSourceName: "displayedSourceName2"
+      displayedSourceName: "displayedSourceName2",
+      reserveBidMarketDocument: null,
     },
   ]);
 };

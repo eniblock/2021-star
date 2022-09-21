@@ -244,6 +244,16 @@ h3 {
     color: white !important;
   }
 }
+.boutonNavigation-white {
+  padding: 10px 40px;
+  border-radius: 35px;
+  background-color: #ffffff;
+  display: inline-block !important;
+  cursor: pointer;
+  span {
+    color: $mat-primary !important;
+  }
+}
 
 // Files uploader
 .uploaderFichier {

@@ -92,14 +92,14 @@ public class HistoriqueLimitationController {
             @Parameter(description = "meteringPointMrid search criteria")
             @RequestParam(required = false, defaultValue = "") String meteringPointMrid,
             @Parameter(description = "typeCriteria search criteria")
-            @RequestParam(required = false, defaultValue = "") String typeCriteria,
+            @RequestParam(required = false, defaultValue = "") String activationType,
             @Parameter(description = "activationReasonList search criteria")
             @RequestParam(required = false, defaultValue = "") String activationReasonList
     ) throws TechnicalException, JsonProcessingException {
-        TypeCriteria activationType = null;
+        TypeCriteria typeCriteria = null;
         List<TypeCriteria> typeCriteriaList = new ArrayList<>();
-        if (StringUtils.isNotBlank(typeCriteria)) {
-            activationType = objectMapper.readValue(typeCriteria, TypeCriteria.class);
+        if (StringUtils.isNotBlank(activationType)) {
+            typeCriteria = objectMapper.readValue(activationType, TypeCriteria.class);
         }
         if (StringUtils.isNotBlank(activationReasonList)) {
             typeCriteriaList = objectMapper.readValue(activationReasonList, objectMapper.getTypeFactory().constructCollectionType(List.class, TypeCriteria.class));
@@ -113,7 +113,7 @@ public class HistoriqueLimitationController {
                 .endCreatedDateTime(endCreatedDateTime)
                 .activationDocumentMrid(activationDocumentMrid)
                 .meteringPointMrid(meteringPointMrid)
-                .activationType(activationType)
+                .activationType(typeCriteria)
                 .activationReasonList(typeCriteriaList)
                 .instance(instance)
                 .build();

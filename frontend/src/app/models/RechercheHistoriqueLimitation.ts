@@ -2,6 +2,7 @@ import {Site} from "./Site";
 import {Producer} from "./Producer";
 import {EnergyAmount} from "./EnergyAmount";
 import {OrdreLimitation} from "./OrdreLimitation";
+import {ReserveBid} from "./ReserveBid";
 
 export interface TypeCriteria {
   messageType: string;
@@ -28,4 +29,5 @@ export interface RechercheHistoriqueLimitationEntite {
   activationDocument: OrdreLimitation,
   subOrderList: OrdreLimitation[],
   displayedSourceName: string,
+  reserveBidMarketDocument: ReserveBid | null
 }

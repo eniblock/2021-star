@@ -30,5 +30,7 @@
 
     REFERENCE_ENERGY_ACCOUNT = 'referenceEnergyAccount',
     PROCESS_TYPE_COMPTAGE = "comptage",
-    PROCESS_TYPE_REFERENCE = "reference"
+    PROCESS_TYPE_REFERENCE = "reference",
+
+    RESERVE_BID_MARKET_DOCUMENT_BASE = "reserveBidMarketDocumentBase"
   }

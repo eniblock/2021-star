@@ -1,0 +1,11 @@
+{
+   "index":{
+      "fields":[
+         "validityPeriodStartDateTime"
+      ]
+   },
+
+   "ddoc":"indexReserveBidStartDateDoc",
+   "name":"indexReserveBidStartDate",
+   "type":"json"
+}

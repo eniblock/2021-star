@@ -1,21 +1,10 @@
 #!/bin/bash
 
 ONLINE_MODE=true
-PAUSE_TIME=0s
-if $ONLINE_MODE
-then
-    PAUSE_TIME=5s
-fi
 
-if $ONLINE_MODE
-then
-    OLD_IFS=$IFS
-    source ../config/config.sh
-    IFS=$OLD_IFS
-fi
-
-DATA_PATH=../data/ActivationDocuments
-
+OLD_IFS=$IFS
+source ./zzz-config.sh
+IFS=$OLD_IFS
 
 echo "***************************************"
 echo "Start of invoke command"
@@ -232,7 +221,12 @@ OUTPUT_RTE=$(
 
 echo "--- process end   $(date +"%T.%3N") ---"
 
+OUTPUT_RTE=$(echo $OUTPUT_RTE | grep -o -P '(?<=").*(?=")')
+OUTPUT_RTE=$(printf "%b" $OUTPUT_RTE)
 
+OUTPUT_ENEDIS_TOPRINT=$(echo $OUTPUT_RTE | sed "s/\\\\\"/\"/g")
+
+echo $OUTPUT_ENEDIS_TOPRINT
 
 
 # echo

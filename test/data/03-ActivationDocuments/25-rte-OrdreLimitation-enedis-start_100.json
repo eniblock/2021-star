@@ -1,0 +1,14 @@
+{
+    "originAutomationRegisteredResourceMrid": "Reconciliation_INCIDENTRTE",
+    "registeredResourceMrid": "SUB_RTE4ENEDIS_4",
+    "orderValue": "RTEtoEnedis_Reconciliation_INCIDENTRTE",
+    "measurementUnitName": "MW",
+    "startCreatedDateTime": "2099-01-01T01:01:01Z",
+    "revisionNumber": "",
+    "messageType": "A54",
+    "businessType": "C55",
+    "reasonCode": "A70",
+    "orderEnd": false,
+    "senderMarketParticipantMrid": "SYSOP_RTE_AD_3",
+    "receiverMarketParticipantMrid": "SYSOP_ENEDIS_AD_5"
+}

@@ -5,6 +5,7 @@ import { ParametersType } from '../enums/ParametersType';
 import { RoleType } from '../enums/RoleType';
 import { HLFServices } from './service/HLFservice';
 import { CommonService } from './service/CommonService';
+import { ReserveBidMarketDocument } from '../model/reserveBidMarketDocument';
 
 
 const enedis_producer = "enedis-producer";
@@ -96,8 +97,6 @@ export class ParametersController {
         const processTypeRefrence: string[] = ["A14", "Z99"];
         parameters.values.set(ParametersType.PROCESS_TYPE_REFERENCE, processTypeRefrence);
 
-
-
         if (identity === OrganizationTypeMsp.ENEDIS) {
             /*
             * ENEDIS
@@ -153,6 +152,22 @@ export class ParametersController {
 
             parameters.values.set(ParametersType.ROLE, role_producer);
 
+            const reserveBidObj: ReserveBidMarketDocument = {
+                reserveBidMrid: '',
+                meteringPointMrid: '',
+                messageType: 'A44',
+                processType: 'A27',
+                senderMarketParticipantMrid: '',
+                receiverMarketParticipantMrid: '',
+                createdDateTime: '',
+                businessType: 'A87',
+                quantityMeasureUnitName: 'MWh',
+                priceMeasureUnitName: '€/MWh',
+                currencyUnitName: '€',
+                flowDirection: '',
+                energyPriceAmount: 0
+            };
+            parameters.values.set(ParametersType.RESERVE_BID_MARKET_DOCUMENT_BASE, reserveBidObj);
 
 
             const valueDataTarget = new Map<string, string[]>();

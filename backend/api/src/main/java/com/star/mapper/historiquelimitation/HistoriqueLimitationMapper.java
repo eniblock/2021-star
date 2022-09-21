@@ -2,6 +2,7 @@ package com.star.mapper.historiquelimitation;
 
 import com.star.dto.historiquelimitation.HistoriqueLimitationDTO;
 import com.star.mapper.energyamount.EnergyAmountMapper;
+import com.star.mapper.reservebid.ReserveBidMapper;
 import com.star.mapper.site.SiteMapper;
 import com.star.models.historiquelimitation.HistoriqueLimitation;
 import org.mapstruct.Mapper;
@@ -15,7 +16,7 @@ import java.util.List;
  */
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {SiteMapper.class, EnergyAmountMapper.class})
+        uses = {SiteMapper.class, EnergyAmountMapper.class, ReserveBidMapper.class})
 public interface HistoriqueLimitationMapper {
 
     HistoriqueLimitationDTO beanToDto(HistoriqueLimitation historiqueLimitation);

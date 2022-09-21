@@ -1,20 +1,10 @@
 #!/bin/bash
 
 ONLINE_MODE=true
-PAUSE_TIME=0s
-if $ONLINE_MODE
-then
-    PAUSE_TIME=5s
-fi
 
-if $ONLINE_MODE
-then
-    OLD_IFS=$IFS
-    source ../config/config.sh
-    IFS=$OLD_IFS
-fi
-
-DATA_PATH=../data/ActivationDocuments
+OLD_IFS=$IFS
+source ./zzz-config.sh
+IFS=$OLD_IFS
 
 echo "***************************************"
 echo "Start of invoke command"
@@ -25,10 +15,10 @@ echo
 echo "** RTE - PRODUCER DATA CREATION"
 echo
 
-RTE_PRODUCERS=$(csvtojson < $DATA_PATH/11-rte-Producer.csv --delimiter=';')
+RTE_PRODUCERS=$(csvtojson < $DATA_PATH/01-MasterData/11-rte-Producer.csv --delimiter=';')
 RTE_PRODUCERS_NB=$(echo $RTE_PRODUCERS | jq 'length')
 
-for i in `seq $RTE_PRODUCERS_NB`
+for i in $(seq $RTE_PRODUCERS_NB)
 do
     tabindex=$(echo ".["$i-1"]")
     RTE_PRODUCERS_VALUE=$(echo $RTE_PRODUCERS | jq $tabindex)
@@ -56,7 +46,7 @@ echo
 echo "** ENEDIS - PRODUCER DATA CREATION"
 echo
 
-ENEDIS_PRODUCERS=$(csvtojson < $DATA_PATH/01-enedis-Producer.csv --delimiter=';')
+ENEDIS_PRODUCERS=$(csvtojson < $DATA_PATH/01-MasterData/01-enedis-Producer.csv --delimiter=';')
 ENEDIS_PRODUCERS_NB=$(echo $ENEDIS_PRODUCERS | jq 'length')
 
 for i in `seq $ENEDIS_PRODUCERS_NB`
@@ -86,7 +76,7 @@ echo
 echo "** RTE - SYSTEMOPERATOR DATA CREATION"
 echo
 
-RTE_SYSTEMOPERATORS=$(csvtojson < $DATA_PATH/12-rte-MarketParticipants.csv --delimiter=';')
+RTE_SYSTEMOPERATORS=$(csvtojson < $DATA_PATH/01-MasterData/12-rte-MarketParticipants.csv --delimiter=';')
 RTE_SYSTEMOPERATORS_NB=$(echo $RTE_SYSTEMOPERATORS | jq 'length')
 
 for i in `seq $RTE_SYSTEMOPERATORS_NB`
@@ -116,7 +106,7 @@ echo
 echo "** ENEDIS - SYSTEMOPERATOR DATA CREATION"
 echo
 
-ENEDIS_SYSTEMOPERATORS=$(csvtojson < $DATA_PATH/02-enedis-MarketParticipants.csv --delimiter=';')
+ENEDIS_SYSTEMOPERATORS=$(csvtojson < $DATA_PATH/01-MasterData/02-enedis-MarketParticipants.csv --delimiter=';')
 ENEDIS_SYSTEMOPERATORS_NB=$(echo $ENEDIS_SYSTEMOPERATORS | jq 'length')
 
 for i in `seq $ENEDIS_SYSTEMOPERATORS_NB`
@@ -159,7 +149,7 @@ echo
 echo "** RTE - SITE DATA CREATION"
 echo
 
-RTE_SITES=$(csvtojson < $DATA_PATH/13-rte-Site.csv --delimiter=';')
+RTE_SITES=$(csvtojson < $DATA_PATH/01-MasterData/13-rte-Site.csv --delimiter=';')
 RTE_SITES_NB=$(echo $RTE_SITES | jq 'length')
 
 for i in `seq $RTE_SITES_NB`
@@ -190,7 +180,7 @@ echo
 echo "** ENEDIS - SITE DATA CREATION"
 echo
 
-ENEDIS_SITES=$(csvtojson < $DATA_PATH/03-enedis-Site.csv --delimiter=';')
+ENEDIS_SITES=$(csvtojson < $DATA_PATH/01-MasterData/03-enedis-Site.csv --delimiter=';')
 ENEDIS_SITES_NB=$(echo $ENEDIS_SITES | jq 'length')
 
 for i in `seq $ENEDIS_SITES_NB`
@@ -219,13 +209,6 @@ done
 
 
 
-echo
-echo "wait $PAUSE_TIME"
-sleep $PAUSE_TIME
-
-
-
-
 
 
 echo "***********************************"
@@ -233,14 +216,14 @@ echo
 echo "** RTE - YELLOWPAGE DATA CREATION"
 echo
 
-RTE_YELLOWPAGES=$(csvtojson < $DATA_PATH/14-YellowPages.csv --delimiter=';')
+RTE_YELLOWPAGES=$(csvtojson < $DATA_PATH/01-MasterData/14-YellowPages.csv --delimiter=';')
 RTE_YELLOWPAGES_NB=$(echo $RTE_YELLOWPAGES | jq 'length')
 
 for i in `seq $RTE_YELLOWPAGES_NB`
 do
     tabindex=$(echo ".["$i-1"]")
     yellowPageMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
-    RTE_YELLOWPAGES_VALUE=$(echo $RTE_YELLOWPAGES | jq $tabindex | jq --arg value $yellowPageMrid '. + {yellowPageMrid: $value}')
+    RTE_YELLOWPAGES_VALUE=$(echo $RTE_YELLOWPAGES | jq $tabindex | jq --arg value "YP_"$yellowPageMrid '. + {yellowPageMrid: $value}')
     RTE_YELLOWPAGES_VALUE_STR=$(echo $RTE_YELLOWPAGES_VALUE | sed "s/\"/\\\\\"/g")
     RTE_YELLOWPAGES_VALUE_STR=${RTE_YELLOWPAGES_VALUE_STR//[$'\t\r\n ']}
 

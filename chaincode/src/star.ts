@@ -23,6 +23,8 @@ import { EligibilityController } from './controller/activationDocument/Eligibili
 import { StarDataStateController } from './controller/StarDataStateController';
 
 import { HLFServices } from './controller/service/HLFservice';
+import { AttachmentFileController } from './controller/AttachmentFileController';
+import { ReserveBidMarketDocumentController } from './controller/ReserveBidMarketDocumentController';
 
 export class Star extends Contract {
 
@@ -674,4 +676,163 @@ export class Star extends Contract {
             throw error;
         }
     }
+
+    /* FILES */
+
+    // /*
+    //     inputStr : file[]
+    // */
+    // public async CreateFiles(
+    //     ctx: Context, inputStr: string) {
+    //     try {
+    //         const params: STARParameters = await ParametersController.getParameterValues(ctx);
+    //         return (await AttachmentFileController.createByList(params, inputStr));
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
+
+    /*
+        inputStr : file id - string
+        output : File
+    */
+    public async GetFileById(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await AttachmentFileController.getById(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /* RESERVE BID MARKET DOCUMENT */
+
+    /*
+        inputStr : reserveBidMarketDocumentCreation
+    */
+    public async CreateReserveBidMarketDocument(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.create(params, inputStr));
+    } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : ReserveBidMarketDocumentFileList
+        output : reserveBidMarketDocument
+    */
+    public async AddFileToReserveBidMarketDocument(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.addFile(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : ReserveBidMarketDocumentFileList
+    */
+    public async RemoveFileFromReserveBidMarketDocument(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.removeFile(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : reserveBidMarketDocumentCreationList
+    */
+    public async CreateReserveBidMarketDocumentList(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.createList(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : ReserveBidMrid - string
+        output : ReserveBidMarketDocument
+    */
+        public async getReserveBidMarketDocumentById(
+            ctx: Context, inputStr: string) {
+            try {
+                const params: STARParameters = await ParametersController.getParameterValues(ctx);
+                return (await ReserveBidMarketDocumentController.getById(params, inputStr));
+            } catch (error) {
+                throw error;
+            }
+        }
+
+    /*
+        inputStr : ReserveBidMrid[] - string[]
+        output : ReserveBidMarketDocument[]
+    */
+        public async getReserveBidMarketDocumentListById(
+            ctx: Context, inputStr: string) {
+            try {
+                const params: STARParameters = await ParametersController.getParameterValues(ctx);
+                return (await ReserveBidMarketDocumentController.getListById(params, inputStr));
+            } catch (error) {
+                throw error;
+            }
+        }
+
+
+    /*
+        inputStr : meteringPointMrid - string
+        output : ReserveBidMarketDocument[]
+    */
+        public async getReserveBidMarketDocumentBySite(
+            ctx: Context, inputStr: string) {
+            try {
+                const params: STARParameters = await ParametersController.getParameterValues(ctx);
+                return (await ReserveBidMarketDocumentController.getByMeteringPointMrid(params, inputStr));
+            } catch (error) {
+                throw error;
+            }
+        }
+
+
+    /*
+        inputStr : meteringPointMrid - string
+        output : ReserveBidMarketDocument[]
+        //Only current and next reserve bid market document
+    */
+        public async getValidReserveBidMarketDocumentBySite(
+            ctx: Context, inputStr: string) {
+            try {
+                const params: STARParameters = await ParametersController.getParameterValues(ctx);
+                return (await ReserveBidMarketDocumentController.getValidByMeteringPointMrid(params, inputStr));
+            } catch (error) {
+                throw error;
+            }
+        }
+
+    /*
+        inputStr : reserveBidMarketDocumentSiteDate
+        output : ReserveBidMarketDocument[]
+        //Only valid
+    */
+        public async getAtDateReserveBidMarketDocumentBySite(
+            ctx: Context, inputStr: string) {
+            try {
+                const params: STARParameters = await ParametersController.getParameterValues(ctx);
+                return (await ReserveBidMarketDocumentController.getAtDateByMeteringPointMrid(params, inputStr));
+            } catch (error) {
+                throw error;
+            }
+        }
+
 }

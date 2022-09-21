@@ -1,0 +1,9 @@
+{
+    "reserveBidMrid": "039d2b4b-2396-4731-900d-77e84d5e329e",
+    "meteringPointMrid": "CART112861",
+    "revisionNumber": "1",
+    "createdDateTime": "2022-09-02T17:01:00Z",
+    "flowDirection": "Offre à la baisse",
+    "energyPriceAmount": 75.55,
+    "attachments" : []
+}

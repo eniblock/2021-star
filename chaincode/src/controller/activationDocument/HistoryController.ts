@@ -24,6 +24,9 @@ import { SiteService } from "../service/SiteService";
 import { StarPrivateDataService } from "../service/StarPrivateDataService";
 import { StarDataService } from "../service/StarDataService";
 import { DataReference } from "../../model/dataReference";
+import { ReserveBidMarketDocument } from "../../model/reserveBidMarketDocument";
+import { ReserveBidMarketDocumentController } from "../ReserveBidMarketDocumentController";
+import { ReserveBidMarketDocumentSiteDate } from "../../model/reserveBidMarketDocumentSiteDate";
 
 export class HistoryInformationInBuilding {
     public historyInformation: Map<string, HistoryInformation> = new Map();
@@ -545,6 +548,31 @@ export class HistoryController {
             //DO nothing except "Not accessible information"
         }
 
+        var reserveBid: ReserveBidMarketDocument = null;
+        if (siteRegistered && siteRegistered.meteringPointMrid) {
+            try {
+                var referenceDateTime: string = activationDocument.startCreatedDateTime;
+                if (!referenceDateTime || referenceDateTime.length === 0) {
+                    if (subOrderList && subOrderList.length > 0) {
+                        referenceDateTime = subOrderList[0].startCreatedDateTime;
+                    }
+                }
+                const criteriaObj: ReserveBidMarketDocumentSiteDate = {
+                    meteringPointMrid: siteRegistered.meteringPointMrid,
+                    referenceDateTime: referenceDateTime,
+                    includeNext: false}
+
+                if (referenceDateTime && referenceDateTime.length > 0) {
+                    const reserveBidList = await ReserveBidMarketDocumentController.getBySiteAndDate(params, criteriaObj);
+                    if (reserveBidList && reserveBidList.length > 0) {
+                        reserveBid = reserveBidList[0];
+                    }
+                }
+            } catch (err) {
+                //DO nothing except "Not accessible information"
+            }
+        }
+
 
 
         const information: HistoryInformation = {
@@ -553,6 +581,7 @@ export class HistoryController {
             site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
             producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
             energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
+            reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
             displayedSourceName: displayedSourceName
         };
 

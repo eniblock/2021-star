@@ -130,7 +130,7 @@ public class EnergyAmountService {
      * @throws IOException
      */
     private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance, boolean creation, String systemOperatorMarketParticipantMrid) throws IOException {
-        if (InstanceEnum.DSO.equals(instance) & fichiers == null || fichiers.size() == 0) {
+        if (InstanceEnum.DSO.equals(instance) & CollectionUtils.isEmpty(fichiers)) {
             throw new IllegalArgumentException("Files must not be empty");
         }
         importUtilsService.checkImportFiles(fichiers, FileExtensionEnum.JSON.getValue());
@@ -245,7 +245,7 @@ public class EnergyAmountService {
                     systemOperators.stream().filter(systemOperator ->
                             StringUtils.equals(systemOperator.getSystemOperatorMarketParticipantMrid(),
                                     receiverMarketParticipantMrid)).findFirst();
-            if (optional.isPresent()) {
+            if (optional.isPresent() && optionalSystemOperator.isPresent()) {
                 SystemOperator systemOperatorReceiverMarketParticipantMrid = optionalSystemOperator.get();
                 energyAmount.setReceiverMarketParticipantMrid(systemOperatorReceiverMarketParticipantMrid.getSystemOperatorMarketParticipantMrid());
                 energyAmount.setReceiverMarketParticipantRole(systemOperatorReceiverMarketParticipantMrid.getSystemOperatorMarketParticipantRoleType());

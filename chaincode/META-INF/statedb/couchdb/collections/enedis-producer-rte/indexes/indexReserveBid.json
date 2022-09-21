@@ -1,0 +1,15 @@
+{
+   "index":{
+      "fields":[
+         "docType","reserveBidMrid","meteringPointMrid","revisionNumber","messageType",
+         "processType","senderMarketParticipantMrid","receiverMarketParticipantMrid",
+         "createdDateTime","validityPeriodStartDateTime","validityPeriodEndDateTime",
+         "businessType","quantityMeasureUnitName","priceMeasureUnitName","currencyUnitName",
+         "flowDirection","energyPriceAmount"
+      ]
+   },
+
+   "ddoc":"indexReserveBidDoc",
+   "name":"indexReserveBid",
+   "type":"json"
+}

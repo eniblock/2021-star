@@ -1,7 +1,6 @@
 package com.star.service;
 
 import com.cloudant.client.api.query.Expression;
-import com.cloudant.client.api.query.Operation;
 import com.cloudant.client.api.query.Selector;
 import com.star.enums.FileExtensionEnum;
 import com.star.enums.InstanceEnum;
@@ -149,24 +148,7 @@ public class SiteService {
                     TSO.equals(siteCrteria.getInstance()) && isSiteHTB(meteringPointMrId)) {
                 selectors.add(Expression.eq(METERING_POINT_MRID, siteCrteria.getMeteringPointMrId()));
             }
-        } else {
-            switch (siteCrteria.getInstance()) {
-                case DSO: // Site HTA (Enedis)
-                    // selectors.add(Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTA + ")+"));
-                    break;
-                case TSO: // Site HBT (RTE)
-                    // selectors.add(Operation.or(
-                    //         Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTB_PDL + ")+"),
-                    //         Expression.regex(METERING_POINT_MRID, REGEX + Site.CODE_SITE_HTB_CART + ")+")
-                    // ));
-                    break;
-                case PRODUCER:
-                    break;
-                default:
-                    break;
-            }
         }
-
         if (isNotEmpty(siteCrteria.getTechnologyType())) {
             List<String> technologies = siteCrteria.getTechnologyType().stream().map(TechnologyTypeEnum::getLabel).collect(toList());
             selectors.add(Expression.in("technologyType", StringUtils.join(technologies, "\",\"")));

@@ -11,6 +11,7 @@ import { ReserveBidMarketDocumentCreationList } from "../model/reserveBidMarketD
 import { ReserveBidMarketDocumentFileIdList } from "../model/reserveBidMarketDocumentFileIdList";
 import { ReserveBidMarketDocumentFileList } from "../model/reserveBidMarketDocumentFileList";
 import { ReserveBidMarketDocumentSiteDate } from "../model/reserveBidMarketDocumentSiteDate";
+import { Site } from "../model/site";
 import { STARParameters } from "../model/starParameters";
 import { AttachmentFileController } from "./AttachmentFileController";
 import { QueryStateService } from "./service/QueryStateService";
@@ -62,6 +63,70 @@ export class ReserveBidMarketDocumentController {
     }
 
 
+
+    private static async getClosedPreviousReserveBid(
+        params: STARParameters,
+        reserveBidObj: ReserveBidMarketDocument): Promise<ReserveBidMarketDocument> {
+        params.logger.debug('============= START : closePreviousReserveBid ReserveBidMarketDocumentController ===========');
+
+        var reserveBidToClose:ReserveBidMarketDocument = null;
+        if (reserveBidObj
+            && reserveBidObj.meteringPointMrid
+            && reserveBidObj.meteringPointMrid.length > 0
+            && reserveBidObj.validityPeriodStartDateTime
+            && reserveBidObj.validityPeriodStartDateTime.length > 0) {
+                const meteringPointMrid: string = reserveBidObj.meteringPointMrid;
+                const date: string = reserveBidObj.validityPeriodStartDateTime;
+
+                const reserveBidToCloseList: ReserveBidMarketDocument[] =
+                    await this.getBySiteAndDate(params, {meteringPointMrid: meteringPointMrid, referenceDateTime: date, includeNext: true});
+
+                if (reserveBidToCloseList) {
+                    if (reserveBidToCloseList.length > 1) {
+                        throw new Error("Error - Reserve Bid Market Document can be only closed when only one exists for current and next periods.")
+                    } else if (reserveBidToCloseList.length > 0) {
+                        reserveBidToClose = reserveBidToCloseList[0];
+                        //Close the ReserveBid
+                        var endDate = new Date (reserveBidObj.validityPeriodStartDateTime);
+                        endDate.setDate(endDate.getDate() - 1);
+                        reserveBidToClose.validityPeriodEndDateTime = JSON.parse(JSON.stringify(endDate));
+                    }
+                }
+            }
+
+        params.logger.debug('=============  END  : closePreviousReserveBid ReserveBidMarketDocumentController ===========');
+        return reserveBidToClose;
+    }
+
+
+    private static async fillObj(
+        params: STARParameters,
+        reserveBidObj: ReserveBidMarketDocument,
+        site: Site): Promise<ReserveBidMarketDocument> {
+        params.logger.debug('============= START : fillObj ReserveBidMarketDocumentController ===========');
+
+        const reserveBidObjBase: ReserveBidMarketDocument = params.values.get(ParametersType.RESERVE_BID_MARKET_DOCUMENT_BASE);
+
+        reserveBidObj.messageType=reserveBidObjBase.messageType;
+        reserveBidObj.processType=reserveBidObjBase.processType;
+        reserveBidObj.businessType=reserveBidObjBase.businessType;
+        reserveBidObj.quantityMeasureUnitName=reserveBidObjBase.quantityMeasureUnitName;
+        reserveBidObj.priceMeasureUnitName=reserveBidObjBase.priceMeasureUnitName;
+        reserveBidObj.currencyUnitName=reserveBidObjBase.currencyUnitName;
+        reserveBidObj.senderMarketParticipantMrid=site.systemOperatorMarketParticipantMrid;
+        reserveBidObj.receiverMarketParticipantMrid=site.producerMarketParticipantMrid;
+        if (!reserveBidObj.validityPeriodStartDateTime
+            || reserveBidObj.validityPeriodStartDateTime.length === 0) {
+            var date: Date = new Date();
+            date.setUTCHours(0,0,0,0);
+            reserveBidObj.validityPeriodStartDateTime = JSON.parse(JSON.stringify(date));
+        }
+
+        params.logger.debug('=============  END  : fillObj ReserveBidMarketDocumentController ===========');
+        return reserveBidObj;
+    }
+
+
     public static async createObj(
         params: STARParameters,
         reserveBidCreationObj: ReserveBidMarketDocumentCreation,
@@ -69,7 +134,7 @@ export class ReserveBidMarketDocumentController {
 
         params.logger.debug('============= START : CreateObj ReserveBidMarketDocumentController ===========');
 
-        const reserveBidObj = reserveBidCreationObj.reserveBid;
+        var reserveBidObj = reserveBidCreationObj.reserveBid;
 
         ReserveBidMarketDocument.schema.validateSync(
             reserveBidObj,
@@ -99,6 +164,7 @@ export class ReserveBidMarketDocumentController {
             throw new Error(`Organisation, ${identity} does not have write access to create a reserve bid market document`);
         }
 
+
         //Get existing sites
         var existingSitesRef:Map<string, DataReference>;
         try {
@@ -112,17 +178,12 @@ export class ReserveBidMarketDocumentController {
         }
 
 
-        try {
-            await StarDataService.getObj(params, {id:reserveBidObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
-        } catch(error) {
-            throw new Error(error.message.concat(' for reserve bid creation'));
+        if (!isRecopy) {
+            const siteRef: DataReference = existingSitesRef.values().next().value;
+            reserveBidObj = await this.fillObj(params, reserveBidObj, siteRef.data);
+
         }
 
-        try {
-            await StarDataService.getObj(params, {id: reserveBidObj.receiverMarketParticipantMrid, docType: DocType.PRODUCER});
-        } catch(error) {
-            throw new Error(error.message.concat(' for reserve bid creation'));
-        }
 
         if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
             reserveBidObj.attachmentsWithStatus = [];
@@ -143,7 +204,12 @@ export class ReserveBidMarketDocumentController {
             }
         }
 
+        const reserveBidObjToClose: ReserveBidMarketDocument = await this.getClosedPreviousReserveBid(params, reserveBidObj);
+
         for (var [key, ] of existingSitesRef) {
+            if (reserveBidObjToClose && reserveBidObjToClose !== null) {
+                await ReserveBidMarketDocumentService.write(params, reserveBidObjToClose, key);
+            }
             await ReserveBidMarketDocumentService.write(params, reserveBidObj, key);
             await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, key);
         }

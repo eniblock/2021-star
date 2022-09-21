@@ -2,6 +2,7 @@ package com.star.mapper.reservebid;
 
 import com.star.dto.reservebid.ReserveBidDTO;
 import com.star.models.reservebid.ReserveBid;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -16,5 +17,8 @@ public interface ReserveBidMapper {
     @Mapping(target = "attachments", ignore = true)
     @Mapping(target = "attachmentsWithStatus", ignore = true)
     ReserveBid dtoToBean(ReserveBidDTO reserveBidDTO);
+
+    @InheritInverseConfiguration
+    ReserveBidDTO beanToDto(ReserveBid reserveBid);
 }
 

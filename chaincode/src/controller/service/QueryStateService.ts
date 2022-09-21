@@ -23,6 +23,13 @@ export class QueryStateService {
         }
         query = query.concat(`]}`);
 
+        //If Limit given
+        if (args.limit && args.limit > 0) {
+            query = query.concat(`,"limit":`);
+            query = query.concat(args.limit.toString());
+        }
+
+
         //If Sort given
         if (args.sort && args.sort.length > 0) {
             query = query.concat(`,"sort":[`);

@@ -7,7 +7,8 @@ package com.star.enums;
 public enum FileExtensionEnum {
 
     CSV("csv"),
-    JSON("json");
+    JSON("json"),
+    PDF("pdf");
 
     private String value;
 

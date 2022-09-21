@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Instance } from 'src/app/models/enum/Instance.enum';
-import { InstanceService } from 'src/app/services/api/instance.service';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {Instance} from 'src/app/models/enum/Instance.enum';
+import {InstanceService} from 'src/app/services/api/instance.service';
 
 const ALL_TSO_COLUMNS_ID: string[] = [
   'technologyType',
@@ -15,6 +15,7 @@ const ALL_TSO_COLUMNS_ID: string[] = [
   'indemnisation',
   'typeLimitation',
   'quantity',
+  'tarifUnitaire',
   'motif',
 ];
 
@@ -30,6 +31,7 @@ const ALL_DSO_COLUMNS_ID: string[] = [
   'indemnisation',
   'typeLimitation',
   'quantity',
+  'tarifUnitaire',
   'motif',
 ];
 
@@ -43,6 +45,7 @@ const ALL_PRODUCER_COLUMNS_ID: string[] = [
   'indemnisation',
   'typeLimitation',
   'quantity',
+  'tarifUnitaire',
   'motif',
 ];
 
@@ -63,7 +66,8 @@ export class LimitationsColumnSelectorComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private instanceService: InstanceService
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     this.instanceService.getTypeInstance().subscribe((instance) => {
@@ -87,7 +91,7 @@ export class LimitationsColumnSelectorComponent implements OnInit {
     // Select initialisation
     this.form
       .get('columns')
-      ?.setValue(this.allColumns.slice(0, this.allColumns.length - 3));
+      ?.setValue(this.allColumns.slice(0, this.allColumns.length));
 
     // Update table columns
     this.formChange();

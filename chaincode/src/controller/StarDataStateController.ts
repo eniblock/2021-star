@@ -1,6 +1,7 @@
 import { DocType } from "../enums/DocType";
 
 import { ActivationDocument } from "../model/activationDocument/activationDocument";
+import { AttachmentFile } from "../model/attachmentFile";
 import { DataReference } from "../model/dataReference";
 import { Site } from "../model/site";
 import { STARParameters } from "../model/starParameters";
@@ -8,9 +9,11 @@ import { STARParameters } from "../model/starParameters";
 import { EligibilityController } from "./activationDocument/EligibilityController";
 import { OrderManagerController } from "./activationDocument/OrderManagerController";
 import { ReconciliationController } from "./activationDocument/ReconciliationController";
+import { AttachmentFileController } from "./AttachmentFileController";
 import { EnergyAccountController } from "./EnergyAccountController";
 import { EnergyAmountController } from "./EnergyAmountController";
 import { ReferenceEnergyAccountController } from "./ReferenceEnergyAccountController";
+import { ReserveBidMarketDocumentController } from "./ReserveBidMarketDocumentController";
 import { SiteController } from "./SiteController";
 
 export class StarDataStateController {
@@ -76,6 +79,13 @@ export class StarDataStateController {
 
                     params.addInMemoryPool(poolKey, updateOrder);
 
+                } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
+                    const data: AttachmentFile = updateOrder.data;
+
+                    const poolKey = updateOrder.collection.concat(data.fileId);
+
+                    params.addInMemoryPool(poolKey, updateOrder);
+
                 }
                 //  else if (updateOrder.docType === DocType.ENERGY_ACCOUNT) {
                 //     const data: EnergyAccount = updateOrder.data;
@@ -94,6 +104,10 @@ export class StarDataStateController {
                     await ReferenceEnergyAccountController.createReferenceEnergyAccountByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
                     await EnergyAmountController.executeOrder(params, updateOrder);
+                } else if (updateOrder.docType === DocType.RESERVE_BID_MARKET_DOCUMENT) {
+                    await ReserveBidMarketDocumentController.createByReference(params, updateOrder);
+                } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
+                    await AttachmentFileController.createByReference(params, updateOrder);
                 }
 
             }

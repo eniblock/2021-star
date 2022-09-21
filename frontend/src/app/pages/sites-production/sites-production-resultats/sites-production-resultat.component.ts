@@ -3,6 +3,11 @@ import {Component, Input, OnInit} from '@angular/core';
 import {RechercheSitesProductionEntite} from 'src/app/models/RechercheSitesProduction';
 import {InstanceService} from "../../../services/api/instance.service";
 import {Instance} from "../../../models/enum/Instance.enum";
+import {MatBottomSheet} from "@angular/material/bottom-sheet";
+import {LimitationsGraphComponent} from "../../limitations/limitations-graph/limitations-graph.component";
+import {
+  SitesProductionAjoutTarifUnitaireComponent
+} from "../sites-production-ajout-tarif-unitaire/sites-production-ajout-tarif-unitaire.component";
 
 @Component({
   selector: 'app-sites-production-resultat',
@@ -21,6 +26,7 @@ export class SitesProductionResultatComponent implements OnInit {
 
   constructor(
     private instanceService: InstanceService,
+    private bottomSheet: MatBottomSheet,
   ) {
   }
 
@@ -39,7 +45,11 @@ export class SitesProductionResultatComponent implements OnInit {
   }
 
   ajoutTarif() {
-    console.log("ajout tarif !")
+    this.bottomSheet.open(SitesProductionAjoutTarifUnitaireComponent, {
+      data: {
+        meteringPointMrid: this.resultat!.meteringPointMrid,
+      }
+    });
   }
 
 }

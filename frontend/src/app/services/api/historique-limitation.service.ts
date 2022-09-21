@@ -199,7 +199,24 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         }
       ],
       displayedSourceName: "displayedSourceName2",
-      reserveBidMarketDocument: null,
+      reserveBidMarketDocument: {
+        reserveBidMrid: 'string',
+        meteringPointMrid: 'string',
+        revisionNumber: 'string',
+        messageType: 'string',
+        processType: 'string',
+        senderMarketParticipantMrid: 'string',
+        receiverMarketParticipantMrid: 'string',
+        createdDateTime: 'string',
+        validityPeriodStartDateTime: 'string',
+        validityPeriodEndDateTime: 'string',
+        businessType: 'string',
+        quantityMeasureUnitName: 'string',
+        priceMeasureUnitName: 'string',
+        currencyUnitName: 'string',
+        flowDirection: 'string',
+        energyPriceAmount: '1.23',
+      },
     },
   ]);
 };

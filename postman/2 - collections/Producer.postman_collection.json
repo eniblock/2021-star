@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "57cb2728-9091-431f-906e-281c9e943438",
+		"_postman_id": "ace0c570-936b-49a3-ae3f-8b692d4f4681",
 		"name": "Producer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "3838263"
@@ -52,6 +52,70 @@
 					],
 					"path": [
 						"producer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Post a reserve bid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "reserveBid",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/reserveBid",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"reserveBid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Post a reserve bid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "reserveBid",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/reserveBid",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"reserveBid"
 					]
 				}
 			},
@@ -155,11 +219,11 @@
 					"query": [
 						{
 							"key": "page",
-							"value": null
+							"value": ""
 						},
 						{
 							"key": "pageSize",
-							"value": null
+							"value": ""
 						},
 						{
 							"key": "order",
@@ -168,40 +232,40 @@
 						},
 						{
 							"key": "bookmark",
-							"value": null
+							"value": ""
 						},
 						{
 							"key": "technologyType",
-							"value": null,
+							"value": "",
 							"description": "Eolien et/ou  Photovoltaïque"
 						},
 						{
 							"key": "producerMarketParticipantMrid",
-							"value": null
+							"value": ""
 						},
 						{
 							"key": "producerMarketParticipantName",
-							"value": null
+							"value": ""
 						},
 						{
 							"key": "siteName",
-							"value": null
+							"value": ""
 						},
 						{
 							"key": "substationName",
-							"value": null
+							"value": ""
 						},
 						{
 							"key": "substationMrid",
-							"value": null
+							"value": ""
 						},
 						{
 							"key": "siteIecCode",
-							"value": null
+							"value": ""
 						},
 						{
 							"key": "meteringPointMrId",
-							"value": null
+							"value": ""
 						}
 					]
 				}

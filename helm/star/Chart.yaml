@@ -25,5 +25,5 @@ appVersion: "0.1.0"
 
 dependencies:
   - name: keycloak
-    version: "0.2.0-develop.118"
+    version: "0.2.0"
     repository: "oci://registry.gitlab.com/xdev-tech/xdev-enterprise-business-network/keycloak/helm"

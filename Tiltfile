@@ -183,7 +183,7 @@ for org in ['enedis', 'producer', 'rte']:
     orderer = read_yaml(values)['releaseName']
     helm_remote('hlf-ord',
         repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-        version="0.1.0-develop.44",
+        version="0.1.0",
         namespace='orderer',
         release_name=orderer,
         values=[values],
@@ -212,7 +212,7 @@ for org in ['enedis', 'rte', 'producer']:
         else:
             helm_remote('hlf-peer',
                 repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-                version="0.1.0-develop.44",
+                version="0.1.0",
                 namespace=org,
                 release_name=peer,
                 values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],

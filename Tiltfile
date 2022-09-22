@@ -105,6 +105,8 @@ local_resource('helm lint',
 
 ############################# hlf #############################
 
+hlf_k8s_version = read_yaml(".gitlab-ci.yml")["variables"]["HLF_K8S_VERSION"]
+
 # image build
 image_build(
     'registry.gitlab.com/xdev-tech/star/chaincode',
@@ -183,7 +185,7 @@ for org in ['enedis', 'producer', 'rte']:
     orderer = read_yaml(values)['releaseName']
     helm_remote('hlf-ord',
         repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-        version="0.1.0",
+        version=hlf_k8s_version,
         namespace='orderer',
         release_name=orderer,
         values=[values],
@@ -212,7 +214,7 @@ for org in ['enedis', 'rte', 'producer']:
         else:
             helm_remote('hlf-peer',
                 repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-                version="0.1.0",
+                version=hlf_k8s_version,
                 namespace=org,
                 release_name=peer,
                 values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],

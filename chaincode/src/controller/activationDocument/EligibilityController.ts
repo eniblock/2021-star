@@ -384,8 +384,8 @@ export class EligibilityController {
                         args.push(`"businessType":"${values[1]}"`);
                         args.push(`"reasonCode":"${values[2]}"`);
 
-                        args.push(`"eligibilityStatus": {"$exists": false}`);
-                        args.push(`"eligibilityStatusEditable":true`);
+                        args.push(`"eligibilityStatus": ${EligibilityStatusType.EligibilityAccepted}`);
+                        args.push(`"eligibilityStatusEditable":false`);
 
                         const query = await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
 

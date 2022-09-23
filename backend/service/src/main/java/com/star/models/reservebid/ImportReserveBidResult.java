@@ -1,6 +1,5 @@
 package com.star.models.reservebid;
 
-import com.star.models.energyamount.EnergyAmount;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

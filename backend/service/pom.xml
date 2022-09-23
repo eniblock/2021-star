@@ -126,6 +126,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/com/star/models/**</exclude>
+                        <exclude>**/com/star/enums/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>

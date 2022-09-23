@@ -6,7 +6,6 @@ import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

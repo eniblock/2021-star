@@ -59,9 +59,11 @@ import static org.apache.commons.lang3.StringUtils.upperCase;
 public class OrdreLimitationService {
     private static final List<String> ELIGIBILITY_STATUS_LIST = Arrays.asList(EligibilityStatusEnum.values())
             .stream()
-            .map(eligibilityStatusEnum -> eligibilityStatusEnum.name())
+            .map(EligibilityStatusEnum::name)
             .collect(toList());
 
+    private static final String IMPORT_ERROR = "import.error";
+    private static final String IMPORT_JSON_ERROR = "import.read.json.error";
     private static final String REVISION_NUMBER = "1";
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
     @Autowired
@@ -109,7 +111,7 @@ public class OrdreLimitationService {
                     }
                     checkEligibilityStatus(ordreLimitation.getEligibilityStatus(), currentErrors);
                     currentErrors.addAll(validator.validate(ordreLimitation).stream().map(violation ->
-                            messageSource.getMessage("import.error",
+                            messageSource.getMessage(IMPORT_ERROR,
                                     new String[]{fichierOrdreLimitation.getFileName(), violation.getMessage()}, null)).collect(toList()));
                     if (isNotEmpty(currentErrors)) {
                         errors.addAll(currentErrors);
@@ -119,7 +121,7 @@ public class OrdreLimitationService {
                 });
             } catch (JsonProcessingException jsonProcessingException) {
                 log.error(jsonProcessingException.getMessage());
-                throw new BusinessException(messageSource.getMessage("import.read.json.error", null, null));
+                throw new BusinessException(messageSource.getMessage(IMPORT_JSON_ERROR, null, null));
             }
         }
         if (isNotEmpty(errors)) {
@@ -195,7 +197,7 @@ public class OrdreLimitationService {
                     }
                     checkEligibilityStatus(ordreLimitation.getEligibilityStatus(), currentErrors);
                     currentErrors.addAll(validator.validate(ordreLimitation).stream().map(violation ->
-                            messageSource.getMessage("import.error",
+                            messageSource.getMessage(IMPORT_ERROR,
                                     new String[]{fichierOrdreLimitation.getFileName(), violation.getMessage()}, null)).collect(toList()));
                     if (isNotEmpty(currentErrors)) {
                         errors.addAll(currentErrors);
@@ -205,7 +207,7 @@ public class OrdreLimitationService {
                 });
             } catch (JsonProcessingException jsonProcessingException) {
                 log.error(jsonProcessingException.getMessage());
-                throw new BusinessException(messageSource.getMessage("import.read.json.error", null, null));
+                throw new BusinessException(messageSource.getMessage(IMPORT_JSON_ERROR, null, null));
             }
         }
         if (isNotEmpty(errors)) {
@@ -269,7 +271,7 @@ public class OrdreLimitationService {
                     }
                     checkEligibilityStatus(ordreLimitation.getEligibilityStatus(), currentErrors);
                     currentErrors.addAll(validator.validate(ordreLimitation).stream().map(violation ->
-                            messageSource.getMessage("import.error",
+                            messageSource.getMessage(IMPORT_ERROR,
                                     new String[]{fichierOrdreLimitation.getFileName(), violation.getMessage()}, null)).collect(toList()));
                     if (isNotEmpty(currentErrors)) {
                         errors.addAll(currentErrors);
@@ -279,7 +281,7 @@ public class OrdreLimitationService {
                 });
             } catch (JsonProcessingException jsonProcessingException) {
                 log.error(jsonProcessingException.getMessage());
-                throw new BusinessException(messageSource.getMessage("import.read.json.error", null, null));
+                throw new BusinessException(messageSource.getMessage(IMPORT_JSON_ERROR, null, null));
             }
         }
         if (isNotEmpty(errors)) {

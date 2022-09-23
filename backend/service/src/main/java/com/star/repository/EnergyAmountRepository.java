@@ -83,11 +83,17 @@ public class EnergyAmountRepository {
     private List<EnergyAmount> writeEnergyAmountsToBc(List<EnergyAmount> energyAmounts, String bcApiName) throws TechnicalException {
         try {
             contract.submitTransaction(bcApiName, objectMapper.writeValueAsString(energyAmounts));
-        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-            throw new TechnicalException("Erreur technique lors de l'enregistrement de l'energy amount ", exception);
+        } catch (TimeoutException timeoutException) {
+            throw new TechnicalException("Erreur technique (Timeout exception) lors de l'enregistrement de l'energy amount ", timeoutException);
+        } catch (InterruptedException interruptedException) {
+            log.error("Erreur technique (Interrupted Exception) lors de l'enregistrement de l'energy amount ", interruptedException);
+            Thread.currentThread().interrupt();
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de l'enregistrement de l'energy amount ", jsonProcessingException);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }
+
         return energyAmounts;
     }
 

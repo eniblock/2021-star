@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 /**
@@ -16,6 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoriqueLimitationCriteria {
+    public List<TypeCriteria> activationReasonList;
+    public TypeCriteria activationType;
     private String originAutomationRegisteredResourceMrid;
     private String producerMarketParticipantMrid;
     private String producerMarketParticipantName;
@@ -24,7 +27,5 @@ public class HistoriqueLimitationCriteria {
     private String endCreatedDateTime;
     private String activationDocumentMrid;
     private String meteringPointMrid;
-    public List<TypeCriteria> activationReasonList;
-    public TypeCriteria activationType;
     private InstanceEnum instance;
 }

@@ -48,7 +48,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 @Slf4j
 public class SiteService {
-    private static final String REGEX = "(?i)(";
     private static final String STRING_REGEX = "[^A-Za-z0-9.,;\\-\\_:!?%]";
     private static final String METERING_POINT_MRID = "meteringPointMrid";
 
@@ -160,7 +159,7 @@ public class SiteService {
         // Vérifier que les ids n'existent pas déjà
         List<String> meteringPointMrids = importSiteResult.getDatas().stream().map(Site::getMeteringPointMrid).collect(toList());
         for (String meteringPointMrId : meteringPointMrids) {
-            boolean existSite = create ? false : this.existSite(meteringPointMrId);
+            boolean existSite = this.existSite(meteringPointMrId);
             // Traitement s'il s'agit d'une création de site.
             if (create && existSite) {
                 importSiteResult.getErrors().add(messageSource.getMessage("import.file.meteringpointmrid.exist.error",

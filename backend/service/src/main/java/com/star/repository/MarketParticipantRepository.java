@@ -49,8 +49,13 @@ public class MarketParticipantRepository {
             if (systemOperator != null) {
                 try {
                     contract.submitTransaction(CREATE_SYSTEM_OPERATOR, objectMapper.writeValueAsString(systemOperator));
-                } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur technique lors de création du market participant", exception);
+                } catch (TimeoutException timeoutException) {
+                    throw new TechnicalException("Erreur technique (Timeout exception) lors de la création du market participant ", timeoutException);
+                } catch (InterruptedException interruptedException) {
+                    log.error("Erreur technique (Interrupted Exception) lors de la création du market participant ", interruptedException);
+                    Thread.currentThread().interrupt();
+                } catch (JsonProcessingException jsonProcessingException) {
+                    throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la création du market participant ", jsonProcessingException);
                 } catch (ContractException contractException) {
                     throw new BusinessException(contractException.getMessage());
                 }

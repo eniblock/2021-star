@@ -1,6 +1,7 @@
 package com.star.models.common;
 
 public class ValidationRegex {
+
     public static final String DATETIME_REGEX = "("
             + "((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)"
             + "|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))"
@@ -16,6 +17,8 @@ public class ValidationRegex {
     public static final String RESOLUTION_REGEX_STR = "PnYnMnDTnHnMnS";
     public static final String DATETIME_INTERVAL_REGEX = DATETIME_REGEX + "/" + DATETIME_REGEX;
     public static final String DATETIME_INTERVAL_REGEX_STR = "YYYY-MM-DDThh:mm:ssZ/YYYY-MM-DDThh:mm:ssZ";
+    private ValidationRegex() {
+    }
 
 
 }

@@ -29,7 +29,7 @@ export class ProducerService {
           .sort(SortHelper.caseInsensitive)
         )
       );
-    if (environment.production) {
+    if (environment.activeCache) {
       // We use a cache in Production
       return this.cacheService.getValueInCacheOrLoadIt<string[]>(
         this.CACHE_KEY,

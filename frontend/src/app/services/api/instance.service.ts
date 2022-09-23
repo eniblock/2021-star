@@ -26,7 +26,7 @@ export class InstanceService {
 
   getTypeInstance(): Observable<Instance> {
     const req = this.httpClient.get<Instance>(`${environment.serverUrl}/instance`);
-    if (environment.production) {
+    if (environment.activeCache) {
       // We use a cache in production
       return this.cacheService.getValueInCacheOrLoadIt<Instance>(
         this.CACHE_KEY_INSTANCE,
@@ -40,7 +40,7 @@ export class InstanceService {
 
   getParticipantName(): Observable<string> {
     const req: any = this.httpClient.get<string>(`${environment.serverUrl}/instance/participantName`, {responseType: 'text'} as any);
-    if (environment.production) {
+    if (environment.activeCache) {
       // We use a cache in production
       return this.cacheService.getValueInCacheOrLoadIt<string>(
         this.CACHE_KEY_PARTICIPANT_NAME,
@@ -54,7 +54,7 @@ export class InstanceService {
 
   getParticipantMrid(): Observable<string> {
     const req: any = this.httpClient.get<string>(`${environment.serverUrl}/instance/participantMrid`, {responseType: 'text'} as any);
-    if (environment.production) {
+    if (environment.activeCache) {
       // We use a cache in production
       return this.cacheService.getValueInCacheOrLoadIt<string>(
         this.CACHE_KEY_PARTICIPANT_MRID,

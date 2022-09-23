@@ -185,7 +185,7 @@ class SiteServiceTest extends AbstractTest {
         siteService.importSite(fileName, csvSiteTsoOk, TSO);
 
         // THEN
-        verify(siteRepository, Mockito.times(0)).existSite(meteringPointMridCaptor.capture());
+        verify(siteRepository, Mockito.times(1)).existSite(meteringPointMridCaptor.capture());
         verify(siteRepository, Mockito.times(1)).saveSites(siteArgumentCaptor.capture());
         assertThat(siteArgumentCaptor.getValue()).hasSize(1);
         List<Site> sites = siteArgumentCaptor.getValue();

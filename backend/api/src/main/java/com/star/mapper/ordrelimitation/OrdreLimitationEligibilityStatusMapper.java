@@ -13,6 +13,7 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface OrdreLimitationEligibilityStatusMapper {
     OrdreLimitationEligibilityStatusDTO beanToDto(OrdreLimitationEligibilityStatus ordreLimitationEligibilityStatus);
+
     @InheritInverseConfiguration
     OrdreLimitationEligibilityStatus dtoToBean(OrdreLimitationEligibilityStatusDTO ordreLimitationEligibilityStatusDTO);
 }

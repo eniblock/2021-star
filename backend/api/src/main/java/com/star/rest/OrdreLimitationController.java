@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -54,6 +55,9 @@ public class OrdreLimitationController {
     private InstanceEnum instance;
 
     @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
     private OrdreLimitationService ordreLimitationService;
 
     @Autowired
@@ -71,7 +75,7 @@ public class OrdreLimitationController {
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreDebutLimitation(
             @Parameter(description = "JSON file containing start limitation order data.")
             @RequestParam MultipartFile[] files) throws BusinessException {
-        Assert.notEmpty(files,"Files must not be empty");
+        Assert.notEmpty(files, messageSource.getMessage("import.files.empty", new String[]{}, null));
         ImportOrdreLimitationResult importOrdreLimitationResult;
         try {
             List<FichierImportation> fichierOrdreLimitations = new ArrayList<>();
@@ -109,7 +113,7 @@ public class OrdreLimitationController {
     public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(
             @Parameter(description = "JSON file containing couple Start/End limit order data.")
             @RequestParam MultipartFile[] files) throws BusinessException {
-        Assert.notEmpty(files,"Files must not be empty");
+        Assert.notEmpty(files, messageSource.getMessage("import.files.empty", new String[]{}, null));
         ImportOrdreLimitationResult importMarketParticipantResult;
         try {
             List<FichierImportation> fichierCoupleOrdreLimitations = new ArrayList<>();
@@ -137,7 +141,7 @@ public class OrdreLimitationController {
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreFinLimitation(
             @Parameter(description = "JSON file containing end limitation order data.")
             @RequestParam MultipartFile[] files) throws BusinessException {
-        Assert.notEmpty(files,"Files must not be empty");
+        Assert.notEmpty(files, messageSource.getMessage("import.files.empty", new String[]{}, null));
         ImportOrdreLimitationResult importOrdreLimitationResult;
         try {
             List<FichierImportation> fichierOrdreLimitations = new ArrayList<>();

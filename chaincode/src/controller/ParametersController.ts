@@ -188,6 +188,7 @@ export class ParametersController {
 
             valueDataTarget.set(OrganizationTypeMsp.RTE, [producer_rte]);
             valueDataTarget.set(producer_rte, [producer_rte]);
+            valueDataTarget.set(RoleType.Role_TSO, [producer_rte]);
 
             valueDataTarget.set(enedis_producer_rte, [enedis_producer_rte]);
 
@@ -221,6 +222,7 @@ export class ParametersController {
 
             valueDataTarget.set(OrganizationTypeMsp.PRODUCER, [producer_rte]);
             valueDataTarget.set(RoleType.Role_Producer, [producer_rte]);
+            valueDataTarget.set(RoleType.Role_TSO, [producer_rte]);
             valueDataTarget.set(producer_rte, [producer_rte]);
 
             valueDataTarget.set(enedis_producer_rte, [enedis_producer_rte]);

@@ -27,6 +27,8 @@ import { DataReference } from "../../model/dataReference";
 import { ReserveBidMarketDocument } from "../../model/reserveBidMarketDocument";
 import { ReserveBidMarketDocumentController } from "../ReserveBidMarketDocumentController";
 import { ReserveBidMarketDocumentSiteDate } from "../../model/reserveBidMarketDocumentSiteDate";
+import { OrganizationTypeMsp } from "../../enums/OrganizationMspType";
+import { EligibilityStatusType } from "../../enums/EligibilityStatusType";
 
 export class HistoryInformationInBuilding {
     public historyInformation: Map<string, HistoryInformation> = new Map();
@@ -459,6 +461,8 @@ export class HistoryController {
         subOrderList: ActivationDocument[],
         siteRegistered: Site,): Promise<HistoryInformationInBuilding> {
 
+        const identity = params.values.get(ParametersType.IDENTITY);
+
         var producer: Producer = null;
         try {
             if (siteRegistered && siteRegistered.producerMarketParticipantMrid) {
@@ -539,8 +543,16 @@ export class HistoryController {
 
 
         var energyAmount: EnergyAmount = null;
+
+        var calculateEnergyAmount: boolean = true;
+        if (identity === OrganizationTypeMsp.PRODUCER) {
+            calculateEnergyAmount =
+                (activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted
+                || activationDocument.eligibilityStatus === EligibilityStatusType.FREligibilityAccepted);
+        }
+
         try {
-            if (activationDocumentForInformation && activationDocumentForInformation.activationDocumentMrid) {
+            if (calculateEnergyAmount && activationDocumentForInformation && activationDocumentForInformation.activationDocumentMrid) {
                 energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(params, activationDocumentForInformation.activationDocumentMrid);
             }
 

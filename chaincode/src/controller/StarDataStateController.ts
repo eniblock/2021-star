@@ -25,6 +25,12 @@ export class StarDataStateController {
 
         orderReferences = await ReconciliationController.getReconciliationState(params);
 
+        params.logger.debug("#######################")
+        params.logger.debug("ooooooooooooooooooooooo")
+        params.logger.debug(JSON.stringify(orderReferences))
+        params.logger.debug("#######################")
+
+
         orderReferences = await EligibilityController.getEligibilityStatusState(params, orderReferences);
 
         var state_str = JSON.stringify(orderReferences);

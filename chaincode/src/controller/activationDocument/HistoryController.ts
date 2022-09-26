@@ -9,12 +9,10 @@ import { HistoryInformation } from "../../model/activationDocument/historyInform
 import { Producer } from "../../model/producer";
 import { Site } from "../../model/site";
 import { STARParameters } from "../../model/starParameters";
-import { YellowPages } from "../../model/yellowPages";
 
 import { ActivationDocumentController } from "./ActivationDocumentController";
 import { EnergyAmountController } from "../EnergyAmountController";
 import { ProducerController } from "../ProducerController";
-import { YellowPagesController } from "../YellowPagesController";
 
 import { ActivationDocumentEligibilityService } from "../service/ActivationDocumentEligibilityService";
 import { ActivationDocumentService } from "../service/ActivationDocumentService";
@@ -29,6 +27,7 @@ import { ReserveBidMarketDocumentController } from "../ReserveBidMarketDocumentC
 import { ReserveBidMarketDocumentSiteDate } from "../../model/reserveBidMarketDocumentSiteDate";
 import { OrganizationTypeMsp } from "../../enums/OrganizationMspType";
 import { EligibilityStatusType } from "../../enums/EligibilityStatusType";
+import { SystemOperatorController } from "../SystemOperatorController";
 
 export class HistoryInformationInBuilding {
     public historyInformation: Map<string, HistoryInformation> = new Map();
@@ -310,10 +309,6 @@ export class HistoryController {
         //     params.logger.debug(JSON.stringify(allActivationDocument[0]))
         //     params.logger.debug("----------------")
         // }
-        const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
-        const identity: string = params.values.get(ParametersType.IDENTITY);
-        const roleUser: string = roleTable.get(identity.toLowerCase());
-
         // const yellowPages: YellowPages[] = await YellowPagesController.getAllYellowPagesObject(params);
         // const ypRegistered: string[] = [];
         // const ypAutomation: string[] = [];
@@ -433,7 +428,6 @@ export class HistoryController {
                 historyInformationInBuilding =
                     await this.consolidateFiltered(
                         params,
-                        roleUser,
                         historyInformationInBuilding,
                         activationDocument,
                         activationDocumentForInformation,
@@ -454,14 +448,32 @@ export class HistoryController {
 
     private static async consolidateFiltered(
         params: STARParameters,
-        roleUser: string,
         historyInformationInBuilding: HistoryInformationInBuilding,
         activationDocument: ActivationDocument,
         activationDocumentForInformation: ActivationDocument,
         subOrderList: ActivationDocument[],
-        siteRegistered: Site,): Promise<HistoryInformationInBuilding> {
+        siteRegistered: Site): Promise<HistoryInformationInBuilding> {
 
-        const identity = params.values.get(ParametersType.IDENTITY);
+        const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
+        const identity: string = params.values.get(ParametersType.IDENTITY);
+        var roleUser: string = roleTable.get(identity.toLowerCase());
+
+        try {
+            if (identity === OrganizationTypeMsp.PRODUCER && siteRegistered && siteRegistered.producerMarketParticipantMrid) {
+                const systemOperator = await SystemOperatorController.getSystemOperatorObjById(params, siteRegistered.systemOperatorMarketParticipantMrid);
+                if (systemOperator && systemOperator.systemOperatorMarketParticipantName){
+                    const roleSystemOperator = roleTable.get(systemOperator.systemOperatorMarketParticipantName.toLowerCase());
+                    if (roleSystemOperator === RoleType.Role_DSO) {
+                        roleUser = RoleType.Role_DSOProducer;
+                    } else if (roleSystemOperator === RoleType.Role_TSO) {
+                        roleUser = RoleType.Role_TSOProducer;
+                    }
+                }
+            }
+        } catch (error) {
+            //DO nothing keep roleUser value as it is
+        }
+
 
         var producer: Producer = null;
         try {
@@ -501,7 +513,7 @@ export class HistoryController {
 
         var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
 
-        if (roleUser === RoleType.Role_TSO) {
+        if (roleUser === RoleType.Role_TSO || roleUser === RoleType.Role_TSOProducer) {
             if(!producer) {
                 displayedSourceName = activationDocument.registeredResourceMrid;
 
@@ -517,7 +529,7 @@ export class HistoryController {
             } else if (siteRegistered) {
                 displayedSourceName = siteRegistered.substationMrid;
             }
-        } else if (roleUser === RoleType.Role_DSO
+        } else if ((roleUser === RoleType.Role_DSO || roleUser === RoleType.Role_DSOProducer)
             && !producer
             && !siteRegistered) {
 

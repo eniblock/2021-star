@@ -23,6 +23,7 @@ export class ReconciliationController {
         params.logger.debug('============= START : getReconciliationState ReconciliationController ===========');
 
         var reconciliationState: ReconciliationState = new ReconciliationState();
+        const activationDocumentIdList: string[] = [];
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity === OrganizationTypeMsp.RTE || identity === OrganizationTypeMsp.ENEDIS) {
@@ -35,22 +36,47 @@ export class ReconciliationController {
                     for (var collection of collections) {
                         var allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(params, query, [collection]);
 
+                        params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
+                        params.logger.debug(JSON.stringify(allResults))
+                        params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
+
                         if (allResults.length > 0) {
                             for (var result of allResults) {
-                                reconciliationState = await this.filterDocument(params, {docType:DocType.ACTIVATION_DOCUMENT, collection:collection, data:result}, reconciliationState);
+                                const idKey = result.activationDocumentMrid.concat("##").concat(collection);
+                                if (!activationDocumentIdList.includes(idKey)) {
+                                    activationDocumentIdList.push(idKey);
+                                    reconciliationState = await this.filterDocument(params, {docType:DocType.ACTIVATION_DOCUMENT, collection:collection, data:result}, reconciliationState);
+                                }
                             }
                         }
                     }
                 }
             }
 
+            params.logger.debug("-----------------------")
+            params.logger.debug("-----------------------")
+            params.logger.debug(JSON.stringify(reconciliationState))
+            params.logger.debug(JSON.stringify([...reconciliationState.endStateRefsMap]))
+            params.logger.debug("-----------------------")
+
+
             if (reconciliationState && reconciliationState.remainingChilds && reconciliationState.remainingChilds.length > 0) {
                 reconciliationState = await ReconciliationController.searchMatchParentWithChild(params, reconciliationState);
             }
+
+            params.logger.debug("- - - - - - - - - - - -")
+            params.logger.debug(JSON.stringify(reconciliationState))
+            params.logger.debug(JSON.stringify([...reconciliationState.endStateRefsMap]))
+            params.logger.debug("- - - - - - - - - - - -")
+
             if (reconciliationState && reconciliationState.startState && reconciliationState.startState.length > 0) {
                 reconciliationState = await ReconciliationController.searchUpdateEndState(params, reconciliationState);
             }
 
+            params.logger.debug("-----------------------")
+            params.logger.debug(JSON.stringify([...reconciliationState.endStateRefsMap]))
+            params.logger.debug("-----------------------")
+            params.logger.debug("-----------------------")
         }
 
         params.logger.debug('=============  END  : getReconciliationState ReconciliationController ===========');

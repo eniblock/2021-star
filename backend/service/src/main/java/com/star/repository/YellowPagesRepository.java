@@ -47,14 +47,17 @@ public class YellowPagesRepository {
         }
         log.info("Sauvegarde de {} YellowPages", yellowPages.size());
         for (YellowPages yellowPage : yellowPages) {
-            if (yellowPage != null) {
-                try {
-                    contract.submitTransaction(CREATE_YELLOW_PAGES, objectMapper.writeValueAsString(yellowPage));
-                } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur technique lors de création du yellow page ", exception);
-                } catch (ContractException contractException) {
-                    throw new BusinessException(contractException.getMessage());
-                }
+            try {
+                contract.submitTransaction(CREATE_YELLOW_PAGES, objectMapper.writeValueAsString(yellowPage));
+            } catch (TimeoutException timeoutException) {
+                throw new TechnicalException("Erreur technique (Timeout exception) lors de la création du yellow page ", timeoutException);
+            } catch (InterruptedException interruptedException) {
+                log.error("Erreur technique (Interrupted Exception) lors de la création du yellow page ", interruptedException);
+                Thread.currentThread().interrupt();
+            } catch (JsonProcessingException jsonProcessingException) {
+                throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la création du yellow page ", jsonProcessingException);
+            } catch (ContractException contractException) {
+                throw new BusinessException(contractException.getMessage());
             }
         }
         return yellowPages;

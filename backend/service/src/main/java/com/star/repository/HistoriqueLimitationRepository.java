@@ -44,8 +44,13 @@ public class HistoriqueLimitationRepository {
                     objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
                     })
                     : returnedArray;
-        } catch (JsonProcessingException | TimeoutException | InterruptedException exception) {
-            throw new TechnicalException("Erreur technique lors de la recherche des historiques de limitation", exception);
+        } catch (TimeoutException timeoutException) {
+            throw new TechnicalException("Erreur technique (Timeout exception) de la recherche des historiques de limitation ", timeoutException);
+        } catch (InterruptedException interruptedException) {
+            log.error("Erreur technique (Interrupted Exception) de la recherche des historiques de limitation ", interruptedException);
+            Thread.currentThread().interrupt();
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new TechnicalException("Erreur technique (JsonProcessing Exception) de la recherche des historiques de limitation ", jsonProcessingException);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }

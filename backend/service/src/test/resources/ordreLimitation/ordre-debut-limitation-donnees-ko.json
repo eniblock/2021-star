@@ -5,6 +5,6 @@
     "messageType": "message type",
     "businessType": "business Type",
     "reasonCode": "reason code",
-    "orderEnd": false
+    "orderEnd": true
   }
 ]

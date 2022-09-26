@@ -56,3 +56,5 @@ logging:
       springframework: WARN
       hyperledger:
         fabric: WARN
+csrf:
+  disable: false

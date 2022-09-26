@@ -212,7 +212,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         validityPeriodEndDateTime: 'string',
         businessType: 'string',
         quantityMeasureUnitName: 'string',
-        priceMeasureUnitName: 'string',
+        priceMeasureUnitName: '€/MWh',
         currencyUnitName: 'string',
         flowDirection: 'string',
         energyPriceAmount: '1.23',

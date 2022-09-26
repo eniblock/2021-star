@@ -65,7 +65,7 @@
 
   <ng-container matColumnDef="tarifUnitaire">
     <th mat-header-cell *matHeaderCellDef> {{ 'tarifUnitaire' | LimitationTableFieldPipe }} </th>
-    <td mat-cell *matCellDef="let element"> {{ element.reserveBidMarketDocument != null ? element.reserveBidMarketDocument.energyPriceAmount + ' €/MWh' : ''}}</td>
+    <td mat-cell *matCellDef="let element"> {{ element.reserveBidMarketDocument != null ? element.reserveBidMarketDocument.energyPriceAmount + ' ' + element.reserveBidMarketDocument.priceMeasureUnitName : '' }}</td>
   </ng-container>
 
   <ng-container matColumnDef="motif">

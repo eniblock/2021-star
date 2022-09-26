@@ -138,6 +138,12 @@ export class ParametersController {
             activationDocumentEligibility.push("D01-Z02-A70");
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_ELIGIBILITY, activationDocumentEligibility);
 
+            const automaticEligibility: string[] = [];
+            //messageType + "-" + businessType + "-" + reasonCode
+            automaticEligibility.push("D01-Z03-Y98");
+            automaticEligibility.push("D01-Z02-A70");
+            parameters.values.set(ParametersType.AUTOMATIC_ELIGIBILITY, automaticEligibility);
+
             const valueEnergy: string[] = [];
             valueEnergy.push(enedis_producer);
             parameters.values.set(ParametersType.REFERENCE_ENERGY_ACCOUNT, valueEnergy);
@@ -182,6 +188,7 @@ export class ParametersController {
 
             valueDataTarget.set(OrganizationTypeMsp.RTE, [producer_rte]);
             valueDataTarget.set(producer_rte, [producer_rte]);
+            valueDataTarget.set(RoleType.Role_TSO, [producer_rte]);
 
             valueDataTarget.set(enedis_producer_rte, [enedis_producer_rte]);
 
@@ -215,6 +222,7 @@ export class ParametersController {
 
             valueDataTarget.set(OrganizationTypeMsp.PRODUCER, [producer_rte]);
             valueDataTarget.set(RoleType.Role_Producer, [producer_rte]);
+            valueDataTarget.set(RoleType.Role_TSO, [producer_rte]);
             valueDataTarget.set(producer_rte, [producer_rte]);
 
             valueDataTarget.set(enedis_producer_rte, [enedis_producer_rte]);

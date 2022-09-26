@@ -58,7 +58,6 @@ public class EnergyAmountService {
 
     private static final String REVISION_NUMBER = "1";
     private static final String ARE_DOMAIN_HTA = "17X100A100A0001A"; // TSO
-    private static final String ARE_DOMAIN_HTB = "10XFR-RTE------Q"; // DSO
 
     @Autowired
     private MessageSource messageSource;
@@ -130,7 +129,7 @@ public class EnergyAmountService {
      * @throws IOException
      */
     private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance, boolean creation, String systemOperatorMarketParticipantMrid) throws IOException {
-        if (InstanceEnum.DSO.equals(instance) & CollectionUtils.isEmpty(fichiers)) {
+        if (InstanceEnum.DSO.equals(instance) && CollectionUtils.isEmpty(fichiers)) {
             throw new IllegalArgumentException("Files must not be empty");
         }
         importUtilsService.checkImportFiles(fichiers, FileExtensionEnum.JSON.getValue());

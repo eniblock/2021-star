@@ -123,6 +123,7 @@ export class FormLimitationsRechercheComponent implements OnInit {
     };
     form.activationReasonList = null;
     form.activationType = null;
+    const activationReasonList: TypeCriteria [] = [];
     if (this.form.value.motifName) {
       const selectedMotifs = nameToMotif(this.form.value.motifName, this.marketParticipantMrid);
       if (selectedMotifs) {
@@ -134,19 +135,15 @@ export class FormLimitationsRechercheComponent implements OnInit {
            };
            form.activationType = JSON.stringify(typeCriteria);
           } else if (selectedMotifs.length > 1) {
-            const activationReasonList: TypeCriteria [] = [];
-            selectedMotifs.forEach(selectedMotif => {
-              const typeCriteria : TypeCriteria = {
-                businessType: selectedMotif.businessType,
-                messageType: selectedMotif.messageType,
-                reasonCode: selectedMotif.reasonCode,
-              };
-              activationReasonList.push(typeCriteria);
-            });
-            form.activationReasonList = JSON.stringify(activationReasonList);
+            selectedMotifs.forEach(selectedMotif =>  activationReasonList.push(this.getTypeCriteriaFromMotif(selectedMotif)));
           }
       }
+    } else {
+      if (this.form.value.typeLimitation && (this.motifs && this.motifs.length > 0)) {
+        this.motifs.forEach(motif => activationReasonList.push(this.getTypeCriteriaFromMotif(motif)));
+      }
     }
+    form.activationReasonList = JSON.stringify(activationReasonList);
     this.formSubmit.emit(form);
   }
 
@@ -159,6 +156,15 @@ export class FormLimitationsRechercheComponent implements OnInit {
   private filter(value: string, options: string[]): string[] {
     const filterValue = value.toLowerCase();
     return options.filter(opt => opt.toLowerCase().includes(filterValue));
+  }
+
+  private getTypeCriteriaFromMotif(motif: Motif): TypeCriteria {
+    const typeCriteria : TypeCriteria = {
+      businessType: motif.businessType,
+      messageType: motif.messageType,
+      reasonCode: motif.reasonCode,
+    };
+    return typeCriteria;
   }
 
   private validateDates(control: AbstractControl): ValidationErrors | null {

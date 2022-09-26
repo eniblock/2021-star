@@ -33,8 +33,10 @@ export class HLFServices {
         if (collectionMap) {
             if (!target || target.length === 0) {
                 collection = collectionMap.get(ParametersType.DEFAULT)[0];
-            } else {
+            } else if (collectionMap.has(target)) {
                 collection = collectionMap.get(target)[0];
+            } else {
+                collection = collectionMap.get(ParametersType.DEFAULT)[0];
             }
         }
 

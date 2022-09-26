@@ -15,6 +15,8 @@
 
     ACTIVATION_DOCUMENT_RULES = 'activationDocumentRules',
     ACTIVATION_DOCUMENT_ELIGIBILITY = 'activationDocumentEligibility',
+    AUTOMATIC_ELIGIBILITY = 'automaticEligibility',
+
     PPCO_TIME_THRESHOLD = 'pPCOTimeThershold',
     PC_TIME_MATCH_THRESHOLD = 'pCTimeMatchThreshold',
     PC_TIME_UPDATEEND_MATCH_THRESHOLD = 'pCTimeUpdateEndMatchThreshold',

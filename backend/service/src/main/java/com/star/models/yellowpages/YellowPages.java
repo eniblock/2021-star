@@ -25,25 +25,21 @@ import static java.util.UUID.randomUUID;
 public class YellowPages implements ImportCSV {
 
     @JsonIgnore
-    private String docType;
-
-    @NotBlank(message = "Le champ yellowPageMrid est obligatoire")
-    private String yellowPageMrid;
-
-    @NotBlank(message = "Le champ originAutomationRegisteredResourceMrid est obligatoire")
-    private String originAutomationRegisteredResourceMrid;
-
-    @NotBlank(message = "Le champ registeredResourceMrid est obligatoire")
-    private String registeredResourceMrid;
-
-    @NotBlank(message = "Le champ systemOperatorMarketParticipantMrid est obligatoire")
-    private String systemOperatorMarketParticipantMrid;
-    @JsonIgnore
     private final List<String> headers = Arrays.asList(
             "originAutomationRegisteredResourceMrid",
             "registeredResourceMrid",
             "systemOperatorMarketParticipantMrid"
     );
+    @JsonIgnore
+    private String docType;
+    @NotBlank(message = "Le champ yellowPageMrid est obligatoire")
+    private String yellowPageMrid;
+    @NotBlank(message = "Le champ originAutomationRegisteredResourceMrid est obligatoire")
+    private String originAutomationRegisteredResourceMrid;
+    @NotBlank(message = "Le champ registeredResourceMrid est obligatoire")
+    private String registeredResourceMrid;
+    @NotBlank(message = "Le champ systemOperatorMarketParticipantMrid est obligatoire")
+    private String systemOperatorMarketParticipantMrid;
 
     @Override
     public List<String> getHeaders() {

@@ -22,6 +22,9 @@ target/
 *.iml
 *.ipr
 
+### VS CODE ###
+.vscode
+
 
 
  compiled output

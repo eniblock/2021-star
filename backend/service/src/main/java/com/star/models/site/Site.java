@@ -29,10 +29,27 @@ public class Site implements ImportCSV {
     public static final String CODE_SITE_HTA = "PRM";
     public static final String CODE_SITE_HTB_PDL = "PDL";
     public static final String CODE_SITE_HTB_CART = "CART";
-
+    @JsonIgnore
+    private final List<String> headers = Arrays.asList(
+            "meteringPointMrid",
+            "systemOperatorMarketParticipantMrid",
+            "producerMarketParticipantMrid",
+            "marketEvaluationPointMrid",
+            "schedulingEntityRegisteredResourceMrid",
+            "technologyType",
+            "siteType",
+            "siteName",
+            "siteAdminMrid",
+            "siteLocation",
+            "siteIecCode",
+            "substationMrid",
+            "substationName",
+            "systemOperatorEntityFlexibilityDomainMrid",
+            "systemOperatorEntityFlexibilityDomainName",
+            "systemOperatorCustomerServiceName"
+    );
     @JsonIgnore
     private String docType;
-
     @NotBlank(message = "Le champ systemOperatorMarketParticipantMrid est obligatoire")
     private String systemOperatorMarketParticipantMrid;
     @ValueOfEnum(enumClass = TechnologyTypeEnum.class, message = " must be any of Eolien/Photovoltaïque")
@@ -60,26 +77,14 @@ public class Site implements ImportCSV {
     private String systemOperatorMarketParticipantName;
     private String producerMarketParticipantName;
 
+    public static boolean isSiteHTA(String meteringPointMrid) {
+        return equalsIgnoreCase(Site.CODE_SITE_HTA, substring(meteringPointMrid, 0, 3));
+    }
 
-    @JsonIgnore
-    private final List<String> headers = Arrays.asList(
-            "meteringPointMrid",
-            "systemOperatorMarketParticipantMrid",
-            "producerMarketParticipantMrid",
-            "marketEvaluationPointMrid",
-            "schedulingEntityRegisteredResourceMrid",
-            "technologyType",
-            "siteType",
-            "siteName",
-            "siteAdminMrid",
-            "siteLocation",
-            "siteIecCode",
-            "substationMrid",
-            "substationName",
-            "systemOperatorEntityFlexibilityDomainMrid",
-            "systemOperatorEntityFlexibilityDomainName",
-            "systemOperatorCustomerServiceName"
-    );
+    public static boolean isSiteHTB(String meteringPointMrid) {
+        return equalsIgnoreCase(Site.CODE_SITE_HTB_CART, substring(meteringPointMrid, 0, 4)) ||
+                equalsIgnoreCase(Site.CODE_SITE_HTB_PDL, substring(meteringPointMrid, 0, 3));
+    }
 
     @Override
     public List<String> getHeaders() {
@@ -107,14 +112,5 @@ public class Site implements ImportCSV {
         this.systemOperatorEntityFlexibilityDomainMrid = csvRecord.get(headers.get(13));
         this.systemOperatorEntityFlexibilityDomainName = csvRecord.get(headers.get(14));
         this.systemOperatorCustomerServiceName = csvRecord.get(headers.get(15));
-    }
-
-    public static boolean isSiteHTA(String meteringPointMrid) {
-        return equalsIgnoreCase(Site.CODE_SITE_HTA, substring(meteringPointMrid, 0, 3));
-    }
-
-    public static boolean isSiteHTB(String meteringPointMrid) {
-        return equalsIgnoreCase(Site.CODE_SITE_HTB_CART, substring(meteringPointMrid, 0, 4)) ||
-                equalsIgnoreCase(Site.CODE_SITE_HTB_PDL, substring(meteringPointMrid, 0, 3));
     }
 }

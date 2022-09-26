@@ -535,6 +535,25 @@ export class Values {
         eligibilityStatusEditable: true
     }
 
+    public static HTB_ActivationDocument_HTA_JustStartDate2: ActivationDocument = {
+        activationDocumentMrid: "8c56459a-794a-4ed1-a7f6-33b0064508f22",
+        originAutomationRegisteredResourceMrid: Values.HTA_yellowPage.originAutomationRegisteredResourceMrid,
+        registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
+        measurementUnitName: "MW",
+        messageType: "string",
+        businessType: "string",
+
+        orderEnd: false,
+        orderValue: "1",
+        startCreatedDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
+        revisionNumber: "1",
+        reasonCode: "string",
+        senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
+        receiverMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
+        eligibilityStatusEditable: true
+    }
+
+
 
 
     /*********************************************/

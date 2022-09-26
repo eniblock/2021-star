@@ -530,26 +530,66 @@ export class ReserveBidMarketDocumentController {
     public static async getBySiteAndDate(params: STARParameters, criteriaObj: ReserveBidMarketDocumentSiteDate): Promise<ReserveBidMarketDocument[]> {
         params.logger.debug('============= START : getBySiteAndDate ReserveBidMarketDocumentController ===========');
 
+        if (!criteriaObj.referenceDateTime || criteriaObj.referenceDateTime.length == 0) {
+            var date: Date = new Date();
+            date.setUTCHours(0,0,0,0);
+            criteriaObj.referenceDateTime =  JSON.parse(JSON.stringify(date));
+        }
+
         var args: string[] = [];
         args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
 
-        var argOrStart: string[] = [];
-        argOrStart.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
-        argOrStart.push(`"validityPeriodStartDateTime":""`);
-        argOrStart.push(`"validityPeriodStartDateTime":{"$exists": false}`);
-        args.push(await QueryStateService.buildORCriteria(argOrStart));
+        // var argOrStart: string[] = [];
+        // argOrStart.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
+        // argOrStart.push(`"validityPeriodStartDateTime":""`);
+        // argOrStart.push(`"validityPeriodStartDateTime":{"$exists": false}`);
+        // args.push(await QueryStateService.buildORCriteria(argOrStart));
+        args.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
+
+        var argOrEnd: string[] = [];
+        argOrEnd.push(`"validityPeriodEndDateTime":{"$gte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
+        argOrEnd.push(`"validityPeriodEndDateTime":""`);
+        argOrEnd.push(`"validityPeriodEndDateTime":{"$exists": false}`);
+        args.push(await QueryStateService.buildORCriteria(argOrEnd));
 
 
-        if (!criteriaObj.includeNext) {
+        const query = await QueryStateService.buildQuery(
+            {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
+            queryArgs: args,
+            sort: [`"validityPeriodStartDateTime":"desc"`],
+            limit:1});
+        const allResultsWithoutAnyLimit = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query);
+        var allResults:ReserveBidMarketDocument[] = [];
+
+        //Private Data Collection Management doesn't take limit
+        //First has to be manually extracted after request
+        if (allResultsWithoutAnyLimit && allResultsWithoutAnyLimit.length > 0) {
+            allResults.push(allResultsWithoutAnyLimit[0]);
+        }
+
+        // Next Period data Management
+
+        if (criteriaObj.includeNext) {
+            var argsNext: string[] = [];
+            argsNext.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
+
+            argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
+
             var argOrEnd: string[] = [];
             argOrEnd.push(`"validityPeriodEndDateTime":{"$gte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
             argOrEnd.push(`"validityPeriodEndDateTime":""`);
             argOrEnd.push(`"validityPeriodEndDateTime":{"$exists": false}`);
-            args.push(await QueryStateService.buildORCriteria(argOrEnd));
-        }
+            argsNext.push(await QueryStateService.buildORCriteria(argOrEnd));
 
-        const query = await QueryStateService.buildQuery({documentType: DocType.RESERVE_BID_MARKET_DOCUMENT, queryArgs: args, sort: [`"validityPeriodStartDateTime":"asc"`]});
-        const allResults = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query);
+            const queryNext = await QueryStateService.buildQuery(
+                {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
+                queryArgs: argsNext,
+                sort: [`"validityPeriodStartDateTime":"asc"`]});
+            const allResultsNext = await ReserveBidMarketDocumentService.getQueryArrayResult(params, queryNext);
+            if (allResultsNext) {
+                allResults = allResults.concat(allResultsNext);
+            }
+        }
 
         params.logger.debug('=============  END  : getBySiteAndDate ReserveBidMarketDocumentController ===========');
         return allResults;

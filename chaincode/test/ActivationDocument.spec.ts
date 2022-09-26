@@ -981,7 +981,7 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument_valid.potentialParent= true;
             activationDocument_valid.potentialChild= false;
 
-            const activationDocument01_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            var activationDocument01_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate2));
             activationDocument01_garbage.docType=DocType.ACTIVATION_DOCUMENT;
             activationDocument01_garbage.startCreatedDateTime = Values.reduceDateTimeStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
             activationDocument01_garbage.potentialParent= true;
@@ -1047,29 +1047,6 @@ describe('Star Tests ActivationDocument', () => {
             childEndDocument.potentialParent = false;
             childEndDocument.potentialChild = true;
             childEndDocument.docType=DocType.ACTIVATION_DOCUMENT;
-
-            const senderMarketParticipantMrid: string = childEndDocument.senderMarketParticipantMrid as string;
-            const registeredResourceMrid: string = childEndDocument.registeredResourceMrid;
-
-            const queryDate: string = childEndDocument.endCreatedDateTime as string;
-
-            const pcuetmt:number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
-
-            const datetmp = new Date(queryDate);
-            datetmp.setUTCHours(0,0,0,0);
-            const dateYesterday = new Date(datetmp.getTime() - pcuetmt);
-
-            var args: string[] = [];
-            args.push(`"orderEnd":false`);
-            args.push(`"senderMarketParticipantMrid":"${senderMarketParticipantMrid}"`);
-            args.push(`"registeredResourceMrid":"${registeredResourceMrid}"`);
-            args.push(`"messageType":{"$in":["A54","A98"]}`);
-            args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateYesterday)},"$lte":${JSON.stringify(queryDate)}}`);
-
-            const query = await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
-
-            const iterator = Values.getActivationDocumentQueryMock(parentStartDocument, mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, query).resolves(iterator);
 
             const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
             const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentStartDocument, childEndDocument, mockHandler);

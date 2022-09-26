@@ -13,6 +13,7 @@ import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -55,36 +56,56 @@ public class OrdreLimitationRepository {
         try {
             contract.submitTransaction(CREATE_LIST, objectMapper.writeValueAsString(ordreLimitations));
             this.reconciliate();
-        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-            throw new TechnicalException("Erreur technique lors de création de l'ordre de limitation ", exception);
+        } catch (TimeoutException timeoutException) {
+            throw new TechnicalException("Erreur technique (Timeout exception) lors de la création de l'ordre de limitation ", timeoutException);
+        } catch (InterruptedException interruptedException) {
+            log.error("Erreur technique (Interrupted Exception) lors de la création de l'ordre de limitation ", interruptedException);
+            Thread.currentThread().interrupt();
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la création de l'ordre de limitation ", jsonProcessingException);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }
+
         return ordreLimitations;
     }
 
     public List<OrdreLimitation> findOrderByQuery(String query) throws TechnicalException {
+        List<OrdreLimitation> results = new ArrayList<>();
         try {
             this.reconciliate();
             byte[] response = contract.evaluateTransaction(GET_ORDER_BY_QUERY, query);
-            return response != null ? Arrays.asList(objectMapper.readValue(new String(response), OrdreLimitation[].class)) : emptyList();
-        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-            throw new TechnicalException("Erreur technique lors de la recherche des ordres de limitation", exception);
+            results = response != null ? Arrays.asList(objectMapper.readValue(new String(response), OrdreLimitation[].class)) : emptyList();
+        } catch (TimeoutException timeoutException) {
+            throw new TechnicalException("Erreur technique (Timeout exception)  ", timeoutException);
+        } catch (InterruptedException interruptedException) {
+            log.error("Erreur technique (Interrupted Exception) ", interruptedException);
+            Thread.currentThread().interrupt();
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new TechnicalException("Erreur technique (JsonProcessing Exception) ", jsonProcessingException);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }
+        return results;
     }
 
     public List<OrdreLimitation> findLimitationOrders(String query) throws TechnicalException {
+        List<OrdreLimitation> results = new ArrayList<>();
         try {
             this.reconciliate();
             byte[] response = contract.evaluateTransaction(GET_BY_QUERY, query);
-            return response != null ? Arrays.asList(objectMapper.readValue(new String(response), OrdreLimitation[].class)) : emptyList();
-        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-            throw new TechnicalException("Erreur technique lors de la recherche des sites", exception);
+            results = response != null ? Arrays.asList(objectMapper.readValue(new String(response), OrdreLimitation[].class)) : emptyList();
+        } catch (TimeoutException timeoutException) {
+            throw new TechnicalException("Erreur technique (Timeout exception)  ", timeoutException);
+        } catch (InterruptedException interruptedException) {
+            log.error("Erreur technique (Interrupted Exception) ", interruptedException);
+            Thread.currentThread().interrupt();
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new TechnicalException("Erreur technique (JsonProcessing Exception) ", jsonProcessingException);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }
+        return results;
     }
 
     public void updateOrdreDebutEligibilityStatus(OrdreLimitationEligibilityStatus ordreLimitationEligibilityStatus) throws BusinessException, TechnicalException {
@@ -92,12 +113,18 @@ public class OrdreLimitationRepository {
         try {
             contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_ELIGIBILITY_STATUS, objectMapper.writeValueAsString(ordreLimitationEligibilityStatus));
             this.reconciliate();
-        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-            throw new TechnicalException("Erreur technique lors de la modification de eligibility Status ", exception);
+        } catch (TimeoutException timeoutException) {
+            throw new TechnicalException("Erreur technique (Timeout exception)  ", timeoutException);
+        } catch (InterruptedException interruptedException) {
+            log.error("Erreur technique (Interrupted Exception) ", interruptedException);
+            Thread.currentThread().interrupt();
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new TechnicalException("Erreur technique (JsonProcessing Exception) ", jsonProcessingException);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }
     }
+
     public void reconciliate() throws ContractException, TimeoutException, InterruptedException {
         byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
         if (evaluateTransaction != null && evaluateTransaction.length > 2) {

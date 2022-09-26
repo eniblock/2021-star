@@ -13,8 +13,8 @@
         "senderMarketParticipantRole": "A50",
         "receiverMarketParticipantMrid": "PROD_RTE_AD_1",
         "receiverMarketParticipantRole": "A32",
-        "createdDateTime": "2020-01-01T01:01:01Z",
-        "timeInterval": "2020-01-01T01:01:01Z/"
+        "createdDateTime": "2035-01-01T01:01:01Z",
+        "timeInterval": "2035-01-01T01:01:01Z/2035-01-01T01:51:51Z"
     },
     {
         "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_1",
@@ -30,8 +30,8 @@
         "senderMarketParticipantRole": "A50",
         "receiverMarketParticipantMrid": "PROD_RTE_AD_1",
         "receiverMarketParticipantRole": "A32",
-        "createdDateTime": "2025-01-01T01:01:01Z",
-        "timeInterval": "2025-01-01T01:01:01Z/"
+        "createdDateTime": "2035-01-01T01:11:11Z",
+        "timeInterval": "2035-01-01T01:11:11Z/2035-01-01T01:41:41Z"
     },
     {
         "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_2",
@@ -47,8 +47,8 @@
         "senderMarketParticipantRole": "A50",
         "receiverMarketParticipantMrid": "PROD_ENEDIS_AD_2",
         "receiverMarketParticipantRole": "A32",
-        "createdDateTime": "2025-02-02T02:02:02Z",
-        "timeInterval": "2025-02-02T02:02:02Z/"
+        "createdDateTime": "2035-02-02T02:02:02Z",
+        "timeInterval": "2035-02-02T02:02:02Z/2035-02-02T02:02:03Z"
     },
     {
         "registeredResourceMrid": "PRM_SITE_ENEDIS_AD_3",

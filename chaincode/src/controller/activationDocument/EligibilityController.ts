@@ -3,6 +3,7 @@ import { DocType } from '../../enums/DocType';
 import { EligibilityStatusType } from '../../enums/EligibilityStatusType';
 import { OrganizationTypeMsp } from '../../enums/OrganizationMspType';
 import { ParametersType } from '../../enums/ParametersType';
+import { RoleType } from '../../enums/RoleType';
 
 import { ActivationDocument } from '../../model/activationDocument/activationDocument';
 import { EligibilityStatus } from '../../model/activationDocument/eligibilityStatus';
@@ -23,6 +24,7 @@ import { ReserveBidMarketDocumentController } from '../ReserveBidMarketDocumentC
 import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
 import { ActivationDocumentService } from '../service/ActivationDocumentService';
 import { HLFServices } from '../service/HLFservice';
+import { QueryStateService } from '../service/QueryStateService';
 import { StarDataService } from '../service/StarDataService';
 import { StarPrivateDataService } from '../service/StarPrivateDataService';
 
@@ -110,7 +112,9 @@ export class EligibilityController {
         if (targetArrayValue && targetArrayValue.length >0 ) {
             var finalTargetArrayValues:string[] = [];
             for (var value of targetArrayValue) {
-                finalTargetArrayValues.push(value.toLowerCase());
+                if (!finalTargetArrayValues.includes(value.toLowerCase())) {
+                    finalTargetArrayValues.push(value.toLowerCase());
+                }
             }
             finalTargetArrayValues.sort();
             targetKey = finalTargetArrayValues.join(ParametersController.targetJoinSeparator);
@@ -346,6 +350,80 @@ export class EligibilityController {
     }
 
 
+    private static async getAutomaticEligibles(params: STARParameters, activationDocumentMridList: string[]): Promise<DataReference[]> {
+        params.logger.debug('============= START : getAutomaticEligibles - EligibilityController ===========');
+        var eligibilityReferences: DataReference[] = [];
+
+        const collection: string = await HLFServices.getCollectionFromParameters(params, ParametersType.DATA_TARGET, RoleType.Role_Producer);
+
+        var finalTarget: string = '';
+        var targetArrayValue: string[];
+
+        if (collection) {
+            targetArrayValue = collection.split(ParametersController.targetJoinSeparator);
+        }
+
+        const collectionTSO = await HLFServices.getCollectionFromParameters(params, ParametersType.DATA_TARGET, RoleType.Role_TSO);
+        if (collectionTSO) {
+            targetArrayValue = targetArrayValue.concat(collectionTSO.split(ParametersController.targetJoinSeparator));
+        }
+        finalTarget = EligibilityController.generateTarget(params, targetArrayValue);
+
+        params.logger.debug("collection: ", collection);
+        params.logger.debug("finalTarget: ", finalTarget);
+
+        const automaticEligibilityList = params.values.get(ParametersType.AUTOMATIC_ELIGIBILITY);
+
+        if (automaticEligibilityList && automaticEligibilityList.length > 0) {
+            for (var automaticEligibility of automaticEligibilityList) {
+                if (automaticEligibility && automaticEligibility.length > 0) {
+                    const values: string[] = automaticEligibility.split("-");
+                    if (values && values.length == 3) {
+                        const args: string[] = [];
+                        args.push(`"messageType":"${values[0]}"`);
+                        args.push(`"businessType":"${values[1]}"`);
+                        args.push(`"reasonCode":"${values[2]}"`);
+
+                        args.push(`"eligibilityStatus": ${JSON.stringify(EligibilityStatusType.EligibilityAccepted)}`);
+                        args.push(`"eligibilityStatusEditable":false`);
+
+                        const query = await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
+
+                        const activationDocumentList: ActivationDocument[] = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, docType: DocType.ACTIVATION_DOCUMENT, collection: collection});
+                        if (activationDocumentList && activationDocumentList.length > 0) {
+                            for (var activationDocument of activationDocumentList) {
+                                if (activationDocument
+                                    && activationDocument.activationDocumentMrid
+                                    && activationDocument.activationDocumentMrid.length > 0
+                                    && !activationDocumentMridList.includes(activationDocument.activationDocumentMrid)) {
+
+                                    // Depend if eligibility needs to be true
+                                    // activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+                                    activationDocument.eligibilityStatusEditable = false;
+                                    activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocument);
+
+                                    const dataReference: DataReference = {
+                                        docType: DocType.ACTIVATION_DOCUMENT,
+                                        previousCollection: collection,
+                                        collection: finalTarget,
+                                        dataAction: DataActionType.COLLECTION_CHANGE,
+                                        data: activationDocument
+                                    }
+
+                                    eligibilityReferences.push(dataReference);
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        params.logger.debug('=============  END  : getAutomaticEligibles - EligibilityController ===========');
+        return eligibilityReferences;
+    }
+
 
 
 
@@ -356,6 +434,7 @@ export class EligibilityController {
         var eligibilityReferences: DataReference[] = [];
 
         const activationDocumentRefMap:Map<string, DataReference>= ActivationDocumentService.dataReferenceArrayToMap(referencedDocuments);
+        const activationDocumentMridList: string[] = [];
 
         for (var referencedDocument of referencedDocuments) {
             const activationDocument: ActivationDocument = referencedDocument.data;
@@ -392,7 +471,35 @@ export class EligibilityController {
 
                 //After creation in new collection, it is needed to create linked data
                 const linkedData = await EligibilityController.getCreationLinkedData(params, referencedDocument, initialTarget);
-                eligibilityReferences = eligibilityReferences.concat(linkedData);
+                for (var data of linkedData) {
+                    eligibilityReferences.push(data);
+                }
+
+            }
+            activationDocumentMridList.push(referencedDocument.data.activationDocumentMrid);
+        }
+        var automaticEligibilityReferences: DataReference[] = await this.getAutomaticEligibles(params, activationDocumentMridList);
+        if (automaticEligibilityReferences && automaticEligibilityReferences.length > 0) {
+            for (var automaticEligibilityReference of automaticEligibilityReferences) {
+                if (automaticEligibilityReference && automaticEligibilityReference.data) {
+                    const initialTarget: string = automaticEligibilityReference.previousCollection;
+
+                    //Before creation in new collection, it is needed to create requirements
+                    const requirements = await EligibilityController.getCreationRequierments(params, automaticEligibilityReference, initialTarget);
+                    for (var requirement of requirements) {
+                        eligibilityReferences.push(requirement);
+                    }
+
+                    //Create the reference in the new collection
+                    eligibilityReferences.push(automaticEligibilityReference);
+
+
+                    //After creation in new collection, it is needed to create linked data
+                    const linkedData = await EligibilityController.getCreationLinkedData(params, automaticEligibilityReference, initialTarget);
+                    for (var data of linkedData) {
+                        eligibilityReferences.push(data);
+                    }
+                }
             }
         }
 

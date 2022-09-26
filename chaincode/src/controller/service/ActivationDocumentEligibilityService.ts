@@ -13,13 +13,17 @@ export class ActivationDocumentEligibilityService {
         activationDocumentObj:ActivationDocument): string {
 
         let newStatus: string;
-        if (activationDocumentObj.eligibilityStatus !== EligibilityStatusType.EligibilityERROR
-            && activationDocumentObj.eligibilityStatus !== EligibilityStatusType.EligibilityAccepted) {
+        if (!activationDocumentObj.eligibilityStatus
+            || activationDocumentObj.eligibilityStatus.length == 0
+            || activationDocumentObj.eligibilityStatus === EligibilityStatusType.EligibilityRefused) {
+
             const eligibilityTable:string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_ELIGIBILITY);
 
             const pattern = activationDocumentObj.messageType + "-" + activationDocumentObj.businessType + "-" + activationDocumentObj.reasonCode;
             if (eligibilityTable && eligibilityTable.includes(pattern)) {
-                newStatus=EligibilityStatusType.EligibilityAccepted;
+                newStatus = EligibilityStatusType.EligibilityAccepted;
+            } else {
+                newStatus = activationDocumentObj.eligibilityStatus;
             }
 
         } else {

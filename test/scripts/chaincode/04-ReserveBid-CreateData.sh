@@ -50,8 +50,8 @@ do
     METERING_POINT_MRID_VALUE=$(echo $RTE_SITES_VALUE | jq '.meteringPointMrid')
     METERING_POINT_MRID_VALUE=$(echo $METERING_POINT_MRID_VALUE | sed "s/\"//g")
     echo "Site: "$METERING_POINT_MRID_VALUE
-    SENDER_MARKET_PARTICIPANT_MRID_VALUE=$(echo $RTE_SITES_VALUE | jq '.producerMarketParticipantMrid')
-    RECEIVER_MARKET_PARTICIPANT_MRID_VALUE=$(echo $RTE_SITES_VALUE | jq '.systemOperatorMarketParticipantMrid')
+    # SENDER_MARKET_PARTICIPANT_MRID_VALUE=$(echo $RTE_SITES_VALUE | jq '.producerMarketParticipantMrid')
+    # RECEIVER_MARKET_PARTICIPANT_MRID_VALUE=$(echo $RTE_SITES_VALUE | jq '.systemOperatorMarketParticipantMrid')
 
     for y in `seq $NB_YEARS`
     do
@@ -75,8 +75,8 @@ do
 
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID | jq '.' | jq --arg reserveBidMrid $reserveBidMrid '. + {reserveBidMrid: $reserveBidMrid}')
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg meteringPointMrid $METERING_POINT_MRID_VALUE '. + {meteringPointMrid: $meteringPointMrid}')
-        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson senderMarketParticipantMrid $SENDER_MARKET_PARTICIPANT_MRID_VALUE '. + {senderMarketParticipantMrid: $senderMarketParticipantMrid}')
-        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson receiverMarketParticipantMrid $RECEIVER_MARKET_PARTICIPANT_MRID_VALUE '. + {receiverMarketParticipantMrid: $receiverMarketParticipantMrid}')
+        # RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson senderMarketParticipantMrid $SENDER_MARKET_PARTICIPANT_MRID_VALUE '. + {senderMarketParticipantMrid: $senderMarketParticipantMrid}')
+        # RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson receiverMarketParticipantMrid $RECEIVER_MARKET_PARTICIPANT_MRID_VALUE '. + {receiverMarketParticipantMrid: $receiverMarketParticipantMrid}')
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodStartDateTime $validityPeriodStartDateTime '. + {validityPeriodStartDateTime: $validityPeriodStartDateTime}')
         # RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodEndDateTime $validityPeriodEndDateTime '. + {validityPeriodEndDateTime: $validityPeriodEndDateTime}')
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson energyPriceAmount $energyPriceAmount '. + {energyPriceAmount: $energyPriceAmount}')
@@ -130,8 +130,8 @@ do
     METERING_POINT_MRID_VALUE=$(echo $ENEDIS_SITES_VALUE | jq '.meteringPointMrid')
     METERING_POINT_MRID_VALUE=$(echo $METERING_POINT_MRID_VALUE | sed "s/\"//g")
     echo "Site: "$METERING_POINT_MRID_VALUE
-    SENDER_MARKET_PARTICIPANT_MRID_VALUE=$(echo $ENEDIS_SITES_VALUE | jq '.producerMarketParticipantMrid')
-    RECEIVER_MARKET_PARTICIPANT_MRID_VALUE=$(echo $ENEDIS_SITES_VALUE | jq '.systemOperatorMarketParticipantMrid')
+    # SENDER_MARKET_PARTICIPANT_MRID_VALUE=$(echo $ENEDIS_SITES_VALUE | jq '.producerMarketParticipantMrid')
+    # RECEIVER_MARKET_PARTICIPANT_MRID_VALUE=$(echo $ENEDIS_SITES_VALUE | jq '.systemOperatorMarketParticipantMrid')
 
 
     for y in `seq $NB_YEARS`
@@ -156,8 +156,8 @@ do
 
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID | jq '.' | jq --arg reserveBidMrid $reserveBidMrid '. + {reserveBidMrid: $reserveBidMrid}')
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg meteringPointMrid $METERING_POINT_MRID_VALUE '. + {meteringPointMrid: $meteringPointMrid}')
-        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson senderMarketParticipantMrid $SENDER_MARKET_PARTICIPANT_MRID_VALUE '. + {senderMarketParticipantMrid: $senderMarketParticipantMrid}')
-        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson receiverMarketParticipantMrid $RECEIVER_MARKET_PARTICIPANT_MRID_VALUE '. + {receiverMarketParticipantMrid: $receiverMarketParticipantMrid}')
+        # ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson senderMarketParticipantMrid $SENDER_MARKET_PARTICIPANT_MRID_VALUE '. + {senderMarketParticipantMrid: $senderMarketParticipantMrid}')
+        # ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson receiverMarketParticipantMrid $RECEIVER_MARKET_PARTICIPANT_MRID_VALUE '. + {receiverMarketParticipantMrid: $receiverMarketParticipantMrid}')
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodStartDateTime $validityPeriodStartDateTime '. + {validityPeriodStartDateTime: $validityPeriodStartDateTime}')
         # ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodEndDateTime $validityPeriodEndDateTime '. + {validityPeriodEndDateTime: $validityPeriodEndDateTime}')
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson energyPriceAmount $energyPriceAmount '. + {energyPriceAmount: $energyPriceAmount}')

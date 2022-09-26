@@ -21,23 +21,19 @@ import java.util.List;
 public class SystemOperator implements ImportCSV {
 
     @JsonIgnore
-    private String docType;
-
-    @NotBlank(message = "Le champ systemOperatorMarketParticipantMrid est obligatoire")
-    private String systemOperatorMarketParticipantMrid;
-
-    @NotBlank(message = "Le champ systemOperatorMarketParticipantName est obligatoire")
-    private String systemOperatorMarketParticipantName;
-
-    @NotBlank(message = "Le champ systemOperatorMarketParticipantRoleType est obligatoire")
-    private String systemOperatorMarketParticipantRoleType;
-
-    @JsonIgnore
     private final List<String> headers = Arrays.asList(
             "systemOperatorMarketParticipantMrid",
             "systemOperatorMarketParticipantName",
             "systemOperatorMarketParticipantRoleType"
     );
+    @JsonIgnore
+    private String docType;
+    @NotBlank(message = "Le champ systemOperatorMarketParticipantMrid est obligatoire")
+    private String systemOperatorMarketParticipantMrid;
+    @NotBlank(message = "Le champ systemOperatorMarketParticipantName est obligatoire")
+    private String systemOperatorMarketParticipantName;
+    @NotBlank(message = "Le champ systemOperatorMarketParticipantRoleType est obligatoire")
+    private String systemOperatorMarketParticipantRoleType;
 
     @Override
     public List<String> getHeaders() {

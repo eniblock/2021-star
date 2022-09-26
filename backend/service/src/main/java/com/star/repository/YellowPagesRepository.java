@@ -51,7 +51,7 @@ public class YellowPagesRepository {
                 try {
                     contract.submitTransaction(CREATE_YELLOW_PAGES, objectMapper.writeValueAsString(yellowPage));
                 } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur technique lors de création du producer ", exception);
+                    throw new TechnicalException("Erreur technique lors de création du yellow page ", exception);
                 } catch (ContractException contractException) {
                     throw new BusinessException(contractException.getMessage());
                 }
@@ -72,7 +72,7 @@ public class YellowPagesRepository {
             byte[] response = contract.evaluateTransaction(GET_ALL_YELLOW_PAGES);
             return response != null ? Arrays.asList(objectMapper.readValue(new String(response), YellowPages[].class)) : Collections.emptyList();
         } catch (JsonProcessingException exception) {
-            throw new TechnicalException("Erreur technique lors de la recherche des producers", exception);
+            throw new TechnicalException("Erreur technique lors de la recherche des yellow pages", exception);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }

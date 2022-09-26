@@ -19,5 +19,6 @@ export interface ReserveBid {
 
 export interface FormulaireReserveBid {
   energyPriceAmount: number,
+  validityPeriodStartDateTime: string,
   files: File[],
 }

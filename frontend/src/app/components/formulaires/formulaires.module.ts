@@ -22,6 +22,7 @@ import { FormEneEniFichierComponent } from './form-ene-eni/form-ene-eni-fichier/
 import { FormEneEniFormComponent } from './form-ene-eni/form-ene-eni-form/form-ene-eni-form.component';
 import { FormEneEniComponent } from './form-ene-eni/form-ene-eni.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {FormAjoutTarifUnitaireComponent} from "./form-ajout-tarif-unitaire/form-ajout-tarif-unitaire.component";
 
 @NgModule({
   imports: [
@@ -50,6 +51,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     FormEneEniFichierComponent,
     FormEneEniFormComponent,
     FormEneEniComponent,
+    FormAjoutTarifUnitaireComponent,
   ],
   exports: [
     FormSitesProductionRechercheComponent,
@@ -59,6 +61,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     FormLimitationsRechercheComponent,
     FormCourbeComptageReferenceComponent,
     FormEneEniComponent,
+    FormAjoutTarifUnitaireComponent,
   ],
 })
 export class FormulairesModule {}

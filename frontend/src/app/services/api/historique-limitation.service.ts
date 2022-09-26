@@ -215,7 +215,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         priceMeasureUnitName: '€/MWh',
         currencyUnitName: 'string',
         flowDirection: 'string',
-        energyPriceAmount: '1.23',
+        energyPriceAmount: 1.23,
       },
     },
   ]);

@@ -17,7 +17,7 @@ export class FormCourbeComptageReferenceComponent implements OnInit {
   loading = false;
 
   tailleMaxUploadFichiers = environment.tailleMaxUploadFichiers;
-  tailleMaxUploadFichiersStr = '...';
+  tailleMaxUploadFichiersStr = environment.tailleMaxUploadFichiers / 1000000 + " Mo";
 
   tailleFichierOk = false;
   extensionFichiersOk = false;

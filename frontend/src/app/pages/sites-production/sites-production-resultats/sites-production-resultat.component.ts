@@ -6,8 +6,8 @@ import {Instance} from "../../../models/enum/Instance.enum";
 import {MatBottomSheet} from "@angular/material/bottom-sheet";
 import {LimitationsGraphComponent} from "../../limitations/limitations-graph/limitations-graph.component";
 import {
-  SitesProductionAjoutTarifUnitaireComponent
-} from "../sites-production-ajout-tarif-unitaire/sites-production-ajout-tarif-unitaire.component";
+  FormAjoutTarifUnitaireComponent
+} from "../../../components/formulaires/form-ajout-tarif-unitaire/form-ajout-tarif-unitaire.component";
 
 @Component({
   selector: 'app-sites-production-resultat',
@@ -45,7 +45,7 @@ export class SitesProductionResultatComponent implements OnInit {
   }
 
   ajoutTarif() {
-    this.bottomSheet.open(SitesProductionAjoutTarifUnitaireComponent, {
+    this.bottomSheet.open(FormAjoutTarifUnitaireComponent, {
       data: {
         meteringPointMrid: this.resultat!.meteringPointMrid,
       }

@@ -102,9 +102,10 @@ public class ReserveBidServiceTest extends AbstractTest {
     void testCreateReserveBidOk() throws TechnicalException, IOException {
         // GIVEN
         String fileName = "file-test.pdf";
+        Float energyPriceAmount = Float.parseFloat("35.15");
         ReserveBid reserveBid = ReserveBid.builder().meteringPointMrid("3516846511600").messageType("TEST162JB")
                 .processType("P31616").senderMarketParticipantMrid("M12JHBHB779").receiverMarketParticipantMrid("R12NJKJNBUB989")
-                .createdDateTime("2022-12-05 12:12:56").priceMeasureUnitName("MW").currencyUnitName("CLIDOIN").energyPriceAmount("3515").build();
+                .createdDateTime("2022-12-05 12:12:56").priceMeasureUnitName("MW").currencyUnitName("CLIDOIN").energyPriceAmount(energyPriceAmount).build();
 
         // WHEN
         ImportReserveBidResult importReserveBidResult = reserveBidService.createReserveBid(reserveBid, asList(createFichierOrdre(fileName, fileTestPdf)));
@@ -118,7 +119,7 @@ public class ReserveBidServiceTest extends AbstractTest {
                 "processType", "senderMarketParticipantMrid", "receiverMarketParticipantMrid", "createdDateTime",
                 "priceMeasureUnitName", "currencyUnitName", "energyPriceAmount")
                 .containsExactly("3516846511600", "TEST162JB", "P31616", "M12JHBHB779", "R12NJKJNBUB989", "2022-12-05 12:12:56", "MW",
-                        "CLIDOIN", "3515");
+                        "CLIDOIN", energyPriceAmount);
         assertThat(reserveBidResult.getAttachments()).hasSize(1);
     }
 

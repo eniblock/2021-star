@@ -45,9 +45,10 @@ class ReserveBidRepositoryTest extends AbstractTest {
     @Test
     void testSaveReserveBid() throws TechnicalException, InterruptedException, TimeoutException, ContractException {
         // GIVEN
+        Float energyPriceAmount = Float.parseFloat("35.15");
         ReserveBid reserveBid = ReserveBid.builder().meteringPointMrid("3516846511600").messageType("TEST162JB")
                 .processType("P31616").senderMarketParticipantMrid("M12JHBHB779").receiverMarketParticipantMrid("R12NJKJNBUB989")
-                .createdDateTime("2022-12-05 12:12:56").priceMeasureUnitName("MW").currencyUnitName("CLIDOIN").energyPriceAmount("3515").build();
+                .createdDateTime("2022-12-05 12:12:56").priceMeasureUnitName("MW").currencyUnitName("CLIDOIN").energyPriceAmount(energyPriceAmount).build();
         ReserveBidMarketDocumentCreation reserveBidMarketDocumentCreation = new ReserveBidMarketDocumentCreation();
         reserveBidMarketDocumentCreation.setReserveBid(reserveBid);
         reserveBidMarketDocumentCreation.setAttachmentFileList(new ArrayList<>());

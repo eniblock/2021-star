@@ -20,6 +20,8 @@ import org.springframework.util.Assert;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,6 +65,12 @@ public class ReserveBidService {
             importReserveBidResult.setErrors(errors);
         } else {
             reserveBid.setReserveBidMrid(randomUUID().toString());
+            if (StringUtils.isBlank(reserveBid.getFlowDirection())) {
+                reserveBid.setFlowDirection(StringUtils.EMPTY);
+            }
+            if (StringUtils.isBlank(reserveBid.getCreatedDateTime())) {
+                reserveBid.setCreatedDateTime(LocalDateTime.now().toString());
+            }
             if (StringUtils.isBlank(reserveBid.getRevisionNumber())) {
                 reserveBid.setRevisionNumber(REVISION_NUMBER);
             }

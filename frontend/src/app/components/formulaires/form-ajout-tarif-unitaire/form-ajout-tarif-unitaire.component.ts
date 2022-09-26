@@ -1,11 +1,13 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_BOTTOM_SHEET_DATA} from "@angular/material/bottom-sheet";
+import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from "@angular/material/bottom-sheet";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {environment} from "../../../../environments/environment";
 import {
   Fichier,
   ListeFichiersEtEtat
 } from "../../micro-components/uploader-fichier/uploader-fichier.component";
+import {FormulaireEnergyAmountFile} from "../../../models/EnergyAmount";
+import {FormulaireReserveBid} from "../../../models/ReserveBid";
 
 @Component({
   selector: 'app-form-ajout-tarif-unitaire',
@@ -34,6 +36,7 @@ export class FormAjoutTarifUnitaireComponent implements OnInit {
       meteringPointMrid: string;
     },
     private formBuilder: FormBuilder,
+    private bottomsheet: MatBottomSheetRef<FormAjoutTarifUnitaireComponent>,
   ) {
   }
 
@@ -47,8 +50,25 @@ export class FormAjoutTarifUnitaireComponent implements OnInit {
   }
 
   onSubmit() {
-    // TODO : energyPriceAmount est un number
-    // TODO : validityPeriodStartDateTime est un dateTime => ajouter Z00:00:00
+    this.loading = true;
+    const form: FormulaireReserveBid = {
+      energyPriceAmount: this.form.get('energyPriceAmount')?.value?.replace(',', '.'),
+      validityPeriodStartDateTime: this.form.get('validityPeriodStartDateTime')?.value,
+      files: this.listeFichiers.map((f) => f.file),
+    };
+    this.bottomsheet.dismiss(form)
+    /*
+    this.energyAmountService.createWithFile(form).subscribe(
+      (ok) => {
+        this.loading = false;
+        this.uploadEffectue = true;
+      },
+      (error) => {
+        this.loading = false;
+        this.errors = error.error.errors;
+      }
+    );
+     */
   }
 
 }

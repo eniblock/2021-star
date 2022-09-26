@@ -1,13 +1,13 @@
 import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {RechercheSitesProductionEntite} from 'src/app/models/RechercheSitesProduction';
 import {InstanceService} from "../../../services/api/instance.service";
 import {Instance} from "../../../models/enum/Instance.enum";
 import {MatBottomSheet} from "@angular/material/bottom-sheet";
-import {LimitationsGraphComponent} from "../../limitations/limitations-graph/limitations-graph.component";
 import {
   FormAjoutTarifUnitaireComponent
 } from "../../../components/formulaires/form-ajout-tarif-unitaire/form-ajout-tarif-unitaire.component";
+import {FormulaireReserveBid} from "../../../models/ReserveBid";
 
 @Component({
   selector: 'app-sites-production-resultat',
@@ -16,6 +16,7 @@ import {
 })
 export class SitesProductionResultatComponent implements OnInit {
   @Input() resultat?: RechercheSitesProductionEntite;
+  @Output() resultatModified = new EventEmitter<FormulaireReserveBid>();
 
   InstanceEnum = Instance;
 
@@ -45,11 +46,18 @@ export class SitesProductionResultatComponent implements OnInit {
   }
 
   ajoutTarif() {
-    this.bottomSheet.open(FormAjoutTarifUnitaireComponent, {
+    const bottomSheetRef = this.bottomSheet.open(FormAjoutTarifUnitaireComponent, {
       data: {
         meteringPointMrid: this.resultat!.meteringPointMrid,
       }
     });
+    bottomSheetRef.afterDismissed().subscribe((data) => {
+      if (data) {
+        console.log("TODO : actualiser l'affichage !!!", data)
+        this.resultatModified.emit(data)
+      }
+    });
+
   }
 
 }

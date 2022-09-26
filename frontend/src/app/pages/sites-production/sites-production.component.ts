@@ -2,7 +2,10 @@ import {OrderDirection} from '../../models/enum/OrderDirection.enum';
 import {Component, OnInit} from '@angular/core';
 import {OrdreRechercheSitesProduction} from 'src/app/models/enum/OrdreRechercheSitesProduction.enum';
 import {RequestForm} from 'src/app/models/RequestForm';
-import {FormulaireRechercheSitesProduction, RechercheSitesProductionEntite} from 'src/app/models/RechercheSitesProduction';
+import {
+  FormulaireRechercheSitesProduction,
+  RechercheSitesProductionEntite
+} from 'src/app/models/RechercheSitesProduction';
 import {SitesProductionService} from 'src/app/services/api/sites-production.service';
 
 @Component({
@@ -46,6 +49,11 @@ export class SitesProductionComponent implements OnInit {
       this.sitesProductionService.rechercher(this.formRecherche, requestForm)
         .subscribe(resultat => this.resultatsRecherche = resultat);
     }
+  }
+
+  refresh() {
+    this.resetResultats();
+    this.lancerRecherche();
   }
 
 }

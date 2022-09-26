@@ -46,19 +46,17 @@ public class MarketParticipantRepository {
         }
         log.info("Sauvegarde de {} markets participants", systemOperators.size());
         for (SystemOperator systemOperator : systemOperators) {
-            if (systemOperator != null) {
-                try {
-                    contract.submitTransaction(CREATE_SYSTEM_OPERATOR, objectMapper.writeValueAsString(systemOperator));
-                } catch (TimeoutException timeoutException) {
-                    throw new TechnicalException("Erreur technique (Timeout exception) lors de la création du market participant ", timeoutException);
-                } catch (InterruptedException interruptedException) {
-                    log.error("Erreur technique (Interrupted Exception) lors de la création du market participant ", interruptedException);
-                    Thread.currentThread().interrupt();
-                } catch (JsonProcessingException jsonProcessingException) {
-                    throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la création du market participant ", jsonProcessingException);
-                } catch (ContractException contractException) {
-                    throw new BusinessException(contractException.getMessage());
-                }
+            try {
+                contract.submitTransaction(CREATE_SYSTEM_OPERATOR, objectMapper.writeValueAsString(systemOperator));
+            } catch (TimeoutException timeoutException) {
+                throw new TechnicalException("Erreur technique (Timeout exception) lors de la création du market participant ", timeoutException);
+            } catch (InterruptedException interruptedException) {
+                log.error("Erreur technique (Interrupted Exception) lors de la création du market participant ", interruptedException);
+                Thread.currentThread().interrupt();
+            } catch (JsonProcessingException jsonProcessingException) {
+                throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la création du market participant ", jsonProcessingException);
+            } catch (ContractException contractException) {
+                throw new BusinessException(contractException.getMessage());
             }
         }
         return systemOperators;

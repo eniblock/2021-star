@@ -73,8 +73,6 @@ public class EnergyAccountRepository {
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }
-
-
         return energyAccounts;
     }
 

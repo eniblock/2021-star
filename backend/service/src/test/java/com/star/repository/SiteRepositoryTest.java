@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
@@ -30,6 +31,9 @@ class SiteRepositoryTest extends AbstractTest {
     private ArgumentCaptor<String> functionNameArgumentCaptor;
 
     @Captor
+    private ArgumentCaptor<String> parameterArgumentCaptor;
+
+    @Captor
     private ArgumentCaptor<String> objectArgumentCaptor;
 
     @Test
@@ -43,16 +47,12 @@ class SiteRepositoryTest extends AbstractTest {
         verifyNoInteractions(contract);
     }
 
-
     @Test
     void testSaveSite() throws InterruptedException, TimeoutException, ContractException, TechnicalException {
         // GIVEN
-        Site site = Site.builder().systemOperatorMarketParticipantMrid("PRM645KJHBD").technologyType("PHOTOVOLTAIQUE")
-                .siteType("SITE_TYPE").meteringPointMrid("PRM976265R46").siteName("SITE_TEST").producerMarketParticipantMrid("AZLKJLKJBK0")
-                .substationMrid("SUB_120OIHOIH").substationName("SUB_NAME_123").build();
 
         // WHEN
-        siteRepository.saveSites(Arrays.asList(site));
+        siteRepository.saveSites(Arrays.asList(getSite()));
 
         // THEN
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
@@ -60,4 +60,55 @@ class SiteRepositoryTest extends AbstractTest {
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(SiteRepository.CREATE_SITE);
     }
 
+
+    @Test
+    void testUpdateSite() throws InterruptedException, TimeoutException, ContractException, TechnicalException {
+        // GIVEN
+
+
+        // WHEN
+        siteRepository.updateSites(Arrays.asList(getSite()));
+
+        // THEN
+        Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
+                objectArgumentCaptor.capture());
+        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(SiteRepository.UPDATE_SITE);
+    }
+
+    @Test
+    void testExistSite() throws ContractException, TechnicalException {
+        // GIVEN
+        String meteringPointMrid = "PRM-35164JHBHJ-51";
+        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn("false".getBytes());
+
+        // WHEN
+        siteRepository.existSite(meteringPointMrid);
+
+        // THEN
+        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), parameterArgumentCaptor.capture());
+        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(SiteRepository.SITE_EXISTS);
+        assertThat(parameterArgumentCaptor.getValue()).isEqualTo(meteringPointMrid);
+    }
+
+    @Test
+    void testFindSiteByQuery() throws ContractException, TechnicalException {
+        // GIVEN
+        String query = "query";
+        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
+
+        // WHEN
+        siteRepository.findSiteByQuery(query);
+
+        // THEN
+        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), parameterArgumentCaptor.capture());
+        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(SiteRepository.GET_SITE_BY_QUERY);
+        assertThat(parameterArgumentCaptor.getValue()).isEqualTo(query);
+    }
+
+
+    private Site getSite() {
+        return Site.builder().systemOperatorMarketParticipantMrid("PRM645KJHBD").technologyType("PHOTOVOLTAIQUE")
+                .siteType("SITE_TYPE").meteringPointMrid("PRM976265R46").siteName("SITE_TEST").producerMarketParticipantMrid("AZLKJLKJBK0")
+                .substationMrid("SUB_120OIHOIH").substationName("SUB_NAME_123").build();
+    }
 }

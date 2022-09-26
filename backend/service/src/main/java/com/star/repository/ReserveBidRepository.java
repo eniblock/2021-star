@@ -42,8 +42,13 @@ public class ReserveBidRepository {
         log.info("Sauvegarde de {} reserve bid ", reserveBidMarketDocumentCreation);
         try {
             contract.submitTransaction(CREATE_RESERVE_BID_MARKET_DOCUMENT, objectMapper.writeValueAsString(reserveBidMarketDocumentCreation));
-        } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-            throw new TechnicalException("Erreur technique lors de création du reserve bid ", exception);
+        } catch (TimeoutException timeoutException) {
+            throw new TechnicalException("Erreur technique (Timeout exception) lors de la création du reserve bid ", timeoutException);
+        } catch (InterruptedException interruptedException) {
+            log.error("Erreur technique (Interrupted Exception) lors de la création du reserve bid ", interruptedException);
+            Thread.currentThread().interrupt();
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la création du reserve bid ", jsonProcessingException);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }

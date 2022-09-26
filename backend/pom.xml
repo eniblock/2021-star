@@ -98,6 +98,12 @@
                         <exclude>com/star/models/**/*.class</exclude>
                         <exclude>com/star/enums/**/*.class</exclude>
                         <exclude>com/star/configuration/HyperLedgerFabricConfiguration.class</exclude>
+
+
+                        <exclude>/com/star/dto/**/*.class</exclude>
+                        <exclude>/com/star/models/**/*.class</exclude>
+                        <exclude>/com/star/enums/**/*.class</exclude>
+                        <exclude>/com/star/configuration/HyperLedgerFabricConfiguration.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>

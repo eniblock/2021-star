@@ -51,6 +51,8 @@ public class ReserveBidService {
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
     public ImportReserveBidResult createReserveBid(ReserveBid reserveBid, List<FichierImportation> fichiers) throws TechnicalException, BusinessException {
+        log.debug("Service de traitement du reservebid  {}", reserveBid);
+        log.debug("Traitement de(s) fichier(s) pour le reservebid DTO {}", fichiers);
         boolean hasFiles = CollectionUtils.isNotEmpty(fichiers);
         if (hasFiles) {
             importUtilsService.checkImportFiles(fichiers, FileExtensionEnum.PDF.getValue());

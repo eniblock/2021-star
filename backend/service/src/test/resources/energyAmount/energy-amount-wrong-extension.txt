@@ -1,0 +1,19 @@
+{
+  "energyAmountMarketDocumentMrid" : "",
+  "activationDocumentMrid" :"dsvgq-sdvdsr-sgfr",
+  "registeredResourceMrid" :"",
+  "quantity" : "65",
+  "measurementUnitName":"MW",
+  "revisionNumber":1,
+  "businessType":"C55",
+  "docStatus":"A02",
+  "processType":"A42",
+  "classificationType":"ZXX",
+  "areaDomain":"10XFR-RTE------Q",
+  "senderMarketParticipantMrid":"10XFR-RTE------Q",
+  "senderMarketParticipantRole":"A49",
+  "receiverMarketParticipantMrid":"STAR",
+  "receiverMarketParticipantRole":"A32",
+  "createdDateTime":"2043-06-30T04:00:45Z",
+  "timeInterval":"2043-06-30T04:00:45Z/2043-06-30T05:00:45Z"
+}

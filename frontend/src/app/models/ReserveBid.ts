@@ -21,5 +21,4 @@ export interface FormulaireReserveBid {
   energyPriceAmount: number,
   validityPeriodStartDateTime: string,
   meteringPointMrid: string,
-  files: File[],
 }

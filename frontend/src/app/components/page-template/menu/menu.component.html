@@ -28,7 +28,7 @@
   <span class="d-none d-xl-inline">Limitations</span>
 </a>
 
-<a [routerLink]="['/',PATH_ROUTE.CHARGER]" routerLinkActive="menu-active" class="text-center text-xl-start my-1 py-3">
+<a [routerLink]="['/',PATH_ROUTE.CHARGER]" routerLinkActive="menu-active" class="text-center text-xl-start my-1 py-3" *ngIf="typeInstance != InstanceEnum.PRODUCER">
   <img src="assets/img/menu-bar/charger.svg" class="iconeLienMenu pb-1 mx-3"/>
   <img src="assets/img/menu-bar/charger-active.svg" class="iconeLienMenuActive d-none pb-1 mx-3"/>
   <span class="d-none d-xl-inline">Charger</span>

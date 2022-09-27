@@ -51,22 +51,13 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
+    @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class, MultipartException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     protected ResponseEntity<Object> handleConflict(RuntimeException runtimeException, WebRequest request) {
         logError(runtimeException);
         return handleExceptionInternal(runtimeException, getErrorDetails(runtimeException, request), new HttpHeaders(),
                 HttpStatus.CONFLICT, request);
     }
-
-    @ExceptionHandler(value = {MultipartException.class})
-    @ResponseStatus(HttpStatus.CONFLICT)
-    protected ResponseEntity<Object> handleMultipartException(RuntimeException runtimeException, WebRequest request) {
-        logError(runtimeException);
-        return handleExceptionInternal(runtimeException, getErrorDetails(runtimeException, request), new HttpHeaders(),
-                HttpStatus.CONFLICT, request);
-    }
-
 
     @ExceptionHandler(value = {BadCredentialsException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

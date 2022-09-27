@@ -1,6 +1,5 @@
 package com.star.rest;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -18,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-@Ignore
 class OrdreLimitationControllerForbiddenTest extends AbstractIntTest {
 
     private static final String URL = OrdreLimitationController.PATH + "/debut";
@@ -30,17 +28,17 @@ class OrdreLimitationControllerForbiddenTest extends AbstractIntTest {
         registry.add("instance", () -> DSO.getValue());
     }
 
-//    @Test
-//    @WithMockUser("spring")
-//    void importOrdreLimitationTestWithForbiddenInstance() throws Exception {
-//        MockMultipartFile file = new MockMultipartFile("files", "ordre-debut-limitation-ok.json",
-//                "text/plain", toByteArray(ordreLimitationOk.getURL()));
-//
-//        // WHEN
-//
-//        // THEN
-//        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
-//                .file(file))
-//                .andExpect(status().isForbidden());
-//    }
+    @Test
+    @WithMockUser("spring")
+    void importOrdreLimitationTestWithForbiddenInstance() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("files", "ordre-debut-limitation-ok.json",
+                "text/plain", toByteArray(ordreLimitationOk.getURL()));
+
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL)
+                .file(file))
+                .andExpect(status().isForbidden());
+    }
 }

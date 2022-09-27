@@ -48,14 +48,17 @@ public class ProducerRepository {
         }
         log.info("Sauvegarde de {} producers", producers.size());
         for (Producer producer : producers) {
-            if (producer != null) {
-                try {
-                    contract.submitTransaction(CREATE_PRODUCER, objectMapper.writeValueAsString(producer));
-                } catch (TimeoutException | InterruptedException | JsonProcessingException exception) {
-                    throw new TechnicalException("Erreur technique lors de création du producer ", exception);
-                } catch (ContractException contractException) {
-                    throw new BusinessException(contractException.getMessage());
-                }
+            try {
+                contract.submitTransaction(CREATE_PRODUCER, objectMapper.writeValueAsString(producer));
+            } catch (TimeoutException timeoutException) {
+                throw new TechnicalException("Erreur technique (Timeout exception) lors de la création du producer ", timeoutException);
+            } catch (InterruptedException interruptedException) {
+                log.error("Erreur technique (Interrupted Exception) lors de la création du producer ", interruptedException);
+                Thread.currentThread().interrupt();
+            } catch (JsonProcessingException jsonProcessingException) {
+                throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la création du producer ", jsonProcessingException);
+            } catch (ContractException contractException) {
+                throw new BusinessException(contractException.getMessage());
             }
         }
         return producers;

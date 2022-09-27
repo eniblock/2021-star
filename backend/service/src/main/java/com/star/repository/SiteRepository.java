@@ -60,19 +60,17 @@ public class SiteRepository {
 
     private List<Site> writeSitesToBc(List<Site> sites, String bcApiName) throws TechnicalException {
         for (Site site : sites) {
-            if (site != null) {
-                try {
-                    contract.submitTransaction(bcApiName, objectMapper.writeValueAsString(site));
-                } catch (TimeoutException timeoutException) {
-                    throw new TechnicalException("Erreur technique (Timeout exception) lors de création du site ", timeoutException);
-                } catch (InterruptedException interruptedException) {
-                    log.error("Erreur technique (Interrupted Exception) lors de création du site ", interruptedException);
-                    Thread.currentThread().interrupt();
-                } catch (JsonProcessingException jsonProcessingException) {
-                    throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de création du site ", jsonProcessingException);
-                } catch (ContractException contractException) {
-                    throw new BusinessException(contractException.getMessage());
-                }
+            try {
+                contract.submitTransaction(bcApiName, objectMapper.writeValueAsString(site));
+            } catch (TimeoutException timeoutException) {
+                throw new TechnicalException("Erreur technique (Timeout exception) lors de création du site ", timeoutException);
+            } catch (InterruptedException interruptedException) {
+                log.error("Erreur technique (Interrupted Exception) lors de création du site ", interruptedException);
+                Thread.currentThread().interrupt();
+            } catch (JsonProcessingException jsonProcessingException) {
+                throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de création du site ", jsonProcessingException);
+            } catch (ContractException contractException) {
+                throw new BusinessException(contractException.getMessage());
             }
         }
         return sites;

@@ -92,6 +92,14 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/com/star/dto/**</exclude>
+                        <exclude>**/com/star/models/**</exclude>
+                        <exclude>**/com/star/enums/**</exclude>
+                        <exclude>**/com/star/configuration/HyperLedgerFabricConfiguration.class</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>merge</id>

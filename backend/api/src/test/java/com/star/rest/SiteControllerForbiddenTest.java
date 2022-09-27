@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-@Ignore
+//@Ignore
 class SiteControllerForbiddenTest extends AbstractIntTest {
 
     private static final String URL_CREATE = SiteController.PATH + "/create";
@@ -32,32 +32,32 @@ class SiteControllerForbiddenTest extends AbstractIntTest {
     @Value("classpath:/site/site-tso-ok.csv")
     private Resource siteTsoOk;
 
-//    @Test
-//    @WithMockUser("spring")
-//    void importSiteOnProducerInstanceTest() throws Exception {
-//        // GIVEN
-//        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
-//                "text/plain", toByteArray(siteTsoOk.getURL()));
-//        // WHEN
-//
-//        // THEN
-//        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_CREATE)
-//                .file(file))
-//                .andExpect(status().isForbidden());
-//    }
-//
-//    @Test
-//    @WithMockUser("spring")
-//    void updateSiteOnProducerInstanceTest() throws Exception {
-//        // GIVEN
-//        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
-//                "text/plain", toByteArray(siteTsoOk.getURL()));
-//        // WHEN
-//
-//        // THEN
-//        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_UPDATE)
-//                .file(file))
-//                .andExpect(status().isForbidden());
-//    }
+    @Test
+    @WithMockUser("spring")
+    void importSiteOnProducerInstanceTest() throws Exception {
+        // GIVEN
+        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
+                "text/plain", toByteArray(siteTsoOk.getURL()));
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_CREATE)
+                .file(file))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser("spring")
+    void updateSiteOnProducerInstanceTest() throws Exception {
+        // GIVEN
+        MockMultipartFile file = new MockMultipartFile("file", "site-tso-ok.csv",
+                "text/plain", toByteArray(siteTsoOk.getURL()));
+        // WHEN
+
+        // THEN
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart(URL_UPDATE)
+                .file(file))
+                .andExpect(status().isForbidden());
+    }
 
 }

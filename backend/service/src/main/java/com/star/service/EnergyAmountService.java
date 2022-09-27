@@ -94,7 +94,8 @@ public class EnergyAmountService {
      * @throws IOException
      * @throws TechnicalException
      */
-    public ImportEnergyAmountResult createEnergyAmounts(List<FichierImportation> fichiers, InstanceEnum instance, String systemOperatorMarketParticipantMrid) throws IOException, TechnicalException {
+    public ImportEnergyAmountResult createEnergyAmounts(List<FichierImportation> fichiers, InstanceEnum instance,
+                                                        String systemOperatorMarketParticipantMrid) throws IOException, TechnicalException {
         var importEnergyAmountResult = checkFiles(fichiers, instance, true, systemOperatorMarketParticipantMrid);
         if (isEmpty(importEnergyAmountResult.getErrors()) && !isEmpty(importEnergyAmountResult.getDatas())) {
             importEnergyAmountResult.setDatas(energyAmountRepository.save(importEnergyAmountResult.getDatas(), instance));
@@ -111,7 +112,8 @@ public class EnergyAmountService {
      * @throws IOException
      * @throws TechnicalException
      */
-    public ImportEnergyAmountResult updateEnergyAmounts(List<FichierImportation> fichiers, InstanceEnum instance, String systemOperatorMarketParticipantMrid) throws IOException, TechnicalException {
+    public ImportEnergyAmountResult updateEnergyAmounts(List<FichierImportation> fichiers, InstanceEnum instance,
+                                                        String systemOperatorMarketParticipantMrid) throws IOException, TechnicalException {
         var importEnergyAmountResult = checkFiles(fichiers, instance, false, systemOperatorMarketParticipantMrid);
         if (isEmpty(importEnergyAmountResult.getErrors()) && !isEmpty(importEnergyAmountResult.getDatas())) {
             importEnergyAmountResult.setDatas(energyAmountRepository.update(importEnergyAmountResult.getDatas(), instance));
@@ -128,7 +130,8 @@ public class EnergyAmountService {
      * @return
      * @throws IOException
      */
-    private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance, boolean creation, String systemOperatorMarketParticipantMrid) throws IOException {
+    private ImportEnergyAmountResult checkFiles(List<FichierImportation> fichiers, InstanceEnum instance,
+                                                boolean creation, String systemOperatorMarketParticipantMrid) throws IOException {
         if (InstanceEnum.DSO.equals(instance) && CollectionUtils.isEmpty(fichiers)) {
             throw new IllegalArgumentException("Files must not be empty");
         }

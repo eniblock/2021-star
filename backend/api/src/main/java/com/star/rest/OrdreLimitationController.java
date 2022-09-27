@@ -50,6 +50,7 @@ public class OrdreLimitationController {
     public static final String COUPLE = "/couple";
     public static final String FIN = "/fin";
     public static final String ELIGIBILITY_STATUS = "/eligibilityStatus";
+    public static final String IMPORT_EMPTY_FILES_ERROR = "import.files.empty";
 
     @Value("${instance}")
     private InstanceEnum instance;
@@ -75,7 +76,7 @@ public class OrdreLimitationController {
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreDebutLimitation(
             @Parameter(description = "JSON file containing start limitation order data.")
             @RequestParam MultipartFile[] files) throws BusinessException {
-        Assert.notEmpty(files, messageSource.getMessage("import.files.empty", new String[]{}, null));
+        Assert.notEmpty(files, messageSource.getMessage(IMPORT_EMPTY_FILES_ERROR, new String[]{}, null));
         ImportOrdreLimitationResult importOrdreLimitationResult;
         try {
             List<FichierImportation> fichierOrdreLimitations = new ArrayList<>();
@@ -113,7 +114,7 @@ public class OrdreLimitationController {
     public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(
             @Parameter(description = "JSON file containing couple Start/End limit order data.")
             @RequestParam MultipartFile[] files) throws BusinessException {
-        Assert.notEmpty(files, messageSource.getMessage("import.files.empty", new String[]{}, null));
+        Assert.notEmpty(files, messageSource.getMessage(IMPORT_EMPTY_FILES_ERROR, new String[]{}, null));
         ImportOrdreLimitationResult importMarketParticipantResult;
         try {
             List<FichierImportation> fichierCoupleOrdreLimitations = new ArrayList<>();
@@ -141,7 +142,7 @@ public class OrdreLimitationController {
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreFinLimitation(
             @Parameter(description = "JSON file containing end limitation order data.")
             @RequestParam MultipartFile[] files) throws BusinessException {
-        Assert.notEmpty(files, messageSource.getMessage("import.files.empty", new String[]{}, null));
+        Assert.notEmpty(files, messageSource.getMessage(IMPORT_EMPTY_FILES_ERROR, new String[]{}, null));
         ImportOrdreLimitationResult importOrdreLimitationResult;
         try {
             List<FichierImportation> fichierOrdreLimitations = new ArrayList<>();

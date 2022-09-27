@@ -26,11 +26,12 @@ export class LimitationsGraphComponent implements OnInit {
     private energyAccountService: EnergyAccountService,
     @Inject(MAT_BOTTOM_SHEET_DATA)
     public bottomSheetParams: {
-      meteringPointMrid: string;
-      startCreatedDateTime?: string;
-      endCreatedDateTime?: string;
-      orderValueConsign?: number;
-      measurementUnitNameConsign?: MeasurementUnitName;
+      meteringPointMrid: string,
+      startCreatedDateTime?: string,
+      endCreatedDateTime?: string,
+      orderValueConsign?: number,
+      measurementUnitNameConsign?: MeasurementUnitName,
+      showOnlyConsign: boolean,
     }
   ) {
   }
@@ -41,16 +42,21 @@ export class LimitationsGraphComponent implements OnInit {
     if (startCreatedDateTime == null || endCreatedDateTime == null) {
       this.invalidData = true;
     } else {
-      this.energyAccountService
-        .find(
-          this.bottomSheetParams.meteringPointMrid,
-          startCreatedDateTime,
-          endCreatedDateTime
-        )
-        .subscribe((data) => {
-          this.data = data;
-          this.makeGraph();
-        });
+      if (this.bottomSheetParams.showOnlyConsign) {
+        this.data = [];
+        this.makeGraph();
+      } else {
+        this.energyAccountService
+          .find(
+            this.bottomSheetParams.meteringPointMrid,
+            startCreatedDateTime,
+            endCreatedDateTime
+          )
+          .subscribe((data) => {
+            this.data = data;
+            this.makeGraph();
+          });
+      }
     }
   }
 

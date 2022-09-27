@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-public class ReserveBidServiceTest extends AbstractTest {
+class ReserveBidServiceTest extends AbstractTest {
     @Value("classpath:/reserveBid/file-test.pdf")
     private Reader fileTestPdf;
 

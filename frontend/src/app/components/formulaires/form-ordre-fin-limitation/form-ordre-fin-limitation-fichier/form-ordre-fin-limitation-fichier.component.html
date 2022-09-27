@@ -22,8 +22,8 @@
         Importer
         <i class="fa-solid fa-hourglass ms-2" *ngIf="loading"></i>
       </button>
-      <p [class]="'mt-1 tailleMaxFichiers ' + ((!tailleFichierOk && listeFichiers.length > 0) ? 'text-danger' : '')">
-        (Taille Maximum : {{ tailleMaxUploadFichiersStr }})
+      <p [class]="'mt-2 tailleMaxFichiers ' + ((!tailleFichierOk && listeFichiers.length > 0) ? 'text-danger' : '')">
+        (Taille maximum des fichiers : {{ tailleMaxUploadFichiersStr }})
       </p>
     </div>
 

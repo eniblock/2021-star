@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  activeCache: true,
   serverUrl: '/api/v0',
   hmr: false,
   keycloak: {

@@ -17,7 +17,7 @@
 
 <div class="row my-3" *ngIf="resultatsRecherche && resultatsRecherche.length > 0">
   <div class="col-12 offset-lg-1 col-lg-10 my-3" *ngFor="let resultat of resultatsRecherche">
-    <app-sites-production-resultat [resultat]="resultat"></app-sites-production-resultat>
+    <app-sites-production-resultat [resultat]="resultat" (resultatModified)="refresh()"></app-sites-production-resultat>
   </div>
 </div>
 

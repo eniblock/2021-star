@@ -20,7 +20,7 @@ export class SiteService {
 
   getSites(): Observable<Site[]> {
     let req = this.httpClient.get<Site[]>(`${environment.serverUrl}/site`);
-    if (environment.production) {
+    if (environment.activeCache) {
       // We use a cache in Production
       return this.cacheService.getValueInCacheOrLoadIt<Site[]>(
         this.CACHE_KEY,

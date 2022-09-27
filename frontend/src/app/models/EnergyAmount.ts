@@ -1,18 +1,18 @@
 export interface FormulaireEnergyAmountFile {
-  files: File[];
+  files: File[],
 }
 
 export interface FormulaireEnergyAmount {
-  activationDocumentMrid: string;
-  revisionNumber: string;
-  processType: string;
-  businessType: string;
-  classificationType: string;
-  quantity: number;
-  measurementUnitName: string;
-  timeInterval: string;
+  activationDocumentMrid: string,
+  revisionNumber: string,
+  processType: string,
+  businessType: string,
+  classificationType: string,
+  quantity: number,
+  measurementUnitName: string,
+  timeInterval: string,
 }
 
 export interface EnergyAmount {
-  quantity: string;
+  quantity: string,
 }

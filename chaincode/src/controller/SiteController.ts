@@ -170,11 +170,24 @@ export class SiteController {
         siteId: string): Promise<boolean> {
         params.logger.info('============= START : siteExists %s Site ===========', siteId);
 
-        const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: siteId});
+        var booleanResult = false;
+        try {
+            const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: siteId});
+            if (result
+                && result.values().next().value
+                && result.values().next().value.data
+                && result.values().next().value.data.meteringPointMrid === siteId
+                && result.values().next().value.collection.length !== 0) {
+
+                booleanResult = true;
+            }
+        } catch (err) {
+            booleanResult = false;
+        }
 
         params.logger.info('=============  END  : siteExists %s Site ===========', siteId);
 
-        return result && result.values().next().value && result.values().next().value.data && result.values().next().value.collection.length !== 0;
+        return booleanResult;
     }
 
 

@@ -11,6 +11,7 @@ import {SystemOperator} from "../../../models/SystemOperator";
 import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
 import {TechnologyType} from 'src/app/models/enum/TechnologyType.enum';
 import {DateHelper} from "../../../helpers/date.helper";
+import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
 
 @Component({
   selector: 'app-limitations-resultats',
@@ -109,6 +110,7 @@ export class LimitationsResultatsComponent implements OnChanges {
       endCreatedDateTime: activation.activationDocument.endCreatedDateTime,
       orderValueConsign: activation.activationDocument.orderValue,
       measurementUnitNameConsign: activation.activationDocument.measurementUnitName,
+      showOnlyConsign: this.instance == Instance.PRODUCER && activation.activationDocument.eligibilityStatus == EligibilityStatus.OUI,
     }
 
     this.bottomSheet.open(LimitationsGraphComponent, {

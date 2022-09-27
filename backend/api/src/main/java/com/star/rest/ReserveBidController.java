@@ -63,6 +63,8 @@ public class ReserveBidController {
             @RequestPart(name = "reserveBid", value = "reserveBid", required = false) @Valid ReserveBidDTO reserveBid,
             @Parameter(description = "PDF files containing reserveBid data")
             @RequestPart(name = "files", value = "files", required = false) MultipartFile[] files) throws BusinessException {
+        log.debug("Import du reservebid DTO {}", reserveBid);
+        log.debug("Traitement de(s) fichier(s) pour le reservebid DTO {}", files);
         ImportReserveBidResult importReserveBidResult = new ImportReserveBidResult();
         try {
             if (files != null && files.length > 0) {

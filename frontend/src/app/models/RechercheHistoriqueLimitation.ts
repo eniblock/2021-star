@@ -5,20 +5,20 @@ import {OrdreLimitation} from "./OrdreLimitation";
 import {ReserveBid} from "./ReserveBid";
 
 export interface TypeCriteria {
-  messageType: string;
-  businessType: string;
-  reasonCode: string;
+  messageType: string,
+  businessType: string,
+  reasonCode: string,
 }
 
 export interface FormulaireRechercheHistoriqueLimitation {
-  originAutomationRegisteredResourceName: string;
-  producerMarketParticipantMrid: string;
-  siteName: string;
-  meteringPointMrid: string;
-  activationType: string | null;
-  activationReasonList: string | null;
-  startCreatedDateTime: string; // JSON
-  endCreatedDateTime: string; // JSON
+  originAutomationRegisteredResourceName: string,
+  producerMarketParticipantMrid: string,
+  siteName: string,
+  meteringPointMrid: string,
+  activationType: string | null,
+  activationReasonList: string | null,
+  startCreatedDateTime: string, // JSON
+  endCreatedDateTime: string, // JSON
 }
 
 export interface RechercheHistoriqueLimitationEntite {
@@ -29,5 +29,5 @@ export interface RechercheHistoriqueLimitationEntite {
   activationDocument: OrdreLimitation,
   subOrderList: OrdreLimitation[],
   displayedSourceName: string,
-  reserveBidMarketDocument: ReserveBid | null
+  reserveBidMarketDocument: ReserveBid | null,
 }

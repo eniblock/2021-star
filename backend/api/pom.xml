@@ -85,16 +85,10 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>com/star/dto/**/*.class</exclude>
-                        <exclude>com/star/models/**/*.class</exclude>
-                        <exclude>com/star/enums/**/*.class</exclude>
-                        <exclude>com/star/configuration/HyperLedgerFabricConfiguration.class</exclude>
-
-
-                        <exclude>/com/star/dto/**/*.class</exclude>
-                        <exclude>/com/star/models/**/*.class</exclude>
-                        <exclude>/com/star/enums/**/*.class</exclude>
-                        <exclude>/com/star/configuration/HyperLedgerFabricConfiguration.class</exclude>
+                        <exclude>**/com/star/dto/**</exclude>
+                        <exclude>**/com/star/models/**</exclude>
+                        <exclude>**/com/star/enums/**</exclude>
+                        <exclude>**/com/star/configuration/HyperLedgerFabricConfiguration.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>

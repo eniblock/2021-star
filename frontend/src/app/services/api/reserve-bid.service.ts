@@ -13,12 +13,16 @@ export class ReserveBidService {
   constructor(private httpClient: HttpClient) {
   }
 
-  createReserveBid(formulaireReserveBid: FormulaireReserveBid, files: File[] | null): Observable<void> {
+  createReserveBid(form: FormulaireReserveBid, files: File[] | null): Observable<void> {
+    form = {
+      ...form,
+      energyPriceAmount: +form.energyPriceAmount, // string to number
+    };
     let formData = new FormData()
     if (files != null && files.length > 0) {
       FormDataHelper.appendFiles(formData, files);
     }
-    FormDataHelper.appendObject(formData, 'reserveBid', formulaireReserveBid);
+    FormDataHelper.appendObject(formData, 'reserveBid', form);
     return this.httpClient.post<void>(`${environment.serverUrl}/reserveBid`, formData);
   }
 

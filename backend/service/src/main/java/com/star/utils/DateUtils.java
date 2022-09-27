@@ -10,7 +10,7 @@ import java.time.format.DateTimeParseException;
  */
 public final class DateUtils {
 
-    public final static DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     private DateUtils() {
     }
@@ -19,13 +19,13 @@ public final class DateUtils {
         if (date == null || date.equals("")) {
             return null;
         }
-        return LocalDateTime.parse(date, DATETIME_FORMATTER);
+        return LocalDateTime.parse(date, dateTimeFormatter);
     }
 
     public static String toJson(LocalDateTime date) {
         if (date == null) {
             return null;
         }
-        return date.format(DATETIME_FORMATTER);
+        return date.format(dateTimeFormatter);
     }
 }

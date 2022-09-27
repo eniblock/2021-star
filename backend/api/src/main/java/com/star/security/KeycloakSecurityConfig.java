@@ -42,13 +42,11 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
-        if (csrfDisable) {
-            http.csrf().disable();
-        }
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .csrf().disable() //NOSONAR
                 .cors()
                 .and()
                 .authorizeRequests()

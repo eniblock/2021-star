@@ -19,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(classes = {TestConfiguration.class})
 @ActiveProfiles("test")
 @SpringBootTest
+@SuppressWarnings("java:S2187")
 public class AbstractTest {
     @MockBean
     protected Network network;

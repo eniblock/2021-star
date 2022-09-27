@@ -9,6 +9,10 @@ import java.util.List;
 
 public class QueryBuilderHelper {
 
+    private QueryBuilderHelper() {
+
+    }
+
     public static QueryBuilder toQueryBuilder(List<Selector> selectors) {
         switch (selectors.size()) {
             case 0:

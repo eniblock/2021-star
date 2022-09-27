@@ -14,5 +14,11 @@ export interface ReserveBid {
   priceMeasureUnitName: string,
   currencyUnitName: string,
   flowDirection: string,
-  energyPriceAmount: string,
+  energyPriceAmount: number,
+}
+
+export interface FormulaireReserveBid {
+  energyPriceAmount: number,
+  validityPeriodStartDateTime: string,
+  meteringPointMrid: string,
 }

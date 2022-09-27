@@ -20,7 +20,7 @@ export class SystemOperatorService {
 
   getSystemOperators(): Observable<SystemOperator[]> {
     let req = this.httpClient.get<SystemOperator[]>(`${environment.serverUrl}/participant`)
-    if (environment.production) {
+    if (environment.activeCache) {
       // We use a cache in Production
       return this.cacheService.getValueInCacheOrLoadIt<SystemOperator[]>(
         this.CACHE_KEY,

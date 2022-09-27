@@ -10,10 +10,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatButtonModule} from '@angular/material/button';
 import {MicroComponentsModule} from 'src/app/components/micro-components/micro-components.module';
 import {PipesModule} from 'src/app/pipes/pipes.module';
-import {
-  SitesProductionAjoutTarifUnitaireComponent
-} from './sites-production-ajout-tarif-unitaire/sites-production-ajout-tarif-unitaire.component';
 import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
+import {MatDatepickerModule} from "@angular/material/datepicker";
 
 @NgModule({
   imports: [
@@ -27,11 +25,11 @@ import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
     MicroComponentsModule,
     PipesModule,
     MatBottomSheetModule,
+    MatDatepickerModule,
   ],
   declarations: [
     SitesProductionComponent,
     SitesProductionResultatComponent,
-    SitesProductionAjoutTarifUnitaireComponent,
   ],
 })
 export class SitesProductionModule {

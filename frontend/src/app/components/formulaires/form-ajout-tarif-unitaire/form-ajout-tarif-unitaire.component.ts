@@ -54,6 +54,7 @@ export class FormAjoutTarifUnitaireComponent implements OnInit {
     const form: FormulaireReserveBid = {
       energyPriceAmount: this.form.get('energyPriceAmount')?.value?.replace(',', '.'),
       validityPeriodStartDateTime: this.form.get('validityPeriodStartDateTime')?.value,
+      meteringPointMrid: this.bottomSheetParams.meteringPointMrid,
       files: this.listeFichiers.map((f) => f.file),
     };
     this.bottomsheet.dismiss(form)

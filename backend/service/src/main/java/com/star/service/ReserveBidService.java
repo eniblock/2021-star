@@ -11,6 +11,7 @@ import com.star.models.reservebid.ReserveBidMarketDocumentCreation;
 import com.star.repository.ReserveBidRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -20,6 +21,8 @@ import org.springframework.util.Assert;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,7 +53,7 @@ public class ReserveBidService {
 
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
-    public ImportReserveBidResult createReserveBid(ReserveBid reserveBid, List<FichierImportation> fichiers) throws TechnicalException, BusinessException {
+    public ImportReserveBidResult createReserveBid(ReserveBid reserveBid, List<FichierImportation> fichiers) throws IOException,TechnicalException, BusinessException {
         log.debug("Service de traitement du reservebid  {}", reserveBid);
         log.debug("Traitement de(s) fichier(s) pour le reservebid DTO {}", fichiers);
         boolean hasFiles = CollectionUtils.isNotEmpty(fichiers);
@@ -80,11 +83,11 @@ public class ReserveBidService {
             if (hasFiles) {
                 List<String> attachments = new ArrayList<>();
                 List<AttachmentFile> attachmentFileList = new ArrayList<>();
-                fichiers.forEach(fichier -> {
-                    String fileUUID = randomUUID().toString() + "_" + fichier.getFileName();
-                    attachmentFileList.add(new AttachmentFile(fileUUID, fichier.getInputStream().toString()));
+                for (FichierImportation fichierImportation : fichiers) {
+                    String fileUUID = randomUUID().toString() + "_" + fichierImportation.getFileName();
+                    attachmentFileList.add(new AttachmentFile(fileUUID, IOUtils.toString(fichierImportation.getInputStream(), StandardCharsets.UTF_8)));
                     attachments.add(fileUUID);
-                });
+                }
                 reserveBid.setAttachments(attachments);
                 reserveBidMarketDocumentCreation.setAttachmentFileList(attachmentFileList);
             }

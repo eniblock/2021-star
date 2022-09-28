@@ -66,18 +66,19 @@ public class ReserveBidController {
         log.debug("Import du reservebid DTO {}", reserveBid);
         log.debug("Traitement de(s) fichier(s) pour le reservebid DTO {}", files);
         ImportReserveBidResult importReserveBidResult = new ImportReserveBidResult();
+        List<FichierImportation> fichiers = new ArrayList<>();
         try {
             if (files != null && files.length > 0) {
-                List<FichierImportation> fichiers = new ArrayList<>();
                 for (MultipartFile file : files) {
                     fichiers.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
                 }
-                importReserveBidResult = reserveBidService.createReserveBid(reserveBidMapper.dtoToBean(reserveBid), fichiers);
             }
+            importReserveBidResult = reserveBidService.createReserveBid(reserveBidMapper.dtoToBean(reserveBid), fichiers);
         } catch (IOException | TechnicalException exception) {
             log.error("Echec de l'import  du reserveBid {}. Erreur : ", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.status(importReserveBidResult.getReserveBid() == null ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importReserveBidResult);
     }
+
 }

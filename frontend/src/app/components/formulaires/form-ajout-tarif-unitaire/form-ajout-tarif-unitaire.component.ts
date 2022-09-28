@@ -14,7 +14,7 @@ import {ReserveBidService} from "../../../services/api/reserve-bid.service";
 export class FormAjoutTarifUnitaireComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({
     energyPriceAmount: ['', [Validators.required, Validators.pattern('[0-9]*[\,\.]?[0-9]*')]],
-    validityPeriodStartDateTime: [''],
+    validityPeriodStartDateTime: ['', Validators.required],
   });
 
   loading = false;
@@ -50,7 +50,7 @@ export class FormAjoutTarifUnitaireComponent implements OnInit {
   onSubmit() {
     this.loading = true;
     const form: FormulaireReserveBid = {
-      energyPriceAmount: this.form.get('energyPriceAmount')?.value?.replace(',', '.'),
+      energyPriceAmount: +(this.form.get('energyPriceAmount')?.value?.replace(',', '.')),
       validityPeriodStartDateTime: this.form.get('validityPeriodStartDateTime')?.value,
       meteringPointMrid: this.bottomSheetParams.meteringPointMrid,
     };

@@ -14,10 +14,6 @@ export class ReserveBidService {
   }
 
   createReserveBid(form: FormulaireReserveBid, files: File[] | null): Observable<void> {
-    form = {
-      ...form,
-      energyPriceAmount: +form.energyPriceAmount, // string to number
-    };
     let formData = new FormData()
     if (files != null && files.length > 0) {
       FormDataHelper.appendFiles(formData, files);

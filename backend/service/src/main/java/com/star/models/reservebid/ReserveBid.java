@@ -25,21 +25,34 @@ public class ReserveBid {
     private String reserveBidMrid;
     @NotBlank(message = "Le champ meteringPointMrid est obligatoire")
     private String meteringPointMrid;
+    @JsonIgnore
     private String revisionNumber;
+    @JsonIgnore
     private String messageType;
+    @JsonIgnore
     private String processType;
+    @JsonIgnore
     private String senderMarketParticipantMrid;
+    @JsonIgnore
     private String receiverMarketParticipantMrid;
     private String createdDateTime;
+    @JsonIgnore
     private String validityPeriodStartDateTime;
+    @JsonIgnore
     private String validityPeriodEndDateTime;
+    @JsonIgnore
     private String businessType;
+    @JsonIgnore
     private String quantityMeasureUnitName;
+    @JsonIgnore
     private String priceMeasureUnitName;
+    @JsonIgnore
     private String currencyUnitName;
     private String flowDirection;
     @NotNull(message = "Le champ energyPriceAmount est obligatoire")
     private Float energyPriceAmount;
+    @JsonIgnore
     private List<String> attachments;
+    @JsonIgnore
     private List<AttachmentFileWithStatus> attachmentsWithStatus;
 }

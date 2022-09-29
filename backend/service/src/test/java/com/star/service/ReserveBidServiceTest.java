@@ -81,7 +81,7 @@ class ReserveBidServiceTest extends AbstractTest {
     }
 
     @Test
-    void testCreateReserveBidWithoutMandatoryAttribute() throws TechnicalException {
+    void testCreateReserveBidWithoutMandatoryAttribute() throws TechnicalException, IOException {
         // GIVEN
         ReserveBid reserveBidWithoutEnergyPriceAmount = ReserveBid.builder().meteringPointMrid("3516846511600").messageType("messageType")
                 .processType("processType").senderMarketParticipantMrid("M12JHBHB779").receiverMarketParticipantMrid("R12NJKJNBUB989")

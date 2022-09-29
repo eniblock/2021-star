@@ -106,7 +106,6 @@ public class EnergyAccountController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
-    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<EnergyAccountDTO[]> findEnergyAccount(
             @Parameter(description = "meteringPointMrid search criteria")
             @RequestParam(value = "meteringPointMrid", required = false) String meteringPointMrid,

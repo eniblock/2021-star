@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {EnergyAmountService} from "../../../../services/api/energy-amount.service";
 import {MatStepper} from "@angular/material/stepper";
 import {DateHelper} from "../../../../helpers/date.helper";
+import {RechercheHistoriqueLimitationEntite} from "../../../../models/RechercheHistoriqueLimitation";
 
 const PROCESS_TYPE_INIT_VALUE = 'A42';
 const BUSINESS_TYPE_INIT_VALUE = 'C55';
@@ -13,6 +14,8 @@ const BUSINESS_TYPE_INIT_VALUE = 'C55';
   styleUrls: ['./form-ene-eni-form.component.css']
 })
 export class FormEneEniFormComponent implements OnInit {
+  @Input() initialFormData?: RechercheHistoriqueLimitationEntite;
+
   form: FormGroup = this.formBuilder.group({
     activationDocumentMrid: ['', Validators.required],
     revisionNumber: ['', Validators.required],
@@ -51,6 +54,9 @@ export class FormEneEniFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.initialFormData != undefined) {
+      console.log(this.initialFormData);
+    }
   }
 
   toResume(stepperRef: MatStepper) {

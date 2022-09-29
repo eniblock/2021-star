@@ -4,21 +4,23 @@
 </h2>
 
 <div class="row mt-3">
-  <mat-form-field appearance="outline" class="col-md-6 col-xl-4">
-    <mat-label>Type de données</mat-label>
-    <mat-select [disabled]="!typesImport || typesImport.length==0" (selectionChange)="onSelectTypeImport($event.value)">
-      <mat-option value=""></mat-option>
-      <mat-option [value]="typeImport" *ngFor="let typeImport of typesImport">{{ typeImport }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="col-md-6 col-xl-4">
+      <mat-label>Type de données</mat-label>
+      <mat-select formControlName="typeImportSelected">
+        <mat-option value=""></mat-option>
+        <mat-option [value]="typeImport" *ngFor="let typeImport of typesImport">{{ typeImport }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
 </div>
 
 <div class="row mt-4">
   <div class="col">
-    <app-form-ordre-debut-limitation *ngIf="typeImportSelected == TypeImportEnum.OrdreDebutLimitation"></app-form-ordre-debut-limitation>
-    <app-form-ordre-fin-limitation *ngIf="typeImportSelected == TypeImportEnum.OrdreFinLimitation"></app-form-ordre-fin-limitation>
-    <app-form-ordre-debut-et-fin-limitation *ngIf="typeImportSelected == TypeImportEnum.OrdreDebutEtFinLimitation"></app-form-ordre-debut-et-fin-limitation>
-    <app-form-courbe-comptage-reference *ngIf="typeImportSelected == TypeImportEnum.CourbeComptageReference || typeImportSelected == TypeImportEnum.CourbeComptage"></app-form-courbe-comptage-reference>
-    <app-form-ene-eni *ngIf="typeImportSelected == TypeImportEnum.EneEni"></app-form-ene-eni>
+    <app-form-ordre-debut-limitation *ngIf="this.form.get('typeImportSelected')?.value == TypeImportEnum.OrdreDebutLimitation"></app-form-ordre-debut-limitation>
+    <app-form-ordre-fin-limitation *ngIf="this.form.get('typeImportSelected')?.value == TypeImportEnum.OrdreFinLimitation"></app-form-ordre-fin-limitation>
+    <app-form-ordre-debut-et-fin-limitation *ngIf="this.form.get('typeImportSelected')?.value == TypeImportEnum.OrdreDebutEtFinLimitation"></app-form-ordre-debut-et-fin-limitation>
+    <app-form-courbe-comptage-reference *ngIf="this.form.get('typeImportSelected')?.value == TypeImportEnum.CourbeComptageReference || this.form.get('typeImportSelected')?.value == TypeImportEnum.CourbeComptage"></app-form-courbe-comptage-reference>
+    <app-form-ene-eni [initialFormData]="initialFormData" *ngIf="this.form.get('typeImportSelected')?.value == TypeImportEnum.EneEni"></app-form-ene-eni>
   </div>
 </div>

@@ -12,6 +12,9 @@ import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
 import {TechnologyType} from 'src/app/models/enum/TechnologyType.enum';
 import {DateHelper} from "../../../helpers/date.helper";
 import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
+import {Router} from "@angular/router";
+import {PATH_ROUTE} from "../../../app-routing.module";
+import {TypeImport} from "../../charger/charger.component";
 
 @Component({
   selector: 'app-limitations-resultats',
@@ -23,6 +26,8 @@ export class LimitationsResultatsComponent implements OnChanges {
   @Input() systemOperators: SystemOperator[] = [];
   @Input() columnsToDisplay: string[] = [];
 
+  InstanceEnum = Instance;
+
   dataComputed: any = [];
   dataComputedSorted: any = [];
 
@@ -31,6 +36,7 @@ export class LimitationsResultatsComponent implements OnChanges {
   constructor(
     private instanceService: InstanceService,
     private bottomSheet: MatBottomSheet,
+    private router: Router,
   ) {
   }
 
@@ -149,6 +155,17 @@ export class LimitationsResultatsComponent implements OnChanges {
     if (sortFunction != null) {
       this.dataComputedSorted = [...this.dataComputed].sort((d1: any, d2: any) => sortFunction(d1, d2));
     }
+  }
+
+  public chargerEne(activation: RechercheHistoriqueLimitationEntite) {
+    this.router.navigate(
+      [PATH_ROUTE.CHARGER],
+      {
+        state: {
+          typeImport: TypeImport.EneEni,
+          formData: activation
+        }
+      });
   }
 
 }

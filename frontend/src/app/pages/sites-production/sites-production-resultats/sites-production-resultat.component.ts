@@ -53,7 +53,6 @@ export class SitesProductionResultatComponent implements OnInit {
     });
     bottomSheetRef.afterDismissed().subscribe((data) => {
       if (data) {
-        console.log("TODO : actualiser l'affichage !!!", data)
         this.resultatModified.emit(data)
       }
     });

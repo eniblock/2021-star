@@ -68,7 +68,7 @@
           <input matInput placeholder="Horodatage de début de limitation - date" [matDatepicker]="pickerDateStart"
                  formControlName="timestampDateStart">
           <mat-datepicker-toggle matSuffix [for]="pickerDateStart"></mat-datepicker-toggle>
-          <mat-datepicker #pickerDateStart></mat-datepicker>
+          <mat-datepicker #pickerDateStart type="datetime"></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field class="col-12 col-lg-6" appearance="outline">
@@ -82,7 +82,7 @@
           <input matInput placeholder="Horodatage de fin de limitation - date" [matDatepicker]="pickerDateEnd"
                  formControlName="timestampDateEnd">
           <mat-datepicker-toggle matSuffix [for]="pickerDateEnd"></mat-datepicker-toggle>
-          <mat-datepicker #pickerDateEnd></mat-datepicker>
+          <mat-datepicker #pickerDateEnd type="datetime"></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field class="col-12 col-lg-6" appearance="outline">

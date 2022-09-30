@@ -42,14 +42,6 @@ export class DateHelper {
     return hours + ':' + minutes + ':' + seconds;
   }
 
-  public static utcDatetimeStrToLocalDateStr(datetimeStr: string): string {
-    const datetime = new Date(datetimeStr);
-    const day = StringHelper.ajouterZerosAGauche(datetime.getDate(), 2);
-    const month = StringHelper.ajouterZerosAGauche(datetime.getMonth() + 1, 2);
-    const year = StringHelper.ajouterZerosAGauche(datetime.getFullYear(), 4);
-    return day + '/' + month + '/' + year;
-  }
-
   public static stringToTimestamp(dateStr: string): number {
     return dateStr ? new Date(dateStr).getTime() : 0;
   }

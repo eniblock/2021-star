@@ -59,9 +59,9 @@ export class FormEneEniFormComponent implements OnInit {
       const hasEndDate = this.initialFormData.activationDocument.endCreatedDateTime != null && this.initialFormData.activationDocument.endCreatedDateTime != "";
       this.form.get('activationDocumentMrid')?.setValue(this.initialFormData.activationDocument.activationDocumentMrid);
       this.form.get('revisionNumber')?.setValue("1");
-      this.form.get('timestampDateStart')?.setValue(hasStartDate ? this.initialFormData.activationDocument.startCreatedDateTime : "");
+      this.form.get('timestampDateStart')?.setValue(hasStartDate ? new Date(this.initialFormData.activationDocument.startCreatedDateTime) : "");
       this.form.get('timestampTimeStart')?.setValue(hasStartDate ? DateHelper.utcDatetimeStrToLocalTimeStr(this.initialFormData.activationDocument.startCreatedDateTime) : "");
-      this.form.get('timestampDateEnd')?.setValue(hasEndDate ? this.initialFormData.activationDocument.endCreatedDateTime : "");
+      this.form.get('timestampDateEnd')?.setValue(hasEndDate ? new Date(this.initialFormData.activationDocument.endCreatedDateTime) : "");
       this.form.get('timestampTimeEnd')?.setValue(hasEndDate ? DateHelper.utcDatetimeStrToLocalTimeStr(this.initialFormData.activationDocument.endCreatedDateTime) : "");
     }
   }

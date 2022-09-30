@@ -1,12 +1,14 @@
 package com.star.rest;
 
 import com.star.dto.energyaccount.EnergyAccountDTO;
+import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.mapper.energyaccount.EnergyAccountMapper;
 import com.star.models.common.FichierImportation;
 import com.star.models.energyaccount.EnergyAccountCriteria;
 import com.star.models.energyaccount.ImportEnergyAccountResult;
+import com.star.security.SecurityComponent;
 import com.star.service.EnergyAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,10 +44,17 @@ import java.util.List;
 public class EnergyAccountController {
     public static final String PATH = ApiRestVersion.VERSION + "/energyAccounts";
 
+    @Value("${instance}")
+    private InstanceEnum instance;
+
     @Autowired
     private EnergyAccountMapper energyAccountMapper;
+
     @Autowired
     private EnergyAccountService energyAccountService;
+
+    @Autowired
+    private SecurityComponent securityComponent;
 
     /**
      * API de création des energy accounts.
@@ -115,8 +125,13 @@ public class EnergyAccountController {
             @RequestParam(value = "endCreatedDateTime", required = false) String endCreatedDateTime) throws BusinessException, TechnicalException {
         EnergyAccountCriteria energyAccountCriteria = EnergyAccountCriteria.builder().meteringPointMrid(meteringPointMrid)
                 .startCreatedDateTime(startCreatedDateTime).endCreatedDateTime(endCreatedDateTime).build();
+        if (InstanceEnum.PRODUCER.equals(instance)) {
+            return ResponseEntity.status(HttpStatus.OK).body(energyAccountMapper.beanToDtos(energyAccountService.findEnergyAccount(energyAccountCriteria, instance,
+                    securityComponent.getProducerMarketParticipantMrid(true))));
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(energyAccountMapper.beanToDtos(energyAccountService.findEnergyAccount(energyAccountCriteria, instance, null)));
+        }
 
-        return ResponseEntity.status(HttpStatus.OK).body(energyAccountMapper.beanToDtos(energyAccountService.findEnergyAccount(energyAccountCriteria)));
     }
 
     private ResponseEntity<ImportEnergyAccountResult> importEnergyAccount(MultipartFile[] files, boolean create) throws BusinessException {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
 import com.star.models.energyaccount.EnergyAccount;
+import com.star.models.energyaccount.EnergyAccountProducerCriteria;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -106,6 +107,24 @@ class EnergyAccountRepositoryTest extends AbstractTest {
         Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), queryArgumentCaptor.capture());
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(energyAccountRepository.GET_ENERGY_ACCOUNT_WITH_PAGINATION);
         assertThat(queryArgumentCaptor.getValue()).isEqualTo(query);
+    }
+
+
+
+    @Test
+    void testFindEnergyAccountByProducer() throws ContractException, TechnicalException, JsonProcessingException {
+        // GIVEN
+        EnergyAccountProducerCriteria energyAccountProducerCriteria = EnergyAccountProducerCriteria.builder()
+                .producerEicCode("producer_test_code").startCreatedDateTime("startDateTime").meteringPointMrid("PRM-kjbb651651").build();
+        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
+
+        // WHEN
+        energyAccountRepository.findEnergyAccountByProducer(energyAccountProducerCriteria);
+
+        // THEN
+        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), queryArgumentCaptor.capture());
+        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(energyAccountRepository.GET_ENERGY_ACCOUNT_BY_PRODUCER);
+        assertThat(queryArgumentCaptor.getValue()).isEqualTo(objectMapper.writeValueAsString(energyAccountProducerCriteria));
     }
 
 

@@ -128,7 +128,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
 
     {
       site: {
-        typeSite: TypeSite.HTA,
+        typeSite: TypeSite.HTB,
         producerMarketParticipantMrid: '---',
         producerMarketParticipantName: '---',
         siteName: 'sites 7',
@@ -222,3 +222,4 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
     },
   ]);
 };
+

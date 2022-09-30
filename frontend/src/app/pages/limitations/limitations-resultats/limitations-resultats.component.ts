@@ -27,6 +27,7 @@ export class LimitationsResultatsComponent implements OnChanges {
   @Input() columnsToDisplay: string[] = [];
 
   InstanceEnum = Instance;
+  TypeSiteEnum= TypeSite;
 
   dataComputed: any = [];
   dataComputedSorted: any = [];

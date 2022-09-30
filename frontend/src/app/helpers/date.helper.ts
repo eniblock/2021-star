@@ -36,15 +36,18 @@ export class DateHelper {
 
   public static utcDatetimeStrToLocalTimeStr(datetimeStr: string): string {
     const datetime = new Date(datetimeStr);
-    return datetime.getHours() + ':' + datetime.getMinutes() + ':' + datetime.getSeconds();
+    const hours = StringHelper.ajouterZerosAGauche(datetime.getHours(), 2);
+    const minutes = StringHelper.ajouterZerosAGauche(datetime.getMinutes(), 2);
+    const seconds = StringHelper.ajouterZerosAGauche(datetime.getSeconds(), 2);
+    return hours + ':' + minutes + ':' + seconds;
   }
 
   public static utcDatetimeStrToLocalDateStr(datetimeStr: string): string {
     const datetime = new Date(datetimeStr);
-    const jour = StringHelper.ajouterZerosAGauche(datetime.getDate(), 2);
-    const mois = StringHelper.ajouterZerosAGauche(datetime.getMonth() + 1, 2);
-    const annee = StringHelper.ajouterZerosAGauche(datetime.getFullYear(), 4);
-    return jour + '/' + mois + '/' + annee;
+    const day = StringHelper.ajouterZerosAGauche(datetime.getDate(), 2);
+    const month = StringHelper.ajouterZerosAGauche(datetime.getMonth() + 1, 2);
+    const year = StringHelper.ajouterZerosAGauche(datetime.getFullYear(), 4);
+    return day + '/' + month + '/' + year;
   }
 
   public static stringToTimestamp(dateStr: string): number {

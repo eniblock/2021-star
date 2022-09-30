@@ -13,7 +13,7 @@ import {EligibilityStatus} from "../../models/enum/EligibilityStatus.enum";
 import {TechnologyType} from "../../models/enum/TechnologyType.enum";
 import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
 
-const MOCK = false;
+const MOCK = true;
 
 @Injectable({
   providedIn: 'root',
@@ -150,9 +150,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         producerMarketParticipantName: 'Prodtest',
         producerMarketParticipantRoleType: '',
       },
-      energyAmount: {
-        quantity: '23'
-      },
+      energyAmount:null,
       activationDocument: {
         activationDocumentMrid: "A2",
         originAutomationRegisteredResourceMrid: 'MANSLE',

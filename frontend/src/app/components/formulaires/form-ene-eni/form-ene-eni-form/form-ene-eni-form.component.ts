@@ -55,7 +55,14 @@ export class FormEneEniFormComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.initialFormData != undefined) {
-      console.log(this.initialFormData);
+      const hasStartDate = this.initialFormData.activationDocument.startCreatedDateTime != null && this.initialFormData.activationDocument.startCreatedDateTime != "";
+      const hasEndDate = this.initialFormData.activationDocument.endCreatedDateTime != null && this.initialFormData.activationDocument.endCreatedDateTime != "";
+      this.form.get('activationDocumentMrid')?.setValue(this.initialFormData.activationDocument.activationDocumentMrid);
+      this.form.get('revisionNumber')?.setValue("1");
+      this.form.get('timestampDateStart')?.setValue(hasStartDate ? DateHelper.utcDatetimeStrToLocalDateStr(this.initialFormData.activationDocument.startCreatedDateTime) : "");
+      this.form.get('timestampTimeStart')?.setValue(hasStartDate ? DateHelper.utcDatetimeStrToLocalTimeStr(this.initialFormData.activationDocument.startCreatedDateTime) : "");
+      this.form.get('timestampDateEnd')?.setValue(hasEndDate ? DateHelper.utcDatetimeStrToLocalDateStr(this.initialFormData.activationDocument.endCreatedDateTime) : "");
+      this.form.get('timestampTimeEnd')?.setValue(hasEndDate ? DateHelper.utcDatetimeStrToLocalTimeStr(this.initialFormData.activationDocument.endCreatedDateTime) : "");
     }
   }
 

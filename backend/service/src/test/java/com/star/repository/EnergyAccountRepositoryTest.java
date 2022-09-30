@@ -112,7 +112,7 @@ class EnergyAccountRepositoryTest extends AbstractTest {
 
 
     @Test
-    void testFindEnergyAccountByProducer() throws ContractException, TechnicalException, JsonProcessingException {
+    void testFindEnergyAccountByProducer() throws ContractException, TechnicalException {
         // GIVEN
         EnergyAccountProducerCriteria energyAccountProducerCriteria = EnergyAccountProducerCriteria.builder()
                 .producerEicCode("producer_test_code").startCreatedDateTime("startDateTime").meteringPointMrid("PRM-kjbb651651").build();
@@ -124,9 +124,7 @@ class EnergyAccountRepositoryTest extends AbstractTest {
         // THEN
         Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), queryArgumentCaptor.capture());
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(energyAccountRepository.GET_ENERGY_ACCOUNT_BY_PRODUCER);
-        assertThat(queryArgumentCaptor.getValue()).isEqualTo(objectMapper.writeValueAsString(energyAccountProducerCriteria));
     }
-
 
     private EnergyAccount getEnergyAccount() {
         return EnergyAccount.builder().energyAccountMarketDocumentMrid("13789-KH2IIg-KJIU").meteringPointMrid("PRM24521").measurementUnitName("MW")
@@ -134,7 +132,4 @@ class EnergyAccountRepositoryTest extends AbstractTest {
                 .receiverMarketParticipantRole("RECEIVER_ROLE").createdDateTime("2022-09-12 14:18:14").timeInterval("00:00:00").build();
 
     }
-
-
-
 }

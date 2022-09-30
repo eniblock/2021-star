@@ -92,7 +92,8 @@ public class EnergyAccountRepository {
 
     public EnergyAccount[] findEnergyAccountByProducer(EnergyAccountProducerCriteria energyAccountProducerCriteria) throws BusinessException, TechnicalException {
         try {
-            byte[] response = contract.evaluateTransaction(GET_ENERGY_ACCOUNT_BY_PRODUCER, objectMapper.writeValueAsString(energyAccountProducerCriteria));
+            byte[] response = contract.evaluateTransaction(GET_ENERGY_ACCOUNT_BY_PRODUCER, energyAccountProducerCriteria.getMeteringPointMrid(),
+                    energyAccountProducerCriteria.getProducerEicCode(), energyAccountProducerCriteria.getStartCreatedDateTime());
             return response != null ? objectMapper.readValue(new String(response), new TypeReference<EnergyAccount[]>() {
             }) : null;
         } catch (JsonProcessingException exception) {

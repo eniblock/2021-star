@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {InstanceService} from "../../../services/api/instance.service";
 import {Instance} from "../../../models/enum/Instance.enum";
+import {RechercheHistoriqueLimitationEntite} from "../../../models/RechercheHistoriqueLimitation";
 
 @Component({
   selector: 'app-form-ene-eni',
@@ -8,6 +9,7 @@ import {Instance} from "../../../models/enum/Instance.enum";
   styleUrls: ['./form-ene-eni.component.css']
 })
 export class FormEneEniComponent implements OnInit {
+  @Input() initialFormData?: RechercheHistoriqueLimitationEntite;
 
   InstanceEnum = Instance;
 

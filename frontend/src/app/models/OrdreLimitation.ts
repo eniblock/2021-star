@@ -38,6 +38,7 @@ export interface OrdreLimitation {
   businessType: string,
   reasonCode: string,
   orderValue: string,
+  revisionNumber: string,
   measurementUnitName: MeasurementUnitName,
   senderMarketParticipantMrid: string,
 }

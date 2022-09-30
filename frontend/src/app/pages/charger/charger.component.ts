@@ -1,6 +1,8 @@
 import {Instance} from 'src/app/models/enum/Instance.enum';
 import {InstanceService} from 'src/app/services/api/instance.service';
 import {Component, OnInit} from '@angular/core';
+import {Navigation, Router} from "@angular/router";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 export enum TypeImport {
   OrdreDebutLimitation = 'Ordre de début de limitation',
@@ -19,12 +21,24 @@ export enum TypeImport {
 export class ChargerComponent implements OnInit {
   TypeImportEnum = TypeImport;
 
+  form: FormGroup = this.formBuilder.group({
+    typeImportSelected: [null]
+  });
+
   typesImport: TypeImport[] = [];
-  typeImportSelected?: TypeImport;
+  initialFormData: any;
 
   constructor(
-    private instanceService: InstanceService
+    private formBuilder: FormBuilder,
+    private instanceService: InstanceService,
+    private router: Router,
   ) {
+    // We load a form if "state.typeImport" in the router call is fullfilled
+    const nav: Navigation | null = this.router.getCurrentNavigation();
+    if (nav != null && nav.extras && nav.extras.state && nav.extras.state.typeImport) {
+      this.form.get("typeImportSelected")?.setValue(nav.extras.state.typeImport);
+      this.initialFormData = nav.extras.state.formData;
+    }
   }
 
   ngOnInit() {
@@ -56,7 +70,4 @@ export class ChargerComponent implements OnInit {
     }
   }
 
-  public onSelectTypeImport(typeImport: TypeImport) {
-    this.typeImportSelected = typeImport;
-  }
 }

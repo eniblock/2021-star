@@ -6,6 +6,8 @@ import { RoleType } from '../enums/RoleType';
 import { HLFServices } from './service/HLFservice';
 import { CommonService } from './service/CommonService';
 import { ReserveBidMarketDocument } from '../model/reserveBidMarketDocument';
+import { BalancingDocument } from '../model/balancingDocument';
+import { DocType } from '../enums/DocType';
 
 
 const enedis_producer = "enedis-producer";
@@ -96,6 +98,18 @@ export class ParametersController {
         parameters.values.set(ParametersType.PROCESS_TYPE_COMPTAGE, processTypeComptage);
         const processTypeRefrence: string[] = ["A14", "Z99"];
         parameters.values.set(ParametersType.PROCESS_TYPE_REFERENCE, processTypeRefrence);
+
+        const balancingDocument: BalancingDocument = {
+            docType: DocType.BALANCING_DOCUMENT,
+            revisionNumber: '1',
+            messageType: 'B44',
+            processsType: 'Z42',
+            businessType: 'B77',
+            direction: 'A02',
+        };
+        parameters.values.set(ParametersType.BALANCING_DOCUMENT, balancingDocument);
+
+        parameters.values.set(ParametersType.BALANCING_DOCUMENT_PREFIX, "BaDoc-");
 
         if (identity === OrganizationTypeMsp.ENEDIS) {
             /*

@@ -15,7 +15,7 @@ export class AttachmentFileController {
     inputStr : file[]
     */
     public static async createByList(params: STARParameters, inputStr: string, target: string = '') {
-        params.logger.info('============= START : AttachmentFileController - Create By List ===========');
+        params.logger.debug('============= START : AttachmentFileController - Create By List ===========');
 
         const fileList = AttachmentFile.formatListString(inputStr);
 
@@ -25,13 +25,13 @@ export class AttachmentFileController {
             }
         }
 
-        params.logger.info('=============  END  : AttachmentFileController - Create By List ===========');
+        params.logger.debug('=============  END  : AttachmentFileController - Create By List ===========');
     }
 
 
 
     public static async createObjByList(params: STARParameters, fileList: AttachmentFile[], target: string = '') {
-        params.logger.info('============= START : AttachmentFileController - Create By List ===========');
+        params.logger.debug('============= START : AttachmentFileController - Create By List ===========');
 
         if (fileList) {
             for (var fileObj of fileList) {
@@ -39,7 +39,7 @@ export class AttachmentFileController {
             }
         }
 
-        params.logger.info('=============  END  : AttachmentFileController - Create By List ===========');
+        params.logger.debug('=============  END  : AttachmentFileController - Create By List ===========');
     }
 
 
@@ -59,7 +59,7 @@ export class AttachmentFileController {
     inputStr : file
     */
     public static async create(params: STARParameters, inputStr: string) {
-        params.logger.info('============= START : AttachmentFileController - create ===========');
+        params.logger.debug('============= START : AttachmentFileController - create ===========');
 
         const fileObj = AttachmentFile.formatString(inputStr);
 
@@ -67,7 +67,7 @@ export class AttachmentFileController {
             await AttachmentFileService.write(params, fileObj);
         }
 
-        params.logger.info('=============  END  : AttachmentFileController - create ===========');
+        params.logger.debug('=============  END  : AttachmentFileController - create ===========');
     }
 
 
@@ -112,11 +112,11 @@ export class AttachmentFileController {
         output : File
     */
     public static async getById(params: STARParameters, fileId: string): Promise<string> {
-        params.logger.info('============= START : AttachmentFileController - get By Id (%s) ===========', fileId);
+        params.logger.debug('============= START : AttachmentFileController - get By Id (%s) ===========', fileId);
 
         const fileObj = await this.getObjById(params, fileId);
 
-        params.logger.info('============= END   : AttachmentFileController - get By Id (%s) ===========', fileId);
+        params.logger.debug('============= END   : AttachmentFileController - get By Id (%s) ===========', fileId);
 
         return JSON.stringify(fileObj);
     }

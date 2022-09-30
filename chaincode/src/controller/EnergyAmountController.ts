@@ -17,6 +17,10 @@ import { StarDataService } from './service/StarDataService';
 
 import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
 import { CommonService } from './service/CommonService';
+import { BalancingDocumentController } from './BalancingDocumentController';
+import { ActivationEnergyAmountIndexersController, DataIndexersController } from './dataIndexersController';
+import { EnergyAmountAbstract, IndexedData } from '../model/dataIndexers';
+import { IdArgument } from '../model/arguments/idArgument';
 
 export class EnergyAmountController {
     public static async executeOrder(
@@ -41,6 +45,7 @@ export class EnergyAmountController {
                 }
 
                 await EnergyAmountService.delete(params, {id:energyAmount.energyAmountMarketDocumentMrid, collection: updateOrder.previousCollection});
+                await BalancingDocumentController.deleteByActivationDocumentMrId(params, energyAmount.activationDocumentMrid, updateOrder.previousCollection);
             }
 
 
@@ -218,6 +223,11 @@ export class EnergyAmountController {
 
         for (var [key, ] of existingActivationDocumentRef) {
             await EnergyAmountService.write(params, energyObj, key);
+
+            const dataReference = existingActivationDocumentRef.get(key);
+            await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
+
+            await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
         }
 
         params.logger.info('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
@@ -256,6 +266,11 @@ export class EnergyAmountController {
 
                 for (var [key, ] of existingActivationDocumentRef) {
                     await EnergyAmountService.write(params, energyObj, key);
+
+                    const dataReference = existingActivationDocumentRef.get(key);
+                    await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
+
+                    await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
                 }
             }
         }
@@ -279,6 +294,9 @@ export class EnergyAmountController {
 
         await EnergyAmountController.checkEnergyAmout(params, dataReference.data, EnergyType.ENE, false, dataReference.collection);
         await EnergyAmountService.write(params, dataReference.data, dataReference.collection);
+        await BalancingDocumentController.createOrUpdate(params, null, null, dataReference.data, dataReference.collection);
+
+        await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, dataReference.data, dataReference.collection);
 
         params.logger.debug('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
             dataReference.data.energyAmountMarketDocumentMrid,
@@ -312,6 +330,8 @@ export class EnergyAmountController {
 
         for (var [key, ] of existingEnergyAmountRef) {
             await EnergyAmountService.write(params, energyObj, key);
+
+            await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
         }
 
         params.logger.info('============= END   : updateTSOEnergyAmount %s EnergyAmountController ===========',
@@ -350,6 +370,8 @@ export class EnergyAmountController {
 
                 for (var [key, ] of existingEnergyAmountRef) {
                     await EnergyAmountService.write(params, energyObj, key);
+
+                    await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
                 }
             }
         }
@@ -384,6 +406,11 @@ export class EnergyAmountController {
 
         for (var [key, ] of existingActivationDocumentRef) {
             await EnergyAmountService.write(params, energyObj, key);
+
+            const dataReference = existingActivationDocumentRef.get(key);
+            await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
+
+            await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
         }
 
         params.logger.debug('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
@@ -421,6 +448,11 @@ export class EnergyAmountController {
 
                 for (var [key, ] of existingActivationDocumentRef) {
                     await EnergyAmountService.write(params, energyObj, key);
+
+                    const dataReference = existingActivationDocumentRef.get(key);
+                    await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
+
+                    await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
                 }
             }
         }
@@ -445,6 +477,9 @@ export class EnergyAmountController {
 
         await EnergyAmountController.checkEnergyAmout(params, dataReference.data, EnergyType.ENI, true, dataReference.collection);
         await EnergyAmountService.write(params, dataReference.data, dataReference.collection);
+        await BalancingDocumentController.createOrUpdate(params, null, null, dataReference.data, dataReference.collection);
+
+        await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, dataReference.data, dataReference.collection);
 
         params.logger.debug('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
         dataReference.data.energyAmountMarketDocumentMrid,
@@ -483,6 +518,8 @@ export class EnergyAmountController {
 
                 for (var [key, ] of existingEnergyAmountRef) {
                     await EnergyAmountService.write(params, energyObj, key);
+
+                    await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
                 }
             }
         }
@@ -516,6 +553,8 @@ export class EnergyAmountController {
 
         for (var [key, ] of existingEnergyAmountRef) {
             await EnergyAmountService.write(params, energyObj, key);
+
+            await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
         }
 
 
@@ -525,6 +564,41 @@ export class EnergyAmountController {
     }
 
 
+
+
+
+    public static async getObjById(params: STARParameters, energyAmountMarketDocumentMrid: string, target: string = ''): Promise<EnergyAmount> {
+        params.logger.debug('============= START : get Obj ById EnergyAmountController ===========');
+
+        const reserveBidObj = await this.getObjByIdArgument(params, {docType: DocType.ENERGY_AMOUNT, id: energyAmountMarketDocumentMrid, collection: target});
+
+        params.logger.debug('=============  END  : get Obj ById EnergyAmountController ===========');
+        return reserveBidObj;
+    }
+
+
+
+    private static async getObjByIdArgument(
+        params: STARParameters,
+        arg: IdArgument): Promise<EnergyAmount> {
+        params.logger.debug('============= START : get EnergyAmountController By Id Argument (%s) ===========', JSON.stringify(arg));
+
+        let energyObj: EnergyAmount;
+        arg.docType = DocType.ENERGY_AMOUNT;
+        if (arg.collection && arg.collection.length > 0) {
+            energyObj = await StarPrivateDataService.getObj(params, arg);
+        } else {
+            const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, arg);
+            const dataReference = result.values().next().value;
+            if (dataReference && dataReference.data) {
+                energyObj = dataReference.data;
+            }
+        }
+
+        params.logger.debug('=============  END  : get EnergyAmountController By Id Argument (%s) ===========', JSON.stringify(arg));
+
+        return energyObj;
+    }
 
 
 
@@ -681,22 +755,57 @@ export class EnergyAmountController {
     }
 
 
-    public static async getEnergyAmountByActivationDocument(
+    // public static async getEnergyAmountByActivationDocument(
+    //     params: STARParameters,
+    //     activationDocumentMrid: string,
+    //     target: string = ''): Promise<EnergyAmount> {
+    //     params.logger.debug('============= START : get EnergyAmount By ActivationDocument ===========');
+
+    //     const query = `{"selector": {"docType": "${DocType.ENERGY_AMOUNT}", "activationDocumentMrid": "${activationDocumentMrid}"}}`;
+    //     const allResults = await EnergyAmountService.getQueryArrayResult(params, {query: query, collection: target});
+
+    //     var energyAmout:EnergyAmount;
+    //     if (allResults && allResults.length >0) {
+    //         energyAmout = allResults[0];
+    //     }
+
+    //     params.logger.debug('=============  END  : get EnergyAmount By ActivationDocument ===========');
+
+    //     return energyAmout;
+    // }
+
+    public static async getByActivationDocument(
         params: STARParameters,
         activationDocumentMrid: string,
-        target: string = ''): Promise<EnergyAmount> {
+        target: string = ''): Promise<EnergyAmount>{
         params.logger.debug('============= START : get EnergyAmount By ActivationDocument ===========');
 
-        const query = `{"selector": {"docType": "${DocType.ENERGY_AMOUNT}", "activationDocumentMrid": "${activationDocumentMrid}"}}`;
-        const allResults = await EnergyAmountService.getQueryArrayResult(params, {query: query, collection: target});
+        var energyAmout:EnergyAmount = null;
 
-        var energyAmout:EnergyAmount;
-        if (allResults && allResults.length >0) {
-            energyAmout = allResults[0];
+        if (activationDocumentMrid) {
+            var activNRJAmountIndx: IndexedData;
+            try {
+                activNRJAmountIndx = await ActivationEnergyAmountIndexersController.get(params, activationDocumentMrid, target);
+            } catch (err) {
+                //DO nothing except "Not accessible information"
+            }
+
+            if (activNRJAmountIndx
+                && activNRJAmountIndx.indexedDataAbstractList
+                && activNRJAmountIndx.indexedDataAbstractList.length > 0) {
+
+                const energyAmountMarketDocumentMrid = activNRJAmountIndx.indexedDataAbstractList[0];
+
+                if (energyAmountMarketDocumentMrid
+                    && energyAmountMarketDocumentMrid.length > 0) {
+
+                        energyAmout = await this.getObjById(params, energyAmountMarketDocumentMrid, target);
+                }
+            }
+
         }
 
         params.logger.debug('=============  END  : get EnergyAmount By ActivationDocument ===========');
-
         return energyAmout;
     }
 

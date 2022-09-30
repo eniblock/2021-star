@@ -17,6 +17,9 @@ import { ActivationDocumentService } from '../service/ActivationDocumentService'
 import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
 import { StarPrivateDataService } from '../service/StarPrivateDataService';
 import { StarDataService } from '../service/StarDataService';
+import { ReserveBidMarketDocument } from '../../model/reserveBidMarketDocument';
+import { ReserveBidMarketDocumentController } from '../ReserveBidMarketDocumentController';
+import { SiteActivationIndexersController } from '../dataIndexersController';
 
 export class ActivationDocumentController {
     public static async getActivationDocumentByProducer(
@@ -24,7 +27,7 @@ export class ActivationDocumentController {
         producerMrid: string): Promise<string> {
         params.logger.info('============= START : get ActivationDocument By Producer ===========');
 
-        const query = `{"selector": {"docType": "activationDocument", "receiverMarketParticipantMrid": "${producerMrid}"}}`;
+        const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "receiverMarketParticipantMrid": "${producerMrid}"}}`;
         params.logger.debug("query: ", query);
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
@@ -44,7 +47,7 @@ export class ActivationDocumentController {
         systemOperatorMrid: string): Promise<string> {
         params.logger.info('============= START : get ActivationDocument By SystemOperator ===========');
 
-        const query = `{"selector": {"docType": "activationDocument", "senderMarketParticipantMrid": "${systemOperatorMrid}"}}`;
+        const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "senderMarketParticipantMrid": "${systemOperatorMrid}"}}`;
         params.logger.debug("query: ", query);
 
         const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
@@ -274,16 +277,17 @@ export class ActivationDocumentController {
                 } else {
                     siteRef = siteRefMap.values().next().value;
                 }
-                // await SiteService.getRaw(targetDocument, activationDocumentObj.registeredResourceMrid);
             } catch(error) {
                 throw new Error(error.message.concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
             }
+
             if (!siteRef
                 || (siteRef.collection !== targetDocument && !targetDocument && targetDocument.length > 0)
                 || !siteRef.data.meteringPointMrid
                 || siteRef.data.meteringPointMrid != activationDocumentObj.registeredResourceMrid) {
-                    throw new Error(`Site : ${activationDocumentObj.registeredResourceMrid} does not exist for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
-                }
+
+                throw new Error(`Site : ${activationDocumentObj.registeredResourceMrid} does not exist for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
+            }
         }
 
         if (isEmpty(activationDocumentObj.endCreatedDateTime) && isEmpty(activationDocumentObj.orderValue)) {
@@ -342,6 +346,7 @@ export class ActivationDocumentController {
         }
 
         await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);
+        await SiteActivationIndexersController.addActivationReference(params, activationDocumentObj, targetDocument);
 
         params.logger.debug('=============  END  : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,

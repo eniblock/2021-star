@@ -29,6 +29,9 @@ import { OrganizationTypeMsp } from "../../enums/OrganizationMspType";
 import { EligibilityStatusType } from "../../enums/EligibilityStatusType";
 import { SystemOperatorController } from "../SystemOperatorController";
 
+import { BalancingDocument } from "../../model/balancingDocument";
+import { BalancingDocumentController } from "../BalancingDocumentController";
+
 export class HistoryInformationInBuilding {
     public historyInformation: Map<string, HistoryInformation> = new Map();
     public eligibilityToDefine: string[] = [];
@@ -565,7 +568,7 @@ export class HistoryController {
 
         try {
             if (calculateEnergyAmount && activationDocumentForInformation && activationDocumentForInformation.activationDocumentMrid) {
-                energyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(params, activationDocumentForInformation.activationDocumentMrid);
+                energyAmount = await EnergyAmountController.getByActivationDocument(params, activationDocumentForInformation.activationDocumentMrid);
             }
 
         } catch (error) {
@@ -597,7 +600,12 @@ export class HistoryController {
             }
         }
 
-
+        let balancingDocument: BalancingDocument = null;
+        try {
+            balancingDocument = await BalancingDocumentController.getByActivationDocumentMrId(params, activationDocument.activationDocumentMrid);
+        }catch (err) {
+                //DO nothing except "Not accessible information"
+        }
 
         const information: HistoryInformation = {
             activationDocument: JSON.parse(JSON.stringify(activationDocument)),
@@ -606,6 +614,7 @@ export class HistoryController {
             producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
             energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
             reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
+            balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
             displayedSourceName: displayedSourceName
         };
 

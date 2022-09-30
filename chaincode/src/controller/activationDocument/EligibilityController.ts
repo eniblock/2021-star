@@ -282,7 +282,7 @@ export class EligibilityController {
         /*****************
          * ENERGY AMOUNT
          ****************/
-        const energyAmount: EnergyAmount = await EnergyAmountController.getEnergyAmountByActivationDocument(params, activationDocument.activationDocumentMrid, initialTarget);
+        const energyAmount: EnergyAmount = await EnergyAmountController.getByActivationDocument(params, activationDocument.activationDocumentMrid, initialTarget);
 
         if (energyAmount
             && energyAmount.energyAmountMarketDocumentMrid

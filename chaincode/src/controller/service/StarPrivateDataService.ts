@@ -38,9 +38,9 @@ export class StarPrivateDataService {
 
         var dataObj:any = null;
 
-        const poolKey = arg.collection.concat(arg.id);
+        const poolKey = arg.id;
 
-        const dataRef = params.getFromMemoryPool(poolKey);
+        const dataRef:Map<string, DataReference> = params.getFromMemoryPool(poolKey);
         if (dataRef
             && dataRef.get(arg.collection)
             && dataRef.get(arg.collection).data
@@ -78,7 +78,8 @@ export class StarPrivateDataService {
         // params.logger.debug("----------------------------------")
         // params.logger.debug("id:",arg.id)
 
-        var result:Map<string, DataReference> = params.getFromMemoryPool(arg.id);
+        const poolKey = arg.id;
+        var result:Map<string, DataReference> = params.getFromMemoryPool(poolKey);
 
         // params.logger.debug("result: ", JSON.stringify([...result]))
 
@@ -113,7 +114,8 @@ export class StarPrivateDataService {
                             data: collectionResult
                         }
                         result.set(collection, elt);
-                        params.addInMemoryPool(arg.id, elt);
+
+                        params.addInMemoryPool(poolKey, elt);
                     }
 
                     // params.logger.debug("result:",JSON.stringify([...result]))
@@ -150,7 +152,9 @@ export class StarPrivateDataService {
         await params.ctx.stub.putPrivateData(collection, arg.id, Buffer.from(JSON.stringify(arg.dataObj)));
 
         const poolRef : DataReference = {collection: collection, docType: arg.dataObj.docType, data: arg.dataObj};
-        params.addInMemoryPool(arg.id, poolRef);
+
+        const poolKey = arg.id;
+        params.addInMemoryPool(poolKey, poolRef);
 
         params.logger.debug('=============  END  : WritePrivateData %s %s %s ===========', arg.dataObj.docType, collection, arg.id);
     }

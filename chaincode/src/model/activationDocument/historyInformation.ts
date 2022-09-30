@@ -1,4 +1,5 @@
 import { ActivationDocument } from "../activationDocument/activationDocument";
+import { BalancingDocument } from "../balancingDocument";
 import { EnergyAmount } from "../energyAmount";
 import { Producer } from "../producer";
 import { ReserveBidMarketDocument } from "../reserveBidMarketDocument";
@@ -12,6 +13,7 @@ export class HistoryInformation {
     public energyAmount: EnergyAmount;
 
     public reserveBidMarketDocument?: ReserveBidMarketDocument;
+    public balancingDocument?: BalancingDocument;
 
     //additionnal properties
     public displayedSourceName: string;

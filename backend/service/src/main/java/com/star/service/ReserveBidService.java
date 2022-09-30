@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -53,12 +55,12 @@ public class ReserveBidService {
 
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
-    public ImportReserveBidResult createReserveBid(ReserveBid reserveBid, List<FichierImportation> fichiers) throws IOException,TechnicalException, BusinessException {
+    public ImportReserveBidResult createReserveBid(ReserveBid reserveBid, List<FichierImportation> fichierImportations) throws IOException,TechnicalException, BusinessException {
         log.debug("Service de traitement du reservebid  {}", reserveBid);
-        log.debug("Traitement de(s) fichier(s) pour le reservebid DTO {}", fichiers);
-        boolean hasFiles = CollectionUtils.isNotEmpty(fichiers);
+        log.debug("Traitement de(s) fichier(s) pour le reservebid DTO {}", fichierImportations);
+        boolean hasFiles = CollectionUtils.isNotEmpty(fichierImportations);
         if (hasFiles) {
-            importUtilsService.checkImportFiles(fichiers, FileExtensionEnum.PDF.getValue());
+            importUtilsService.checkImportFiles(fichierImportations, FileExtensionEnum.PDF.getValue());
         }
         ImportReserveBidResult importReserveBidResult = new ImportReserveBidResult();
         Assert.notNull(reserveBid, messageSource.getMessage("import.reserveBid.not.null", null, null));
@@ -79,18 +81,49 @@ public class ReserveBidService {
             if (StringUtils.isBlank(reserveBid.getRevisionNumber())) {
                 reserveBid.setRevisionNumber(REVISION_NUMBER);
             }
+            if (isBlank(reserveBid.getMessageType())) {
+                reserveBid.setMessageType(EMPTY);
+            }
+            if (isBlank(reserveBid.getProcessType())) {
+                reserveBid.setProcessType(EMPTY);
+            }
+            if (isBlank(reserveBid.getSenderMarketParticipantMrid())) {
+                reserveBid.setSenderMarketParticipantMrid(EMPTY);
+            }
+            if (isBlank(reserveBid.getReceiverMarketParticipantMrid())) {
+                reserveBid.setReceiverMarketParticipantMrid(EMPTY);
+            }
+            if (isBlank(reserveBid.getValidityPeriodStartDateTime())) {
+                reserveBid.setValidityPeriodStartDateTime(EMPTY);
+            }
+            if (isBlank(reserveBid.getValidityPeriodEndDateTime())) {
+                reserveBid.setValidityPeriodEndDateTime(EMPTY);
+            }
+            if (isBlank(reserveBid.getBusinessType())) {
+                reserveBid.setBusinessType(EMPTY);
+            }
+            if (isBlank(reserveBid.getQuantityMeasureUnitName())) {
+                reserveBid.setQuantityMeasureUnitName(EMPTY);
+            }
+            if (isBlank(reserveBid.getPriceMeasureUnitName())) {
+                reserveBid.setPriceMeasureUnitName(EMPTY);
+            }
+            if (isBlank(reserveBid.getCurrencyUnitName())) {
+                reserveBid.setCurrencyUnitName(EMPTY);
+            }
             ReserveBidMarketDocumentCreation reserveBidMarketDocumentCreation = new ReserveBidMarketDocumentCreation();
+            List<String> attachments = new ArrayList<>();
+            List<AttachmentFile> attachmentFileList = new ArrayList<>();
             if (hasFiles) {
-                List<String> attachments = new ArrayList<>();
-                List<AttachmentFile> attachmentFileList = new ArrayList<>();
-                for (FichierImportation fichierImportation : fichiers) {
+                for (FichierImportation fichierImportation : fichierImportations) {
                     String fileUUID = randomUUID().toString() + "_" + fichierImportation.getFileName();
                     attachmentFileList.add(new AttachmentFile(fileUUID, IOUtils.toString(fichierImportation.getInputStream(), StandardCharsets.UTF_8)));
                     attachments.add(fileUUID);
                 }
-                reserveBid.setAttachments(attachments);
-                reserveBidMarketDocumentCreation.setAttachmentFileList(attachmentFileList);
             }
+            // S'il n'y a pas de fichiers en PJ, on aura 2 listes vides MAIS NON NULLES car les 2 listes ont été initialisées ci-dessus.
+            reserveBid.setAttachments(attachments);
+            reserveBidMarketDocumentCreation.setAttachmentFileList(attachmentFileList);
             reserveBidMarketDocumentCreation.setReserveBid(reserveBid);
             importReserveBidResult.setReserveBid(reserveBid);
             reserveBidRepository.save(reserveBidMarketDocumentCreation);

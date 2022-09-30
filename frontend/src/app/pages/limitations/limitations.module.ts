@@ -22,7 +22,6 @@ import {
 } from './limitations-indemnisation/limitations-indemnisation-choose-yes-no/limitations-indemnisation-choose-yes-no.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {LimitationsRoutes} from './limitations.routing';
-import {MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
@@ -40,7 +39,6 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatBottomSheetModule,
     GraphModule,
     MatDialogModule,
-    MatTooltipModule,
   ],
   declarations: [
     LimitationsComponent,

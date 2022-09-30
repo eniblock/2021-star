@@ -1,2 +1,2 @@
-<app-form-ene-eni-form *ngIf="instance==InstanceEnum.TSO"></app-form-ene-eni-form>
+<app-form-ene-eni-form [initialFormData]="initialFormData" *ngIf="instance==InstanceEnum.TSO"></app-form-ene-eni-form>
 <app-form-ene-eni-fichier *ngIf="instance==InstanceEnum.DSO"></app-form-ene-eni-fichier>

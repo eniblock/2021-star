@@ -1,4 +1,5 @@
 import {parse} from 'tinyduration';
+import StringHelper from "./string.helpers";
 
 export class DateHelper {
   public static makeDate(day: number, month: number, year: number): Date {
@@ -31,6 +32,22 @@ export class DateHelper {
       parseInt(timeParts[1], 10),
       parseInt(timeParts[2], 10),
     ];
+  }
+
+  public static utcDatetimeStrToLocalTimeStr(datetimeStr: string): string {
+    const datetime = new Date(datetimeStr);
+    const hours = StringHelper.ajouterZerosAGauche(datetime.getHours(), 2);
+    const minutes = StringHelper.ajouterZerosAGauche(datetime.getMinutes(), 2);
+    const seconds = StringHelper.ajouterZerosAGauche(datetime.getSeconds(), 2);
+    return hours + ':' + minutes + ':' + seconds;
+  }
+
+  public static utcDatetimeStrToLocalDateStr(datetimeStr: string): string {
+    const datetime = new Date(datetimeStr);
+    const day = StringHelper.ajouterZerosAGauche(datetime.getDate(), 2);
+    const month = StringHelper.ajouterZerosAGauche(datetime.getMonth() + 1, 2);
+    const year = StringHelper.ajouterZerosAGauche(datetime.getFullYear(), 4);
+    return day + '/' + month + '/' + year;
   }
 
   public static stringToTimestamp(dateStr: string): number {

@@ -119,6 +119,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         orderValue: '13',
         measurementUnitName: MeasurementUnitName.MW,
         senderMarketParticipantMrid: '10XFR-RTE------Q', // 10XFR-RTE------Q    17X100A100A0001A
+        revisionNumber: "12",
       },
       subOrderList: [],
       displayedSourceName: "displayedSourceName1",
@@ -149,9 +150,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         producerMarketParticipantName: 'Prodtest',
         producerMarketParticipantRoleType: '',
       },
-      energyAmount: {
-        quantity: '23'
-      },
+      energyAmount:null,
       activationDocument: {
         activationDocumentMrid: "A2",
         originAutomationRegisteredResourceMrid: 'MANSLE',
@@ -166,6 +165,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         orderValue: '13',
         measurementUnitName: MeasurementUnitName.MW,
         senderMarketParticipantMrid: '17X100A100A0001A', // 10XFR-RTE------Q    17X100A100A0001A
+        revisionNumber: "12",
       },
       subOrderList: [
         {
@@ -182,6 +182,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           orderValue: '12',
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
+          revisionNumber: "12",
         }, {
           activationDocumentMrid: "A4",
           originAutomationRegisteredResourceMrid: 'MANSLE3',
@@ -196,6 +197,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           orderValue: '11',
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
+          revisionNumber: "12",
         }
       ],
       displayedSourceName: "displayedSourceName2",

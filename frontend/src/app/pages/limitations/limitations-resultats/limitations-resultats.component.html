@@ -62,7 +62,7 @@
     <th mat-header-cell *matHeaderCellDef> {{ 'quantity' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element">
       {{ element.energyAmount?.quantity}}
-      <button mat-raised-button class="bg-primary text-white" (click)="chargerEne(element)" *ngIf="instance == InstanceEnum.TSO && element.energyAmount == null">
+      <button mat-raised-button class="bg-primary text-white" (click)="chargerEne(element)" *ngIf="instance == InstanceEnum.TSO && element.energyAmount == null && element.site?.typeSite == TypeSiteEnum.HTB">
         <i [class]="'fa-solid fa-pen'"></i>
       </button>
     </td>

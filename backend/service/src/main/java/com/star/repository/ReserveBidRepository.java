@@ -39,7 +39,7 @@ public class ReserveBidRepository {
         if (reserveBidMarketDocumentCreation == null) {
             return null;
         }
-        log.info("Sauvegarde de {} reserve bid ", reserveBidMarketDocumentCreation);
+        log.debug("Sauvegarde de {} reserve bid ", reserveBidMarketDocumentCreation);
         try {
             contract.submitTransaction(CREATE_RESERVE_BID_MARKET_DOCUMENT, objectMapper.writeValueAsString(reserveBidMarketDocumentCreation));
         } catch (TimeoutException timeoutException) {

@@ -72,6 +72,7 @@ public class ReserveBidService {
             importReserveBidResult.setErrors(errors);
         } else {
             reserveBid.setReserveBidMrid(randomUUID().toString());
+            reserveBid.setAttachmentsWithStatus(new ArrayList<>());
             if (StringUtils.isBlank(reserveBid.getFlowDirection())) {
                 reserveBid.setFlowDirection(StringUtils.EMPTY);
             }

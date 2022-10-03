@@ -85,6 +85,9 @@ export class BalancingDocumentController {
         params.logger.debug('=============  END  : deleteByActivationDocumentMrId BalancingDocumentController ===========');
     }
 
+
+
+
     public static async createOrUpdateById(
         params: STARParameters,
         activationDocumentMrid: string,
@@ -99,10 +102,14 @@ export class BalancingDocumentController {
             activationDocument = await ActivationDocumentController.getActivationDocumentById(params, activationDocumentMrid, target);
         }
 
-        this.consolidateAndCreateOrUpdate(params, activationDocument, reserveBid, energyAmount, target);
+        await this.consolidateAndCreateOrUpdate(params, activationDocument, reserveBid, energyAmount, target);
 
         params.logger.debug('=============  END  : createOrUpdateById BalancingDocumentController ===========');
     }
+
+
+
+
 
     public static async createOrUpdate(
         params: STARParameters,
@@ -125,7 +132,7 @@ export class BalancingDocumentController {
             }
         }
 
-        this.consolidateAndCreateOrUpdate(params, activationDocument, reserveBid, energyAmount, target);
+        await this.consolidateAndCreateOrUpdate(params, activationDocument, reserveBid, energyAmount, target);
 
         params.logger.debug('=============  END  : createOrUpdate BalancingDocumentController ===========');
     }
@@ -134,7 +141,7 @@ export class BalancingDocumentController {
 
 
 
-    public static async consolidateAndCreateOrUpdate(
+    private static async consolidateAndCreateOrUpdate(
         params: STARParameters,
         activationDocument: ActivationDocument,
         reserveBid : ReserveBidMarketDocument,
@@ -167,7 +174,7 @@ export class BalancingDocumentController {
             }
         }
 
-        this.createOrUpdateObj(params, activationDocument, reserveBid, energyAmount, target);
+        await this.createOrUpdateObj(params, activationDocument, reserveBid, energyAmount, target);
 
         params.logger.debug('=============  END  : consolidateAndCreateOrUpdate BalancingDocumentController ===========');
     }
@@ -180,14 +187,6 @@ export class BalancingDocumentController {
         energyAmount : EnergyAmount,
         target: string = '') {
         params.logger.debug('============= START : createOrUpdateObj BalancingDocumentController ===========');
-
-        params.logger.info("oooooooooooooooooooo")
-        params.logger.info("activationDocument: ", JSON.stringify(activationDocument))
-        params.logger.info("reserveBid: ", JSON.stringify(reserveBid))
-        params.logger.info("energyAmount: ", JSON.stringify(energyAmount))
-        params.logger.info("target: ", JSON.stringify(target))
-        params.logger.info("oooooooooooooooooooo")
-
 
         if (activationDocument
             && activationDocument.activationDocumentMrid

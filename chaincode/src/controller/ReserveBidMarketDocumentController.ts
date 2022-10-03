@@ -57,7 +57,6 @@ export class ReserveBidMarketDocumentController {
             }
         }
 
-
         params.logger.info('=============  END  : Create by List ReserveBidMarketDocumentController ===========');
     }
 
@@ -70,40 +69,6 @@ export class ReserveBidMarketDocumentController {
     }
 
 
-
-    private static async getClosedPreviousReserveBid(
-        params: STARParameters,
-        reserveBidObj: ReserveBidMarketDocument): Promise<ReserveBidMarketDocument> {
-        params.logger.debug('============= START : closePreviousReserveBid ReserveBidMarketDocumentController ===========');
-
-        var reserveBidToClose:ReserveBidMarketDocument = null;
-        if (reserveBidObj
-            && reserveBidObj.meteringPointMrid
-            && reserveBidObj.meteringPointMrid.length > 0
-            && reserveBidObj.validityPeriodStartDateTime
-            && reserveBidObj.validityPeriodStartDateTime.length > 0) {
-                const meteringPointMrid: string = reserveBidObj.meteringPointMrid;
-                const date: string = reserveBidObj.validityPeriodStartDateTime;
-
-                const reserveBidToCloseList: ReserveBidMarketDocument[] =
-                    await this.getBySiteAndDate(params, {meteringPointMrid: meteringPointMrid, referenceDateTime: date, includeNext: true});
-
-                if (reserveBidToCloseList) {
-                    if (reserveBidToCloseList.length > 1) {
-                        throw new Error("Error - Reserve Bid Market Document can be only closed when only one exists for current and next periods.")
-                    } else if (reserveBidToCloseList.length > 0) {
-                        reserveBidToClose = reserveBidToCloseList[0];
-                        //Close the ReserveBid
-                        var endDate = new Date (reserveBidObj.validityPeriodStartDateTime);
-                        endDate.setDate(endDate.getDate() - 1);
-                        reserveBidToClose.validityPeriodEndDateTime = JSON.parse(JSON.stringify(endDate));
-                    }
-                }
-            }
-
-        params.logger.debug('=============  END  : closePreviousReserveBid ReserveBidMarketDocumentController ===========');
-        return reserveBidToClose;
-    }
 
 
     private static async fillObj(
@@ -209,30 +174,34 @@ export class ReserveBidMarketDocumentController {
             }
         }
 
-        // Cannot find the reserveBid to Close and close it before creation
-        // unsuppored transaction. Transaction has already performed queries on pvt data. Writes are not allowed
-        // const reserveBidObjToClose: ReserveBidMarketDocument = await this.getClosedPreviousReserveBid(params, reserveBidObj);
-
-        for (var [key, ] of existingSitesRef) {
-            // if (reserveBidObjToClose && reserveBidObjToClose !== null) {
-            //     await ReserveBidMarketDocumentService.write(params, reserveBidObjToClose, key);
-            // }
-            await ReserveBidMarketDocumentService.write(params, reserveBidObj, key);
-            await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, key);
-        }
+        params.logger.info('YOUK START');
+        params.logger.info('existingSitesRef: ', [...existingSitesRef]);
 
         for (var [target, ] of existingSitesRef) {
+            params.logger.info('target: ', target);
             await ReserveBidMarketDocumentService.write(params, reserveBidObj, target);
             await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, target);
             await SiteReserveBidIndexersController.addReserveBidReference(params, reserveBidObj, target);
 
+
             const activationDocumentIdList: string[] = await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, target);
+            params.logger.info('activationDocumentIdList: ', JSON.stringify(activationDocumentIdList));
             if (activationDocumentIdList && activationDocumentIdList.length > 0) {
                 for (var activationDocumentId of activationDocumentIdList) {
+
+                    params.logger.info('target: ', target);
+                    params.logger.info('activationDocumentId: ', activationDocumentId);
+                    params.logger.info('reserveBidObj.receiverMarketParticipantMrid: ', reserveBidObj.receiverMarketParticipantMrid);
+
                     await BalancingDocumentController.createOrUpdateById(params, activationDocumentId, reserveBidObj, null, target);
+
+                    params.logger.info('YOUKI !!!!');
                 }
+                params.logger.info('YOUKI Oh');
             }
+            params.logger.info('YOUKI Aaaaaaaah');
         }
+        params.logger.info('YOUKI Yeah !!!!!!');
 
 
 

@@ -16,13 +16,7 @@ export class BalancingDocumentService {
         target: string = ''): Promise<void> {
         params.logger.debug('============= START : write BalancingDocumentService ===========');
 
-        balancingObj.docType = DocType.RESERVE_BID_MARKET_DOCUMENT;
-
-        params.logger.info("*********************")
-        params.logger.info("id: ", JSON.stringify(balancingObj.balancingDocumentMrid))
-        params.logger.info("balancingObj: ", JSON.stringify(balancingObj))
-        params.logger.info("target: ", JSON.stringify(target))
-        params.logger.info("*********************")
+        balancingObj.docType = DocType.BALANCING_DOCUMENT;
 
         await StarPrivateDataService.write(params, {id: balancingObj.balancingDocumentMrid, dataObj: balancingObj, collection: target});
 

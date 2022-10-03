@@ -109,7 +109,7 @@ export class ParametersController {
         };
         parameters.values.set(ParametersType.BALANCING_DOCUMENT, balancingDocument);
 
-        parameters.values.set(ParametersType.BALANCING_DOCUMENT_PREFIX, "BaDoc-");
+        parameters.values.set(ParametersType.BALANCING_DOCUMENT_PREFIX, "BaDoc_");
 
         if (identity === OrganizationTypeMsp.ENEDIS) {
             /*

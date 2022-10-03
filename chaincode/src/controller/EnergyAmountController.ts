@@ -754,26 +754,6 @@ export class EnergyAmountController {
         return results;
     }
 
-
-    // public static async getEnergyAmountByActivationDocument(
-    //     params: STARParameters,
-    //     activationDocumentMrid: string,
-    //     target: string = ''): Promise<EnergyAmount> {
-    //     params.logger.debug('============= START : get EnergyAmount By ActivationDocument ===========');
-
-    //     const query = `{"selector": {"docType": "${DocType.ENERGY_AMOUNT}", "activationDocumentMrid": "${activationDocumentMrid}"}}`;
-    //     const allResults = await EnergyAmountService.getQueryArrayResult(params, {query: query, collection: target});
-
-    //     var energyAmout:EnergyAmount;
-    //     if (allResults && allResults.length >0) {
-    //         energyAmout = allResults[0];
-    //     }
-
-    //     params.logger.debug('=============  END  : get EnergyAmount By ActivationDocument ===========');
-
-    //     return energyAmout;
-    // }
-
     public static async getByActivationDocument(
         params: STARParameters,
         activationDocumentMrid: string,
@@ -794,7 +774,8 @@ export class EnergyAmountController {
                 && activNRJAmountIndx.indexedDataAbstractList
                 && activNRJAmountIndx.indexedDataAbstractList.length > 0) {
 
-                const energyAmountMarketDocumentMrid = activNRJAmountIndx.indexedDataAbstractList[0];
+                const energyAmountAbstract: EnergyAmountAbstract = activNRJAmountIndx.indexedDataAbstractList[0];
+                const energyAmountMarketDocumentMrid: string = energyAmountAbstract.energyAmountMarketDocumentMrid;
 
                 if (energyAmountMarketDocumentMrid
                     && energyAmountMarketDocumentMrid.length > 0) {

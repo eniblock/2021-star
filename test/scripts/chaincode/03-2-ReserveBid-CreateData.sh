@@ -64,6 +64,7 @@ do
         reserveBidMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
         reserveBidMrid=$(echo "Bid_"$METERING_POINT_MRID_VALUE"_"$reserveBidMrid)
         validityPeriodStartDateTime=$(date -d $START_DATE' + '$y' year' -Iseconds)
+        validityPeriodStartDateTime=${validityPeriodStartDateTime::-6}
         echo -ne "\r"$validityPeriodStartDateTime
         validityPeriodStartDateTime=$(echo $validityPeriodStartDateTime"Z")
         validityPeriodEndDateTime=$(date -d $START_DATE' + '$y' year + 1 year - 1 day' -Iseconds)
@@ -146,6 +147,7 @@ do
         reserveBidMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
         reserveBidMrid=$(echo "Bid_"$METERING_POINT_MRID_VALUE"_"$reserveBidMrid)
         validityPeriodStartDateTime=$(date -d $START_DATE' + '$y' year' -Iseconds)
+        validityPeriodStartDateTime=${validityPeriodStartDateTime::-6}
         echo -ne "\r"$validityPeriodStartDateTime
         validityPeriodStartDateTime=$(echo $validityPeriodStartDateTime"Z")
         validityPeriodEndDateTime=$(date -d $START_DATE' + '$y' year + 1 year - 1 day' -Iseconds)

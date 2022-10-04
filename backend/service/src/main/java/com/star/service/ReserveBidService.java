@@ -118,8 +118,11 @@ public class ReserveBidService {
             if (hasFiles) {
                 for (FichierImportation fichierImportation : fichierImportations) {
                     String fileUUID = randomUUID().toString() + "_" + fichierImportation.getFileName();
-                    attachmentFileList.add(new AttachmentFile(fileUUID, IOUtils.toString(fichierImportation.getInputStream(), StandardCharsets.UTF_8)));
                     attachments.add(fileUUID);
+                    AttachmentFile attachmentFile = new AttachmentFile();
+                    attachmentFile.setFileContent(IOUtils.toString(fichierImportation.getInputStream(), StandardCharsets.UTF_8));
+                    attachmentFile.setFileId(fileUUID);
+                    attachmentFileList.add(attachmentFile);
                 }
             }
             // S'il n'y a pas de fichiers en PJ, on aura 2 listes vides MAIS NON NULLES car les 2 listes ont été initialisées ci-dessus.

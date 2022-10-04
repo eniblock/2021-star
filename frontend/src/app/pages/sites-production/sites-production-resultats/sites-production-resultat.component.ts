@@ -7,7 +7,8 @@ import {MatBottomSheet} from "@angular/material/bottom-sheet";
 import {
   FormAjoutTarifUnitaireComponent
 } from "../../../components/formulaires/form-ajout-tarif-unitaire/form-ajout-tarif-unitaire.component";
-import {FormulaireReserveBid} from "../../../models/ReserveBid";
+import {FormulaireReserveBid, ReserveBid} from "../../../models/ReserveBid";
+import {ReserveBidService} from "../../../services/api/reserve-bid.service";
 
 @Component({
   selector: 'app-sites-production-resultat',
@@ -16,7 +17,7 @@ import {FormulaireReserveBid} from "../../../models/ReserveBid";
 })
 export class SitesProductionResultatComponent implements OnInit {
   @Input() resultat?: RechercheSitesProductionEntite;
-  @Output() resultatModified = new EventEmitter<FormulaireReserveBid>();
+  @Output() reserveBidChange = new EventEmitter<FormulaireReserveBid>();
 
   InstanceEnum = Instance;
 
@@ -25,9 +26,12 @@ export class SitesProductionResultatComponent implements OnInit {
 
   showDetails = false;
 
+  currentReserveBids: ReserveBid[] | null = [];
+
   constructor(
     private instanceService: InstanceService,
     private bottomSheet: MatBottomSheet,
+    private reserveBidService: ReserveBidService,
   ) {
   }
 
@@ -39,6 +43,8 @@ export class SitesProductionResultatComponent implements OnInit {
 
   open() {
     this.showDetails = true;
+    this.reserveBidService.getReserveBidBySite(this.resultat!.meteringPointMrid)
+      .subscribe(reserveBids => this.currentReserveBids = reserveBids);
   }
 
   close() {
@@ -53,7 +59,7 @@ export class SitesProductionResultatComponent implements OnInit {
     });
     bottomSheetRef.afterDismissed().subscribe((data) => {
       if (data) {
-        this.resultatModified.emit(data)
+        this.reserveBidChange.emit(data)
       }
     });
 

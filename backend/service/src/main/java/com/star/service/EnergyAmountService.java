@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.star.enums.DocTypeEnum.ENERGY_AMOUNT;
+import static com.star.enums.InstanceEnum.DSO;
 import static com.star.enums.InstanceEnum.TSO;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
@@ -158,10 +159,14 @@ public class EnergyAmountService {
                     currentErrors.addAll(validator.validate(currentEnergyAmount).stream().map(violation ->
                             messageSource.getMessage("import.error",
                                     new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
-                    // Vérifier que l'ID du document est fourni quand on est en modification
-                    if (!creation && StringUtils.isBlank(currentEnergyAmount.getEnergyAmountMarketDocumentMrid())) {
+                    if (creation && isBlank(currentEnergyAmount.getActivationDocumentMrid()) && DSO.equals(instance)) {
                         currentErrors.add(messageSource.getMessage("import.error",
-                                new String[]{fichier.getFileName(), "energyAmountMarketDocumentMrid est obligatoire."}, null));
+                                new String[]{fichier.getFileName(), "ActivationDocumentMrid est obligatoire."}, null));
+                    }
+                    // Vérifier que l'ID du document est fourni quand on est en modification
+                    if (!creation && StringUtils.isBlank(currentEnergyAmount.getActivationDocumentMrid())) {
+                        currentErrors.add(messageSource.getMessage("import.error",
+                                new String[]{fichier.getFileName(), "ActivationDocumentMrid est obligatoire."}, null));
                     }
                     String registeredResourceMrid = currentEnergyAmount.getRegisteredResourceMrid();
                     if (isBlank(registeredResourceMrid)) {
@@ -198,7 +203,7 @@ public class EnergyAmountService {
         if (isNotEmpty(errors)) {
             importEnergyAmountResult.setErrors(errors);
         } else {
-            energyAmounts.forEach(energyAmount -> setAttributes(energyAmount, creation));
+            energyAmounts.forEach(energyAmount -> setAttributes(energyAmount, creation, instance));
             importEnergyAmountResult.setDatas(energyAmounts);
         }
         return importEnergyAmountResult;
@@ -270,7 +275,7 @@ public class EnergyAmountService {
         if (isNotEmpty(errors)) {
             importEnergyAmountResult.setErrors(errors);
         } else {
-            setAttributes(energyAmount, creation);
+            setAttributes(energyAmount, creation, instance);
             if (creation) {
                 importEnergyAmountResult.setDatas(energyAmountRepository.save(Arrays.asList(energyAmount), instance));
             } else {
@@ -280,12 +285,15 @@ public class EnergyAmountService {
         return importEnergyAmountResult;
     }
 
-    private void setAttributes(EnergyAmount energyAmount, boolean creation) {
+    private void setAttributes(EnergyAmount energyAmount, boolean creation, InstanceEnum instance) {
         if (energyAmount == null) {
             return;
         }
         if (creation) {
             energyAmount.setEnergyAmountMarketDocumentMrid(randomUUID().toString());
+            if (TSO.equals(instance)) {
+                energyAmount.setActivationDocumentMrid(randomUUID().toString());
+            }
         }
         energyAmount.setDocType(ENERGY_AMOUNT.getDocType());
         if (energyAmount.getRevisionNumber() == null) {

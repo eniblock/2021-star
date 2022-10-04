@@ -25,7 +25,6 @@ public class EnergyAmount {
 
     private String energyAmountMarketDocumentMrid;
 
-    @NotBlank(message = "Le champ activationDocumentMrid est obligatoire")
     private String activationDocumentMrid;
 
     private String registeredResourceMrid;

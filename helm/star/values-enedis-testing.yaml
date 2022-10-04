@@ -1,9 +1,36 @@
 ingress:
   enabled: true
   host: "enedis.testing.star.eniblock.fr"
+
+frontend:
+  replicaCount: 2
+  affinity: {}
+
 backend:
+  replicaCount: 2
   peerConnectionOrganization: enedis
   instance: dso
+  affinity: {}
+
 keycloak:
+  replicas: 2
   ingress:
     host: "enedis.testing.star.eniblock.fr"
+    
+  db:
+    primary:
+      affinity: {}
+      persistence:
+        accessModes:
+        - ReadWriteOnce
+        mountPath: /bitnami/postgresql
+        size: 8Gi
+
+      standby:
+        enabled: false
+        primaryHost: ""
+        primaryPort: ""
+
+    readReplicas:
+      affinity: {}
+      replicaCount: 2

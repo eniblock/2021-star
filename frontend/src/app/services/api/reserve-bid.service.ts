@@ -4,10 +4,6 @@ import {environment} from 'src/environments/environment';
 import {FormulaireReserveBid, ReserveBid} from "../../models/ReserveBid";
 import {HttpClient} from "@angular/common/http";
 import {FormDataHelper} from "./helpers/formData-helper";
-import {
-  FormulaireRechercheHistoriqueLimitation,
-  RechercheHistoriqueLimitationEntite
-} from "../../models/RechercheHistoriqueLimitation";
 
 const MOCK = false;
 

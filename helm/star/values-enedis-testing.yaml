@@ -44,21 +44,3 @@ keycloak:
             values:
             - "keycloak"
         topologyKey: "kubernetes.io/hostname"
-
-  db:
-    primary:
-      affinity: {}
-      persistence:
-        accessModes:
-        - ReadWriteOnce
-        mountPath: /bitnami/postgresql
-        size: 8Gi
-
-      standby:
-        enabled: false
-        primaryHost: ""
-        primaryPort: ""
-
-    readReplicas:
-      affinity: {}
-      replicaCount: 2

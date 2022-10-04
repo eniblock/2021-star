@@ -1,9 +1,46 @@
 ingress:
   enabled: true
   host: "rte.staging.star.eniblock.fr"
+
+frontend:
+  replicaCount: 2
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: "app.kubernetes.io/component"
+            operator: In
+            values:
+            - "frontend"
+        topologyKey: "kubernetes.io/hostname"
+
 backend:
+  replicaCount: 2
   peerConnectionOrganization: rte
   instance: tso
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: "app.kubernetes.io/component"
+            operator: In
+            values:
+            - "backend"
+        topologyKey: "kubernetes.io/hostname"
+
 keycloak:
+  replicas: 2
   ingress:
     host: "rte.staging.star.eniblock.fr"
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: "app.kubernetes.io/component"
+            operator: In
+            values:
+            - "keycloak"
+        topologyKey: "kubernetes.io/hostname"

@@ -12,7 +12,7 @@ import {MicroComponentsModule} from 'src/app/components/micro-components/micro-c
 import {PipesModule} from 'src/app/pipes/pipes.module';
 import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
 import {MatDatepickerModule} from "@angular/material/datepicker";
-import { SitesPorductionResultatFileLinkComponent } from './sites-production-resultats/sites-porduction-resultat-file-link/sites-porduction-resultat-file-link.component';
+import { SitesProductionResultatFileLinkComponent } from './sites-production-resultats/sites-production-resultat-file-link/sites-production-resultat-file-link.component';
 
 @NgModule({
   imports: [
@@ -31,7 +31,7 @@ import { SitesPorductionResultatFileLinkComponent } from './sites-production-res
   declarations: [
     SitesProductionComponent,
     SitesProductionResultatComponent,
-    SitesPorductionResultatFileLinkComponent,
+    SitesProductionResultatFileLinkComponent,
   ],
 })
 export class SitesProductionModule {

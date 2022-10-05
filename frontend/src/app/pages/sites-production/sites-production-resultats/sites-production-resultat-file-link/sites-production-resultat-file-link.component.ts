@@ -2,11 +2,11 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ReserveBidService} from "../../../../services/api/reserve-bid.service";
 
 @Component({
-  selector: 'app-sites-porduction-resultat-file-link',
-  templateUrl: './sites-porduction-resultat-file-link.component.html',
-  styleUrls: ['./sites-porduction-resultat-file-link.component.css']
+  selector: 'app-sites-production-resultat-file-link',
+  templateUrl: './sites-production-resultat-file-link.component.html',
+  styleUrls: ['./sites-production-resultat-file-link.component.css']
 })
-export class SitesPorductionResultatFileLinkComponent implements OnInit {
+export class SitesProductionResultatFileLinkComponent implements OnInit {
 
   @Input() fileId: string = "";
   fileName: string = "";

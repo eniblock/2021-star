@@ -26,12 +26,13 @@
             <div class="priceAndDate">
               <strong>{{ rb.energyPriceAmount + ' ' + rb.priceMeasureUnitName }}</strong>
               <br/>
-              <span>{{ (rb.validityPeriodStartDateTime | date:'shortDate') }}</span>
+              <span *ngIf="!rb.validityPeriodEndDateTime">{{ (rb.validityPeriodStartDateTime | date:'shortDate') }}</span>
+              <span *ngIf="rb.validityPeriodEndDateTime">{{ (rb.validityPeriodStartDateTime | date:'shortDate') + " → " + (rb.validityPeriodEndDateTime | date:'shortDate') }}</span>
             </div>
             <ul class="sites-production-resultat-detail-liste-fichiers mt-3" *ngIf="rb.attachments != null && rb.attachments.length > 0">
               <li class="my-1" *ngFor="let f of rb.attachments">
                 <span class="far fa-file me-2"></span>
-                <app-sites-porduction-resultat-file-link [fileId]="f"></app-sites-porduction-resultat-file-link>
+                <app-sites-production-resultat-file-link [fileId]="f"></app-sites-production-resultat-file-link>
               </li>
             </ul>
           </div>

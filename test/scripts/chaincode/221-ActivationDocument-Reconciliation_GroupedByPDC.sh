@@ -1,10 +1,19 @@
 #!/bin/bash
 
 ONLINE_MODE=true
+DO_RECONCILIATION=true
 
 OLD_IFS=$IFS
 source ./zzz-config.sh
 IFS=$OLD_IFS
+
+declare -A mapRTE_RECONCILIATION
+declare -A mapENEDIS_RECONCILIATION
+listRTE_RECONCILIATION_Key=()
+listENEDIS_RECONCILIATION_Key=()
+declare -A mapRTE_RECONCILIATION_TLSOPT
+declare -A mapENEDIS_RECONCILIATION_TLSOPT
+
 
 echo "***************************************"
 echo "Start of invoke command"
@@ -69,39 +78,63 @@ while [[ $OUTPUT_ENEDIS ]]; do
                 collection_ENEDIS=$(echo $VALUE_OUTPUT | grep "enedis")
                 collection_PRODUCER=$(echo $VALUE_OUTPUT | grep "producer")
                 collection_RTE=$(echo $VALUE_OUTPUT | grep "rte")
+                collection_KEY=""
                 TLSOPT=""
                 if [[ "[$collection_ENEDIS]" != "[]" ]]
                 then
                         TLSOPT="$TLSOPT $ENEDIS_TLSOPT"
+                        collection_KEY=$collection_KEY"ENEDIS"
                 fi
                 if [[ "[$collection_PRODUCER]" != "[]" ]]
                 then
                         TLSOPT="$TLSOPT $PRODUCER_TLSOPT"
+                        collection_KEY=$collection_KEY"PRODUCER"
                 fi
-                # if [[ "[$collection_RTE]" != "[]" ]]
-                # then
-                #         TLSOPT="$TLSOPT $RTE_TLSOPT"
-                # fi
+                if [[ "[$collection_RTE]" != "[]" ]]
+                then
+                        TLSOPT="$TLSOPT $RTE_TLSOPT"
+                        collection_KEY=$collection_KEY"RTE"
+                fi
 
-                echo
-                echo "UpdateActivationDocumentByOrders $COLLECTION_OUTPUT"
-                echo $TLSOPT
-                echo $VALUE_OUTPUT
-                echo
+                if [[ " ${listENEDIS_RECONCILIATION_Key[*]} " =~ " ${collection_KEY} " ]]
+                then
+                        LIST_VALUE=${mapENEDIS_RECONCILIATION[$collection_KEY]}
+                        LIST_VALUE+=(",")
+                else
+                        LIST_VALUE=()
+                        listENEDIS_RECONCILIATION_Key+=($collection_KEY)
+                        mapENEDIS_RECONCILIATION_TLSOPT[$collection_KEY]=$TLSOPT
+                fi
+                VALUE_OUTPUT=${VALUE_OUTPUT::-1}
+                VALUE_OUTPUT=${VALUE_OUTPUT:1}
 
+                LIST_VALUE+=($VALUE_OUTPUT)
+                mapENEDIS_RECONCILIATION[$collection_KEY]=${LIST_VALUE[@]}
+        fi
+        START="{"
+
+done;
+
+for KEY in ${listENEDIS_RECONCILIATION_Key[@]}; do
+        echo "----------------------------------------"
+        echo "UpdateActivationDocumentByOrders $COLLECTION_OUTPUT"
+        echo "KEY :"$KEY
+        TLSOPT=${mapENEDIS_RECONCILIATION_TLSOPT[$KEY]}
+        echo "TLSOPT :"$TLSOPT
+        TODO=${mapENEDIS_RECONCILIATION[$KEY]}
+        TODO_STR=$(echo "["${TODO[@]}"]")
+        TODO_STR=${TODO_STR//[$'\t\r\n ']}
+        # echo "TODO_STR :"$TODO_STR
+
+        if $DO_RECONCILIATION
+        then
                 kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
                         peer chaincode invoke \
                         -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
                         --tls $TLSOPT \
-                        -c '{"Args":["UpdateActivationDocumentByOrders","'$VALUE_OUTPUT'"]}'
-
+                        -c '{"Args":["UpdateActivationDocumentByOrders","'$TODO_STR'"]}'
         fi
-        START="{"
-
         echo
-        echo "wait $PAUSE_TIME"
-        sleep $PAUSE_TIME
-
 done;
 
 
@@ -155,33 +188,67 @@ while [[ $OUTPUT_RTE ]]; do
                 collection_ENEDIS=$(echo $VALUE_OUTPUT | grep "enedis")
                 collection_PRODUCER=$(echo $VALUE_OUTPUT | grep "producer")
                 collection_RTE=$(echo $VALUE_OUTPUT | grep "rte")
+                collection_KEY=""
                 TLSOPT=""
-                # if [[ "[$collection_ENEDIS]" != "[]" ]]
-                # then
-                #         TLSOPT="$TLSOPT $ENEDIS_TLSOPT"
-                # fi
+                if [[ "[$collection_ENEDIS]" != "[]" ]]
+                then
+                        TLSOPT="$TLSOPT $ENEDIS_TLSOPT"
+                        collection_KEY=$collection_KEY"ENEDIS"
+                fi
                 if [[ "[$collection_PRODUCER]" != "[]" ]]
                 then
                         TLSOPT="$TLSOPT $PRODUCER_TLSOPT"
+                        collection_KEY=$collection_KEY"PRODUCER"
                 fi
                 if [[ "[$collection_RTE]" != "[]" ]]
                 then
                         TLSOPT="$TLSOPT $RTE_TLSOPT"
+                        collection_KEY=$collection_KEY"RTE"
                 fi
 
-                echo
-                echo "UpdateActivationDocumentByOrders $COLLECTION_OUTPUT"
-                echo
+                if [[ " ${listRTE_RECONCILIATION_Key[*]} " =~ " ${collection_KEY} " ]]
+                then
+                        LIST_VALUE=${mapRTE_RECONCILIATION[$collection_KEY]}
+                        LIST_VALUE+=(",")
+                else
+                        LIST_VALUE=()
+                        listRTE_RECONCILIATION_Key+=($collection_KEY)
+                        mapRTE_RECONCILIATION_TLSOPT[$collection_KEY]=$TLSOPT
+                fi
+                VALUE_OUTPUT=${VALUE_OUTPUT::-1}
+                VALUE_OUTPUT=${VALUE_OUTPUT:1}
 
-                kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
-                        peer chaincode invoke \
-                        -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                        --tls $TLSOPT \
-                        -c '{"Args":["UpdateActivationDocumentByOrders","'$VALUE_OUTPUT'"]}'
+                LIST_VALUE+=($VALUE_OUTPUT)
+                mapRTE_RECONCILIATION[$collection_KEY]=${LIST_VALUE[@]}
 
         fi
         START="{"
 done;
+
+
+for KEY in ${listRTE_RECONCILIATION_Key[@]}; do
+        echo "----------------------------------------"
+        echo "UpdateActivationDocumentByOrders $COLLECTION_OUTPUT"
+        echo "KEY :"$KEY
+        TLSOPT=${mapRTE_RECONCILIATION_TLSOPT[$KEY]}
+        echo "TLSOPT :"$TLSOPT
+        TODO=${mapRTE_RECONCILIATION[$KEY]}
+        TODO_STR=$(echo "["${TODO[@]}"]")
+        TODO_STR=${TODO_STR//[$'\t\r\n ']}
+        # echo "TODO_STR :"$TODO_STR
+
+        if $DO_RECONCILIATION
+        then
+                kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+                        peer chaincode invoke \
+                        -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+                        --tls $TLSOPT \
+                        -c '{"Args":["UpdateActivationDocumentByOrders","'$TODO_STR'"]}'
+        fi
+
+        echo
+done;
+
 
 
 echo ""

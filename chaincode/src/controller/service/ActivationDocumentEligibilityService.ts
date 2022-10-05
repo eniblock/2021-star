@@ -20,6 +20,7 @@ export class ActivationDocumentEligibilityService {
             const eligibilityTable:string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_ELIGIBILITY);
 
             const pattern = activationDocumentObj.messageType + "-" + activationDocumentObj.businessType + "-" + activationDocumentObj.reasonCode;
+
             if (eligibilityTable && eligibilityTable.includes(pattern)) {
                 newStatus = EligibilityStatusType.EligibilityAccepted;
             } else {
@@ -29,8 +30,12 @@ export class ActivationDocumentEligibilityService {
         } else {
             newStatus=activationDocumentObj.eligibilityStatus;
         }
+
         return newStatus;
     }
+
+
+
 
     public static statusInternationalValue(statusValue: string): string {
         var newStatus = EligibilityStatusType.EligibilityERROR;

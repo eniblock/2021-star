@@ -57,9 +57,16 @@ export class ActivationDocumentService {
     public static dataReferenceArrayToMap(dataReferenceArray:DataReference[]): Map<string, DataReference> {
         const returnedMap: Map<string, DataReference> = new Map();
 
-        for (var dataReference of dataReferenceArray) {
-            var data: ActivationDocument = dataReference.data;
-            returnedMap.set(data.activationDocumentMrid, dataReference);
+        if (dataReferenceArray && dataReferenceArray.length > 0) {
+            for (const dataReference of dataReferenceArray) {
+                if (dataReference.data
+                    && dataReference.data.activationDocumentMrid
+                    && dataReference.data.activationDocumentMrid.length > 0
+                    && !returnedMap.has(dataReference.data.activationDocumentMrid)){
+
+                        returnedMap.set(dataReference.data.activationDocumentMrid, dataReference);
+                }
+            }
         }
 
         return returnedMap;

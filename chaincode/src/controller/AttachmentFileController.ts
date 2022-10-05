@@ -159,19 +159,24 @@ export class AttachmentFileController {
         params.logger.debug('============= START : AttachmentFileController - dataExists ===========');
 
         let existing: boolean = false;
-        const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ATTACHMENT_FILE, id: id});
+        try {
+            const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ATTACHMENT_FILE, id: id});
 
-        if (target && target.length > 0) {
-            const dataReference: DataReference = result.get(target);
-            existing = dataReference
-                && dataReference.data
-                && dataReference.data.fileId == id;
-        } else {
-            existing = result
-                && result.values().next().value
-                && result.values().next().value.data
-                && result.values().next().value.data.fileId == id;
+            if (target && target.length > 0) {
+                const dataReference: DataReference = result.get(target);
+                existing = dataReference
+                    && dataReference.data
+                    && dataReference.data.fileId == id;
+            } else {
+                existing = result
+                    && result.values().next().value
+                    && result.values().next().value.data
+                    && result.values().next().value.data.fileId == id;
+            }
+        } catch (err) {
+            existing = false;
         }
+
 
         params.logger.debug('=============  END  : AttachmentFileController - dataExists ===========');
         return existing;

@@ -85,7 +85,13 @@ export class StarPrivateDataService {
 
         if (!result || !result.values().next().value) {
             result = new Map();
-            const target: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+            var target: string[] = [];
+            if (arg.collection && arg.collection.length > 0) {
+                target = [arg.collection];
+            } else {
+                target = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+            }
+
             const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, target);
 
             // params.logger.debug("target:",JSON.stringify(target))

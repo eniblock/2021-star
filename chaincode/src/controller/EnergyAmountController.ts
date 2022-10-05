@@ -63,7 +63,6 @@ export class EnergyAmountController {
         params: STARParameters,
         energyObj: EnergyAmount,
         energyType: EnergyType,
-        checkSite: boolean = false,
         target: string = '') : Promise<void> {
         params.logger.debug('============= START : checkEnergyAmout EnergyAmountController ===========');
 
@@ -74,35 +73,24 @@ export class EnergyAmountController {
             throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
         }
 
-        if (checkSite && energyObj.registeredResourceMrid && energyObj.registeredResourceMrid !== "") {
-            // try {
-            //         await SiteController.getSiteById(params, energyObj.registeredResourceMrid, target);
-            // } catch(error) {
-            //     throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
-            // }
+        energyObj.registeredResourceMrid = orderObj.registeredResourceMrid;
 
-            var siteRef: DataReference;
-            try {
-                const siteRefMap: Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: energyObj.registeredResourceMrid});
-                if (target && target.length > 0) {
-                    siteRef = siteRefMap.get(target);
-                } else {
-                    siteRef = siteRefMap.values().next().value;
-                }
-            } catch(error) {
-                throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
+        var siteRef: DataReference;
+        try {
+            const siteRefMap: Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: energyObj.registeredResourceMrid});
+            if (target && target.length > 0) {
+                siteRef = siteRefMap.get(target);
+            } else {
+                siteRef = siteRefMap.values().next().value;
             }
-            if (!siteRef
-                || (siteRef.collection !== target && !target && target.length > 0)
-                || !siteRef.data.meteringPointMrid
-                || siteRef.data.meteringPointMrid != energyObj.registeredResourceMrid) {
-                    throw new Error(`Site : ${energyObj.registeredResourceMrid} does not exist for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`);
-            }
-
-
-            if (orderObj.registeredResourceMrid !== energyObj.registeredResourceMrid) {
-                throw new Error(`ERROR manage EnergyAmount mismatch beetween registeredResourceMrid in Activation Document : ${orderObj.registeredResourceMrid} and Energy Amount : ${energyObj.registeredResourceMrid}.`);
-            }
+        } catch(error) {
+            throw new Error(error.message.concat(` for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`));
+        }
+        if (!siteRef
+            || (siteRef.collection !== target && !target && target.length > 0)
+            || !siteRef.data.meteringPointMrid
+            || siteRef.data.meteringPointMrid != energyObj.registeredResourceMrid) {
+                throw new Error(`Site : ${energyObj.registeredResourceMrid} does not exist for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`);
         }
 
         // params.logger.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
@@ -292,7 +280,7 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        await EnergyAmountController.checkEnergyAmout(params, dataReference.data, EnergyType.ENE, false, dataReference.collection);
+        await EnergyAmountController.checkEnergyAmout(params, dataReference.data, EnergyType.ENE, dataReference.collection);
         await EnergyAmountService.write(params, dataReference.data, dataReference.collection);
         await BalancingDocumentController.createOrUpdate(params, null, null, dataReference.data, dataReference.collection);
 
@@ -394,7 +382,7 @@ export class EnergyAmountController {
         }
 
         const energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
-        await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENI, true);
+        await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENI);
 
         //Get existing Activation Documents
         var existingActivationDocumentRef:Map<string, DataReference>;
@@ -436,7 +424,7 @@ export class EnergyAmountController {
 
         if (energyList) {
             for(var energyObj of energyList) {
-                await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENI, true);
+                await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENI);
 
                 //Get existing Activation Documents
                 var existingActivationDocumentRef:Map<string, DataReference>;
@@ -475,7 +463,7 @@ export class EnergyAmountController {
             throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
         }
 
-        await EnergyAmountController.checkEnergyAmout(params, dataReference.data, EnergyType.ENI, true, dataReference.collection);
+        await EnergyAmountController.checkEnergyAmout(params, dataReference.data, EnergyType.ENI, dataReference.collection);
         await EnergyAmountService.write(params, dataReference.data, dataReference.collection);
         await BalancingDocumentController.createOrUpdate(params, null, null, dataReference.data, dataReference.collection);
 
@@ -506,7 +494,7 @@ export class EnergyAmountController {
 
         if (energyList) {
             for(var energyObj of energyList) {
-                await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENI, true);
+                await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENI);
 
                 //Get existing data
                 var existingEnergyAmountRef:Map<string, DataReference>;
@@ -541,7 +529,7 @@ export class EnergyAmountController {
         }
 
         const energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
-        await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENI, true);
+        await EnergyAmountController.checkEnergyAmout(params, energyObj, EnergyType.ENI);
 
         //Get existing data
         var existingEnergyAmountRef:Map<string, DataReference>;

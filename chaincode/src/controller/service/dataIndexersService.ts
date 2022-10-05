@@ -24,4 +24,16 @@ export class DataIndexersService {
 
         params.logger.debug('=============  END  : write DataIndexersService ===========');
     }
+
+    public static async delete(
+        params: STARParameters,
+        id: string,
+        target: string): Promise<void> {
+        params.logger.debug('============= START : Delete %s ( %s ) DataIndexersService ===========', id, target);
+
+        await params.ctx.stub.deletePrivateData(target, id);
+
+        params.logger.debug('=============  END  : Delete %s ( %s ) DataIndexersService ===========', id, target);
+    }
+
 }

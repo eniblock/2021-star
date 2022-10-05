@@ -286,6 +286,11 @@ export class ParametersController {
             //messageType + "-" + businessType + "-" + reasonCode
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_ELIGIBILITY, activationDocumentEligibility);
 
+            const automaticEligibility: string[] = [];
+            //messageType + "-" + businessType + "-" + reasonCode
+            parameters.values.set(ParametersType.AUTOMATIC_ELIGIBILITY, automaticEligibility);
+
+
 
             const valueEnergy: string[] = [];
             valueEnergy.push(producer_rte);

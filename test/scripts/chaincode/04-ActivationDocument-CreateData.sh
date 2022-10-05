@@ -51,6 +51,10 @@ then
 fi
 
 
+echo
+echo "wait $PAUSE_TIME"
+sleep $PAUSE_TIME
+
 
 echo "***********************************"
 echo
@@ -82,6 +86,10 @@ then
             -c '{"Args":["CreateActivationDocumentList","'$RTE_ACTIVATIONDOCUMENT_VALUE_STR'"]}'
 fi
 
+
+echo
+echo "wait $PAUSE_TIME"
+sleep $PAUSE_TIME
 
 
 
@@ -116,6 +124,10 @@ then
             -c '{"Args":["CreateActivationDocumentList","'$RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_STR'"]}'
 fi
 
+echo
+echo "wait $PAUSE_TIME"
+sleep $PAUSE_TIME
+
 
 
 echo "***********************************"
@@ -149,6 +161,9 @@ then
             -c '{"Args":["CreateActivationDocumentList","'$RTE_ENEDIS_ACTIVATIONDOCUMENT_VALUE_STR'"]}'
 fi
 
+echo
+echo "wait $PAUSE_TIME"
+sleep $PAUSE_TIME
 
 
 echo "***********************************"

@@ -52,6 +52,54 @@ export class DataIndexersController {
 
         params.logger.debug('=============  END  : addReference DataIndexersController ===========');
     }
+
+
+
+    public static async deleteReference(
+        params: STARParameters,
+        dataToDeleteId: string,
+        indexId: string,
+        target: string = '') {
+        params.logger.debug('============= START : deleteReference DataIndexersController ===========');
+
+        if (indexId.includes(dataToDeleteId)) {
+            await DataIndexersService.delete(params, indexId, target);
+            return;
+        }
+
+        var ref: IndexedData = null;
+        try {
+            ref = await this.get(params, indexId, target);
+        } catch (err) {
+            //ref doesn't exist and doesn't need to be deleted
+        }
+
+
+        if (ref) {
+            if (ref.indexedDataAbstractList
+                && ref.indexedDataAbstractList.length > 0) {
+
+                const indexedDataAbstractList  = [];
+
+                for (var elt of ref.indexedDataAbstractList) {
+                    const eltValue = JSON.stringify(elt);
+                    if (!eltValue.includes(dataToDeleteId)) {
+                        indexedDataAbstractList.push(elt);
+                    }
+                }
+
+                ref.indexedDataAbstractList = indexedDataAbstractList;
+            }
+
+            if (ref.indexedDataAbstractList.length > 0) {
+                await DataIndexersService.write(params, ref, target);
+            } else {
+                await DataIndexersService.delete(params, indexId, target);
+            }
+        }
+
+        params.logger.debug('=============  END  : deleteReference DataIndexersController ===========');
+    }
 }
 
 
@@ -198,28 +246,49 @@ export class SiteActivationIndexersController {
             const activationAbstract: ActivationDocumentAbstract =
                 {activationDocumentMrid: activationDocumentObj.activationDocumentMrid, startCreatedDateTime: activationDocumentObj.startCreatedDateTime};
             const indexId = this.getKeyStr(activationDocumentObj.registeredResourceMrid, activationDocumentObj.startCreatedDateTime);
+
             await DataIndexersController.addReference(params, indexId, activationAbstract, target);
 
             var maxDateStr: string = "";
             try {
                 maxDateStr = await this.getMaxDate(params, activationDocumentObj.registeredResourceMrid, target);
+
                 const maxDate = new Date(maxDateStr);
                 const docDate = new Date(activationDocumentObj.startCreatedDateTime);
+
                 if (docDate > maxDate) {
                     const dataObj: ActivationDocumentDateMax= {dateTime: activationDocumentObj.startCreatedDateTime, docType: DocType.INDEXER_MAX_DATE};
                     const maxDateId = this.getMaxKey(activationDocumentObj.registeredResourceMrid);
+
                     await StarPrivateDataService.write(params, {id: maxDateId, dataObj:dataObj, collection: target})
                 }
             } catch (err) {
                 //write activation document strat date as first Max Date
                 const dataObj: ActivationDocumentDateMax= {dateTime: activationDocumentObj.startCreatedDateTime, docType: DocType.INDEXER_MAX_DATE};
                 const maxDateId = this.getMaxKey(activationDocumentObj.registeredResourceMrid);
+
                 await StarPrivateDataService.write(params, {id: maxDateId, dataObj:dataObj, collection: target})
             }
         }
 
         params.logger.debug('=============  END  : addActivationReference SiteActivationIndexersController ===========');
     }
+
+
+    public static async deleteActivationReference(
+        params: STARParameters,
+        activationDocumentId: string,
+        meteringPointMrid: string,
+        referenceDate: string,
+        target: string) {
+        params.logger.debug('============= START : deleteActivationReference SiteActivationIndexersController ===========');
+
+        const indexId = this.getKeyStr(meteringPointMrid, referenceDate);
+        await DataIndexersController.deleteReference(params, activationDocumentId, indexId, target);
+
+        params.logger.debug('=============  END  : deleteActivationReference SiteActivationIndexersController ===========');
+    }
+
 
 }
 
@@ -261,6 +330,19 @@ export class ActivationEnergyAmountIndexersController {
         await DataIndexersController.addReference(params, indexId, valueAbstract, target);
 
         params.logger.debug('=============  END  : addEnergyAmountReference ActivationNRJAmountIndexersController ===========');
+    }
+
+
+    public static async deleteEnergyAmountReference(
+        params: STARParameters,
+        activationDocumentId: string,
+        target: string) {
+        params.logger.debug('============= START : deleteEnergyAmountReference ActivationNRJAmountIndexersController ===========');
+
+        const indexId = this.getKey(activationDocumentId);
+        await DataIndexersController.deleteReference(params, activationDocumentId, indexId, target);
+
+        params.logger.debug('=============  END  : deleteEnergyAmountReference ActivationNRJAmountIndexersController ===========');
     }
 
 }

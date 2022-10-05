@@ -124,7 +124,10 @@ export class ReserveBidMarketDocumentController {
         }
 
         if (existingReserveBidRef
-            && existingReserveBidRef.values().next().value) {
+            && existingReserveBidRef.values().next().value
+            && target
+            && target.length > 0
+            && existingReserveBidRef.values().next().value.collection !== target) {
 
             const reserveBidRef: ReserveBidMarketDocument = JSON.parse(JSON.stringify(existingReserveBidRef.values().next().value.data));
             const currentReserveBidObj: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
@@ -174,35 +177,20 @@ export class ReserveBidMarketDocumentController {
             }
         }
 
-        params.logger.info('YOUK START');
-        params.logger.info('existingSitesRef: ', [...existingSitesRef]);
-
-        for (var [target, ] of existingSitesRef) {
-            params.logger.info('target: ', target);
-            await ReserveBidMarketDocumentService.write(params, reserveBidObj, target);
-            await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, target);
-            await SiteReserveBidIndexersController.addReserveBidReference(params, reserveBidObj, target);
+        for (var [targetExistingSite, ] of existingSitesRef) {
+            await ReserveBidMarketDocumentService.write(params, reserveBidObj, targetExistingSite);
+            await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, targetExistingSite);
+            await SiteReserveBidIndexersController.addReserveBidReference(params, reserveBidObj, targetExistingSite);
 
 
-            const activationDocumentIdList: string[] = await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, target);
-            params.logger.info('activationDocumentIdList: ', JSON.stringify(activationDocumentIdList));
+            const activationDocumentIdList: string[] = await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, targetExistingSite);
             if (activationDocumentIdList && activationDocumentIdList.length > 0) {
                 for (var activationDocumentId of activationDocumentIdList) {
 
-                    params.logger.info('target: ', target);
-                    params.logger.info('activationDocumentId: ', activationDocumentId);
-                    params.logger.info('reserveBidObj.receiverMarketParticipantMrid: ', reserveBidObj.receiverMarketParticipantMrid);
-
-                    await BalancingDocumentController.createOrUpdateById(params, activationDocumentId, reserveBidObj, null, target);
-
-                    params.logger.info('YOUKI !!!!');
+                    await BalancingDocumentController.createOrUpdateById(params, activationDocumentId, reserveBidObj, null, targetExistingSite);
                 }
-                params.logger.info('YOUKI Oh');
             }
-            params.logger.info('YOUKI Aaaaaaaah');
         }
-        params.logger.info('YOUKI Yeah !!!!!!');
-
 
 
         params.logger.debug('=============  END  : CreateObj ReserveBidMarketDocumentController ===========');
@@ -739,19 +727,24 @@ export class ReserveBidMarketDocumentController {
         params.logger.debug('============= START : dataExists ReserveBidMarketDocumentController ===========');
 
         let existing: boolean = false;
-        const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: id, collection: target});
+        try{
+            const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: id, collection: target});
 
-        if (target && target.length > 0) {
-            const dataReference: DataReference = result.get(target);
-            existing = dataReference
-                && dataReference.data
-                && dataReference.data.reserveBidMrid == id;
-        } else {
-            existing = result
-                && result.values().next().value
-                && result.values().next().value.data
-                && result.values().next().value.data.reserveBidMrid == id;
+            if (target && target.length > 0) {
+                const dataReference: DataReference = result.get(target);
+                existing = dataReference
+                    && dataReference.data
+                    && dataReference.data.reserveBidMrid == id;
+            } else {
+                existing = result
+                    && result.values().next().value
+                    && result.values().next().value.data
+                    && result.values().next().value.data.reserveBidMrid == id;
+            }
+        } catch (err) {
+            existing = false;
         }
+
 
         params.logger.debug('=============  END  : dataExists ReserveBidMarketDocumentController ===========');
         return existing;

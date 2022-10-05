@@ -225,6 +225,7 @@ export class ActivationDocumentController {
                 producerName = producerName.toLowerCase();
             }
         }
+
         var producerSystemOperatorName: string;
         if (producerSystemOperatorObj) {
             producerSystemOperatorName = producerSystemOperatorObj.systemOperatorMarketParticipantName;
@@ -233,13 +234,11 @@ export class ActivationDocumentController {
             }
         }
 
-
         if (roleTable.has(producerName)) {
             role_producer = roleTable.get(producerName);
         } else if (roleTable.has(producerSystemOperatorName)) {
             role_producer = roleTable.get(producerSystemOperatorName);
         }
-
 
         var systemOperatorName: string;
         if (systemOperatorObj) {
@@ -280,7 +279,6 @@ export class ActivationDocumentController {
             } catch(error) {
                 throw new Error(error.message.concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
             }
-
             if (!siteRef
                 || (siteRef.collection !== targetDocument && !targetDocument && targetDocument.length > 0)
                 || !siteRef.data.meteringPointMrid
@@ -299,7 +297,6 @@ export class ActivationDocumentController {
         if (activationDocumentRules && !activationDocumentRules.includes(pattern)) {
             throw new Error(`Incoherency between messageType, businessType and reason code for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
         }
-
 
 
         if (activationDocumentObj.endCreatedDateTime) {
@@ -333,10 +330,8 @@ export class ActivationDocumentController {
         activationDocumentObj.potentialChild = dsoChild || tsoChild;
 
 
-
         activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.statusInternationalValue(activationDocumentObj.eligibilityStatus);
         activationDocumentObj.eligibilityStatus = ActivationDocumentEligibilityService.checkEligibilityStatus(params, activationDocumentObj);
-
         if (activationDocumentObj.eligibilityStatus === EligibilityStatusType.EligibilityAccepted
             || (RoleType.Role_TSO === role_systemOperator && RoleType.Role_DSO === role_producer)) {
 
@@ -344,7 +339,6 @@ export class ActivationDocumentController {
         } else {
             activationDocumentObj.eligibilityStatusEditable = true;
         }
-
         await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);
         await SiteActivationIndexersController.addActivationReference(params, activationDocumentObj, targetDocument);
 

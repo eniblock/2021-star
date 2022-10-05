@@ -297,18 +297,23 @@ export class EnergyAccountController {
         params.logger.debug('============= START : dataExists EnergyAccount Controller ===========');
 
         let existing: boolean = false;
-        const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ENERGY_ACCOUNT, id: id});
 
-        if (target && target.length > 0) {
-            const dataReference: DataReference = result.get(target);
-            existing = dataReference
-                && dataReference.data
-                && dataReference.data.energyAccountMarketDocumentMrid == id;
-        } else {
-            existing = result
-                && result.values().next().value
-                && result.values().next().value.data
-                && result.values().next().value.data.energyAccountMarketDocumentMrid == id;
+        try {
+            const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ENERGY_ACCOUNT, id: id});
+
+            if (target && target.length > 0) {
+                const dataReference: DataReference = result.get(target);
+                existing = dataReference
+                    && dataReference.data
+                    && dataReference.data.energyAccountMarketDocumentMrid == id;
+            } else {
+                existing = result
+                    && result.values().next().value
+                    && result.values().next().value.data
+                    && result.values().next().value.data.energyAccountMarketDocumentMrid == id;
+            }
+        } catch (err) {
+            existing = false;
         }
 
         params.logger.debug('=============  END  : dataExists EnergyAccount Controller ===========');

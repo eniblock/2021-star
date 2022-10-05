@@ -350,7 +350,7 @@ export class EligibilityController {
     }
 
 
-    private static async getAutomaticEligibles(params: STARParameters, activationDocumentMridList: string[]): Promise<DataReference[]> {
+    public static async getAutomaticEligibles(params: STARParameters): Promise<DataReference[]> {
         params.logger.debug('============= START : getAutomaticEligibles - EligibilityController ===========');
         var eligibilityReferences: DataReference[] = [];
 
@@ -394,8 +394,7 @@ export class EligibilityController {
                             for (var activationDocument of activationDocumentList) {
                                 if (activationDocument
                                     && activationDocument.activationDocumentMrid
-                                    && activationDocument.activationDocumentMrid.length > 0
-                                    && !activationDocumentMridList.includes(activationDocument.activationDocumentMrid)) {
+                                    && activationDocument.activationDocumentMrid.length > 0) {
 
                                     // Depend if eligibility needs to be true
                                     // activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
@@ -429,21 +428,28 @@ export class EligibilityController {
 
     public static async getEligibilityStatusState(
         params: STARParameters,
-        referencedDocuments: DataReference[]): Promise<DataReference[]> {
+        orderReferencesMap: Map<string, DataReference>): Promise<DataReference[]> {
         params.logger.debug('============= START : getEligibilityState - EligibilityController ===========');
         var eligibilityReferences: DataReference[] = [];
 
-        const activationDocumentRefMap:Map<string, DataReference>= ActivationDocumentService.dataReferenceArrayToMap(referencedDocuments);
-        const activationDocumentMridList: string[] = [];
+        params.logger.debug("===========================")
+        params.logger.debug("===========================")
+        params.logger.debug("===========================")
 
-        for (var referencedDocument of referencedDocuments) {
+        params.logger.debug("Initialization")
+        params.logger.debug("orderReferencesMap: ", JSON.stringify([...orderReferencesMap]))
+
+        params.logger.debug("===========================")
+
+        for (var [, referencedDocument] of orderReferencesMap) {
+            params.logger.debug("referencedDocument: ", JSON.stringify(referencedDocument))
             const activationDocument: ActivationDocument = referencedDocument.data;
             const initialTarget = referencedDocument.collection;
 
             var targetDocument: string;
 
             if (activationDocument && activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted) {
-                targetDocument = await EligibilityController.findDataTarget(params, activationDocument, initialTarget, activationDocumentRefMap);
+                targetDocument = await EligibilityController.findDataTarget(params, activationDocument, initialTarget, orderReferencesMap);
             } else {
                 targetDocument = initialTarget;
             }
@@ -476,32 +482,18 @@ export class EligibilityController {
                 }
 
             }
-            activationDocumentMridList.push(referencedDocument.data.activationDocumentMrid);
+            params.logger.debug("===")
         }
-        var automaticEligibilityReferences: DataReference[] = await this.getAutomaticEligibles(params, activationDocumentMridList);
-        if (automaticEligibilityReferences && automaticEligibilityReferences.length > 0) {
-            for (var automaticEligibilityReference of automaticEligibilityReferences) {
-                if (automaticEligibilityReference && automaticEligibilityReference.data) {
-                    const initialTarget: string = automaticEligibilityReference.previousCollection;
-
-                    //Before creation in new collection, it is needed to create requirements
-                    const requirements = await EligibilityController.getCreationRequierments(params, automaticEligibilityReference, initialTarget);
-                    for (var requirement of requirements) {
-                        eligibilityReferences.push(requirement);
-                    }
-
-                    //Create the reference in the new collection
-                    eligibilityReferences.push(automaticEligibilityReference);
 
 
-                    //After creation in new collection, it is needed to create linked data
-                    const linkedData = await EligibilityController.getCreationLinkedData(params, automaticEligibilityReference, initialTarget);
-                    for (var data of linkedData) {
-                        eligibilityReferences.push(data);
-                    }
-                }
-            }
-        }
+        params.logger.debug("===========================")
+        params.logger.debug("eligibilityReferences: ", JSON.stringify(eligibilityReferences))
+        params.logger.debug("===========================")
+
+
+        params.logger.debug("===========================")
+        params.logger.debug("===========================")
+        params.logger.debug("===========================")
 
         params.logger.debug('=============  END  : getEligibilityState - EligibilityController ===========');
         return eligibilityReferences;

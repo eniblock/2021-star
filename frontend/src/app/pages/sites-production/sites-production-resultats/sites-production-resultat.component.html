@@ -23,11 +23,13 @@
         </div>
         <div class="text-center mt-5 pt-3 text-white" *ngIf="currentReserveBids != null && currentReserveBids.length > 0">
           <div [class]="last ? '' : 'pb-5'" *ngFor="let rb of currentReserveBids; let last = last;">
-            <strong>{{ rb.energyPriceAmount + ' ' + rb.priceMeasureUnitName }}</strong>
-            <br/>
-            <span>{{ (rb.validityPeriodStartDateTime | date:'shortDate') + " → " + (rb.validityPeriodEndDateTime | date:'shortDate') }}</span>
-            <ul class="sites-production-resultat-detail-liste-fichiers" *ngIf="rb.attachments != null && rb.attachments.length > 0">
-              <li class="my-2" *ngFor="let f of rb.attachments">
+            <div class="priceAndDate">
+              <strong>{{ rb.energyPriceAmount + ' ' + rb.priceMeasureUnitName }}</strong>
+              <br/>
+              <span>{{ (rb.validityPeriodStartDateTime | date:'shortDate') }}</span>
+            </div>
+            <ul class="sites-production-resultat-detail-liste-fichiers mt-3" *ngIf="rb.attachments != null && rb.attachments.length > 0">
+              <li class="my-1" *ngFor="let f of rb.attachments">
                 <span class="far fa-file me-2"></span>
                 <app-sites-porduction-resultat-file-link [fileId]="f"></app-sites-porduction-resultat-file-link>
               </li>

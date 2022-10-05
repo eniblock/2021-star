@@ -576,28 +576,10 @@ export class HistoryController {
         }
 
         var reserveBid: ReserveBidMarketDocument = null;
-        if (siteRegistered && siteRegistered.meteringPointMrid) {
-            try {
-                var referenceDateTime: string = activationDocument.startCreatedDateTime;
-                if (!referenceDateTime || referenceDateTime.length === 0) {
-                    if (subOrderList && subOrderList.length > 0) {
-                        referenceDateTime = subOrderList[0].startCreatedDateTime;
-                    }
-                }
-                const criteriaObj: ReserveBidMarketDocumentSiteDate = {
-                    meteringPointMrid: siteRegistered.meteringPointMrid,
-                    referenceDateTime: referenceDateTime,
-                    includeNext: false}
-
-                if (referenceDateTime && referenceDateTime.length > 0) {
-                    const reserveBidList = await ReserveBidMarketDocumentController.getBySiteAndDate(params, criteriaObj);
-                    if (reserveBidList && reserveBidList.length > 0) {
-                        reserveBid = reserveBidList[0];
-                    }
-                }
-            } catch (err) {
-                //DO nothing except "Not accessible information"
-            }
+        try {
+                reserveBid = await ReserveBidMarketDocumentController.getByActivationDocument(params, activationDocument);
+        } catch (err) {
+            //DO nothing except "Not accessible information"
         }
 
         let balancingDocument: BalancingDocument = null;

@@ -36,9 +36,9 @@ export class ReconciliationController {
                     for (var collection of collections) {
                         var allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(params, query, [collection]);
 
-                        params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
-                        params.logger.debug(JSON.stringify(allResults))
-                        params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
+                        // params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
+                        // params.logger.debug(JSON.stringify(allResults))
+                        // params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
 
                         if (allResults.length > 0) {
                             for (var result of allResults) {
@@ -53,30 +53,55 @@ export class ReconciliationController {
                 }
             }
 
-            params.logger.debug("-----------------------")
-            params.logger.debug("-----------------------")
-            params.logger.debug(JSON.stringify(reconciliationState))
-            params.logger.debug(JSON.stringify([...reconciliationState.endStateRefsMap]))
-            params.logger.debug("-----------------------")
+            // params.logger.debug("-----------------------")
+            // params.logger.debug("-----------------------")
+            // params.logger.debug("- - - - - - - - - - - -")
+            // params.logger.debug("-----------------------")
+            // params.logger.debug("-----------------------")
+
+            // params.logger.debug(JSON.stringify(reconciliationState))
+            // params.logger.debug("---")
+            // params.logger.debug(JSON.stringify([...reconciliationState.endStateRefsMap]))
+            // params.logger.debug("---")
+            // params.logger.debug(JSON.stringify([...reconciliationState.remainingParentsMap]))
+            // params.logger.debug("---")
+            // params.logger.debug(JSON.stringify([...reconciliationState.remainingChilds]))
+            // params.logger.debug("-----------------------")
 
 
             if (reconciliationState && reconciliationState.remainingChilds && reconciliationState.remainingChilds.length > 0) {
                 reconciliationState = await ReconciliationController.searchMatchParentWithChild(params, reconciliationState);
             }
 
-            params.logger.debug("- - - - - - - - - - - -")
-            params.logger.debug(JSON.stringify(reconciliationState))
-            params.logger.debug(JSON.stringify([...reconciliationState.endStateRefsMap]))
-            params.logger.debug("- - - - - - - - - - - -")
+            // params.logger.debug("- - - - - - - - - - - -")
+            // params.logger.debug(JSON.stringify(reconciliationState))
+            // params.logger.debug("- - -")
+            // params.logger.debug(JSON.stringify([...reconciliationState.endStateRefsMap]))
+            // params.logger.debug("- - -")
+            // params.logger.debug(JSON.stringify([...reconciliationState.remainingParentsMap]))
+            // params.logger.debug("- - -")
+            // params.logger.debug(JSON.stringify([...reconciliationState.remainingChilds]))
+            // params.logger.debug("- - - - - - - - - - - -")
 
             if (reconciliationState && reconciliationState.startState && reconciliationState.startState.length > 0) {
                 reconciliationState = await ReconciliationController.searchUpdateEndState(params, reconciliationState);
             }
 
-            params.logger.debug("-----------------------")
-            params.logger.debug(JSON.stringify([...reconciliationState.endStateRefsMap]))
-            params.logger.debug("-----------------------")
-            params.logger.debug("-----------------------")
+            // params.logger.debug("-----------------------")
+            // params.logger.debug(JSON.stringify(reconciliationState))
+            // params.logger.debug("-----")
+            // params.logger.debug(JSON.stringify([...reconciliationState.endStateRefsMap]))
+            // params.logger.debug("-----")
+            // params.logger.debug(JSON.stringify([...reconciliationState.remainingParentsMap]))
+            // params.logger.debug("-----")
+            // params.logger.debug(JSON.stringify([...reconciliationState.remainingChilds]))
+
+            // params.logger.debug("-----------------------")
+            // params.logger.debug("-----------------------")
+            // params.logger.debug("- - - - - - - - - - - -")
+            // params.logger.debug("-----------------------")
+            // params.logger.debug("-----------------------")
+
         }
 
         params.logger.debug('=============  END  : getReconciliationState ReconciliationController ===========');

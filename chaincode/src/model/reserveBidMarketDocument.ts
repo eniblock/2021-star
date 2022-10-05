@@ -1,10 +1,9 @@
 import * as Yup from 'yup';
 import { DocType } from '../enums/DocType';
 import { AttachmentFileWithStatus } from './attachmentFile';
-import { STARParameters } from './starParameters';
 
 export class ReserveBidMarketDocument {
-    public static formatString(params: STARParameters, inputString: string) : ReserveBidMarketDocument {
+    public static formatString(inputString: string) : ReserveBidMarketDocument {
         let reserveBidObj: ReserveBidMarketDocument;
         try {
             reserveBidObj = JSON.parse(inputString);

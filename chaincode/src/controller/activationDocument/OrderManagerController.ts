@@ -4,6 +4,7 @@ import { DocType } from "../../enums/DocType";
 import { ActivationDocument } from "../../model/activationDocument/activationDocument";
 import { DataReference } from "../../model/dataReference";
 import { STARParameters } from "../../model/starParameters";
+import { ActivationEnergyAmountIndexersController, SiteActivationIndexersController } from "../dataIndexersController";
 
 import { ActivationDocumentService } from "../service/ActivationDocumentService";
 import { StarPrivateDataService } from "../service/StarPrivateDataService";
@@ -26,6 +27,16 @@ export class OrderManagerController {
             if (updateOrder.dataAction === DataActionType.COLLECTION_CHANGE) {
                 await ActivationDocumentController.createActivationDocumentByReference(params, updateOrder);
                 await ActivationDocumentService.delete(params, activationDocument.activationDocumentMrid, updateOrder.previousCollection);
+                await SiteActivationIndexersController.deleteActivationReference(
+                    params,
+                    activationDocument.activationDocumentMrid,
+                    activationDocument.registeredResourceMrid,
+                    activationDocument.startCreatedDateTime,
+                    updateOrder.previousCollection);
+                await ActivationEnergyAmountIndexersController.deleteEnergyAmountReference(
+                    params,
+                    activationDocument.activationDocumentMrid,
+                    updateOrder.previousCollection);
             } else {
                 await this.updateByOrders(params, activationDocument, updateOrder.collection);
             }

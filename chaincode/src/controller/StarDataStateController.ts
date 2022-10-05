@@ -1,4 +1,5 @@
 import { DocType } from "../enums/DocType";
+import { EligibilityStatusType } from "../enums/EligibilityStatusType";
 
 import { ActivationDocument } from "../model/activationDocument/activationDocument";
 import { AttachmentFile } from "../model/attachmentFile";
@@ -14,6 +15,8 @@ import { EnergyAccountController } from "./EnergyAccountController";
 import { EnergyAmountController } from "./EnergyAmountController";
 import { ReferenceEnergyAccountController } from "./ReferenceEnergyAccountController";
 import { ReserveBidMarketDocumentController } from "./ReserveBidMarketDocumentController";
+import { ActivationDocumentEligibilityService } from "./service/ActivationDocumentEligibilityService";
+import { ActivationDocumentService } from "./service/ActivationDocumentService";
 import { SiteController } from "./SiteController";
 
 export class StarDataStateController {
@@ -21,17 +24,48 @@ export class StarDataStateController {
         params: STARParameters): Promise<string> {
         params.logger.info('============= START : getStarDataState StarDataStateController ===========');
 
-        var orderReferences : DataReference[];
+        const orderReferencesReconciliation: DataReference[] = await ReconciliationController.getReconciliationState(params);
 
-        orderReferences = await ReconciliationController.getReconciliationState(params);
+        const orderReferencesMap: Map<string, DataReference> = ActivationDocumentService.dataReferenceArrayToMap(orderReferencesReconciliation);
 
-        params.logger.debug("#######################")
-        params.logger.debug("ooooooooooooooooooooooo")
-        params.logger.debug(JSON.stringify(orderReferences))
-        params.logger.debug("#######################")
+        params.logger.debug("# # # # # # # # # # # #")
+        params.logger.debug("from Reconciliation")
+        params.logger.debug([...orderReferencesMap])
+        params.logger.debug("# # # # # # # # # # # #")
+
+        const automaticEligibles = await EligibilityController.getAutomaticEligibles(params);
+
+        params.logger.debug("# # # # # # # # # # # #")
+        params.logger.debug("from Automatic Eligility")
+        params.logger.debug([...automaticEligibles])
+        params.logger.debug("# # # # # # # # # # # #")
 
 
-        orderReferences = await EligibilityController.getEligibilityStatusState(params, orderReferences);
+        if (automaticEligibles && automaticEligibles.length > 0) {
+            for (const automaticEligible of automaticEligibles) {
+                if (automaticEligible.data
+                    && automaticEligible.data.activationDocumentMrid
+                    && automaticEligible.data.activationDocumentMrid.length > 0) {
+
+                    if (orderReferencesMap.has(automaticEligible.data.activationDocumentMrid)){
+                        const newOrderReferenceValue = orderReferencesMap.get(automaticEligible.data.activationDocumentMrid);
+                        newOrderReferenceValue.data.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+                        newOrderReferenceValue.data = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, newOrderReferenceValue.data);
+
+                        orderReferencesMap.set(automaticEligible.data.activationDocumentMrid, newOrderReferenceValue);
+                    } else {
+                        orderReferencesMap.set(automaticEligible.data.activationDocumentMrid, automaticEligible);
+                    }
+                }
+            }
+        }
+
+        params.logger.debug("# # # # # # # # # # # #")
+        params.logger.debug("after merge automatic elibigility")
+        params.logger.debug([...orderReferencesMap])
+        params.logger.debug("# # # # # # # # # # # #")
+
+        const orderReferences = await EligibilityController.getEligibilityStatusState(params, orderReferencesMap);
 
         var state_str = JSON.stringify(orderReferences);
 

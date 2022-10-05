@@ -3,6 +3,10 @@
  */
 
  export enum ParametersType {
+    SITE_RESERVE_BID_INDEXER_PREFIX = "Indx_SiteResBid_",
+    SITE_ACTIVATION_INDEXER_PREFIX = "Indx_SiteActiv_",
+    ACTIVATION_ENERGY_AMOUNT_INDEXER_PREFIX = "Indx_ActivNRJAm_",
+
     DEFAULT = "default",
     ALL = "all",
 
@@ -34,5 +38,8 @@
     PROCESS_TYPE_COMPTAGE = "comptage",
     PROCESS_TYPE_REFERENCE = "reference",
 
-    RESERVE_BID_MARKET_DOCUMENT_BASE = "reserveBidMarketDocumentBase"
+    RESERVE_BID_MARKET_DOCUMENT_BASE = "reserveBidMarketDocumentBase",
+
+    BALANCING_DOCUMENT = "balancingDocument",
+    BALANCING_DOCUMENT_PREFIX = "balancingDocumentPrefix"
   }

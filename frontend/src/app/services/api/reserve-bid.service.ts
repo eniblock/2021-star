@@ -30,11 +30,18 @@ export class ReserveBidService {
       console.log(meteringPointMrid);
       callResult = getMocks(meteringPointMrid);
     } else {
-      callResult = this.httpClient.get<ReserveBid[] | null>(`${environment.serverUrl}/reserveBid?meteringPointMrid=` + meteringPointMrid);
+      callResult = this.httpClient.get<ReserveBid[] | null>(`${environment.serverUrl}/reserveBid?meteringPointMrid=${meteringPointMrid}`);
     }
     return callResult;
   }
 
+  getFileName(fileId: string): string {
+    return fileId;
+  }
+
+  getFileUrl(fileId: string): string {
+    return `${environment.serverUrl}/reserveBid/file?fileId=${fileId}`;
+  }
 }
 
 
@@ -44,24 +51,27 @@ export class ReserveBidService {
 const getMocks = (meteringPointMrid: string): Observable<ReserveBid[] | null> => {
   //return of (null);
   return of([
-      {
-        reserveBidMrid: "reserveBidMrid1",
-        meteringPointMrid: meteringPointMrid,
-        revisionNumber: "1",
-        messageType: "string",
-        processType: "string",
-        senderMarketParticipantMrid: "string",
-        receiverMarketParticipantMrid: "string",
-        createdDateTime: "2019-09-11T05:22:00Z",
-        validityPeriodStartDateTime: "2020-09-11T05:22:00Z",
-        validityPeriodEndDateTime: "2024-09-11T05:22:00Z",
-        businessType: "string",
-        quantityMeasureUnitName: "MWh",
-        priceMeasureUnitName: "€/MWh",
-        currencyUnitName: "€",
-        flowDirection: "string",
-        energyPriceAmount: 12,
-      },
+      /*
+        {
+          reserveBidMrid: "reserveBidMrid1",
+          meteringPointMrid: meteringPointMrid,
+          revisionNumber: "1",
+          messageType: "string",
+          processType: "string",
+          senderMarketParticipantMrid: "string",
+          receiverMarketParticipantMrid: "string",
+          createdDateTime: "2019-09-11T05:22:00Z",
+          validityPeriodStartDateTime: "2020-09-11T05:22:00Z",
+          validityPeriodEndDateTime: "2024-09-11T05:22:00Z",
+          businessType: "string",
+          quantityMeasureUnitName: "MWh",
+          priceMeasureUnitName: "€/MWh",
+          currencyUnitName: "€",
+          flowDirection: "string",
+          energyPriceAmount: 12,
+          attachments: [],
+        },
+       */
       {
         reserveBidMrid: "reserveBidMrid2",
         meteringPointMrid: meteringPointMrid,
@@ -79,6 +89,10 @@ const getMocks = (meteringPointMrid: string): Observable<ReserveBid[] | null> =>
         currencyUnitName: "€",
         flowDirection: "string",
         energyPriceAmount: 23,
+        attachments: [
+          "fichier1.pdf",
+          "fichier2.pdf",
+        ]
       }
     ]
   )

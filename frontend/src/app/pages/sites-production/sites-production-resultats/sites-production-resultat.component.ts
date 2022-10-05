@@ -62,7 +62,6 @@ export class SitesProductionResultatComponent implements OnInit {
         this.reserveBidChange.emit(data)
       }
     });
-
   }
 
 }

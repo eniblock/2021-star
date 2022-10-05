@@ -150,7 +150,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         producerMarketParticipantName: 'Prodtest',
         producerMarketParticipantRoleType: '',
       },
-      energyAmount:null,
+      energyAmount: null,
       activationDocument: {
         activationDocumentMrid: "A2",
         originAutomationRegisteredResourceMrid: 'MANSLE',
@@ -218,6 +218,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         currencyUnitName: 'string',
         flowDirection: 'string',
         energyPriceAmount: 1.23,
+        attachments: [],
       },
     },
   ]);

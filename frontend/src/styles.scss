@@ -19,6 +19,7 @@ h1 {
   font-size: 2em;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
 h2 {
   font-weight: bold !important;
   font-size: 1.3em;
@@ -26,6 +27,7 @@ h2 {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   margin-bottom: 1.5em;
 }
+
 h3 {
   font-weight: bold !important;
   font-size: 1.3em;
@@ -46,12 +48,15 @@ h3 {
   background-color: #ffffff; // couleur de fond des inputs
   border-radius: 5px;
 }
+
 .mat-form-field-wrapper {
   padding-bottom: 0 !important; // espacement vertical entre les inputs
 }
+
 .calageMatSuffixButtonIcon {
   top: -0.5em !important;
 }
+
 .calageMatSuffixButton {
   top: -0.75em !important;
 }
@@ -112,10 +117,12 @@ h3 {
   color: #fff !important;
   background-color: $mat-success !important;
 }
+
 .error-snackbar {
   color: #fff !important;
   background-color: $mat-warn !important;
 }
+
 .mat-simple-snackbar-action {
   color: #fff !important;
 }
@@ -126,24 +133,30 @@ h3 {
   border-left: 0.25rem solid;
   border-radius: 0.25rem;
 }
+
 .bd-callout-warning {
   background: #fff3cd;
   border-color: #f0ad4e !important;
 }
+
 .bd-callout-warning h5 {
   color: #856404;
 }
+
 .bd-callout-info {
   background: #d1ecf1;
   border-color: #17a2b8 !important;
 }
+
 .bd-callout-info h5 {
   color: #0c5460;
 }
+
 .bd-callout-danger {
   background: #f8d7da;
   border-color: #d9534f !important;
 }
+
 .bd-callout-danger h5 {
   color: #721c24;
 }
@@ -154,10 +167,12 @@ h3 {
   padding: 0 20px;
   font-size: 0.8em;
 }
+
 .badge-star.primary {
   color: $mat-primary;
   background-color: #e6f7fc;
 }
+
 .badge-star.blanc {
   color: $mat-primary;
   background-color: white;
@@ -169,6 +184,7 @@ h3 {
   background-color: white;
   cursor: pointer;
 }
+
 .sites-production-resultat-detail {
   border-radius: 15px;
   overflow: hidden; // Allows achild divs enfant to "respect" the radius of their parent
@@ -178,6 +194,16 @@ h3 {
 
     h3 {
       color: white;
+    }
+
+    ul.sites-production-resultat-detail-liste-fichiers {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+
+      a {
+        color: #FFFFFF !important;
+      }
     }
   }
 
@@ -198,6 +224,7 @@ h3 {
 
   thead {
     background-color: $mat-primary;
+
     th {
       font-size: 0.9rem;
       padding-top: 2.25em;
@@ -208,6 +235,7 @@ h3 {
   .mat-header-cell {
     color: white !important;
   }
+
   .mat-sort-header-arrow {
     color: white !important;
   }
@@ -221,11 +249,13 @@ h3 {
     tr {
       background-color: white;
     }
+
     td {
       padding-top: 25px !important;
       padding-bottom: 25px !important;
       color: $mat-text !important;
     }
+
     .text-emph {
       color: $mat-primary !important;
       font-weight: 500;
@@ -240,16 +270,19 @@ h3 {
   background-color: $mat-primary;
   display: inline-block !important;
   cursor: pointer;
+
   span {
     color: white !important;
   }
 }
+
 .boutonNavigation-white {
   padding: 10px 40px;
   border-radius: 35px;
   background-color: #ffffff;
   display: inline-block !important;
   cursor: pointer;
+
   span {
     color: $mat-primary !important;
   }
@@ -258,28 +291,34 @@ h3 {
 // Files uploader
 .uploaderFichier {
   color: inherit !important;
+
   .ngx-file-drop__content {
     color: inherit !important;
   }
+
   .ngx-file-drop__drop-zone {
     height: 150px !important;
     border: 2px dashed $mat-text !important;
     border-radius: 30px !important;
     background-color: white !important;
   }
+
   .ngx-file-drop__content {
     height: 150px !important;
   }
 }
+
 .uploaderFichier.full .ngx-file-drop__drop-zone {
   border: 1px solid $mat-text !important;
   background-color: rgb(197, 197, 197) !important;
 }
+
 .upload-fichier-table {
   background-color: white;
   border-radius: 30px !important;
   padding: 20px 40px;
 }
+
 .tailleMaxFichiers {
   font-size: 0.8em;
 }
@@ -295,9 +334,11 @@ h3 {
 .mat-stepper-vertical {
   background-color: inherit !important;
 }
+
 .mat-horizontal-content-containe {
   padding: 0px;
 }
+
 .disabledHeaderNavigation {
   // Desactiver la navigation en cliquant sur le header
   .mat-horizontal-stepper-header {
@@ -310,6 +351,7 @@ h3 {
   min-width: 80vw !important;
   min-height: 50vh !important;
 }
+
 .echarts {
   width: 100%;
   height: 100%;

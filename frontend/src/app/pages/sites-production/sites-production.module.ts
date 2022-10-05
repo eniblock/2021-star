@@ -12,6 +12,7 @@ import {MicroComponentsModule} from 'src/app/components/micro-components/micro-c
 import {PipesModule} from 'src/app/pipes/pipes.module';
 import {MatBottomSheetModule} from "@angular/material/bottom-sheet";
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import { SitesPorductionResultatFileLinkComponent } from './sites-production-resultats/sites-porduction-resultat-file-link/sites-porduction-resultat-file-link.component';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
   declarations: [
     SitesProductionComponent,
     SitesProductionResultatComponent,
+    SitesPorductionResultatFileLinkComponent,
   ],
 })
 export class SitesProductionModule {

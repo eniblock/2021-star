@@ -117,7 +117,7 @@ export class LimitationsResultatsComponent implements OnChanges {
       endCreatedDateTime: activation.activationDocument.endCreatedDateTime,
       orderValueConsign: activation.activationDocument.orderValue,
       measurementUnitNameConsign: activation.activationDocument.measurementUnitName,
-      showOnlyConsign: this.instance == Instance.PRODUCER && activation.activationDocument.eligibilityStatus == EligibilityStatus.OUI,
+      showOnlyConsign: this.instance == Instance.PRODUCER && activation.activationDocument.eligibilityStatus != EligibilityStatus.OUI,
     }
 
     this.bottomSheet.open(LimitationsGraphComponent, {

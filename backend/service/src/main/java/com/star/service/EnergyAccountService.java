@@ -160,7 +160,12 @@ public class EnergyAccountService {
 
     public EnergyAccount[] findEnergyAccount(EnergyAccountCriteria energyAccountCriteria, InstanceEnum instance, String producerMarketParticipantMrid) throws
             BusinessException, TechnicalException {
+        log.debug("Recherche des energy acount");
+        log.debug("Recherche des energy acount. Valeur de energyAccountCriteria : {}", energyAccountCriteria);
+        log.debug("Recherche des energy acount. Valeur de producerMarketParticipantMrid : {}", producerMarketParticipantMrid);
+        log.debug("Recherche des energy acount. Valeur de l'instance : {}", instance);
         if (!InstanceEnum.PRODUCER.equals(instance)) {
+            log.debug("Recherche des energy acount à partir d'une instance autre que producer");
             var selectors = new ArrayList<Selector>();
             selectors.add(Expression.eq("docType", ENERGY_ACCOUNT.getDocType()));
             if (isNotBlank(energyAccountCriteria.getMeteringPointMrid())) {
@@ -177,6 +182,7 @@ public class EnergyAccountService {
             log.debug("Transaction query: " + query);
             return energyAccountRepository.findEnergyAccountByQuery(query);
         } else {
+            log.debug("Recherche des energy acount à partir d'une instance de producer");
             EnergyAccountProducerCriteria energyAccountProducerCriteria = EnergyAccountProducerCriteria.builder()
                     .producerEicCode(producerMarketParticipantMrid).meteringPointMrid(energyAccountCriteria.getMeteringPointMrid())
                     .startCreatedDateTime(energyAccountCriteria.getStartCreatedDateTime()).build();

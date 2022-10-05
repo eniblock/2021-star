@@ -1,17 +1,13 @@
 package com.star.service;
 
-import com.cloudant.client.api.query.Expression;
-import com.cloudant.client.api.query.Selector;
 import com.star.AbstractTest;
 import com.star.enums.InstanceEnum;
-import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.common.FichierImportation;
 import com.star.models.energyamount.EnergyAmount;
 import com.star.models.energyamount.EnergyAmountCriteria;
 import com.star.models.energyamount.ImportEnergyAmountResult;
 import com.star.repository.EnergyAmountRepository;
-import com.star.service.helpers.QueryBuilderHelper;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,13 +22,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.star.enums.DocTypeEnum.ENERGY_AMOUNT;
 import static com.star.enums.InstanceEnum.DSO;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 

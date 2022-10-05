@@ -91,6 +91,7 @@ public class EnergyAccountRepository {
     }
 
     public EnergyAccount[] findEnergyAccountByProducer(EnergyAccountProducerCriteria energyAccountProducerCriteria) throws BusinessException, TechnicalException {
+        log.debug("Recherche des energy account à partir des critères : {}", energyAccountProducerCriteria);
         try {
             byte[] response = contract.evaluateTransaction(GET_ENERGY_ACCOUNT_BY_PRODUCER, energyAccountProducerCriteria.getMeteringPointMrid(),
                     energyAccountProducerCriteria.getProducerEicCode(), energyAccountProducerCriteria.getStartCreatedDateTime());

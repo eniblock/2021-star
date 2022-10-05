@@ -43,7 +43,7 @@ export class StarDataService {
                 try {
                     dataObj = JSON.parse(dataAsBytes.toString());
 
-                    const poolRef : DataReference = {collection: "", docType: arg.docType, data: dataObj};
+                    const poolRef : DataReference = {collection: "XoX", docType: arg.docType, data: dataObj};
                     params.addInMemoryPool(poolKey, poolRef);
                 } catch (error) {
                     throw new Error(`ERROR ${arg.docType} -> Input string NON-JSON value`);
@@ -65,7 +65,7 @@ export class StarDataService {
 
         await params.ctx.stub.putState(arg.id,Buffer.from(JSON.stringify(arg.dataObj)));
 
-        const poolRef : DataReference = {collection: "", docType: arg.dataObj.docType, data: arg.dataObj};
+        const poolRef : DataReference = {collection: "XoX", docType: arg.dataObj.docType, data: arg.dataObj};
         params.addInMemoryPool(arg.id, poolRef);
 
 

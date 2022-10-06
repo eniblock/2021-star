@@ -397,7 +397,8 @@ export class EnergyAccountController {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
         }
 
-        params.logger.info('getEnergyAccountByQuery - query: ', query);
+        params.logger.debug('getEnergyAccountByQuery - query: ', query);
+
         let results = await EnergyAccountService.getQueryArrayResult(params, query);
 
         params.logger.info('=============  END  : get EnergyAccount Obj By Query ===========');
@@ -420,13 +421,6 @@ export class EnergyAccountController {
             throw new Error(`Organisation, ${identity} does not have read access for producer's Energy Account.`);
         }
 
-        const dateStart = new Date(startCreatedDateTime);
-
-        dateStart.setUTCHours(0,0,0,0);
-        // params.logger.log('dateStart=', JSON.stringify(dateStart));
-        const dateEnd = new Date(dateStart.getTime() + 86399999);
-        // params.logger.log('dateEnd=', JSON.stringify(dateEnd));
-
         var args: string[] = [];
         args.push(`"meteringPointMrid":"${meteringPointMrid}"`);
         args.push(`"receiverMarketParticipantMrid":"${producerEicCode}"`);
@@ -440,7 +434,7 @@ export class EnergyAccountController {
 
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
-        params.logger.info('getEnergyAccountByProducer - query: ', query);
+        params.logger.debug('getEnergyAccountByProducer - query: ', query);
 
         const allResults: EnergyAccount[] = await EnergyAccountService.getQueryArrayResult(params, query);
 

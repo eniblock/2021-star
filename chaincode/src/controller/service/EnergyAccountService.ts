@@ -54,9 +54,6 @@ export class EnergyAccountService {
                             allResultsId.push(result.energyAccountMarketDocumentMrid);
                             allResults.push(result);
                         }
-
-                        params.logger.info('collection: ', collections[i]);
-                        params.logger.info('energyAccountMarketDocumentMrid: ', result.energyAccountMarketDocumentMrid);
                 }
             }
         }

@@ -419,17 +419,6 @@ export class EnergyAccountController {
             throw new Error(`Organisation, ${identity} does not have read access for producer's Energy Account.`);
         }
 
-        var args: string[] = [];
-        args.push(`"meteringPointMrid":"${meteringPointMrid}"`);
-        args.push(`"receiverMarketParticipantMrid":"${producerEicCode}"`);
-
-        // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
-        const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
-        params.logger.info('query: ', query);
-
-        const allResults: EnergyAccount[] = await EnergyAccountService.getQueryArrayResult(params, query);
-        params.logger.info('allResults: ', JSON.stringify(allResults));
-
         const dateStart = new Date(startCreatedDateTime);
 
         dateStart.setUTCHours(0,0,0,0);
@@ -437,31 +426,19 @@ export class EnergyAccountController {
         const dateEnd = new Date(dateStart.getTime() + 86399999);
         // params.logger.log('dateEnd=', JSON.stringify(dateEnd));
 
-        params.logger.info('dates: ', JSON.stringify({dateStart, dateEnd}));
+        var args: string[] = [];
+        args.push(`"meteringPointMrid":"${meteringPointMrid}"`);
+        args.push(`"receiverMarketParticipantMrid":"${producerEicCode}"`);
+        args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateStart)},"$lte":${JSON.stringify(dateEnd)}}`);
 
-        const dataResult: EnergyAccount[] = [];
-        const dataResultId: string[] = [];
-        for (const result of allResults) {
-            const strSplitted = result.timeInterval.split('/', 2);
-            if (strSplitted
-                && strSplitted[0]
-                && strSplitted[0].length > 0) {
+        // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
+        const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
+        params.logger.info('query: ', query);
 
-                const begin = new Date(strSplitted[0]);
-                if (begin
-                    && dateStart <= begin
-                    && begin <= dateEnd) {
+        const allResults: EnergyAccount[] = await EnergyAccountService.getQueryArrayResult(params, query);
 
-                    dataResult.push(result);
-                    //Created for logs
-                    dataResultId.push(result.energyAccountMarketDocumentMrid);
-                }
-            }
-        }
+        const formated = JSON.stringify(allResults);
 
-        const formated = JSON.stringify(dataResult);
-
-        params.logger.info('dataResultId: ', JSON.stringify(dataResultId));
         params.logger.info('=============  END  : get EnergyAccount By Producer ===========');
         return formated;
     }

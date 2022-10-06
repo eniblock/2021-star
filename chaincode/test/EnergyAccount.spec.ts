@@ -1237,9 +1237,15 @@ describe('Star Tests EnergyAccount', () => {
 
             const iterator = Values.getEnergyAccountQueryMock(Values.HTA_EnergyAccount_a1,mockHandler);
 
+            const dateStart = new Date(Values.HTA_EnergyAccount_a1.startCreatedDateTime);
+
+            dateStart.setUTCHours(0,0,0,0);
+            const dateEnd = new Date(dateStart.getTime() + 86399999);
+
             var args: string[] = [];
             args.push(`"meteringPointMrid":"${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
             args.push(`"receiverMarketParticipantMrid":"${Values.HTA_EnergyAccount_a1.receiverMarketParticipantMrid}"`);
+            args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateStart)},"$lte":${JSON.stringify(dateEnd)}}`);
             const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
 
@@ -1253,7 +1259,7 @@ describe('Star Tests EnergyAccount', () => {
             let ret = await star.GetEnergyAccountByProducer(transactionContext,
                 Values.HTA_EnergyAccount_a1.meteringPointMrid,
                 Values.HTA_EnergyAccount_a1.receiverMarketParticipantMrid,
-                strSplitted[0]);
+                Values.HTA_EnergyAccount_a1.startCreatedDateTime);
             ret = JSON.parse(ret);
             // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);

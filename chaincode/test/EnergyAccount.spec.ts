@@ -995,13 +995,8 @@ describe('Star Tests EnergyAccount', () => {
 
             const iterator = Values.getEnergyAccountQueryMock(Values.HTA_EnergyAccount_a1,mockHandler);
 
-            const dateUp = new Date(Values.HTA_EnergyAccount_a1.createdDateTime);
-            dateUp.setUTCHours(0,0,0,0);
-            const dateDown = new Date(dateUp.getTime() + 86399999);
-
             var args: string[] = [];
             args.push(`"meteringPointMrid": "${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
-            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
             args.push(`"senderMarketParticipantMrid": "${Values.HTA_EnergyAccount_a1.senderMarketParticipantMrid}"`);
             const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
@@ -1016,6 +1011,7 @@ describe('Star Tests EnergyAccount', () => {
             ret = JSON.parse(ret);
             // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);
+
 
             const expected: EnergyAccount[] = [JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a1))];
 
@@ -1179,13 +1175,8 @@ describe('Star Tests EnergyAccount', () => {
 
             const iterator = Values.getEnergyAccountQueryMock2Values(Values.HTB_EnergyAccount_a3,Values.HTB_EnergyAccount_a4,mockHandler);
 
-            const dateUp = new Date(Values.HTB_EnergyAccount_a3.createdDateTime);
-            dateUp.setUTCHours(0,0,0,0);
-            const dateDown = new Date(dateUp.getTime() + 86399999);
-
             var args: string[] = [];
             args.push(`"meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}"`);
-            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
 
             const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
@@ -1246,14 +1237,9 @@ describe('Star Tests EnergyAccount', () => {
 
             const iterator = Values.getEnergyAccountQueryMock(Values.HTA_EnergyAccount_a1,mockHandler);
 
-            const dateUp = new Date(Values.HTA_EnergyAccount_a1.createdDateTime);
-            dateUp.setUTCHours(0,0,0,0);
-            const dateDown = new Date(dateUp.getTime() + 86399999);
-
             var args: string[] = [];
             args.push(`"meteringPointMrid":"${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
             args.push(`"receiverMarketParticipantMrid":"${Values.HTA_EnergyAccount_a1.receiverMarketParticipantMrid}"`);
-            args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
             const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
 
@@ -1262,10 +1248,12 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collections[0], query).resolves(iterator);
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
 
+            const strSplitted = Values.HTA_EnergyAccount_a1.timeInterval.split('/', 2);
+
             let ret = await star.GetEnergyAccountByProducer(transactionContext,
                 Values.HTA_EnergyAccount_a1.meteringPointMrid,
                 Values.HTA_EnergyAccount_a1.receiverMarketParticipantMrid,
-                Values.HTA_EnergyAccount_a1.createdDateTime);
+                strSplitted[0]);
             ret = JSON.parse(ret);
             // params.logger.log('ret=', ret)
             expect(ret.length).to.equal(1);

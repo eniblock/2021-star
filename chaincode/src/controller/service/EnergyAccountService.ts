@@ -29,7 +29,7 @@ export class EnergyAccountService {
     public static async getQueryArrayResult(
         params: STARParameters,
         query: string,
-        target: string = ''): Promise<any[]>  {
+        target: string = ''): Promise<EnergyAccount[]>  {
         params.logger.debug('============= START : getQueryArrayResult EnergyAccountService ===========');
 
         let collections: string[];
@@ -39,7 +39,7 @@ export class EnergyAccountService {
             collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
         }
 
-        var allResults = [];
+        var allResults: EnergyAccount[] = [];
         var allResultsId: string[] = [];
 
         if (collections) {

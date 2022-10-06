@@ -455,15 +455,14 @@ export class Star extends Contract {
         ctx: Context,
         meteringPointMrid: string,
         systemOperatorEicCode: string,
-        startCreatedDateTime: string) {
+        startCreatedDateTime: string = '') {
                 try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
             return (await EnergyAccountController.getEnergyAccountForSystemOperator
                 (
                     params,
                     meteringPointMrid,
-                    systemOperatorEicCode,
-                    startCreatedDateTime,
+                    systemOperatorEicCode
                 )
             );
         } catch (error) {

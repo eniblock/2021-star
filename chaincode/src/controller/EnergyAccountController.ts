@@ -328,12 +328,11 @@ export class EnergyAccountController {
     public static async getEnergyAccountForSystemOperator(
             params: STARParameters,
             meteringPointMrid: string,
-            systemOperatorEicCode: string,
-            startCreatedDateTime: string): Promise<string> {
+            systemOperatorEicCode: string): Promise<string> {
         params.logger.info('============= START : get EnergyAccount For SystemOperator ===========');
 
         const allResults = await EnergyAccountController.getEnergyAccountForSystemOperatorObj(
-            params, meteringPointMrid, systemOperatorEicCode, startCreatedDateTime);
+            params, meteringPointMrid, systemOperatorEicCode);
         const formated = JSON.stringify(allResults);
 
         params.logger.info('=============  END  : get EnergyAccount For SystemOperator ===========');
@@ -347,7 +346,6 @@ export class EnergyAccountController {
         params: STARParameters,
         meteringPointMrid: string,
         systemOperatorEicCode: string,
-        startCreatedDateTime: string,
         target: string = ''): Promise<any[]> {
         params.logger.debug('============= START : get EnergyAccount Obj For SystemOperator ===========');
 
@@ -356,30 +354,23 @@ export class EnergyAccountController {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
         }
 
-        const dateUp = new Date(startCreatedDateTime);
+        //System Operator can access to every information accessible to them
+        // let systemOperatorObj: SystemOperator;
+        // try {
+        //     systemOperatorObj = await StarDataService.getObj(params, {id: systemOperatorEicCode, docType: DocType.SYSTEM_OPERATOR});
+        // } catch (error) {
+        //     throw new Error('ERROR getEnergyAccountForSystemOperator : '.concat(error.message).concat(` for Energy Account read.`));
+        // }
 
-        dateUp.setUTCHours(0,0,0,0);
-        // params.logger.log('dateUp=', JSON.stringify(dateUp));
-        const dateDown = new Date(dateUp.getTime() + 86399999);
-        // params.logger.log('dateDown=', JSON.stringify(dateDown));
-
-        let systemOperatorObj: SystemOperator;
-        try {
-            systemOperatorObj = await StarDataService.getObj(params, {id: systemOperatorEicCode, docType: DocType.SYSTEM_OPERATOR});
-        } catch (error) {
-            throw new Error('ERROR getEnergyAccountForSystemOperator : '.concat(error.message).concat(` for Energy Account read.`));
-        }
-
-        if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
-            throw new Error(
-                `Energy Account, sender: ${identity} does not provide his own systemOperatorEicCode therefore he does not have read access.`,
-            );
-        }
+        // if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
+        //     throw new Error(
+        //         `Energy Account, sender: ${identity} does not provide his own systemOperatorEicCode therefore he does not have read access.`,
+        //     );
+        // }
         // let query;
 
         var args: string[] = [];
         args.push(`"meteringPointMrid": "${meteringPointMrid}"`);
-        args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte": ${JSON.stringify(dateDown)}}`);
 
         if (identity !== OrganizationTypeMsp.RTE) {
             args.push(`"senderMarketParticipantMrid": "${systemOperatorEicCode}"`);
@@ -423,35 +414,46 @@ export class EnergyAccountController {
         startCreatedDateTime: string): Promise<string> {
         params.logger.info('============= START : get EnergyAccount By Producer ===========');
 
-        params.logger.info('meteringPointMrid: ', meteringPointMrid);
-        params.logger.info('producerEicCode: ', producerEicCode);
-        params.logger.info('startCreatedDateTime: ', startCreatedDateTime);
-
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have read access for producer's Energy Account.`);
         }
-        const dateUp = new Date(startCreatedDateTime);
-
-        dateUp.setUTCHours(0,0,0,0);
-        // params.logger.log('dateUp=', JSON.stringify(dateUp));
-        const dateDown = new Date(dateUp.getTime() + 86399999);
-        // params.logger.log('dateDown=', JSON.stringify(dateDown));
 
         var args: string[] = [];
         args.push(`"meteringPointMrid":"${meteringPointMrid}"`);
         args.push(`"receiverMarketParticipantMrid":"${producerEicCode}"`);
-        args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
 
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
-        params.logger.info('query: ', query);
+        const allResults: EnergyAccount[] = await EnergyAccountService.getQueryArrayResult(params, query);
 
-        const allResults = await EnergyAccountService.getQueryArrayResult(params, query);
-        params.logger.info('allResults: ', JSON.stringify(allResults));
+        const dateStart = new Date(startCreatedDateTime);
 
-        const formated = JSON.stringify(allResults);
+        dateStart.setUTCHours(0,0,0,0);
+        // params.logger.log('dateStart=', JSON.stringify(dateStart));
+        const dateEnd = new Date(dateStart.getTime() + 86399999);
+        // params.logger.log('dateEnd=', JSON.stringify(dateEnd));
+
+
+        const dataResult: EnergyAccount[] = [];
+        for (const result of allResults) {
+            const strSplitted = result.timeInterval.split('/', 2);
+            if (strSplitted
+                && strSplitted[0]
+                && strSplitted[0].length > 0) {
+
+                const begin = new Date(strSplitted[0]);
+                if (begin
+                    && dateStart <= begin
+                    && begin <= dateEnd) {
+
+                    dataResult.push(result);
+                }
+            }
+        }
+
+        const formated = JSON.stringify(dataResult);
 
         params.logger.info('=============  END  : get EnergyAccount By Producer ===========');
         return formated;

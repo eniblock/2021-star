@@ -239,7 +239,6 @@ export class EligibilityController {
             params,
             activationDocument.registeredResourceMrid,
             activationDocument.senderMarketParticipantMrid,
-            activationDocument.startCreatedDateTime,
             initialTarget);
 
         if (energyAccountList && energyAccountList.length > 0) {

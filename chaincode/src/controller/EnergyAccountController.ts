@@ -423,6 +423,10 @@ export class EnergyAccountController {
         startCreatedDateTime: string): Promise<string> {
         params.logger.info('============= START : get EnergyAccount By Producer ===========');
 
+        params.logger.info('meteringPointMrid: ', meteringPointMrid);
+        params.logger.info('producerEicCode: ', producerEicCode);
+        params.logger.info('startCreatedDateTime: ', startCreatedDateTime);
+
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have read access for producer's Energy Account.`);
@@ -442,7 +446,11 @@ export class EnergyAccountController {
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
+        params.logger.info('query: ', query);
+
         const allResults = await EnergyAccountService.getQueryArrayResult(params, query);
+        params.logger.info('allResults: ', JSON.stringify(allResults));
+
         const formated = JSON.stringify(allResults);
 
         params.logger.info('=============  END  : get EnergyAccount By Producer ===========');

@@ -15,6 +15,7 @@ export interface ReserveBid {
   currencyUnitName: string,
   flowDirection: string,
   energyPriceAmount: number,
+  attachments: string[],
 }
 
 export interface FormulaireReserveBid {

@@ -437,6 +437,7 @@ export class EnergyAccountController {
 
 
         const dataResult: EnergyAccount[] = [];
+        const dataResultId: string[] = [];
         for (const result of allResults) {
             const strSplitted = result.timeInterval.split('/', 2);
             if (strSplitted
@@ -449,12 +450,15 @@ export class EnergyAccountController {
                     && begin <= dateEnd) {
 
                     dataResult.push(result);
+                    //Created for logs
+                    dataResultId.push(result.energyAccountMarketDocumentMrid);
                 }
             }
         }
 
         const formated = JSON.stringify(dataResult);
 
+        params.logger.info('dataResultId: ', JSON.stringify(dataResultId));
         params.logger.info('=============  END  : get EnergyAccount By Producer ===========');
         return formated;
     }

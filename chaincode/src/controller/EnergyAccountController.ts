@@ -425,8 +425,10 @@ export class EnergyAccountController {
 
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
+        params.logger.info('query: ', query);
 
         const allResults: EnergyAccount[] = await EnergyAccountService.getQueryArrayResult(params, query);
+        params.logger.info('allResults: ', JSON.stringify(allResults));
 
         const dateStart = new Date(startCreatedDateTime);
 
@@ -435,6 +437,7 @@ export class EnergyAccountController {
         const dateEnd = new Date(dateStart.getTime() + 86399999);
         // params.logger.log('dateEnd=', JSON.stringify(dateEnd));
 
+        params.logger.info('dates: ', JSON.stringify({dateStart, dateEnd}));
 
         const dataResult: EnergyAccount[] = [];
         const dataResultId: string[] = [];

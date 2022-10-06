@@ -4,6 +4,7 @@ import {environment} from 'src/environments/environment';
 import {FormulaireReserveBid, ReserveBid} from "../../models/ReserveBid";
 import {HttpClient} from "@angular/common/http";
 import {FormDataHelper} from "./helpers/formData-helper";
+import {KeycloakService} from "../common/keycloak.service";
 
 const MOCK = false;
 
@@ -12,7 +13,10 @@ const MOCK = false;
 })
 export class ReserveBidService {
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    private keycloakService: KeycloakService,
+  ) {
   }
 
   createReserveBid(form: FormulaireReserveBid, files: File[] | null): Observable<void> {
@@ -30,18 +34,37 @@ export class ReserveBidService {
       console.log(meteringPointMrid);
       callResult = getMocks(meteringPointMrid);
     } else {
-      callResult = this.httpClient.get<ReserveBid[] | null>(`${environment.serverUrl}/reserveBid?meteringPointMrid=${meteringPointMrid}`);
+      callResult = this.httpClient.get<ReserveBid[] | null>(`${environment.serverUrl}/reserveBid/${meteringPointMrid}`);
     }
     return callResult;
   }
 
   getFileName(fileId: string): string {
-    return fileId;
+    return fileId.substring(fileId.indexOf('_') + 1, fileId.length);
   }
 
   getFileUrl(fileId: string): string {
     return `${environment.serverUrl}/reserveBid/file?fileId=${fileId}`;
   }
+
+  download(fileUrl: string, fileName: string) {
+    this.keycloakService.getToken(true)
+      .subscribe(token => {
+        let headers = new Headers();
+        headers.append('Authorization', 'bearer ' + token);
+        fetch(fileUrl, {headers})
+          .then(response => response.blob())
+          .then(blobby => {
+            let objectUrl = window.URL.createObjectURL(blobby);
+            const anchor = document.createElement('a');
+            anchor.href = objectUrl;
+            anchor.download = fileName;
+            anchor.click();
+            URL.revokeObjectURL(objectUrl);
+          });
+      });
+  }
+
 }
 
 

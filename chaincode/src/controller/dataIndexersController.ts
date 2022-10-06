@@ -15,7 +15,22 @@ export class DataIndexersController {
         target: string = ''): Promise<IndexedData> {
         params.logger.debug('============= START : get DataIndexersController ===========');
 
-        const obj: IndexedData = await StarPrivateDataService.getObj(params, {id: indexId, collection: target, docType: DocType.DATA_INDEXER})
+
+        var obj: IndexedData;
+        if (target && target.length > 0) {
+            params.logger.debug('getObj');
+            obj = await StarPrivateDataService.getObj(params, {id: indexId, collection: target, docType: DocType.DATA_INDEXER});
+        } else {
+            params.logger.debug('getObjRefbyId');
+
+            const objRef = await StarPrivateDataService.getObjRefbyId(params, {id: indexId, docType: DocType.DATA_INDEXER});
+            params.logger.debug('objRef: ', JSON.stringify(objRef));
+
+            if (objRef) {
+                obj = objRef.values().next().value.data;
+            }
+        }
+
 
         params.logger.debug('=============  END  : get DataIndexersController ===========');
         return obj;
@@ -116,7 +131,13 @@ export class SiteReserveBidIndexersController {
         params.logger.debug('============= START : get SiteReserveBidIndexersController ===========');
 
         const indexId = this.getKey(meteringPointMrid);
+
+        params.logger.debug('indexId: ', indexId);
+        params.logger.debug('target: ', target);
+
         const obj: IndexedData = await DataIndexersController.get(params, indexId, target);
+
+        params.logger.debug('obj: ', JSON.stringify(obj));
 
         params.logger.debug('=============  END  : get SiteReserveBidIndexersController ===========');
         return obj;

@@ -537,20 +537,24 @@ export class ReserveBidMarketDocumentController {
         var reserveBidValue: ReserveBidMarketDocument = null;
 
         if (activationDocumentObj && activationDocumentObj.registeredResourceMrid) {
-            var siteReserveBid: IndexedData;
+            var indexedSiteReserveBidList: IndexedData;
             try {
-                siteReserveBid = await SiteReserveBidIndexersController.get(params, activationDocumentObj.registeredResourceMrid, target);
+                indexedSiteReserveBidList = await SiteReserveBidIndexersController.get(params, activationDocumentObj.registeredResourceMrid, target);
             } catch (err) {
                 //DO nothing except "Not accessible information"
             }
 
-            if (siteReserveBid
-                && siteReserveBid.indexedDataAbstractList
-                && siteReserveBid.indexedDataAbstractList.length > 0) {
+            if (indexedSiteReserveBidList
+                && indexedSiteReserveBidList.indexedDataAbstractList
+                && indexedSiteReserveBidList.indexedDataAbstractList.length > 0) {
 
                 var reserveBidAbstractRef: ReserveBidMarketDocumentAbstract = null;
-                for (var reserveBidAbstract of siteReserveBid.indexedDataAbstractList) {
+                for (var reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractList) {
+                    params.logger.debug('reserveBidAbstract: ', JSON.stringify(reserveBidAbstract));
+
                     const check = this.checkActivationDocument(activationDocumentObj, reserveBidAbstract);
+                    params.logger.debug('check: ', JSON.stringify(check));
+
                     if (check) {
                         if (!reserveBidAbstractRef
                             || !reserveBidAbstractRef.reserveBidMrid

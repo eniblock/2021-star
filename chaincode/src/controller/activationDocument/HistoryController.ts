@@ -457,6 +457,8 @@ export class HistoryController {
         subOrderList: ActivationDocument[],
         siteRegistered: Site): Promise<HistoryInformationInBuilding> {
 
+        params.logger.debug('============= START : consolidateFiltered ===========');
+
         const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
         const identity: string = params.values.get(ParametersType.IDENTITY);
         var roleUser: string = roleTable.get(identity.toLowerCase());
@@ -476,6 +478,8 @@ export class HistoryController {
         } catch (error) {
             //DO nothing keep roleUser value as it is
         }
+
+        params.logger.debug('roleUser: ', roleUser);
 
 
         var producer: Producer = null;
@@ -514,6 +518,9 @@ export class HistoryController {
             }
         }
 
+        params.logger.debug('producer: ', JSON.stringify(producer));
+
+
         var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
 
         if (roleUser === RoleType.Role_TSO || roleUser === RoleType.Role_TSOProducer) {
@@ -538,6 +545,8 @@ export class HistoryController {
 
             displayedSourceName = activationDocument.registeredResourceMrid;
         }
+
+        params.logger.debug('displayedSourceName: ', displayedSourceName);
 
         // if (!producer) {
         //     try {
@@ -575,6 +584,8 @@ export class HistoryController {
             //DO nothing except "Not accessible information"
         }
 
+        params.logger.debug('energyAmount: ', JSON.stringify(energyAmount));
+
         var reserveBid: ReserveBidMarketDocument = null;
         try {
                 reserveBid = await ReserveBidMarketDocumentController.getByActivationDocument(params, activationDocument);
@@ -582,12 +593,16 @@ export class HistoryController {
             //DO nothing except "Not accessible information"
         }
 
+        params.logger.debug('reserveBid: ', JSON.stringify(reserveBid));
+
         let balancingDocument: BalancingDocument = null;
         try {
             balancingDocument = await BalancingDocumentController.getByActivationDocumentMrId(params, activationDocument.activationDocumentMrid);
         }catch (err) {
                 //DO nothing except "Not accessible information"
         }
+
+        params.logger.debug('balancingDocument: ', JSON.stringify(balancingDocument));
 
         const information: HistoryInformation = {
             activationDocument: JSON.parse(JSON.stringify(activationDocument)),
@@ -626,6 +641,7 @@ export class HistoryController {
         } else {
             historyInformationInBuilding.others.push(key);
         }
+        params.logger.debug('=============  END  : consolidateFiltered ===========');
 
         return historyInformationInBuilding;
     }

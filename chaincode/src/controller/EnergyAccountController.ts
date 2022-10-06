@@ -390,7 +390,7 @@ export class EnergyAccountController {
     public static async getEnergyAccountByQuery(
         params: STARParameters,
         query: string): Promise<any> {
-        params.logger.debug('============= START : get EnergyAccount Obj By Query ===========');
+        params.logger.info('============= START : get EnergyAccount Obj By Query ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -400,7 +400,7 @@ export class EnergyAccountController {
         params.logger.info('getEnergyAccountByQuery - query: ', query);
         let results = await EnergyAccountService.getQueryArrayResult(params, query);
 
-        params.logger.debug('=============  END  : get EnergyAccount Obj By Query ===========');
+        params.logger.info('=============  END  : get EnergyAccount Obj By Query ===========');
         return results;
     }
 

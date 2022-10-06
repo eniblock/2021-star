@@ -430,7 +430,7 @@ export class EnergyAccountController {
         var args: string[] = [];
         args.push(`"meteringPointMrid":"${meteringPointMrid}"`);
         args.push(`"receiverMarketParticipantMrid":"${producerEicCode}"`);
-        args.push(`"startCreatedDateTime":{"$lte":${startCreatedDateTime}}`);
+        args.push(`"startCreatedDateTime":{"$lte":${JSON.stringify(startCreatedDateTime)}}`);
 
         var argOrEnd: string[] = [];
         argOrEnd.push(`"endCreatedDateTime":{"$gte": ${JSON.stringify(startCreatedDateTime)}}`);

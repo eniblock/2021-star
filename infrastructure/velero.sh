@@ -22,6 +22,18 @@ function create_schedules {
     velero schedule create ${ENV}-24h --include-namespaces ${ENV} --default-volumes-to-restic --schedule="@every 24h"
 }
 
+function restore_backup_storage {
+    ENV=$1
+    [ "$ENV" = "sbg" ] && RESTORE_ENV="gra"
+    [ "$ENV" = "gra" ] && RESTORE_ENV="sbg"
+    velero backup-location create restore \
+    --provider aws  \
+    --bucket velero  \
+    --config region=${RESTORE_ENV} \
+    --config s3Url=https://s3.${RESTORE_ENV}.cloud.ovh.net \
+    --access-mode ReadOnly 
+}
+
 install_velero ${CLUSTER_REGION}
 
 create_schedules enedis-testing
@@ -38,3 +50,5 @@ create_schedules enedis-prod
 create_schedules orderer-prod
 create_schedules producer-prod
 create_schedules rte-prod
+
+restore_backup_storage ${CLUSTER_REGION}

@@ -429,7 +429,7 @@ export class EnergyAccountController {
         var args: string[] = [];
         args.push(`"meteringPointMrid":"${meteringPointMrid}"`);
         args.push(`"receiverMarketParticipantMrid":"${producerEicCode}"`);
-        // args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateStart)},"$lte":${JSON.stringify(dateEnd)}}`);
+        args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateStart)},"$lte":${JSON.stringify(dateEnd)}}`);
 
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});

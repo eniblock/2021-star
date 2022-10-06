@@ -397,6 +397,7 @@ export class EnergyAccountController {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
         }
 
+        params.logger.info('getEnergyAccountByQuery - query: ', query);
         let results = await EnergyAccountService.getQueryArrayResult(params, query);
 
         params.logger.debug('=============  END  : get EnergyAccount Obj By Query ===========');
@@ -433,7 +434,7 @@ export class EnergyAccountController {
 
         // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
-        params.logger.info('query: ', query);
+        params.logger.info('getEnergyAccountByProducer - query: ', query);
 
         const allResults: EnergyAccount[] = await EnergyAccountService.getQueryArrayResult(params, query);
 

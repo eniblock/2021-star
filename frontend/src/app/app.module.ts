@@ -1,17 +1,13 @@
 import {PageTemplateModule} from './components/page-template/page-template.module';
-import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
-import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ServerErrorInterceptor} from './interceptors/serveur-error-interceptor';
-import {
-  DateAdapter,
-  MatNativeDateModule,
-  MAT_DATE_LOCALE,
-} from '@angular/material/core';
+import {DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule,} from '@angular/material/core';
 import {CustomDateAdapter} from './adapters/custom-date-adapter';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {KeycloakInterceptor} from "./interceptors/keycloak-interceptor";

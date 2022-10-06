@@ -1,16 +1,22 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {environment} from 'src/environments/environment';
-import {FormulaireReserveBid} from "../../models/ReserveBid";
+import {FormulaireReserveBid, ReserveBid} from "../../models/ReserveBid";
 import {HttpClient} from "@angular/common/http";
 import {FormDataHelper} from "./helpers/formData-helper";
+import {KeycloakService} from "../common/keycloak.service";
+
+const MOCK = false;
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReserveBidService {
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    private keycloakService: KeycloakService,
+  ) {
   }
 
   createReserveBid(form: FormulaireReserveBid, files: File[] | null): Observable<void> {
@@ -22,4 +28,96 @@ export class ReserveBidService {
     return this.httpClient.post<void>(`${environment.serverUrl}/reserveBid`, formData);
   }
 
+  getReserveBidBySite(meteringPointMrid: string): Observable<ReserveBid[] | null> {
+    let callResult: Observable<ReserveBid[] | null>;
+    if (MOCK) {
+      console.log(meteringPointMrid);
+      callResult = getMocks(meteringPointMrid);
+    } else {
+      callResult = this.httpClient.get<ReserveBid[] | null>(`${environment.serverUrl}/reserveBid/${meteringPointMrid}`);
+    }
+    return callResult;
+  }
+
+  getFileName(fileId: string): string {
+    return fileId.substring(fileId.indexOf('_') + 1, fileId.length);
+  }
+
+  getFileUrl(fileId: string): string {
+    return `${environment.serverUrl}/reserveBid/file?fileId=${fileId}`;
+  }
+
+  download(fileUrl: string, fileName: string) {
+    this.keycloakService.getToken(true)
+      .subscribe(token => {
+        let headers = new Headers();
+        headers.append('Authorization', 'bearer ' + token);
+        fetch(fileUrl, {headers})
+          .then(response => response.blob())
+          .then(blobby => {
+            let objectUrl = window.URL.createObjectURL(blobby);
+            const anchor = document.createElement('a');
+            anchor.href = objectUrl;
+            anchor.download = fileName;
+            anchor.click();
+            URL.revokeObjectURL(objectUrl);
+          });
+      });
+  }
+
 }
+
+
+/* *********************************************************
+                               MOCKS
+   ********************************************************* */
+const getMocks = (meteringPointMrid: string): Observable<ReserveBid[] | null> => {
+  //return of (null);
+  return of([
+      /*
+        {
+          reserveBidMrid: "reserveBidMrid1",
+          meteringPointMrid: meteringPointMrid,
+          revisionNumber: "1",
+          messageType: "string",
+          processType: "string",
+          senderMarketParticipantMrid: "string",
+          receiverMarketParticipantMrid: "string",
+          createdDateTime: "2019-09-11T05:22:00Z",
+          validityPeriodStartDateTime: "2020-09-11T05:22:00Z",
+          validityPeriodEndDateTime: "2024-09-11T05:22:00Z",
+          businessType: "string",
+          quantityMeasureUnitName: "MWh",
+          priceMeasureUnitName: "€/MWh",
+          currencyUnitName: "€",
+          flowDirection: "string",
+          energyPriceAmount: 12,
+          attachments: [],
+        },
+       */
+      {
+        reserveBidMrid: "reserveBidMrid2",
+        meteringPointMrid: meteringPointMrid,
+        revisionNumber: "1",
+        messageType: "string",
+        processType: "string",
+        senderMarketParticipantMrid: "string",
+        receiverMarketParticipantMrid: "string",
+        createdDateTime: "2019-09-11T05:22:00Z",
+        validityPeriodStartDateTime: "2020-09-11T05:22:00Z",
+        validityPeriodEndDateTime: "2023-09-11T05:22:00Z",
+        businessType: "string",
+        quantityMeasureUnitName: "MWh",
+        priceMeasureUnitName: "€/MWh",
+        currencyUnitName: "€",
+        flowDirection: "string",
+        energyPriceAmount: 23,
+        attachments: [
+          "fichier1.pdf",
+          "fichier2.pdf",
+        ]
+      }
+    ]
+  )
+};
+

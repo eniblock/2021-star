@@ -392,10 +392,10 @@ export class EnergyAccountController {
         query: string): Promise<any> {
         params.logger.info('============= START : get EnergyAccount Obj By Query ===========');
 
-        const identity = params.values.get(ParametersType.IDENTITY);
-        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
-        }
+        // const identity = params.values.get(ParametersType.IDENTITY);
+        // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+        //     throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
+        // }
 
         params.logger.debug('getEnergyAccountByQuery - query: ', query);
 

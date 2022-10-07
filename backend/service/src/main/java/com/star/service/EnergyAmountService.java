@@ -159,9 +159,19 @@ public class EnergyAmountService {
                     currentErrors.addAll(validator.validate(currentEnergyAmount).stream().map(violation ->
                             messageSource.getMessage("import.error",
                                     new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
-                    if (creation && isBlank(currentEnergyAmount.getActivationDocumentMrid()) && DSO.equals(instance)) {
-                        currentErrors.add(messageSource.getMessage("import.error",
-                                new String[]{fichier.getFileName(), "ActivationDocumentMrid est obligatoire."}, null));
+                    if (creation && DSO.equals(instance)) {
+                        String activationDocumentMrid = currentEnergyAmount.getActivationDocumentMrid();
+                        if (isBlank(activationDocumentMrid)) {
+                            currentErrors.add(messageSource.getMessage("import.error",
+                                    new String[]{fichier.getFileName(), "ActivationDocumentMrid est obligatoire."}, null));
+                        } else {
+                            String[] splittedActivationDocumentMrid = activationDocumentMrid.split("_");
+                            if (splittedActivationDocumentMrid == null ||
+                                    (splittedActivationDocumentMrid != null && splittedActivationDocumentMrid.length != 5)) {
+                                currentErrors.add(messageSource.getMessage("import.file.energy.amount.activationDocumentMrid.enedis.error",
+                                        new String[]{}, null));
+                            }
+                        }
                     }
                     // Vérifier que l'ID du document est fourni quand on est en modification
                     if (!creation && StringUtils.isBlank(currentEnergyAmount.getActivationDocumentMrid())) {

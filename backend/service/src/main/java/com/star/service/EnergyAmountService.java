@@ -300,9 +300,15 @@ public class EnergyAmountService {
             return;
         }
         if (creation) {
-            energyAmount.setEnergyAmountMarketDocumentMrid(randomUUID().toString());
+            String energyAmountMarketDocumentMrid = randomUUID().toString();
+            log.debug("Initialisation du champ energyAmountMarketDocumentMrid : {}", energyAmountMarketDocumentMrid);
+            energyAmount.setEnergyAmountMarketDocumentMrid(energyAmountMarketDocumentMrid);
             if (TSO.equals(instance)) {
-                energyAmount.setActivationDocumentMrid(randomUUID().toString());
+                String activationDocumentMrid = randomUUID().toString();
+                log.debug("Cas d'initialisation de l'ActivationDocumentMrid pour un appel TSO (RTE). activationDocumentMrid = {}", activationDocumentMrid);
+                energyAmount.setActivationDocumentMrid(activationDocumentMrid);
+            } else {
+                log.debug("Cas d'appel pour DSO (ENEDIS). On n'initialise pas activationDocumentMrid (clé composite). activationDocumentMrid = {}", energyAmount.getActivationDocumentMrid());
             }
         }
         energyAmount.setDocType(ENERGY_AMOUNT.getDocType());

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.energyaccount.EnergyAccount;
-import com.star.models.energyaccount.EnergyAccountProducerCriteria;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hyperledger.fabric.gateway.Contract;
@@ -28,7 +27,6 @@ public class EnergyAccountRepository {
     public static final String CREATE_LIST = "CreateEnergyAccountList";
     public static final String UPDATE_LIST = "UpdateEnergyAccountList";
     public static final String GET_ENERGY_ACCOUNT_WITH_PAGINATION = "GetEnergyAccountWithPagination";
-    public static final String GET_ENERGY_ACCOUNT_BY_PRODUCER = "GetEnergyAccountByProducer";
 
     @Autowired
     private Contract contract;
@@ -79,22 +77,9 @@ public class EnergyAccountRepository {
     }
 
     public EnergyAccount[] findEnergyAccountByQuery(String query) throws BusinessException, TechnicalException {
+        log.debug("Recherche des energy account à partir de la requêtes : {}", query);
         try {
             byte[] response = contract.evaluateTransaction(GET_ENERGY_ACCOUNT_WITH_PAGINATION, query);
-            return response != null ? objectMapper.readValue(new String(response), new TypeReference<EnergyAccount[]>() {
-            }) : null;
-        } catch (JsonProcessingException exception) {
-            throw new TechnicalException("Erreur technique lors de la recherche des courbes de comptage", exception);
-        } catch (ContractException contractException) {
-            throw new BusinessException(contractException.getMessage());
-        }
-    }
-
-    public EnergyAccount[] findEnergyAccountByProducer(EnergyAccountProducerCriteria energyAccountProducerCriteria) throws BusinessException, TechnicalException {
-        log.debug("Recherche des energy account à partir des critères : {}", energyAccountProducerCriteria);
-        try {
-            byte[] response = contract.evaluateTransaction(GET_ENERGY_ACCOUNT_BY_PRODUCER, energyAccountProducerCriteria.getMeteringPointMrid(),
-                    energyAccountProducerCriteria.getProducerEicCode(), energyAccountProducerCriteria.getStartCreatedDateTime());
             return response != null ? objectMapper.readValue(new String(response), new TypeReference<EnergyAccount[]>() {
             }) : null;
         } catch (JsonProcessingException exception) {

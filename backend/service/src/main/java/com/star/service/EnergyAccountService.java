@@ -5,13 +5,11 @@ import com.cloudant.client.api.query.Selector;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.enums.FileExtensionEnum;
-import com.star.enums.InstanceEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.common.FichierImportation;
 import com.star.models.energyaccount.EnergyAccount;
 import com.star.models.energyaccount.EnergyAccountCriteria;
-import com.star.models.energyaccount.EnergyAccountProducerCriteria;
 import com.star.models.energyaccount.ImportEnergyAccountResult;
 import com.star.repository.EnergyAccountRepository;
 import com.star.service.helpers.QueryBuilderHelper;
@@ -158,35 +156,26 @@ public class EnergyAccountService {
         return importEnergyAccountResult;
     }
 
-    public EnergyAccount[] findEnergyAccount(EnergyAccountCriteria energyAccountCriteria, InstanceEnum instance, String producerMarketParticipantMrid) throws
+    public EnergyAccount[] findEnergyAccount(EnergyAccountCriteria energyAccountCriteria) throws
             BusinessException, TechnicalException {
-        log.debug("Recherche des energy acount");
         log.debug("Recherche des energy acount. Valeur de energyAccountCriteria : {}", energyAccountCriteria);
-        log.debug("Recherche des energy acount. Valeur de producerMarketParticipantMrid : {}", producerMarketParticipantMrid);
-        log.debug("Recherche des energy acount. Valeur de l'instance : {}", instance);
-        if (!InstanceEnum.PRODUCER.equals(instance)) {
-            log.debug("Recherche des energy acount à partir d'une instance autre que producer");
-            var selectors = new ArrayList<Selector>();
-            selectors.add(Expression.eq("docType", ENERGY_ACCOUNT.getDocType()));
-            if (isNotBlank(energyAccountCriteria.getMeteringPointMrid())) {
-                selectors.add(Expression.eq("meteringPointMrid", energyAccountCriteria.getMeteringPointMrid()));
-            }
-            if (isNotBlank(energyAccountCriteria.getStartCreatedDateTime())) {
-                selectors.add(Expression.gte("endCreatedDateTime", energyAccountCriteria.getStartCreatedDateTime()));
-            }
-            if (isNotBlank(energyAccountCriteria.getEndCreatedDateTime())) {
-                selectors.add(Expression.lte("startCreatedDateTime", energyAccountCriteria.getEndCreatedDateTime()));
-            }
-            var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
-            String query = queryBuilder.build();
-            log.debug("Transaction query: " + query);
-            return energyAccountRepository.findEnergyAccountByQuery(query);
-        } else {
-            log.debug("Recherche des energy acount à partir d'une instance de producer");
-            EnergyAccountProducerCriteria energyAccountProducerCriteria = EnergyAccountProducerCriteria.builder()
-                    .producerEicCode(producerMarketParticipantMrid).meteringPointMrid(energyAccountCriteria.getMeteringPointMrid())
-                    .startCreatedDateTime(energyAccountCriteria.getStartCreatedDateTime()).build();
-            return energyAccountRepository.findEnergyAccountByProducer(energyAccountProducerCriteria);
+        var selectors = new ArrayList<Selector>();
+        selectors.add(Expression.eq("docType", ENERGY_ACCOUNT.getDocType()));
+        if (isNotBlank(energyAccountCriteria.getMeteringPointMrid())) {
+            selectors.add(Expression.eq("meteringPointMrid", energyAccountCriteria.getMeteringPointMrid()));
         }
+        if (isNotBlank(energyAccountCriteria.getStartCreatedDateTime())) {
+            selectors.add(Expression.gte("endCreatedDateTime", energyAccountCriteria.getStartCreatedDateTime()));
+        }
+        if (isNotBlank(energyAccountCriteria.getEndCreatedDateTime())) {
+            selectors.add(Expression.lte("startCreatedDateTime", energyAccountCriteria.getEndCreatedDateTime()));
+        }
+        if (isNotBlank(energyAccountCriteria.getProducerMarketParticipantMrid())) {
+            selectors.add(Expression.eq("senderMarketParticipantMrid", energyAccountCriteria.getProducerMarketParticipantMrid()));
+        }
+        var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
+        String query = queryBuilder.build();
+        log.debug("Transaction query: " + query);
+        return energyAccountRepository.findEnergyAccountByQuery(query);
     }
 }

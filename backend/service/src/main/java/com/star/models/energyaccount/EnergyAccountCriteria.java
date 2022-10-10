@@ -17,4 +17,5 @@ public class EnergyAccountCriteria {
     private String meteringPointMrid;
     private String startCreatedDateTime;
     private String endCreatedDateTime;
+    private String producerMarketParticipantMrid;
 }

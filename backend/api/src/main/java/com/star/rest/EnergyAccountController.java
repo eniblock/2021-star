@@ -126,12 +126,9 @@ public class EnergyAccountController {
         EnergyAccountCriteria energyAccountCriteria = EnergyAccountCriteria.builder().meteringPointMrid(meteringPointMrid)
                 .startCreatedDateTime(startCreatedDateTime).endCreatedDateTime(endCreatedDateTime).build();
         if (InstanceEnum.PRODUCER.equals(instance)) {
-            return ResponseEntity.status(HttpStatus.OK).body(energyAccountMapper.beanToDtos(energyAccountService.findEnergyAccount(energyAccountCriteria, instance,
-                    securityComponent.getProducerMarketParticipantMrid(true))));
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body(energyAccountMapper.beanToDtos(energyAccountService.findEnergyAccount(energyAccountCriteria, instance, null)));
+            energyAccountCriteria.setProducerMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));
         }
-
+        return ResponseEntity.status(HttpStatus.OK).body(energyAccountMapper.beanToDtos(energyAccountService.findEnergyAccount(energyAccountCriteria)));
     }
 
     private ResponseEntity<ImportEnergyAccountResult> importEnergyAccount(MultipartFile[] files, boolean create) throws BusinessException {

@@ -562,25 +562,27 @@ export class ReserveBidMarketDocumentController {
                     params.logger.debug('check: ', JSON.stringify(check));
 
                     if (check) {
-                        if (!reserveBidAbstractRef
-                            || !reserveBidAbstractRef.reserveBidMrid
-                            || reserveBidAbstractRef.reserveBidMrid.length === 0) {
+                        const dateBid = new Date(reserveBidAbstract.validityPeriodStartDateTime);
 
-                                reserveBidAbstractRef = reserveBidAbstract;
-                        } else {
-                            const dateBid = new Date(reserveBidAbstract.validityPeriodStartDateTime);
-                            const dateBidValue = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
+                        if (dateBid.getTime() === dateBid.getTime()
+                            && dateBid <= dateDoc) {
 
-                            if (dateBid.getTime() === dateBid.getTime()
-                                && dateDoc <= dateBid) {
+                            if (!reserveBidAbstractRef
+                                || !reserveBidAbstractRef.reserveBidMrid
+                                || reserveBidAbstractRef.reserveBidMrid.length === 0) {
+
+                                    reserveBidAbstractRef = reserveBidAbstract;
+                            } else {
+                                const dateBidValue = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
 
                                 if (dateBidValue.getTime() !== dateBidValue.getTime()
                                     || dateBidValue < dateBid) {
                                     reserveBidAbstractRef = reserveBidAbstract;
                                 }
-                            }
 
+                            }
                         }
+
                     }
                 }
 

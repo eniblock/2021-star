@@ -572,7 +572,7 @@ export class ReserveBidMarketDocumentController {
                             const dateBidValue = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
 
                             if (dateBid.getTime() === dateBid.getTime()
-                                && dateBid <= dateDoc) {
+                                && dateDoc <= dateBid) {
 
                                 if (dateBidValue.getTime() !== dateBidValue.getTime()
                                     || dateBidValue < dateBid) {

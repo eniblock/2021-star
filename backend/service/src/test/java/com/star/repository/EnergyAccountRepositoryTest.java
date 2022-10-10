@@ -109,23 +109,6 @@ class EnergyAccountRepositoryTest extends AbstractTest {
         assertThat(queryArgumentCaptor.getValue()).isEqualTo(query);
     }
 
-
-
-    @Test
-    void testFindEnergyAccountByProducer() throws ContractException, TechnicalException {
-        // GIVEN
-        EnergyAccountProducerCriteria energyAccountProducerCriteria = EnergyAccountProducerCriteria.builder()
-                .producerEicCode("producer_test_code").startCreatedDateTime("startDateTime").meteringPointMrid("PRM-kjbb651651").build();
-        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
-
-        // WHEN
-        energyAccountRepository.findEnergyAccountByProducer(energyAccountProducerCriteria);
-
-        // THEN
-        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), queryArgumentCaptor.capture());
-        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(energyAccountRepository.GET_ENERGY_ACCOUNT_BY_PRODUCER);
-    }
-
     private EnergyAccount getEnergyAccount() {
         return EnergyAccount.builder().energyAccountMarketDocumentMrid("13789-KH2IIg-KJIU").meteringPointMrid("PRM24521").measurementUnitName("MW")
                 .areaDomain("AREA-DOMAIN").senderMarketParticipantMrid("PRM561656").senderMarketParticipantRole("ROLE").receiverMarketParticipantMrid("PRMJHGTFTU")

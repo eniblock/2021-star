@@ -1,3 +1,5 @@
+import * as Yup from 'yup';
+
 export class ReserveBidMarketDocumentAbstract {
     public reserveBidMrid: string;
     public validityPeriodStartDateTime?: string;
@@ -18,7 +20,14 @@ export class EnergyAmountAbstract {
 }
 
 export class IndexedData {
-    public docType: string;
+
+    public static readonly schema = Yup.object().shape({
+        docType: Yup.string().notRequired(),
+        indexId: Yup.string().required('indexId is required').typeError('indexId must be a string'),
+        indexedDataAbstractList: Yup.array().notRequired()
+    });
+
+    public docType?: string;
     public indexId: string;
-    public indexedDataAbstractList: any[];
+    public indexedDataAbstractList?: any[];
 }

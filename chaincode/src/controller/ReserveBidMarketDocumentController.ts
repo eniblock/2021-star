@@ -548,6 +548,12 @@ export class ReserveBidMarketDocumentController {
                 && indexedSiteReserveBidList.indexedDataAbstractList
                 && indexedSiteReserveBidList.indexedDataAbstractList.length > 0) {
 
+                const dateDoc = new Date(activationDocumentObj.startCreatedDateTime);
+
+                if (dateDoc.getTime() !== dateDoc.getTime()) {
+                    return;
+                }
+
                 var reserveBidAbstractRef: ReserveBidMarketDocumentAbstract = null;
                 for (var reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractList) {
                     params.logger.debug('reserveBidAbstract: ', JSON.stringify(reserveBidAbstract));
@@ -564,9 +570,16 @@ export class ReserveBidMarketDocumentController {
                         } else {
                             const dateBid = new Date(reserveBidAbstract.validityPeriodStartDateTime);
                             const dateBidValue = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
-                            if (dateBid > dateBidValue) {
-                                reserveBidAbstractRef = reserveBidAbstract;
+
+                            if (dateBid.getTime() === dateBid.getTime()
+                                && dateBid <= dateDoc) {
+
+                                if (dateBidValue.getTime() !== dateBidValue.getTime()
+                                    || dateBidValue < dateBid) {
+                                    reserveBidAbstractRef = reserveBidAbstract;
+                                }
                             }
+
                         }
                     }
                 }

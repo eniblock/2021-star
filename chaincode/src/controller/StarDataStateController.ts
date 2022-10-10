@@ -11,6 +11,7 @@ import { EligibilityController } from "./activationDocument/EligibilityControlle
 import { OrderManagerController } from "./activationDocument/OrderManagerController";
 import { ReconciliationController } from "./activationDocument/ReconciliationController";
 import { AttachmentFileController } from "./AttachmentFileController";
+import { DataIndexersController, SiteReserveBidIndexersController } from "./dataIndexersController";
 import { EnergyAccountController } from "./EnergyAccountController";
 import { EnergyAmountController } from "./EnergyAmountController";
 import { ReferenceEnergyAccountController } from "./ReferenceEnergyAccountController";
@@ -66,6 +67,17 @@ export class StarDataStateController {
         params.logger.debug("# # # # # # # # # # # #")
 
         const orderReferences = await EligibilityController.getEligibilityStatusState(params, orderReferencesMap);
+
+
+        //Add Indexed Data References (to fill lack in data if needed)
+
+        const dataIndexerReferences = await SiteReserveBidIndexersController.getState(params);
+
+        if (dataIndexerReferences && dataIndexerReferences.length > 0) {
+            for (const dataIndexerRef of dataIndexerReferences) {
+                orderReferences.push(dataIndexerRef);
+            }
+        }
 
         var state_str = JSON.stringify(orderReferences);
 
@@ -146,6 +158,8 @@ export class StarDataStateController {
                     await ReserveBidMarketDocumentController.createByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
                     await AttachmentFileController.createByReference(params, updateOrder);
+                } else if (updateOrder.docType === DocType.DATA_INDEXER) {
+                    await DataIndexersController.executeOrder(params, updateOrder);
                 }
 
             }

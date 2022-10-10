@@ -11,6 +11,7 @@ import { StarDataService } from './service/StarDataService';
 import { DocType } from '../enums/DocType';
 import { StarPrivateDataService } from './service/StarPrivateDataService';
 import { IdArgument } from '../model/arguments/idArgument';
+import { QueryStateService } from './service/QueryStateService';
 
 export class SiteController {
     public static async createSite(
@@ -215,6 +216,15 @@ export class SiteController {
     }
 
 
+    public static async getAllObjRef( params: STARParameters): Promise<DataReference[]> {
+        params.logger.info('============= START : getAllProducer ProducerController ===========');
+
+        const arrayResult = await SiteService.getAll(params);
+
+        params.logger.info('=============  END  : getAllProducer ProducerController ===========');
+
+        return arrayResult;
+    }
 
 
     public static async getSitesBySystemOperator(

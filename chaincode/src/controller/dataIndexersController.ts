@@ -7,6 +7,10 @@ import { DataIndexersService } from "./service/dataIndexersService";
 import { StarPrivateDataService } from "./service/StarPrivateDataService";
 import { ActivationDocument } from "../model/activationDocument/activationDocument";
 import { EnergyAmount } from "../model/energyAmount";
+import { DataReference } from "../model/dataReference";
+import { SiteController } from "./SiteController";
+import { ReserveBidMarketDocumentController } from "./ReserveBidMarketDocumentController";
+import { Site } from "../model/site";
 
 export class DataIndexersController {
     public static async get(
@@ -115,7 +119,39 @@ export class DataIndexersController {
 
         params.logger.debug('=============  END  : deleteReference DataIndexersController ===========');
     }
+
+
+    public static async executeOrder(
+        params: STARParameters,
+        updateOrder: DataReference) {
+        params.logger.debug('============= START : executeOrder DataIndexersController ===========');
+
+        if (updateOrder.data) {
+            IndexedData.schema.validateSync(
+                updateOrder.data,
+                {strict: true, abortEarly: false},
+            );
+
+            const indexData:IndexedData = updateOrder.data;
+            if (indexData.indexedDataAbstractList && indexData.indexedDataAbstractList.length > 0) {
+                for (const abstract of indexData.indexedDataAbstractList) {
+                    this.addReference(params, indexData.indexId, abstract, updateOrder.collection);
+                }
+            }
+        }
+
+        params.logger.debug('============= END   : executeOrder DataIndexersController ===========');
+    }
+
 }
+
+
+
+
+
+
+
+
 
 
 export class SiteReserveBidIndexersController {
@@ -158,6 +194,49 @@ export class SiteReserveBidIndexersController {
         params.logger.debug('=============  END  : addReserveBidReference SiteReserveBidIndexersController ===========');
     }
 
+
+    public static async getState(params: STARParameters): Promise<DataReference[]> {
+        params.logger.debug('============= START : getState SiteReserveBidIndexersController ===========');
+        const states: DataReference[] = [];
+
+        var allSiteRef: DataReference[];
+        try {
+            allSiteRef = await SiteController.getAllObjRef(params);
+        } catch (err) {
+            //Just return empty list
+            return states;
+        }
+
+        if (allSiteRef && allSiteRef.length > 0) {
+            for (const siteRef of allSiteRef) {
+                try {
+                    const site: Site = siteRef.data;
+                    const meteringPointMrid: string = site.meteringPointMrid;
+                    const reserveBidList: ReserveBidMarketDocument[] = await ReserveBidMarketDocumentController.getObjByMeteringPointMrid(params, meteringPointMrid, siteRef.collection);
+                    if (reserveBidList && reserveBidList.length > 0) {
+                        for (const reserveBidObj of reserveBidList) {
+                            const reserveBidMarketDocumentAbstract : ReserveBidMarketDocumentAbstract =
+                                {reserveBidMrid:reserveBidObj.reserveBidMrid, validityPeriodStartDateTime:reserveBidObj.validityPeriodStartDateTime};
+                            const indexId = this.getKey(reserveBidObj.meteringPointMrid);
+
+                            const indexData: IndexedData = {
+                                docType: DocType.DATA_INDEXER,
+                                indexId: indexId,
+                                indexedDataAbstractList: [reserveBidMarketDocumentAbstract]
+                            };
+
+                            states.push({data: indexData, collection: siteRef.collection, docType: DocType.DATA_INDEXER});
+                        }
+                    }
+                } catch (err) {
+                    //Do Nothing ... just cannot manage reserveBid
+                }
+            }
+        }
+
+        params.logger.debug('=============  END  : getState SiteReserveBidIndexersController ===========');
+        return states;
+    }
 }
 
 

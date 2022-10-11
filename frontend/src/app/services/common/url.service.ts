@@ -41,11 +41,11 @@ export class UrlService {
 
     if (dev.test(url)) {
       return EnvironmentType.DEV;
-    }else if (testing.test(url)) {
+    } else if (testing.test(url)) {
       return EnvironmentType.TESTING;
-    }else if (staging.test(url)) {
+    } else if (staging.test(url)) {
       return EnvironmentType.STAGING;
-    }else
+    } else
       return EnvironmentType.PROD;
   }
 

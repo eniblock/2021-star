@@ -9,6 +9,8 @@
   </p>
 </div>
 
+<div class="environmentType mt-4 mb-2" *ngIf="environmentType != EnvironmentTypeEnum.PROD">{{ environmentType }}</div>
+
 <!-- Menu -->
 <a [routerLink]="['/',PATH_ROUTE.ACCUEIL]" routerLinkActive="menu-active" class="text-center text-xl-start mt-3 mb-1 py-3">
   <img src="assets/img/menu-bar/home.svg" class="iconeLienMenu pb-1 mx-3"/>

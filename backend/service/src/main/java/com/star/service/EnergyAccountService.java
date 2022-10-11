@@ -171,7 +171,7 @@ public class EnergyAccountService {
             selectors.add(Expression.gte("endCreatedDateTime", energyAccountCriteria.getStartCreatedDateTime()));
         }
         if (isNotBlank(energyAccountCriteria.getProducerMarketParticipantMrid())) {
-            selectors.add(Expression.eq("receiverMarketParticipantRole", energyAccountCriteria.getProducerMarketParticipantMrid()));
+            selectors.add(Expression.eq("receiverMarketParticipantMrid", energyAccountCriteria.getProducerMarketParticipantMrid()));
         }
         var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
         String query = queryBuilder.build();

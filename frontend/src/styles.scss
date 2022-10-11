@@ -99,6 +99,13 @@ h3 {
     display: inline !important;
   }
 
+  .environmentType {
+    text-align: center;
+    font-weight: 700;
+    color: $mat-accent;
+    font-size: .95em;
+  }
+
   .participantName {
     text-align: center;
     font-weight: 500;

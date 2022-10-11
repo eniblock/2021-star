@@ -4,6 +4,8 @@ import {InstanceService} from 'src/app/services/api/instance.service';
 import {KeycloakService} from "../../../services/common/keycloak.service";
 import {Instance} from "../../../models/enum/Instance.enum";
 import {getTypesDeRechercheSimple} from "../../../models/enum/TypeDeRechercheSimple.enum";
+import {UrlService} from "../../../services/common/url.service";
+import {EnvironmentType} from "../../../models/enum/EnvironmentType.enum";
 
 @Component({
   selector: 'app-menu',
@@ -13,15 +15,18 @@ import {getTypesDeRechercheSimple} from "../../../models/enum/TypeDeRechercheSim
 export class MenuComponent implements OnInit {
   PATH_ROUTE = PATH_ROUTE;
   InstanceEnum = Instance;
+  EnvironmentTypeEnum = EnvironmentType;
 
   participantName: string = "";
   username?: string;
 
   typeInstance?: Instance;
+  environmentType?: EnvironmentType;
 
   constructor(
     private keycloakService: KeycloakService,
-    private instanceService: InstanceService
+    private instanceService: InstanceService,
+    private urlService: UrlService,
   ) {
   }
 
@@ -31,7 +36,8 @@ export class MenuComponent implements OnInit {
     this.instanceService.getParticipantName()
       .subscribe(participantName => this.participantName = participantName);
     this.keycloakService.getUserProfile()
-      .subscribe(userProfile => this.username = userProfile != null ? userProfile.username : "");
+      .subscribe(userProfile => this.username = userProfile != null ? userProfile.username : "")
+    this.environmentType = this.urlService.getEnvironmentType();
   }
 
   deconnexion() {

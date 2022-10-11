@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {EnvironmentType} from "../../models/enum/EnvironmentType.enum";
 
 @Injectable({
   providedIn: 'root',
 })
 export class UrlService {
-  constructor() {}
+  constructor() {
+  }
 
   toUrlParams(form: Object): string {
     return Object.entries(form)
@@ -30,4 +32,21 @@ export class UrlService {
   private encodeParamValue(paramValue: string): string {
     return encodeURIComponent(paramValue);
   }
+
+  getEnvironmentType(): EnvironmentType {
+    const url = window.location.href;
+    const dev = new RegExp('https?://[^\.]*\.localhost');
+    const testing = new RegExp('https?://[^\.]*\.testing\.star\.eniblock\.fr');
+    const staging = new RegExp('https?://[^\.]*\.staging\.star\.eniblock\.fr');
+
+    if (dev.test(url)) {
+      return EnvironmentType.DEV;
+    } else if (testing.test(url)) {
+      return EnvironmentType.TESTING;
+    } else if (staging.test(url)) {
+      return EnvironmentType.STAGING;
+    } else
+      return EnvironmentType.PROD;
+  }
+
 }

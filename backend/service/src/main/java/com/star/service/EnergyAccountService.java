@@ -165,10 +165,10 @@ public class EnergyAccountService {
             selectors.add(Expression.eq("meteringPointMrid", energyAccountCriteria.getMeteringPointMrid()));
         }
         if (isNotBlank(energyAccountCriteria.getEndCreatedDateTime())) {
-            selectors.add(Expression.lte("startCreatedDateTime", energyAccountCriteria.getStartCreatedDateTime()));
+            selectors.add(Expression.lte("startCreatedDateTime", energyAccountCriteria.getEndCreatedDateTime()));
         }
         if (isNotBlank(energyAccountCriteria.getStartCreatedDateTime())) {
-            selectors.add(Expression.gte("endCreatedDateTime", energyAccountCriteria.getEndCreatedDateTime()));
+            selectors.add(Expression.gte("endCreatedDateTime", energyAccountCriteria.getStartCreatedDateTime()));
         }
         if (isNotBlank(energyAccountCriteria.getProducerMarketParticipantMrid())) {
             selectors.add(Expression.eq("senderMarketParticipantMrid", energyAccountCriteria.getProducerMarketParticipantMrid()));

@@ -36,19 +36,19 @@ class HistoriqueLimitationRepositoryTest extends AbstractTest {
     private ArgumentCaptor<String> objectArgumentCaptor;
 
 
-    @Test
-    void testFindHistoriqueByQuery() throws ContractException, TechnicalException {
-        // GIVEN
-        HistoriqueLimitationCriteria historiqueLimitationCriteria = HistoriqueLimitationCriteria.builder().build();
-        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
-        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
-
-        // WHEN
-        historiqueLimitationRepository.findHistoriqueByQuery(historiqueLimitationCriteria);
-
-        // THEN
-        Mockito.verify(contract, Mockito.times(2)).evaluateTransaction(historiqueLimitationArgumentCaptor.capture(), objectArgumentCaptor.capture());
-        assertThat(historiqueLimitationArgumentCaptor.getValue()).isEqualTo(historiqueLimitationRepository.GET_ACTIVATION_DOCUMENT_HISTORY);
-    }
+//    @Test
+//    void testFindHistoriqueByQuery() throws ContractException, TechnicalException {
+//        // GIVEN
+//        HistoriqueLimitationCriteria historiqueLimitationCriteria = HistoriqueLimitationCriteria.builder().build();
+//        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
+//        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
+//
+//        // WHEN
+//        historiqueLimitationRepository.findHistoriqueByQuery(historiqueLimitationCriteria);
+//
+//        // THEN
+//        Mockito.verify(contract, Mockito.times(2)).evaluateTransaction(historiqueLimitationArgumentCaptor.capture(), objectArgumentCaptor.capture());
+//        assertThat(historiqueLimitationArgumentCaptor.getValue()).isEqualTo(historiqueLimitationRepository.GET_ACTIVATION_DOCUMENT_HISTORY);
+//    }
 
 }

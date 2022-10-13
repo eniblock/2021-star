@@ -25,6 +25,7 @@ import { StarDataStateController } from './controller/StarDataStateController';
 import { HLFServices } from './controller/service/HLFservice';
 import { AttachmentFileController } from './controller/AttachmentFileController';
 import { ReserveBidMarketDocumentController } from './controller/ReserveBidMarketDocumentController';
+import { BalancingDocumentController } from './controller/BalancingDocumentController';
 
 export class Star extends Contract {
 
@@ -764,44 +765,44 @@ export class Star extends Contract {
         inputStr : ReserveBidMrid - string
         output : ReserveBidMarketDocument
     */
-        public async getReserveBidMarketDocumentById(
-            ctx: Context, inputStr: string) {
-            try {
-                const params: STARParameters = await ParametersController.getParameterValues(ctx);
-                return (await ReserveBidMarketDocumentController.getById(params, inputStr));
-            } catch (error) {
-                throw error;
-            }
+    public async GetReserveBidMarketDocumentById(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.getById(params, inputStr));
+        } catch (error) {
+            throw error;
         }
+    }
 
     /*
         inputStr : ReserveBidMrid[] - string[]
         output : ReserveBidMarketDocument[]
     */
-        public async getReserveBidMarketDocumentListById(
-            ctx: Context, inputStr: string) {
-            try {
-                const params: STARParameters = await ParametersController.getParameterValues(ctx);
-                return (await ReserveBidMarketDocumentController.getListById(params, inputStr));
-            } catch (error) {
-                throw error;
-            }
+    public async GetReserveBidMarketDocumentListById(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.getListById(params, inputStr));
+        } catch (error) {
+            throw error;
         }
+    }
 
 
     /*
         inputStr : meteringPointMrid - string
         output : ReserveBidMarketDocument[]
     */
-        public async getReserveBidMarketDocumentBySite(
-            ctx: Context, inputStr: string) {
-            try {
-                const params: STARParameters = await ParametersController.getParameterValues(ctx);
-                return (await ReserveBidMarketDocumentController.getByMeteringPointMrid(params, inputStr));
-            } catch (error) {
-                throw error;
-            }
+    public async GetReserveBidMarketDocumentBySite(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.getByMeteringPointMrid(params, inputStr));
+        } catch (error) {
+            throw error;
         }
+    }
 
 
     /*
@@ -809,29 +810,44 @@ export class Star extends Contract {
         output : ReserveBidMarketDocument[]
         //Only current and next reserve bid market document
     */
-        public async getValidReserveBidMarketDocumentBySite(
-            ctx: Context, inputStr: string) {
-            try {
-                const params: STARParameters = await ParametersController.getParameterValues(ctx);
-                return (await ReserveBidMarketDocumentController.getValidByMeteringPointMrid(params, inputStr));
-            } catch (error) {
-                throw error;
-            }
+    public async GetValidReserveBidMarketDocumentBySite(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.getValidByMeteringPointMrid(params, inputStr));
+        } catch (error) {
+            throw error;
         }
+    }
 
     /*
         inputStr : reserveBidMarketDocumentSiteDate
         output : ReserveBidMarketDocument[]
         //Only valid
     */
-        public async getAtDateReserveBidMarketDocumentBySite(
-            ctx: Context, inputStr: string) {
-            try {
-                const params: STARParameters = await ParametersController.getParameterValues(ctx);
-                return (await ReserveBidMarketDocumentController.getAtDateByMeteringPointMrid(params, inputStr));
-            } catch (error) {
-                throw error;
-            }
+    public async GetAtDateReserveBidMarketDocumentBySite(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.getAtDateByMeteringPointMrid(params, inputStr));
+        } catch (error) {
+            throw error;
         }
+    }
+
+    /*
+        inputStr : BalancingDocumentSearchCriteria
+        output : BalancingDocument[]
+    */
+    public async SearchBalancingDocumentByCriteria(
+        ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await BalancingDocumentController.searchByCriteria(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
 }

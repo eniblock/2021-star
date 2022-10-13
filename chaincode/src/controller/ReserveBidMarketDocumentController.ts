@@ -32,17 +32,17 @@ export class ReserveBidMarketDocumentController {
     /*
         inputStr : reserveBidMarketDocument
     */
-        public static async create(params: STARParameters, inputStr: string) {
-            params.logger.info('============= START : Create ReserveBidMarketDocumentController ===========');
+    public static async create(params: STARParameters, inputStr: string) {
+        params.logger.info('============= START : Create ReserveBidMarketDocumentController ===========');
 
-            const reserveBidCreationObj = ReserveBidMarketDocumentCreation.formatString(inputStr);
-            if (reserveBidCreationObj && reserveBidCreationObj.reserveBid) {
-                await this.createObj(params, reserveBidCreationObj);
-            }
-
-
-            params.logger.info('=============  END  : Create ReserveBidMarketDocumentController ===========');
+        const reserveBidCreationObj = ReserveBidMarketDocumentCreation.formatString(inputStr);
+        if (reserveBidCreationObj && reserveBidCreationObj.reserveBid) {
+            await this.createObj(params, reserveBidCreationObj);
         }
+
+
+        params.logger.info('=============  END  : Create ReserveBidMarketDocumentController ===========');
+    }
 
     /*
         inputStr : reserveBidMarketDocument
@@ -177,17 +177,19 @@ export class ReserveBidMarketDocumentController {
             }
         }
 
-        for (var [targetExistingSite, ] of existingSitesRef) {
-            await ReserveBidMarketDocumentService.write(params, reserveBidObj, targetExistingSite);
-            await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, targetExistingSite);
-            await SiteReserveBidIndexersController.addReserveBidReference(params, reserveBidObj, targetExistingSite);
+        if (existingSitesRef) {
+            for (var [targetExistingSite, ] of existingSitesRef) {
+                await ReserveBidMarketDocumentService.write(params, reserveBidObj, targetExistingSite);
+                await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, targetExistingSite);
+                await SiteReserveBidIndexersController.addReserveBidReference(params, reserveBidObj, targetExistingSite);
 
 
-            const activationDocumentIdList: string[] = await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, targetExistingSite);
-            if (activationDocumentIdList && activationDocumentIdList.length > 0) {
-                for (var activationDocumentId of activationDocumentIdList) {
+                const activationDocumentIdList: string[] = await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, targetExistingSite);
+                if (activationDocumentIdList && activationDocumentIdList.length > 0) {
+                    for (var activationDocumentId of activationDocumentIdList) {
 
-                    await BalancingDocumentController.createOrUpdateById(params, activationDocumentId, reserveBidObj, null, targetExistingSite);
+                        await BalancingDocumentController.createOrUpdateById(params, activationDocumentId, reserveBidObj, null, targetExistingSite);
+                    }
                 }
             }
         }
@@ -263,7 +265,8 @@ export class ReserveBidMarketDocumentController {
                 throw new Error(error.message.concat(' to add file'));
             }
             //Take the first reference
-            reserveBidObj = existingReserveBidRef.values().next().value;
+            const reserveBidObjRef:DataReference = existingReserveBidRef.values().next().value;
+            reserveBidObj = reserveBidObjRef.data;
 
             //Only do somehting if the found reference is the asekd one
             if (reserveBidObj && reserveBidObj.reserveBidMrid === reserveBidFileObj.reserveBidMrid) {
@@ -340,8 +343,11 @@ export class ReserveBidMarketDocumentController {
         const reserveBidFileObj = ReserveBidMarketDocumentFileIdList.formatString(inputStr);
         var reserveBidObj:ReserveBidMarketDocument = null;
 
+        params.logger.log('reserveBidFileObj=', reserveBidFileObj)
+
         //Do something only if there are file ids in the list
         if (reserveBidFileObj.attachmentFileIdList && reserveBidFileObj.attachmentFileIdList.length > 0) {
+            params.logger.log('in','');
 
             //Get every reference to Bid Market Document in every Collection
             var existingReserveBidRef:Map<string, DataReference>;
@@ -351,21 +357,26 @@ export class ReserveBidMarketDocumentController {
                 throw new Error(error.message.concat(' to remove file'));
             }
             //Take the first reference
-            reserveBidObj = existingReserveBidRef.values().next().value;
+            const reserveBidObjRef:DataReference = existingReserveBidRef.values().next().value;
+            reserveBidObj = reserveBidObjRef.data;
+
+            params.logger.log('reserveBidObj=', reserveBidObj)
 
             //Only do somehting if the found reference is the asekd one
             if (reserveBidObj && reserveBidObj.reserveBidMrid === reserveBidFileObj.reserveBidMrid) {
                 var idRemoved = false;
                 //Check every file already present in document
                 const newFileList: AttachmentFileWithStatus[] = [];
-                for (var attachmentFile of reserveBidObj.attachmentsWithStatus) {
-                    if (attachmentFile.status !== AttachmentFileStatus.REMOVED
-                        && reserveBidFileObj.attachmentFileIdList.includes(attachmentFile.fileId)) {
+                if (reserveBidObj.attachmentsWithStatus) {
+                    for (var attachmentFile of reserveBidObj.attachmentsWithStatus) {
+                        if (attachmentFile.status !== AttachmentFileStatus.REMOVED
+                            && reserveBidFileObj.attachmentFileIdList.includes(attachmentFile.fileId)) {
 
-                        attachmentFile.status = AttachmentFileStatus.REMOVED;
-                        idRemoved = true;
+                            attachmentFile.status = AttachmentFileStatus.REMOVED;
+                            idRemoved = true;
+                        }
+                        newFileList.push(attachmentFile);
                     }
-                    newFileList.push(attachmentFile);
                 }
 
                 //Update document if only a file id was removed before
@@ -407,13 +418,15 @@ export class ReserveBidMarketDocumentController {
 
     private static cleanReserveBidMarketDocumentFileList(reserveBidObj: ReserveBidMarketDocument): ReserveBidMarketDocument {
         const fileList: string[] = [];
-        for (var attachmentFile of reserveBidObj.attachmentsWithStatus) {
-            if (attachmentFile.status !== AttachmentFileStatus.REMOVED) {
-                fileList.push(attachmentFile.fileId);
+        if (reserveBidObj && reserveBidObj.attachmentsWithStatus) {
+            for (var attachmentFile of reserveBidObj.attachmentsWithStatus) {
+                if (attachmentFile.status !== AttachmentFileStatus.REMOVED) {
+                    fileList.push(attachmentFile.fileId);
+                }
             }
+            reserveBidObj.attachments = fileList;
+            reserveBidObj.attachmentsWithStatus = [];
         }
-        reserveBidObj.attachments = fileList;
-        reserveBidObj.attachmentsWithStatus = null;
 
         return reserveBidObj;
     }
@@ -607,7 +620,7 @@ export class ReserveBidMarketDocumentController {
     public static async getByMeteringPointMrid(params: STARParameters, meteringPointMrid: string): Promise<string> {
         params.logger.info('============= START : getByMeteringPointMrid ReserveBidMarketDocumentController ===========');
 
-        const allResults = this.getObjByMeteringPointMrid(params, meteringPointMrid);
+        const allResults = await this.getObjByMeteringPointMrid(params, meteringPointMrid);
 
         params.logger.info('=============  END  : getByMeteringPointMridSite ReserveBidMarketDocumentController ===========');
         return JSON.stringify(allResults);
@@ -640,8 +653,11 @@ export class ReserveBidMarketDocumentController {
     public static async getValidByMeteringPointMrid(params: STARParameters, meteringPointMrid: string): Promise<string> {
         params.logger.info('============= START : getValidByMeteringPointMrid ReserveBidMarketDocumentController ===========');
 
-        const criteriaDate = (new Date()).toISOString();
-        const criteriaObj: ReserveBidMarketDocumentSiteDate = {meteringPointMrid: meteringPointMrid, referenceDateTime: criteriaDate, includeNext: true};
+        const date = new Date();
+        date.setUTCHours(0,0,0,0);
+        const criteriaDate = date.toISOString();
+
+        const criteriaObj: ReserveBidMarketDocumentSiteDate = {meteringPointMrid: meteringPointMrid, referenceDateTime: JSON.stringify(criteriaDate), includeNext: true};
 
         const allResults = await this.getBySiteAndDate(params, criteriaObj);
 
@@ -687,10 +703,10 @@ export class ReserveBidMarketDocumentController {
         // argOrStart.push(`"validityPeriodStartDateTime":""`);
         // argOrStart.push(`"validityPeriodStartDateTime":{"$exists": false}`);
         // args.push(await QueryStateService.buildORCriteria(argOrStart));
-        args.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
+        args.push(`"validityPeriodStartDateTime":{"$lte": ${criteriaObj.referenceDateTime}}`);
 
         var argOrEnd: string[] = [];
-        argOrEnd.push(`"validityPeriodEndDateTime":{"$gte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
+        argOrEnd.push(`"validityPeriodEndDateTime":{"$gte": ${criteriaObj.referenceDateTime}}`);
         argOrEnd.push(`"validityPeriodEndDateTime":""`);
         argOrEnd.push(`"validityPeriodEndDateTime":{"$exists": false}`);
         args.push(await QueryStateService.buildORCriteria(argOrEnd));
@@ -701,6 +717,8 @@ export class ReserveBidMarketDocumentController {
             queryArgs: args,
             sort: [`"validityPeriodStartDateTime":"desc"`],
             limit:1});
+        // params.logger.debug('query=', query)
+
         const allResultsWithoutAnyLimit = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query);
         var allResults:ReserveBidMarketDocument[] = [];
 
@@ -716,10 +734,10 @@ export class ReserveBidMarketDocumentController {
             var argsNext: string[] = [];
             argsNext.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
 
-            argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
+            argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${criteriaObj.referenceDateTime}}`);
 
             var argOrEnd: string[] = [];
-            argOrEnd.push(`"validityPeriodEndDateTime":{"$gte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
+            argOrEnd.push(`"validityPeriodEndDateTime":{"$gte": ${criteriaObj.referenceDateTime}}`);
             argOrEnd.push(`"validityPeriodEndDateTime":""`);
             argOrEnd.push(`"validityPeriodEndDateTime":{"$exists": false}`);
             argsNext.push(await QueryStateService.buildORCriteria(argOrEnd));
@@ -728,6 +746,8 @@ export class ReserveBidMarketDocumentController {
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: argsNext,
                 sort: [`"validityPeriodStartDateTime":"asc"`]});
+            // params.logger.debug('queryNext=', queryNext)
+
             const allResultsNext = await ReserveBidMarketDocumentService.getQueryArrayResult(params, queryNext);
             if (allResultsNext) {
                 allResults = allResults.concat(allResultsNext);

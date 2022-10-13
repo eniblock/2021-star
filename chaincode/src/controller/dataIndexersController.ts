@@ -22,13 +22,13 @@ export class DataIndexersController {
 
         var obj: IndexedData;
         if (target && target.length > 0) {
-            params.logger.debug('getObj');
+            // params.logger.debug('getObj');
             obj = await StarPrivateDataService.getObj(params, {id: indexId, collection: target, docType: DocType.DATA_INDEXER});
         } else {
-            params.logger.debug('getObjRefbyId');
+            // params.logger.debug('getObjRefbyId');
 
             const objRef = await StarPrivateDataService.getObjRefbyId(params, {id: indexId, docType: DocType.DATA_INDEXER});
-            params.logger.debug('objRef: ', JSON.stringify(objRef));
+            // params.logger.debug('objRef: ', JSON.stringify(objRef));
 
             if (objRef) {
                 obj = objRef.values().next().value.data;
@@ -156,7 +156,7 @@ export class DataIndexersController {
 
 export class SiteReserveBidIndexersController {
 
-    private static getKey(meteringPointMrid: string): string {
+    public static getKey(meteringPointMrid: string): string {
         return ParametersType.SITE_RESERVE_BID_INDEXER_PREFIX.concat(meteringPointMrid);
     }
 
@@ -246,11 +246,11 @@ export class SiteReserveBidIndexersController {
 
 
 export class SiteActivationIndexersController {
-    private static getMaxKey(meteringPointMrid: string): string {
+    public static getMaxKey(meteringPointMrid: string): string {
         return ParametersType.SITE_ACTIVATION_INDEXER_PREFIX.concat(meteringPointMrid);
     }
 
-    private static getKey(meteringPointMrid: string, dateRef: Date): string {
+    public static getKey(meteringPointMrid: string, dateRef: Date): string {
         var dateKeyStr: string = "X";
 
         try {
@@ -400,7 +400,7 @@ export class SiteActivationIndexersController {
 
 export class ActivationEnergyAmountIndexersController {
 
-    private static getKey(activationDocumentId: string): string {
+    public static getKey(activationDocumentId: string): string {
         return ParametersType.ACTIVATION_ENERGY_AMOUNT_INDEXER_PREFIX.concat(activationDocumentId);
     }
 

@@ -317,11 +317,11 @@ describe('Star Tests SITES', () => {
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
 
-            const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionNames[0], mockHandler)
+            const iteratorHTA = Values.getQueryMockArrayValues([Values.HTA_site_valid], mockHandler)
             const queryHTA = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${Values.HTA_site_valid.systemOperatorMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryHTA).resolves(iteratorHTA);
 
-            const iteratorHTB = Values.getSiteQueryMock(Values.HTB_site_valid, collectionNames[0], mockHandler)
+            const iteratorHTB = Values.getQueryMockArrayValues([Values.HTB_site_valid], mockHandler)
             const queryHTB = `{"selector": {"docType": "site", "systemOperatorMarketParticipantMrid": "${Values.HTB_site_valid.systemOperatorMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryHTB).resolves(iteratorHTB);
 
@@ -413,11 +413,11 @@ describe('Star Tests SITES', () => {
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
 
-            const iteratorHTA = Values.getSiteQueryMock(Values.HTA_site_valid, collectionNames[0], mockHandler)
+            const iteratorHTA = Values.getQueryMockArrayValues([Values.HTA_site_valid], mockHandler)
             const queryHTA = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${Values.HTA_site_valid.producerMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryHTA).resolves(iteratorHTA);
 
-            const iteratorHTB = Values.getSiteQueryMock(Values.HTB_site_valid, collectionNames[0], mockHandler)
+            const iteratorHTB = Values.getQueryMockArrayValues([Values.HTB_site_valid], mockHandler)
             const queryHTB = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${Values.HTB_site_valid.producerMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryHTB).resolves(iteratorHTB);
 
@@ -491,7 +491,7 @@ describe('Star Tests SITES', () => {
 
             const producerMarketParticipantMrid = Values.HTA_site_valid_ProdA.producerMarketParticipantMrid;
 
-            const iterator = Values.getSiteQueryMock2Values(Values.HTA_site_valid_ProdA, Values.HTA_site_valid_ProdB,collectionNames[0], mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTA_site_valid_ProdA, Values.HTA_site_valid_ProdB], mockHandler);
             const query = `{"selector": {"docType": "site", "producerMarketParticipantMrid": "${producerMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator);
 

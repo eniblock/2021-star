@@ -335,7 +335,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
             const query = await QueryStateService.buildQuery({documentType: DocType.REFERENCE_ENERGY_ACCOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
-            const iterator = Values.getEnergyAccountQueryMock2Values(energy_account, Values.HTB_EnergyAccount_a4, mockHandler);
+            const iterator = Values.getQueryMockArrayValues([energy_account, Values.HTB_EnergyAccount_a4], mockHandler);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collections: string[] = params.values.get(ParametersType.REFERENCE_ENERGY_ACCOUNT);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collections[0], query).resolves(iterator);
@@ -507,7 +507,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
             //     }
             // }`;
 
-            const iterator = Values.getEnergyAccountQueryMock(energy_account,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([energy_account],mockHandler);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collections: string[] = params.values.get(ParametersType.REFERENCE_ENERGY_ACCOUNT);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collections[0], query).resolves(iterator);
@@ -548,7 +548,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                 }
             }`;
 
-            const iterator = Values.getEnergyAccountQueryMock(energy_account,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([energy_account],mockHandler);
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
 
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);

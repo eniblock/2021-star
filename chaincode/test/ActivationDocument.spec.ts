@@ -23,6 +23,8 @@ import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { EligibilityStatus } from '../src/model/activationDocument/eligibilityStatus';
 import { EligibilityStatusType } from '../src/enums/EligibilityStatusType';
 import { HLFServices } from '../src/controller/service/HLFservice';
+import { ActivationDocumentAbstract, ActivationDocumentDateMax, IndexedData } from '../src/model/dataIndexers';
+import { SiteActivationIndexersController } from '../src/controller/dataIndexersController';
 
 class TestLoggerMgt {
     public getLogger(arg: string): any {
@@ -363,21 +365,63 @@ describe('Star Tests ActivationDocument', () => {
             expected.eligibilityStatusEditable = false;
             expected.docType = DocType.ACTIVATION_DOCUMENT;
 
+
+            const indexedDataAbstract: ActivationDocumentAbstract = {
+                activationDocumentMrid: expected.activationDocumentMrid,
+                startCreatedDateTime: expected.startCreatedDateTime as string
+            };
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract],
+                indexId: SiteActivationIndexersController.getKey(expected.registeredResourceMrid, new Date(expected.startCreatedDateTime as string))
+            };
+
+            const expectedDateMax: ActivationDocumentDateMax = {
+                dateTime: expected.startCreatedDateTime as string,
+                docType: DocType.INDEXER_MAX_DATE
+            };
+            const expectedDateMaxId: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
+
+
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expected))
             // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.thirdCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.thirdCall.args[2].toString()).toString('utf8'));
+            // params.logger.info("oo")
+            // params.logger.info(JSON.stringify(expectedDateMax))
+            // params.logger.info("-----------")
 
 
-            transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
                 "enedis-producer",
                 expected.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedIndexer.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer))
+            );
+
+            transactionContext.stub.putPrivateData.thirdCall.should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedDateMaxId,
+                Buffer.from(JSON.stringify(expectedDateMax))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(3);
         });
 
         it('should return SUCCESS CreateActivationDocumentListe 2 docs HTA', async () => {
@@ -419,31 +463,121 @@ describe('Star Tests ActivationDocument', () => {
             expected2.eligibilityStatus = '';
             expected2.docType = DocType.ACTIVATION_DOCUMENT;
 
+
+
+            const indexedDataAbstract1: ActivationDocumentAbstract = {
+                activationDocumentMrid: expected.activationDocumentMrid,
+                startCreatedDateTime: expected.startCreatedDateTime as string
+            };
+
+            const expectedIndexer1: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract1],
+                indexId: SiteActivationIndexersController.getKey(expected.registeredResourceMrid, new Date(expected.startCreatedDateTime as string))
+            };
+
+            const expectedDateMax1: ActivationDocumentDateMax = {
+                dateTime: expected.startCreatedDateTime as string,
+                docType: DocType.INDEXER_MAX_DATE
+            };
+            const expectedDateMaxId1: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
+
+
+
+            const indexedDataAbstract2: ActivationDocumentAbstract = {
+                activationDocumentMrid: expected2.activationDocumentMrid,
+                startCreatedDateTime: expected2.startCreatedDateTime as string
+            };
+
+            const expectedIndexer2: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract1, indexedDataAbstract2],
+                indexId: SiteActivationIndexersController.getKey(expected2.registeredResourceMrid, new Date(expected2.startCreatedDateTime as string))
+            };
+
+            const expectedDateMax2: ActivationDocumentDateMax = {
+                dateTime: expected2.startCreatedDateTime as string,
+                docType: DocType.INDEXER_MAX_DATE
+            };
+            const expectedDateMaxId2: string = SiteActivationIndexersController.getMaxKey(expected2.registeredResourceMrid);
+
+
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expected))
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer1))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info("oo")
+            // params.logger.info(JSON.stringify(expectedDateMax1))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expected2))
             // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(4).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer2))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(5).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(5).args[2].toString()).toString('utf8'));
+            // params.logger.info("oo")
+            // params.logger.info(JSON.stringify(expectedDateMax2))
+            // params.logger.info("-----------")
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
                 "enedis-producer",
                 expected.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedIndexer1.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer1))
+            );
+
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedDateMaxId1,
+                Buffer.from(JSON.stringify(expectedDateMax1))
+            );
+
+
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
                 "enedis-producer",
                 expected2.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expected2))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+            transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedIndexer2.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer2))
+            );
+
+            transactionContext.stub.putPrivateData.getCall(5).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedDateMaxId2,
+                Buffer.from(JSON.stringify(expectedDateMax2))
+            );
+
+
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(6);
+
         });
 
     });
@@ -596,21 +730,63 @@ describe('Star Tests ActivationDocument', () => {
             expected.eligibilityStatus = '';
             expected.docType = DocType.ACTIVATION_DOCUMENT;
 
+
+            const indexedDataAbstract: ActivationDocumentAbstract = {
+                activationDocumentMrid: expected.activationDocumentMrid,
+                startCreatedDateTime: expected.startCreatedDateTime as string
+            };
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract],
+                indexId: SiteActivationIndexersController.getKey(expected.registeredResourceMrid, new Date(expected.startCreatedDateTime as string))
+            };
+
+            const expectedDateMax: ActivationDocumentDateMax = {
+                dateTime: expected.startCreatedDateTime as string,
+                docType: DocType.INDEXER_MAX_DATE
+            };
+            const expectedDateMaxId: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
+
+
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expected))
             // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.thirdCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.thirdCall.args[2].toString()).toString('utf8'));
+            // params.logger.info("oo")
+            // params.logger.info(JSON.stringify(expectedDateMax))
+            // params.logger.info("-----------")
 
 
-            transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
                 "producer-rte",
                 expected.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                "producer-rte",
+                expectedIndexer.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer))
+            );
+
+            transactionContext.stub.putPrivateData.thirdCall.should.have.been.calledWithExactly(
+                "producer-rte",
+                expectedDateMaxId,
+                Buffer.from(JSON.stringify(expectedDateMax))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(3);
         });
 
     });
@@ -630,8 +806,8 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return SUCCESS on GetActivationDocumentByProducer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
-            const iterator1 = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid, mockHandler);
-            const iterator2 = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid_Doc2,mockHandler);
+            const iterator1 = Values.getQueryMockArrayValues([Values.HTA_ActivationDocument_Valid], mockHandler);
+            const iterator2 = Values.getQueryMockArrayValues([Values.HTA_ActivationDocument_Valid_Doc2],mockHandler);
             const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "receiverMarketParticipantMrid": "${Values.HTA_Producer.producerMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator1);
             transactionContext.stub.getPrivateDataQueryResult.withArgs("producer-rte", query).resolves(iterator2);
@@ -769,11 +945,11 @@ describe('Star Tests ActivationDocument', () => {
 
         it('should return SUCCESS on GetActivationDocumentBySystemOperator', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-            const iterator = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid,mockHandler);
-            const iterator2 = Values.getActivationDocumentQueryMock(Values.HTA_ActivationDocument_Valid_Doc2,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTA_ActivationDocument_Valid],mockHandler);
+            const iterator2 = Values.getQueryMockArrayValues([Values.HTA_ActivationDocument_Valid_Doc2],mockHandler);
             const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}", "senderMarketParticipantMrid": "${Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid}"}}`;
             transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs("producer-rte", query).resolves(iterator);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs("producer-rte", query).resolves(iterator2);
 
             let ret = await star.GetActivationDocumentBySystemOperator(transactionContext, Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid as string);
             ret = JSON.parse(ret);
@@ -940,9 +1116,9 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument02_garbage.potentialChild= true;
 
             const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
-            const iteratorMix = Values.getActivationDocumentQueryMock(activationDocument01_garbage,mockHandler);
+            const iteratorMix = Values.getQueryMockArrayValues([activationDocument01_garbage],mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorMix);
-            const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument02_garbage,mockHandler);
+            const iteratorProd = Values.getQueryMockArrayValues([activationDocument02_garbage],mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorProd);
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
@@ -995,9 +1171,9 @@ describe('Star Tests ActivationDocument', () => {
             activationDocument02_garbage.potentialChild= true;
 
             const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
-            const iteratorMix = Values.getActivationDocumentQueryMock2Values(activationDocument_valid, activationDocument01_garbage,mockHandler);
+            const iteratorMix = Values.getQueryMockArrayValues([activationDocument_valid, activationDocument01_garbage],mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorMix);
-            const iteratorProd = Values.getActivationDocumentQueryMock(activationDocument02_garbage,mockHandler);
+            const iteratorProd = Values.getQueryMockArrayValues([activationDocument02_garbage],mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorProd);
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
@@ -1049,7 +1225,7 @@ describe('Star Tests ActivationDocument', () => {
             childEndDocument.docType=DocType.ACTIVATION_DOCUMENT;
 
             const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
-            const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentStartDocument, childEndDocument, mockHandler);
+            const iteratorReconciliation = Values.getQueryMockArrayValues([parentStartDocument, childEndDocument], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
@@ -1134,11 +1310,11 @@ describe('Star Tests ActivationDocument', () => {
             const query = await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
             // params.logger.info("** Query TEST - END **");
 
-            const iterator = Values.getActivationDocumentQueryMock2Values(parentStartDocumentOldest, parentStartDocument, mockHandler);
+            const iterator = Values.getQueryMockArrayValues([parentStartDocumentOldest, parentStartDocument], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, query).resolves(iterator);
 
             const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
-            const iteratorReconciliation = Values.getActivationDocumentQueryMock2Values(parentStartDocument, childEndDocument, mockHandler);
+            const iteratorReconciliation = Values.getQueryMockArrayValues([parentStartDocument, childEndDocument], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
@@ -1198,13 +1374,13 @@ describe('Star Tests ActivationDocument', () => {
 
 
             const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${childDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
-            const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
+            const iteratorYellowPage = Values.getQueryMockArrayValues([Values.HTA_yellowPage],mockHandler);
             transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
 
             const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
-            const iteratorReconciliationParent = Values.getActivationDocumentQueryMock(parentDocument, mockHandler);
+            const iteratorReconciliationParent = Values.getQueryMockArrayValues([parentDocument], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorReconciliationParent);
-            const iteratorReconciliationChild = Values.getActivationDocumentQueryMock(childDocument_Reconciliation, mockHandler);
+            const iteratorReconciliationChild = Values.getQueryMockArrayValues([childDocument_Reconciliation], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliationChild);
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
@@ -1273,13 +1449,13 @@ describe('Star Tests ActivationDocument', () => {
 
 
             const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${childDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
-            const iteratorYellowPage = Values.getYellowPageQueryMock(Values.HTA_yellowPage,mockHandler);
+            const iteratorYellowPage = Values.getQueryMockArrayValues([Values.HTA_yellowPage],mockHandler);
             transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
 
             const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
-            const iteratorReconciliationParents = Values.getActivationDocumentQueryMockArrayValues([parentDocument, parentDocumentOldest], mockHandler);
+            const iteratorReconciliationParents = Values.getQueryMockArrayValues([parentDocument, parentDocumentOldest], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorReconciliationParents);
-            const iteratorReconciliationChilds = Values.getActivationDocumentQueryMockArrayValues([ childDocument_Reconciliation], mockHandler);
+            const iteratorReconciliationChilds = Values.getQueryMockArrayValues([ childDocument_Reconciliation], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliationChilds);
 
             let ret = await star.GetActivationDocumentReconciliationState(transactionContext);

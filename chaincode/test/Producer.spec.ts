@@ -250,7 +250,7 @@ describe('Star Tests PRODUCERS', () => {
         });
 
         it('should return success on getAllProducer', async () => {
-            const iterator = Values.getProducerQueryMock2Values(Values.HTA_Producer, Values.HTB_Producer,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTA_Producer, Values.HTB_Producer],mockHandler);
             const query = `{"selector": {"docType": "producer"}}`;
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
 

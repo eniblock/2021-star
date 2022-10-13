@@ -69,11 +69,11 @@ describe('Star Tests RESTITUTIONS', () => {
 
         it('should return SUCCESS on System Operater view', async () => {
             const query_SystemOperator = `{"selector": {"docType": "systemOperator"}}`;
-            const iterator_SystemOperator = Values.getSystemOperatorQueryMock2Values(Values.HTA_systemoperator, Values.HTB_systemoperator,mockHandler);
+            const iterator_SystemOperator = Values.getQueryMockArrayValues([Values.HTA_systemoperator, Values.HTB_systemoperator] ,mockHandler);
             transactionContext.stub.getQueryResult.withArgs(query_SystemOperator).resolves(iterator_SystemOperator);
 
             const query_Producer = `{"selector": {"docType": "producer"}}`;
-            const iterator_Producer = Values.getProducerQueryMock2Values(Values.HTA_Producer, Values.HTB_Producer,mockHandler);
+            const iterator_Producer = Values.getQueryMockArrayValues([Values.HTA_Producer, Values.HTB_Producer] ,mockHandler);
             transactionContext.stub.getQueryResult.withArgs(query_Producer).resolves(iterator_Producer);
 
             let ret = await star.ViewSystemOperaterMarketParticipant(transactionContext);
@@ -93,7 +93,7 @@ describe('Star Tests RESTITUTIONS', () => {
     describe('Test ViewProducerMarketParticipant', () => {
         it('should return SUCCESS on Producer view', async () => {
             const query_SystemOperator = `{"selector": {"docType": "systemOperator"}}`;
-            const iterator_SystemOperator = Values.getSystemOperatorQueryMock2Values(Values.HTA_systemoperator, Values.HTB_systemoperator,mockHandler);
+            const iterator_SystemOperator = Values.getQueryMockArrayValues([Values.HTA_systemoperator, Values.HTB_systemoperator], mockHandler);
             transactionContext.stub.getQueryResult.withArgs(query_SystemOperator).resolves(iterator_SystemOperator);
 
             transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));

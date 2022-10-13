@@ -21,6 +21,8 @@ import { DocType } from '../src/enums/DocType';
 import { HLFServices } from '../src/controller/service/HLFservice';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { CommonService } from '../src/controller/service/CommonService';
+import { EnergyAmountAbstract, IndexedData } from '../src/model/dataIndexers';
+import { ActivationEnergyAmountIndexersController } from '../src/controller/dataIndexersController';
 
 
 class TestLoggerMgt {
@@ -252,7 +254,7 @@ describe('Star Tests EnergyAmount', () => {
             transactionContext.stub.getPrivateData.withArgs(collection, Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             const dateStart = Values.HTB_ActivationDocument_Valid.startCreatedDateTime;
-            const dateEnd = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.endCreatedDateTime))  as string, -1);
+            const dateEnd = Values.increaseDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.endCreatedDateTime))  as string, 1);
             energyamount.timeInterval = `${dateStart}/${dateEnd}`;
 
             try {
@@ -286,21 +288,41 @@ describe('Star Tests EnergyAmount', () => {
             const expected = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount))
             expected.docType = DocType.ENERGY_AMOUNT;
 
+            const indexedDataAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: expected.energyAmountMarketDocumentMrid
+            }
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract],
+                indexId: ActivationEnergyAmountIndexersController.getKey(expected.activationDocumentMrid),
+            }
+
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(JSON.stringify(collection));
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expected));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(exceptedIndexer))
             // params.logger.info("-----------")
 
-            transactionContext.stub.putPrivateData.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
                 collection,
-                Values.HTB_EnergyAmount.energyAmountMarketDocumentMrid,
+                expected.energyAmountMarketDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                collection,
+                expectedIndexer.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
         });
 
 
@@ -327,31 +349,73 @@ describe('Star Tests EnergyAmount', () => {
             const expected2 = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount_2))
             expected2.docType = DocType.ENERGY_AMOUNT;
 
+            const indexedDataAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: expected.energyAmountMarketDocumentMrid
+            }
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract],
+                indexId: ActivationEnergyAmountIndexersController.getKey(expected.activationDocumentMrid),
+            }
+
+            const indexedDataAbstract2: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: expected2.energyAmountMarketDocumentMrid
+            }
+
+            const expectedIndexer2: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract, indexedDataAbstract2],
+                indexId: ActivationEnergyAmountIndexersController.getKey(expected2.activationDocumentMrid),
+            }
+
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expected))
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expected2))
             // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer2))
+            // params.logger.info("-----------")
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
                 collection,
-                Values.HTB_EnergyAmount.energyAmountMarketDocumentMrid,
+                expected.energyAmountMarketDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
                 collection,
-                Values.HTB_EnergyAmount_2.energyAmountMarketDocumentMrid,
+                expectedIndexer.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer))
+            );
+
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                collection,
+                expected2.energyAmountMarketDocumentMrid,
                 Buffer.from(JSON.stringify(expected2))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
+                collection,
+                expectedIndexer2.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer2))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(4);
         });
 
 
@@ -396,7 +460,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal(`ERROR manage EnergyAmount mismatch beetween registeredResourceMrid in Activation Document : ${activationDocument.registeredResourceMrid} and Energy Amount : ${energyamount.registeredResourceMrid}.`);
+                expect(err.message).to.equal(`site : toto does not exist (not found in any collection). for Energy Amount ${energyamount.energyAmountMarketDocumentMrid} creation.`);
             }
         });
 
@@ -417,7 +481,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal(`ERROR Site-> Input string NON-JSON value for Energy Amount ${energyamount.energyAmountMarketDocumentMrid} creation.`);
+                expect(err.message).to.equal(`ERROR site -> Input string NON-JSON value for Energy Amount ${energyamount.energyAmountMarketDocumentMrid} creation.`);
             }
         });
 
@@ -686,15 +750,44 @@ describe('Star Tests EnergyAmount', () => {
 
             await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(Values.HTA_EnergyAmount));
 
-            const expected = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount))
+            const expected: EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount))
             expected.docType = DocType.ENERGY_AMOUNT;
-            transactionContext.stub.putPrivateData.should.have.been.calledWithExactly(
+
+            const indexedDataAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: expected.energyAmountMarketDocumentMrid
+            }
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract],
+                indexId: ActivationEnergyAmountIndexersController.getKey(expected.activationDocumentMrid),
+            }
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(exceptedIndexer))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
                 collections[0],
-                Values.HTA_EnergyAmount.energyAmountMarketDocumentMrid,
+                expected.energyAmountMarketDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                collections[0],
+                expectedIndexer.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
         });
     });
 
@@ -768,7 +861,7 @@ describe('Star Tests EnergyAmount', () => {
 
 
         it('should return SUCCESS on GetEnergyAmountForSystemOperator.', async () => {
-            const iterator = Values.getEnergyAmountQueryMock(Values.HTB_EnergyAmount,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTB_EnergyAmount],mockHandler);
 
             const dateUp = new Date(Values.HTB_EnergyAmount.createdDateTime);
             dateUp.setUTCHours(0,0,0,0);
@@ -935,7 +1028,7 @@ describe('Star Tests EnergyAmount', () => {
         });
 
         it('should return SUCCESS on GetEnergyAmountByProducer', async () => {
-            const iterator = Values.getEnergyAmountQueryMock(Values.HTB_EnergyAmount,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTB_EnergyAmount],mockHandler);
 
             const dateUp = new Date(Values.HTB_EnergyAmount.createdDateTime);
             dateUp.setUTCHours(0,0,0,0);
@@ -1082,7 +1175,7 @@ describe('Star Tests EnergyAmount', () => {
 ////////////////////////////////////////////////////////////////////////////
     describe('Test ENI GetEnergyAmountForSystemOperator.', () => {
         it('should return SUCCESS on GetEnergyAmountForSystemOperator.', async () => {
-            const iterator = Values.getEnergyAmountQueryMock(Values.HTA_EnergyAmount,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTA_EnergyAmount],mockHandler);
 
             const dateUp = new Date(Values.HTA_EnergyAmount.createdDateTime);
             dateUp.setUTCHours(0,0,0,0);
@@ -1133,7 +1226,7 @@ describe('Star Tests EnergyAmount', () => {
 
     describe('Test ENI GetEnergyAmountByProducer', () => {
         it('should return SUCCESS on GetEnergyAmountByProducer', async () => {
-            const iterator = Values.getEnergyAmountQueryMock(Values.HTA_EnergyAmount,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTA_EnergyAmount],mockHandler);
 
             const dateUp = new Date(Values.HTA_EnergyAmount.createdDateTime);
             dateUp.setUTCHours(0,0,0,0);

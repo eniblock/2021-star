@@ -244,7 +244,7 @@ describe('Star Tests YELLOW PAGES', () => {
         it('should return success on getAllYellowPages', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
-            const iterator = Values.getYellowPageQueryMock(Values.HTB_yellowPage,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTB_yellowPage],mockHandler);
             const query = `{"selector": {"docType": "yellowPages"}}`;
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
 

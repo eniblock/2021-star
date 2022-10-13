@@ -286,7 +286,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
         it('should return SUCCESS on GetAllSystemOperator', async () => {
 
             const query = `{"selector": {"docType": "systemOperator"}}`;
-            const iterator = Values.getSystemOperatorQueryMock2Values(Values.HTA_systemoperator, Values.HTB_systemoperator2, mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTA_systemoperator, Values.HTB_systemoperator2], mockHandler);
             transactionContext.stub.getQueryResult.withArgs(query).resolves(iterator);
 
 

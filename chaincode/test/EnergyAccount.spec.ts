@@ -916,7 +916,7 @@ describe('Star Tests EnergyAccount', () => {
         it('should return OK on GetEnergyAccountForSystemOperator HTA 47,71 error coverage', async () => {
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
-            const iterator = Values.getEnergyAccountQueryMock(Values.HTA_EnergyAccount_a1,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTA_EnergyAccount_a1],mockHandler);
 
             const dateUp = new Date(Values.HTA_EnergyAccount_a1.createdDateTime);
             dateUp.setUTCHours(0,0,0,0);
@@ -955,7 +955,7 @@ describe('Star Tests EnergyAccount', () => {
         it('should return Error on GetEnergyAccountForSystemOperator HTA wrong read rights', async () => {
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
-            const iterator = Values.getEnergyAccountQueryMock(Values.HTB_EnergyAccount_a3,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTB_EnergyAccount_a3],mockHandler);
 
             const dateUp = new Date(Values.HTB_EnergyAccount_a3.createdDateTime);
             dateUp.setUTCHours(0,0,0,0);
@@ -993,7 +993,7 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
-            const iterator = Values.getEnergyAccountQueryMock(Values.HTA_EnergyAccount_a1,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTA_EnergyAccount_a1],mockHandler);
 
             var args: string[] = [];
             args.push(`"meteringPointMrid": "${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
@@ -1126,7 +1126,7 @@ describe('Star Tests EnergyAccount', () => {
         it('should return ERROR on GetEnergyAccountForSystemOperator HTB', async () => {
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from("XXX"));
 
-            const iterator = Values.getEnergyAccountQueryMock2Values(Values.HTB_EnergyAccount_a3,Values.HTB_EnergyAccount_a4,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTB_EnergyAccount_a3,Values.HTB_EnergyAccount_a4],mockHandler);
 
             const dateUp = new Date(Values.HTB_EnergyAccount_a3.createdDateTime);
             dateUp.setUTCHours(0,0,0,0);
@@ -1173,7 +1173,7 @@ describe('Star Tests EnergyAccount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
-            const iterator = Values.getEnergyAccountQueryMock2Values(Values.HTB_EnergyAccount_a3,Values.HTB_EnergyAccount_a4,mockHandler);
+            const iterator = Values.getQueryMockArrayValues([Values.HTB_EnergyAccount_a3,Values.HTB_EnergyAccount_a4],mockHandler);
 
             var args: string[] = [];
             args.push(`"meteringPointMrid": "${Values.HTB_EnergyAccount_a3.meteringPointMrid}"`);
@@ -1234,27 +1234,29 @@ describe('Star Tests EnergyAccount', () => {
 
         it('should return SUCCESS on GetEnergyAccountByProducer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
-
-            const iterator = Values.getEnergyAccountQueryMock(Values.HTA_EnergyAccount_a1,mockHandler);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
 
             const dateStart = new Date(Values.HTA_EnergyAccount_a1.startCreatedDateTime);
-
-            dateStart.setUTCHours(0,0,0,0);
-            const dateEnd = new Date(dateStart.getTime() + 86399999);
 
             var args: string[] = [];
             args.push(`"meteringPointMrid":"${Values.HTA_EnergyAccount_a1.meteringPointMrid}"`);
             args.push(`"receiverMarketParticipantMrid":"${Values.HTA_EnergyAccount_a1.receiverMarketParticipantMrid}"`);
-            args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateStart)},"$lte":${JSON.stringify(dateEnd)}}`);
+            args.push(`"startCreatedDateTime":{"$lte":${JSON.stringify(dateStart)}}`);
+
+            var argOrEnd: string[] = [];
+            argOrEnd.push(`"endCreatedDateTime":{"$gte": ${JSON.stringify(dateStart)}}`);
+            argOrEnd.push(`"endCreatedDateTime":""`);
+            argOrEnd.push(`"endCreatedDateTime":{"$exists": false}`);
+            args.push(await QueryStateService.buildORCriteria(argOrEnd));
+
             const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
+            // params.logger.log('query=', query)
 
+            const iterator = Values.getQueryMockArrayValues([Values.HTA_EnergyAccount_a1],mockHandler);
 
-            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collections: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            // params.logger.log('collections[0]=', collections[0])
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collections[0], query).resolves(iterator);
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
-
-            const strSplitted = Values.HTA_EnergyAccount_a1.timeInterval.split('/', 2);
 
             let ret = await star.GetEnergyAccountByProducer(transactionContext,
                 Values.HTA_EnergyAccount_a1.meteringPointMrid,

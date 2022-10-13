@@ -31,16 +31,5 @@ backend:
         topologyKey: "kubernetes.io/hostname"
 
 keycloak:
-  replicas: 2
   ingress:
     host: "producer.testing.star.eniblock.fr"
-  affinity:
-    podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: "app.kubernetes.io/component"
-            operator: In
-            values:
-            - "keycloak"
-        topologyKey: "kubernetes.io/hostname"

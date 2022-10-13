@@ -3,6 +3,7 @@ import { ParametersType } from "../enums/ParametersType";
 import { ActivationDocument } from "../model/activationDocument/activationDocument";
 import { IdArgument } from "../model/arguments/idArgument";
 import { BalancingDocument } from "../model/balancingDocument";
+import { BalancingDocumentSearchCriteria } from "../model/BalancingDocumentSearchCriteria";
 import { DataReference } from "../model/dataReference";
 import { EnergyAmount } from "../model/energyAmount";
 import { ReserveBidMarketDocument } from "../model/reserveBidMarketDocument";
@@ -11,9 +12,48 @@ import { ActivationDocumentController } from "./activationDocument/ActivationDoc
 import { EnergyAmountController } from "./EnergyAmountController";
 import { ReserveBidMarketDocumentController } from "./ReserveBidMarketDocumentController";
 import { BalancingDocumentService } from "./service/BalancingDocumentService";
+import { QueryStateService } from "./service/QueryStateService";
 import { StarPrivateDataService } from "./service/StarPrivateDataService";
 
 export class BalancingDocumentController {
+
+    public static async searchByCriteria(params: STARParameters, criteria: string): Promise<string> {
+        params.logger.debug('============= START : search by criteria BalancingDocumentController ===========');
+
+        const criteriaObj = BalancingDocumentSearchCriteria.formatString(criteria);
+        const allResults = await this.searchObjByCriteria(params, criteriaObj);
+
+        params.logger.debug('=============  END  : search by criteria BalancingDocumentController ===========');
+        return JSON.stringify(allResults);
+    }
+
+
+    private static async searchObjByCriteria(params: STARParameters, criteriaObj: BalancingDocumentSearchCriteria): Promise<BalancingDocument[]> {
+        params.logger.debug('============= START : search obj by criteria BalancingDocumentController ===========');
+
+        var args: string[] = [];
+        if (criteriaObj.meteringPointMrid && criteriaObj.meteringPointMrid.length > 0) {
+            args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
+        }
+        if (criteriaObj.activationDocumentMrid && criteriaObj.activationDocumentMrid.length > 0) {
+            args.push(`"activationDocumentMrid":"${criteriaObj.activationDocumentMrid}"`);
+        }
+        if (criteriaObj.startCreatedDateTime && criteriaObj.startCreatedDateTime.length > 0) {
+            args.push(`"createdDateTime":{"$gte": ${JSON.stringify(criteriaObj.startCreatedDateTime)}}`);
+        }
+        if (criteriaObj.endCreatedDateTime && criteriaObj.endCreatedDateTime.length > 0) {
+            args.push(`"createdDateTime":{"$lte": ${JSON.stringify(criteriaObj.endCreatedDateTime)}}`);
+        }
+
+        if (args.length === 0) {
+            throw new Error(`Balancing Document Search criteria needs, at least, 1 criteria`);
+        }
+
+        const query = await QueryStateService.buildQuery({documentType: DocType.BALANCING_DOCUMENT, queryArgs: args});
+
+        params.logger.debug('=============  END  : search obj by criteria BalancingDocumentController ===========');
+        return await BalancingDocumentService.getQueryArrayResult(params, query);
+    }
 
     private static getBalancingDocumentMrid(params: STARParameters,activationDocumentMrid: string): string {
         const prefix: string = params.values.get(ParametersType.BALANCING_DOCUMENT_PREFIX);
@@ -38,10 +78,10 @@ export class BalancingDocumentController {
     public static async getObjById(params: STARParameters, balancingDocumentMrid: string): Promise<BalancingDocument> {
         params.logger.debug('============= START : get Obj ById BalancingDocumentController ===========');
 
-        const reserveBidObj = await this.getObjByIdArgument(params, {docType: DocType.BALANCING_DOCUMENT, id: balancingDocumentMrid});
+        const balancingObj = await this.getObjByIdArgument(params, {docType: DocType.BALANCING_DOCUMENT, id: balancingDocumentMrid});
 
         params.logger.debug('=============  END  : get Obj ById BalancingDocumentController ===========');
-        return reserveBidObj;
+        return balancingObj;
     }
 
 
@@ -52,21 +92,21 @@ export class BalancingDocumentController {
         arg: IdArgument): Promise<BalancingDocument> {
         params.logger.debug('============= START : get BalancingDocument By Id Argument (%s) ===========', JSON.stringify(arg));
 
-        let reserveBidObj: BalancingDocument;
+        let balancingObj: BalancingDocument;
         arg.docType = DocType.BALANCING_DOCUMENT;
         if (arg.collection && arg.collection.length > 0) {
-            reserveBidObj = await StarPrivateDataService.getObj(params, arg);
+            balancingObj = await StarPrivateDataService.getObj(params, arg);
         } else {
             const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, arg);
             const dataReference = result.values().next().value;
             if (dataReference && dataReference.data) {
-                reserveBidObj = dataReference.data;
+                balancingObj = dataReference.data;
             }
         }
 
         params.logger.debug('=============  END  : get BalancingDocument By Id Argument (%s) ===========', JSON.stringify(arg));
 
-        return reserveBidObj;
+        return balancingObj;
     }
 
 

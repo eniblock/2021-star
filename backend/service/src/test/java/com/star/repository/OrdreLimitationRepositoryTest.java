@@ -69,56 +69,56 @@ class OrdreLimitationRepositoryTest extends AbstractTest {
         assertThat(objectArgumentCaptor.getValue()).isNotNull();
     }
 
-    @Test
-    void testFindOrderByQuery() throws ContractException, TechnicalException {
-        // GIVEN
-        String query = "query";
-        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
-        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
-
-        // WHEN
-        ordreLimitationRepository.findOrderByQuery(query);
-
-        // THEN
-        Mockito.verify(contract, Mockito.times(2)).evaluateTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());
-        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.GET_ORDER_BY_QUERY);
-    }
-
-
-    @Test
-    void testFindLimitationOrders() throws ContractException, TechnicalException {
-        // GIVEN
-        String query = "query";
-        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
-        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
-
-        // WHEN
-        ordreLimitationRepository.findLimitationOrders(query);
-
-        // THEN
-        Mockito.verify(contract, Mockito.times(2)).evaluateTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());
-        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.GET_BY_QUERY);
-    }
+//    @Test
+//    void testFindOrderByQuery() throws ContractException, TechnicalException {
+//        // GIVEN
+//        String query = "query";
+//        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
+//        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
+//
+//        // WHEN
+//        ordreLimitationRepository.findOrderByQuery(query);
+//
+//        // THEN
+//        Mockito.verify(contract, Mockito.times(2)).evaluateTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());
+//        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.GET_ORDER_BY_QUERY);
+//    }
 
 
-    @Test
-    void testUpdateOrdreDebutEligibilityStatus() throws ContractException, TechnicalException, TimeoutException, InterruptedException, JsonProcessingException {
-        // GIVEN
-        String query = "query";
-        OrdreLimitationEligibilityStatus ordreLimitationEligibilityStatus = OrdreLimitationEligibilityStatus.builder().build();
-        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
-        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
+//    @Test
+//    void testFindLimitationOrders() throws ContractException, TechnicalException {
+//        // GIVEN
+//        String query = "query";
+//        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
+//        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
+//
+//        // WHEN
+//        ordreLimitationRepository.findLimitationOrders(query);
+//
+//        // THEN
+//        Mockito.verify(contract, Mockito.times(2)).evaluateTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());
+//        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.GET_BY_QUERY);
+//    }
 
-        // WHEN
-        ordreLimitationRepository.updateOrdreDebutEligibilityStatus(ordreLimitationEligibilityStatus);
 
-        // THEN
-        Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());
-        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.UPDATE_ACTIVATION_DOCUMENT_ELIGIBILITY_STATUS);
-        assertThat(objectArgumentCaptor.getValue()).isEqualTo(objectMapper.writeValueAsString(ordreLimitationEligibilityStatus));
-
-        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(reconciliationArgumentCaptor.capture());
-        assertThat(reconciliationArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
-    }
+//    @Test
+//    void testUpdateOrdreDebutEligibilityStatus() throws ContractException, TechnicalException, TimeoutException, InterruptedException, JsonProcessingException {
+//        // GIVEN
+//        String query = "query";
+//        OrdreLimitationEligibilityStatus ordreLimitationEligibilityStatus = OrdreLimitationEligibilityStatus.builder().build();
+//        Mockito.when(contract.evaluateTransaction(any())).thenReturn(null);
+//        Mockito.when(contract.evaluateTransaction(any(), any())).thenReturn(null);
+//
+//        // WHEN
+//        ordreLimitationRepository.updateOrdreDebutEligibilityStatus(ordreLimitationEligibilityStatus);
+//
+//        // THEN
+//        Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());
+//        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.UPDATE_ACTIVATION_DOCUMENT_ELIGIBILITY_STATUS);
+//        assertThat(objectArgumentCaptor.getValue()).isEqualTo(objectMapper.writeValueAsString(ordreLimitationEligibilityStatus));
+//
+//        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(reconciliationArgumentCaptor.capture());
+//        assertThat(reconciliationArgumentCaptor.getValue()).isEqualTo(ordreLimitationRepository.GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
+//    }
 
 }

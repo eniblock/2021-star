@@ -304,9 +304,14 @@ public class EnergyAmountService {
             log.debug("Initialisation du champ energyAmountMarketDocumentMrid : {}", energyAmountMarketDocumentMrid);
             energyAmount.setEnergyAmountMarketDocumentMrid(energyAmountMarketDocumentMrid);
             if (TSO.equals(instance)) {
-                String activationDocumentMrid = randomUUID().toString();
-                log.debug("Cas d'initialisation de l'ActivationDocumentMrid pour un appel TSO (RTE). activationDocumentMrid = {}", activationDocumentMrid);
-                energyAmount.setActivationDocumentMrid(activationDocumentMrid);
+                if (isBlank(energyAmount.getActivationDocumentMrid())) {
+                    String activationDocumentMrid = randomUUID().toString();
+                    log.debug("Cas d'initialisation de l'ActivationDocumentMrid pour un appel TSO (RTE). activationDocumentMrid = {}", activationDocumentMrid);
+                    energyAmount.setActivationDocumentMrid(activationDocumentMrid);
+                } else {
+                    log.debug("appel TSO (RTE) - l'ActivationDocumentMrid est déjà rempli. activationDocumentMrid = {}. Inutile de l'initialiser", energyAmount.getActivationDocumentMrid());
+                }
+
             } else {
                 log.debug("Cas d'appel pour DSO (ENEDIS). On n'initialise pas activationDocumentMrid (clé composite). activationDocumentMrid = {}", energyAmount.getActivationDocumentMrid());
             }

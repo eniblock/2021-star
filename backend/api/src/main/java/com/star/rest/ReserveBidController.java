@@ -5,8 +5,8 @@ import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.mapper.reservebid.ReserveBidMapper;
 import com.star.models.common.FichierImportation;
+import com.star.models.reservebid.AttachmentFile;
 import com.star.models.reservebid.ImportReserveBidResult;
-import com.star.models.reservebid.ReserveBid;
 import com.star.service.ReserveBidService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -94,24 +94,12 @@ public class ReserveBidController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping("/{meteringPointMrid}")
-    public ResponseEntity<ReserveBid[]> getReserveBidsBySite(
+    public ResponseEntity<List<ReserveBidDTO>> getReserveBidsBySite(
             @Parameter(description = "MeteringPointMrid of the reserveBids")
-            @PathVariable String meteringPointMrid) {
-
-        // TODO : MOCK !
-        // TODO : retourner un DTO ?
-
-        var reserveBid = new ReserveBid();
-        reserveBid.setAttachments(List.of("8895511d-d081-49ca-93a1-2036816505b5_mon_fichier.pdf"));
-        reserveBid.setValidityPeriodStartDateTime("2020-09-11T05:22:00Z");
-        reserveBid.setValidityPeriodEndDateTime("2023-09-11T05:22:00Z");
-        reserveBid.setQuantityMeasureUnitName("MWh");
-        reserveBid.setPriceMeasureUnitName("€/MWh");
-        reserveBid.setCurrencyUnitName("€");
-        reserveBid.setEnergyPriceAmount(234.56f);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new ReserveBid[]{reserveBid});
+            @PathVariable String meteringPointMrid) throws TechnicalException {
+        return ResponseEntity.status(HttpStatus.OK).body(reserveBidMapper.beansToDtos(reserveBidService.getReserveBid(meteringPointMrid)));
     }
+
     @Operation(summary = "Get file.")
     @ApiResponses(
             value = {
@@ -119,21 +107,16 @@ public class ReserveBidController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping(value = "/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<byte[]> getDocument(
+    public ResponseEntity<?> getDocument(
             @Parameter(description = "the fileId")
-            @RequestParam(value = "fileId", required = true) String fileId) {
+            @RequestParam(value = "fileId") String fileId) throws TechnicalException {
 
-        // TODO : MOCK !
-
+        AttachmentFile attachmentFile = reserveBidService.getFile(fileId);
         var fileName = fileId.substring(fileId.indexOf('_') + 1);
-        var content = new byte[]{};
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData(fileName, fileName);
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-        ResponseEntity<byte[]> response = new ResponseEntity<>(content, headers, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(attachmentFile.getFileContent(), headers, HttpStatus.OK);
     }
-
 
 }

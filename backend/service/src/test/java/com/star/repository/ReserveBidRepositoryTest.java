@@ -62,4 +62,33 @@ class ReserveBidRepositoryTest extends AbstractTest {
         assertThat(objectArgumentCaptor.getValue()).isNotNull();
     }
 
+
+    @Test
+    void testGetReserveBid() throws TechnicalException, ContractException {
+        // GIVEN
+        String meteringPointMrid = "PRM6351561";
+
+        // WHEN
+        reserveBidRepository.getReserveBid(meteringPointMrid);
+
+        // THEN
+        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());
+        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(reserveBidRepository.GET_RESERVE_BID);
+        assertThat(objectArgumentCaptor.getValue()).isEqualTo(meteringPointMrid);
+    }
+
+
+    @Test
+    void testGetFile() throws TechnicalException, ContractException {
+        // GIVEN
+        String fileId = "P3515-AZ61-HG78-145kju.pdf";
+
+        // WHEN
+        reserveBidRepository.getFile(fileId);
+
+        // THEN
+        Mockito.verify(contract, Mockito.times(1)).evaluateTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());
+        assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(reserveBidRepository.GET_FILE_BY_ID);
+        assertThat(objectArgumentCaptor.getValue()).isEqualTo(fileId);
+    }
 }

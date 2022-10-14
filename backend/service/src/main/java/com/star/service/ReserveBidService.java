@@ -23,7 +23,6 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,5 +132,15 @@ public class ReserveBidService {
             reserveBidRepository.save(reserveBidMarketDocumentCreation);
         }
         return importReserveBidResult;
+    }
+
+    public List<ReserveBid> getReserveBid(String meteringPointMrid) throws TechnicalException {
+        Assert.notNull(meteringPointMrid, "MeteringPointMrid must be non null");
+        return reserveBidRepository.getReserveBid(meteringPointMrid);
+    }
+
+    public AttachmentFile getFile(String fileId) throws TechnicalException {
+        Assert.notNull(fileId, "fileId must be non null");
+        return reserveBidRepository.getFile(fileId);
     }
 }

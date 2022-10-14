@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
+import com.star.models.producer.Producer;
+import com.star.models.reservebid.AttachmentFile;
+import com.star.models.reservebid.ReserveBid;
 import com.star.models.reservebid.ReserveBidMarketDocumentCreation;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Contract;
@@ -11,6 +14,9 @@ import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -21,6 +27,8 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class ReserveBidRepository {
     public static final String CREATE_RESERVE_BID_MARKET_DOCUMENT = "CreateReserveBidMarketDocument";
+    public static final String GET_RESERVE_BID = "getReserveBidMarketDocumentBySite";
+    public static final String GET_FILE_BY_ID = "GetFileById";
 
     @Autowired
     private Contract contract;
@@ -53,5 +61,28 @@ public class ReserveBidRepository {
             throw new BusinessException(contractException.getMessage());
         }
         return reserveBidMarketDocumentCreation;
+    }
+
+
+    public List<ReserveBid> getReserveBid(String meteringPointMrid) throws TechnicalException, BusinessException {
+        try {
+            byte[] response = contract.evaluateTransaction(GET_RESERVE_BID, meteringPointMrid);
+            return response != null ? Arrays.asList(objectMapper.readValue(new String(response), ReserveBid[].class)) : Collections.emptyList();
+        } catch (JsonProcessingException exception) {
+            throw new TechnicalException("Erreur technique lors de la recherche des reserves bid", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
+    }
+
+    public AttachmentFile getFile(String fileId) throws TechnicalException, BusinessException {
+        try {
+            byte[] response = contract.evaluateTransaction(GET_FILE_BY_ID, fileId);
+            return response != null ? objectMapper.readValue(new String(response), AttachmentFile.class) : null;
+        } catch (JsonProcessingException exception) {
+            throw new TechnicalException("Erreur technique lors de la recherche du fichier", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
     }
 }

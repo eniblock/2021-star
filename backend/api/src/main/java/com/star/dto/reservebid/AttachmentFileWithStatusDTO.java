@@ -1,4 +1,4 @@
-package com.star.models.reservebid;
+package com.star.dto.reservebid;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttachmentFile {
-    private String fileContent;
+public class AttachmentFileWithStatusDTO {
     private String fileId;
+    private String status;
 }

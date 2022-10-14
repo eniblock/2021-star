@@ -1,5 +1,6 @@
 package com.star.dto.reservebid;
 
+import com.star.models.reservebid.AttachmentFileWithStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -35,4 +37,6 @@ public class ReserveBidDTO {
     private String flowDirection;
     @NotNull(message = "Le champ energyPriceAmount est obligatoire")
     private Float energyPriceAmount;
+    private List<String> attachments;
+    private List<AttachmentFileWithStatusDTO> attachmentsWithStatus;
 }

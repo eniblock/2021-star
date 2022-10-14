@@ -47,6 +47,8 @@ class ReserveBidServiceTest extends AbstractTest {
     @Captor
     private ArgumentCaptor<ReserveBidMarketDocumentCreation> reserveBidMarketDocumentCreationArgumentCaptor;
 
+    @Captor
+    private ArgumentCaptor<String> meteringPointMridArgumentCaptor;
 
     @Test
     void testCreateReserveBidNull() {
@@ -121,6 +123,31 @@ class ReserveBidServiceTest extends AbstractTest {
                 .containsExactly("3516846511600", "TEST162JB", "P31616", "M12JHBHB779", "R12NJKJNBUB989", "2022-12-05 12:12:56", "MW",
                         "CLIDOIN", energyPriceAmount);
         assertThat(reserveBidResult.getAttachments()).hasSize(1);
+    }
+
+
+    @Test
+    void testGeteReserveBidWithMeteringPointMridNull() {
+        // GIVEN
+
+        // WHEN
+        Assertions.assertThrows(IllegalArgumentException.class, () -> reserveBidService.getReserveBid(null));
+
+        // THEN
+        Mockito.verifyNoInteractions(reserveBidRepository);
+    }
+
+    @Test
+    void testGeteReserveBid() throws Exception {
+        // GIVEN
+        String meteringPointMrid = "PRM6351561";
+
+        // WHEN
+        reserveBidService.getReserveBid(meteringPointMrid);
+
+        // THEN
+        Mockito.verify(reserveBidRepository, Mockito.times(1)).getReserveBid(meteringPointMridArgumentCaptor.capture());
+        assertThat(meteringPointMridArgumentCaptor.getValue()).isEqualTo(meteringPointMrid);
     }
 
     private FichierImportation createFichierOrdre(String fileName, Reader reader) throws IOException {

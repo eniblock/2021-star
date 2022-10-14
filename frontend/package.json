@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0 --disable-host-check --proxy-config=proxy.conf.localenv.json",
-    "build": "ng build",
-    "build-prod": "ng build --build-optimizer --progress=false --source-map=false",
+    "build": "ng build --output-hashing=all",
+    "build-prod": "ng build --build-optimizer --progress=false --source-map=false --output-hashing=all",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

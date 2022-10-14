@@ -55,7 +55,7 @@ export class BalancingDocumentController {
         return await BalancingDocumentService.getQueryArrayResult(params, query);
     }
 
-    private static getBalancingDocumentMrid(params: STARParameters,activationDocumentMrid: string): string {
+    public static getBalancingDocumentMrid(params: STARParameters,activationDocumentMrid: string): string {
         const prefix: string = params.values.get(ParametersType.BALANCING_DOCUMENT_PREFIX);
 
         return prefix.concat(activationDocumentMrid);

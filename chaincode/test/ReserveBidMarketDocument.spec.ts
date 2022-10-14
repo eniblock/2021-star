@@ -24,6 +24,14 @@ import { ReserveBidMarketDocumentFileList } from '../src/model/reserveBidMarketD
 import { AttachmentFile } from '../src/model/attachmentFile';
 import { AttachmentFileStatus } from '../src/enums/AttachmentFileStatus';
 import { ReserveBidMarketDocumentFileIdList } from '../src/model/reserveBidMarketDocumentFileIdList';
+import { Site } from '../src/model/site';
+import { ReserveBidMarketDocumentCreation } from '../src/model/reserveBidMarketDocumentCreation';
+import { ActivationDocumentAbstract, ActivationDocumentDateMax, EnergyAmountAbstract, IndexedData, ReserveBidMarketDocumentAbstract } from '../src/model/dataIndexers';
+import { ActivationEnergyAmountIndexersController, SiteActivationIndexersController, SiteReserveBidIndexersController } from '../src/controller/dataIndexersController';
+import { ActivationDocument } from '../src/model/activationDocument/activationDocument';
+import { EnergyAmount } from '../src/model/energyAmount';
+import { BalancingDocument } from '../src/model/balancingDocument';
+import { BalancingDocumentController } from '../src/controller/BalancingDocumentController';
 
 
 
@@ -77,8 +85,443 @@ describe('Star Tests ReserveBidMarketDocument', () => {
     // */
     // public async CreateReserveBidMarketDocument(ctx: Context, inputStr: string)
     describe('Test CreateReserveBidMarketDocument', () => {
+        it('should return ERROR on CreateReserveBidMarketDocument initial creation by Enedis', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteReserveBid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+
+            const attachmentFile: AttachmentFile = JSON.parse(JSON.stringify(Values.AttachmentFile_1));
+            const attachmentFileList: AttachmentFile[] = [attachmentFile];
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            reserveBidObj.attachments = [attachmentFile.fileId];
+
+            const reserveBidCreationObj: ReserveBidMarketDocumentCreation = {
+                reserveBid: reserveBidObj,
+                attachmentFileList: attachmentFileList
+            }
+
+            try {
+                await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
+            } catch (err) {
+                // params.logger.info('err: ', err.message)
+                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.ENEDIS} does not have write access to create a reserve bid market document`);
+            }
+
+        });
+
+
+
+
+
+        it('should return ERROR on CreateReserveBidMarketDocument initial creation by RTE', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteReserveBid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+
+            const attachmentFile: AttachmentFile = JSON.parse(JSON.stringify(Values.AttachmentFile_1));
+            const attachmentFileList: AttachmentFile[] = [attachmentFile];
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            reserveBidObj.attachments = [attachmentFile.fileId];
+
+            const reserveBidCreationObj: ReserveBidMarketDocumentCreation = {
+                reserveBid: reserveBidObj,
+                attachmentFileList: attachmentFileList
+            }
+
+            try {
+                await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
+            } catch (err) {
+                // params.logger.info('err: ', err.message)
+                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} does not have write access to create a reserve bid market document`);
+            }
+
+        });
+
+
+
+
+        it('should return ERROR on CreateReserveBidMarketDocument initial creation - site does not exist', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+
+            const attachmentFile: AttachmentFile = JSON.parse(JSON.stringify(Values.AttachmentFile_1));
+            const attachmentFileList: AttachmentFile[] = [attachmentFile];
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            reserveBidObj.attachments = [attachmentFile.fileId];
+
+            const reserveBidCreationObj: ReserveBidMarketDocumentCreation = {
+                reserveBid: reserveBidObj,
+                attachmentFileList: attachmentFileList
+            }
+
+            try {
+                await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
+            } catch (err) {
+                // params.logger.info('err: ', err.message)
+                expect(err.message).to.equal(`site : ${reserveBidObj.meteringPointMrid} does not exist (not found in any collection). for reserve bid creation`);
+            }
+
+        });
+
+
+
+
+        it('should return ERROR on CreateReserveBidMarketDocument initial creation', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteReserveBid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+
+            const attachmentFile: AttachmentFile = JSON.parse(JSON.stringify(Values.AttachmentFile_1));
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            reserveBidObj.attachments = [attachmentFile.fileId];
+
+            const reserveBidCreationObj: ReserveBidMarketDocumentCreation = {
+                reserveBid: reserveBidObj
+            }
+
+            try {
+                await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
+            } catch (err) {
+                // params.logger.info('err: ', err.message)
+                expect(err.message).to.equal(`attachmentFile : ${attachmentFile.fileId} does not exist (not found in any collection). for reserve bid creation`);
+            }
+
+        });
+
+
+
+
+
+        it('should return SUCCESS on CreateReserveBidMarketDocument initial creation with attachment by Producer', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteReserveBid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+
+            const attachmentFile: AttachmentFile = JSON.parse(JSON.stringify(Values.AttachmentFile_1));
+            const attachmentFileList: AttachmentFile[] = [attachmentFile];
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            reserveBidObj.attachments = [attachmentFile.fileId];
+
+            const reserveBidCreationObj: ReserveBidMarketDocumentCreation = {
+                reserveBid: reserveBidObj,
+                attachmentFileList: attachmentFileList
+            }
+
+            await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
+
+
+            const expected: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
+            expected.attachmentsWithStatus = [];
+            expected.attachments = [attachmentFile.fileId];
+            expected.attachmentsWithStatus = [{fileId:attachmentFile.fileId, status:AttachmentFileStatus.ACTIVE}];
+            // params.logger.log('expected=', expected)
+
+            const expectedFile: AttachmentFile = JSON.parse(JSON.stringify(attachmentFile));
+
+            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: expected.reserveBidMrid,
+                validityPeriodStartDateTime: expected.validityPeriodStartDateTime
+            };
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract],
+                indexId: SiteReserveBidIndexersController.getKey(expected.meteringPointMrid)
+            };
+
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedFile))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info("-----------")
+
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expected.reserveBidMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedFile.fileId,
+                Buffer.from(JSON.stringify(expectedFile))
+            );
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedIndexer.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(3);
+
+        });
+
+
+
+
+        it('should return SUCCESS on CreateReserveBidMarketDocument initial creation with existing attachment by Producer', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteReserveBid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+
+            const attachmentFile: AttachmentFile = JSON.parse(JSON.stringify(Values.AttachmentFile_1));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], attachmentFile.fileId).resolves(Buffer.from(JSON.stringify(attachmentFile)));
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            reserveBidObj.attachments = [attachmentFile.fileId];
+
+            const reserveBidCreationObj: ReserveBidMarketDocumentCreation = {
+                reserveBid: reserveBidObj
+            }
+
+            await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
+
+
+            const expected: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
+            expected.attachmentsWithStatus = [];
+            expected.attachments = [attachmentFile.fileId];
+            expected.attachmentsWithStatus = [{fileId:attachmentFile.fileId, status:AttachmentFileStatus.ACTIVE}];
+            // params.logger.log('expected=', expected)
+
+            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: expected.reserveBidMrid,
+                validityPeriodStartDateTime: expected.validityPeriodStartDateTime
+            };
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract],
+                indexId: SiteReserveBidIndexersController.getKey(expected.meteringPointMrid)
+            };
+
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info("-----------")
+
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expected.reserveBidMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedIndexer.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+
+        });
+
+
+
+
+        it('should return SUCCESS on CreateReserveBidMarketDocument initial creation with attachment and existing Activation Document by Producer', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteReserveBid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+
+            const attachmentFile: AttachmentFile = JSON.parse(JSON.stringify(Values.AttachmentFile_1));
+            const attachmentFileList: AttachmentFile[] = [attachmentFile];
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            reserveBidObj.attachments = [attachmentFile.fileId];
+
+            const reserveBidCreationObj: ReserveBidMarketDocumentCreation = {
+                reserveBid: reserveBidObj,
+                attachmentFileList: attachmentFileList
+            }
+
+            /// Add Max Date in transaction Context
+            const maxDateId = SiteActivationIndexersController.getMaxKey(reserveBidObj.meteringPointMrid);
+            const maxDate: ActivationDocumentDateMax = {
+                docType: DocType.INDEXER_MAX_DATE,
+                dateTime: reserveBidObj.validityPeriodStartDateTime as string,
+            };
+
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], maxDateId).resolves(Buffer.from(JSON.stringify(maxDate)));
+
+
+            //Add Avaliable Activation Document in transaction context
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            //New date after ReserveBidDate
+            const newDate = Values.increaseDateDaysStr(reserveBidObj.validityPeriodStartDateTime as string, 1)
+            activationDocumentObj.startCreatedDateTime = newDate;
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+
+            //Add corresponding eneryAmount in transaction context
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            //Add Indexed enery Amount in transaction context
+            const energyAmountIndexKey = ActivationEnergyAmountIndexersController.getKey(activationDocumentObj.activationDocumentMrid)
+            const energyAmountAbstract : EnergyAmountAbstract = {energyAmountMarketDocumentMrid:energyAmountObj.energyAmountMarketDocumentMrid};
+            const energyAmountIndexedData: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList:[energyAmountAbstract],
+                indexId:energyAmountIndexKey
+            };
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyAmountIndexKey).resolves(Buffer.from(JSON.stringify(energyAmountIndexedData)));
+
+
+            /// Add Indexed Activation Document in transaction Context
+            const indexedDataId = SiteActivationIndexersController.getKey(reserveBidObj.meteringPointMrid, new Date(reserveBidObj.validityPeriodStartDateTime as string));
+
+            const activationAbstract: ActivationDocumentAbstract =
+                {activationDocumentMrid: activationDocumentObj.activationDocumentMrid, startCreatedDateTime: activationDocumentObj.startCreatedDateTime};
+
+            const indexedData: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexedDataId,
+                indexedDataAbstractList : [activationAbstract],
+            };
+
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], indexedDataId).resolves(Buffer.from(JSON.stringify(indexedData)));
+
+
+            await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
+
+
+            const expected: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
+            expected.attachmentsWithStatus = [];
+            expected.attachments = [attachmentFile.fileId];
+            expected.attachmentsWithStatus = [{fileId:attachmentFile.fileId, status:AttachmentFileStatus.ACTIVE}];
+            // params.logger.log('expected=', expected)
+
+            const expectedFile: AttachmentFile = JSON.parse(JSON.stringify(attachmentFile));
+
+            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: expected.reserveBidMrid,
+                validityPeriodStartDateTime: expected.validityPeriodStartDateTime
+            };
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract],
+                indexId: SiteReserveBidIndexersController.getKey(expected.meteringPointMrid)
+            };
+
+
+            const expectedBalancingDocument: BalancingDocument = params.values.get(ParametersType.BALANCING_DOCUMENT);
+
+            const balancingDocumentMrid = BalancingDocumentController.getBalancingDocumentMrid(params, activationDocumentObj.activationDocumentMrid);
+            expectedBalancingDocument.balancingDocumentMrid = balancingDocumentMrid;
+            expectedBalancingDocument.activationDocumentMrid = activationDocumentObj.activationDocumentMrid;
+            expectedBalancingDocument.energyAmountMarketDocumentMrid = energyAmountObj.energyAmountMarketDocumentMrid;
+            expectedBalancingDocument.reserveBidMrid = reserveBidObj.reserveBidMrid;
+            expectedBalancingDocument.senderMarketParticipantMrid = activationDocumentObj.senderMarketParticipantMrid;
+            expectedBalancingDocument.receiverMarketParticipantMrid = activationDocumentObj.receiverMarketParticipantMrid;
+            expectedBalancingDocument.createdDateTime = reserveBidObj.createdDateTime;
+            expectedBalancingDocument.period = activationDocumentObj.startCreatedDateTime.concat("/").concat(activationDocumentObj.endCreatedDateTime as string);
+            expectedBalancingDocument.quantityMeasureUnitName = energyAmountObj.measurementUnitName;
+            expectedBalancingDocument.priceMeasureUnitName = reserveBidObj.priceMeasureUnitName;
+            expectedBalancingDocument.currencyUnitName = reserveBidObj.currencyUnitName;
+            expectedBalancingDocument.meteringPointMrid = activationDocumentObj.registeredResourceMrid;
+            expectedBalancingDocument.quantity = Number(energyAmountObj.quantity);
+            expectedBalancingDocument.activationPriceAmount = reserveBidObj.energyPriceAmount;
+            expectedBalancingDocument.financialPriceAmount = expectedBalancingDocument.quantity * expectedBalancingDocument.activationPriceAmount;
+
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedFile))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedBalancingDocument))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expected.reserveBidMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedFile.fileId,
+                Buffer.from(JSON.stringify(expectedFile))
+            );
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedIndexer.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer))
+            );
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedBalancingDocument.balancingDocumentMrid,
+                Buffer.from(JSON.stringify(expectedBalancingDocument))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(4);
+
+        });
+
 
     });
+
+
+
+
 
     // /*
     //     inputStr : ReserveBidMarketDocumentFileList
@@ -179,12 +622,12 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             let ret = await star.RemoveFileFromReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidFileObj));
             ret = JSON.parse(ret);
-            params.logger.log('ret=', ret)
+            // params.logger.log('ret=', ret)
 
             const expected: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
             expected.attachmentsWithStatus = [];
             expected.attachments = [];
-            params.logger.log('expected=', expected)
+            // params.logger.log('expected=', expected)
 
             expect(ret).to.eql(expected);
 

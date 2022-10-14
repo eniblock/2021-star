@@ -160,6 +160,7 @@ export class ReserveBidMarketDocumentController {
 
         if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
             reserveBidObj.attachmentsWithStatus = [];
+
             for (var attachmentFileId of reserveBidObj.attachments) {
                 const fileIdList: string[] = [];
                 if (reserveBidCreationObj.attachmentFileList && reserveBidCreationObj.attachmentFileList.length > 0) {
@@ -170,7 +171,9 @@ export class ReserveBidMarketDocumentController {
 
                 try {
                     const attachmentFile = await this.prepareNewFile(params, attachmentFileId, fileIdList);
-                    reserveBidObj.attachmentsWithStatus.push(attachmentFile);
+                    if (attachmentFile) {
+                        reserveBidObj.attachmentsWithStatus.push(attachmentFile);
+                    }
                 } catch(error) {
                     throw new Error(error.message.concat(' for reserve bid creation'));
                 }
@@ -268,7 +271,7 @@ export class ReserveBidMarketDocumentController {
             const reserveBidObjRef:DataReference = existingReserveBidRef.values().next().value;
             reserveBidObj = reserveBidObjRef.data;
 
-            //Only do somehting if the found reference is the asekd one
+            //Only do something if the found reference is the asekd one
             if (reserveBidObj && reserveBidObj.reserveBidMrid === reserveBidFileObj.reserveBidMrid) {
                 const fileIdList: string[] = [];
                 for (var attachmentFile of reserveBidFileObj.attachmentFileList) {
@@ -343,12 +346,10 @@ export class ReserveBidMarketDocumentController {
         const reserveBidFileObj = ReserveBidMarketDocumentFileIdList.formatString(inputStr);
         var reserveBidObj:ReserveBidMarketDocument = null;
 
-        params.logger.log('reserveBidFileObj=', reserveBidFileObj)
+        // params.logger.log('reserveBidFileObj=', reserveBidFileObj)
 
         //Do something only if there are file ids in the list
         if (reserveBidFileObj.attachmentFileIdList && reserveBidFileObj.attachmentFileIdList.length > 0) {
-            params.logger.log('in','');
-
             //Get every reference to Bid Market Document in every Collection
             var existingReserveBidRef:Map<string, DataReference>;
             try {
@@ -360,7 +361,7 @@ export class ReserveBidMarketDocumentController {
             const reserveBidObjRef:DataReference = existingReserveBidRef.values().next().value;
             reserveBidObj = reserveBidObjRef.data;
 
-            params.logger.log('reserveBidObj=', reserveBidObj)
+            // params.logger.log('reserveBidObj=', reserveBidObj)
 
             //Only do somehting if the found reference is the asekd one
             if (reserveBidObj && reserveBidObj.reserveBidMrid === reserveBidFileObj.reserveBidMrid) {

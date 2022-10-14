@@ -510,7 +510,7 @@ export class Values {
         energyAmountMarketDocumentMrid: "mmea4cef73-ff6b-400b-8957-d34000eb30a3",
         activationDocumentMrid: Values.HTA_ActivationDocument_Valid.activationDocumentMrid,
         registeredResourceMrid: Values.HTA_site_valid.meteringPointMrid,
-        quantity: "number",
+        quantity: "42",
         measurementUnitName: "KW",
         revisionNumber: "1",
         businessType: "A14 / Z14",
@@ -741,7 +741,7 @@ export class Values {
         meteringPointMrid: Values.HTA_site_valid.meteringPointMrid,
         createdDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
         flowDirection: "Direction_HTA_ReserveBidMarketDocument_1",
-        energyPriceAmount: 1
+        energyPriceAmount: 42.0
     }
 
     public static HTA_ReserveBidMarketDocument_1_Full: ReserveBidMarketDocument = {
@@ -761,7 +761,7 @@ export class Values {
         priceMeasureUnitName: '€/MWh',
         currencyUnitName: '€',
         flowDirection: "Direction_HTA_ReserveBidMarketDocument_1",
-        energyPriceAmount: 1,
+        energyPriceAmount: 42.0,
 
         attachments: [],
         attachmentsWithStatus: [],
@@ -784,7 +784,7 @@ export class Values {
         priceMeasureUnitName: '€/MWh',
         currencyUnitName: '€',
         flowDirection: "Direction_HTA_ReserveBidMarketDocument_2",
-        energyPriceAmount: 1,
+        energyPriceAmount: 42.0,
 
         attachments: [],
         attachmentsWithStatus: [],
@@ -814,8 +814,8 @@ export class Values {
         meteringPointMrid:"meteringPointMrid",
         direction:"A02",
         quantity: 42,
-        activationPriceAmount: 42.0,
-        financialPriceAmount: 42.42
+        activationPriceAmount: 42,
+        financialPriceAmount: 1764
     }
 
 }

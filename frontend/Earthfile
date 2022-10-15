@@ -1,4 +1,4 @@
-VERSION 0.5
+VERSION 0.6
 
 ARG repository=registry.gitlab.com/xdev-tech/star/frontend
 
@@ -12,7 +12,7 @@ deps:
 
 dev:
     FROM +deps
-    COPY ./ ./
+    COPY . ./
     CMD npm start
     ARG tag=latest
     ARG ref=${repository}:${tag}

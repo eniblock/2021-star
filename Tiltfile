@@ -26,17 +26,23 @@ local_resource('helm dependencies',
                trigger_mode=TRIGGER_MODE_MANUAL, auto_init=False)
 
 # frontend build
-target='docker'
-extra_front_opts = {}
 if cfg.get('dev-frontend'):
     target='dev'
-    extra_front_opts.update(dict(
-        live_update=[
+    extra_front_opts = {
+        "live_update": [
             sync('frontend', '/app'),
             run('cd /usr/src/app && npm ci',
                 trigger=['./package.json', './package.lock']),
         ]
-    ))
+    }
+else:
+    target='docker'
+    extra_front_opts = {
+        "live_update": [
+            sync('frontend/nginx.conf', '/etc/nginx/nginx.conf'),
+            run('nginx -s reload', trigger=['./frontend/nginx.conf']),
+        ]
+    }
 custom_build('registry.gitlab.com/xdev-tech/star/frontend',
          'earthly ./frontend/+' + target + ' --ref=$EXPECTED_REF',
          ['frontend'],

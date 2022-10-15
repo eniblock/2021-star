@@ -22,7 +22,7 @@ build:
     FROM +dev
     RUN npm run build-prod
     RUN fd '.*\.(js|css|html|svg|txt|gif|wasm)$' dist -x gzip -k
-    SAVE ARTIFACT /app/dist
+    SAVE ARTIFACT --keep-ts /app/dist
     # cache this target (including the layers from the target dependencies)
     ARG tag=latest
     SAVE IMAGE --cache-from=${repository}:cache-build-develop --push ${repository}:cache-build-${tag}
@@ -30,7 +30,7 @@ build:
 docker:
     FROM nginx:1-alpine
     COPY nginx.conf /etc/nginx/templates/default.conf.template
-    COPY +build/dist/frontend /usr/share/nginx/html
+    COPY --keep-ts +build/dist/frontend /usr/share/nginx/html
     ARG tag=latest
     ARG ref=${repository}:${tag}
     ARG buildid=

@@ -39,7 +39,7 @@ else:
     target='docker'
     extra_front_opts = {
         "live_update": [
-            sync('frontend/nginx.conf', '/etc/nginx/nginx.conf'),
+            sync('frontend/nginx.conf', '/etc/nginx/conf.d/default.conf'),
             run('nginx -s reload', trigger=['./frontend/nginx.conf']),
         ]
     }

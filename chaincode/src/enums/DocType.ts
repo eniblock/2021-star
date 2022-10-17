@@ -1,5 +1,6 @@
 export enum DocType {
     ACTIVATION_DOCUMENT = 'activationDocument',
+    ACTIVATION_DOCUMENT_COMPOSITE_KEY = 'activationDocumentCompositeKey',
     ATTACHMENT_FILE = "attachmentFile",
     BALANCING_DOCUMENT = "balancingDocument",
     ENERGY_ACCOUNT = 'energyAccount',

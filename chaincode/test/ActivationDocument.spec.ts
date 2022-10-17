@@ -25,6 +25,10 @@ import { EligibilityStatusType } from '../src/enums/EligibilityStatusType';
 import { HLFServices } from '../src/controller/service/HLFservice';
 import { ActivationDocumentAbstract, ActivationDocumentDateMax, IndexedData } from '../src/model/dataIndexers';
 import { SiteActivationIndexersController } from '../src/controller/dataIndexersController';
+import { ActivationDocumentCompositeKey } from '../src/model/activationDocument/activationDocumentCompositeKey';
+import { ActivationDocumentController } from '../src/controller/activationDocument/ActivationDocumentController';
+import { ActivationDocumentService } from '../src/controller/service/ActivationDocumentService';
+import { ActivationDocumentCompositeKeyIndex } from '../src/model/activationDocument/activationDocumentCompositeKeyIndex';
 
 class TestLoggerMgt {
     public getLogger(arg: string): any {
@@ -340,6 +344,53 @@ describe('Star Tests ActivationDocument', () => {
 
         });
 
+
+
+        it('should return ERROR CreateActivationDocument couple HTA - already exists with Composite key', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            const activationDocumentObj:ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            const activationDocumentCompositeKeyObj: ActivationDocumentCompositeKey = {
+                originAutomationRegisteredResourceMrid: activationDocumentObj.originAutomationRegisteredResourceMrid,
+                registeredResourceMrid: activationDocumentObj.registeredResourceMrid,
+                startCreatedDateTime: activationDocumentObj.startCreatedDateTime as string,
+                endCreatedDateTime: activationDocumentObj.endCreatedDateTime as string,
+                revisionNumber: activationDocumentObj.revisionNumber as string
+            }
+
+            var args: string[] = [];
+            args.push(`"originAutomationRegisteredResourceMrid":"${activationDocumentCompositeKeyObj.originAutomationRegisteredResourceMrid}"`);
+            args.push(`"registeredResourceMrid":"${activationDocumentCompositeKeyObj.registeredResourceMrid}"`);
+            args.push(`"startCreatedDateTime":"${activationDocumentCompositeKeyObj.startCreatedDateTime}"`);
+            args.push(`"endCreatedDateTime":"${activationDocumentCompositeKeyObj.endCreatedDateTime}"`);
+            args.push(`"revisionNumber":"${activationDocumentCompositeKeyObj.revisionNumber}"`);
+
+            const query = await QueryStateService.buildQuery(
+                {documentType: DocType.ACTIVATION_DOCUMENT,
+                queryArgs: args});
+            params.logger.info('test query: ', query);
+
+            const existingActivationDocumentObj:ActivationDocument = JSON.parse(JSON.stringify(activationDocumentObj));
+            existingActivationDocumentObj.activationDocumentMrid = "existingActivationDocumentObj.activationDocumentMrid";
+            const iterator = Values.getQueryMockArrayValues([existingActivationDocumentObj], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs("enedis-producer", query).resolves(iterator);
+
+            try {
+                await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocumentObj));
+            } catch(err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`Error: An Activation Document with same Composite Key already exists: ${JSON.stringify(activationDocumentCompositeKeyObj)}`);
+            }
+
+        });
+
+
         it('should return SUCCESS CreateActivationDocument couple HTA', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const activationDocument:ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
@@ -365,6 +416,13 @@ describe('Star Tests ActivationDocument', () => {
             expected.eligibilityStatusEditable = false;
             expected.docType = DocType.ACTIVATION_DOCUMENT;
 
+            const activationDocumentCompositeKey = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyIndex = {
+                docType: DocType.DATA_INDEXER,
+                activationDocumentCompositeKey: activationDocumentCompositeKey,
+                activationDocumentMrid: expected.activationDocumentMrid
+            }
+
 
             const indexedDataAbstract: ActivationDocumentAbstract = {
                 activationDocumentMrid: expected.activationDocumentMrid,
@@ -385,44 +443,62 @@ describe('Star Tests ActivationDocument', () => {
 
 
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expected))
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndex))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info("oo")
             // params.logger.info(JSON.stringify(expectedIndexer))
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.thirdCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.thirdCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
             // params.logger.info("oo")
             // params.logger.info(JSON.stringify(expectedDateMax))
             // params.logger.info("-----------")
 
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
                 "enedis-producer",
                 expected.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                "enedis-producer",
+                compositeKeyIndex.activationDocumentCompositeKey,
+                Buffer.from(JSON.stringify(compositeKeyIndex))
+            );
+
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
                 "enedis-producer",
                 expectedIndexer.indexId,
                 Buffer.from(JSON.stringify(expectedIndexer))
             );
 
-            transactionContext.stub.putPrivateData.thirdCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
                 "enedis-producer",
                 expectedDateMaxId,
                 Buffer.from(JSON.stringify(expectedDateMax))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(3);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(4);
         });
+
+
+
+
+
+
 
         it('should return SUCCESS CreateActivationDocumentListe 2 docs HTA', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
@@ -437,7 +513,7 @@ describe('Star Tests ActivationDocument', () => {
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocument.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocument2.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocument2.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid_ProdA)));
 
             // const iterator = Values.getYellowPageQueryMock(Values.HTA_yellowPage, mockHandler);
             // const query = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${activationDocument.originAutomationRegisteredResourceMrid}"}}`;
@@ -463,6 +539,20 @@ describe('Star Tests ActivationDocument', () => {
             expected2.eligibilityStatus = '';
             expected2.docType = DocType.ACTIVATION_DOCUMENT;
 
+
+            const activationDocumentCompositeKey1 = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
+            const activationDocumentCompositeKey2 = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected2)));
+
+            const compositeKeyIndex1: ActivationDocumentCompositeKeyIndex = {
+                docType: DocType.DATA_INDEXER,
+                activationDocumentCompositeKey: activationDocumentCompositeKey1,
+                activationDocumentMrid: expected.activationDocumentMrid
+            }
+            const compositeKeyIndex2: ActivationDocumentCompositeKeyIndex = {
+                docType: DocType.DATA_INDEXER,
+                activationDocumentCompositeKey: activationDocumentCompositeKey2,
+                activationDocumentMrid: expected2.activationDocumentMrid
+            }
 
 
             const indexedDataAbstract1: ActivationDocumentAbstract = {
@@ -491,7 +581,7 @@ describe('Star Tests ActivationDocument', () => {
 
             const expectedIndexer2: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract1, indexedDataAbstract2],
+                indexedDataAbstractList: [indexedDataAbstract2],
                 indexId: SiteActivationIndexersController.getKey(expected2.registeredResourceMrid, new Date(expected2.startCreatedDateTime as string))
             };
 
@@ -511,27 +601,38 @@ describe('Star Tests ActivationDocument', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexer1))
+            // params.logger.info(JSON.stringify(compositeKeyIndex1))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
             // params.logger.info("oo")
-            // params.logger.info(JSON.stringify(expectedDateMax1))
+            // params.logger.info(JSON.stringify(expectedIndexer1))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expected2))
+            // params.logger.info(JSON.stringify(expectedDateMax1))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(4).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(4).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexer2))
+            // params.logger.info(JSON.stringify(expected2))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(5).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(5).args[2].toString()).toString('utf8'));
+            // params.logger.info("oo")
+            // params.logger.info(JSON.stringify(compositeKeyIndex2))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(6).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(6).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer2))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(7).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(7).args[2].toString()).toString('utf8'));
             // params.logger.info("oo")
             // params.logger.info(JSON.stringify(expectedDateMax2))
             // params.logger.info("-----------")
@@ -545,38 +646,49 @@ describe('Star Tests ActivationDocument', () => {
 
             transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
                 "enedis-producer",
-                expectedIndexer1.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer1))
+                compositeKeyIndex1.activationDocumentCompositeKey,
+                Buffer.from(JSON.stringify(compositeKeyIndex1))
             );
 
             transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
                 "enedis-producer",
-                expectedDateMaxId1,
-                Buffer.from(JSON.stringify(expectedDateMax1))
+                expectedIndexer1.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer1))
             );
 
 
             transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
                 "enedis-producer",
+                expectedDateMaxId1,
+                Buffer.from(JSON.stringify(expectedDateMax1))
+            );
+
+            transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
+                "enedis-producer",
                 expected2.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expected2))
             );
 
-            transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(5).should.have.been.calledWithExactly(
+                "enedis-producer",
+                compositeKeyIndex2.activationDocumentCompositeKey,
+                Buffer.from(JSON.stringify(compositeKeyIndex2))
+            );
+
+            transactionContext.stub.putPrivateData.getCall(6).should.have.been.calledWithExactly(
                 "enedis-producer",
                 expectedIndexer2.indexId,
                 Buffer.from(JSON.stringify(expectedIndexer2))
             );
 
-            transactionContext.stub.putPrivateData.getCall(5).should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(7).should.have.been.calledWithExactly(
                 "enedis-producer",
                 expectedDateMaxId2,
                 Buffer.from(JSON.stringify(expectedDateMax2))
             );
 
 
-
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(6);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(8);
 
         });
 
@@ -731,6 +843,15 @@ describe('Star Tests ActivationDocument', () => {
             expected.docType = DocType.ACTIVATION_DOCUMENT;
 
 
+            const activationDocumentCompositeKey = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyIndex = {
+                docType: DocType.DATA_INDEXER,
+                activationDocumentCompositeKey: activationDocumentCompositeKey,
+                activationDocumentMrid: expected.activationDocumentMrid
+            }
+
+
+
             const indexedDataAbstract: ActivationDocumentAbstract = {
                 activationDocumentMrid: expected.activationDocumentMrid,
                 startCreatedDateTime: expected.startCreatedDateTime as string
@@ -750,43 +871,55 @@ describe('Star Tests ActivationDocument', () => {
 
 
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expected))
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndex))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info("oo")
             // params.logger.info(JSON.stringify(expectedIndexer))
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.thirdCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.thirdCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
             // params.logger.info("oo")
             // params.logger.info(JSON.stringify(expectedDateMax))
             // params.logger.info("-----------")
 
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
                 "producer-rte",
                 expected.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expected))
             );
 
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                "producer-rte",
+                compositeKeyIndex.activationDocumentCompositeKey,
+                Buffer.from(JSON.stringify(compositeKeyIndex))
+            );
+
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
                 "producer-rte",
                 expectedIndexer.indexId,
                 Buffer.from(JSON.stringify(expectedIndexer))
             );
 
-            transactionContext.stub.putPrivateData.thirdCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
                 "producer-rte",
                 expectedDateMaxId,
                 Buffer.from(JSON.stringify(expectedDateMax))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(3);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(4);
         });
 
     });
@@ -1569,25 +1702,48 @@ describe('Star Tests ActivationDocument', () => {
 
             await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
 
-            // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(activationDocument_garbageProducer))
-            // params.logger.info("-----------")
-
             const expectedValue_Producer = JSON.parse(JSON.stringify(activationDocument_Producer));
             expectedValue_Producer.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
             expectedValue_Producer.eligibilityStatusEditable = false;
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+            const activationDocumentCompositeKey = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expectedValue_Producer)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyIndex = {
+                docType: DocType.DATA_INDEXER,
+                activationDocumentCompositeKey: activationDocumentCompositeKey,
+                activationDocumentMrid: expectedValue_Producer.activationDocumentMrid
+            }
+
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedValue_Producer))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndex))
+            // params.logger.info("-----------")
+
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
                 collectionProducer,
-                activationDocument_Producer.activationDocumentMrid,
+                expectedValue_Producer.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expectedValue_Producer))
             );
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                collectionProducer,
+                activationDocumentCompositeKey,
+                Buffer.from(JSON.stringify(compositeKeyIndex))
+            );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
         });
+
+
+
+
 
         it('should return SUCCESS UpdateActivationDocumentEligibilityStatus: DSO Producer Document', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
@@ -1615,25 +1771,51 @@ describe('Star Tests ActivationDocument', () => {
 
             await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
 
-            // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(activationDocument_garbageProducer))
-            // params.logger.info("-----------")
 
             const expectedValue_Producer = JSON.parse(JSON.stringify(activationDocument_Producer));
             expectedValue_Producer.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
             expectedValue_Producer.eligibilityStatusEditable = false;
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+            const activationDocumentCompositeKey = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expectedValue_Producer)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyIndex = {
+                docType: DocType.DATA_INDEXER,
+                activationDocumentCompositeKey: activationDocumentCompositeKey,
+                activationDocumentMrid: expectedValue_Producer.activationDocumentMrid
+            }
+
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedValue_Producer))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndex))
+            // params.logger.info("-----------")
+
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
                 collectionProducer,
-                activationDocument_Producer.activationDocumentMrid,
+                expectedValue_Producer.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expectedValue_Producer))
             );
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                collectionProducer,
+                activationDocumentCompositeKey,
+                Buffer.from(JSON.stringify(compositeKeyIndex))
+            );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
         });
+
+
+
+
+
+
 
         it('should return SUCCESS UpdateActivationDocumentEligibilityStatus : TSO Document', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
@@ -1662,24 +1844,43 @@ describe('Star Tests ActivationDocument', () => {
 
             await star.UpdateActivationDocumentEligibilityStatus(transactionContext, updateOrders_str);
 
-            // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(activationDocument_garbageTSO))
-            // params.logger.info("-----------")
-
             const expectedValue_TSO = JSON.parse(JSON.stringify(activationDocument_TSO));
             expectedValue_TSO.eligibilityStatus = EligibilityStatusType.EligibilityRefused;
             expectedValue_TSO.eligibilityStatusEditable = false;
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+            const activationDocumentCompositeKey = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument_TSO)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyIndex = {
+                docType: DocType.DATA_INDEXER,
+                activationDocumentCompositeKey: activationDocumentCompositeKey,
+                activationDocumentMrid: activationDocument_TSO.activationDocumentMrid
+            }
+
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedValue_TSO))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndex))
+            // params.logger.info("-----------")
+
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
                 collectionDSO,
                 activationDocument_TSO.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expectedValue_TSO))
             );
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                collectionDSO,
+                activationDocumentCompositeKey,
+                Buffer.from(JSON.stringify(compositeKeyIndex))
+            );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
         });
 
     });
@@ -1856,30 +2057,64 @@ describe('Star Tests ActivationDocument', () => {
 
             await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
 
+            const activationDocumentCompositeKey1 = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument_Producer)));
+            const activationDocumentCompositeKey2 = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument_TSO)));
+
+            const compositeKeyIndex1: ActivationDocumentCompositeKeyIndex = {
+                docType: DocType.DATA_INDEXER,
+                activationDocumentCompositeKey: activationDocumentCompositeKey1,
+                activationDocumentMrid: activationDocument_Producer.activationDocumentMrid
+            }
+            const compositeKeyIndex2: ActivationDocumentCompositeKeyIndex = {
+                docType: DocType.DATA_INDEXER,
+                activationDocumentCompositeKey: activationDocumentCompositeKey2,
+                activationDocumentMrid: activationDocument_TSO.activationDocumentMrid
+            }
+
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(activationDocument_garbageProducer))
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(activationDocument_Producer))
             // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
             // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(activationDocument_garbageTSO))
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndex1))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(activationDocument_TSO))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndex2))
             // params.logger.info("-----------")
 
-            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
                 collectionProducer,
                 activationDocument_Producer.activationDocumentMrid,
                 Buffer.from(JSON.stringify(activationDocument_Producer))
             );
-            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                collectionProducer,
+                activationDocumentCompositeKey1,
+                Buffer.from(JSON.stringify(compositeKeyIndex1))
+            );
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
                 collectionTSO,
                 activationDocument_TSO.activationDocumentMrid,
                 Buffer.from(JSON.stringify(activationDocument_TSO))
             );
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
+                collectionTSO,
+                activationDocumentCompositeKey2,
+                Buffer.from(JSON.stringify(compositeKeyIndex2))
+            );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(4);
         });
 
     });

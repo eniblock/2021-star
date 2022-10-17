@@ -352,7 +352,7 @@ export class Values {
     public static HTA_ActivationDocument_Valid_Doc2: ActivationDocument = {
         activationDocumentMrid: '8c56459a-794a-4ed1-a7f6-33b0064508f2', // PK
         originAutomationRegisteredResourceMrid: Values.HTA_yellowPage.originAutomationRegisteredResourceMrid, // FK1
-        registeredResourceMrid: Values.HTA_site_valid.meteringPointMrid,
+        registeredResourceMrid: Values.HTA_site_valid_ProdA.meteringPointMrid,
         measurementUnitName: 'KW',
         messageType: 'D01',
         businessType: 'Z03',

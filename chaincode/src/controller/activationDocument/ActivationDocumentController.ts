@@ -17,9 +17,10 @@ import { ActivationDocumentService } from '../service/ActivationDocumentService'
 import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
 import { StarPrivateDataService } from '../service/StarPrivateDataService';
 import { StarDataService } from '../service/StarDataService';
-import { ReserveBidMarketDocument } from '../../model/reserveBidMarketDocument';
-import { ReserveBidMarketDocumentController } from '../ReserveBidMarketDocumentController';
-import { SiteActivationIndexersController } from '../dataIndexersController';
+import { ActivationEnergyAmountIndexersController, SiteActivationIndexersController } from '../dataIndexersController';
+import { ActivationDocumentCompositeKey } from '../../model/activationDocument/activationDocumentCompositeKey';
+import { QueryStateService } from '../service/QueryStateService';
+import { ActivationDocumentCompositeKeyIndex } from '../../model/activationDocument/activationDocumentCompositeKeyIndex';
 
 export class ActivationDocumentController {
     public static async getActivationDocumentByProducer(
@@ -61,6 +62,86 @@ export class ActivationDocumentController {
     }
 
 
+    public static async getActivationDocumentByCompositeKey(
+        params: STARParameters,
+        inputStr: string): Promise<string> {
+        params.logger.info('============= START : get ActivationDocument By Composite Key ===========');
+
+        const activationDocumentCompositeKeyObj: ActivationDocumentCompositeKey =ActivationDocumentCompositeKey.formatString(inputStr);
+
+        const activationDocumentCompositeKeyId = ActivationDocumentService.getActivationDocumentCompositeKeyId(activationDocumentCompositeKeyObj);
+        const objResult = await this.getActivationDocumentObjByCompositeKey(params, activationDocumentCompositeKeyId);
+        const formated = JSON.stringify(objResult);
+
+        params.logger.info('=============  END  : get ActivationDocument By Composite Key ===========');
+        return formated;
+    }
+
+
+
+
+    public static async getActivationDocumentByCompositeKeyList(
+        params: STARParameters,
+        inputStr: string): Promise<string> {
+        params.logger.info('============= START : get ActivationDocument By Composite Key List ===========');
+
+        const activationDocumentCompositeKeyList: ActivationDocumentCompositeKey[] = ActivationDocumentCompositeKey.formatListString(inputStr);
+
+        const resultList: ActivationDocument[] = [];
+        if (activationDocumentCompositeKeyList) {
+            for (var activationDocumentCompositeKeyObj of activationDocumentCompositeKeyList) {
+                const activationDocumentCompositeKeyId = ActivationDocumentService.getActivationDocumentCompositeKeyId(activationDocumentCompositeKeyObj);
+                const objResult = await this.getActivationDocumentObjByCompositeKey(params, activationDocumentCompositeKeyId);
+                if (objResult && objResult.activationDocumentMrid && objResult.activationDocumentMrid.length > 0) {
+                    resultList.push(objResult);
+                }
+            }
+        }
+
+        const formated = JSON.stringify(resultList);
+
+        params.logger.info('=============  END  : get ActivationDocument By Composite Key List ===========');
+        return formated;
+    }
+
+
+
+
+    public static async getActivationDocumentObjByCompositeKey(
+        params: STARParameters,
+        activationDocumentCompositeKeyId: string): Promise<ActivationDocument> {
+        params.logger.debug('============= START : get ActivationDocument obj By Composite Key ===========');
+
+        const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.DATA_INDEXER, id: activationDocumentCompositeKeyId});
+        const dataReference = result.values().next().value;
+
+        var activationDocumentCompositeKeyIndex: ActivationDocumentCompositeKeyIndex = null;
+        if (dataReference && dataReference.data) {
+            activationDocumentCompositeKeyIndex = dataReference.data;
+        }
+
+        var activationDocument: ActivationDocument = null;
+        if (activationDocumentCompositeKeyIndex
+            && activationDocumentCompositeKeyIndex.activationDocumentCompositeKey === activationDocumentCompositeKeyId
+            && activationDocumentCompositeKeyIndex.activationDocumentMrid
+            && activationDocumentCompositeKeyIndex.activationDocumentMrid.length > 0) {
+
+            activationDocument = await this.getActivationDocumentById(params, activationDocumentCompositeKeyIndex.activationDocumentMrid);
+        }
+
+
+        params.logger.debug('=============  END  : get ActivationDocument obj By Composite Key ===========');
+        return activationDocument;
+    }
+
+
+
+
+
+
+
+
+
     public static async getActivationDocumentById(
         params: STARParameters,
         activationDocumentMrid: string,
@@ -86,6 +167,8 @@ export class ActivationDocumentController {
         params.logger.debug('=============  END  : get ActivationDocument By Id ===========');
         return formatedResult;
     }
+
+
 
 
 
@@ -178,6 +261,12 @@ export class ActivationDocumentController {
         params.logger.debug('============= START : Create createActivationDocumentObj ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
+
+        if (!activationDocumentObj.revisionNumber
+            || activationDocumentObj.revisionNumber.length === 0) {
+
+            activationDocumentObj.revisionNumber = "1";
+        }
 
         // if (identity === OrganizationTypeMsp.RTE &&
         //     activationDocumentObj.measurementUnitName !== MeasurementUnitType.MW) {
@@ -339,12 +428,52 @@ export class ActivationDocumentController {
         } else {
             activationDocumentObj.eligibilityStatusEditable = true;
         }
+
+        const compositeKey = ActivationDocumentCompositeKey.formatActivationDocument(activationDocumentObj);
+        const activationDocumentCompositeKeyId = ActivationDocumentService.getActivationDocumentCompositeKeyId(compositeKey);
+        let existingActivationDocumentCompositeKey: ActivationDocument = null;
+        try {
+            existingActivationDocumentCompositeKey = await this.getActivationDocumentObjByCompositeKey(params, activationDocumentCompositeKeyId);
+        } catch (error) {
+            //Do Nothing, it's a good thing if document doesn't exist
+        }
+        if (existingActivationDocumentCompositeKey
+            && existingActivationDocumentCompositeKey.activationDocumentMrid
+            && existingActivationDocumentCompositeKey.activationDocumentMrid.length > 0) {
+
+            throw new Error(`Error: An Activation Document with same Composite Key already exists: ${JSON.stringify(compositeKey)}`);
+        }
+
+
         await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);
         await SiteActivationIndexersController.addActivationReference(params, activationDocumentObj, targetDocument);
 
         params.logger.debug('=============  END  : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,
         );
+    }
+
+    public static async deleteActivationDocumentObj(
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument,
+        target: string = '') {
+        params.logger.debug('============= START : Delete createActivationDocumentObj ===========');
+
+        await ActivationDocumentService.delete(params, activationDocumentObj, target);
+
+        await SiteActivationIndexersController.deleteActivationReference(
+            params,
+            activationDocumentObj.activationDocumentMrid,
+            activationDocumentObj.registeredResourceMrid,
+            activationDocumentObj.startCreatedDateTime,
+            target);
+
+        await ActivationEnergyAmountIndexersController.deleteEnergyAmountReference(
+            params,
+            activationDocumentObj.activationDocumentMrid,
+            target);
+
+        params.logger.debug('=============  END  : Delete createActivationDocumentObj ===========');
     }
 
 }

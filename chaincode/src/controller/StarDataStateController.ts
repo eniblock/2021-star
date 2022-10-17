@@ -69,15 +69,15 @@ export class StarDataStateController {
         const orderReferences = await EligibilityController.getEligibilityStatusState(params, orderReferencesMap);
 
 
-        //Add Indexed Data References (to fill lack in data if needed)
+        // //Add Indexed Data References (to fill lack in data if needed)
 
-        const dataIndexerReferences = await SiteReserveBidIndexersController.getState(params);
+        // const dataIndexerReferences = await SiteReserveBidIndexersController.getState(params);
 
-        if (dataIndexerReferences && dataIndexerReferences.length > 0) {
-            for (const dataIndexerRef of dataIndexerReferences) {
-                orderReferences.push(dataIndexerRef);
-            }
-        }
+        // if (dataIndexerReferences && dataIndexerReferences.length > 0) {
+        //     for (const dataIndexerRef of dataIndexerReferences) {
+        //         orderReferences.push(dataIndexerRef);
+        //     }
+        // }
 
         var state_str = JSON.stringify(orderReferences);
 

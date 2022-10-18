@@ -11,6 +11,7 @@ import { AttachmentFile, AttachmentFileWithStatus } from "../src/model/attachmen
 import { DocType } from "../src/enums/DocType";
 import { ReserveBidMarketDocument } from "../src/model/reserveBidMarketDocument";
 import { BalancingDocument } from "../src/model/balancingDocument";
+import { CommonService } from '../src/controller/service/CommonService';
 
 export class Values {
     public static FakeMSP = 'FakeMSP';
@@ -37,20 +38,6 @@ export class Values {
         return new StateQueryIterator(mockHandler, 'TestChannelID','txId', response);
     }
 
-
-
-    public static async deleteJSONField(jsonvalue: string, todelete: string): Promise<string> {
-        let value:string = JSON.parse(JSON.stringify(jsonvalue));
-
-        let pattern = new RegExp("\"".concat(todelete).concat("[^,]+,"));
-        let newvalue = value.replace(pattern, '');
-        if (newvalue === value) {
-            pattern = new RegExp(",\"".concat(todelete).concat("[^}]+"));
-            newvalue = value.replace(pattern, '');
-        }
-        return newvalue;
-    }
-
     public static getStartDate(): Date {
         var dateStart: Date = new Date();
         var offset:number = 0 - new Date().getTimezoneOffset();
@@ -73,38 +60,18 @@ export class Values {
         return dateEnd;
     }
 
-    public static reduceDateTimeStr(dateref: string, reducing: number): string {
-        var reducedDate = new Date(Date.parse(dateref));
 
-        reducedDate = new Date(reducedDate.getTime() - reducing);
 
-        return JSON.parse(JSON.stringify(reducedDate));
-    }
+    public static async deleteJSONField(jsonvalue: string, todelete: string): Promise<string> {
+        let value:string = JSON.parse(JSON.stringify(jsonvalue));
 
-    public static reduceDateDaysStr(dateref: string, reducing: number): string {
-        var reducedDate = new Date(Date.parse(dateref));
-
-        reducedDate.setDate(reducedDate.getDate() - reducing);
-
-        return JSON.parse(JSON.stringify(reducedDate));
-    }
-
-    public static increaseDateDaysStr(dateref: string, increasing: number): string {
-        var increasedDate = new Date(Date.parse(dateref));
-
-        increasedDate.setDate(increasedDate.getDate() + increasing);
-
-        return JSON.parse(JSON.stringify(increasedDate));
-    }
-
-    public static midnightDateStr(dateref: string): string {
-        // params.logger.info("dateref : ", dateref);
-        var newDate = new Date(Date.parse(dateref));
-
-        newDate.setHours(1,0,0,0);
-        // params.logger.info("newDate : ", newDate);
-
-        return JSON.parse(JSON.stringify(newDate));
+        let pattern = new RegExp("\"".concat(todelete).concat("[^,]+,"));
+        let newvalue = value.replace(pattern, '');
+        if (newvalue === value) {
+            pattern = new RegExp(",\"".concat(todelete).concat("[^}]+"));
+            newvalue = value.replace(pattern, '');
+        }
+        return newvalue;
     }
 
 
@@ -777,7 +744,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTA_site_valid.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_site_valid.producerMarketParticipantMrid,
         createdDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
-        validityPeriodStartDateTime: Values.increaseDateDaysStr(JSON.parse(JSON.stringify(Values.getStartDate())), 10),
+        validityPeriodStartDateTime: CommonService.increaseDateDaysStr(JSON.parse(JSON.stringify(Values.getStartDate())), 10),
         validityPeriodEndDateTime: "",
         businessType: 'A87',
         quantityMeasureUnitName: 'MWh',

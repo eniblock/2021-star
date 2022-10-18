@@ -26,9 +26,9 @@ import { HLFServices } from '../src/controller/service/HLFservice';
 import { ActivationDocumentAbstract, ActivationDocumentDateMax, IndexedData } from '../src/model/dataIndexers';
 import { SiteActivationIndexersController } from '../src/controller/dataIndexersController';
 import { ActivationDocumentCompositeKey } from '../src/model/activationDocument/activationDocumentCompositeKey';
-import { ActivationDocumentController } from '../src/controller/activationDocument/ActivationDocumentController';
 import { ActivationDocumentService } from '../src/controller/service/ActivationDocumentService';
 import { ActivationDocumentCompositeKeyIndex } from '../src/model/activationDocument/activationDocumentCompositeKeyIndex';
+import { CommonService } from '../src/controller/service/CommonService';
 
 class TestLoggerMgt {
     public getLogger(arg: string): any {
@@ -1237,14 +1237,14 @@ describe('Star Tests ActivationDocument', () => {
 
             const activationDocument01_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
             activationDocument01_garbage.docType=DocType.ACTIVATION_DOCUMENT;
-            activationDocument01_garbage.startCreatedDateTime = Values.reduceDateTimeStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument01_garbage.startCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
             activationDocument01_garbage.potentialParent= true;
             activationDocument01_garbage.potentialChild= false;
 
             const activationDocument02_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
             activationDocument02_garbage.docType=DocType.ACTIVATION_DOCUMENT;
-            activationDocument02_garbage.startCreatedDateTime = Values.reduceDateTimeStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott+1);
-            activationDocument02_garbage.endCreatedDateTime = Values.reduceDateTimeStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.startCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.endCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott+1);
             activationDocument02_garbage.potentialParent= false;
             activationDocument02_garbage.potentialChild= true;
 
@@ -1292,14 +1292,14 @@ describe('Star Tests ActivationDocument', () => {
 
             var activationDocument01_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate2));
             activationDocument01_garbage.docType=DocType.ACTIVATION_DOCUMENT;
-            activationDocument01_garbage.startCreatedDateTime = Values.reduceDateTimeStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument01_garbage.startCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
             activationDocument01_garbage.potentialParent= true;
             activationDocument01_garbage.potentialChild= false;
 
             const activationDocument02_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
             activationDocument02_garbage.docType=DocType.ACTIVATION_DOCUMENT;
-            activationDocument02_garbage.startCreatedDateTime = Values.reduceDateTimeStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott+1);
-            activationDocument02_garbage.endCreatedDateTime = Values.reduceDateTimeStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.startCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.endCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott+1);
             activationDocument02_garbage.potentialParent= false;
             activationDocument02_garbage.potentialChild= true;
 

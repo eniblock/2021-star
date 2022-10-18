@@ -18,6 +18,8 @@ import { Values } from './Values';
 import { DocType } from '../src/enums/DocType';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { HLFServices } from '../src/controller/service/HLFservice';
+import { CommonService } from '../src/controller/service/CommonService';
+
 import { ReserveBidMarketDocument } from '../src/model/reserveBidMarketDocument';
 import { ReserveBidMarketDocumentSiteDate } from '../src/model/reserveBidMarketDocumentSiteDate';
 import { ReserveBidMarketDocumentFileList } from '../src/model/reserveBidMarketDocumentFileList';
@@ -391,7 +393,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             //Add Avaliable Activation Document in transaction context
             const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
             //New date after ReserveBidDate
-            const newDate = Values.increaseDateDaysStr(reserveBidObj.validityPeriodStartDateTime as string, 1)
+            const newDate = CommonService.increaseDateDaysStr(reserveBidObj.validityPeriodStartDateTime as string, 1)
             activationDocumentObj.startCreatedDateTime = newDate;
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
 

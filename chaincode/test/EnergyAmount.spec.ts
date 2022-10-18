@@ -224,7 +224,7 @@ describe('Star Tests EnergyAmount', () => {
 
             transactionContext.stub.getPrivateData.withArgs(collection, Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
-            const dateStart = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, 1);
+            const dateStart = CommonService.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, 1);
             const dateEnd = Values.HTB_ActivationDocument_Valid.endCreatedDateTime;
             energyamount.timeInterval = `${dateStart}/${dateEnd}`;
 
@@ -254,7 +254,7 @@ describe('Star Tests EnergyAmount', () => {
             transactionContext.stub.getPrivateData.withArgs(collection, Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
             const dateStart = Values.HTB_ActivationDocument_Valid.startCreatedDateTime;
-            const dateEnd = Values.increaseDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.endCreatedDateTime))  as string, 1);
+            const dateEnd = CommonService.increaseDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.endCreatedDateTime))  as string, 1);
             energyamount.timeInterval = `${dateStart}/${dateEnd}`;
 
             try {
@@ -557,8 +557,8 @@ describe('Star Tests EnergyAmount', () => {
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
-            const dateStart = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
-            const dateEnd = Values.reduceDateTimeStr(dateStart, -23*60*60*1000);
+            const dateStart = CommonService.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
+            const dateEnd = CommonService.reduceDateTimeStr(dateStart, -23*60*60*1000);
             try {
                 energyamount.timeInterval = `${dateStart}/${dateEnd}`;
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(energyamount));
@@ -720,8 +720,8 @@ describe('Star Tests EnergyAmount', () => {
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_EnergyAmount.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
-            const dateStart = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
-            const dateEnd = Values.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid.endCreatedDateTime))  as string, 30);
+            const dateStart = CommonService.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
+            const dateEnd = CommonService.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid.endCreatedDateTime))  as string, 30);
             try {
                 const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount));
                 energyamount.timeInterval = `${dateStart}/${dateEnd}`;

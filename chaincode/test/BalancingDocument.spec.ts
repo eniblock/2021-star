@@ -8,7 +8,6 @@ const expect = chai.expect;
 import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
-import { EnergyAccount } from '../src/model/energyAccount';
 import { STARParameters } from '../src/model/starParameters';
 
 import { ParametersController } from '../src/controller/ParametersController';
@@ -19,7 +18,7 @@ import { Values } from './Values';
 import { DocType } from '../src/enums/DocType';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { HLFServices } from '../src/controller/service/HLFservice';
-import { AttachmentFile } from '../src/model/attachmentFile';
+import { CommonService } from '../src/controller/service/CommonService';
 import { BalancingDocumentSearchCriteria } from '../src/model/BalancingDocumentSearchCriteria';
 import { BalancingDocument } from '../src/model/balancingDocument';
 
@@ -183,7 +182,7 @@ describe('Star Tests Balancing Document', () => {
 
             const balancingDocument: BalancingDocument = JSON.parse(JSON.stringify(Values.BalancingDocument_1));
 
-            const startCreatedDateTime = Values.reduceDateDaysStr(balancingDocument.createdDateTime as string, 1);
+            const startCreatedDateTime = CommonService.reduceDateDaysStr(balancingDocument.createdDateTime as string, 1);
             const criteriaObj: BalancingDocumentSearchCriteria = {startCreatedDateTime:startCreatedDateTime};
             const query = await prepareSearchQuery(criteriaObj);
 
@@ -215,8 +214,8 @@ describe('Star Tests Balancing Document', () => {
 
             const balancingDocument: BalancingDocument = JSON.parse(JSON.stringify(Values.BalancingDocument_1));
 
-            const startCreatedDateTime = Values.reduceDateDaysStr(balancingDocument.createdDateTime as string, 1);
-            const endCreatedDateTime = Values.increaseDateDaysStr(balancingDocument.createdDateTime as string, 1);
+            const startCreatedDateTime = CommonService.reduceDateDaysStr(balancingDocument.createdDateTime as string, 1);
+            const endCreatedDateTime = CommonService.increaseDateDaysStr(balancingDocument.createdDateTime as string, 1);
             const criteriaObj: BalancingDocumentSearchCriteria = {startCreatedDateTime:startCreatedDateTime, endCreatedDateTime: endCreatedDateTime};
             const query = await prepareSearchQuery(criteriaObj);
 

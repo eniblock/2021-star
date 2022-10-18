@@ -1,5 +1,7 @@
 package com.star.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
 import com.star.models.reservebid.ReserveBid;
@@ -31,6 +33,9 @@ class ReserveBidRepositoryTest extends AbstractTest {
     @Captor
     private ArgumentCaptor<String> objectArgumentCaptor;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     void testSaveNullReserveBid() throws TechnicalException {
         // GIVEN
@@ -43,10 +48,11 @@ class ReserveBidRepositoryTest extends AbstractTest {
     }
 
     @Test
-    void testSaveReserveBid() throws TechnicalException, InterruptedException, TimeoutException, ContractException {
+    void testSaveReserveBid() throws TechnicalException, InterruptedException, TimeoutException, ContractException, JsonProcessingException {
         // GIVEN
         Float energyPriceAmount = Float.parseFloat("35.15");
         ReserveBid reserveBid = ReserveBid.builder().meteringPointMrid("3516846511600").messageType("TEST162JB")
+                .reserveBidStatus("status")
                 .processType("P31616").senderMarketParticipantMrid("M12JHBHB779").receiverMarketParticipantMrid("R12NJKJNBUB989")
                 .createdDateTime("2022-12-05 12:12:56").priceMeasureUnitName("MW").currencyUnitName("CLIDOIN").energyPriceAmount(energyPriceAmount).build();
         ReserveBidMarketDocumentCreation reserveBidMarketDocumentCreation = new ReserveBidMarketDocumentCreation();
@@ -60,6 +66,7 @@ class ReserveBidRepositoryTest extends AbstractTest {
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(), objectArgumentCaptor.capture());
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(reserveBidRepository.CREATE_RESERVE_BID_MARKET_DOCUMENT);
         assertThat(objectArgumentCaptor.getValue()).isNotNull();
+        assertThat(objectArgumentCaptor.getValue()).isEqualTo(objectMapper.writeValueAsString(reserveBidMarketDocumentCreation));
     }
 
 

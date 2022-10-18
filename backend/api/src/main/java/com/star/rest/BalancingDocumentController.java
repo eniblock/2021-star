@@ -59,7 +59,7 @@ public class BalancingDocumentController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<List<BalancingDocumentDTO>> findEnergyAccount(
+    public ResponseEntity<List<BalancingDocumentDTO>> findBalancingDocument(
             @Parameter(description = "meteringPointMrid search criteria")
             @RequestParam(value = "meteringPointMrid", required = false) String meteringPointMrid,
             @Parameter(description = "startCreatedDateTime search criteria")

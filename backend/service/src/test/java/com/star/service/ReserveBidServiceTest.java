@@ -16,11 +16,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -105,7 +103,7 @@ class ReserveBidServiceTest extends AbstractTest {
         // GIVEN
         String fileName = "file-test.pdf";
         Float energyPriceAmount = Float.parseFloat("35.15");
-        ReserveBid reserveBid = ReserveBid.builder().meteringPointMrid("3516846511600").messageType("TEST162JB")
+        ReserveBid reserveBid = ReserveBid.builder().meteringPointMrid("3516846511600").messageType("TEST162JB").reserveBidStatus("status")
                 .processType("P31616").senderMarketParticipantMrid("M12JHBHB779").receiverMarketParticipantMrid("R12NJKJNBUB989")
                 .createdDateTime("2022-12-05 12:12:56").priceMeasureUnitName("MW").currencyUnitName("CLIDOIN").energyPriceAmount(energyPriceAmount).build();
 
@@ -119,15 +117,15 @@ class ReserveBidServiceTest extends AbstractTest {
         ReserveBid reserveBidResult = reserveBidMarketDocumentCreationArgumentCaptor.getValue().getReserveBid();
         assertThat(reserveBidResult).extracting("meteringPointMrid", "messageType",
                 "processType", "senderMarketParticipantMrid", "receiverMarketParticipantMrid", "createdDateTime",
-                "priceMeasureUnitName", "currencyUnitName", "energyPriceAmount")
+                "priceMeasureUnitName", "currencyUnitName", "energyPriceAmount", "reserveBidStatus")
                 .containsExactly("3516846511600", "TEST162JB", "P31616", "M12JHBHB779", "R12NJKJNBUB989", "2022-12-05 12:12:56", "MW",
-                        "CLIDOIN", energyPriceAmount);
+                        "CLIDOIN", energyPriceAmount, "status");
         assertThat(reserveBidResult.getAttachments()).hasSize(1);
     }
 
 
     @Test
-    void testGeteReserveBidWithMeteringPointMridNull() {
+    void testGetReserveBidWithMeteringPointMridNull() {
         // GIVEN
 
         // WHEN
@@ -138,7 +136,7 @@ class ReserveBidServiceTest extends AbstractTest {
     }
 
     @Test
-    void testGeteReserveBid() throws Exception {
+    void testGetReserveBid() throws Exception {
         // GIVEN
         String meteringPointMrid = "PRM6351561";
 

@@ -206,10 +206,28 @@ export class EligibilityController {
          ****************/
 
          const siteRefMap = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocument.registeredResourceMrid});
+
+        //Only include Site data in orders if it is not already know in destination collection
+        if (activationDocument.registeredResourceMrid === "PRM50028509357520") {
+            params.logger.info('00');
+            params.logger.info('siteRefMap: ', JSON.stringify(siteRefMap));
+            params.logger.info('referencedDocument.collection: ', JSON.stringify(referencedDocument.collection));
+            params.logger.info('initialTarget: ', JSON.stringify(initialTarget));
+
+        }
         if (!siteRefMap.has(referencedDocument.collection)) {
-            //Only include Site data in orders if it is not already know in destination collection
+            if (activationDocument.registeredResourceMrid === "PRM50028509357520") {
+                params.logger.info('01');
+            }
+
             if (siteRefMap.has(initialTarget)) {
                 const siteRef = siteRefMap.get(initialTarget);
+
+                if (activationDocument.registeredResourceMrid === "PRM50028509357520") {
+                    params.logger.info('02');
+                    params.logger.info('siteRef: ', JSON.stringify(siteRef));
+                }
+
                 requiredReferences.push({docType:DocType.SITE, collection:referencedDocument.collection, data: siteRef.data})
             }
         }

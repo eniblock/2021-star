@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -107,7 +108,7 @@ public class ReserveBidController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping(value = "/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<?> getDocument(
+    public ResponseEntity<byte[]> getDocument(
             @Parameter(description = "the fileId")
             @RequestParam(value = "fileId") String fileId) throws TechnicalException {
 
@@ -116,7 +117,7 @@ public class ReserveBidController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData(fileName, fileName);
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-        return new ResponseEntity<>(attachmentFile.getFileContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(Base64.getDecoder().decode(attachmentFile.getFileContent()), headers, HttpStatus.OK);
     }
 
 }

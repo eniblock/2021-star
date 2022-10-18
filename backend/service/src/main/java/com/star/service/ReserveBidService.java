@@ -11,7 +11,6 @@ import com.star.models.reservebid.ReserveBidMarketDocumentCreation;
 import com.star.repository.ReserveBidRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -22,9 +21,9 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +53,7 @@ public class ReserveBidService {
 
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
-    public ImportReserveBidResult createReserveBid(ReserveBid reserveBid, List<FichierImportation> fichierImportations) throws IOException,TechnicalException, BusinessException {
+    public ImportReserveBidResult createReserveBid(ReserveBid reserveBid, List<FichierImportation> fichierImportations) throws IOException, TechnicalException, BusinessException {
         log.debug("Service de traitement du reservebid  {}", reserveBid);
         log.debug("Traitement de(s) fichier(s) pour le reservebid DTO {}", fichierImportations);
         boolean hasFiles = CollectionUtils.isNotEmpty(fichierImportations);
@@ -119,7 +118,7 @@ public class ReserveBidService {
                     String fileUUID = randomUUID().toString() + "_" + fichierImportation.getFileName();
                     attachments.add(fileUUID);
                     AttachmentFile attachmentFile = new AttachmentFile();
-                    attachmentFile.setFileContent(IOUtils.toString(fichierImportation.getInputStream(), StandardCharsets.UTF_8));
+                    attachmentFile.setFileContent(Base64.getEncoder().encodeToString(fichierImportation.getInputStream().readAllBytes()));
                     attachmentFile.setFileId(fileUUID);
                     attachmentFileList.add(attachmentFile);
                 }

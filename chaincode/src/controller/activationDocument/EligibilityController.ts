@@ -208,26 +208,10 @@ export class EligibilityController {
          const siteRefMap = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocument.registeredResourceMrid});
 
         //Only include Site data in orders if it is not already know in destination collection
-        if (activationDocument.registeredResourceMrid === "PRM50028509357520") {
-            params.logger.info('00');
-            params.logger.info('siteRefMap: ', JSON.stringify(siteRefMap));
-            params.logger.info('referencedDocument.collection: ', JSON.stringify(referencedDocument.collection));
-            params.logger.info('initialTarget: ', JSON.stringify(initialTarget));
-
-        }
         if (!siteRefMap.has(referencedDocument.collection)) {
-            if (activationDocument.registeredResourceMrid === "PRM50028509357520") {
-                params.logger.info('01');
-            }
 
             if (siteRefMap.has(initialTarget)) {
                 const siteRef = siteRefMap.get(initialTarget);
-
-                if (activationDocument.registeredResourceMrid === "PRM50028509357520") {
-                    params.logger.info('02');
-                    params.logger.info('siteRef: ', JSON.stringify(siteRef));
-                }
-
                 requiredReferences.push({docType:DocType.SITE, collection:referencedDocument.collection, data: siteRef.data})
             }
         }
@@ -449,17 +433,17 @@ export class EligibilityController {
         params.logger.debug('============= START : getEligibilityState - EligibilityController ===========');
         var eligibilityReferences: DataReference[] = [];
 
-        params.logger.info("===========================")
-        params.logger.info("===========================")
-        params.logger.info("===========================")
+        params.logger.debug("===========================")
+        params.logger.debug("===========================")
+        params.logger.debug("===========================")
 
-        params.logger.info("Initialization")
+        params.logger.debug("Initialization")
         params.logger.debug("orderReferencesMap: ", JSON.stringify([...orderReferencesMap]))
 
-        params.logger.info("===========================")
+        params.logger.debug("===========================")
 
         for (var [, referencedDocument] of orderReferencesMap) {
-            params.logger.info("referencedDocument: ", JSON.stringify(referencedDocument))
+            params.logger.debug("referencedDocument: ", JSON.stringify(referencedDocument))
             const activationDocument: ActivationDocument = referencedDocument.data;
 
             var initialTarget: string;
@@ -480,18 +464,12 @@ export class EligibilityController {
                 referencedDocument.collection = targetDocument;
             }
 
-            params.logger.info("initialTarget: ", initialTarget)
-            params.logger.info("targetDocument: ", targetDocument)
-
             if (initialTarget && targetDocument === initialTarget) {
                 //Just update Order
-                params.logger.info("just Update")
                 eligibilityReferences.push(referencedDocument);
             } else {
                 //Before creation in new collection, it is needed to create requirements
-                params.logger.info("all Game")
                 const requirements = await EligibilityController.getCreationRequierments(params, referencedDocument, initialTarget);
-                params.logger.info("requirements: ", JSON.stringify(requirements))
                 for (var requirement of requirements) {
                     eligibilityReferences.push(requirement);
                 }

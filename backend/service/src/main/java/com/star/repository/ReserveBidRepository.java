@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class ReserveBidRepository {
     public static final String CREATE_RESERVE_BID_MARKET_DOCUMENT = "CreateReserveBidMarketDocument";
-    public static final String GET_RESERVE_BID = "getReserveBidMarketDocumentBySite";
+    public static final String GET_RESERVE_BID = "GetReserveBidMarketDocumentBySite";
     public static final String GET_FILE_BY_ID = "GetFileById";
 
     @Autowired

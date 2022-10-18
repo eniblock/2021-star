@@ -748,6 +748,24 @@ export class Star extends Contract {
         }
     }
 
+
+    /*
+        inputStr : reserveBidMrid, newStatus
+        output : ReserveBidMarketDocument
+    */
+    public async UpdateStatusReserveBidMarketDocument(
+        ctx: Context,
+        reserveBidMrid: string,
+        newStatus: string) {
+
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await ReserveBidMarketDocumentController.updateStatus(params, reserveBidMrid, newStatus));
+        } catch (error) {
+            throw error;
+        }
+    }
+
     /*
         inputStr : reserveBidMarketDocumentCreationList
     */

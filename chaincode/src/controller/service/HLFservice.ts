@@ -89,6 +89,18 @@ export class HLFServices {
     }
 
 
+
+    public static getUserRole(params: STARParameters): string {
+        const identity = params.values.get(ParametersType.IDENTITY);
+        const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
+        var roleUser: string;
+        if (roleTable.has(identity)) {
+            roleUser = roleTable.get(identity);
+        }
+        return roleUser;
+    }
+
+
     public static async setLogLevel(params: STARParameters, loglevel: string): Promise<void> {
         if (!["WARNING", "INFO", "DEBUG"].includes(loglevel)) {
             throw new Error("defined log level can only be : WARNING or INFO or DEBUG");

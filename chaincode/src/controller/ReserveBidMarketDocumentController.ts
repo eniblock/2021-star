@@ -5,7 +5,6 @@ import { ParametersType } from "../enums/ParametersType";
 
 import { ActivationDocument } from "../model/activationDocument/activationDocument";
 import { IdArgument } from "../model/arguments/idArgument";
-import { AttachmentFile, AttachmentFileWithStatus } from "../model/attachmentFile";
 import { DataReference } from "../model/dataReference";
 import { ReserveBidMarketDocument } from "../model/reserveBidMarketDocument";
 import { ReserveBidMarketDocumentCreation } from "../model/reserveBidMarketDocumentCreation";
@@ -22,9 +21,12 @@ import { SiteActivationIndexersController, SiteReserveBidIndexersController } fr
 
 import { QueryStateService } from "./service/QueryStateService";
 import { ReserveBidMarketDocumentService } from "./service/ReserveBidMarketDocumentService";
-import { StarDataService } from "./service/StarDataService";
 import { StarPrivateDataService } from "./service/StarPrivateDataService";
 import { BalancingDocumentController } from "./BalancingDocumentController";
+import { AttachmentFileWithStatus } from "../model/attachmentFile";
+import { RoleType } from "../enums/RoleType";
+import { HLFServices } from "./service/HLFservice";
+import { ReserveBidStatus } from "../enums/ReserveBidStatus";
 
 
 export class ReserveBidMarketDocumentController {
@@ -37,6 +39,7 @@ export class ReserveBidMarketDocumentController {
 
         const reserveBidCreationObj = ReserveBidMarketDocumentCreation.formatString(inputStr);
         if (reserveBidCreationObj && reserveBidCreationObj.reserveBid) {
+            reserveBidCreationObj.reserveBid.reserveBidStatus = '';
             await this.createObj(params, reserveBidCreationObj);
         }
 
@@ -53,6 +56,7 @@ export class ReserveBidMarketDocumentController {
         const reserveBidCreationObj = ReserveBidMarketDocumentCreationList.formatString(inputStr);
         if (reserveBidCreationObj && reserveBidCreationObj.reserveBidList) {
             for (var reserveBidObj of reserveBidCreationObj.reserveBidList) {
+                reserveBidObj.reserveBidStatus = '';
                 await this.createObj(params, {reserveBid:reserveBidObj, attachmentFileList:reserveBidCreationObj.attachmentFileList});
             }
         }
@@ -400,13 +404,59 @@ export class ReserveBidMarketDocumentController {
 
 
     /*
+        inputStr : reserveBidMrid, newStatus
+        output : ReserveBidMarketDocument
+    */
+    public static async updateStatus(params: STARParameters, reserveBidMrid: string, newStatus: string): Promise<string> {
+        params.logger.info('============= START : updateStatus ReserveBidMarketDocumentController ===========');
+
+        const userRole = HLFServices.getUserRole(params);
+
+        if (userRole !== RoleType.Role_DSO && userRole !== RoleType.Role_TSO) {
+            throw new Error(`Organisation, ${userRole} does not have write access to create a reserve bid market document`);
+        }
+
+        if (newStatus !== ReserveBidStatus.VALIDATED
+            && newStatus !== ReserveBidStatus.REFUSED) {
+
+            throw new Error(`UpdateStatus : unkown bew Status ${newStatus}`);
+        }
+
+        const existingReserveBidRef:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidMrid});
+        var reserveBidObj: ReserveBidMarketDocument = null;
+
+        if (existingReserveBidRef) {
+            const dataReference = existingReserveBidRef.values().next().value;
+            if (dataReference && dataReference.data) {
+                reserveBidObj = dataReference.data;
+            }
+
+            if (reserveBidObj
+                && reserveBidObj.reserveBidMrid === reserveBidMrid) {
+
+                reserveBidObj.reserveBidStatus = newStatus;
+
+                for (var [key, ] of existingReserveBidRef) {
+                    await ReserveBidMarketDocumentService.write(params, reserveBidObj, key);
+                }
+            }
+        }
+
+        params.logger.info('=============  END  : updateStatus ReserveBidMarketDocumentController ===========');
+
+        return JSON.stringify(reserveBidObj);
+    }
+
+
+
+    /*
         inputStr : ReserveBidMrid
         output : ReserveBidMarketDocument
     */
-    public static async getById(params: STARParameters, ReserveBidMrid: string, target: string = ''): Promise<string> {
+    public static async getById(params: STARParameters, reserveBidMrid: string, target: string = ''): Promise<string> {
         params.logger.info('============= START : getById ReserveBidMarketDocumentController ===========');
 
-        const reserveBidObj: ReserveBidMarketDocument = await this.getObjById(params, ReserveBidMrid, target);
+        const reserveBidObj: ReserveBidMarketDocument = await this.getObjById(params, reserveBidMrid, target);
         const cleanedReserveBidObj = this.cleanReserveBidMarketDocumentFileList(reserveBidObj);
 
         params.logger.info('=============  END  : getById ReserveBidMarketDocumentController ===========');
@@ -434,10 +484,10 @@ export class ReserveBidMarketDocumentController {
 
 
 
-    public static async getObjById(params: STARParameters, ReserveBidMrid: string, target: string = ''): Promise<ReserveBidMarketDocument> {
+    public static async getObjById(params: STARParameters, reserveBidMrid: string, target: string = ''): Promise<ReserveBidMarketDocument> {
         params.logger.debug('============= START : get Obj ById ReserveBidMarketDocumentController ===========');
 
-        const reserveBidObj = await this.getObjByIdArgument(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: ReserveBidMrid, collection: target});
+        const reserveBidObj = await this.getObjByIdArgument(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidMrid, collection: target});
 
         params.logger.debug('=============  END  : get Obj ById ReserveBidMarketDocumentController ===========');
         return reserveBidObj;

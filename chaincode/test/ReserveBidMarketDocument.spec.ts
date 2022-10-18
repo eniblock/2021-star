@@ -34,6 +34,8 @@ import { ActivationDocument } from '../src/model/activationDocument/activationDo
 import { EnergyAmount } from '../src/model/energyAmount';
 import { BalancingDocument } from '../src/model/balancingDocument';
 import { BalancingDocumentController } from '../src/controller/BalancingDocumentController';
+import { ReserveBidStatus } from '../src/enums/ReserveBidStatus';
+import { RoleType } from '../src/enums/RoleType';
 
 
 
@@ -234,6 +236,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             expected.attachmentsWithStatus = [];
             expected.attachments = [attachmentFile.fileId];
             expected.attachmentsWithStatus = [{fileId:attachmentFile.fileId, status:AttachmentFileStatus.ACTIVE}];
+            expected.reserveBidStatus = '';
             // params.logger.log('expected=', expected)
 
             const expectedFile: AttachmentFile = JSON.parse(JSON.stringify(attachmentFile));
@@ -316,6 +319,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             expected.attachmentsWithStatus = [];
             expected.attachments = [attachmentFile.fileId];
             expected.attachmentsWithStatus = [{fileId:attachmentFile.fileId, status:AttachmentFileStatus.ACTIVE}];
+            expected.reserveBidStatus = '';
             // params.logger.log('expected=', expected)
 
             const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
@@ -357,6 +361,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
 
         });
+
+
+
 
 
 
@@ -435,6 +442,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             expected.attachmentsWithStatus = [];
             expected.attachments = [attachmentFile.fileId];
             expected.attachmentsWithStatus = [{fileId:attachmentFile.fileId, status:AttachmentFileStatus.ACTIVE}];
+            expected.reserveBidStatus = '';
             // params.logger.log('expected=', expected)
 
             const expectedFile: AttachmentFile = JSON.parse(JSON.stringify(attachmentFile));
@@ -652,6 +660,149 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             );
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+
+        });
+
+    });
+
+    // /*
+    //  inputStr : reserveBidMrid, newStatus
+    //  output : ReserveBidMarketDocument
+    // */
+    // public async UpdateStatus(ctx: Context, reserveBidMrid: string, newStatus: string)
+    describe('Test UpdateStatus', () => {
+        it('should return ERROR on UpdateStatus - newStatus value', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+
+            const newStatus = "XXX";
+
+            try {
+                await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
+            } catch (err) {
+                // params.logger.info('err: ', err.message)
+                expect(err.message).to.equal(`UpdateStatus : unkown bew Status ${newStatus}`);
+            }
+        });
+
+
+
+
+        it('should return ERROR on UpdateStatus - Producer', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+
+            const newStatus = ReserveBidStatus.VALIDATED;
+
+            try {
+                await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
+            } catch (err) {
+                // params.logger.info('err: ', err.message)
+                expect(err.message).to.equal(`Organisation, ${RoleType.Role_Producer} does not have write access to create a reserve bid market document`);
+            }
+        });
+
+
+
+
+        it('should return SUCCESS on UpdateStatus - Enedis', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            for (const collectionName of collectionNames) {
+                transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+            }
+            const newStatus = ReserveBidStatus.VALIDATED;
+
+            let ret = await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
+            ret = JSON.parse(ret);
+            // params.logger.log('ret=', ret)
+
+            const expected: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
+            expected.attachmentsWithStatus = [];
+            expected.attachments = [];
+            expected.reserveBidStatus = newStatus;
+            // params.logger.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+
+
+            var i: number = 0;
+            for (const collectionName of collectionNames) {
+                // params.logger.info("-----------")
+                // params.logger.info(transactionContext.stub.putPrivateData.getCall(i).args);
+                // params.logger.info("ooooooooo")
+                // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(i).args[2].toString()).toString('utf8'));
+                // params.logger.info(JSON.stringify(expected))
+
+                i++;
+
+
+                transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                    collectionName,
+                    expected.reserveBidMrid,
+                    Buffer.from(JSON.stringify(expected))
+                );
+            }
+            // params.logger.info("-----------")
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(collectionNames.length);
+
+        });
+
+
+
+
+        it('should return SUCCESS on UpdateStatus - RTE', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            for (const collectionName of collectionNames) {
+                transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+            }
+            const newStatus = ReserveBidStatus.REFUSED;
+
+            let ret = await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
+            ret = JSON.parse(ret);
+            // params.logger.log('ret=', ret)
+
+            const expected: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
+            expected.attachmentsWithStatus = [];
+            expected.attachments = [];
+            expected.reserveBidStatus = newStatus;
+            // params.logger.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+
+
+            var i: number = 0;
+            for (const collectionName of collectionNames) {
+                // params.logger.info("-----------")
+                // params.logger.info(transactionContext.stub.putPrivateData.getCall(i).args);
+                // params.logger.info("ooooooooo")
+                // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(i).args[2].toString()).toString('utf8'));
+                // params.logger.info(JSON.stringify(expected))
+
+                i++;
+
+
+                transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                    collectionName,
+                    expected.reserveBidMrid,
+                    Buffer.from(JSON.stringify(expected))
+                );
+            }
+            // params.logger.info("-----------")
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(collectionNames.length);
 
         });
 

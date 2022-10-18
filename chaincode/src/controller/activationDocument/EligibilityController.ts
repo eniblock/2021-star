@@ -449,17 +449,17 @@ export class EligibilityController {
         params.logger.debug('============= START : getEligibilityState - EligibilityController ===========');
         var eligibilityReferences: DataReference[] = [];
 
-        params.logger.debug("===========================")
-        params.logger.debug("===========================")
-        params.logger.debug("===========================")
+        params.logger.info("===========================")
+        params.logger.info("===========================")
+        params.logger.info("===========================")
 
-        params.logger.debug("Initialization")
+        params.logger.info("Initialization")
         params.logger.debug("orderReferencesMap: ", JSON.stringify([...orderReferencesMap]))
 
-        params.logger.debug("===========================")
+        params.logger.info("===========================")
 
         for (var [, referencedDocument] of orderReferencesMap) {
-            params.logger.debug("referencedDocument: ", JSON.stringify(referencedDocument))
+            params.logger.info("referencedDocument: ", JSON.stringify(referencedDocument))
             const activationDocument: ActivationDocument = referencedDocument.data;
             const initialTarget = referencedDocument.collection;
 
@@ -472,12 +472,18 @@ export class EligibilityController {
             }
             referencedDocument.collection = targetDocument;
 
+            params.logger.info("initialTarget: ", initialTarget)
+            params.logger.info("targetDocument: ", targetDocument)
+
             if (initialTarget && targetDocument === initialTarget) {
                 //Just update Order
+                params.logger.info("just Update")
                 eligibilityReferences.push(referencedDocument);
             } else {
                 //Before creation in new collection, it is needed to create requirements
+                params.logger.info("all Game")
                 const requirements = await EligibilityController.getCreationRequierments(params, referencedDocument, initialTarget);
+                params.logger.info("requirements: ", JSON.stringify(requirements))
                 for (var requirement of requirements) {
                     eligibilityReferences.push(requirement);
                 }

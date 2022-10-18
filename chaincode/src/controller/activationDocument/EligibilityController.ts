@@ -461,16 +461,24 @@ export class EligibilityController {
         for (var [, referencedDocument] of orderReferencesMap) {
             params.logger.info("referencedDocument: ", JSON.stringify(referencedDocument))
             const activationDocument: ActivationDocument = referencedDocument.data;
-            const initialTarget = referencedDocument.collection;
 
+            var initialTarget: string;
             var targetDocument: string;
 
-            if (activationDocument && activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted) {
-                targetDocument = await EligibilityController.findDataTarget(params, activationDocument, initialTarget, orderReferencesMap);
+            if (referencedDocument.previousCollection
+                && referencedDocument.previousCollection.length > 0) {
+                initialTarget = referencedDocument.previousCollection
+                targetDocument = referencedDocument.collection;
             } else {
-                targetDocument = initialTarget;
+                initialTarget = referencedDocument.collection;
+
+                if (activationDocument && activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted) {
+                    targetDocument = await EligibilityController.findDataTarget(params, activationDocument, initialTarget, orderReferencesMap);
+                } else {
+                    targetDocument = initialTarget;
+                }
+                referencedDocument.collection = targetDocument;
             }
-            referencedDocument.collection = targetDocument;
 
             params.logger.info("initialTarget: ", initialTarget)
             params.logger.info("targetDocument: ", targetDocument)

@@ -80,16 +80,17 @@ export class StarDataStateController {
         // }
 
 
-        const orderReferencesFinal: DataReference[] = [];
-        if (orderReferences && orderReferences.length > 0) {
-            for (const orderReference of orderReferences) {
-                if (orderReference.docType != DocType.ACTIVATION_DOCUMENT) {
-                    orderReferencesFinal.push(orderReference);
-                }
-            }
-        }
+        // const orderReferencesFinal: DataReference[] = [];
+        // if (orderReferences && orderReferences.length > 0) {
+        //     for (const orderReference of orderReferences) {
+        //         if (orderReference.docType != DocType.ACTIVATION_DOCUMENT) {
+        //             orderReferencesFinal.push(orderReference);
+        //         }
+        //     }
+        // }
+        // var state_str = JSON.stringify(orderReferencesFinal);
 
-        var state_str = JSON.stringify(orderReferencesFinal);
+        var state_str = JSON.stringify(orderReferences);
 
         params.logger.debug("#######################")
         params.logger.debug(state_str)

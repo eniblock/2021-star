@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImportReserveBidResult {
-
     private ReserveBid reserveBid;
     private List<String> errors = new ArrayList<>();
 

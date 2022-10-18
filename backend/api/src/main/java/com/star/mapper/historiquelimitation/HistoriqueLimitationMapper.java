@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {SiteMapper.class, EnergyAmountMapper.class, ReserveBidMapper.class})
+        uses = {SiteMapper.class, EnergyAmountMapper.class, ReserveBidMapper.class, BalancingDocumentMapper.class})
 public interface HistoriqueLimitationMapper {
 
     HistoriqueLimitationDTO beanToDto(HistoriqueLimitation historiqueLimitation);

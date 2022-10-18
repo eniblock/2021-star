@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.producer.Producer;
 import com.star.models.reservebid.AttachmentFile;
 import com.star.models.reservebid.ReserveBid;
 import com.star.models.reservebid.ReserveBidMarketDocumentCreation;

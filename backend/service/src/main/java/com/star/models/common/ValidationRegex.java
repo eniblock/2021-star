@@ -17,6 +17,7 @@ public class ValidationRegex {
     public static final String RESOLUTION_REGEX_STR = "PnYnMnDTnHnMnS";
     public static final String DATETIME_INTERVAL_REGEX = DATETIME_REGEX + "/" + DATETIME_REGEX;
     public static final String DATETIME_INTERVAL_REGEX_STR = "YYYY-MM-DDThh:mm:ssZ/YYYY-MM-DDThh:mm:ssZ";
+
     private ValidationRegex() {
     }
 

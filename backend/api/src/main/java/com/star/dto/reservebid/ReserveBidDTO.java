@@ -1,6 +1,5 @@
 package com.star.dto.reservebid;
 
-import com.star.models.reservebid.AttachmentFileWithStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +34,7 @@ public class ReserveBidDTO {
     private String priceMeasureUnitName;
     private String currencyUnitName;
     private String flowDirection;
+    private String reserveBidStatus;
     @NotNull(message = "Le champ energyPriceAmount est obligatoire")
     private Float energyPriceAmount;
     private List<String> attachments;

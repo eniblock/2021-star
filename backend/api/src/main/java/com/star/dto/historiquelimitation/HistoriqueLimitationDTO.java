@@ -22,4 +22,5 @@ public class HistoriqueLimitationDTO {
     private OrdreLimitation activationDocument;
     private OrdreLimitation[] subOrderList;
     private ReserveBidDTO reserveBidMarketDocument;
+    private BalancingDocumentDTO balancingDocument;
 }

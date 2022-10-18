@@ -16,6 +16,11 @@ export class ActivationDocumentCompositeKey {
         }
 
         try {
+            if (!activationDocumentCompositeKey.revisionNumber
+                || activationDocumentCompositeKey.revisionNumber.length === 0) {
+
+                activationDocumentCompositeKey.revisionNumber = "0"
+            }
             ActivationDocumentCompositeKey.schema.validateSync(
                 activationDocumentCompositeKey,
                 {strict: true, abortEarly: false},
@@ -35,6 +40,12 @@ export class ActivationDocumentCompositeKey {
         }
 
         try {
+            if (!activationDocumentCompositeKeyObj.revisionNumber
+                || activationDocumentCompositeKeyObj.revisionNumber.length === 0) {
+
+                    activationDocumentCompositeKeyObj.revisionNumber = "0"
+            }
+
             ActivationDocumentCompositeKey.schema.validateSync(
                 activationDocumentCompositeKeyObj,
                 {strict: true, abortEarly: false},
@@ -56,6 +67,12 @@ export class ActivationDocumentCompositeKey {
         if (activationDocumentCompositeKeyList && activationDocumentCompositeKeyList.length > 0) {
             for (var activationDocumentCompositeKeyObj of activationDocumentCompositeKeyList) {
                 try {
+                    if (!activationDocumentCompositeKeyObj.revisionNumber
+                        || activationDocumentCompositeKeyObj.revisionNumber.length === 0) {
+
+                            activationDocumentCompositeKeyObj.revisionNumber = "0"
+                    }
+
                     ActivationDocumentCompositeKey.schema.validateSync(
                         activationDocumentCompositeKeyObj,
                         {strict: true, abortEarly: false},

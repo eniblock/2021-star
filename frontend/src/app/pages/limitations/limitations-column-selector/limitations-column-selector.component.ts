@@ -16,6 +16,7 @@ const ALL_TSO_COLUMNS_ID: string[] = [
   'typeLimitation',
   'quantity',
   'tarifUnitaire',
+  'montantIndemnisation',
   'motif',
 ];
 
@@ -32,6 +33,7 @@ const ALL_DSO_COLUMNS_ID: string[] = [
   'typeLimitation',
   'quantity',
   'tarifUnitaire',
+  'montantIndemnisation',
   'motif',
 ];
 
@@ -46,6 +48,7 @@ const ALL_PRODUCER_COLUMNS_ID: string[] = [
   'typeLimitation',
   'quantity',
   'tarifUnitaire',
+  'montantIndemnisation',
   'motif',
 ];
 

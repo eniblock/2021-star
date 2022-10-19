@@ -13,6 +13,7 @@ export const LIMITATIONS_TABLE_COLUMNS_DEF = [
   { id: 'quantity', champ: 'ENE/I (MWh)' },
   { id: 'motif', champ: 'Motif' },
   { id: 'indemnisation', champ: 'Eligible indemnisation' },
+  { id: 'montantIndemnisation', champ: 'Montant indemnisation' },
   { id: 'tarifUnitaire', champ: 'Tarif unitaire' },
 ];
 

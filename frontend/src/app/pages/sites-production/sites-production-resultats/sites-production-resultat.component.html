@@ -18,11 +18,11 @@
         <div class="text-center my-4 text-white">
           {{ resultat?.producerMarketParticipantName }}
         </div>
-        <div class="text-center mt-5 pt-3 text-white" *ngIf="currentReserveBids == null || currentReserveBids.length == 0">
+        <div class="text-center mt-5 pt-3 text-white" *ngIf="reserveBidsToShow.length == 0">
           <strong>Aucun tarif unitaire de valorisation</strong>
         </div>
-        <div class="text-center mt-5 pt-3 text-white" *ngIf="currentReserveBids != null && currentReserveBids.length > 0">
-          <div [class]="last ? '' : 'pb-5'" *ngFor="let rb of currentReserveBids; let last = last;">
+        <div class="text-center mt-5 pt-3 text-white" *ngIf="reserveBidsToShow.length > 0">
+          <div [class]="last ? '' : 'pb-5'" *ngFor="let rb of reserveBidsToShow; let last = last;">
             <div class="priceAndDate">
               <strong>{{ rb.energyPriceAmount + ' ' + rb.priceMeasureUnitName }}</strong>
               <br/>
@@ -35,6 +35,18 @@
                 <app-sites-production-resultat-file-link [fileId]="f"></app-sites-production-resultat-file-link>
               </li>
             </ul>
+          </div>
+          <div class="mt-5">
+            <a class="text-white pointer" (click)="switchShowAllReserveBids()">
+              <ng-container *ngIf="!showAllReservids">
+                <i class="fa-solid fa-eye me-2"></i>
+                Afficher tout
+              </ng-container>
+              <ng-container *ngIf="showAllReservids">
+                <i class="fa-solid fa-eye-slash me-2"></i>
+                Masquer les tarifs
+              </ng-container>
+            </a>
           </div>
         </div>
         <div class="text-center mt-5" *ngIf="typeInstance == InstanceEnum.PRODUCER">

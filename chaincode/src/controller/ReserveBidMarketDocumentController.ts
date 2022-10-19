@@ -188,16 +188,6 @@ export class ReserveBidMarketDocumentController {
             for (var [targetExistingSite, ] of existingSitesRef) {
                 await ReserveBidMarketDocumentService.write(params, reserveBidObj, targetExistingSite);
                 await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, targetExistingSite);
-                await SiteReserveBidIndexersController.addReserveBidReference(params, reserveBidObj, targetExistingSite);
-
-
-                const activationDocumentIdList: string[] = await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, targetExistingSite);
-                if (activationDocumentIdList && activationDocumentIdList.length > 0) {
-                    for (var activationDocumentId of activationDocumentIdList) {
-
-                        await BalancingDocumentController.createOrUpdateById(params, activationDocumentId, reserveBidObj, null, targetExistingSite);
-                    }
-                }
             }
         }
 
@@ -438,6 +428,19 @@ export class ReserveBidMarketDocumentController {
 
                 for (var [key, ] of existingReserveBidRef) {
                     await ReserveBidMarketDocumentService.write(params, reserveBidObj, key);
+
+                    if (newStatus === ReserveBidStatus.VALIDATED) {
+                        await SiteReserveBidIndexersController.addReserveBidReference(params, reserveBidObj, key);
+
+
+                        const activationDocumentIdList: string[] = await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, key);
+                        if (activationDocumentIdList && activationDocumentIdList.length > 0) {
+                            for (var activationDocumentId of activationDocumentIdList) {
+
+                                await BalancingDocumentController.createOrUpdateById(params, activationDocumentId, reserveBidObj, null, key);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -749,6 +752,9 @@ export class ReserveBidMarketDocumentController {
         var args: string[] = [];
         args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
 
+        args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+
+
         // var argOrStart: string[] = [];
         // argOrStart.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
         // argOrStart.push(`"validityPeriodStartDateTime":""`);
@@ -766,7 +772,7 @@ export class ReserveBidMarketDocumentController {
         const query = await QueryStateService.buildQuery(
             {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
             queryArgs: args,
-            sort: [`"validityPeriodStartDateTime":"desc"`],
+            sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"desc"`],
             limit:1});
         // params.logger.debug('query=', query)
 
@@ -785,6 +791,8 @@ export class ReserveBidMarketDocumentController {
             var argsNext: string[] = [];
             argsNext.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
 
+            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+
             argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${criteriaObj.referenceDateTime}}`);
 
             var argOrEnd: string[] = [];
@@ -796,12 +804,19 @@ export class ReserveBidMarketDocumentController {
             const queryNext = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: argsNext,
-                sort: [`"validityPeriodStartDateTime":"asc"`]});
+                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"desc"`]});
             // params.logger.debug('queryNext=', queryNext)
 
             const allResultsNext = await ReserveBidMarketDocumentService.getQueryArrayResult(params, queryNext);
             if (allResultsNext) {
-                allResults = allResults.concat(allResultsNext);
+                var dateRef: string = "";
+                for (const result of allResultsNext) {
+                    if (result.validityPeriodStartDateTime !== dateRef) {
+                        dateRef = result.validityPeriodStartDateTime;
+                        allResults.push(result);
+                    }
+                }
+
             }
         }
 

@@ -13,8 +13,7 @@ export class HistoryInformation {
     public energyAmount: EnergyAmount;
 
     public reserveBidMarketDocument?: ReserveBidMarketDocument;
-    // Waiting to be parsed in Back Layer
-    // public balancingDocument?: BalancingDocument;
+    public balancingDocument?: BalancingDocument;
 
     //additionnal properties
     public displayedSourceName: string;

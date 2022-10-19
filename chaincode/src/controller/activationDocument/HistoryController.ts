@@ -611,8 +611,7 @@ export class HistoryController {
             producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
             energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
             reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
-            // Waiting to be parsed in Back Layer
-            // balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
+            balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
             displayedSourceName: displayedSourceName
         };
 

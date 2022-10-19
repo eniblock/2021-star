@@ -19,6 +19,8 @@ const ppco_time_threshold: number = 75*24*60*60*1000; // 75 days
 const pc_time_match_threshold: number = 5*60*1000; //5 minutes
 const pc_time_updateend_match_threshold: number = 24*60*60*1000; // 24 hours
 
+const reserveBid_validation_time_max: number = 30; // 30 days
+
 const energyAccount_TimeInterval_LAPsec = 24 * 60 * 60;
 const energyAccount_TimeInterval_LAPsec_Less1H = 23 * 60 * 60;
 const energyAccount_TimeInterval_LAPsec_Plus1H = 25 * 60 * 60;
@@ -69,6 +71,8 @@ export class ParametersController {
         parameters.values.set(ParametersType.PC_TIME_MATCH_THRESHOLD, pc_time_match_threshold);
         parameters.values.set(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD, pc_time_updateend_match_threshold);
 
+
+        parameters.values.set(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX, reserveBid_validation_time_max);
 
 
         parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec, energyAccount_TimeInterval_LAPsec);

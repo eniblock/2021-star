@@ -39,6 +39,7 @@
     PROCESS_TYPE_REFERENCE = "reference",
 
     RESERVE_BID_MARKET_DOCUMENT_BASE = "reserveBidMarketDocumentBase",
+    RESERVE_BID_VALIDATION_TIME_MAX = 'reserveBid_validation_time_max',
 
     BALANCING_DOCUMENT = "balancingDocument",
     BALANCING_DOCUMENT_PREFIX = "balancingDocumentPrefix"

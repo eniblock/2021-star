@@ -27,6 +27,7 @@ import { AttachmentFileWithStatus } from "../model/attachmentFile";
 import { RoleType } from "../enums/RoleType";
 import { HLFServices } from "./service/HLFservice";
 import { ReserveBidStatus } from "../enums/ReserveBidStatus";
+import { CommonService } from "./service/CommonService";
 
 
 export class ReserveBidMarketDocumentController {
@@ -855,6 +856,43 @@ export class ReserveBidMarketDocumentController {
         return existing;
     }
 
+
+    public static async getWithoutStatusOutOfTime(
+        params: STARParameters): Promise<ReserveBidMarketDocument[]> {
+
+        params.logger.debug('============= START : getWithoutStatusOutOfTime ReserveBidMarketDocumentController ===========');
+
+        var withoutStatusList: ReserveBidMarketDocument[] = [];
+
+        const reserveBid_validation_time_max: number = params.values.get(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX);
+        var dateRef = CommonService.increaseDateDays(new Date(), reserveBid_validation_time_max);
+        dateRef = CommonService.setHoursEndDay(dateRef);
+        const referenceDateTime =  JSON.parse(JSON.stringify(dateRef));
+
+
+        var args: string[] = [];
+
+        args.push(`"createdDateTime":{"$lte": ${referenceDateTime}}`);
+
+        var argOr: string[] = [];
+        argOr.push(`"reserveBidStatus":""`);
+        argOr.push(`"reserveBidStatus":{"$exists": false}`);
+        args.push(await QueryStateService.buildORCriteria(argOr));
+
+        const query = await QueryStateService.buildQuery(
+            {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
+            queryArgs: args}
+        );
+
+        const allResults = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query);
+        if (allResults) {
+            withoutStatusList = allResults;
+        }
+
+
+        params.logger.debug('=============  END  : getWithoutStatusOutOfTime ReserveBidMarketDocumentController ===========');
+        return withoutStatusList;
+    }
 
 
 

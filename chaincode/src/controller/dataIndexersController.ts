@@ -74,10 +74,56 @@ export class DataIndexersController {
 
 
 
+    public static async modifyReference(
+        params: STARParameters,
+        indexId: string,
+        obj: any,
+        idToModify: string,
+        target: string = '') {
+        params.logger.debug('============= START : modifyReference DataIndexersController ===========');
+
+        var ref: IndexedData = null;
+        try {
+            ref = await this.get(params, indexId, target);
+        } catch (err) {
+            //ref doesn't exist and needs to be created
+        }
+
+        if (!ref
+            || !ref.indexId
+            || ref.indexId.length === 0) {
+
+            ref = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList:[],
+                indexId:indexId};
+        }
+        var found = false;
+
+        for (var i=0; i< ref.indexedDataAbstractList.length && !found; i++) {
+            const eltValue = JSON.stringify(ref.indexedDataAbstractList[i]);
+
+            if (eltValue.includes(idToModify)) {
+                ref.indexedDataAbstractList[i] = obj;
+                found = true;
+            }
+        }
+
+        if (!found) {
+            ref.indexedDataAbstractList.push(obj);
+        }
+
+        await DataIndexersService.write(params, ref, target);
+
+        params.logger.debug('=============  END  : modifyReference DataIndexersController ===========');
+    }
+
+
+
     public static async deleteReference(
         params: STARParameters,
-        dataToDeleteId: string,
         indexId: string,
+        dataToDeleteId: string,
         target: string = '') {
         params.logger.debug('============= START : deleteReference DataIndexersController ===========');
 
@@ -187,7 +233,10 @@ export class SiteReserveBidIndexersController {
         params.logger.debug('============= START : addReserveBidReference SiteReserveBidIndexersController ===========');
 
         const reserveBidMarketDocumentAbstract : ReserveBidMarketDocumentAbstract =
-            {reserveBidMrid:reserveBidObj.reserveBidMrid, validityPeriodStartDateTime:reserveBidObj.validityPeriodStartDateTime};
+            {reserveBidMrid:reserveBidObj.reserveBidMrid,
+            reserveBidStatus: reserveBidObj.reserveBidStatus,
+            validityPeriodStartDateTime:reserveBidObj.validityPeriodStartDateTime,
+            createdDateTime:reserveBidObj.createdDateTime};
         const indexId = this.getKey(reserveBidObj.meteringPointMrid);
         await DataIndexersController.addReference(params, indexId, reserveBidMarketDocumentAbstract, target);
 
@@ -195,48 +244,84 @@ export class SiteReserveBidIndexersController {
     }
 
 
-    public static async getState(params: STARParameters): Promise<DataReference[]> {
-        params.logger.debug('============= START : getState SiteReserveBidIndexersController ===========');
-        const states: DataReference[] = [];
 
-        var allSiteRef: DataReference[];
-        try {
-            allSiteRef = await SiteController.getAllObjRef(params);
-        } catch (err) {
-            //Just return empty list
-            return states;
-        }
+    public static async modifyReserveBidReference(
+        params: STARParameters,
+        reserveBidObj: ReserveBidMarketDocument,
+        target: string = '') {
+        params.logger.debug('============= START : modifyReserveBidReference SiteReserveBidIndexersController ===========');
 
-        if (allSiteRef && allSiteRef.length > 0) {
-            for (const siteRef of allSiteRef) {
-                try {
-                    const site: Site = siteRef.data;
-                    const meteringPointMrid: string = site.meteringPointMrid;
-                    const reserveBidList: ReserveBidMarketDocument[] = await ReserveBidMarketDocumentController.getObjByMeteringPointMrid(params, meteringPointMrid, siteRef.collection);
-                    if (reserveBidList && reserveBidList.length > 0) {
-                        for (const reserveBidObj of reserveBidList) {
-                            const reserveBidMarketDocumentAbstract : ReserveBidMarketDocumentAbstract =
-                                {reserveBidMrid:reserveBidObj.reserveBidMrid, validityPeriodStartDateTime:reserveBidObj.validityPeriodStartDateTime};
-                            const indexId = this.getKey(reserveBidObj.meteringPointMrid);
+        const reserveBidMarketDocumentAbstract : ReserveBidMarketDocumentAbstract =
+            {reserveBidMrid:reserveBidObj.reserveBidMrid,
+            reserveBidStatus: reserveBidObj.reserveBidStatus,
+            validityPeriodStartDateTime:reserveBidObj.validityPeriodStartDateTime,
+            createdDateTime:reserveBidObj.createdDateTime};
+        const indexId = this.getKey(reserveBidObj.meteringPointMrid);
+        await DataIndexersController.modifyReference(params, indexId, reserveBidMarketDocumentAbstract, reserveBidObj.reserveBidMrid, target);
 
-                            const indexData: IndexedData = {
-                                docType: DocType.DATA_INDEXER,
-                                indexId: indexId,
-                                indexedDataAbstractList: [reserveBidMarketDocumentAbstract]
-                            };
-
-                            states.push({data: indexData, collection: siteRef.collection, docType: DocType.DATA_INDEXER});
-                        }
-                    }
-                } catch (err) {
-                    //Do Nothing ... just cannot manage reserveBid
-                }
-            }
-        }
-
-        params.logger.debug('=============  END  : getState SiteReserveBidIndexersController ===========');
-        return states;
+        params.logger.debug('=============  END  : modifyReserveBidReference SiteReserveBidIndexersController ===========');
     }
+
+
+
+
+    public static async deleteReserveBidReference(
+        params: STARParameters,
+        reserveBidObj: ReserveBidMarketDocument,
+        target: string = '') {
+        params.logger.debug('============= START : deleteReserveBidReference SiteReserveBidIndexersController ===========');
+
+        const indexId = this.getKey(reserveBidObj.meteringPointMrid);
+        await DataIndexersController.deleteReference(params, indexId, reserveBidObj.reserveBidMrid, target);
+
+        params.logger.debug('=============  END  : deleteReserveBidReference SiteReserveBidIndexersController ===========');
+    }
+
+    //To Rebuild indexes from stored Data
+    // public static async getState(params: STARParameters): Promise<DataReference[]> {
+    //     params.logger.debug('============= START : getState SiteReserveBidIndexersController ===========');
+    //     const states: DataReference[] = [];
+
+    //     var allSiteRef: DataReference[];
+    //     try {
+    //         allSiteRef = await SiteController.getAllObjRef(params);
+    //     } catch (err) {
+    //         //Just return empty list
+    //         return states;
+    //     }
+
+    //     if (allSiteRef && allSiteRef.length > 0) {
+    //         for (const siteRef of allSiteRef) {
+    //             try {
+    //                 const site: Site = siteRef.data;
+    //                 const meteringPointMrid: string = site.meteringPointMrid;
+    //                 const reserveBidList: ReserveBidMarketDocument[] = await ReserveBidMarketDocumentController.getObjByMeteringPointMrid(params, meteringPointMrid, siteRef.collection);
+    //                 if (reserveBidList && reserveBidList.length > 0) {
+    //                     for (const reserveBidObj of reserveBidList) {
+    //                         const reserveBidMarketDocumentAbstract : ReserveBidMarketDocumentAbstract =
+    //                             {reserveBidMrid:reserveBidObj.reserveBidMrid,
+    //                             reserveBidStatus: reserveBidObj.reserveBidStatus,
+    //                             validityPeriodStartDateTime:reserveBidObj.validityPeriodStartDateTime};
+    //                         const indexId = this.getKey(reserveBidObj.meteringPointMrid);
+
+    //                         const indexData: IndexedData = {
+    //                             docType: DocType.DATA_INDEXER,
+    //                             indexId: indexId,
+    //                             indexedDataAbstractList: [reserveBidMarketDocumentAbstract]
+    //                         };
+
+    //                         states.push({data: indexData, collection: siteRef.collection, docType: DocType.DATA_INDEXER});
+    //                     }
+    //                 }
+    //             } catch (err) {
+    //                 //Do Nothing ... just cannot manage reserveBid
+    //             }
+    //         }
+    //     }
+
+    //     params.logger.debug('=============  END  : getState SiteReserveBidIndexersController ===========');
+    //     return states;
+    // }
 }
 
 
@@ -384,7 +469,7 @@ export class SiteActivationIndexersController {
         params.logger.debug('============= START : deleteActivationReference SiteActivationIndexersController ===========');
 
         const indexId = this.getKeyStr(meteringPointMrid, referenceDate);
-        await DataIndexersController.deleteReference(params, activationDocumentId, indexId, target);
+        await DataIndexersController.deleteReference(params, indexId, activationDocumentId, target);
 
         params.logger.debug('=============  END  : deleteActivationReference SiteActivationIndexersController ===========');
     }
@@ -440,7 +525,7 @@ export class ActivationEnergyAmountIndexersController {
         params.logger.debug('============= START : deleteEnergyAmountReference ActivationNRJAmountIndexersController ===========');
 
         const indexId = this.getKey(activationDocumentId);
-        await DataIndexersController.deleteReference(params, activationDocumentId, indexId, target);
+        await DataIndexersController.deleteReference(params, indexId, activationDocumentId, target);
 
         params.logger.debug('=============  END  : deleteEnergyAmountReference ActivationNRJAmountIndexersController ===========');
     }

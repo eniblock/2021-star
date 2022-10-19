@@ -2,7 +2,9 @@ import * as Yup from 'yup';
 
 export class ReserveBidMarketDocumentAbstract {
     public reserveBidMrid: string;
+    public reserveBidStatus: string;
     public validityPeriodStartDateTime?: string;
+    public createdDateTime: string;
 }
 
 export class ActivationDocumentAbstract {

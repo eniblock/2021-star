@@ -5,7 +5,6 @@ import { ParametersType } from "../enums/ParametersType";
 
 import { ActivationDocument } from "../model/activationDocument/activationDocument";
 import { IdArgument } from "../model/arguments/idArgument";
-import { AttachmentFile, AttachmentFileWithStatus } from "../model/attachmentFile";
 import { DataReference } from "../model/dataReference";
 import { ReserveBidMarketDocument } from "../model/reserveBidMarketDocument";
 import { ReserveBidMarketDocumentCreation } from "../model/reserveBidMarketDocumentCreation";
@@ -22,9 +21,13 @@ import { SiteActivationIndexersController, SiteReserveBidIndexersController } fr
 
 import { QueryStateService } from "./service/QueryStateService";
 import { ReserveBidMarketDocumentService } from "./service/ReserveBidMarketDocumentService";
-import { StarDataService } from "./service/StarDataService";
 import { StarPrivateDataService } from "./service/StarPrivateDataService";
 import { BalancingDocumentController } from "./BalancingDocumentController";
+import { AttachmentFileWithStatus } from "../model/attachmentFile";
+import { RoleType } from "../enums/RoleType";
+import { HLFServices } from "./service/HLFservice";
+import { ReserveBidStatus } from "../enums/ReserveBidStatus";
+import { CommonService } from "./service/CommonService";
 
 
 export class ReserveBidMarketDocumentController {
@@ -37,6 +40,7 @@ export class ReserveBidMarketDocumentController {
 
         const reserveBidCreationObj = ReserveBidMarketDocumentCreation.formatString(inputStr);
         if (reserveBidCreationObj && reserveBidCreationObj.reserveBid) {
+            reserveBidCreationObj.reserveBid.reserveBidStatus = '';
             await this.createObj(params, reserveBidCreationObj);
         }
 
@@ -53,6 +57,7 @@ export class ReserveBidMarketDocumentController {
         const reserveBidCreationObj = ReserveBidMarketDocumentCreationList.formatString(inputStr);
         if (reserveBidCreationObj && reserveBidCreationObj.reserveBidList) {
             for (var reserveBidObj of reserveBidCreationObj.reserveBidList) {
+                reserveBidObj.reserveBidStatus = '';
                 await this.createObj(params, {reserveBid:reserveBidObj, attachmentFileList:reserveBidCreationObj.attachmentFileList});
             }
         }
@@ -186,14 +191,6 @@ export class ReserveBidMarketDocumentController {
                 await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, targetExistingSite);
                 await SiteReserveBidIndexersController.addReserveBidReference(params, reserveBidObj, targetExistingSite);
 
-
-                const activationDocumentIdList: string[] = await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, targetExistingSite);
-                if (activationDocumentIdList && activationDocumentIdList.length > 0) {
-                    for (var activationDocumentId of activationDocumentIdList) {
-
-                        await BalancingDocumentController.createOrUpdateById(params, activationDocumentId, reserveBidObj, null, targetExistingSite);
-                    }
-                }
             }
         }
 
@@ -400,19 +397,84 @@ export class ReserveBidMarketDocumentController {
 
 
     /*
+        inputStr : reserveBidMrid, newStatus
+        output : ReserveBidMarketDocument
+    */
+    public static async updateStatus(params: STARParameters, reserveBidMrid: string, newStatus: string): Promise<string> {
+        params.logger.info('============= START : updateStatus ReserveBidMarketDocumentController ===========');
+
+        const userRole = HLFServices.getUserRole(params);
+
+        if (userRole !== RoleType.Role_DSO && userRole !== RoleType.Role_TSO) {
+            throw new Error(`Organisation, ${userRole} does not have write access to create a reserve bid market document`);
+        }
+
+        if (newStatus !== ReserveBidStatus.VALIDATED
+            && newStatus !== ReserveBidStatus.REFUSED) {
+
+            throw new Error(`UpdateStatus : unkown bew Status ${newStatus}`);
+        }
+
+        const existingReserveBidRef:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidMrid});
+        var reserveBidObj: ReserveBidMarketDocument = null;
+
+        if (existingReserveBidRef) {
+            const dataReference = existingReserveBidRef.values().next().value;
+            if (dataReference && dataReference.data) {
+                reserveBidObj = dataReference.data;
+            }
+
+            if (reserveBidObj
+                && reserveBidObj.reserveBidMrid === reserveBidMrid) {
+
+                reserveBidObj.reserveBidStatus = newStatus;
+
+                for (var [key, ] of existingReserveBidRef) {
+                    await ReserveBidMarketDocumentService.write(params, reserveBidObj, key);
+
+                    if (newStatus === ReserveBidStatus.VALIDATED) {
+                        await SiteReserveBidIndexersController.modifyReserveBidReference(params, reserveBidObj, key);
+
+
+                        const activationDocumentIdList: string[] = await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, key);
+                        if (activationDocumentIdList && activationDocumentIdList.length > 0) {
+                            for (var activationDocumentId of activationDocumentIdList) {
+
+                                await BalancingDocumentController.createOrUpdateById(params, activationDocumentId, reserveBidObj, null, key);
+                            }
+                        }
+                    } else if (newStatus === ReserveBidStatus.REFUSED) {
+                        await SiteReserveBidIndexersController.deleteReserveBidReference(params, reserveBidObj, key);
+                    }
+                }
+            }
+        }
+
+        params.logger.info('=============  END  : updateStatus ReserveBidMarketDocumentController ===========');
+
+        return JSON.stringify(reserveBidObj);
+    }
+
+
+
+
+
+    /*
         inputStr : ReserveBidMrid
         output : ReserveBidMarketDocument
     */
-    public static async getById(params: STARParameters, ReserveBidMrid: string, target: string = ''): Promise<string> {
+    public static async getById(params: STARParameters, reserveBidMrid: string, target: string = ''): Promise<string> {
         params.logger.info('============= START : getById ReserveBidMarketDocumentController ===========');
 
-        const reserveBidObj: ReserveBidMarketDocument = await this.getObjById(params, ReserveBidMrid, target);
+        const reserveBidObj: ReserveBidMarketDocument = await this.getObjById(params, reserveBidMrid, target);
         const cleanedReserveBidObj = this.cleanReserveBidMarketDocumentFileList(reserveBidObj);
 
         params.logger.info('=============  END  : getById ReserveBidMarketDocumentController ===========');
 
         return JSON.stringify(cleanedReserveBidObj);
     }
+
+
 
 
 
@@ -434,14 +496,19 @@ export class ReserveBidMarketDocumentController {
 
 
 
-    public static async getObjById(params: STARParameters, ReserveBidMrid: string, target: string = ''): Promise<ReserveBidMarketDocument> {
+
+
+    public static async getObjById(params: STARParameters, reserveBidMrid: string, target: string = ''): Promise<ReserveBidMarketDocument> {
         params.logger.debug('============= START : get Obj ById ReserveBidMarketDocumentController ===========');
 
-        const reserveBidObj = await this.getObjByIdArgument(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: ReserveBidMrid, collection: target});
+        const reserveBidObj = await this.getObjByIdArgument(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidMrid, collection: target});
 
         params.logger.debug('=============  END  : get Obj ById ReserveBidMarketDocumentController ===========');
         return reserveBidObj;
     }
+
+
+
 
 
 
@@ -468,6 +535,9 @@ export class ReserveBidMarketDocumentController {
     }
 
 
+
+
+
     /*
         inputStr : ReserveBidMrid[]
         output : ReserveBidMarketDocument[]
@@ -487,6 +557,10 @@ export class ReserveBidMarketDocumentController {
         params.logger.info('=============  END  : getListById ReserveBidMarketDocumentController ===========');
         return JSON.stringify(reserveBidObjList);
     }
+
+
+
+
 
     /*
         string[] : ReserveBidMrid[]
@@ -508,6 +582,9 @@ export class ReserveBidMarketDocumentController {
         params.logger.info('=============  END  : getListById ReserveBidMarketDocumentController ===========');
         return reserveBidObjList;
     }
+
+
+
 
 
     private static async checkActivationDocument(
@@ -569,7 +646,8 @@ export class ReserveBidMarketDocumentController {
                 }
 
                 var reserveBidAbstractRef: ReserveBidMarketDocumentAbstract = null;
-                for (var reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractList) {
+                for (const listElt of indexedSiteReserveBidList.indexedDataAbstractList) {
+                    const reserveBidAbstract: ReserveBidMarketDocumentAbstract = listElt;
                     params.logger.debug('reserveBidAbstract: ', JSON.stringify(reserveBidAbstract));
 
                     const check = this.checkActivationDocument(activationDocumentObj, reserveBidAbstract);
@@ -577,6 +655,7 @@ export class ReserveBidMarketDocumentController {
 
                     if (check) {
                         const dateBid = new Date(reserveBidAbstract.validityPeriodStartDateTime);
+                        const dateCreationBid = new Date(reserveBidAbstract.createdDateTime);
 
                         if (dateBid.getTime() === dateBid.getTime()
                             && dateBid <= dateDoc) {
@@ -587,10 +666,16 @@ export class ReserveBidMarketDocumentController {
 
                                     reserveBidAbstractRef = reserveBidAbstract;
                             } else {
-                                const dateBidValue = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
+                                const dateBidRef = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
+                                const dateCreationBidRef = new Date(reserveBidAbstractRef.createdDateTime);
 
-                                if (dateBidValue.getTime() !== dateBidValue.getTime()
-                                    || dateBidValue < dateBid) {
+                                if (dateBidRef.getTime() !== dateBidRef.getTime()
+                                    || dateCreationBidRef.getTime() !== dateCreationBidRef.getTime()) {
+                                    reserveBidAbstractRef = reserveBidAbstract;
+
+                                } else if (dateBidRef < dateBid
+                                    && dateCreationBidRef > dateCreationBid
+                                    && reserveBidAbstract.reserveBidStatus != ReserveBidStatus.REFUSED) {
                                     reserveBidAbstractRef = reserveBidAbstract;
                                 }
 
@@ -699,6 +784,9 @@ export class ReserveBidMarketDocumentController {
         var args: string[] = [];
         args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
 
+        args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+
+
         // var argOrStart: string[] = [];
         // argOrStart.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
         // argOrStart.push(`"validityPeriodStartDateTime":""`);
@@ -716,9 +804,9 @@ export class ReserveBidMarketDocumentController {
         const query = await QueryStateService.buildQuery(
             {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
             queryArgs: args,
-            sort: [`"validityPeriodStartDateTime":"desc"`],
+            sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"desc"`],
             limit:1});
-        // params.logger.debug('query=', query)
+        params.logger.debug('query=', query)
 
         const allResultsWithoutAnyLimit = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query);
         var allResults:ReserveBidMarketDocument[] = [];
@@ -735,6 +823,8 @@ export class ReserveBidMarketDocumentController {
             var argsNext: string[] = [];
             argsNext.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
 
+            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+
             argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${criteriaObj.referenceDateTime}}`);
 
             var argOrEnd: string[] = [];
@@ -746,12 +836,19 @@ export class ReserveBidMarketDocumentController {
             const queryNext = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: argsNext,
-                sort: [`"validityPeriodStartDateTime":"asc"`]});
-            // params.logger.debug('queryNext=', queryNext)
+                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"desc"`]});
+            params.logger.debug('queryNext=', queryNext)
 
             const allResultsNext = await ReserveBidMarketDocumentService.getQueryArrayResult(params, queryNext);
             if (allResultsNext) {
-                allResults = allResults.concat(allResultsNext);
+                var dateRef: string = "";
+                for (const result of allResultsNext) {
+                    if (result.validityPeriodStartDateTime !== dateRef) {
+                        dateRef = result.validityPeriodStartDateTime;
+                        allResults.push(result);
+                    }
+                }
+
             }
         }
 
@@ -790,6 +887,43 @@ export class ReserveBidMarketDocumentController {
         return existing;
     }
 
+
+    public static async getWithoutStatusOutOfTime(
+        params: STARParameters): Promise<ReserveBidMarketDocument[]> {
+
+        params.logger.debug('============= START : getWithoutStatusOutOfTime ReserveBidMarketDocumentController ===========');
+
+        var withoutStatusList: ReserveBidMarketDocument[] = [];
+
+        const reserveBid_validation_time_max: number = params.values.get(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX);
+        var dateRef = CommonService.increaseDateDays(new Date(), reserveBid_validation_time_max);
+        dateRef = CommonService.setHoursEndDay(dateRef);
+        const referenceDateTime =  JSON.parse(JSON.stringify(dateRef));
+
+
+        var args: string[] = [];
+
+        args.push(`"createdDateTime":{"$lte": ${referenceDateTime}}`);
+
+        var argOr: string[] = [];
+        argOr.push(`"reserveBidStatus":""`);
+        argOr.push(`"reserveBidStatus":{"$exists": false}`);
+        args.push(await QueryStateService.buildORCriteria(argOr));
+
+        const query = await QueryStateService.buildQuery(
+            {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
+            queryArgs: args}
+        );
+
+        const allResults = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query);
+        if (allResults) {
+            withoutStatusList = allResults;
+        }
+
+
+        params.logger.debug('=============  END  : getWithoutStatusOutOfTime ReserveBidMarketDocumentController ===========');
+        return withoutStatusList;
+    }
 
 
 

@@ -1,10 +1,6 @@
 import * as Yup from 'yup';
 
 export class ReserveBidMarketDocumentAbstract {
-    public static getId(obj: ReserveBidMarketDocumentAbstract): string {
-        return obj.reserveBidMrid;
-    }
-
     public reserveBidMrid: string;
     public reserveBidStatus: string;
     public validityPeriodStartDateTime?: string;
@@ -12,10 +8,6 @@ export class ReserveBidMarketDocumentAbstract {
 }
 
 export class ActivationDocumentAbstract {
-    public static getId(obj: ActivationDocumentAbstract): string {
-        return obj.activationDocumentMrid;
-    }
-
     public activationDocumentMrid: string;
     public startCreatedDateTime: string;
 }
@@ -26,10 +18,6 @@ export class ActivationDocumentDateMax{
 }
 
 export class EnergyAmountAbstract {
-    public static getId(obj: EnergyAmountAbstract): string {
-        return obj.energyAmountMarketDocumentMrid;
-    }
-
     public energyAmountMarketDocumentMrid: string;
 }
 

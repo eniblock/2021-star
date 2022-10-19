@@ -78,6 +78,7 @@ export class DataIndexersController {
         params: STARParameters,
         indexId: string,
         obj: any,
+        idToModify: string,
         target: string = '') {
         params.logger.debug('============= START : modifyReference DataIndexersController ===========');
 
@@ -99,27 +100,13 @@ export class DataIndexersController {
         }
         var found = false;
 
-        if (typeof obj.getId === "function"
-            && ref.indexedDataAbstractList.length > 0
-            && typeof ref.indexedDataAbstractList[0].getId === "function") {
+        for (var i=0; i< ref.indexedDataAbstractList.length && !found; i++) {
+            const eltValue = JSON.stringify(ref.indexedDataAbstractList[i]);
 
-            const idObj = obj.getId(obj);
-
-            for (var i=0; i< ref.indexedDataAbstractList.length && !found; i++) {
-                if (typeof ref.indexedDataAbstractList[i].getId === "function") {
-                    const idRef = ref.indexedDataAbstractList[i].getId(ref);
-
-                    if (idObj === idRef) {
-                        found = true;
-                        ref.indexedDataAbstractList[i] = obj;
-                        break;
-                    }
-                }
-
+            if (eltValue.includes(idToModify)) {
+                ref.indexedDataAbstractList[i] = obj;
+                found = true;
             }
-        } else {
-            found = true;
-            ref.indexedDataAbstractList.push(obj);
         }
 
         if (!found) {
@@ -270,7 +257,7 @@ export class SiteReserveBidIndexersController {
             validityPeriodStartDateTime:reserveBidObj.validityPeriodStartDateTime,
             createdDateTime:reserveBidObj.createdDateTime};
         const indexId = this.getKey(reserveBidObj.meteringPointMrid);
-        await DataIndexersController.modifyReference(params, indexId, reserveBidMarketDocumentAbstract, target);
+        await DataIndexersController.modifyReference(params, indexId, reserveBidMarketDocumentAbstract, reserveBidObj.reserveBidMrid, target);
 
         params.logger.debug('=============  END  : modifyReserveBidReference SiteReserveBidIndexersController ===========');
     }
@@ -285,7 +272,7 @@ export class SiteReserveBidIndexersController {
         params.logger.debug('============= START : deleteReserveBidReference SiteReserveBidIndexersController ===========');
 
         const indexId = this.getKey(reserveBidObj.meteringPointMrid);
-        await DataIndexersController.addReference(params, indexId, reserveBidObj.meteringPointMrid, target);
+        await DataIndexersController.deleteReference(params, indexId, reserveBidObj.reserveBidMrid, target);
 
         params.logger.debug('=============  END  : deleteReserveBidReference SiteReserveBidIndexersController ===========');
     }

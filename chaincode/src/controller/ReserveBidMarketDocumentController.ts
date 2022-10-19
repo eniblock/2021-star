@@ -806,7 +806,7 @@ export class ReserveBidMarketDocumentController {
             queryArgs: args,
             sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"desc"`],
             limit:1});
-        // params.logger.debug('query=', query)
+        params.logger.debug('query=', query)
 
         const allResultsWithoutAnyLimit = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query);
         var allResults:ReserveBidMarketDocument[] = [];
@@ -837,7 +837,7 @@ export class ReserveBidMarketDocumentController {
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: argsNext,
                 sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"desc"`]});
-            // params.logger.debug('queryNext=', queryNext)
+            params.logger.debug('queryNext=', queryNext)
 
             const allResultsNext = await ReserveBidMarketDocumentService.getQueryArrayResult(params, queryNext);
             if (allResultsNext) {

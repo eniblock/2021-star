@@ -243,7 +243,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
                 reserveBidMrid: expected.reserveBidMrid,
-                validityPeriodStartDateTime: expected.validityPeriodStartDateTime
+                reserveBidStatus: expected.reserveBidStatus,
+                validityPeriodStartDateTime: expected.validityPeriodStartDateTime,
+                createdDateTime: expected.createdDateTime
             };
 
             const expectedIndexer: IndexedData = {
@@ -324,7 +326,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
                 reserveBidMrid: expected.reserveBidMrid,
-                validityPeriodStartDateTime: expected.validityPeriodStartDateTime
+                reserveBidStatus: expected.reserveBidStatus,
+                validityPeriodStartDateTime: expected.validityPeriodStartDateTime,
+                createdDateTime: expected.createdDateTime
             };
 
             const expectedIndexer: IndexedData = {
@@ -359,170 +363,6 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             );
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
-
-        });
-
-
-
-
-
-
-
-        it('should return SUCCESS on CreateReserveBidMarketDocument initial creation with attachment and existing Activation Document by Producer', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
-            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
-
-            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteReserveBid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
-
-            const attachmentFile: AttachmentFile = JSON.parse(JSON.stringify(Values.AttachmentFile_1));
-            const attachmentFileList: AttachmentFile[] = [attachmentFile];
-
-            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
-            reserveBidObj.attachments = [attachmentFile.fileId];
-
-            const reserveBidCreationObj: ReserveBidMarketDocumentCreation = {
-                reserveBid: reserveBidObj,
-                attachmentFileList: attachmentFileList
-            }
-
-            /// Add Max Date in transaction Context
-            const maxDateId = SiteActivationIndexersController.getMaxKey(reserveBidObj.meteringPointMrid);
-            const maxDate: ActivationDocumentDateMax = {
-                docType: DocType.INDEXER_MAX_DATE,
-                dateTime: reserveBidObj.validityPeriodStartDateTime as string,
-            };
-
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], maxDateId).resolves(Buffer.from(JSON.stringify(maxDate)));
-
-
-            //Add Avaliable Activation Document in transaction context
-            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
-            //New date after ReserveBidDate
-            const newDate = CommonService.increaseDateDaysStr(reserveBidObj.validityPeriodStartDateTime as string, 1)
-            activationDocumentObj.startCreatedDateTime = newDate;
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
-
-
-            //Add corresponding eneryAmount in transaction context
-            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount));
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
-
-            //Add Indexed enery Amount in transaction context
-            const energyAmountIndexKey = ActivationEnergyAmountIndexersController.getKey(activationDocumentObj.activationDocumentMrid)
-            const energyAmountAbstract : EnergyAmountAbstract = {energyAmountMarketDocumentMrid:energyAmountObj.energyAmountMarketDocumentMrid};
-            const energyAmountIndexedData: IndexedData = {
-                docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList:[energyAmountAbstract],
-                indexId:energyAmountIndexKey
-            };
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyAmountIndexKey).resolves(Buffer.from(JSON.stringify(energyAmountIndexedData)));
-
-
-            /// Add Indexed Activation Document in transaction Context
-            const indexedDataId = SiteActivationIndexersController.getKey(reserveBidObj.meteringPointMrid, new Date(reserveBidObj.validityPeriodStartDateTime as string));
-
-            const activationAbstract: ActivationDocumentAbstract =
-                {activationDocumentMrid: activationDocumentObj.activationDocumentMrid, startCreatedDateTime: activationDocumentObj.startCreatedDateTime};
-
-            const indexedData: IndexedData = {
-                docType: DocType.DATA_INDEXER,
-                indexId: indexedDataId,
-                indexedDataAbstractList : [activationAbstract],
-            };
-
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], indexedDataId).resolves(Buffer.from(JSON.stringify(indexedData)));
-
-
-            await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
-
-
-            const expected: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
-            expected.attachmentsWithStatus = [];
-            expected.attachments = [attachmentFile.fileId];
-            expected.attachmentsWithStatus = [{fileId:attachmentFile.fileId, status:AttachmentFileStatus.ACTIVE}];
-            expected.reserveBidStatus = '';
-            // params.logger.log('expected=', expected)
-
-            const expectedFile: AttachmentFile = JSON.parse(JSON.stringify(attachmentFile));
-
-            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
-                reserveBidMrid: expected.reserveBidMrid,
-                validityPeriodStartDateTime: expected.validityPeriodStartDateTime
-            };
-
-            const expectedIndexer: IndexedData = {
-                docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract],
-                indexId: SiteReserveBidIndexersController.getKey(expected.meteringPointMrid)
-            };
-
-
-            const expectedBalancingDocument: BalancingDocument = params.values.get(ParametersType.BALANCING_DOCUMENT);
-
-            const balancingDocumentMrid = BalancingDocumentController.getBalancingDocumentMrid(params, activationDocumentObj.activationDocumentMrid);
-            expectedBalancingDocument.balancingDocumentMrid = balancingDocumentMrid;
-            expectedBalancingDocument.activationDocumentMrid = activationDocumentObj.activationDocumentMrid;
-            expectedBalancingDocument.energyAmountMarketDocumentMrid = energyAmountObj.energyAmountMarketDocumentMrid;
-            expectedBalancingDocument.reserveBidMrid = reserveBidObj.reserveBidMrid;
-            expectedBalancingDocument.senderMarketParticipantMrid = activationDocumentObj.senderMarketParticipantMrid;
-            expectedBalancingDocument.receiverMarketParticipantMrid = activationDocumentObj.receiverMarketParticipantMrid;
-            expectedBalancingDocument.createdDateTime = reserveBidObj.createdDateTime;
-            expectedBalancingDocument.period = activationDocumentObj.startCreatedDateTime.concat("/").concat(activationDocumentObj.endCreatedDateTime as string);
-            expectedBalancingDocument.quantityMeasureUnitName = energyAmountObj.measurementUnitName;
-            expectedBalancingDocument.priceMeasureUnitName = reserveBidObj.priceMeasureUnitName;
-            expectedBalancingDocument.currencyUnitName = reserveBidObj.currencyUnitName;
-            expectedBalancingDocument.meteringPointMrid = activationDocumentObj.registeredResourceMrid;
-            expectedBalancingDocument.quantity = Number(energyAmountObj.quantity);
-            expectedBalancingDocument.activationPriceAmount = reserveBidObj.energyPriceAmount;
-            expectedBalancingDocument.financialPriceAmount = expectedBalancingDocument.quantity * expectedBalancingDocument.activationPriceAmount;
-
-
-            // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
-            // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expected))
-            // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
-            // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedFile))
-            // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
-            // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexer))
-            // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
-            // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedBalancingDocument))
-            // params.logger.info("-----------")
-
-            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
-                "enedis-producer",
-                expected.reserveBidMrid,
-                Buffer.from(JSON.stringify(expected))
-            );
-            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedFile.fileId,
-                Buffer.from(JSON.stringify(expectedFile))
-            );
-            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedIndexer.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer))
-            );
-            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedBalancingDocument.balancingDocumentMrid,
-                Buffer.from(JSON.stringify(expectedBalancingDocument))
-            );
-
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(4);
 
         });
 
@@ -713,10 +553,32 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
 
+            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime,
+                reserveBidStatus: reserveBidObj.reserveBidStatus as string,
+                createdDateTime: reserveBidObj.createdDateTime
+            };
+            const indexedDataAbstract2: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidMrid,
+                validityPeriodStartDateTime: Values.HTA_ReserveBidMarketDocument_2_Full.validityPeriodStartDateTime,
+                reserveBidStatus: Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidStatus as string,
+                createdDateTime: Values.HTA_ReserveBidMarketDocument_2_Full.createdDateTime
+            };
+
+            const indexedData: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract, indexedDataAbstract2],
+                indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
+            };
+
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             for (const collectionName of collectionNames) {
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
             }
+
+
             const newStatus = ReserveBidStatus.VALIDATED;
 
             let ret = await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
@@ -731,6 +593,16 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             expect(ret).to.eql(expected);
 
+            const expectedIndexedData: IndexedData = JSON.parse(JSON.stringify(indexedData));
+
+            const expectedIndexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: expected.reserveBidMrid,
+                reserveBidStatus: expected.reserveBidStatus as string,
+                validityPeriodStartDateTime: expected.validityPeriodStartDateTime,
+                createdDateTime: expected.createdDateTime
+            };
+
+            expectedIndexedData.indexedDataAbstractList = [expectedIndexedDataAbstract, indexedDataAbstract2];
 
             var i: number = 0;
             for (const collectionName of collectionNames) {
@@ -739,19 +611,204 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 // params.logger.info("ooooooooo")
                 // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(i).args[2].toString()).toString('utf8'));
                 // params.logger.info(JSON.stringify(expected))
+                // params.logger.info("-----------")
+                // params.logger.info(transactionContext.stub.putPrivateData.getCall(i+1).args);
+                // params.logger.info("ooooooooo")
+                // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(i+1).args[2].toString()).toString('utf8'));
+                // params.logger.info(JSON.stringify(expectedIndexedData))
 
-                i++;
-
-
-                transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                transactionContext.stub.putPrivateData.getCall(i).should.have.been.calledWithExactly(
                     collectionName,
                     expected.reserveBidMrid,
                     Buffer.from(JSON.stringify(expected))
                 );
+                transactionContext.stub.putPrivateData.getCall(i+1).should.have.been.calledWithExactly(
+                    collectionName,
+                    indexedData.indexId,
+                    Buffer.from(JSON.stringify(expectedIndexedData))
+                );
+
+                i=i+2;
             }
             // params.logger.info("-----------")
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(collectionNames.length);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2*collectionNames.length);
+
+        });
+
+
+
+
+        it('should return SUCCESS on UpdateStatus with attachment and existing Activation Document - Enedis', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteReserveBid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+
+            // Add ReserveBid and indexes in Transaction Context
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+
+            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime,
+                reserveBidStatus: reserveBidObj.reserveBidStatus as string,
+                createdDateTime: reserveBidObj.createdDateTime
+            };
+            const indexedDataAbstract2: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidMrid,
+                validityPeriodStartDateTime: Values.HTA_ReserveBidMarketDocument_2_Full.validityPeriodStartDateTime,
+                reserveBidStatus: Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidStatus as string,
+                createdDateTime: Values.HTA_ReserveBidMarketDocument_2_Full.createdDateTime
+            };
+
+            const indexedData: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract, indexedDataAbstract2],
+                indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
+            };
+
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
+
+
+
+            /// Add Max Date in transaction Context
+            const maxDateId = SiteActivationIndexersController.getMaxKey(reserveBidObj.meteringPointMrid);
+            const maxDate: ActivationDocumentDateMax = {
+                docType: DocType.INDEXER_MAX_DATE,
+                dateTime: reserveBidObj.validityPeriodStartDateTime as string,
+            };
+
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], maxDateId).resolves(Buffer.from(JSON.stringify(maxDate)));
+
+
+            //Add Avaliable Activation Document in transaction context
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            //New date after ReserveBidDate
+            const newDate = CommonService.increaseDateDaysStr(reserveBidObj.validityPeriodStartDateTime as string, 1)
+            activationDocumentObj.startCreatedDateTime = newDate;
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+
+            //Add corresponding eneryAmount in transaction context
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            //Add Indexed enery Amount in transaction context
+            const energyAmountIndexKey = ActivationEnergyAmountIndexersController.getKey(activationDocumentObj.activationDocumentMrid)
+            const energyAmountAbstract : EnergyAmountAbstract = {energyAmountMarketDocumentMrid:energyAmountObj.energyAmountMarketDocumentMrid};
+            const energyAmountIndexedData: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList:[energyAmountAbstract],
+                indexId:energyAmountIndexKey
+            };
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyAmountIndexKey).resolves(Buffer.from(JSON.stringify(energyAmountIndexedData)));
+
+
+            /// Add Indexed Activation Document in transaction Context
+            const indexedActivationDataId = SiteActivationIndexersController.getKey(reserveBidObj.meteringPointMrid, new Date(reserveBidObj.validityPeriodStartDateTime as string));
+
+            const activationAbstract: ActivationDocumentAbstract =
+                {activationDocumentMrid: activationDocumentObj.activationDocumentMrid, startCreatedDateTime: activationDocumentObj.startCreatedDateTime};
+
+            const indexedDataActivation: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexedActivationDataId,
+                indexedDataAbstractList : [activationAbstract],
+            };
+
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], indexedActivationDataId).resolves(Buffer.from(JSON.stringify(indexedDataActivation)));
+
+
+            const newStatus = ReserveBidStatus.VALIDATED;
+
+            let ret = await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
+            ret = JSON.parse(ret);
+            // params.logger.log('ret=', ret)
+
+            const expected: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
+            expected.attachmentsWithStatus = [];
+            expected.attachments = [];
+            expected.reserveBidStatus = newStatus;
+            // params.logger.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+
+            const expectedIndexedData: IndexedData = JSON.parse(JSON.stringify(indexedData));
+
+            const expectedIndexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: expected.reserveBidMrid,
+                reserveBidStatus: expected.reserveBidStatus as string,
+                validityPeriodStartDateTime: expected.validityPeriodStartDateTime,
+                createdDateTime: expected.createdDateTime
+            };
+
+            expectedIndexedData.indexedDataAbstractList = [expectedIndexedDataAbstract, indexedDataAbstract2];
+
+
+            // const expectedIndexer: IndexedData = {
+            //     docType: DocType.DATA_INDEXER,
+            //     indexedDataAbstractList: [indexedDataAbstract],
+            //     indexId: SiteReserveBidIndexersController.getKey(expected.meteringPointMrid)
+            // };
+
+
+            const expectedBalancingDocument: BalancingDocument = params.values.get(ParametersType.BALANCING_DOCUMENT);
+
+            const balancingDocumentMrid = BalancingDocumentController.getBalancingDocumentMrid(params, activationDocumentObj.activationDocumentMrid);
+            expectedBalancingDocument.balancingDocumentMrid = balancingDocumentMrid;
+            expectedBalancingDocument.activationDocumentMrid = activationDocumentObj.activationDocumentMrid;
+            expectedBalancingDocument.energyAmountMarketDocumentMrid = energyAmountObj.energyAmountMarketDocumentMrid;
+            expectedBalancingDocument.reserveBidMrid = reserveBidObj.reserveBidMrid;
+            expectedBalancingDocument.senderMarketParticipantMrid = activationDocumentObj.senderMarketParticipantMrid;
+            expectedBalancingDocument.receiverMarketParticipantMrid = activationDocumentObj.receiverMarketParticipantMrid;
+            expectedBalancingDocument.createdDateTime = reserveBidObj.createdDateTime;
+            expectedBalancingDocument.period = activationDocumentObj.startCreatedDateTime.concat("/").concat(activationDocumentObj.endCreatedDateTime as string);
+            expectedBalancingDocument.quantityMeasureUnitName = energyAmountObj.measurementUnitName;
+            expectedBalancingDocument.priceMeasureUnitName = reserveBidObj.priceMeasureUnitName;
+            expectedBalancingDocument.currencyUnitName = reserveBidObj.currencyUnitName;
+            expectedBalancingDocument.meteringPointMrid = activationDocumentObj.registeredResourceMrid;
+            expectedBalancingDocument.quantity = Number(energyAmountObj.quantity);
+            expectedBalancingDocument.activationPriceAmount = reserveBidObj.energyPriceAmount;
+            expectedBalancingDocument.financialPriceAmount = expectedBalancingDocument.quantity * expectedBalancingDocument.activationPriceAmount;
+
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexedData))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedBalancingDocument))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expected.reserveBidMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedIndexedData.indexId,
+                Buffer.from(JSON.stringify(expectedIndexedData))
+            );
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                "enedis-producer",
+                expectedBalancingDocument.balancingDocumentMrid,
+                Buffer.from(JSON.stringify(expectedBalancingDocument))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(3);
 
         });
 
@@ -764,10 +821,32 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
 
+            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime,
+                reserveBidStatus: reserveBidObj.reserveBidStatus as string,
+                createdDateTime: reserveBidObj.createdDateTime
+            };
+            const indexedDataAbstract2: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidMrid,
+                validityPeriodStartDateTime: Values.HTA_ReserveBidMarketDocument_2_Full.validityPeriodStartDateTime,
+                reserveBidStatus: Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidStatus as string,
+                createdDateTime: Values.HTA_ReserveBidMarketDocument_2_Full.createdDateTime
+            };
+
+            const indexedData: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract, indexedDataAbstract2],
+                indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
+            };
+
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             for (const collectionName of collectionNames) {
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
             }
+
+
             const newStatus = ReserveBidStatus.REFUSED;
 
             let ret = await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
@@ -782,6 +861,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             expect(ret).to.eql(expected);
 
+            const expectedIndexedData: IndexedData = JSON.parse(JSON.stringify(indexedData));
+            expectedIndexedData.indexedDataAbstractList = [indexedDataAbstract2];
+
 
             var i: number = 0;
             for (const collectionName of collectionNames) {
@@ -790,19 +872,29 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 // params.logger.info("ooooooooo")
                 // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(i).args[2].toString()).toString('utf8'));
                 // params.logger.info(JSON.stringify(expected))
+                // params.logger.info("-----------")
+                // params.logger.info(transactionContext.stub.putPrivateData.getCall(i+1).args);
+                // params.logger.info("ooooooooo")
+                // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(i+1).args[2].toString()).toString('utf8'));
+                // params.logger.info(JSON.stringify(expectedIndexedData))
 
-                i++;
-
-
-                transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                transactionContext.stub.putPrivateData.getCall(i).should.have.been.calledWithExactly(
                     collectionName,
                     expected.reserveBidMrid,
                     Buffer.from(JSON.stringify(expected))
                 );
+                transactionContext.stub.putPrivateData.getCall(i+1).should.have.been.calledWithExactly(
+                    collectionName,
+                    indexedData.indexId,
+                    Buffer.from(JSON.stringify(expectedIndexedData))
+                );
+
+                i=i+2;
+
             }
             // params.logger.info("-----------")
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(collectionNames.length);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2*collectionNames.length);
 
         });
 
@@ -1046,6 +1138,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             var args: string[] = [];
             args.push(`"meteringPointMrid":"${reserveBidObj1.meteringPointMrid}"`);
+
+            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+
             args.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaDate)}}`);
 
             var argOrEnd: string[] = [];
@@ -1058,7 +1153,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const query = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: args,
-                sort: [`"validityPeriodStartDateTime":"desc"`],
+                sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"desc"`],
                 limit:1});
 
             const iterator1 = Values.getQueryMockArrayValues([reserveBidObj1], mockHandler);
@@ -1071,6 +1166,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             var argsNext: string[] = [];
             argsNext.push(`"meteringPointMrid":"${reserveBidObj2.meteringPointMrid}"`);
+
+            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+
             argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${JSON.stringify(criteriaDate)}}`);
 
             var argOrEnd: string[] = [];
@@ -1082,7 +1180,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const queryNext = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: argsNext,
-                sort: [`"validityPeriodStartDateTime":"asc"`]});
+                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"desc"`]});
 
             const iteratorNext = Values.getQueryMockArrayValues([reserveBidObj2], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryNext).resolves(iteratorNext);
@@ -1131,6 +1229,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             var args: string[] = [];
             args.push(`"meteringPointMrid":"${reserveBidObj1.meteringPointMrid}"`);
+
+            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+
             args.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaDate)}}`);
 
             var argOrEnd: string[] = [];
@@ -1143,7 +1244,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const query = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: args,
-                sort: [`"validityPeriodStartDateTime":"desc"`],
+                sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"desc"`],
                 limit:1});
 
             const iterator1 = Values.getQueryMockArrayValues([reserveBidObj1], mockHandler);
@@ -1156,6 +1257,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             var argsNext: string[] = [];
             argsNext.push(`"meteringPointMrid":"${reserveBidObj2.meteringPointMrid}"`);
+
+            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+
             argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${JSON.stringify(criteriaDate)}}`);
 
             var argOrEnd: string[] = [];
@@ -1167,7 +1271,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const queryNext = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: argsNext,
-                sort: [`"validityPeriodStartDateTime":"asc"`]});
+                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"desc"`]});
 
             const iteratorNext = Values.getQueryMockArrayValues([reserveBidObj2], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryNext).resolves(iteratorNext);
@@ -1213,6 +1317,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             var args: string[] = [];
             args.push(`"meteringPointMrid":"${reserveBidObj1.meteringPointMrid}"`);
+
+            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+
             args.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaDate)}}`);
 
             var argOrEnd: string[] = [];
@@ -1225,8 +1332,10 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const query = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: args,
-                sort: [`"validityPeriodStartDateTime":"desc"`],
+                sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"desc"`],
                 limit:1});
+
+            // params.logger.log("test query: ", query)
 
             const iterator1 = Values.getQueryMockArrayValues([reserveBidObj1], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator1);
@@ -1238,6 +1347,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             var argsNext: string[] = [];
             argsNext.push(`"meteringPointMrid":"${reserveBidObj2.meteringPointMrid}"`);
+
+            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+
             argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${JSON.stringify(criteriaDate)}}`);
 
             var argOrEnd: string[] = [];
@@ -1249,7 +1361,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const queryNext = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: argsNext,
-                sort: [`"validityPeriodStartDateTime":"asc"`]});
+                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"desc"`]});
+
+            // params.logger.log("test queryNext: ", queryNext);
 
             const iteratorNext = Values.getQueryMockArrayValues([reserveBidObj2], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryNext).resolves(iteratorNext);

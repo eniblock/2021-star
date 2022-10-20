@@ -1,5 +1,6 @@
 package com.star.models.historiquelimitation;
 
+import com.star.models.balancing.BalancingDocument;
 import com.star.models.energyamount.EnergyAmount;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.producer.Producer;
@@ -26,4 +27,5 @@ public class HistoriqueLimitation {
     private OrdreLimitation activationDocument;
     private OrdreLimitation[] subOrderList;
     private ReserveBid reserveBidMarketDocument;
+    private BalancingDocument balancingDocument;
 }

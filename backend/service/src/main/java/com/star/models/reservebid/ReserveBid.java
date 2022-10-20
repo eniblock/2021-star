@@ -19,7 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReserveBid {
-
     @JsonIgnore
     private String docType;
     private String reserveBidMrid;
@@ -38,6 +37,7 @@ public class ReserveBid {
     private String priceMeasureUnitName;
     private String currencyUnitName;
     private String flowDirection;
+    private String reserveBidStatus;
     @NotNull(message = "Le champ energyPriceAmount est obligatoire")
     private Float energyPriceAmount;
     private List<String> attachments;

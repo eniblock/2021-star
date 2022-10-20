@@ -9,6 +9,7 @@ import {
 } from "../../../components/formulaires/form-ajout-tarif-unitaire/form-ajout-tarif-unitaire.component";
 import {FormulaireReserveBid, ReserveBid} from "../../../models/ReserveBid";
 import {ReserveBidService} from "../../../services/api/reserve-bid.service";
+import {DateHelper} from "../../../helpers/date.helper";
 
 @Component({
   selector: 'app-sites-production-resultat',
@@ -26,7 +27,11 @@ export class SitesProductionResultatComponent implements OnInit {
 
   showDetails = false;
 
-  currentReserveBids: ReserveBid[] | null = [];
+  allReserveBids?: ReserveBid[];
+  currentReserveBid?: ReserveBid;
+  reserveBidsToShow: ReserveBid[] = [];
+  showAllReservids = false;
+
 
   constructor(
     private instanceService: InstanceService,
@@ -44,7 +49,7 @@ export class SitesProductionResultatComponent implements OnInit {
   open() {
     this.showDetails = true;
     this.reserveBidService.getReserveBidBySite(this.resultat!.meteringPointMrid)
-      .subscribe(reserveBids => this.currentReserveBids = reserveBids);
+      .subscribe(reserveBids => this.initReserveBids(reserveBids));
   }
 
   close() {
@@ -64,4 +69,32 @@ export class SitesProductionResultatComponent implements OnInit {
     });
   }
 
+  private initReserveBids(reserveBids: ReserveBid[] | null) {
+    this.allReserveBids = reserveBids
+      ?.sort((r1, r2) => r1.validityPeriodStartDateTime.localeCompare(r2.validityPeriodStartDateTime));
+    if (reserveBids != null) {
+      let currentDate = new Date();
+      for (let rb of reserveBids) {
+        if (currentDate.getTime() >= new Date(rb.validityPeriodStartDateTime).getTime()) {
+          this.currentReserveBid = rb;
+        } else {
+          break;
+        }
+      }
+    }
+    this.updateReserveBidsToShow();
+  }
+
+  private updateReserveBidsToShow() {
+    if (this.showAllReservids) {
+      this.reserveBidsToShow = this.allReserveBids ? this.allReserveBids : [];
+    } else {
+      this.reserveBidsToShow = this.currentReserveBid ? [this.currentReserveBid] : [];
+    }
+  }
+
+  switchShowAllReserveBids() {
+    this.showAllReservids = !this.showAllReservids;
+    this.updateReserveBidsToShow()
+  }
 }

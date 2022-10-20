@@ -53,6 +53,11 @@
     </td>
   </ng-container>
 
+  <ng-container matColumnDef="montantIndemnisation">
+    <th mat-header-cell *matHeaderCellDef> {{ 'montantIndemnisation' | LimitationTableFieldPipe }} </th>
+    <td mat-cell *matCellDef="let element"> {{ '...' }} </td>
+  </ng-container>
+
   <ng-container matColumnDef="typeLimitation">
     <th mat-header-cell *matHeaderCellDef> {{ 'typeLimitation' | LimitationTableFieldPipe }} </th>
     <td mat-cell *matCellDef="let element"> {{ element.limitationType }} </td>

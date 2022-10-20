@@ -110,6 +110,9 @@ public class ReserveBidService {
             if (isBlank(reserveBid.getCurrencyUnitName())) {
                 reserveBid.setCurrencyUnitName(EMPTY);
             }
+            if (isBlank(reserveBid.getReserveBidStatus())) {
+                reserveBid.setReserveBidStatus(EMPTY);
+            }
             ReserveBidMarketDocumentCreation reserveBidMarketDocumentCreation = new ReserveBidMarketDocumentCreation();
             List<String> attachments = new ArrayList<>();
             List<AttachmentFile> attachmentFileList = new ArrayList<>();

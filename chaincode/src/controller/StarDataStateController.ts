@@ -1,3 +1,4 @@
+import { DataActionType } from "../enums/DataActionType";
 import { DocType } from "../enums/DocType";
 import { EligibilityStatusType } from "../enums/EligibilityStatusType";
 
@@ -68,6 +69,14 @@ export class StarDataStateController {
 
         const orderReferences = await EligibilityController.getEligibilityStatusState(params, orderReferencesMap);
 
+        const listReserveBidStatusToUpdate = await ReserveBidMarketDocumentController.getWithoutStatusOutOfTime(params);
+
+        if (listReserveBidStatusToUpdate && listReserveBidStatusToUpdate.length > 0) {
+            for (var reserveBidStatusToUpdate of listReserveBidStatusToUpdate) {
+                reserveBidStatusToUpdate.dataAction = DataActionType.UPDATE;
+                orderReferences.push(reserveBidStatusToUpdate);
+            }
+        }
 
         // //Add Indexed Data References (to fill lack in data if needed)
 
@@ -166,7 +175,7 @@ export class StarDataStateController {
                 } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
                     await EnergyAmountController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.RESERVE_BID_MARKET_DOCUMENT) {
-                    await ReserveBidMarketDocumentController.createByReference(params, updateOrder);
+                    await ReserveBidMarketDocumentController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
                     await AttachmentFileController.createByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.DATA_INDEXER) {

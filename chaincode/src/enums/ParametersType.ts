@@ -40,6 +40,7 @@
 
     RESERVE_BID_MARKET_DOCUMENT_BASE = "reserveBidMarketDocumentBase",
     RESERVE_BID_VALIDATION_TIME_MAX = 'reserveBid_validation_time_max',
+    RESERVE_BID_OUT_OF_TIME_STATUS = 'reserveBid_out_of_time_status',
 
     BALANCING_DOCUMENT = "balancingDocument",
     BALANCING_DOCUMENT_PREFIX = "balancingDocumentPrefix"

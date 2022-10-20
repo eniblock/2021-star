@@ -8,6 +8,7 @@ import { CommonService } from './service/CommonService';
 import { ReserveBidMarketDocument } from '../model/reserveBidMarketDocument';
 import { BalancingDocument } from '../model/balancingDocument';
 import { DocType } from '../enums/DocType';
+import { ReserveBidStatus } from '../enums/ReserveBidStatus';
 
 
 const enedis_producer = "enedis-producer";
@@ -20,6 +21,7 @@ const pc_time_match_threshold: number = 5*60*1000; //5 minutes
 const pc_time_updateend_match_threshold: number = 24*60*60*1000; // 24 hours
 
 const reserveBid_validation_time_max: number = 30; // 30 days
+const reserveBid_out_of_time_status = ReserveBidStatus.VALIDATED;
 
 const energyAccount_TimeInterval_LAPsec = 24 * 60 * 60;
 const energyAccount_TimeInterval_LAPsec_Less1H = 23 * 60 * 60;
@@ -73,6 +75,7 @@ export class ParametersController {
 
 
         parameters.values.set(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX, reserveBid_validation_time_max);
+        parameters.values.set(ParametersType.RESERVE_BID_OUT_OF_TIME_STATUS, reserveBid_out_of_time_status);
 
 
         parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec, energyAccount_TimeInterval_LAPsec);
@@ -114,6 +117,13 @@ export class ParametersController {
         parameters.values.set(ParametersType.BALANCING_DOCUMENT, balancingDocument);
 
         parameters.values.set(ParametersType.BALANCING_DOCUMENT_PREFIX, "BaDoc_");
+
+
+
+
+
+
+
 
         if (identity === OrganizationTypeMsp.ENEDIS) {
             /*

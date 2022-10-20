@@ -28,6 +28,7 @@ import { RoleType } from "../enums/RoleType";
 import { HLFServices } from "./service/HLFservice";
 import { ReserveBidStatus } from "../enums/ReserveBidStatus";
 import { CommonService } from "./service/CommonService";
+import { DataActionType } from "../enums/DataActionType";
 
 
 export class ReserveBidMarketDocumentController {
@@ -400,7 +401,7 @@ export class ReserveBidMarketDocumentController {
         inputStr : reserveBidMrid, newStatus
         output : ReserveBidMarketDocument
     */
-    public static async updateStatus(params: STARParameters, reserveBidMrid: string, newStatus: string): Promise<string> {
+    public static async updateStatus(params: STARParameters, reserveBidMrid: string, newStatus: string, target: string = ''): Promise<string> {
         params.logger.info('============= START : updateStatus ReserveBidMarketDocumentController ===========');
 
         const userRole = HLFServices.getUserRole(params);
@@ -415,7 +416,20 @@ export class ReserveBidMarketDocumentController {
             throw new Error(`UpdateStatus : unkown bew Status ${newStatus}`);
         }
 
-        const existingReserveBidRef:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidMrid});
+        var existingReserveBidRef:Map<string, DataReference>;
+        if (!target || target.length === 0) {
+            existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidMrid});
+        } else {
+            existingReserveBidRef = new Map<string, DataReference>();
+            const reserveBidObjRef = await StarPrivateDataService.getObj(params, {id: reserveBidMrid, collection: target, docType: DocType.RESERVE_BID_MARKET_DOCUMENT});
+            const dataReference:DataReference = {
+                docType: DocType.RESERVE_BID_MARKET_DOCUMENT,
+                collection: target,
+                data: reserveBidObjRef
+            };
+            existingReserveBidRef.set(target, dataReference);
+        }
+
         var reserveBidObj: ReserveBidMarketDocument = null;
 
         if (existingReserveBidRef) {
@@ -901,16 +915,16 @@ export class ReserveBidMarketDocumentController {
 
 
     public static async getWithoutStatusOutOfTime(
-        params: STARParameters): Promise<ReserveBidMarketDocument[]> {
+        params: STARParameters): Promise<DataReference[]> {
 
         params.logger.debug('============= START : getWithoutStatusOutOfTime ReserveBidMarketDocumentController ===========');
 
-        var withoutStatusList: ReserveBidMarketDocument[] = [];
+        var withoutStatusList: DataReference[] = [];
 
         const reserveBid_validation_time_max: number = params.values.get(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX);
         var dateRef = CommonService.increaseDateDays(new Date(), reserveBid_validation_time_max);
         dateRef = CommonService.setHoursEndDay(dateRef);
-        const referenceDateTime =  JSON.parse(JSON.stringify(dateRef));
+        const referenceDateTime =  JSON.stringify(dateRef);
 
 
         var args: string[] = [];
@@ -926,9 +940,10 @@ export class ReserveBidMarketDocumentController {
             {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
             queryArgs: args}
         );
+        params.logger.debug("query :", query)
 
-        const allResults = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query);
-        if (allResults) {
+        const allResults = await ReserveBidMarketDocumentService.getQueryArrayDataReferenceResult(params, query);
+        if (allResults && allResults.length > 0) {
             withoutStatusList = allResults;
         }
 
@@ -938,5 +953,58 @@ export class ReserveBidMarketDocumentController {
     }
 
 
+    public static async executeOrder(
+        params: STARParameters,
+        updateOrder: DataReference) {
+        params.logger.debug('============= START : executeOrder ReserveBidMarketDocumentController ===========');
+
+        if (updateOrder.data) {
+            ReserveBidMarketDocument.schema.validateSync(
+                updateOrder.data,
+                {strict: true, abortEarly: false},
+            );
+
+            if (updateOrder.dataAction === DataActionType.UPDATE) {
+                const reserveBidObj:ReserveBidMarketDocument = updateOrder.data;
+                await ReserveBidMarketDocumentController.executeUpdateOrder(params, reserveBidObj, updateOrder.collection);
+            } else {
+                await ReserveBidMarketDocumentController.createByReference(params, updateOrder);
+            }
+
+        }
+
+        params.logger.debug('============= END   : executeOrder ReserveBidMarketDocumentController ===========');
+    }
+
+
+    private static async executeUpdateOrder(
+        params: STARParameters,
+        reserveBidObj:ReserveBidMarketDocument,
+        target: string) {
+        params.logger.debug('============= START : executeUpdateOrder ReserveBidMarketDocumentController ===========');
+
+        if (reserveBidObj.reserveBidMrid
+            && reserveBidObj.reserveBidMrid.length > 0
+            && reserveBidObj.createdDateTime
+            && reserveBidObj.createdDateTime.length > 0) {
+
+            const reserveBid_validation_time_max: number = params.values.get(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX);
+            var dateRef = CommonService.increaseDateDays(new Date(), reserveBid_validation_time_max);
+            dateRef = CommonService.setHoursEndDay(dateRef);
+
+            const reserveBidDateCreation = new Date(reserveBidObj.createdDateTime);
+
+            const reserveBid_out_of_time_status: string = params.values.get(ParametersType.RESERVE_BID_OUT_OF_TIME_STATUS);
+
+            if (reserveBidDateCreation <= dateRef
+                && (!reserveBidObj.reserveBidStatus
+                    || reserveBidObj.reserveBidStatus.length === 0)) {
+
+                await this.updateStatus(params, reserveBidObj.reserveBidMrid, reserveBid_out_of_time_status, target);
+            }
+        }
+
+        params.logger.debug('============= END   : executeUpdateOrder ReserveBidMarketDocumentController ===========');
+    }
 
 }

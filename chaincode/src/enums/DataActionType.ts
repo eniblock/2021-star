@@ -1,3 +1,4 @@
 export enum DataActionType {
-    COLLECTION_CHANGE = "X",
+    COLLECTION_CHANGE = "COLLECTION_CHANGE",
+    UPDATE = "UPDATE",
 }

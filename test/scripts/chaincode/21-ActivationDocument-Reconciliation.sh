@@ -114,9 +114,6 @@ echo
 echo "** RTE"
 echo
 
-
-
-
 echo
 echo "GetActivationDocumentReconciliationState"
 echo
@@ -128,7 +125,23 @@ kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/v
 
 
 OUTPUT_RTE=$(echo $OUTPUT_RTE | grep -o -P '(?<=").*(?=")')
+OUTPUT_RTE=$(printf "%b" $OUTPUT_RTE)
+
+echo
+echo "Call Result"
+echo
+
+OUTPUT_RTE_TOPRINT=$(echo $OUTPUT_RTE | sed "s/\\\\\"/\"/g")
+
+# echo $OUTPUT_RTE_TOPRINT
+
+echo
+echo
+echo
+
+
 OUTPUT_RTE="${OUTPUT_RTE:1:-1}"
+
 
 DELIMITER="}},{"
 OUTPUT_RTE=$OUTPUT_RTE$DELIMITER
@@ -171,6 +184,8 @@ while [[ $OUTPUT_RTE ]]; do
 
                 echo
                 echo "UpdateActivationDocumentByOrders $COLLECTION_OUTPUT"
+                echo $TLSOPT
+                echo $VALUE_OUTPUT
                 echo
 
                 kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \

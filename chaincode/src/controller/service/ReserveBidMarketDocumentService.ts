@@ -1,5 +1,6 @@
 import { DocType } from "../../enums/DocType";
 import { ParametersType } from "../../enums/ParametersType";
+import { DataReference } from "../../model/dataReference";
 
 import { ReserveBidMarketDocument } from "../../model/reserveBidMarketDocument";
 import { STARParameters } from "../../model/starParameters";
@@ -79,6 +80,54 @@ export class ReserveBidMarketDocumentService {
 
         params.logger.debug('=============  END  : getPrivateQueryArrayResult ReserveBidMarketDocumentService ===========');
         return allResults;
+    }
+
+
+
+    public static async getQueryArrayDataReferenceResult(
+        params: STARParameters,
+        query: string,
+        target: string = ''): Promise<DataReference[]>  {
+
+        params.logger.debug('============= START : getQueryArrayDataReferenceResult ReserveBidMarketDocumentService ===========');
+
+        let collections: string[];
+        if (target && target.length > 0) {
+            collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
+        } else {
+            collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        }
+
+        var allDataReferenceResults:DataReference[] = [];
+        var allResultsId: string[] = [];
+
+        if (collections) {
+            for (var i=0; i<collections.length; i++) {
+                // params.logger.debug("collection : ", collections[i])
+                let results: ReserveBidMarketDocument[] = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, collection: collections[i]});
+                // params.logger.debug("results :", JSON.stringify(results))
+                for (var result of results) {
+                    if (result
+                        && result.reserveBidMrid
+                        && result.reserveBidMrid !== ""
+                        && !allResultsId.includes(result.reserveBidMrid)) {
+
+                            allResultsId.push(result.reserveBidMrid);
+                            const dataReference:DataReference = {
+                                docType: DocType.RESERVE_BID_MARKET_DOCUMENT,
+                                collection: collections[i],
+                                data: result
+                            }
+                            allDataReferenceResults.push(dataReference);
+                        }
+                }
+                // params.logger.debug("allResults :", JSON.stringify(allResults))
+                // params.logger.debug("allResultsId :", JSON.stringify(allResultsId))
+            }
+        }
+
+        params.logger.debug('=============  END  : getQueryArrayDataReferenceResult ReserveBidMarketDocumentService ===========');
+        return allDataReferenceResults;
     }
 
 }

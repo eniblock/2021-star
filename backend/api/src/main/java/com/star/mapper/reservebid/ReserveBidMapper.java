@@ -2,7 +2,6 @@ package com.star.mapper.reservebid;
 
 import com.star.dto.reservebid.ReserveBidDTO;
 import com.star.models.reservebid.ReserveBid;
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

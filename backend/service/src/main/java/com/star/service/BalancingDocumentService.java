@@ -6,12 +6,14 @@ import com.star.models.balancing.BalancingDocument;
 import com.star.models.balancing.BalancingDocumentCriteria;
 import com.star.repository.BalancingDocumentRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -34,6 +36,21 @@ public class BalancingDocumentService {
                 isBlank(balancingDocumentCriteria.getEndCreatedDateTime()) &&
                 isBlank(balancingDocumentCriteria.getMeteringPointMrid())) {
             throw new BusinessException("You must enter at least one search criteria");
+        }
+        if (isBlank(balancingDocumentCriteria.getActivationDocumentMrid())) {
+            balancingDocumentCriteria.setActivationDocumentMrid(EMPTY);
+        }
+
+        if (isBlank(balancingDocumentCriteria.getStartCreatedDateTime())) {
+            balancingDocumentCriteria.setStartCreatedDateTime(EMPTY);
+        }
+
+        if (isBlank(balancingDocumentCriteria.getEndCreatedDateTime())) {
+            balancingDocumentCriteria.setEndCreatedDateTime(EMPTY);
+        }
+
+        if (isBlank(balancingDocumentCriteria.getMeteringPointMrid())) {
+            balancingDocumentCriteria.setMeteringPointMrid(EMPTY);
         }
         return balancingDocumentRepository.findBalancingDocumentByCriteria(balancingDocumentCriteria);
     }

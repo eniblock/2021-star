@@ -758,6 +758,54 @@ export class Values {
     }
 
 
+    public static HTB_ReserveBidMarketDocument_1_Full: ReserveBidMarketDocument = {
+        docType: DocType.RESERVE_BID_MARKET_DOCUMENT,
+        reserveBidMrid: "HTB_ReserveBidMarketDocument_1_Full",
+        meteringPointMrid: Values.HTB_site_valid.meteringPointMrid,
+        revisionNumber: "0",
+        messageType: 'A44',
+        processType: 'A27',
+        senderMarketParticipantMrid: Values.HTB_site_valid.systemOperatorMarketParticipantMrid,
+        receiverMarketParticipantMrid: Values.HTB_site_valid.producerMarketParticipantMrid,
+        createdDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
+        validityPeriodStartDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
+        validityPeriodEndDateTime: "",
+        businessType: 'A87',
+        quantityMeasureUnitName: 'MWh',
+        priceMeasureUnitName: '€/MWh',
+        currencyUnitName: '€',
+        flowDirection: "Direction_HTB_ReserveBidMarketDocument_1",
+        energyPriceAmount: 42.0,
+
+        attachments: [],
+        attachmentsWithStatus: [],
+    }
+
+
+    public static HTB_ReserveBidMarketDocument_2_Full: ReserveBidMarketDocument = {
+        docType: DocType.RESERVE_BID_MARKET_DOCUMENT,
+        reserveBidMrid: "HTB_ReserveBidMarketDocument_2_Full",
+        meteringPointMrid: Values.HTB_site_valid.meteringPointMrid,
+        revisionNumber: "0",
+        messageType: 'A44',
+        processType: 'A27',
+        senderMarketParticipantMrid: Values.HTB_site_valid.systemOperatorMarketParticipantMrid,
+        receiverMarketParticipantMrid: Values.HTB_site_valid.producerMarketParticipantMrid,
+        createdDateTime: JSON.parse(JSON.stringify(Values.getStartDate())),
+        validityPeriodStartDateTime: CommonService.increaseDateDaysStr(JSON.parse(JSON.stringify(Values.getStartDate())), 10),
+        validityPeriodEndDateTime: "",
+        businessType: 'A87',
+        quantityMeasureUnitName: 'MWh',
+        priceMeasureUnitName: '€/MWh',
+        currencyUnitName: '€',
+        flowDirection: "Direction_HTB_ReserveBidMarketDocument_2",
+        energyPriceAmount: 42.0,
+
+        attachments: [],
+        attachmentsWithStatus: [],
+    }
+
+
     /*********************************************/
     /*            BALANCING_DOCUMENT             */
     /*********************************************/

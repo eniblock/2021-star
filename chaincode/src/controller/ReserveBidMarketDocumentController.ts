@@ -438,6 +438,18 @@ export class ReserveBidMarketDocumentController {
                 reserveBidObj = dataReference.data;
             }
 
+            const siteObj = await StarPrivateDataService.getObj(params, {docType: DocType.SITE, id: reserveBidObj.meteringPointMrid});
+            if (siteObj.marketEvaluationPointMrid && siteObj.schedulingEntityRegisteredResourceMrid) {
+                if (userRole !== RoleType.Role_TSO) {
+                    throw new Error(`Organisation, ${userRole} does not have write access for HTB(HV) sites`);
+                }
+            } else if (!siteObj.marketEvaluationPointMrid && !siteObj.schedulingEntityRegisteredResourceMrid) {
+                if (userRole !== RoleType.Role_DSO) {
+                    throw new Error(`Organisation, ${userRole} does not have write access for HTA(MV) sites`);
+                }
+            }
+
+
             if (reserveBidObj
                 && reserveBidObj.reserveBidMrid === reserveBidMrid) {
 

@@ -546,12 +546,94 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
 
 
+        it('should return ERROR on UpdateStatus - Enedis does not have write access for HTB', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTB_ReserveBidMarketDocument_1_Full));
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTB_site_valid));
+
+            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime,
+                reserveBidStatus: reserveBidObj.reserveBidStatus as string,
+                createdDateTime: reserveBidObj.createdDateTime
+            };
+
+            const indexedData: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract],
+                indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
+            };
+
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            for (const collectionName of collectionNames) {
+                transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
+            }
+
+
+            const newStatus = ReserveBidStatus.VALIDATED;
+
+            try {
+                await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
+            } catch (err) {
+                // params.logger.info('err: ', err.message)
+                expect(err.message).to.equal(`Organisation, ${RoleType.Role_DSO} does not have write access for HTB(HV) sites`);
+            }
+
+
+        });
+
+
+        it('should return ERROR on UpdateStatus - RTE does not have write access for HTA', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+
+            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime,
+                reserveBidStatus: reserveBidObj.reserveBidStatus as string,
+                createdDateTime: reserveBidObj.createdDateTime
+            };
+
+            const indexedData: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract],
+                indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
+            };
+
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            for (const collectionName of collectionNames) {
+                transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
+            }
+
+
+            const newStatus = ReserveBidStatus.VALIDATED;
+
+            try {
+                await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
+            } catch (err) {
+                // params.logger.info('err: ', err.message)
+                expect(err.message).to.equal(`Organisation, ${RoleType.Role_TSO} does not have write access for HTA(MV) sites`);
+            }
+
+
+        });
+
 
         it('should return SUCCESS on UpdateStatus - Enedis', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
             const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
 
             const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
                 reserveBidMrid: reserveBidObj.reserveBidMrid,
@@ -574,6 +656,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             for (const collectionName of collectionNames) {
+                transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
                 transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
             }
@@ -819,7 +902,8 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTB_ReserveBidMarketDocument_1_Full));
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTB_site_valid));
 
             const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
                 reserveBidMrid: reserveBidObj.reserveBidMrid,
@@ -828,10 +912,10 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 createdDateTime: reserveBidObj.createdDateTime
             };
             const indexedDataAbstract2: ReserveBidMarketDocumentAbstract = {
-                reserveBidMrid: Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidMrid,
-                validityPeriodStartDateTime: Values.HTA_ReserveBidMarketDocument_2_Full.validityPeriodStartDateTime,
-                reserveBidStatus: Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidStatus as string,
-                createdDateTime: Values.HTA_ReserveBidMarketDocument_2_Full.createdDateTime
+                reserveBidMrid: Values.HTB_ReserveBidMarketDocument_2_Full.reserveBidMrid,
+                validityPeriodStartDateTime: Values.HTB_ReserveBidMarketDocument_2_Full.validityPeriodStartDateTime,
+                reserveBidStatus: Values.HTB_ReserveBidMarketDocument_2_Full.reserveBidStatus as string,
+                createdDateTime: Values.HTB_ReserveBidMarketDocument_2_Full.createdDateTime
             };
 
             const indexedData: IndexedData = {
@@ -842,6 +926,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             for (const collectionName of collectionNames) {
+                transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
                 transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
             }

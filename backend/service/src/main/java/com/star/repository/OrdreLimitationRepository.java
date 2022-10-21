@@ -127,9 +127,9 @@ public class OrdreLimitationRepository {
 
     public void reconciliate() throws ContractException, TimeoutException, InterruptedException {
         log.debug("Appel de GetActivationDocumentReconciliationState mis en commentaire temporaire");
-       byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
-       if (evaluateTransaction != null && evaluateTransaction.length > 2) {
-           contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS, new String(evaluateTransaction));
-       }
+//       byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
+//       if (evaluateTransaction != null && evaluateTransaction.length > 2) {
+//           contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS, new String(evaluateTransaction));
+//       }
     }
 }

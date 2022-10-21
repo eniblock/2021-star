@@ -1,0 +1,124 @@
+{
+	"info": {
+		"_postman_id": "025ccb9c-6aa5-4523-8ca3-fe1df685e764",
+		"name": "Balancing Document",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3838263"
+	},
+	"item": [
+		{
+			"name": "ENEDIS - Find Balancing by criteria",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/balancingDocument?meteringPointMrid=&activationDocumentMrid=&startCreatedDateTime&endCreatedDateTime",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"balancingDocument"
+					],
+					"query": [
+						{
+							"key": "meteringPointMrid",
+							"value": ""
+						},
+						{
+							"key": "activationDocumentMrid",
+							"value": ""
+						},
+						{
+							"key": "startCreatedDateTime",
+							"value": null
+						},
+						{
+							"key": "endCreatedDateTime",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Find Balancing by criteria",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/balancingDocument?meteringPointMrid=&activationDocumentMrid=&startCreatedDateTime&endCreatedDateTime",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"balancingDocument"
+					],
+					"query": [
+						{
+							"key": "meteringPointMrid",
+							"value": ""
+						},
+						{
+							"key": "activationDocumentMrid",
+							"value": ""
+						},
+						{
+							"key": "startCreatedDateTime",
+							"value": null
+						},
+						{
+							"key": "endCreatedDateTime",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

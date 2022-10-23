@@ -23,6 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -120,4 +121,19 @@ public class ReserveBidController {
         return new ResponseEntity<>(Base64.getDecoder().decode(attachmentFile.getFileContent()), headers, HttpStatus.OK);
     }
 
+    @Operation(summary = "Update an tarif's status.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Update successfully a status of tarif", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    @PutMapping(value = "/{reserveBidMrid}/{newStatus}")
+    public ResponseEntity<Void> updateEnergyAmount(
+            @Parameter(description = "Reserve bid Id to update")
+            @PathVariable("reserveBidMrid") String reserveBidMrid,
+            @Parameter(description = "New status of the reserveBid")
+            @PathVariable("newStatus") String newStatus) throws BusinessException, TechnicalException {
+        reserveBidService.updateStatus(reserveBidMrid, newStatus);
+        return  new ResponseEntity<>(HttpStatus.OK);
+    }
 }

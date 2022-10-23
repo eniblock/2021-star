@@ -8,6 +8,7 @@ import com.star.models.reservebid.AttachmentFile;
 import com.star.models.reservebid.ReserveBid;
 import com.star.models.reservebid.ReserveBidMarketDocumentCreation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class ReserveBidRepository {
     public static final String CREATE_RESERVE_BID_MARKET_DOCUMENT = "CreateReserveBidMarketDocument";
+    public static final String UPDATE_RESERVE_BID_STATUS = "UpdateStatusReserveBidMarketDocument";
     public static final String GET_RESERVE_BID = "GetReserveBidMarketDocumentBySite";
     public static final String GET_FILE_BY_ID = "GetFileById";
 
@@ -80,6 +82,23 @@ public class ReserveBidRepository {
             return response != null ? objectMapper.readValue(new String(response), AttachmentFile.class) : null;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche du fichier", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
+    }
+
+    public void updateStatus(String reserveBidMrid, String newStatus) throws TechnicalException {
+        if (StringUtils.isBlank(reserveBidMrid) || StringUtils.isBlank(newStatus)) {
+            return;
+        }
+        log.debug("Modification du status du reserve bid {} avec le nouveau status {}", reserveBidMrid, newStatus);
+        try {
+            contract.submitTransaction(UPDATE_RESERVE_BID_STATUS, reserveBidMrid, newStatus);
+        } catch (TimeoutException timeoutException) {
+            throw new TechnicalException("Erreur technique (Timeout exception) lors de la modification du status du reserve bid ", timeoutException);
+        } catch (InterruptedException interruptedException) {
+            log.error("Erreur technique (Interrupted Exception) lors de la modification du status du reserve bid ", interruptedException);
+            Thread.currentThread().interrupt();
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }

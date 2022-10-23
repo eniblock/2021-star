@@ -1,6 +1,7 @@
 package com.star.service;
 
 import com.star.enums.FileExtensionEnum;
+import com.star.enums.ReserveBidStatusEnum;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.common.FichierImportation;
@@ -23,14 +24,17 @@ import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.UUID.randomUUID;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.upperCase;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -39,6 +43,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Slf4j
 @Service
 public class ReserveBidService {
+
+    private static final List<String> RESERVE_BID_STATUS_LIST = Arrays.asList(ReserveBidStatusEnum.values())
+            .stream()
+            .map(ReserveBidStatusEnum::name)
+            .collect(toList());
 
     private static final String REVISION_NUMBER = "1";
 
@@ -144,5 +153,15 @@ public class ReserveBidService {
     public AttachmentFile getFile(String fileId) throws TechnicalException {
         Assert.notNull(fileId, "fileId must be non null");
         return reserveBidRepository.getFile(fileId);
+    }
+
+    public void updateStatus(String reserveBidMrid, String newStatus) throws TechnicalException, BusinessException{
+        Assert.notNull(reserveBidMrid, "reserveBidMrid must be non null");
+        Assert.notNull(newStatus, "newStatus must be non null");
+        if (StringUtils.isNotBlank(newStatus) && !RESERVE_BID_STATUS_LIST.contains(upperCase(newStatus))) {
+            throw new BusinessException(messageSource.getMessage(messageSource.getMessage("update.reserveBid.status.error",
+                    new String[]{}, null), null, null));
+        }
+        reserveBidRepository.updateStatus(reserveBidMrid, newStatus);
     }
 }

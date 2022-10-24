@@ -79,7 +79,7 @@ export class LimitationsResultatsComponent implements OnChanges {
             siteName: '---',
             technologyType: TechnologyType.PHOTOVOLTAIQUE,
             meteringPointMrid: '---',
-            siteAdminMRID: '---',
+            siteAdminMrid: '---',
             siteLocation: '---',
             siteType: '---',
             substationName: '---',

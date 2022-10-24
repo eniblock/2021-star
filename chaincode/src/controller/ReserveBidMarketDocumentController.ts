@@ -626,6 +626,13 @@ export class ReserveBidMarketDocumentController {
             return false;
         }
 
+        if (!reserveBidObj
+            || !reserveBidObj.reserveBidMrid
+            || reserveBidObj.reserveBidMrid.length === 0) {
+
+            return false;
+        }
+
         var dateActivationDocument: Date = null;
         if (activationDocument.startCreatedDateTime && activationDocument.startCreatedDateTime.length > 0) {
             dateActivationDocument = new Date(activationDocument.startCreatedDateTime);
@@ -680,10 +687,7 @@ export class ReserveBidMarketDocumentController {
 
                     if (check) {
                         const dateBid = new Date(reserveBidAbstract.validityPeriodStartDateTime);
-                        var dateCreationBid = null;
-                        if (reserveBidAbstract.createdDateTime && reserveBidAbstract.createdDateTime.length > 0) {
-                            dateCreationBid = new Date(reserveBidAbstract.createdDateTime);
-                        }
+                        const dateCreationBid = new Date(reserveBidAbstract.createdDateTime);
 
                         if (dateBid.getTime() === dateBid.getTime()
                             && dateBid <= dateDoc) {
@@ -701,8 +705,11 @@ export class ReserveBidMarketDocumentController {
                                 const dateBidRef = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
                                 const dateCreationBidRef = new Date(reserveBidAbstractRef.createdDateTime);
 
+                                const dateCreationBidOk = (dateCreationBid.getTime() === dateCreationBid.getTime());
+                                const dateCreationBidRefOk = (dateCreationBidRef.getTime() !== dateCreationBidRef.getTime());
+
                                 if (dateBidRef.getTime() !== dateBidRef.getTime()
-                                    || dateCreationBidRef.getTime() !== dateCreationBidRef.getTime()) {
+                                    || !dateCreationBidRefOk) {
 
                                     if (!reserveBidAbstract.reserveBidStatus
                                         || reserveBidAbstract.reserveBidStatus !== ReserveBidStatus.REFUSED) {
@@ -710,9 +717,9 @@ export class ReserveBidMarketDocumentController {
                                         reserveBidAbstractRef = reserveBidAbstract;
                                     }
                                 } else if (dateBidRef < dateBid
-                                    && ((!dateCreationBid && !dateCreationBidRef)
-                                        || (dateCreationBid && !dateCreationBidRef)
-                                        || (dateCreationBid && dateCreationBidRef && dateCreationBidRef < dateCreationBid))
+                                    && ((!dateCreationBidOk && !dateCreationBidRefOk)
+                                        || (dateCreationBidOk && !dateCreationBidRefOk)
+                                        || (dateCreationBidOk && dateCreationBidRefOk && dateCreationBid > dateCreationBidRef))
                                     && (!reserveBidAbstract.reserveBidStatus
                                         || reserveBidAbstract.reserveBidStatus !== ReserveBidStatus.REFUSED)) {
                                     reserveBidAbstractRef = reserveBidAbstract;

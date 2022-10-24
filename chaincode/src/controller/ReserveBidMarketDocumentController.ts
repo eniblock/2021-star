@@ -692,28 +692,29 @@ export class ReserveBidMarketDocumentController {
                                 || !reserveBidAbstractRef.reserveBidMrid
                                 || reserveBidAbstractRef.reserveBidMrid.length === 0) {
 
+                                if (!reserveBidAbstract.reserveBidStatus
+                                    || reserveBidAbstract.reserveBidStatus !== ReserveBidStatus.REFUSED) {
+
                                     reserveBidAbstractRef = reserveBidAbstract;
+                                }
                             } else {
                                 const dateBidRef = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
-
-                                var dateCreationBidRef = null;
-                                if (reserveBidAbstractRef.createdDateTime && reserveBidAbstractRef.createdDateTime.length > 0) {
-                                    dateCreationBidRef = new Date(reserveBidAbstractRef.createdDateTime);
-                                }
+                                const dateCreationBidRef = new Date(reserveBidAbstractRef.createdDateTime);
 
                                 if (dateBidRef.getTime() !== dateBidRef.getTime()
                                     || dateCreationBidRef.getTime() !== dateCreationBidRef.getTime()) {
 
                                     if (!reserveBidAbstract.reserveBidStatus
-                                        || reserveBidAbstract.reserveBidStatus != ReserveBidStatus.REFUSED) {
-                                            reserveBidAbstractRef = reserveBidAbstract;
-                                        }
+                                        || reserveBidAbstract.reserveBidStatus !== ReserveBidStatus.REFUSED) {
+
+                                        reserveBidAbstractRef = reserveBidAbstract;
+                                    }
                                 } else if (dateBidRef < dateBid
                                     && ((!dateCreationBid && !dateCreationBidRef)
                                         || (dateCreationBid && !dateCreationBidRef)
-                                        || (dateCreationBid && dateCreationBidRef && dateCreationBidRef > dateCreationBid))
+                                        || (dateCreationBid && dateCreationBidRef && dateCreationBidRef < dateCreationBid))
                                     && (!reserveBidAbstract.reserveBidStatus
-                                        || reserveBidAbstract.reserveBidStatus != ReserveBidStatus.REFUSED)) {
+                                        || reserveBidAbstract.reserveBidStatus !== ReserveBidStatus.REFUSED)) {
                                     reserveBidAbstractRef = reserveBidAbstract;
                                 }
 

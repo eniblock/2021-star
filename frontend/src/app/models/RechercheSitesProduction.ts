@@ -28,7 +28,7 @@ export interface RechercheSitesProductionEntite {
   siteName: string,
   technologyType: TechnologyType,
   meteringPointMrid: string,
-  siteAdminMRID: string,
+  siteAdminMrid: string,
   siteLocation: string,
   siteType: string,
   substationName: string,

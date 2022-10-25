@@ -354,7 +354,7 @@ public class OrdreLimitationService {
     }
 
     private void checkEligibilityStatus(String eligibilityStatus, List<String> currentErrors) {
-        log.debug("Valeur reçue pour le champ eligibilityStatus : {}", eligibilityStatus);
+        log.info("Valeur reçue pour le champ eligibilityStatus : {}", eligibilityStatus);
         if (StringUtils.isNotBlank(eligibilityStatus) && !ELIGIBILITY_STATUS_LIST.contains(upperCase(eligibilityStatus))) {
             log.debug("L'element {} n'est pas contenue dans la liste {}. Rejet !", eligibilityStatus, ELIGIBILITY_STATUS_LIST);
             currentErrors.add(messageSource.getMessage("import.ordreLimitation.eligibilityStatus.error",

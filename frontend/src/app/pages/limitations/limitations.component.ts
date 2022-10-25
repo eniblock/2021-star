@@ -3,13 +3,16 @@ import {Instance} from 'src/app/models/enum/Instance.enum';
 import {InstanceService} from 'src/app/services/api/instance.service';
 import {
   FormulaireRechercheHistoriqueLimitation,
-  RechercheHistoriqueLimitationEntite,
+  RechercheHistoriqueLimitationEntiteAnnotated,
 } from 'src/app/models/RechercheHistoriqueLimitation';
 import {
   flatHistoriqueLimitation,
   HistoriqueLimitationService
 } from 'src/app/services/api/historique-limitation.service';
 import {DateHelper} from "../../helpers/date.helper";
+import {motifToString} from "../../rules/motif-rules";
+import {getLimitationType} from "../../rules/limitation-type-rules";
+import {TypeLimitation} from "../../models/enum/TypeLimitation.enum";
 
 @Component({
   selector: 'app-limitations',
@@ -19,7 +22,11 @@ import {DateHelper} from "../../helpers/date.helper";
 export class LimitationsComponent implements OnInit {
   formRecherche?: FormulaireRechercheHistoriqueLimitation;
 
-  resultatsRechercheWithOnlyOneSubOrderByOrder?: RechercheHistoriqueLimitationEntite[]; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder
+  researchResultsWithOnlyOneSuborder?: RechercheHistoriqueLimitationEntiteAnnotated[]; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder
+  researchResultsWithOnlyOneSuborderFiltered?: RechercheHistoriqueLimitationEntiteAnnotated[];
+
+  motifNameFilter: string | null = null;
+  typeLimitationFilter: TypeLimitation | null = null;
 
   typeInstance?: Instance;
 
@@ -50,16 +57,41 @@ export class LimitationsComponent implements OnInit {
     if (this.formRecherche != undefined) {
       this.historiqueLimitationService
         .rechercher(this.formRecherche)
-        .subscribe(resultat => this.resultatsRechercheWithOnlyOneSubOrderByOrder = flatHistoriqueLimitation(resultat));
+        .subscribe(resultat => {
+          this.researchResultsWithOnlyOneSuborder = flatHistoriqueLimitation(resultat)
+            .map(rhl => ({
+              ...rhl,
+              limitationType: getLimitationType(rhl),
+              motifName: motifToString(rhl.activationDocument),
+            }));
+          this.researchResultsWithOnlyOneSuborderFiltered = [...this.researchResultsWithOnlyOneSuborder];
+        });
     }
   }
 
   private resetResultats() {
-    this.resultatsRechercheWithOnlyOneSubOrderByOrder = undefined;
+    this.researchResultsWithOnlyOneSuborder = undefined;
+    this.researchResultsWithOnlyOneSuborderFiltered = undefined;
   }
 
   updateColumnsToDisplay(columnsToDisplay: string[]) {
     this.columnsToDisplay = [...columnsToDisplay, 'actions'];
+  }
+
+  typeLimitationFilterChange(typeLimitation: TypeLimitation | null) {
+    this.typeLimitationFilter = typeLimitation;
+    this.filterResults();
+  }
+
+  motifNameFilterChange(motifName: string | null) {
+    this.motifNameFilter = motifName;
+    this.filterResults();
+  }
+
+  private filterResults() {
+    this.researchResultsWithOnlyOneSuborderFiltered = this.researchResultsWithOnlyOneSuborder
+      ?.filter(rhl => (this.typeLimitationFilter == null) ? true : rhl.limitationType == this.typeLimitationFilter)
+      ?.filter(rhl => (this.motifNameFilter == null) ? true : rhl.motifName == this.motifNameFilter)
   }
 
 }

@@ -22,6 +22,7 @@ import {
 } from './limitations-indemnisation/limitations-indemnisation-choose-yes-no/limitations-indemnisation-choose-yes-no.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {LimitationsRoutes} from './limitations.routing';
+import { LimitationsFilterOnResultsComponent } from './limitations-filter-on-results/limitations-filter-on-results.component';
 
 @NgModule({
   imports: [
@@ -48,6 +49,7 @@ import {LimitationsRoutes} from './limitations.routing';
     LimitationsHorodatesComponent,
     LimitationsIndemnisationComponent,
     LimitationsIndemnisationChooseYesNoComponent,
+    LimitationsFilterOnResultsComponent,
   ],
 })
 export class LimitationsModule {

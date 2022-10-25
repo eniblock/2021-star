@@ -4,9 +4,10 @@ import {InstanceService} from 'src/app/services/api/instance.service';
 import {Instance} from 'src/app/models/enum/Instance.enum';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {LimitationsGraphComponent} from '../limitations-graph/limitations-graph.component';
-import {motifToString,} from 'src/app/rules/motif-rules';
-import {RechercheHistoriqueLimitationEntite} from 'src/app/models/RechercheHistoriqueLimitation';
-import {getLimitationType} from "../../../rules/limitation-type-rules";
+import {
+  RechercheHistoriqueLimitationEntite,
+  RechercheHistoriqueLimitationEntiteAnnotated
+} from 'src/app/models/RechercheHistoriqueLimitation';
 import {SystemOperator} from "../../../models/SystemOperator";
 import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
 import {TechnologyType} from 'src/app/models/enum/TechnologyType.enum';
@@ -22,12 +23,12 @@ import {TypeImport} from "../../charger/charger.component";
   styleUrls: ['./limitations-resultats.component.css'],
 })
 export class LimitationsResultatsComponent implements OnChanges {
-  @Input() data: RechercheHistoriqueLimitationEntite[] = [];
+  @Input() data: RechercheHistoriqueLimitationEntiteAnnotated[] = [];
   @Input() systemOperators: SystemOperator[] = [];
   @Input() columnsToDisplay: string[] = [];
 
   InstanceEnum = Instance;
-  TypeSiteEnum= TypeSite;
+  TypeSiteEnum = TypeSite;
 
   dataComputed: any = [];
   dataComputedSorted: any = [];
@@ -49,20 +50,7 @@ export class LimitationsResultatsComponent implements OnChanges {
   }
 
   private computeData() {
-    // 1) Fill missing data
-    let dataForComputation: RechercheHistoriqueLimitationEntite[] = this.fillMissingData(this.data);
-
-    // 2) Compute data
-    this.dataComputed = dataForComputation.map((rhl) => {
-      const limitationType = getLimitationType(rhl);
-      const motif = motifToString(rhl.activationDocument);
-      return {
-        ...rhl,
-        motif: motif,
-        limitationType: limitationType,
-      };
-    });
-
+    this.dataComputed = this.fillMissingData(this.data);
     this.dataComputedSorted = [...this.dataComputed];
   }
 

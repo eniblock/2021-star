@@ -16,6 +16,7 @@ import { ActivationDocumentService } from '../service/ActivationDocumentService'
 
 import { YellowPagesController } from '../YellowPagesController';
 import { SystemOperatorController } from '../SystemOperatorController';
+import { CommonService } from '../service/CommonService';
 
 export class ReconciliationController {
     public static async getReconciliationState(
@@ -150,7 +151,7 @@ export class ReconciliationController {
         var garbage: boolean = false;
 
         const ppcott:number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
-        const ppcott_date = new Date((new Date()).getTime() - ppcott);
+        const ppcott_date = CommonService.reduceDateDays(new Date(), ppcott);
 
 
         if (dataReference.data.startCreatedDateTime) {

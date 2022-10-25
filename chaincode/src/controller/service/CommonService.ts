@@ -12,9 +12,19 @@ export class CommonService {
     public static reduceDateDaysStr(dateref: string, reducing: number): string {
         var reducedDate = new Date(Date.parse(dateref));
 
-        reducedDate.setDate(reducedDate.getDate() - reducing);
+        reducedDate = this.reduceDateDays(reducedDate, reducing);
 
         return JSON.parse(JSON.stringify(reducedDate));
+    }
+
+
+
+    public static reduceDateDays(dateref: Date, reducing: number): Date {
+        var reducedDate = new Date(dateref);
+
+        reducedDate.setDate(reducedDate.getDate() - reducing);
+
+        return reducedDate;
     }
 
 
@@ -22,7 +32,7 @@ export class CommonService {
     public static increaseDateDaysStr(dateref: string, increasing: number): string {
         var increasedDate = new Date(Date.parse(dateref));
 
-        increasedDate =this.increaseDateDays(increasedDate, increasing);
+        increasedDate = this.increaseDateDays(increasedDate, increasing);
 
         return JSON.parse(JSON.stringify(increasedDate));
     }

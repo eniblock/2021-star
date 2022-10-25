@@ -16,7 +16,7 @@ const enedis_rte = "enedis-rte";
 const producer_rte = "producer-rte";
 const enedis_producer_rte = "enedis-producer-rte";
 
-const ppco_time_threshold: number = 75*24*60*60*1000; // 75 days
+const ppco_time_threshold: number = 550; // 550 days
 const pc_time_match_threshold: number = 5*60*1000; //5 minutes
 const pc_time_updateend_match_threshold: number = 24*60*60*1000; // 24 hours
 

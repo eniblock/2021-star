@@ -128,7 +128,7 @@ public class ReserveBidController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PutMapping(value = "/{reserveBidMrid}/{newStatus}")
-    public ResponseEntity<Void> updateEnergyAmount(
+    public ResponseEntity<Void> updateStatusReserveBid(
             @Parameter(description = "Reserve bid Id to update")
             @PathVariable("reserveBidMrid") String reserveBidMrid,
             @Parameter(description = "New status of the reserveBid")

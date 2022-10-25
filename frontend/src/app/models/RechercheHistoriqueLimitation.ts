@@ -3,6 +3,7 @@ import {Producer} from "./Producer";
 import {EnergyAmount} from "./EnergyAmount";
 import {OrdreLimitation} from "./OrdreLimitation";
 import {ReserveBid} from "./ReserveBid";
+import {TypeLimitation} from "./enum/TypeLimitation.enum";
 
 export interface TypeCriteria {
   messageType: string,
@@ -30,4 +31,9 @@ export interface RechercheHistoriqueLimitationEntite {
   subOrderList: OrdreLimitation[],
   displayedSourceName: string,
   reserveBidMarketDocument: ReserveBid | null,
+}
+
+export interface RechercheHistoriqueLimitationEntiteAnnotated extends RechercheHistoriqueLimitationEntite {
+  limitationType: TypeLimitation,
+  motifName: string,
 }

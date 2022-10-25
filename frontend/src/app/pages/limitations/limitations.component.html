@@ -9,11 +9,13 @@
   </div>
 </div>
 
-<div class="row mt-4" *ngIf="resultatsRechercheWithOnlyOneSubOrderByOrder && resultatsRechercheWithOnlyOneSubOrderByOrder.length > 0">
+<div class="row mt-4" *ngIf="researchResultsWithOnlyOneSuborder && researchResultsWithOnlyOneSuborder.length > 0">
   <div class="col">
-    <div class="mb-3">{{ resultatsRechercheWithOnlyOneSubOrderByOrder.length }} {{ resultatsRechercheWithOnlyOneSubOrderByOrder.length>1 ? 'résultats' : 'résultat' }}</div>
+    <div class="mb-3">{{ researchResultsWithOnlyOneSuborder.length }} {{ researchResultsWithOnlyOneSuborder.length>1 ? 'résultats' : 'résultat' }}</div>
     <div class="row">
-      <div class="col-6"></div>
+      <div class="col-6">
+        <app-limitations-filter-on-results [researchResult]="researchResultsWithOnlyOneSuborder" (typeLimitationChange)="typeLimitationFilterChange($event)" (motifNameChange)="motifNameFilterChange($event)"></app-limitations-filter-on-results>
+      </div>
       <div class="col-6">
         <app-limitations-column-selector (columnsToDisplayChange)="updateColumnsToDisplay($event)"></app-limitations-column-selector>
       </div>
@@ -21,13 +23,13 @@
   </div>
 </div>
 
-<div class="row my-3" *ngIf="resultatsRechercheWithOnlyOneSubOrderByOrder && resultatsRechercheWithOnlyOneSubOrderByOrder.length > 0">
+<div class="row my-3" *ngIf="researchResultsWithOnlyOneSuborderFiltered && researchResultsWithOnlyOneSuborderFiltered.length > 0">
   <div class="col">
-    <app-limitations-resultats [data]="resultatsRechercheWithOnlyOneSubOrderByOrder" [columnsToDisplay]="columnsToDisplay"></app-limitations-resultats>
+    <app-limitations-resultats [data]="researchResultsWithOnlyOneSuborderFiltered" [columnsToDisplay]="columnsToDisplay"></app-limitations-resultats>
   </div>
 </div>
 
-<div class="row my-3 mt-5" *ngIf="resultatsRechercheWithOnlyOneSubOrderByOrder && resultatsRechercheWithOnlyOneSubOrderByOrder.length == 0">
+<div class="row my-3 mt-5" *ngIf="researchResultsWithOnlyOneSuborder && researchResultsWithOnlyOneSuborder.length == 0">
   <div class="col-12 text-center">
     Aucun résultat...
   </div>

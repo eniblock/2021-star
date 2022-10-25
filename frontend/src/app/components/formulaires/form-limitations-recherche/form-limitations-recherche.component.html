@@ -31,21 +31,6 @@
     </mat-form-field>
 
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
-      <mat-label>Type de limitation</mat-label>
-      <mat-select formControlName="typeLimitation" (selectionChange)="selectionTypeLimitation()">
-        <mat-option [value]="TypeLimitationEnum.MANUELLE">Manuelle</mat-option>
-        <mat-option [value]="TypeLimitationEnum.AUTOMATIQUE">Automatique</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="col-12 col-lg-6" appearance="outline">
-      <mat-label>Motif</mat-label>
-      <mat-select formControlName="motifName">
-        <mat-option *ngFor="let motifName of motifNames" [value]="motifName">{{ motifName }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="col-12 col-lg-6" appearance="outline">
       <mat-label>Date de début</mat-label>
       <input matInput placeholder="Date de début" [matDatepicker]="pickerDateDebut"
              formControlName="startCreatedDateTime">
@@ -62,7 +47,8 @@
 
     <div class="mt-4">
       <p class="text-center text-danger" *ngIf="form.errors?.ERROR_FORM_DATE_INTERVAL_TOO_LARGE">
-        Erreur : vous ne pouvez pas effectuer une recherche sur plus de {{ intervalDateMaxRechercheHistoriqueLimitation }} jours.
+        Erreur : vous ne pouvez pas effectuer une recherche sur plus
+        de {{ intervalDateMaxRechercheHistoriqueLimitation }} jours.
       </p>
       <p class="text-center text-danger" *ngIf="form.errors?.ERROR_FORM_DATE_INTERVAL_NEGATIVE">
         Erreur : la date de fin ne peut pas être avant la date de début.
@@ -82,7 +68,8 @@
       <mat-label>Poste Source</mat-label>
       <input matInput placeholder="Poste Source" type="text" formControlName="originAutomationRegisteredResourceMrid"
              [matAutocomplete]="substationMridAutocomplete">
-      <mat-autocomplete autoOrdreRechercheSitesProductionActiveFirstOption #substationMridAutocomplete="matAutocomplete">
+      <mat-autocomplete autoOrdreRechercheSitesProductionActiveFirstOption
+                        #substationMridAutocomplete="matAutocomplete">
         <mat-option *ngFor="let option of filteredPosteSourceCodes | async" [value]="option">
           {{option}}
         </mat-option>
@@ -97,21 +84,6 @@
     <mat-form-field class="col-12 col-lg-4" appearance="outline">
       <mat-label>Nom du site</mat-label>
       <input matInput placeholder="Nom du site" type="text" formControlName="siteName">
-    </mat-form-field>
-
-    <mat-form-field class="col-12 col-lg-6" appearance="outline">
-      <mat-label>Type de limitation</mat-label>
-      <mat-select formControlName="typeLimitation" (selectionChange)="selectionTypeLimitation()">
-        <mat-option [value]="TypeLimitationEnum.MANUELLE">Manuelle</mat-option>
-        <mat-option [value]="TypeLimitationEnum.AUTOMATIQUE">Automatique</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="col-12 col-lg-6" appearance="outline">
-      <mat-label>Motif</mat-label>
-      <mat-select formControlName="motifName">
-        <mat-option *ngFor="let motifName of motifNames" [value]="motifName">{{ motifName }}</mat-option>
-      </mat-select>
     </mat-form-field>
 
     <mat-form-field class="col-12 col-lg-6" appearance="outline">
@@ -131,7 +103,8 @@
 
     <div class="mt-4">
       <p class="text-center text-danger" *ngIf="form.errors?.ERROR_FORM_DATE_INTERVAL_TOO_LARGE">
-        Erreur : vous ne pouvez pas effectuer une recherche sur plus de {{ intervalDateMaxRechercheHistoriqueLimitation }} jours...
+        Erreur : vous ne pouvez pas effectuer une recherche sur plus
+        de {{ intervalDateMaxRechercheHistoriqueLimitation }} jours...
       </p>
       <p class="text-center text-danger" *ngIf="form.errors?.ERROR_FORM_DATE_INTERVAL_NEGATIVE">
         Erreur : la date de fin ne peut pas être avant la date de début...

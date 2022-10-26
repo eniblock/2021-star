@@ -69,7 +69,7 @@ export class LimitationsIndemnisationComponent implements OnInit, OnChanges {
         this.ordreLimitationService.updateEligibilityStatus(activationDocumentMrid, result).subscribe(
           (result) => {
             this.loading = false;
-            this.eligibilityStatus = result.eligibilityStatus;
+            this.eligibilityStatus = result.eligibilityStatus ? result.eligibilityStatus!.toUpperCase() as any : null;
             this.eligibilityStatusEditable = result.eligibilityStatusEditable;
             this.updateButtonClasses();
           },

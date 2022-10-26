@@ -8,6 +8,7 @@ import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -32,7 +33,7 @@ public class ReconciliationRepository {
     public String getReconciliation() throws ContractException, JsonProcessingException {
         log.info("Appel de GetActivationDocumentReconciliationState pour obtenir l'état de la réconciliation");
        byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
-       return response == null ? null : objectMapper.readValue(new String(response), String.class);
+       return response == null ? null : new String(response, StandardCharsets.UTF_8);
     }
 
 

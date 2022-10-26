@@ -449,6 +449,11 @@ export class ReserveBidMarketDocumentController {
                 }
             }
 
+            if (reserveBidObj
+                && reserveBidObj.reserveBidStatus === ReserveBidStatus.REFUSED) {
+
+                    throw new Error(`Error ReserveBid : Status ${ReserveBidStatus.REFUSED} can not be updated.`);
+            }
 
             if (reserveBidObj
                 && reserveBidObj.reserveBidMrid === reserveBidMrid) {
@@ -830,14 +835,9 @@ export class ReserveBidMarketDocumentController {
         var args: string[] = [];
         args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
 
-        args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+        //on Site information, it can seen ReservBid whatever is the status
+        // args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
 
-
-        // var argOrStart: string[] = [];
-        // argOrStart.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaObj.referenceDateTime)}}`);
-        // argOrStart.push(`"validityPeriodStartDateTime":""`);
-        // argOrStart.push(`"validityPeriodStartDateTime":{"$exists": false}`);
-        // args.push(await QueryStateService.buildORCriteria(argOrStart));
         args.push(`"validityPeriodStartDateTime":{"$lte": ${criteriaObj.referenceDateTime}}`);
 
         var argOrEnd: string[] = [];
@@ -850,17 +850,28 @@ export class ReserveBidMarketDocumentController {
         const query = await QueryStateService.buildQuery(
             {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
             queryArgs: args,
-            sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"desc"`],
+            sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"asc"`],
             limit:1});
         params.logger.debug('query=', query)
 
         const allResultsWithoutAnyLimit = await ReserveBidMarketDocumentService.getQueryArrayResult(params, query);
         var allResults:ReserveBidMarketDocument[] = [];
 
-        //Private Data Collection Management doesn't take limit
-        //First has to be manually extracted after request
         if (allResultsWithoutAnyLimit && allResultsWithoutAnyLimit.length > 0) {
-            allResults.push(allResultsWithoutAnyLimit[0]);
+            //Take the first with same validityPeriodStartDateTime
+            const date0Ref = allResultsWithoutAnyLimit[0].validityPeriodStartDateTime;
+            var stopLoop = false;
+            var i = 0;
+            while (i < allResultsWithoutAnyLimit.length && !stopLoop) {
+                if (allResultsWithoutAnyLimit[i].validityPeriodStartDateTime === date0Ref) {
+                    allResults.push(allResultsWithoutAnyLimit[i]);
+                } else {
+                    stopLoop = true;
+                }
+                i++
+            }
+
+
         }
 
         // Next Period data Management
@@ -869,7 +880,8 @@ export class ReserveBidMarketDocumentController {
             var argsNext: string[] = [];
             argsNext.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
 
-            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+            //on Site information, it can seen ReservBid whatever is the status
+            // args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
 
             argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${criteriaObj.referenceDateTime}}`);
 
@@ -882,19 +894,21 @@ export class ReserveBidMarketDocumentController {
             const queryNext = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: argsNext,
-                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"desc"`]});
+                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"asc"`]});
             params.logger.debug('queryNext=', queryNext)
 
             const allResultsNext = await ReserveBidMarketDocumentService.getQueryArrayResult(params, queryNext);
-            if (allResultsNext) {
-                var dateRef: string = "";
-                for (const result of allResultsNext) {
-                    if (result.validityPeriodStartDateTime !== dateRef) {
-                        dateRef = result.validityPeriodStartDateTime;
-                        allResults.push(result);
-                    }
-                }
-
+            if (allResultsNext && allResultsNext.length > 0) {
+                allResults = allResults.concat(allResultsNext);
+                //in Site information, all ReservBid next information can be seen
+                // var dateRef: string = "";
+                // for (const result of allResultsNext) {
+                //     if (result.validityPeriodStartDateTime !== dateRef) {
+                //         //TODO : Manage creation date
+                //         dateRef = result.validityPeriodStartDateTime;
+                //         allResults.push(result);
+                //     }
+                // }
             }
         }
 

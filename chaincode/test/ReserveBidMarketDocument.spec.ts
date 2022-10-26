@@ -628,6 +628,54 @@ describe('Star Tests ReserveBidMarketDocument', () => {
         });
 
 
+        it('should return SUCCESS on UpdateStatus - Error REFUSED can not be updated', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.REFUSED;
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+
+            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime,
+                reserveBidStatus: reserveBidObj.reserveBidStatus as string,
+                createdDateTime: reserveBidObj.createdDateTime
+            };
+            const indexedDataAbstract2: ReserveBidMarketDocumentAbstract = {
+                reserveBidMrid: Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidMrid,
+                validityPeriodStartDateTime: Values.HTA_ReserveBidMarketDocument_2_Full.validityPeriodStartDateTime,
+                reserveBidStatus: Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidStatus as string,
+                createdDateTime: Values.HTA_ReserveBidMarketDocument_2_Full.createdDateTime
+            };
+
+            const indexedData: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractList: [indexedDataAbstract, indexedDataAbstract2],
+                indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
+            };
+
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            for (const collectionName of collectionNames) {
+                transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
+            }
+
+
+            const newStatus = ReserveBidStatus.VALIDATED;
+
+            try {
+                await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
+            } catch(err) {
+                // params.logger.info('err: ', err.message)
+                expect(err.message).to.equal(`Error ReserveBid : Status ${ReserveBidStatus.REFUSED} can not be updated.`);
+            }
+
+
+        });
+
+
         it('should return SUCCESS on UpdateStatus - Enedis', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
@@ -1224,7 +1272,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             var args: string[] = [];
             args.push(`"meteringPointMrid":"${reserveBidObj1.meteringPointMrid}"`);
 
-            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+            // args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
 
             args.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaDate)}}`);
 
@@ -1238,7 +1286,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const query = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: args,
-                sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"desc"`],
+                sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"asc"`],
                 limit:1});
 
             const iterator1 = Values.getQueryMockArrayValues([reserveBidObj1], mockHandler);
@@ -1252,7 +1300,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             var argsNext: string[] = [];
             argsNext.push(`"meteringPointMrid":"${reserveBidObj2.meteringPointMrid}"`);
 
-            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+            // args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
 
             argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${JSON.stringify(criteriaDate)}}`);
 
@@ -1265,7 +1313,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const queryNext = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: argsNext,
-                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"desc"`]});
+                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"asc"`]});
 
             const iteratorNext = Values.getQueryMockArrayValues([reserveBidObj2], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryNext).resolves(iteratorNext);
@@ -1315,7 +1363,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             var args: string[] = [];
             args.push(`"meteringPointMrid":"${reserveBidObj1.meteringPointMrid}"`);
 
-            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+            // args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
 
             args.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaDate)}}`);
 
@@ -1329,7 +1377,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const query = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: args,
-                sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"desc"`],
+                sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"asc"`],
                 limit:1});
 
             const iterator1 = Values.getQueryMockArrayValues([reserveBidObj1], mockHandler);
@@ -1343,7 +1391,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             var argsNext: string[] = [];
             argsNext.push(`"meteringPointMrid":"${reserveBidObj2.meteringPointMrid}"`);
 
-            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+            // args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
 
             argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${JSON.stringify(criteriaDate)}}`);
 
@@ -1356,7 +1404,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const queryNext = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: argsNext,
-                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"desc"`]});
+                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"asc"`]});
 
             const iteratorNext = Values.getQueryMockArrayValues([reserveBidObj2], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryNext).resolves(iteratorNext);
@@ -1403,7 +1451,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             var args: string[] = [];
             args.push(`"meteringPointMrid":"${reserveBidObj1.meteringPointMrid}"`);
 
-            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
+            // args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
 
             args.push(`"validityPeriodStartDateTime":{"$lte": ${JSON.stringify(criteriaDate)}}`);
 
@@ -1417,41 +1465,13 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const query = await QueryStateService.buildQuery(
                 {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
                 queryArgs: args,
-                sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"desc"`],
+                sort: [`"validityPeriodStartDateTime":"desc"`,`"createdDateTime":"asc"`],
                 limit:1});
 
             // params.logger.log("test query: ", query)
 
             const iterator1 = Values.getQueryMockArrayValues([reserveBidObj1], mockHandler);
             transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator1);
-
-
-
-            const reserveBidObj2:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_2_Full));
-
-
-            var argsNext: string[] = [];
-            argsNext.push(`"meteringPointMrid":"${reserveBidObj2.meteringPointMrid}"`);
-
-            args.push(`"reserveBidStatus":"${ReserveBidStatus.VALIDATED}"`);
-
-            argsNext.push(`"validityPeriodStartDateTime":{"$gte": ${JSON.stringify(criteriaDate)}}`);
-
-            var argOrEnd: string[] = [];
-            argOrEnd.push(`"validityPeriodEndDateTime":{"$gte": ${JSON.stringify(criteriaDate)}}`);
-            argOrEnd.push(`"validityPeriodEndDateTime":""`);
-            argOrEnd.push(`"validityPeriodEndDateTime":{"$exists": false}`);
-            argsNext.push(await QueryStateService.buildORCriteria(argOrEnd));
-
-            const queryNext = await QueryStateService.buildQuery(
-                {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
-                queryArgs: argsNext,
-                sort: [`"validityPeriodStartDateTime":"asc"`,`"createdDateTime":"desc"`]});
-
-            // params.logger.log("test queryNext: ", queryNext);
-
-            const iteratorNext = Values.getQueryMockArrayValues([reserveBidObj2], mockHandler);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], queryNext).resolves(iteratorNext);
 
 
             const criteriaObj: ReserveBidMarketDocumentSiteDate = {

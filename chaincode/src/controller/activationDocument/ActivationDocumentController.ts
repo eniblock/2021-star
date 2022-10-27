@@ -431,17 +431,22 @@ export class ActivationDocumentController {
 
         const compositeKey = ActivationDocumentCompositeKey.formatActivationDocument(activationDocumentObj);
         const activationDocumentCompositeKeyId = ActivationDocumentService.getActivationDocumentCompositeKeyId(compositeKey);
-        let existingActivationDocumentCompositeKey: ActivationDocument = null;
-        try {
-            existingActivationDocumentCompositeKey = await this.getActivationDocumentObjByCompositeKey(params, activationDocumentCompositeKeyId);
-        } catch (error) {
-            //Do Nothing, it's a good thing if document doesn't exist
-        }
-        if (existingActivationDocumentCompositeKey
-            && existingActivationDocumentCompositeKey.activationDocumentMrid
-            && existingActivationDocumentCompositeKey.activationDocumentMrid.length > 0) {
 
-            throw new Error(`Error: An Activation Document with same Composite Key already exists: ${JSON.stringify(compositeKey)}`);
+        if (!definedTarget || definedTarget.length === 0) {
+            //Only control when it's an original creation (by list)
+            //Don't do control when it's a creation by reference (and then by order after reconciliation)
+            let existingActivationDocumentCompositeKey: ActivationDocument = null;
+            try {
+                existingActivationDocumentCompositeKey = await this.getActivationDocumentObjByCompositeKey(params, activationDocumentCompositeKeyId);
+            } catch (error) {
+                //Do Nothing, it's a good thing if document doesn't exist
+            }
+            if (existingActivationDocumentCompositeKey
+                && existingActivationDocumentCompositeKey.activationDocumentMrid
+                && existingActivationDocumentCompositeKey.activationDocumentMrid.length > 0) {
+
+                throw new Error(`Error: An Activation Document with same Composite Key already exists: ${JSON.stringify(compositeKey)}`);
+            }
         }
 
 

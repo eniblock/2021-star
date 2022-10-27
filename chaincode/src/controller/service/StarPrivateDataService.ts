@@ -15,10 +15,10 @@ export class StarPrivateDataService {
         try {
             dataAsBytes = await params.ctx.stub.getPrivateData(arg.collection, arg.id);
         } catch (error) {
-            throw new Error(`${arg.docType} : ${arg.id} does not exist`);
+            throw new Error(`${arg.docType} : ${arg.id} does not exist (error)`);
         }
         if (!dataAsBytes || dataAsBytes.length === 0) {
-            throw new Error(`${arg.docType} : ${arg.id} does not exist`);
+            throw new Error(`${arg.docType} : ${arg.id} does not exist (empty)`);
         }
 
         params.logger.debug('=============  END  : getPrivateData %s %s %s ===========', arg.docType, arg.collection, arg.id);

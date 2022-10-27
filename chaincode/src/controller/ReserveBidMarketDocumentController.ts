@@ -401,7 +401,7 @@ export class ReserveBidMarketDocumentController {
         inputStr : reserveBidMrid, newStatus
         output : ReserveBidMarketDocument
     */
-    public static async updateStatus(params: STARParameters, reserveBidMrid: string, newStatus: string, target: string = ''): Promise<string> {
+    public static async updateStatus(params: STARParameters, reserveBidMrid: string, newStatus: string): Promise<string> {
         params.logger.info('============= START : updateStatus ReserveBidMarketDocumentController ===========');
 
         const userRole = HLFServices.getUserRole(params);
@@ -416,19 +416,7 @@ export class ReserveBidMarketDocumentController {
             throw new Error(`UpdateStatus : unkown bew Status ${newStatus}`);
         }
 
-        var existingReserveBidRef:Map<string, DataReference>;
-        if (!target || target.length === 0) {
-            existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidMrid});
-        } else {
-            existingReserveBidRef = new Map<string, DataReference>();
-            const reserveBidObjRef = await StarPrivateDataService.getObj(params, {id: reserveBidMrid, collection: target, docType: DocType.RESERVE_BID_MARKET_DOCUMENT});
-            const dataReference:DataReference = {
-                docType: DocType.RESERVE_BID_MARKET_DOCUMENT,
-                collection: target,
-                data: reserveBidObjRef
-            };
-            existingReserveBidRef.set(target, dataReference);
-        }
+        var existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(params, {id: reserveBidMrid, docType: DocType.RESERVE_BID_MARKET_DOCUMENT});
 
         var reserveBidObj: ReserveBidMarketDocument = null;
 
@@ -1034,7 +1022,7 @@ export class ReserveBidMarketDocumentController {
                 && (!reserveBidObj.reserveBidStatus
                     || reserveBidObj.reserveBidStatus.length === 0)) {
 
-                await this.updateStatus(params, reserveBidObj.reserveBidMrid, reserveBid_out_of_time_status, target);
+                await this.updateStatus(params, reserveBidObj.reserveBidMrid, reserveBid_out_of_time_status);
             }
         }
 

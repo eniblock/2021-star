@@ -47,7 +47,8 @@ export class SitesProductionComponent implements OnInit {
           orderDirection: OrderDirection.asc,
         };
       this.sitesProductionService.rechercher(this.formRecherche, requestForm)
-        .subscribe(resultat => this.resultatsRecherche = resultat);
+        .subscribe(resultat => this.resultatsRecherche = resultat
+          .sort((r1, r2) => r1.siteName.localeCompare(r2.siteName)));
     }
   }
 

@@ -27,10 +27,8 @@ export class SitesProductionResultatComponent implements OnInit {
 
   showDetails = false;
 
-  allReserveBids?: ReserveBid[];
+  reserveBids?: ReserveBid[];
   currentReserveBid?: ReserveBid;
-  reserveBidsToShow: ReserveBid[] = [];
-  showAllReservids = false;
 
 
   constructor(
@@ -70,7 +68,7 @@ export class SitesProductionResultatComponent implements OnInit {
   }
 
   private initReserveBids(reserveBids: ReserveBid[] | null) {
-    this.allReserveBids = reserveBids
+    this.reserveBids = reserveBids
       ?.sort((r1, r2) => r1.validityPeriodStartDateTime.localeCompare(r2.validityPeriodStartDateTime));
     if (reserveBids != null) {
       let currentDate = new Date();
@@ -82,19 +80,6 @@ export class SitesProductionResultatComponent implements OnInit {
         }
       }
     }
-    this.updateReserveBidsToShow();
   }
 
-  private updateReserveBidsToShow() {
-    if (this.showAllReservids) {
-      this.reserveBidsToShow = this.allReserveBids ? this.allReserveBids : [];
-    } else {
-      this.reserveBidsToShow = this.currentReserveBid ? [this.currentReserveBid] : [];
-    }
-  }
-
-  switchShowAllReserveBids() {
-    this.showAllReservids = !this.showAllReservids;
-    this.updateReserveBidsToShow()
-  }
 }

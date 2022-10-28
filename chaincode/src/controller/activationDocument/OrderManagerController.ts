@@ -41,7 +41,12 @@ export class OrderManagerController {
         collection: string) {
 
         params.logger.debug('============= START : updateByOrders OrderManagerController ===========');
-        const original:ActivationDocument = await StarPrivateDataService.getObj(params, {id: activationDocument.activationDocumentMrid, docType: DocType.ACTIVATION_DOCUMENT, collection: collection});
+        var original:ActivationDocument
+        try {
+            original = await StarPrivateDataService.getObj(params, {id: activationDocument.activationDocumentMrid, docType: DocType.ACTIVATION_DOCUMENT, collection: collection});
+        } catch (err) {
+            throw new Error(`Error : Activation Document - updateByOrders - Unknown document cannot be Updated ${activationDocument.activationDocumentMrid}`);
+        }
 
         const original_order:ActivationDocument = JSON.parse(JSON.stringify(original));
         original_order.orderEnd = activationDocument.orderEnd;

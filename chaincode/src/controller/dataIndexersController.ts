@@ -53,6 +53,7 @@ export class DataIndexersController {
             ref = await this.get(params, indexId, target);
         } catch (err) {
             //ref doesn't exist and needs to be created
+            err = null;
         }
 
         if (!ref
@@ -87,6 +88,7 @@ export class DataIndexersController {
             ref = await this.get(params, indexId, target);
         } catch (err) {
             //ref doesn't exist and needs to be created
+            err = null;
         }
 
         if (!ref
@@ -137,6 +139,8 @@ export class DataIndexersController {
             ref = await this.get(params, indexId, target);
         } catch (err) {
             //ref doesn't exist and doesn't need to be deleted
+            err = null;
+            return;
         }
 
 

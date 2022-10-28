@@ -139,7 +139,12 @@ export class BalancingDocumentController {
         var activationDocument: ActivationDocument;
 
         if (activationDocumentMrid && activationDocumentMrid.length > 0) {
-            activationDocument = await ActivationDocumentController.getActivationDocumentById(params, activationDocumentMrid, target);
+            try {
+                activationDocument = await ActivationDocumentController.getActivationDocumentById(params, activationDocumentMrid, target);
+            } catch (err) {
+                //Document not found
+                err = null;
+            }
         }
 
         await this.consolidateAndCreateOrUpdate(params, activationDocument, reserveBid, energyAmount, target);
@@ -168,7 +173,12 @@ export class BalancingDocumentController {
                 && energyAmount.activationDocumentMrid
                 && energyAmount.activationDocumentMrid.length > 0) {
 
-                activationDocument = await ActivationDocumentController.getActivationDocumentById(params, energyAmount.activationDocumentMrid, target);
+                try {
+                    activationDocument = await ActivationDocumentController.getActivationDocumentById(params, energyAmount.activationDocumentMrid, target);
+                } catch (err) {
+                    //Document not found
+                    err = null;
+                }
             }
         }
 
@@ -197,7 +207,12 @@ export class BalancingDocumentController {
                 && activationDocument.activationDocumentMrid
                 && activationDocument.activationDocumentMrid.length > 0) {
 
-                energyAmount = await EnergyAmountController.getByActivationDocument(params, activationDocument.activationDocumentMrid, target);
+                try {
+                    energyAmount = await EnergyAmountController.getByActivationDocument(params, activationDocument.activationDocumentMrid, target);
+                } catch (err) {
+                    //Document not found
+                    err = null;
+                }
             }
         }
 
@@ -210,7 +225,12 @@ export class BalancingDocumentController {
                 && activationDocument.activationDocumentMrid
                 && activationDocument.activationDocumentMrid.length > 0) {
 
-                reserveBid = await ReserveBidMarketDocumentController.getByActivationDocument(params, activationDocument, target);
+                try {
+                    reserveBid = await ReserveBidMarketDocumentController.getByActivationDocument(params, activationDocument, target);
+                } catch (err) {
+                    //Document not found
+                    err = null;
+                }
             }
         }
 

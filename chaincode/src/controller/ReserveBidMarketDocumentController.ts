@@ -425,6 +425,10 @@ export class ReserveBidMarketDocumentController {
             if (dataReference && dataReference.data) {
                 reserveBidObj = dataReference.data;
             }
+            if (reserveBidObj.reserveBidStatus === newStatus) {
+                //nothing to do newStatus is already active Status
+                return JSON.stringify(reserveBidObj);
+            }
 
             const siteObj = await StarPrivateDataService.getObj(params, {docType: DocType.SITE, id: reserveBidObj.meteringPointMrid});
             if (siteObj.marketEvaluationPointMrid && siteObj.schedulingEntityRegisteredResourceMrid) {

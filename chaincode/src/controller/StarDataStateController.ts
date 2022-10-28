@@ -164,6 +164,7 @@ export class StarDataStateController {
             }
             // PROCESS Step
             for (const updateOrder of updateOrders) {
+                const dateIn = new Date()
                 if (updateOrder.docType === DocType.ACTIVATION_DOCUMENT) {
                     params.logger.info(`UpdateOrder : ${updateOrder.docType} - ${updateOrder.data.activationDocumentMrid}`);
                     await OrderManagerController.executeOrder(params, updateOrder);
@@ -183,7 +184,8 @@ export class StarDataStateController {
                 } else if (updateOrder.docType === DocType.DATA_INDEXER) {
                     await DataIndexersController.executeOrder(params, updateOrder);
                 }
-                params.logger.info(`UpdateOrder : ${updateOrder.docType} done !`);
+                const dateOut = new Date()
+                params.logger.info(`UpdateOrder : ${updateOrder.docType} done : ${dateIn}/${dateOut} !`);
 
             }
         }

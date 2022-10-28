@@ -5,6 +5,7 @@ import {FormulaireReserveBid, ReserveBid} from "../../models/ReserveBid";
 import {HttpClient} from "@angular/common/http";
 import {FormDataHelper} from "./helpers/formData-helper";
 import {KeycloakService} from "../common/keycloak.service";
+import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
 
 const MOCK = false;
 
@@ -74,27 +75,26 @@ export class ReserveBidService {
 const getMocks = (meteringPointMrid: string): Observable<ReserveBid[] | null> => {
   //return of (null);
   return of([
-      /*
-        {
-          reserveBidMrid: "reserveBidMrid1",
-          meteringPointMrid: meteringPointMrid,
-          revisionNumber: "1",
-          messageType: "string",
-          processType: "string",
-          senderMarketParticipantMrid: "string",
-          receiverMarketParticipantMrid: "string",
-          createdDateTime: "2019-09-11T05:22:00Z",
-          validityPeriodStartDateTime: "2020-09-11T05:22:00Z",
-          validityPeriodEndDateTime: "2024-09-11T05:22:00Z",
-          businessType: "string",
-          quantityMeasureUnitName: "MWh",
-          priceMeasureUnitName: "€/MWh",
-          currencyUnitName: "€",
-          flowDirection: "string",
-          energyPriceAmount: 12,
-          attachments: [],
-        },
-       */
+      {
+        reserveBidMrid: "reserveBidMrid1",
+        meteringPointMrid: meteringPointMrid,
+        revisionNumber: "1",
+        messageType: "string",
+        processType: "string",
+        senderMarketParticipantMrid: "string",
+        receiverMarketParticipantMrid: "string",
+        createdDateTime: "2019-09-11T05:22:00Z",
+        validityPeriodStartDateTime: "2020-09-11T05:22:00Z",
+        validityPeriodEndDateTime: "2024-09-11T05:22:00Z",
+        businessType: "string",
+        quantityMeasureUnitName: "MWh",
+        priceMeasureUnitName: "€/MWh",
+        currencyUnitName: "€",
+        flowDirection: "string",
+        energyPriceAmount: 12,
+        attachments: [],
+        reserveBidStatus: ReserveBidStatus.VALIDATED
+      },
       {
         reserveBidMrid: "reserveBidMrid2",
         meteringPointMrid: meteringPointMrid,
@@ -104,7 +104,7 @@ const getMocks = (meteringPointMrid: string): Observable<ReserveBid[] | null> =>
         senderMarketParticipantMrid: "string",
         receiverMarketParticipantMrid: "string",
         createdDateTime: "2019-09-11T05:22:00Z",
-        validityPeriodStartDateTime: "2020-09-11T05:22:00Z",
+        validityPeriodStartDateTime: "2021-09-11T05:22:00Z",
         validityPeriodEndDateTime: "2023-09-11T05:22:00Z",
         businessType: "string",
         quantityMeasureUnitName: "MWh",
@@ -115,7 +115,8 @@ const getMocks = (meteringPointMrid: string): Observable<ReserveBid[] | null> =>
         attachments: [
           "fichier1.pdf",
           "fichier2.pdf",
-        ]
+        ],
+        reserveBidStatus: ReserveBidStatus.VALIDATED
       }
     ]
   )

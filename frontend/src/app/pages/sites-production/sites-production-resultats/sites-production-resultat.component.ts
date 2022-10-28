@@ -9,7 +9,7 @@ import {
 } from "../../../components/formulaires/form-ajout-tarif-unitaire/form-ajout-tarif-unitaire.component";
 import {FormulaireReserveBid, ReserveBid} from "../../../models/ReserveBid";
 import {ReserveBidService} from "../../../services/api/reserve-bid.service";
-import {DateHelper} from "../../../helpers/date.helper";
+import {ReserveBidStatus} from "../../../models/enum/ReserveBidStatus.enum";
 
 @Component({
   selector: 'app-sites-production-resultat',
@@ -68,18 +68,25 @@ export class SitesProductionResultatComponent implements OnInit {
   }
 
   private initReserveBids(reserveBids: ReserveBid[] | null) {
+    // Order reserveBids
     this.reserveBids = reserveBids
-      ?.sort((r1, r2) => r1.validityPeriodStartDateTime.localeCompare(r2.validityPeriodStartDateTime));
+      ?.sort((r1, r2) =>
+        r1.validityPeriodStartDateTime == r2.validityPeriodStartDateTime
+          ? r1.createdDateTime.localeCompare(r2.createdDateTime)
+          : r1.validityPeriodStartDateTime.localeCompare(r2.validityPeriodStartDateTime)
+      );
+    // Find current reserveBid
     if (reserveBids != null) {
       let currentDate = new Date();
       for (let rb of reserveBids) {
-        if (currentDate.getTime() >= new Date(rb.validityPeriodStartDateTime).getTime()) {
+        if ((currentDate.getTime() >= new Date(rb.validityPeriodStartDateTime).getTime()) && (rb.reserveBidStatus == ReserveBidStatus.VALIDATED)) {
           this.currentReserveBid = rb;
         } else {
           break;
         }
       }
     }
+    console.log(this.currentReserveBid)
   }
 
 }

@@ -12,6 +12,7 @@ import {map} from "rxjs/operators";
 import {EligibilityStatus} from "../../models/enum/EligibilityStatus.enum";
 import {TechnologyType} from "../../models/enum/TechnologyType.enum";
 import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
+import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
 
 const MOCK = false;
 
@@ -219,6 +220,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         flowDirection: 'string',
         energyPriceAmount: 1.23,
         attachments: [],
+        reserveBidStatus: ReserveBidStatus.VALIDATED
       },
     },
   ]);

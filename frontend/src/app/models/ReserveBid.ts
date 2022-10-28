@@ -1,3 +1,5 @@
+import {ReserveBidStatus} from "./enum/ReserveBidStatus.enum";
+
 export interface ReserveBid {
   reserveBidMrid: string,
   meteringPointMrid: string,
@@ -16,6 +18,7 @@ export interface ReserveBid {
   flowDirection: string,
   energyPriceAmount: number,
   attachments: string[],
+  reserveBidStatus: ReserveBidStatus,
 }
 
 export interface FormulaireReserveBid {

@@ -68,25 +68,36 @@ export class SitesProductionResultatComponent implements OnInit {
   }
 
   private initReserveBids(reserveBids: ReserveBid[] | null) {
+    if (reserveBids == null) {
+      return;
+    }
     // Order reserveBids
-    this.reserveBids = reserveBids
-      ?.sort((r1, r2) =>
-        r1.validityPeriodStartDateTime == r2.validityPeriodStartDateTime
-          ? r1.createdDateTime.localeCompare(r2.createdDateTime)
-          : r1.validityPeriodStartDateTime.localeCompare(r2.validityPeriodStartDateTime)
-      );
-    // Find current reserveBid
-    if (reserveBids != null) {
-      let currentDate = new Date();
-      for (let rb of reserveBids) {
-        if ((currentDate.getTime() >= new Date(rb.validityPeriodStartDateTime).getTime()) && (rb.reserveBidStatus == ReserveBidStatus.VALIDATED)) {
-          this.currentReserveBid = rb;
-        } else {
-          break;
-        }
+    this.reserveBids = reserveBids.sort((r1, r2) =>
+      r1.validityPeriodStartDateTime == r2.validityPeriodStartDateTime
+        ? r1.createdDateTime.localeCompare(r2.createdDateTime)
+        : r1.validityPeriodStartDateTime.localeCompare(r2.validityPeriodStartDateTime)
+    );
+    // Find current reserveBid and compute dates
+    let currentDate = new Date();
+    for (let rb of this.reserveBids) {
+      if ((currentDate.getTime() >= new Date(rb.validityPeriodStartDateTime).getTime()) && (rb.reserveBidStatus == ReserveBidStatus.VALIDATED)) {
+        this.currentReserveBid = rb;
       }
     }
-    console.log(this.currentReserveBid)
+    // Compute validityPeriodEndDateTime
+    let lastReserveBid: ReserveBid | null = null;
+    for (let i = this.reserveBids.length - 1; i >= 0; i--) {
+      let currentReserveBid = this.reserveBids[i];
+      if (currentReserveBid.reserveBidStatus == ReserveBidStatus.VALIDATED) {
+        if (lastReserveBid) {
+          let d = new Date(lastReserveBid.validityPeriodStartDateTime);
+          d.setDate(d.getDate() - 1);
+          currentReserveBid.validityPeriodEndDateTime = d as any;
+        }
+        lastReserveBid = currentReserveBid;
+      }
+    }
+    console.log(this.reserveBids)
   }
 
 }

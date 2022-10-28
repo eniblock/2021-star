@@ -165,6 +165,7 @@ export class StarDataStateController {
             // PROCESS Step
             for (const updateOrder of updateOrders) {
                 if (updateOrder.docType === DocType.ACTIVATION_DOCUMENT) {
+                    params.logger.info(`UpdateOrder : ${updateOrder.docType} - ${updateOrder.data.activationDocumentMrid}`);
                     await OrderManagerController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.SITE) {
                     await SiteController.createSiteByReference(params, updateOrder);
@@ -175,12 +176,14 @@ export class StarDataStateController {
                 } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
                     await EnergyAmountController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.RESERVE_BID_MARKET_DOCUMENT) {
+                    params.logger.info(`UpdateOrder : ${updateOrder.docType} - ${updateOrder.data.reserveBidMrid}`);
                     await ReserveBidMarketDocumentController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
                     await AttachmentFileController.createByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.DATA_INDEXER) {
                     await DataIndexersController.executeOrder(params, updateOrder);
                 }
+                params.logger.info(`UpdateOrder : ${updateOrder.docType} done !`);
 
             }
         }

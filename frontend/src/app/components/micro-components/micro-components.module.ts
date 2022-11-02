@@ -7,6 +7,7 @@ import {NgxFileDropModule} from 'ngx-file-drop';
 import {MatButtonModule} from '@angular/material/button';
 import {TarifStatusComponent} from './tarif-status/tarif-status.component';
 import {MatChipsModule} from "@angular/material/chips";
+import {PipesModule} from "../../pipes/pipes.module";
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import {MatChipsModule} from "@angular/material/chips";
     NgxFileDropModule,
     MatButtonModule,
     MatChipsModule,
+    PipesModule
   ],
   declarations: [
     BadgeComponent,

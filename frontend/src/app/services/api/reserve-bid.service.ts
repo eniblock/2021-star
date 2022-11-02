@@ -66,6 +66,10 @@ export class ReserveBidService {
       });
   }
 
+  modifyStatus(newStatus: ReserveBidStatus, reserveBidMRID: string): Observable<void> {
+    return this.httpClient.put<void>(`${environment.serverUrl}/reserveBid/${reserveBidMRID}/${newStatus}`, null);
+  }
+
 }
 
 
@@ -116,7 +120,7 @@ const getMocks = (meteringPointMrid: string): Observable<ReserveBid[] | null> =>
           "fichier1.pdf",
           "fichier2.pdf",
         ],
-        reserveBidStatus: ReserveBidStatus.VALIDATED
+        reserveBidStatus: ReserveBidStatus.NEW
       }
     ]
   )

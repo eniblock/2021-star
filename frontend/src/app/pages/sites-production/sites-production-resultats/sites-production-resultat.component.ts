@@ -21,7 +21,7 @@ export class SitesProductionResultatComponent implements OnInit {
   @Output() reserveBidChange = new EventEmitter<FormulaireReserveBid>();
 
   InstanceEnum = Instance;
-  TypeSiteEnum = TypeSite;
+  TypeSiteEnum = TypeSite
   typeInstance?: Instance;
 
   showDetails = false;

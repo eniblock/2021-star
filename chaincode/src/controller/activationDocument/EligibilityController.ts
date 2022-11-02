@@ -30,8 +30,6 @@ import { StarPrivateDataService } from '../service/StarPrivateDataService';
 
 export class EligibilityController {
 
-
-
     public static async updateEligibilityStatus(
         params: STARParameters,
         inputStr: string): Promise<ActivationDocument> {
@@ -55,11 +53,14 @@ export class EligibilityController {
             {strict: true, abortEarly: false},
         );
 
-        var newStatus = ActivationDocumentEligibilityService.statusInternationalValue(statusToUpdate.eligibilityStatus);
+        const newStatus =
+            ActivationDocumentEligibilityService.statusInternationalValue(statusToUpdate.eligibilityStatus);
 
-        let activationDocumentReferenceMap:Map<string, DataReference>;
+        let activationDocumentReferenceMap: Map<string, DataReference>;
         try {
-            activationDocumentReferenceMap = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ACTIVATION_DOCUMENT, id: statusToUpdate.activationDocumentMrid});
+            activationDocumentReferenceMap =
+                await StarPrivateDataService.getObjRefbyId(
+                    params, {docType: DocType.ACTIVATION_DOCUMENT, id: statusToUpdate.activationDocumentMrid});
         } catch (error) {
             throw new Error(`ERROR cannot find reference to Activation Document ${statusToUpdate.activationDocumentMrid} for status Update.`);
         }
@@ -73,17 +74,21 @@ export class EligibilityController {
         }
 
         if (!activationDocument.eligibilityStatusEditable) {
-            throw new Error(`ERROR Activation Document ${statusToUpdate.activationDocumentMrid} status is not Editable.`);
+            throw new Error(`ERROR Activation Document
+                ${statusToUpdate.activationDocumentMrid} status is not Editable.`);
         }
 
         let systemOperatorObj: SystemOperator;
         try {
-            systemOperatorObj = await StarDataService.getObj(params, {id: activationDocument.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+            systemOperatorObj =
+                await StarDataService.getObj(
+                    params, {id: activationDocument.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
             throw new Error(error.message.concat(` for Activation Document ${activationDocument.activationDocumentMrid} status Update.`));
         }
 
-        if (!systemOperatorObj || systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
+        if (!systemOperatorObj
+            || systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
             throw new Error(`ERROR updateEligibilityStatus : ${identity.toLowerCase()} has no right to modify the Eligibility Status of ${systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase()} document.`);
         }
 
@@ -96,22 +101,188 @@ export class EligibilityController {
         return await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocument);
     }
 
+    public static async getAutomaticEligibles(params: STARParameters): Promise<DataReference[]> {
+        params.logger.debug('============= START : getAutomaticEligibles - EligibilityController ===========');
+        const eligibilityReferences: DataReference[] = [];
+
+        const collection: string =
+            await HLFServices.getCollectionFromParameters(params, ParametersType.DATA_TARGET, RoleType.Role_Producer);
+
+        let finalTarget: string = '';
+        let targetArrayValue: string[];
+
+        if (collection) {
+            targetArrayValue = collection.split(ParametersController.targetJoinSeparator);
+        }
+
+        const collectionTSO =
+            await HLFServices.getCollectionFromParameters(params, ParametersType.DATA_TARGET, RoleType.Role_TSO);
+        if (collectionTSO) {
+            targetArrayValue = targetArrayValue.concat(collectionTSO.split(ParametersController.targetJoinSeparator));
+        }
+        finalTarget = EligibilityController.generateTarget(params, targetArrayValue);
+
+        params.logger.debug('collection: ', collection);
+        params.logger.debug('finalTarget: ', finalTarget);
+
+        const automaticEligibilityList = params.values.get(ParametersType.AUTOMATIC_ELIGIBILITY);
+
+        if (automaticEligibilityList && automaticEligibilityList.length > 0) {
+            for (const automaticEligibility of automaticEligibilityList) {
+                if (automaticEligibility && automaticEligibility.length > 0) {
+                    const values: string[] = automaticEligibility.split('-');
+                    if (values && values.length === 3) {
+                        const args: string[] = [];
+                        args.push(`"messageType":"${values[0]}"`);
+                        args.push(`"businessType":"${values[1]}"`);
+                        args.push(`"reasonCode":"${values[2]}"`);
+
+                        args.push(`"eligibilityStatus": ${JSON.stringify(EligibilityStatusType.EligibilityAccepted)}`);
+                        args.push(`"eligibilityStatusEditable":false`);
+
+                        const query =
+                            await QueryStateService.buildQuery(
+                                {documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
+
+                        const activationDocumentList: ActivationDocument[] =
+                            await QueryStateService.getPrivateQueryArrayResult(
+                                params, {query, docType: DocType.ACTIVATION_DOCUMENT, collection});
+
+                        if (activationDocumentList && activationDocumentList.length > 0) {
+                            for (let activationDocument of activationDocumentList) {
+                                if (activationDocument
+                                    && activationDocument.activationDocumentMrid
+                                    && activationDocument.activationDocumentMrid.length > 0) {
+
+                                    // Depend if eligibility needs to be true
+                                    // activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+                                    activationDocument.eligibilityStatusEditable = false;
+                                    activationDocument =
+                                        await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(
+                                            params, activationDocument);
+
+                                    const dataReference: DataReference = {
+                                        collection: finalTarget,
+                                        data: activationDocument,
+                                        dataAction: DataActionType.COLLECTION_CHANGE,
+                                        docType: DocType.ACTIVATION_DOCUMENT,
+                                        previousCollection: collection,
+
+                                    };
+
+                                    eligibilityReferences.push(dataReference);
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        params.logger.debug('=============  END  : getAutomaticEligibles - EligibilityController ===========');
+        return eligibilityReferences;
+    }
+
+    public static async getEligibilityStatusState(
+        params: STARParameters,
+        orderReferencesMap: Map<string, DataReference>): Promise<DataReference[]> {
+        params.logger.debug('============= START : getEligibilityState - EligibilityController ===========');
+        const eligibilityReferences: DataReference[] = [];
+
+        params.logger.debug('===========================');
+        params.logger.debug('===========================');
+        params.logger.debug('===========================');
+
+        params.logger.debug('Initialization');
+        params.logger.debug('orderReferencesMap: ', JSON.stringify([...orderReferencesMap]));
+
+        params.logger.debug('===========================');
+
+        for (const [, referencedDocument] of orderReferencesMap) {
+            params.logger.debug('referencedDocument: ', JSON.stringify(referencedDocument));
+            const activationDocument: ActivationDocument = referencedDocument.data;
+
+            let initialTarget: string;
+            let targetDocument: string;
+
+            if (referencedDocument.previousCollection
+                && referencedDocument.previousCollection.length > 0) {
+                initialTarget = referencedDocument.previousCollection;
+                targetDocument = referencedDocument.collection;
+            } else {
+                initialTarget = referencedDocument.collection;
+
+                if (activationDocument
+                    && activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted) {
+                    targetDocument =
+                        await EligibilityController.findDataTarget(
+                            params, activationDocument, initialTarget, orderReferencesMap);
+                } else {
+                    targetDocument = initialTarget;
+                }
+                referencedDocument.collection = targetDocument;
+            }
+
+            if (initialTarget && targetDocument === initialTarget) {
+                // Just update Order
+                eligibilityReferences.push(referencedDocument);
+            } else {
+                // Before creation in new collection, it is needed to create requirements
+                const requirements =
+                    await EligibilityController.getCreationRequierments(params, referencedDocument, initialTarget);
+                for (const requirement of requirements) {
+                    eligibilityReferences.push(requirement);
+                }
+
+                // Creation of the data in the new collection
+                const dataReference: DataReference = {
+                    collection: targetDocument,
+                    data: referencedDocument.data,
+                    dataAction: DataActionType.COLLECTION_CHANGE,
+                    docType: DocType.ACTIVATION_DOCUMENT,
+                    previousCollection: initialTarget,
+                };
+                eligibilityReferences.push(dataReference);
+
+                // After creation in new collection, it is needed to create linked data
+                const linkedData =
+                    await EligibilityController.getCreationLinkedData(params, referencedDocument, initialTarget);
+                for (const data of linkedData) {
+                    eligibilityReferences.push(data);
+                }
+
+            }
+            params.logger.debug('===');
+        }
+
+        params.logger.debug('===========================');
+        params.logger.debug('eligibilityReferences: ', JSON.stringify(eligibilityReferences));
+        params.logger.debug('===========================');
+
+        params.logger.debug('===========================');
+        params.logger.debug('===========================');
+        params.logger.debug('===========================');
+
+        params.logger.debug('=============  END  : getEligibilityState - EligibilityController ===========');
+        return eligibilityReferences;
+    }
 
     private static generateTarget(
         params: STARParameters,
         targetArrayValue: string[]): string {
 
-        var targetKey: string = '';
-        var targetValue: string = '';
+        let targetKey: string = '';
+        let targetValue: string = '';
 
         // params.logger.debug("------------------")
         // params.logger.debug(JSON.stringify(targetArrayValue))
         // params.logger.debug("------------------")
 
         targetArrayValue = [...new Set(targetArrayValue)];
-        if (targetArrayValue && targetArrayValue.length >0 ) {
-            var finalTargetArrayValues:string[] = [];
-            for (var value of targetArrayValue) {
+        if (targetArrayValue && targetArrayValue.length > 0 ) {
+            const finalTargetArrayValues: string[] = [];
+            for (const value of targetArrayValue) {
                 if (!finalTargetArrayValues.includes(value.toLowerCase())) {
                     finalTargetArrayValues.push(value.toLowerCase());
                 }
@@ -129,7 +300,7 @@ export class EligibilityController {
         const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
         if (collectionMap) {
             const collection = collectionMap.get(targetKey);
-            if (collection && collection.length>0) {
+            if (collection && collection.length > 0) {
                 targetValue = collection[0];
             }
         }
@@ -137,45 +308,52 @@ export class EligibilityController {
         return targetValue;
     }
 
-
     private static async findDataTarget(
         params: STARParameters,
         activationDocument: ActivationDocument,
-        currentTarget:string,
-        activationDocumentRefMap:Map<string, DataReference>=null): Promise<string> {
+        currentTarget: string,
+        activationDocumentRefMap: Map<string, DataReference>= null): Promise<string> {
 
         params.logger.debug('============= START : findDataDestination - EligibilityController ===========');
 
         currentTarget = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, currentTarget);
 
-        var finalTarget: string = '';
-        var targetArrayValue: string[];
+        let finalTarget: string = '';
+        let targetArrayValue: string[];
 
         if (currentTarget) {
             targetArrayValue = currentTarget.split(ParametersController.targetJoinSeparator);
         }
 
-        var parentDocument: ActivationDocument;
-        var parentDocumentRef: DataReference;
-        if (activationDocumentRefMap && activationDocument && activationDocument.subOrderList && activationDocument.subOrderList.length > 0) {
+        let parentDocument: ActivationDocument;
+        let parentDocumentRef: DataReference;
+        if (activationDocumentRefMap && activationDocument
+            && activationDocument.subOrderList && activationDocument.subOrderList.length > 0) {
             parentDocumentRef = activationDocumentRefMap.get(activationDocument.subOrderList[0]);
             if (parentDocumentRef && parentDocumentRef.data) {
                 parentDocument = parentDocumentRef.data;
             }
         }
 
-        if (!parentDocument && activationDocument && activationDocument.subOrderList && activationDocument.subOrderList.length > 0) {
-            const parentDocumentMapRef:Map<string, DataReference> =
-                await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.ACTIVATION_DOCUMENT, id: activationDocument.subOrderList[0]});
+        if (!parentDocument
+            && activationDocument
+            && activationDocument.subOrderList
+            && activationDocument.subOrderList.length > 0) {
+
+            const parentDocumentMapRef: Map<string, DataReference> =
+                await StarPrivateDataService.getObjRefbyId(
+                    params, {docType: DocType.ACTIVATION_DOCUMENT, id: activationDocument.subOrderList[0]});
             parentDocumentRef = parentDocumentMapRef.values().next().value;
             if (parentDocumentRef && parentDocumentRef.data) {
                 parentDocument = parentDocumentRef.data;
             }
         }
 
-        var sender: SystemOperator;
+        let sender: SystemOperator;
         if (parentDocument && parentDocument.senderMarketParticipantMrid) {
-            sender = await StarDataService.getObj(params, {id: parentDocument.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+            sender =
+                await StarDataService.getObj(
+                    params, {id: parentDocument.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         }
 
         if (sender && sender.systemOperatorMarketParticipantName) {
@@ -188,16 +366,13 @@ export class EligibilityController {
         return finalTarget;
     }
 
-
-
-
     private static async getCreationRequierments(
         params: STARParameters,
         referencedDocument: DataReference,
         initialTarget: string): Promise<DataReference[]>  {
 
         params.logger.debug('============= START : getCreationRequierments - EligibilityController ===========');
-        var requiredReferences: DataReference[] = [];
+        const requiredReferences: DataReference[] = [];
 
         const activationDocument: ActivationDocument = referencedDocument.data;
 
@@ -205,14 +380,19 @@ export class EligibilityController {
          * SITE
          ****************/
 
-         const siteRefMap = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocument.registeredResourceMrid});
+        const siteRefMap =
+            await StarPrivateDataService.getObjRefbyId(
+                params, {docType: DocType.SITE, id: activationDocument.registeredResourceMrid});
 
-        //Only include Site data in orders if it is not already know in destination collection
+        // Only include Site data in orders if it is not already know in destination collection
         if (!siteRefMap.has(referencedDocument.collection)) {
 
             if (siteRefMap.has(initialTarget)) {
                 const siteRef = siteRefMap.get(initialTarget);
-                requiredReferences.push({docType:DocType.SITE, collection:referencedDocument.collection, data: siteRef.data})
+                requiredReferences.push(
+                    {collection: referencedDocument.collection,
+                    data: siteRef.data,
+                    docType: DocType.SITE});
             }
         }
 
@@ -220,16 +400,13 @@ export class EligibilityController {
         return requiredReferences;
     }
 
-
-
-
     private static async getCreationLinkedData(
         params: STARParameters,
         referencedDocument: DataReference,
         initialTarget: string): Promise<DataReference[]>  {
 
         params.logger.debug('============= START : getCreationLinkedData - EligibilityController ===========');
-        var requiredReferences: DataReference[] = [];
+        const requiredReferences: DataReference[] = [];
 
         const activationDocument: ActivationDocument = referencedDocument.data;
         const identity = params.values.get(ParametersType.IDENTITY);
@@ -245,11 +422,16 @@ export class EligibilityController {
 
         if (energyAccountList && energyAccountList.length > 0) {
 
-            for (var energyAccount of energyAccountList) {
+            for (const energyAccount of energyAccountList) {
 
-                const existing = await EnergyAccountController.dataExists(params, energyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
+                const existing =
+                    await EnergyAccountController.dataExists(
+                        params, energyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
                 if (!existing) {
-                    requiredReferences.push({docType:DocType.ENERGY_ACCOUNT, collection:referencedDocument.collection, data: energyAccount})
+                    requiredReferences.push(
+                        {collection: referencedDocument.collection,
+                        data: energyAccount,
+                        docType: DocType.ENERGY_ACCOUNT});
                 }
             }
 
@@ -258,61 +440,70 @@ export class EligibilityController {
         /*****************
          * REFERENCE ENERGY ACCOUNT
          ****************/
-         if (identity === OrganizationTypeMsp.RTE) {
-            const referenceEnergyAccountList: any[] = await ReferenceEnergyAccountController.getReferenceEnergyAccountForSystemOperatorObj(
-                params,
-                activationDocument.registeredResourceMrid,
-                activationDocument.senderMarketParticipantMrid,
-                activationDocument.startCreatedDateTime,
-                initialTarget);
+        if (identity === OrganizationTypeMsp.RTE) {
+            const referenceEnergyAccountList: any[] =
+                await ReferenceEnergyAccountController.getReferenceEnergyAccountForSystemOperatorObj(
+                    params,
+                    activationDocument.registeredResourceMrid,
+                    activationDocument.senderMarketParticipantMrid,
+                    activationDocument.startCreatedDateTime,
+                    initialTarget);
 
             if (referenceEnergyAccountList && referenceEnergyAccountList.length > 0) {
 
-                for (var referenceEnergyAccount of referenceEnergyAccountList) {
+                for (const referenceEnergyAccount of referenceEnergyAccountList) {
 
-                    const existing = await EnergyAccountController.dataExists(params, referenceEnergyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
+                    const existing =
+                        await EnergyAccountController.dataExists(
+                            params,
+                            referenceEnergyAccount.energyAccountMarketDocumentMrid,
+                            referencedDocument.collection);
                     if (!existing) {
-                        requiredReferences.push({docType:DocType.REFERENCE_ENERGY_ACCOUNT, collection:referencedDocument.collection, data: referenceEnergyAccount})
+                        requiredReferences.push(
+                            {collection: referencedDocument.collection,
+                            data: referenceEnergyAccount,
+                            docType: DocType.REFERENCE_ENERGY_ACCOUNT});
                     }
                 }
 
             }
         }
 
-
         /*****************
          * ENERGY AMOUNT
          ****************/
-        const energyAmount: EnergyAmount = await EnergyAmountController.getByActivationDocument(params, activationDocument.activationDocumentMrid, initialTarget);
+        const energyAmount: EnergyAmount =
+            await EnergyAmountController.getByActivationDocument(
+                params, activationDocument.activationDocumentMrid, initialTarget);
 
         if (energyAmount
             && energyAmount.energyAmountMarketDocumentMrid
             && energyAmount.energyAmountMarketDocumentMrid.length > 0) {
 
             const dataReference: DataReference = {
+                collection: referencedDocument.collection,
+                data: energyAmount,
+                dataAction: DataActionType.COLLECTION_CHANGE,
                 docType: DocType.ENERGY_AMOUNT,
                 previousCollection: initialTarget,
-                collection: referencedDocument.collection,
-                dataAction: DataActionType.COLLECTION_CHANGE,
-                data: energyAmount
-            }
+            };
 
             requiredReferences.push(dataReference);
         }
 
-
         /*****************
          * RESERVE BID MARKET DOCUMENT
          ****************/
-        const reserveBidList: ReserveBidMarketDocument[] = await ReserveBidMarketDocumentController.getObjByMeteringPointMrid(
-            params,
-            activationDocument.registeredResourceMrid,
-            initialTarget);
+        const reserveBidList: ReserveBidMarketDocument[] =
+            await ReserveBidMarketDocumentController.getObjByMeteringPointMrid(
+                params,
+                activationDocument.registeredResourceMrid,
+                initialTarget);
 
-        var fileIdList: string[] = [];
+        let fileIdList: string[] = [];
 
         if (reserveBidList && reserveBidList.length > 0) {
-            for (var reserveBidObj of reserveBidList) {
+            for (const reserveBidObj of reserveBidList) {
                 if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
                     fileIdList = fileIdList.concat(reserveBidObj.attachments);
                 }
@@ -321,191 +512,39 @@ export class EligibilityController {
                     params, reserveBidObj.reserveBidMrid, referencedDocument.collection);
 
                 if (!existing) {
-                    requiredReferences.push({docType:DocType.RESERVE_BID_MARKET_DOCUMENT, collection:referencedDocument.collection, data: reserveBidObj})
+                    requiredReferences.push(
+                        {collection: referencedDocument.collection,
+                        data: reserveBidObj,
+                        docType: DocType.RESERVE_BID_MARKET_DOCUMENT});
                 }
             }
         }
-
 
         /*****************
          * FILES
          ****************/
-        const FileList: AttachmentFile[] = await AttachmentFileController.getObjsByIdList(params, fileIdList, initialTarget);
+        const FileList: AttachmentFile[] =
+            await AttachmentFileController.getObjsByIdList(params, fileIdList, initialTarget);
 
         if (FileList && FileList.length > 0) {
 
-            for (var attachmentFile of FileList) {
+            for (const attachmentFile of FileList) {
 
-                const existing = await AttachmentFileController.dataExists(params, attachmentFile.fileId, referencedDocument.collection);
+                const existing =
+                    await AttachmentFileController.dataExists(
+                        params, attachmentFile.fileId, referencedDocument.collection);
                 if (!existing) {
-                    requiredReferences.push({docType:DocType.ATTACHMENT_FILE, collection:referencedDocument.collection, data: attachmentFile})
+                    requiredReferences.push(
+                        {collection: referencedDocument.collection,
+                        data: attachmentFile,
+                        docType: DocType.ATTACHMENT_FILE});
                 }
             }
 
         }
 
-
-
-         params.logger.debug('============= END  : getCreationLinkedData - EligibilityController ===========');
+        params.logger.debug('============= END  : getCreationLinkedData - EligibilityController ===========');
         return requiredReferences;
-    }
-
-
-    public static async getAutomaticEligibles(params: STARParameters): Promise<DataReference[]> {
-        params.logger.debug('============= START : getAutomaticEligibles - EligibilityController ===========');
-        var eligibilityReferences: DataReference[] = [];
-
-        const collection: string = await HLFServices.getCollectionFromParameters(params, ParametersType.DATA_TARGET, RoleType.Role_Producer);
-
-        var finalTarget: string = '';
-        var targetArrayValue: string[];
-
-        if (collection) {
-            targetArrayValue = collection.split(ParametersController.targetJoinSeparator);
-        }
-
-        const collectionTSO = await HLFServices.getCollectionFromParameters(params, ParametersType.DATA_TARGET, RoleType.Role_TSO);
-        if (collectionTSO) {
-            targetArrayValue = targetArrayValue.concat(collectionTSO.split(ParametersController.targetJoinSeparator));
-        }
-        finalTarget = EligibilityController.generateTarget(params, targetArrayValue);
-
-        params.logger.debug("collection: ", collection);
-        params.logger.debug("finalTarget: ", finalTarget);
-
-        const automaticEligibilityList = params.values.get(ParametersType.AUTOMATIC_ELIGIBILITY);
-
-        if (automaticEligibilityList && automaticEligibilityList.length > 0) {
-            for (var automaticEligibility of automaticEligibilityList) {
-                if (automaticEligibility && automaticEligibility.length > 0) {
-                    const values: string[] = automaticEligibility.split("-");
-                    if (values && values.length == 3) {
-                        const args: string[] = [];
-                        args.push(`"messageType":"${values[0]}"`);
-                        args.push(`"businessType":"${values[1]}"`);
-                        args.push(`"reasonCode":"${values[2]}"`);
-
-                        args.push(`"eligibilityStatus": ${JSON.stringify(EligibilityStatusType.EligibilityAccepted)}`);
-                        args.push(`"eligibilityStatusEditable":false`);
-
-                        const query = await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
-
-                        const activationDocumentList: ActivationDocument[] = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, docType: DocType.ACTIVATION_DOCUMENT, collection: collection});
-                        if (activationDocumentList && activationDocumentList.length > 0) {
-                            for (var activationDocument of activationDocumentList) {
-                                if (activationDocument
-                                    && activationDocument.activationDocumentMrid
-                                    && activationDocument.activationDocumentMrid.length > 0) {
-
-                                    // Depend if eligibility needs to be true
-                                    // activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
-                                    activationDocument.eligibilityStatusEditable = false;
-                                    activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocument);
-
-                                    const dataReference: DataReference = {
-                                        docType: DocType.ACTIVATION_DOCUMENT,
-                                        previousCollection: collection,
-                                        collection: finalTarget,
-                                        dataAction: DataActionType.COLLECTION_CHANGE,
-                                        data: activationDocument
-                                    }
-
-                                    eligibilityReferences.push(dataReference);
-                                }
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
-
-        params.logger.debug('=============  END  : getAutomaticEligibles - EligibilityController ===========');
-        return eligibilityReferences;
-    }
-
-
-
-
-    public static async getEligibilityStatusState(
-        params: STARParameters,
-        orderReferencesMap: Map<string, DataReference>): Promise<DataReference[]> {
-        params.logger.debug('============= START : getEligibilityState - EligibilityController ===========');
-        var eligibilityReferences: DataReference[] = [];
-
-        params.logger.debug("===========================")
-        params.logger.debug("===========================")
-        params.logger.debug("===========================")
-
-        params.logger.debug("Initialization")
-        params.logger.debug("orderReferencesMap: ", JSON.stringify([...orderReferencesMap]))
-
-        params.logger.debug("===========================")
-
-        for (var [, referencedDocument] of orderReferencesMap) {
-            params.logger.debug("referencedDocument: ", JSON.stringify(referencedDocument))
-            const activationDocument: ActivationDocument = referencedDocument.data;
-
-            var initialTarget: string;
-            var targetDocument: string;
-
-            if (referencedDocument.previousCollection
-                && referencedDocument.previousCollection.length > 0) {
-                initialTarget = referencedDocument.previousCollection
-                targetDocument = referencedDocument.collection;
-            } else {
-                initialTarget = referencedDocument.collection;
-
-                if (activationDocument && activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted) {
-                    targetDocument = await EligibilityController.findDataTarget(params, activationDocument, initialTarget, orderReferencesMap);
-                } else {
-                    targetDocument = initialTarget;
-                }
-                referencedDocument.collection = targetDocument;
-            }
-
-            if (initialTarget && targetDocument === initialTarget) {
-                //Just update Order
-                eligibilityReferences.push(referencedDocument);
-            } else {
-                //Before creation in new collection, it is needed to create requirements
-                const requirements = await EligibilityController.getCreationRequierments(params, referencedDocument, initialTarget);
-                for (var requirement of requirements) {
-                    eligibilityReferences.push(requirement);
-                }
-
-                //Creation of the data in the new collection
-                const dataReference: DataReference = {
-                    docType: DocType.ACTIVATION_DOCUMENT,
-                    previousCollection: initialTarget,
-                    collection: targetDocument,
-                    dataAction: DataActionType.COLLECTION_CHANGE,
-                    data: referencedDocument.data
-                }
-                eligibilityReferences.push(dataReference);
-
-                //After creation in new collection, it is needed to create linked data
-                const linkedData = await EligibilityController.getCreationLinkedData(params, referencedDocument, initialTarget);
-                for (var data of linkedData) {
-                    eligibilityReferences.push(data);
-                }
-
-            }
-            params.logger.debug("===")
-        }
-
-
-        params.logger.debug("===========================")
-        params.logger.debug("eligibilityReferences: ", JSON.stringify(eligibilityReferences))
-        params.logger.debug("===========================")
-
-
-        params.logger.debug("===========================")
-        params.logger.debug("===========================")
-        params.logger.debug("===========================")
-
-        params.logger.debug('=============  END  : getEligibilityState - EligibilityController ===========');
-        return eligibilityReferences;
     }
 
 }

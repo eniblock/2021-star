@@ -1,13 +1,13 @@
-import { DocType } from "../../enums/DocType";
-import { ParametersType } from "../../enums/ParametersType";
-import { DataReference } from "../../model/dataReference";
+import { DocType } from '../../enums/DocType';
+import { ParametersType } from '../../enums/ParametersType';
+import { DataReference } from '../../model/dataReference';
 
-import { ReserveBidMarketDocument } from "../../model/reserveBidMarketDocument";
-import { STARParameters } from "../../model/starParameters";
+import { ReserveBidMarketDocument } from '../../model/reserveBidMarketDocument';
+import { STARParameters } from '../../model/starParameters';
 
-import { HLFServices } from "./HLFservice";
-import { QueryStateService } from "./QueryStateService";
-import { StarPrivateDataService } from "./StarPrivateDataService";
+import { HLFServices } from './HLFservice';
+import { QueryStateService } from './QueryStateService';
+import { StarPrivateDataService } from './StarPrivateDataService';
 
 export class ReserveBidMarketDocumentService {
 
@@ -18,12 +18,11 @@ export class ReserveBidMarketDocumentService {
         params.logger.debug('============= START : write ReserveBidMarketDocumentService ===========');
 
         reserveBidObj.docType = DocType.RESERVE_BID_MARKET_DOCUMENT;
-        await StarPrivateDataService.write(params, {id: reserveBidObj.reserveBidMrid, dataObj: reserveBidObj, collection: target});
+        await StarPrivateDataService.write(
+            params, {id: reserveBidObj.reserveBidMrid, dataObj: reserveBidObj, collection: target});
 
         params.logger.debug('=============  END  : write ReserveBidMarketDocumentService ===========');
     }
-
-
 
     public static async getQueryStringResult(
         params: STARParameters,
@@ -39,8 +38,6 @@ export class ReserveBidMarketDocumentService {
         return formated;
     }
 
-
-
     public static async getQueryArrayResult(
         params: STARParameters,
         query: string,
@@ -52,21 +49,23 @@ export class ReserveBidMarketDocumentService {
         if (target && target.length > 0) {
             collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
         } else {
-            collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+            collections =
+                await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
         }
 
-        var allResults:ReserveBidMarketDocument[] = [];
-        var allResultsId: string[] = [];
+        const allResults: ReserveBidMarketDocument[] = [];
+        const allResultsId: string[] = [];
 
         if (collections) {
-            for (var i=0; i<collections.length; i++) {
+            for (const collection of collections) {
                 // params.logger.debug("collection : ", collections[i])
-                let results: ReserveBidMarketDocument[] = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, collection: collections[i]});
+                const results: ReserveBidMarketDocument[] =
+                    await QueryStateService.getPrivateQueryArrayResult(params, {query, collection});
                 // params.logger.debug("results :", JSON.stringify(results))
-                for (var result of results) {
+                for (const result of results) {
                     if (result
                         && result.reserveBidMrid
-                        && result.reserveBidMrid !== ""
+                        && result.reserveBidMrid !== ''
                         && !allResultsId.includes(result.reserveBidMrid)) {
 
                             allResultsId.push(result.reserveBidMrid);
@@ -82,8 +81,6 @@ export class ReserveBidMarketDocumentService {
         return allResults;
     }
 
-
-
     public static async getQueryArrayDataReferenceResult(
         params: STARParameters,
         query: string,
@@ -95,29 +92,31 @@ export class ReserveBidMarketDocumentService {
         if (target && target.length > 0) {
             collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
         } else {
-            collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+            collections =
+                await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
         }
 
-        var allDataReferenceResults:DataReference[] = [];
-        var allResultsId: string[] = [];
+        const allDataReferenceResults: DataReference[] = [];
+        const allResultsId: string[] = [];
 
         if (collections) {
-            for (var i=0; i<collections.length; i++) {
+            for (const collection of  collections) {
                 // params.logger.debug("collection : ", collections[i])
-                let results: ReserveBidMarketDocument[] = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, collection: collections[i]});
+                const results: ReserveBidMarketDocument[] =
+                    await QueryStateService.getPrivateQueryArrayResult(params, {query, collection});
                 // params.logger.debug("results :", JSON.stringify(results))
-                for (var result of results) {
+                for (const result of results) {
                     if (result
                         && result.reserveBidMrid
-                        && result.reserveBidMrid !== ""
+                        && result.reserveBidMrid !== ''
                         && !allResultsId.includes(result.reserveBidMrid)) {
 
                             allResultsId.push(result.reserveBidMrid);
-                            const dataReference:DataReference = {
+                            const dataReference: DataReference = {
+                                collection,
+                                data: result,
                                 docType: DocType.RESERVE_BID_MARKET_DOCUMENT,
-                                collection: collections[i],
-                                data: result
-                            }
+                            };
                             allDataReferenceResults.push(dataReference);
                         }
                 }

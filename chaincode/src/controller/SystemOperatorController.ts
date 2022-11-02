@@ -45,23 +45,15 @@ export class SystemOperatorController {
         );
     }
 
-
-
-
-
     public static async getSystemOperatorObjById(params: STARParameters, sompId: string): Promise<SystemOperator> {
         params.logger.info('============= START : get System Operator Market Participant by id %s ===========', sompId);
 
-        const dataObj = await StarDataService.getObj(params, {id:sompId, docType: DocType.SYSTEM_OPERATOR});
+        const dataObj = await StarDataService.getObj(params, {id: sompId, docType: DocType.SYSTEM_OPERATOR});
         // params.logger.info(sompId, sompAsBytes.toString());
 
         params.logger.info('============= END   : get System Operator Market Participant by id %s ===========', sompId);
         return dataObj;
     }
-
-
-
-
 
     public static async updateSystemOperator(
         params: STARParameters,
@@ -69,7 +61,7 @@ export class SystemOperatorController {
 
         params.logger.info('============= START : Update System Operator Market Participant ===========');
 
-            const identity = params.values.get(ParametersType.IDENTITY);
+        const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have write access to update a system operator`);
         }
@@ -99,10 +91,6 @@ export class SystemOperatorController {
         );
     }
 
-
-
-
-
     public static async getAllSystemOperator(params: STARParameters): Promise<string> {
         params.logger.info('============= START : get all System Operator Market Participant ===========');
 
@@ -113,12 +101,10 @@ export class SystemOperatorController {
         return JSON.stringify(arrayResult);
     }
 
-
-
     public static async getSystemOperatorByQuery(params: STARParameters, query: string): Promise<string> {
         params.logger.info('============= START : get System Operator Market Participant by query %s ===========');
         params.logger.info('=============  END  : get System Operator Market Participant by query %s ===========');
 
-        return await QueryStateService.getQueryStringResult(params, {query: query});
+        return await QueryStateService.getQueryStringResult(params, {query});
     }
 }

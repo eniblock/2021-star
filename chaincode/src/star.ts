@@ -9,23 +9,23 @@ import { STARParameters } from './model/starParameters';
 import { ParametersType } from './enums/ParametersType';
 
 import { ActivationDocumentController } from './controller/activationDocument/ActivationDocumentController';
+import { EligibilityController } from './controller/activationDocument/EligibilityController';
+import {HistoryController} from './controller/activationDocument/HistoryController';
 import { EnergyAccountController } from './controller/EnergyAccountController';
 import { EnergyAmountController } from './controller/EnergyAmountController';
 import { ParametersController } from './controller/ParametersController';
 import { ProducerController } from './controller/ProducerController';
 import { ReferenceEnergyAccountController } from './controller/ReferenceEnergyAccountController';
 import { SiteController } from './controller/SiteController';
+import { StarDataStateController } from './controller/StarDataStateController';
 import { SystemOperatorController } from './controller/SystemOperatorController';
 import { ViewMarketParticipantController } from './controller/ViewMarketParticipantController';
 import { YellowPagesController } from './controller/YellowPagesController';
-import {HistoryController} from "./controller/activationDocument/HistoryController";
-import { EligibilityController } from './controller/activationDocument/EligibilityController';
-import { StarDataStateController } from './controller/StarDataStateController';
 
-import { HLFServices } from './controller/service/HLFservice';
 import { AttachmentFileController } from './controller/AttachmentFileController';
-import { ReserveBidMarketDocumentController } from './controller/ReserveBidMarketDocumentController';
 import { BalancingDocumentController } from './controller/BalancingDocumentController';
+import { ReserveBidMarketDocumentController } from './controller/ReserveBidMarketDocumentController';
+import { HLFServices } from './controller/service/HLFservice';
 import { StarDataUpdateController } from './controller/StarDataUpdateController';
 
 export class Star extends Contract {
@@ -53,10 +53,10 @@ export class Star extends Contract {
     public async testLog(ctx: Context) {
         const params: STARParameters = await ParametersController.getParameterValues(ctx);
 
-        params.logger.debug("test log DEBUG");
-        params.logger.info("test log INFO");
-        params.logger.warn("test log WARNING");
-        params.logger.error("test log ERROR");
+        params.logger.debug('test log DEBUG');
+        params.logger.info('test log INFO');
+        params.logger.warn('test log WARNING');
+        params.logger.error('test log ERROR');
 
         return true;
     }
@@ -392,8 +392,6 @@ export class Star extends Contract {
         }
     }
 
-
-
     /*      Yellow Pages       */
 
     public async CreateYellowPages(ctx: Context, inputStr: string) {
@@ -444,7 +442,6 @@ export class Star extends Contract {
         }
     }
 
-
     public async UpdateEnergyAccountList(ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
@@ -453,7 +450,6 @@ export class Star extends Contract {
             throw error;
         }
     }
-
 
     public async GetEnergyAccountForSystemOperator(
         ctx: Context,
@@ -466,7 +462,7 @@ export class Star extends Contract {
                 (
                     params,
                     meteringPointMrid,
-                    systemOperatorEicCode
+                    systemOperatorEicCode,
                 )
             );
         } catch (error) {
@@ -751,7 +747,6 @@ export class Star extends Contract {
         }
     }
 
-
     /*
         inputStr : reserveBidMrid, newStatus
         output : ReserveBidMarketDocument
@@ -810,7 +805,6 @@ export class Star extends Contract {
         }
     }
 
-
     /*
         inputStr : meteringPointMrid - string
         output : ReserveBidMarketDocument[]
@@ -824,7 +818,6 @@ export class Star extends Contract {
             throw error;
         }
     }
-
 
     /*
         inputStr : meteringPointMrid - string
@@ -869,6 +862,5 @@ export class Star extends Contract {
             throw error;
         }
     }
-
 
 }

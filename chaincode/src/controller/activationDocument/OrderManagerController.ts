@@ -1,14 +1,14 @@
-import { DataActionType } from "../../enums/DataActionType";
-import { DocType } from "../../enums/DocType";
+import { DataActionType } from '../../enums/DataActionType';
+import { DocType } from '../../enums/DocType';
 
-import { ActivationDocument } from "../../model/activationDocument/activationDocument";
-import { DataReference } from "../../model/dataReference";
-import { STARParameters } from "../../model/starParameters";
+import { ActivationDocument } from '../../model/activationDocument/activationDocument';
+import { DataReference } from '../../model/dataReference';
+import { STARParameters } from '../../model/starParameters';
 
-import { ActivationDocumentService } from "../service/ActivationDocumentService";
-import { StarPrivateDataService } from "../service/StarPrivateDataService";
+import { ActivationDocumentService } from '../service/ActivationDocumentService';
+import { StarPrivateDataService } from '../service/StarPrivateDataService';
 
-import { ActivationDocumentController } from "./ActivationDocumentController";
+import { ActivationDocumentController } from './ActivationDocumentController';
 
 export class OrderManagerController {
     public static async executeOrder(
@@ -21,10 +21,11 @@ export class OrderManagerController {
                 updateOrder.data,
                 {strict: true, abortEarly: false},
             );
-            const activationDocument:ActivationDocument = updateOrder.data;
+            const activationDocument: ActivationDocument = updateOrder.data;
 
             if (updateOrder.dataAction === DataActionType.COLLECTION_CHANGE) {
-                await ActivationDocumentController.deleteActivationDocumentObj(params, activationDocument, updateOrder.previousCollection);
+                await ActivationDocumentController.deleteActivationDocumentObj(
+                    params, activationDocument, updateOrder.previousCollection);
                 await ActivationDocumentController.createActivationDocumentByReference(params, updateOrder);
             } else {
                 await this.updateByOrders(params, activationDocument, updateOrder.collection);
@@ -34,37 +35,41 @@ export class OrderManagerController {
         params.logger.debug('============= END   : executeOrder OrderManagerController ===========');
     }
 
-
     public static async updateByOrders(
         params: STARParameters,
-        activationDocument:ActivationDocument,
+        activationDocument: ActivationDocument,
         collection: string) {
 
         params.logger.debug('============= START : updateByOrders OrderManagerController ===========');
-        var original:ActivationDocument
+        let original: ActivationDocument;
         try {
-            original = await StarPrivateDataService.getObj(params, {id: activationDocument.activationDocumentMrid, docType: DocType.ACTIVATION_DOCUMENT, collection: collection});
+            original = await StarPrivateDataService.getObj(
+                params, {
+                    collection,
+                    docType: DocType.ACTIVATION_DOCUMENT,
+                    id: activationDocument.activationDocumentMrid});
         } catch (err) {
             throw new Error(`Error : Activation Document - updateByOrders - Unknown document cannot be Updated ${activationDocument.activationDocumentMrid}`);
         }
 
-        const original_order:ActivationDocument = JSON.parse(JSON.stringify(original));
-        original_order.orderEnd = activationDocument.orderEnd;
-        original_order.potentialChild = activationDocument.potentialChild;
-        original_order.potentialParent = activationDocument.potentialParent;
-        original_order.subOrderList = activationDocument.subOrderList;
-        original_order.eligibilityStatus = activationDocument.eligibilityStatus;
-        original_order.eligibilityStatusEditable = activationDocument.eligibilityStatusEditable;
+        const originalOrder: ActivationDocument = JSON.parse(JSON.stringify(original));
+        originalOrder.orderEnd = activationDocument.orderEnd;
+        originalOrder.potentialChild = activationDocument.potentialChild;
+        originalOrder.potentialParent = activationDocument.potentialParent;
+        originalOrder.subOrderList = activationDocument.subOrderList;
+        originalOrder.eligibilityStatus = activationDocument.eligibilityStatus;
+        originalOrder.eligibilityStatusEditable = activationDocument.eligibilityStatusEditable;
 
-        if (JSON.stringify(original_order) !== JSON.stringify(activationDocument)) {
+        if (JSON.stringify(originalOrder) !== JSON.stringify(activationDocument)) {
             throw new Error(`Error on document ${activationDocument.activationDocumentMrid} all modified data cannot be updated by orders.`);
         }
 
-        //TODO check subOrderList
+        // TODO check subOrderList
         // if (original.subOrderList) {
         //     for (const listElt of original.subOrderList) {
         //         if (!activationDocument.subOrderList.includes(listElt)) {
-        //             throw new Error(`Error on document ${activationDocument.activationDocumentMrid} ids can only be added to subOrderList.`);
+        //             throw new Error(`Error on document ${activationDocument.activationDocumentMrid}
+        //                  ids can only be added to subOrderList.`);
         //         }
         //     }
         // }

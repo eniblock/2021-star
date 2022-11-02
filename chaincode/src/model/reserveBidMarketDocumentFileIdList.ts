@@ -1,7 +1,13 @@
 import * as Yup from 'yup';
 
 export class ReserveBidMarketDocumentFileIdList {
-    public static formatString(inputString: string) : ReserveBidMarketDocumentFileIdList {
+
+    public static readonly schema = Yup.object().shape({
+        attachmentFileIdList: Yup.array().of(Yup.string()).notRequired(),
+        reserveBidMrid: Yup.string().required('reserveBidMrid is a compulsory string.').typeError('reserveBidMrid must be a string'),
+    });
+
+    public static formatString(inputString: string): ReserveBidMarketDocumentFileIdList {
         let reserveBidObj: ReserveBidMarketDocumentFileIdList;
         try {
             reserveBidObj = JSON.parse(inputString);
@@ -19,12 +25,6 @@ export class ReserveBidMarketDocumentFileIdList {
         }
         return reserveBidObj;
     }
-
-    public static readonly schema = Yup.object().shape({
-        reserveBidMrid: Yup.string().required('reserveBidMrid is a compulsory string.').typeError('reserveBidMrid must be a string'),
-        attachmentFileIdList: Yup.array().of(Yup.string()).notRequired(),
-    });
-
 
     public reserveBidMrid: string;
 

@@ -19,8 +19,8 @@ import { DocType } from '../src/enums/DocType';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { HLFServices } from '../src/controller/service/HLFservice';
 import { CommonService } from '../src/controller/service/CommonService';
-import { BalancingDocumentSearchCriteria } from '../src/model/BalancingDocumentSearchCriteria';
 import { BalancingDocument } from '../src/model/balancingDocument';
+import { BalancingDocumentSearchCriteria } from '../src/model/balancingDocumentSearchCriteria';
 
 
 

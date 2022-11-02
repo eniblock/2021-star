@@ -1,4 +1,4 @@
-export class buildQueryArgument {
+export class BuildQueryArgument {
     public documentType: string;
     public queryArgs: string[];
     public sort?: string[] = [];

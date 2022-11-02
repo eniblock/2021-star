@@ -5,6 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
+        "no-floating-promises": true,
         "indent": [true, "spaces", 4],
         "linebreak-style": [true, "LF"],
         "quotemark": [true, "single"],

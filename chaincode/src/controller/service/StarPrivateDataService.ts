@@ -1,34 +1,11 @@
-import { ParametersType } from "../../enums/ParametersType";
-import { DataObjArgument } from "../../model/arguments/dataObjArgument";
-import { IdArgument } from "../../model/arguments/idArgument";
-import { DataReference } from "../../model/dataReference";
-import { STARParameters } from "../../model/starParameters";
-import { HLFServices } from "./HLFservice";
+import { ParametersType } from '../../enums/ParametersType';
+import { DataObjArgument } from '../../model/arguments/dataObjArgument';
+import { IdArgument } from '../../model/arguments/idArgument';
+import { DataReference } from '../../model/dataReference';
+import { STARParameters } from '../../model/starParameters';
+import { HLFServices } from './HLFservice';
 
 export class StarPrivateDataService {
-    private static async getRaw(
-        params: STARParameters,
-        arg: IdArgument): Promise<Uint8Array> {
-        params.logger.debug('============= START : getPrivateData %s %s %s ===========', arg.docType, arg.collection, arg.id);
-
-        let dataAsBytes: Uint8Array;
-        try {
-            dataAsBytes = await params.ctx.stub.getPrivateData(arg.collection, arg.id);
-        } catch (error) {
-            params.logger.debug('=============  END  : getPrivateData error ===========');
-            throw new Error(`${arg.docType} : ${arg.id} does not exist (error)`);
-        }
-        if (!dataAsBytes || dataAsBytes.length === 0) {
-            params.logger.debug('=============  END  : getPrivateData empty ===========');
-            throw new Error(`${arg.docType} : ${arg.id} does not exist (empty)`);
-        }
-
-        params.logger.debug('=============  END  : getPrivateData %s %s %s ===========', arg.docType, arg.collection, arg.id);
-        return dataAsBytes;
-    }
-
-
-
 
     public static async getObj(
         params: STARParameters,
@@ -37,16 +14,15 @@ export class StarPrivateDataService {
 
         arg.collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, arg.collection);
 
-
-        var dataObj:any = null;
+        let dataObj: any = null;
 
         const poolKey = arg.id;
 
-        const dataRef:Map<string, DataReference> = params.getFromMemoryPool(poolKey);
+        const dataRef: Map<string, DataReference> = params.getFromMemoryPool(poolKey);
         if (dataRef
             && dataRef.get(arg.collection)
             && dataRef.get(arg.collection).data
-            && (dataRef.get(arg.collection).docType === arg.docType || !arg.docType || arg.docType.length == 0)
+            && (dataRef.get(arg.collection).docType === arg.docType || !arg.docType || arg.docType.length === 0)
             ) {
             dataObj = dataRef.get(arg.collection).data;
         }
@@ -57,7 +33,7 @@ export class StarPrivateDataService {
                 try {
                     dataObj = JSON.parse(dataAsBytes.toString());
 
-                    const poolRef : DataReference = {collection: arg.collection, docType: arg.docType, data: dataObj};
+                    const poolRef: DataReference = {collection: arg.collection, docType: arg.docType, data: dataObj};
                     params.addInMemoryPool(poolKey, poolRef);
                 } catch (error) {
                     params.logger.debug('=============  END  : getObj with Error ===========');
@@ -70,29 +46,29 @@ export class StarPrivateDataService {
         return dataObj;
     }
 
-
-
-
     public static async getObjRefbyId(
         params: STARParameters,
         arg: IdArgument): Promise<Map<string, DataReference>> {
-        params.logger.debug('============= START : getObjRefbyId %s %s %s ===========', arg.docType, arg.collection, arg.id);
+        params.logger.debug('============= START : getObjRefbyId %s %s %s ===========',
+            arg.docType, arg.collection, arg.id);
 
         // params.logger.debug("----------------------------------")
         // params.logger.debug("id:",arg.id)
 
         const poolKey = arg.id;
-        var result:Map<string, DataReference> = params.getFromMemoryPool(poolKey);
+        let result: Map<string, DataReference> = params.getFromMemoryPool(poolKey);
 
         // params.logger.debug("result: ", JSON.stringify([...result]))
 
         if (!result || !result.values().next().value) {
             result = new Map();
-            var target: string[] = [];
+            let target: string[] = [];
             if (arg.collection && arg.collection.length > 0) {
                 target = [arg.collection];
             } else {
-                target = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+                target =
+                    await HLFServices.getCollectionsFromParameters(
+                        params, ParametersType.DATA_TARGET, ParametersType.ALL);
             }
 
             const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, target);
@@ -103,12 +79,13 @@ export class StarPrivateDataService {
 
             if (collections) {
                 for (const collection of collections) {
-                    let collectionResult:any;
+                    let collectionResult: any;
                     // params.logger.debug("collection:",collection)
                     try {
-                        collectionResult = await StarPrivateDataService.getObj(params, {id: arg.id, collection: collection, docType: arg.docType});
+                        collectionResult =
+                            await StarPrivateDataService.getObj(params, {id: arg.id, collection, docType: arg.docType});
                     } catch (error) {
-                        if (error && error.message && error.message.includes("NON-JSON")) {
+                        if (error && error.message && error.message.includes('NON-JSON')) {
                             params.logger.debug('=============  END  : getObjRefbyId with Error ===========');
                             throw error;
                         }
@@ -119,10 +96,10 @@ export class StarPrivateDataService {
 
                     if (collectionResult) {
                         const elt  = {
-                            collection: collection,
+                            collection,
+                            data: collectionResult,
                             docType: arg.docType,
-                            data: collectionResult
-                        }
+                        };
                         result.set(collection, elt);
 
                         params.addInMemoryPool(poolKey, elt);
@@ -146,28 +123,52 @@ export class StarPrivateDataService {
             throw new Error(`${arg.docType} : ${arg.id} does not exist (not found in any collection).`);
         }
 
-        params.logger.debug('=============  END  : getObjRefbyId %s %s %s ===========', arg.docType, arg.collection, arg.id);
+        params.logger.debug('=============  END  : getObjRefbyId %s %s %s ===========',
+            arg.docType, arg.collection, arg.id);
         return result;
     }
-
-
-
 
     public static async write(
         params: STARParameters,
         arg: DataObjArgument): Promise<void> {
 
-        params.logger.debug('============= START : WritePrivateData %s %s %s ===========', arg.dataObj.docType, arg.collection, arg.id);
+        params.logger.debug('============= START : WritePrivateData %s %s %s ===========',
+            arg.dataObj.docType, arg.collection, arg.id);
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, arg.collection);
         await params.ctx.stub.putPrivateData(collection, arg.id, Buffer.from(JSON.stringify(arg.dataObj)));
 
-        const poolRef : DataReference = {collection: collection, docType: arg.dataObj.docType, data: arg.dataObj};
+        const poolRef: DataReference = {collection, docType: arg.dataObj.docType, data: arg.dataObj};
 
         const poolKey = arg.id;
         params.addInMemoryPool(poolKey, poolRef);
 
-        params.logger.debug('=============  END  : WritePrivateData %s %s %s ===========', arg.dataObj.docType, collection, arg.id);
+        params.logger.debug('=============  END  : WritePrivateData %s %s %s ===========',
+            arg.dataObj.docType, collection, arg.id);
+    }
+
+    private static async getRaw(
+        params: STARParameters,
+        arg: IdArgument): Promise<Uint8Array> {
+
+        params.logger.debug('============= START : getPrivateData %s %s %s ===========',
+            arg.docType, arg.collection, arg.id);
+
+        let dataAsBytes: Uint8Array;
+        try {
+            dataAsBytes = await params.ctx.stub.getPrivateData(arg.collection, arg.id);
+        } catch (error) {
+            params.logger.debug('=============  END  : getPrivateData error ===========');
+            throw new Error(`${arg.docType} : ${arg.id} does not exist (error)`);
+        }
+        if (!dataAsBytes || dataAsBytes.length === 0) {
+            params.logger.debug('=============  END  : getPrivateData empty ===========');
+            throw new Error(`${arg.docType} : ${arg.id} does not exist (empty)`);
+        }
+
+        params.logger.debug('=============  END  : getPrivateData %s %s %s ===========',
+            arg.docType, arg.collection, arg.id);
+        return dataAsBytes;
     }
 
 }

@@ -3,12 +3,12 @@
  */
 
  export enum ParametersType {
-    SITE_RESERVE_BID_INDEXER_PREFIX = "Indx_SiteResBid_",
-    SITE_ACTIVATION_INDEXER_PREFIX = "Indx_SiteActiv_",
-    ACTIVATION_ENERGY_AMOUNT_INDEXER_PREFIX = "Indx_ActivNRJAm_",
+    SITE_RESERVE_BID_INDEXER_PREFIX = 'Indx_SiteResBid_',
+    SITE_ACTIVATION_INDEXER_PREFIX = 'Indx_SiteActiv_',
+    ACTIVATION_ENERGY_AMOUNT_INDEXER_PREFIX = 'Indx_ActivNRJAm_',
 
-    DEFAULT = "default",
-    ALL = "all",
+    DEFAULT = 'default',
+    ALL = 'all',
 
     IDENTITY = 'identity',
 
@@ -35,13 +35,13 @@
     ENERGY_ACCOUNT_TIME_INTERVAL_SECONDS = 'energyAccount_TimeInterval_Seconds',
 
     REFERENCE_ENERGY_ACCOUNT = 'referenceEnergyAccount',
-    PROCESS_TYPE_COMPTAGE = "comptage",
-    PROCESS_TYPE_REFERENCE = "reference",
+    PROCESS_TYPE_COMPTAGE = 'comptage',
+    PROCESS_TYPE_REFERENCE = 'reference',
 
-    RESERVE_BID_MARKET_DOCUMENT_BASE = "reserveBidMarketDocumentBase",
+    RESERVE_BID_MARKET_DOCUMENT_BASE = 'reserveBidMarketDocumentBase',
     RESERVE_BID_VALIDATION_TIME_MAX = 'reserveBid_validation_time_max',
     RESERVE_BID_OUT_OF_TIME_STATUS = 'reserveBid_out_of_time_status',
 
-    BALANCING_DOCUMENT = "balancingDocument",
-    BALANCING_DOCUMENT_PREFIX = "balancingDocumentPrefix"
+    BALANCING_DOCUMENT = 'balancingDocument',
+    BALANCING_DOCUMENT_PREFIX = 'balancingDocumentPrefix',
   }

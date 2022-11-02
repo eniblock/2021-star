@@ -1,28 +1,31 @@
-import { DataActionType } from "../enums/DataActionType";
-import { DocType } from "../enums/DocType";
-import { IndexedData } from "../model/dataIndexers";
+import { DataActionType } from '../enums/DataActionType';
+import { DocType } from '../enums/DocType';
+import { IndexedData } from '../model/dataIndex/dataIndexers';
 
-import { DataReference } from "../model/dataReference";
-import { STARParameters } from "../model/starParameters";
+import { DataReference } from '../model/dataReference';
+import { STARParameters } from '../model/starParameters';
+import { ActivationCompositeKeyIndexersController } from './dataIndex/ActivationCompositeKeyIndexersController';
+import { ActivationEnergyAmountIndexersController } from './dataIndex/ActivationEnergyAmountIndexersController';
+import { DataIndexersController } from './dataIndex/DataIndexersController';
+import { SiteActivationIndexersController } from './dataIndex/SiteActivationIndexersController';
+import { SiteReserveBidIndexersController } from './dataIndex/SiteReserveBidIndexersController';
 
-import { ActivationCompositeKeyIndexersController, ActivationEnergyAmountIndexersController, DataIndexersController, SiteActivationIndexersController, SiteReserveBidIndexersController } from "./dataIndexersController";
-import { DataIndexersService } from "./service/dataIndexersService";
+import { DataIndexersService } from './service/DataIndexersService';
 
 export class StarDataUpdateController {
     public static async getStarDataToUpdate(
         params: STARParameters): Promise<string> {
         params.logger.info('============= START : getStarDataToUpdate StarDataUpdateController ===========');
 
-        var state_str = "[]";
+        let stateStr = '[]';
         const listOfIndexers = await this.getAllIndexersToCreate(params);
-        state_str = JSON.stringify(listOfIndexers);
+        stateStr = JSON.stringify(listOfIndexers);
 
         params.logger.info('=============  END  : getStarDataToUpdate StarDataUpdateController ===========');
 
-        return state_str;
+        return stateStr;
 
     }
-
 
     public static async executeStarDataOrders(
         params: STARParameters,
@@ -39,7 +42,7 @@ export class StarDataUpdateController {
         }
 
         if (updateOrders && updateOrders.length > 0 ) {
-            //VALIDATION AND INITIALIZATION STEP
+            // VALIDATION AND INITIALIZATION STEP
             for (const updateOrder of updateOrders) {
                 DataReference.schema.validateSync(
                     updateOrder,
@@ -67,7 +70,6 @@ export class StarDataUpdateController {
         params.logger.info('=============  END  : executeStarDataOrders StarDataUpdateController ===========');
         }
 
-
     private static async getAllIndexersToDelete(params: STARParameters): Promise<DataReference[]> {
         params.logger.info('============= START : getAllIndexersToDelete StarDataUpdateController ===========');
 
@@ -87,7 +89,7 @@ export class StarDataUpdateController {
                     && indexer.data.indexId
                     && indexer.data.indexId.length > 0) {
 
-                        indexer.dataAction = DataActionType.DELETE
+                        indexer.dataAction = DataActionType.DELETE;
                         listOfIndexersWithAction.push(indexer);
                 }
             }
@@ -102,21 +104,18 @@ export class StarDataUpdateController {
 
         // const indexSiteReservBidList = await SiteReserveBidIndexersController.getNeededIndexesFromData(params);
         const indexSiteActivationList = await SiteActivationIndexersController.getNeededIndexesFromData(params);
-        // const indexActivationCompositeKeyList = await ActivationCompositeKeyIndexersController.getNeededIndexesFromData(params);
+        // const indexActivationCompositeKeyList =
+        //      await ActivationCompositeKeyIndexersController.getNeededIndexesFromData(params);
         // const indexEnergyList = await ActivationEnergyAmountIndexersController.getNeededIndexesFromData(params);
 
-
-        var indexList: DataReference[] = [];
+        let indexList: DataReference[] = [];
         // indexList = indexList.concat(indexSiteReservBidList);
         indexList = indexList.concat(indexSiteActivationList);
         // indexList = indexList.concat(indexActivationCompositeKeyList);
         // indexList = indexList.concat(indexEnergyList);
 
-
         params.logger.info('=============  END  : getAllIndexersToDelete StarDataUpdateController ===========');
         return indexList;
     }
-
-
 
 }

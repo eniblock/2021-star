@@ -1,52 +1,57 @@
 
+import { DocType } from '../../enums/DocType';
 import { OrganizationTypeMsp } from '../../enums/OrganizationMspType';
 import { ParametersType } from '../../enums/ParametersType';
 import { RoleType } from '../../enums/RoleType';
-import { DocType } from '../../enums/DocType';
 
 import { ActivationDocument } from '../../model/activationDocument/activationDocument';
-import { YellowPages } from '../../model/yellowPages';
-import { STARParameters } from '../../model/starParameters';
-import { SystemOperator } from '../../model/systemOperator';
 import { ReconciliationState } from '../../model/activationDocument/reconciliationState';
 import { DataReference } from '../../model/dataReference';
+import { STARParameters } from '../../model/starParameters';
+import { SystemOperator } from '../../model/systemOperator';
+import { YellowPages } from '../../model/yellowPages';
 
-import { HLFServices } from '../service/HLFservice';
 import { ActivationDocumentService } from '../service/ActivationDocumentService';
+import { HLFServices } from '../service/HLFservice';
 
-import { YellowPagesController } from '../YellowPagesController';
-import { SystemOperatorController } from '../SystemOperatorController';
 import { CommonService } from '../service/CommonService';
+import { SystemOperatorController } from '../SystemOperatorController';
+import { YellowPagesController } from '../YellowPagesController';
 
 export class ReconciliationController {
     public static async getReconciliationState(
         params: STARParameters): Promise<DataReference[]> {
         params.logger.debug('============= START : getReconciliationState ReconciliationController ===========');
 
-        var reconciliationState: ReconciliationState = new ReconciliationState();
+        let reconciliationState: ReconciliationState = new ReconciliationState();
         const activationDocumentIdList: string[] = [];
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity === OrganizationTypeMsp.RTE || identity === OrganizationTypeMsp.ENEDIS) {
             const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
 
-            for (var role of [ RoleType.Role_DSO, RoleType.Role_TSO, OrganizationTypeMsp.PRODUCER ]) {
-                const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, role);
+            for (const role of [ RoleType.Role_DSO, RoleType.Role_TSO, OrganizationTypeMsp.PRODUCER ]) {
+                const collections: string[] = await HLFServices.getCollectionsFromParameters(
+                    params, ParametersType.DATA_TARGET, role);
 
                 if (collections) {
-                    for (var collection of collections) {
-                        var allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(params, query, [collection]);
+                    for (const collection of collections) {
+                        const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(
+                            params, query, [collection]);
 
                         // params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
                         // params.logger.debug(JSON.stringify(allResults))
                         // params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
 
                         if (allResults.length > 0) {
-                            for (var result of allResults) {
-                                const idKey = result.activationDocumentMrid.concat("##").concat(collection);
+                            for (const result of allResults) {
+                                const idKey = result.activationDocumentMrid.concat('##').concat(collection);
                                 if (!activationDocumentIdList.includes(idKey)) {
                                     activationDocumentIdList.push(idKey);
-                                    reconciliationState = await this.filterDocument(params, {docType:DocType.ACTIVATION_DOCUMENT, collection:collection, data:result}, reconciliationState);
+                                    reconciliationState = await this.filterDocument(
+                                        params,
+                                        {collection, data: result, docType: DocType.ACTIVATION_DOCUMENT},
+                                        reconciliationState);
                                 }
                             }
                         }
@@ -69,9 +74,11 @@ export class ReconciliationController {
             // params.logger.debug(JSON.stringify([...reconciliationState.remainingChilds]))
             // params.logger.debug("-----------------------")
 
-
-            if (reconciliationState && reconciliationState.remainingChilds && reconciliationState.remainingChilds.length > 0) {
-                reconciliationState = await ReconciliationController.searchMatchParentWithChild(params, reconciliationState);
+            if (reconciliationState
+                && reconciliationState.remainingChilds
+                && reconciliationState.remainingChilds.length > 0) {
+                reconciliationState =
+                    await ReconciliationController.searchMatchParentWithChild(params, reconciliationState);
             }
 
             // params.logger.debug("- - - - - - - - - - - -")
@@ -110,8 +117,7 @@ export class ReconciliationController {
         return reconciliationState.updateOrders;
     }
 
-
-    //Garbage and Map Creation for matching
+    // Garbage and Map Creation for matching
     private static async filterDocument(
         params: STARParameters,
         dataReference: DataReference,
@@ -139,33 +145,28 @@ export class ReconciliationController {
         return conciliationState;
     }
 
-
-
-
-
     private static async testGarbage(
         params: STARParameters,
         dataReference: DataReference): Promise<boolean> {
         params.logger.debug('============= START : testGarbage ReconciliationController ===========');
 
-        var garbage: boolean = false;
+        let garbage: boolean = false;
 
-        const ppcott:number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
-        const ppcott_date = CommonService.reduceDateDays(new Date(), ppcott);
-
+        const ppcott: number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
+        const ppcottDate = CommonService.reduceDateDays(new Date(), ppcott);
 
         if (dataReference.data.startCreatedDateTime) {
-            const sto_str: string = dataReference.data.startCreatedDateTime;
-            const sto_date: Date = new Date(sto_str);
-            if (ppcott_date.getTime() >= sto_date.getTime()) {
+            const stoStr: string = dataReference.data.startCreatedDateTime;
+            const stoDate: Date = new Date(stoStr);
+            if (ppcottDate.getTime() >= stoDate.getTime()) {
                 garbage = true;
             }
         }
 
         if (!garbage && dataReference.data.endCreatedDateTime) {
-            const eto_str: string = dataReference.data.endCreatedDateTime;
-            const eto_date: Date = new Date(eto_str);
-            if (ppcott_date.getTime() >= eto_date.getTime()) {
+            const etoStr: string = dataReference.data.endCreatedDateTime;
+            const etoDate: Date = new Date(etoStr);
+            if (ppcottDate.getTime() >= etoDate.getTime()) {
                 garbage = true;
             }
         }
@@ -173,8 +174,6 @@ export class ReconciliationController {
         params.logger.debug(`=============  END  : testGarbage (${JSON.stringify(garbage)}) ReconciliationController =========== `);
         return garbage;
     }
-
-
 
     private static async filterChild(
         params: STARParameters,
@@ -191,19 +190,18 @@ export class ReconciliationController {
                 && dataReference.data.endCreatedDateTime) {
 
             const senderMarketParticipant: SystemOperator =
-                await SystemOperatorController.getSystemOperatorObjById(params, dataReference.data.senderMarketParticipantMrid);
+                await SystemOperatorController.getSystemOperatorObjById(
+                    params, dataReference.data.senderMarketParticipantMrid);
 
-            if (senderMarketParticipant.systemOperatorMarketParticipantName.toLocaleLowerCase() === OrganizationTypeMsp.RTE.toLocaleLowerCase()) {
+            if (senderMarketParticipant.systemOperatorMarketParticipantName.toLocaleLowerCase() ===
+                OrganizationTypeMsp.RTE.toLocaleLowerCase()) {
                 conciliationState.startState.push(dataReference);
             }
         }
 
-
         params.logger.debug('=============  END  : filterChild ReconciliationController ===========');
         return conciliationState;
     }
-
-
 
     private static async filterParent(
         params: STARParameters,
@@ -212,7 +210,8 @@ export class ReconciliationController {
         params.logger.debug('============= START : filterParent ReconciliationController ===========');
 
         if (RoleType.Role_DSO === dataReference.data.receiverRole) {
-            var refs:DataReference[] = conciliationState.remainingParentsMap.get(dataReference.data.registeredResourceMrid);
+            let refs: DataReference[] =
+                conciliationState.remainingParentsMap.get(dataReference.data.registeredResourceMrid);
             if (!refs) {
                 refs = [];
             }
@@ -222,9 +221,9 @@ export class ReconciliationController {
         } else {
             const senderMarketParticipantMrid: string = dataReference.data.senderMarketParticipantMrid;
             const registeredResourceMrid: string = dataReference.data.registeredResourceMrid;
-            const key:string = senderMarketParticipantMrid.concat("XZYZX").concat(registeredResourceMrid);
+            const key: string = senderMarketParticipantMrid.concat('XZYZX').concat(registeredResourceMrid);
 
-            var refs:DataReference[] = conciliationState.endStateRefsMap.get(key);
+            let refs: DataReference[] = conciliationState.endStateRefsMap.get(key);
             if (!refs) {
                 refs = [];
             }
@@ -237,19 +236,14 @@ export class ReconciliationController {
         return conciliationState;
     }
 
-
-
-
-
-
     private static async searchMatchParentWithChild(
         params: STARParameters,
         reconciliationState: ReconciliationState): Promise<ReconciliationState> {
         params.logger.debug('============= START : searchMatchParentWithChild ReconciliationController ===========');
 
-        const pctmt:number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
+        const pctmt: number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
 
-        for (var childReference of reconciliationState.remainingChilds) {
+        for (const childReference of reconciliationState.remainingChilds) {
             const queryDate: string = childReference.data.startCreatedDateTime;
             const datetmp = new Date(queryDate);
 
@@ -258,38 +252,38 @@ export class ReconciliationController {
             const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
             const datePlusPCTMT = new Date(datetmp.getTime() + pctmt);
 
-
             const yellowPageList: YellowPages[] =
             await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(
                 params,
-                childReference.data.originAutomationRegisteredResourceMrid
+                childReference.data.originAutomationRegisteredResourceMrid,
             );
 
-            params.logger.debug("0000000000000000000000000")
+            params.logger.debug('0000000000000000000000000');
             params.logger.debug('childReference=', JSON.stringify(childReference));
             params.logger.debug('remainingParentsMap=', JSON.stringify([...reconciliationState.remainingParentsMap]));
             params.logger.debug('yellowPageList for BB reconciliation=', JSON.stringify(yellowPageList));
-            params.logger.debug("0000000000000000000000000")
+            params.logger.debug('0000000000000000000000000');
 
-            params.logger.debug("1111111111111111111111111")
+            params.logger.debug('1111111111111111111111111');
 
-            var possibleParents: DataReference[] = [];
-            for (const yellowPage of yellowPageList){
+            const possibleParents: DataReference[] = [];
+            for (const yellowPage of yellowPageList) {
 
-                params.logger.debug("yellowPage.registeredResourceMrid: ", yellowPage.registeredResourceMrid)
+                params.logger.debug('yellowPage.registeredResourceMrid: ', yellowPage.registeredResourceMrid);
 
-                var linkedParents: DataReference[] = reconciliationState.remainingParentsMap.get(yellowPage.registeredResourceMrid);
+                const linkedParents: DataReference[] =
+                    reconciliationState.remainingParentsMap.get(yellowPage.registeredResourceMrid);
 
-                params.logger.debug("linkedParents: ", JSON.stringify(linkedParents))
+                params.logger.debug('linkedParents: ', JSON.stringify(linkedParents));
 
                 if (linkedParents) {
-                    for (var linkedParent of linkedParents) {
+                    for (const linkedParent of linkedParents) {
                         const activationDocument: ActivationDocument = linkedParent.data;
                         const dateActivationDocument = new Date(activationDocument.startCreatedDateTime);
 
-                        params.logger.debug("dateMinusPCTMT: ", dateMinusPCTMT)
-                        params.logger.debug("dateActivationDocument: ", dateActivationDocument)
-                        params.logger.debug("datePlusPCTMT: ", datePlusPCTMT)
+                        params.logger.debug('dateMinusPCTMT: ', dateMinusPCTMT);
+                        params.logger.debug('dateActivationDocument: ', dateActivationDocument);
+                        params.logger.debug('datePlusPCTMT: ', datePlusPCTMT);
 
                         if (dateMinusPCTMT <= dateActivationDocument
                             && dateActivationDocument <= datePlusPCTMT) {
@@ -299,11 +293,11 @@ export class ReconciliationController {
                 }
             }
 
-            params.logger.debug("possibleParents: ", JSON.stringify(possibleParents))
-            params.logger.debug("1111111111111111111111111")
+            params.logger.debug('possibleParents: ', JSON.stringify(possibleParents));
+            params.logger.debug('1111111111111111111111111');
 
-            const index = await ReconciliationController.findIndexofClosestEndDateRef(childReference.data, possibleParents);
-
+            const index = await ReconciliationController.findIndexofClosestEndDateRef(
+                childReference.data, possibleParents);
 
             // If a parent document is found
             if ( index !== -1 ) {
@@ -312,10 +306,15 @@ export class ReconciliationController {
                     if (!parentStartDocument.endCreatedDateTime) {
                         parentStartDocument.orderEnd = true;
                     }
-                    parentStartDocument.subOrderList = await ReconciliationController.fillList(parentStartDocument.subOrderList, childReference.data.activationDocumentMrid);
-                    reconciliationState.updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection:possibleParents[index].collection, data:parentStartDocument});
+                    parentStartDocument.subOrderList = await ReconciliationController.fillList(
+                        parentStartDocument.subOrderList, childReference.data.activationDocumentMrid);
+                    reconciliationState.updateOrders.push(
+                        {collection: possibleParents[index].collection,
+                        data: parentStartDocument,
+                        docType: DocType.ACTIVATION_DOCUMENT});
 
-                    childReference.data.subOrderList = await ReconciliationController.fillList(childReference.data.subOrderList, parentStartDocument.activationDocumentMrid);
+                    childReference.data.subOrderList = await ReconciliationController.fillList(
+                        childReference.data.subOrderList, parentStartDocument.activationDocumentMrid);
                     childReference.data.potentialChild = false;
                     childReference.docType = DocType.ACTIVATION_DOCUMENT;
                     reconciliationState.updateOrders.push(childReference);
@@ -328,30 +327,28 @@ export class ReconciliationController {
         return reconciliationState;
     }
 
-
-
     private static async searchUpdateEndState(
         params: STARParameters,
         reconciliationState: ReconciliationState): Promise<ReconciliationState> {
         params.logger.debug('============= START : searchUpdateEndState ReconciliationController ===========');
 
-        const pcuetmt:number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
+        const pcuetmt: number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
 
-        for (var childReference of reconciliationState.startState) {
+        for (const childReference of reconciliationState.startState) {
             const senderMarketParticipantMrid: string = childReference.data.senderMarketParticipantMrid;
             const registeredResourceMrid: string = childReference.data.registeredResourceMrid;
-            const key:string = senderMarketParticipantMrid.concat("XZYZX").concat(registeredResourceMrid);
+            const key: string = senderMarketParticipantMrid.concat('XZYZX').concat(registeredResourceMrid);
 
             const queryDateStr: string = childReference.data.endCreatedDateTime;
             const queryDate: Date = new Date(queryDateStr);
             const datetmp = new Date(queryDateStr);
-            datetmp.setUTCHours(0,0,0,0);
+            datetmp.setUTCHours(0, 0, 0, 0);
             const dateYesterday = new Date(datetmp.getTime() - pcuetmt);
 
-            var possibleParents: DataReference[] = [];
-            var linkedParents: DataReference[] = reconciliationState.endStateRefsMap.get(key);
+            const possibleParents: DataReference[] = [];
+            const linkedParents: DataReference[] = reconciliationState.endStateRefsMap.get(key);
             if (linkedParents) {
-                for (var linkedParent of linkedParents) {
+                for (const linkedParent of linkedParents) {
                     const activationDocument: ActivationDocument = linkedParent.data;
                     const dateActivationDocument = new Date(activationDocument.startCreatedDateTime);
                     if (dateYesterday <= dateActivationDocument
@@ -361,7 +358,8 @@ export class ReconciliationController {
                 }
             }
 
-            const index = await ReconciliationController.findIndexofClosestEndDateRef(childReference.data, possibleParents);
+            const index = await ReconciliationController.findIndexofClosestEndDateRef(
+                childReference.data, possibleParents);
 
             // If a parent document is found
             if ( index !== -1 ) {
@@ -370,10 +368,15 @@ export class ReconciliationController {
                     if (!parentStartDocument.endCreatedDateTime) {
                         parentStartDocument.orderEnd = true;
                     }
-                    parentStartDocument.subOrderList = await ReconciliationController.fillList(parentStartDocument.subOrderList, childReference.data.activationDocumentMrid);
-                    reconciliationState.updateOrders.push({docType:DocType.ACTIVATION_DOCUMENT, collection:possibleParents[index].collection, data:parentStartDocument});
+                    parentStartDocument.subOrderList = await ReconciliationController.fillList(
+                        parentStartDocument.subOrderList, childReference.data.activationDocumentMrid);
+                    reconciliationState.updateOrders.push(
+                        {collection: possibleParents[index].collection,
+                        data: parentStartDocument,
+                        docType: DocType.ACTIVATION_DOCUMENT});
 
-                    childReference.data.subOrderList = await ReconciliationController.fillList(childReference.data.subOrderList, parentStartDocument.activationDocumentMrid);
+                    childReference.data.subOrderList = await ReconciliationController.fillList(
+                        childReference.data.subOrderList, parentStartDocument.activationDocumentMrid);
                     childReference.data.potentialChild = false;
                     childReference.docType = DocType.ACTIVATION_DOCUMENT;
                     reconciliationState.updateOrders.push(childReference);
@@ -385,11 +388,6 @@ export class ReconciliationController {
         return reconciliationState;
     }
 
-
-
-
-
-
     private static async fillList(inputList: string[], content: string): Promise<string[]> {
         if (!inputList) {
             inputList = [];
@@ -400,23 +398,24 @@ export class ReconciliationController {
         return inputList;
     }
 
+    private static async findIndexofClosestEndDateRef(
+        referenceDocument: ActivationDocument,
+        comparedDocument: DataReference[]): Promise<number> {
 
+        let delta: number = Number.MAX_VALUE;
+        let index: number = -1;
 
-    private static async findIndexofClosestEndDateRef(referenceDocument: ActivationDocument, comparedDocument: DataReference[]): Promise<number> {
-        var delta:number = Number.MAX_VALUE;
-        var index:number = -1;
-
-        for (var i = 0; i < comparedDocument.length; i++) {
+        for (let i = 0; i < comparedDocument.length; i++) {
             const dateParent = new Date(comparedDocument[i].data.startCreatedDateTime);
-            var dateChild: Date;
+            let dateChild: Date;
             if (referenceDocument.startCreatedDateTime) {
                 dateChild = new Date(referenceDocument.startCreatedDateTime);
             } else {
                 dateChild = new Date(referenceDocument.endCreatedDateTime);
             }
-            const delta_loc = Math.abs(dateParent.getTime() - dateChild.getTime());
-            if (delta_loc < delta) {
-                delta = delta_loc;
+            const deltaLoc = Math.abs(dateParent.getTime() - dateChild.getTime());
+            if (deltaLoc < delta) {
+                delta = deltaLoc;
                 index = i;
             }
         }

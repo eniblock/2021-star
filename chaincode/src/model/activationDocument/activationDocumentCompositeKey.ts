@@ -6,20 +6,32 @@ import { DocType } from '../../enums/DocType';
 import { ActivationDocument } from './activationDocument';
 
 export class ActivationDocumentCompositeKey {
-    public static formatActivationDocument(activationDocumentObj: ActivationDocument) : ActivationDocumentCompositeKey {
+
+    public static readonly schema = Yup.object().shape({
+        endCreatedDateTime: Yup.string().notRequired().typeError('endCreatedDateTime must be a string'),
+        originAutomationRegisteredResourceMrid: Yup.string().required(
+            'originAutomationRegisteredResourceMrid is required').typeError('originAutomationRegisteredResourceMrid must be a string'),
+        registeredResourceMrid: Yup.string().required(
+            'registeredResourceMrid is required').typeError('registeredResourceMrid must be a string'),
+        revisionNumber: Yup.string().required(
+            'revisionNumber is required').typeError('revisionNumber must be a string').matches(/^[0-9]*$/),
+        startCreatedDateTime: Yup.string().notRequired().typeError('startCreatedDateTime must be a string'),
+    });
+
+    public static formatActivationDocument(activationDocumentObj: ActivationDocument): ActivationDocumentCompositeKey {
         const activationDocumentCompositeKey: ActivationDocumentCompositeKey = {
+            endCreatedDateTime: activationDocumentObj.endCreatedDateTime,
             originAutomationRegisteredResourceMrid: activationDocumentObj.originAutomationRegisteredResourceMrid,
             registeredResourceMrid: activationDocumentObj.registeredResourceMrid,
+            revisionNumber: activationDocumentObj.revisionNumber,
             startCreatedDateTime: activationDocumentObj.startCreatedDateTime,
-            endCreatedDateTime: activationDocumentObj.endCreatedDateTime,
-            revisionNumber: activationDocumentObj.revisionNumber
-        }
+        };
 
         try {
             if (!activationDocumentCompositeKey.revisionNumber
                 || activationDocumentCompositeKey.revisionNumber.length === 0) {
 
-                activationDocumentCompositeKey.revisionNumber = "0"
+                activationDocumentCompositeKey.revisionNumber = '0';
             }
             ActivationDocumentCompositeKey.schema.validateSync(
                 activationDocumentCompositeKey,
@@ -31,7 +43,7 @@ export class ActivationDocumentCompositeKey {
         return activationDocumentCompositeKey;
     }
 
-    public static formatString(inputString: string) : ActivationDocumentCompositeKey {
+    public static formatString(inputString: string): ActivationDocumentCompositeKey {
         let activationDocumentCompositeKeyObj: ActivationDocumentCompositeKey;
         try {
             activationDocumentCompositeKeyObj = JSON.parse(inputString);
@@ -43,7 +55,7 @@ export class ActivationDocumentCompositeKey {
             if (!activationDocumentCompositeKeyObj.revisionNumber
                 || activationDocumentCompositeKeyObj.revisionNumber.length === 0) {
 
-                    activationDocumentCompositeKeyObj.revisionNumber = "0"
+                    activationDocumentCompositeKeyObj.revisionNumber = '0';
             }
 
             ActivationDocumentCompositeKey.schema.validateSync(
@@ -56,7 +68,7 @@ export class ActivationDocumentCompositeKey {
         return activationDocumentCompositeKeyObj;
     }
 
-    public static formatListString(inputString: string) : ActivationDocumentCompositeKey[] {
+    public static formatListString(inputString: string): ActivationDocumentCompositeKey[] {
         let activationDocumentCompositeKeyList: ActivationDocumentCompositeKey[] = [];
         try {
             activationDocumentCompositeKeyList = JSON.parse(inputString);
@@ -65,12 +77,12 @@ export class ActivationDocumentCompositeKey {
         }
 
         if (activationDocumentCompositeKeyList && activationDocumentCompositeKeyList.length > 0) {
-            for (var activationDocumentCompositeKeyObj of activationDocumentCompositeKeyList) {
+            for (const activationDocumentCompositeKeyObj of activationDocumentCompositeKeyList) {
                 try {
                     if (!activationDocumentCompositeKeyObj.revisionNumber
                         || activationDocumentCompositeKeyObj.revisionNumber.length === 0) {
 
-                            activationDocumentCompositeKeyObj.revisionNumber = "0"
+                            activationDocumentCompositeKeyObj.revisionNumber = '0';
                     }
 
                     ActivationDocumentCompositeKey.schema.validateSync(
@@ -84,17 +96,6 @@ export class ActivationDocumentCompositeKey {
         }
         return activationDocumentCompositeKeyList;
     }
-
-    public static readonly schema = Yup.object().shape({
-        originAutomationRegisteredResourceMrid: Yup.string().required(
-            'originAutomationRegisteredResourceMrid is required').typeError('originAutomationRegisteredResourceMrid must be a string'),
-        registeredResourceMrid: Yup.string().required(
-            'registeredResourceMrid is required').typeError('registeredResourceMrid must be a string'),
-        startCreatedDateTime: Yup.string().notRequired().typeError('startCreatedDateTime must be a string'),
-        endCreatedDateTime: Yup.string().notRequired().typeError('endCreatedDateTime must be a string'),
-        revisionNumber: Yup.string().required(
-            'revisionNumber is required').typeError('revisionNumber must be a string').matches(/^[0-9]*$/),
-    });
 
     public originAutomationRegisteredResourceMrid: string;
     public registeredResourceMrid: string;

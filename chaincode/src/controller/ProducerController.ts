@@ -28,7 +28,6 @@ export class ProducerController {
         params.logger.info('=============  END  : createProducer ProducerController ===========');
     }
 
-
     public static async createProducerList(
         params: STARParameters,
         inputStr: string) {
@@ -42,14 +41,13 @@ export class ProducerController {
         const producerList: Producer[] = Producer.formatListString(inputStr);
 
         if (producerList) {
-            for (var producerObj of producerList) {
+            for (const producerObj of producerList) {
                 await ProducerService.write(params, producerObj);
             }
         }
 
         params.logger.info('=============  END  : createProducerList ProducerController ===========');
     }
-
 
     public static async updateProducer(
         params: STARParameters,
@@ -63,13 +61,13 @@ export class ProducerController {
 
         const producerObj = Producer.formatString(inputStr);
 
-        await StarDataService.getObj(params, {id: producerObj.producerMarketParticipantMrid, docType: DocType.PRODUCER});
+        await StarDataService.getObj(
+            params, {id: producerObj.producerMarketParticipantMrid, docType: DocType.PRODUCER});
 
         await ProducerService.write(params, producerObj);
 
         params.logger.info('=============  END  : updateProducer ProducerController ===========');
     }
-
 
     public static async updateProducerList(
         params: STARParameters,
@@ -84,18 +82,15 @@ export class ProducerController {
         const producerList: Producer[] = Producer.formatListString(inputStr);
 
         if (producerList) {
-            for (var producerObj of producerList) {
-                await StarDataService.getObj(params, {id: producerObj.producerMarketParticipantMrid, docType: DocType.PRODUCER});
+            for (const producerObj of producerList) {
+                await StarDataService.getObj(
+                    params, {id: producerObj.producerMarketParticipantMrid, docType: DocType.PRODUCER});
                 await ProducerService.write(params, producerObj);
             }
         }
 
         params.logger.info('=============  END  : updateProducerList ProducerController ===========');
     }
-
-
-
-
 
     public static async getProducerById(
         params: STARParameters,
@@ -109,9 +104,6 @@ export class ProducerController {
         return JSON.stringify(prodObj);
     }
 
-
-
-
     public static async getAllProducer( params: STARParameters): Promise<string> {
         params.logger.info('============= START : getAllProducer ProducerController ===========');
 
@@ -122,20 +114,17 @@ export class ProducerController {
         return JSON.stringify(arrayResult);
     }
 
-
-
-
     public static async getProducerByName(
         params: STARParameters,
         producerMarketParticipantName: string): Promise<Producer[]> {
         params.logger.debug('============= START : getProducerByName %s ===========', producerMarketParticipantName);
 
-        var args: string[] = [];
+        const args: string[] = [];
         args.push(`"producerMarketParticipantName":"${producerMarketParticipantName}"`);
 
         const query = await QueryStateService.buildQuery({documentType: DocType.PRODUCER, queryArgs: args});
 
-        const allResults = await QueryStateService.getQueryArrayResult(params, {query: query});
+        const allResults = await QueryStateService.getQueryArrayResult(params, {query});
 
         params.logger.debug('============= END : getProducerByName %s ===========', producerMarketParticipantName);
 

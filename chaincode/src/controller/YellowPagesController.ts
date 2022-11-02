@@ -37,8 +37,9 @@ export class YellowPagesController {
         );
 
         try {
-            await StarDataService.getObj(params, {id: yellowPageObj.systemOperatorMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
-        } catch(error) {
+            await StarDataService.getObj(
+                params, {id: yellowPageObj.systemOperatorMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+        } catch (error) {
             throw new Error(error.message.concat(` in Yellow Pages ${yellowPageObj.originAutomationRegisteredResourceMrid}.`));
         }
 
@@ -48,9 +49,6 @@ export class YellowPagesController {
             yellowPageObj.yellowPageMrid,
         );
     }
-
-
-
 
     public static async getAllYellowPages(params: STARParameters): Promise<string> {
         params.logger.info('============= START : getAllYellowPages ===========');
@@ -62,15 +60,12 @@ export class YellowPagesController {
         return JSON.stringify(arrayResult);
     }
 
-
     public static async getAllYellowPagesObject(params: STARParameters): Promise<YellowPages[]> {
         params.logger.debug('============= START : getAllYellowPages Obj ===========');
         params.logger.debug('=============  END  : getAllYellowPages Obj ===========');
 
         return await QueryStateService.getAllStates(params, DocType.YELLOW_PAGES);
     }
-
-
 
     public static async getYellowPagesByOriginAutomationRegisteredResource(
         params: STARParameters,
@@ -79,14 +74,12 @@ export class YellowPagesController {
 
         const query = `{"selector": {"docType": "${DocType.YELLOW_PAGES}", "originAutomationRegisteredResourceMrid": "${originAutomationRegisteredResourceMrid}"}}`;
 
-        const allResults  = await QueryStateService.getQueryArrayResult(params, {query: query});
+        const allResults  = await QueryStateService.getQueryArrayResult(params, {query});
 
         params.logger.debug('=============  END  : getYellowPages By OriginAutomationRegisteredResource ===========');
 
         return allResults;
     }
-
-
 
     public static async getYellowPagesByRegisteredResourceMrid(
         params: STARParameters,
@@ -95,17 +88,17 @@ export class YellowPagesController {
 
         const query = `{"selector": {"docType": "${DocType.YELLOW_PAGES}", "registeredResourceMrid": "${registeredResourceMrid}"}}`;
 
-        var allResults : YellowPages[];
+        let allResults: YellowPages[];
 
-        var poolValue = params.getFromMemoryPool(query);
+        const poolValue = params.getFromMemoryPool(query);
         if (!poolValue
             || !poolValue.values().next().value
             || !poolValue.values().next().value.data
             || poolValue.values().next().value.docType !== DocType.YELLOW_PAGES) {
 
-            allResults  = await QueryStateService.getQueryArrayResult(params, {query: query});
+            allResults  = await QueryStateService.getQueryArrayResult(params, {query});
 
-            const poolRef : DataReference = {collection: "", docType: DocType.YELLOW_PAGES, data: allResults};
+            const poolRef: DataReference = {collection: '', docType: DocType.YELLOW_PAGES, data: allResults};
             params.addInMemoryPool(query, poolRef);
         } else {
             allResults = poolValue.values().next().value.data;

@@ -5,47 +5,6 @@ import * as Yup from 'yup';
 import { DocType } from '../enums/DocType';
 
 export class EnergyAmount {
-    public static formatString(inputString: string) : EnergyAmount {
-        let energyAmountObj: EnergyAmount;
-        try {
-            energyAmountObj = JSON.parse(inputString);
-        } catch (error) {
-            throw new Error(`ERROR ${DocType.ENERGY_AMOUNT} -> Input string NON-JSON value`);
-        }
-
-        try {
-            EnergyAmount.schema.validateSync(
-                energyAmountObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
-        return energyAmountObj;
-    }
-
-    public static formatListString(inputString: string) : EnergyAmount[] {
-        let energyAmountList: EnergyAmount[] = [];
-        try {
-            energyAmountList = JSON.parse(inputString);
-        } catch (error) {
-            throw new Error(`ERROR ${DocType.ENERGY_AMOUNT} by list -> Input string NON-JSON value`);
-        }
-
-        if (energyAmountList && energyAmountList.length > 0) {
-            for (var energyAmountObj of energyAmountList) {
-                try {
-                    EnergyAmount.schema.validateSync(
-                        energyAmountObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
-            }
-        }
-        return energyAmountList;
-    }
 
     public static readonly schema = Yup.object().shape({
         activationDocumentMrid: Yup.string().required(
@@ -81,6 +40,48 @@ export class EnergyAmount {
         ),
         timeInterval: Yup.string().required('timeInterval is a compulsory string'),
     });
+
+    public static formatString(inputString: string): EnergyAmount {
+        let energyAmountObj: EnergyAmount;
+        try {
+            energyAmountObj = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR ${DocType.ENERGY_AMOUNT} -> Input string NON-JSON value`);
+        }
+
+        try {
+            EnergyAmount.schema.validateSync(
+                energyAmountObj,
+                {strict: true, abortEarly: false},
+            );
+        } catch (error) {
+            throw error;
+        }
+        return energyAmountObj;
+    }
+
+    public static formatListString(inputString: string): EnergyAmount[] {
+        let energyAmountList: EnergyAmount[] = [];
+        try {
+            energyAmountList = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR ${DocType.ENERGY_AMOUNT} by list -> Input string NON-JSON value`);
+        }
+
+        if (energyAmountList && energyAmountList.length > 0) {
+            for (const energyAmountObj of energyAmountList) {
+                try {
+                    EnergyAmount.schema.validateSync(
+                        energyAmountObj,
+                        {strict: true, abortEarly: false},
+                    );
+                } catch (error) {
+                    throw error;
+                }
+            }
+        }
+        return energyAmountList;
+    }
 
     public docType?: string;
     public energyAmountMarketDocumentMrid: string; // PK

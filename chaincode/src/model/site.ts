@@ -5,7 +5,31 @@ import * as Yup from 'yup';
 import { DocType } from '../enums/DocType';
 
 export class Site {
-    public static formatString(inputString: string) : Site {
+
+    public static readonly schema = Yup.object().shape({
+        docType: Yup.string().notRequired(),
+        instance: Yup.string().notRequired(),
+        meteringPointMrid: Yup.string().required('meteringPointMrid is a compulsory field (string)'),
+        producerMarketParticipantMrid: Yup.string().required('producerMarketParticipantMrid is a compulsory field (string)'),
+        siteName: Yup.string().required('siteName is a compulsory field (string)'),
+        siteType: Yup.string().required('siteType is a compulsory field (string)'),
+        substationMrid: Yup.string().required('substationMrid is a compulsory field (string)'),
+        substationName: Yup.string().required('substationName is a compulsory field (string)'),
+        systemOperatorMarketParticipantMrid: Yup.string().required('systemOperatorMarketParticipantMrid is a compulsory field (string)'),
+        technologyType: Yup.string().required('technologyType is a compulsory field (string)'),
+
+        marketEvaluationPointMrid: Yup.string().notRequired(),
+        producerMarketParticipantName: Yup.string().notRequired(),
+        schedulingEntityRegisteredResourceMrid: Yup.string().notRequired(),
+        siteAdminMrid: Yup.string().notRequired(),
+        siteIecCode: Yup.string().notRequired(),
+        siteLocation: Yup.string().notRequired(),
+        systemOperatorCustomerServiceName: Yup.string().notRequired(),
+        systemOperatorEntityFlexibilityDomainMrid: Yup.string().notRequired(),
+        systemOperatorEntityFlexibilityDomainName: Yup.string().notRequired(),
+    });
+
+    public static formatString(inputString: string): Site {
         let siteObj: Site;
         try {
             siteObj = JSON.parse(inputString);
@@ -24,7 +48,7 @@ export class Site {
         return siteObj;
     }
 
-    public static formatListString(inputString: string) : Site[] {
+    public static formatListString(inputString: string): Site[] {
         let siteList: Site[] = [];
         try {
             siteList = JSON.parse(inputString);
@@ -33,7 +57,7 @@ export class Site {
         }
 
         if (siteList && siteList.length > 0) {
-            for (var siteObj of siteList) {
+            for (const siteObj of siteList) {
                 try {
                     Site.schema.validateSync(
                         siteObj,
@@ -46,29 +70,6 @@ export class Site {
         }
         return siteList;
     }
-
-    public static readonly schema = Yup.object().shape({
-        docType: Yup.string().notRequired(),
-        instance: Yup.string().notRequired(),
-        meteringPointMrid: Yup.string().required('meteringPointMrid is a compulsory field (string)'),
-        producerMarketParticipantMrid: Yup.string().required('producerMarketParticipantMrid is a compulsory field (string)'),
-        siteName: Yup.string().required('siteName is a compulsory field (string)'),
-        siteType: Yup.string().required('siteType is a compulsory field (string)'),
-        substationMrid: Yup.string().required('substationMrid is a compulsory field (string)'),
-        substationName: Yup.string().required('substationName is a compulsory field (string)'),
-        systemOperatorMarketParticipantMrid: Yup.string().required('systemOperatorMarketParticipantMrid is a compulsory field (string)'),
-        technologyType: Yup.string().required('technologyType is a compulsory field (string)'),
-
-        marketEvaluationPointMrid: Yup.string().notRequired(),
-        schedulingEntityRegisteredResourceMrid: Yup.string().notRequired(),
-        siteAdminMrid: Yup.string().notRequired(),
-        siteIecCode: Yup.string().notRequired(),
-        siteLocation: Yup.string().notRequired(),
-        systemOperatorCustomerServiceName: Yup.string().notRequired(),
-        systemOperatorEntityFlexibilityDomainMrid: Yup.string().notRequired(),
-        systemOperatorEntityFlexibilityDomainName: Yup.string().notRequired(),
-        producerMarketParticipantName: Yup.string().notRequired(),
-    });
 
     public docType?: string;
     public meteringPointMrid: string; // PK

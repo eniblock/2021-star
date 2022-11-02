@@ -28,8 +28,6 @@ import { AttachmentFileStatus } from '../src/enums/AttachmentFileStatus';
 import { ReserveBidMarketDocumentFileIdList } from '../src/model/reserveBidMarketDocumentFileIdList';
 import { Site } from '../src/model/site';
 import { ReserveBidMarketDocumentCreation } from '../src/model/reserveBidMarketDocumentCreation';
-import { ActivationDocumentAbstract, ActivationDocumentDateMax, EnergyAmountAbstract, IndexedData, ReserveBidMarketDocumentAbstract } from '../src/model/dataIndexers';
-import { ActivationEnergyAmountIndexersController, SiteActivationIndexersController, SiteReserveBidIndexersController } from '../src/controller/dataIndexersController';
 import { ActivationDocument } from '../src/model/activationDocument/activationDocument';
 import { EnergyAmount } from '../src/model/energyAmount';
 import { BalancingDocument } from '../src/model/balancingDocument';
@@ -37,6 +35,14 @@ import { BalancingDocumentController } from '../src/controller/BalancingDocument
 import { ReserveBidStatus } from '../src/enums/ReserveBidStatus';
 import { RoleType } from '../src/enums/RoleType';
 import { IndexedDataJson } from '../src/model/dataIndexersJson';
+import { ReserveBidMarketDocumentAbstract } from '../src/model/dataIndex/reserveBidMarketDocumentAbstract';
+import { IndexedData } from '../src/model/dataIndex/dataIndexers';
+import { SiteReserveBidIndexersController } from '../src/controller/dataIndex/SiteReserveBidIndexersController';
+import { SiteActivationIndexersController } from '../src/controller/dataIndex/SiteActivationIndexersController';
+import { ActivationDocumentDateMax } from '../src/model/dataIndex/activationDocumentDateMax';
+import { ActivationEnergyAmountIndexersController } from '../src/controller/dataIndex/ActivationEnergyAmountIndexersController';
+import { EnergyAmountAbstract } from '../src/model/dataIndex/energyAmountAbstract';
+import { ActivationDocumentAbstract } from '../src/model/dataIndex/activationDocumentAbstract';
 
 
 
@@ -243,10 +249,10 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const expectedFile: AttachmentFile = JSON.parse(JSON.stringify(attachmentFile));
 
             const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: expected.createdDateTime,
                 reserveBidMrid: expected.reserveBidMrid,
                 reserveBidStatus: expected.reserveBidStatus,
                 validityPeriodStartDateTime: expected.validityPeriodStartDateTime,
-                createdDateTime: expected.createdDateTime
             };
 
             const expectedIndexer: IndexedData = {
@@ -329,10 +335,10 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             // params.logger.log('expected=', expected)
 
             const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: expected.createdDateTime,
                 reserveBidMrid: expected.reserveBidMrid,
                 reserveBidStatus: expected.reserveBidStatus,
                 validityPeriodStartDateTime: expected.validityPeriodStartDateTime,
-                createdDateTime: expected.createdDateTime
             };
 
             const expectedIndexer: IndexedData = {
@@ -754,10 +760,10 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const expectedIndexedData: IndexedData = IndexedData.fromJson(IndexedDataJson.toJson(indexedData));
 
             const expectedIndexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: expected.createdDateTime,
                 reserveBidMrid: expected.reserveBidMrid,
                 reserveBidStatus: expected.reserveBidStatus as string,
                 validityPeriodStartDateTime: expected.validityPeriodStartDateTime,
-                createdDateTime: expected.createdDateTime
             };
 
             expectedIndexedData.indexedDataAbstractMap.set(expectedIndexedDataAbstract.reserveBidMrid, expectedIndexedDataAbstract);
@@ -911,10 +917,10 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const expectedIndexedData: IndexedData = IndexedData.fromJson(IndexedDataJson.toJson(indexedData));
 
             const expectedIndexedDataAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: expected.createdDateTime,
                 reserveBidMrid: expected.reserveBidMrid,
                 reserveBidStatus: expected.reserveBidStatus as string,
                 validityPeriodStartDateTime: expected.validityPeriodStartDateTime,
-                createdDateTime: expected.createdDateTime
             };
 
             expectedIndexedData.indexedDataAbstractMap.set(expectedIndexedDataAbstract.reserveBidMrid, expectedIndexedDataAbstract);

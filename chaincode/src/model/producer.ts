@@ -5,7 +5,18 @@ import * as Yup from 'yup';
 import { DocType } from '../enums/DocType';
 
 export class Producer {
-    public static formatString(inputString: string) : Producer {
+
+    public static readonly schema = Yup.object().shape({
+        docType: Yup.string().notRequired(),
+        producerMarketParticipantMrid: Yup.string().required(
+            'producerMarketParticipantMrid is a compulsory string.'),
+        producerMarketParticipantName: Yup.string().required(
+            'producerMarketParticipantName is a compulsory string.'),
+        producerMarketParticipantRoleType: Yup.string().required(
+            'producerMarketParticipantRoleType is a compulsory string.'),
+    });
+
+    public static formatString(inputString: string): Producer {
         let producerObj: Producer;
         try {
             producerObj = JSON.parse(inputString);
@@ -24,7 +35,7 @@ export class Producer {
         return producerObj;
     }
 
-    public static formatListString(inputString: string) : Producer[] {
+    public static formatListString(inputString: string): Producer[] {
         let producerList: Producer[] = [];
         try {
             producerList = JSON.parse(inputString);
@@ -33,7 +44,7 @@ export class Producer {
         }
 
         if (producerList && producerList.length > 0) {
-            for (var producerObj of producerList) {
+            for (const producerObj of producerList) {
                 try {
                     Producer.schema.validateSync(
                         producerObj,
@@ -46,16 +57,6 @@ export class Producer {
         }
         return producerList;
     }
-
-    public static readonly schema = Yup.object().shape({
-        docType: Yup.string().notRequired(),
-        producerMarketParticipantMrid: Yup.string().required(
-            'producerMarketParticipantMrid is a compulsory string.'),
-        producerMarketParticipantName: Yup.string().required(
-            'producerMarketParticipantName is a compulsory string.'),
-        producerMarketParticipantRoleType: Yup.string().required(
-            'producerMarketParticipantRoleType is a compulsory string.'),
-    });
 
     public docType?: string;
     public producerMarketParticipantMrid: string;

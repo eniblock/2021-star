@@ -14,7 +14,7 @@ export class StarDataUpdateController {
         params.logger.info('============= START : getStarDataToUpdate StarDataUpdateController ===========');
 
         var state_str = "[]";
-        const listOfIndexers = await this.getAllIndexersToDelete(params);
+        const listOfIndexers = await this.getAllIndexersToCreate(params);
         state_str = JSON.stringify(listOfIndexers);
 
         params.logger.info('=============  END  : getStarDataToUpdate StarDataUpdateController ===========');

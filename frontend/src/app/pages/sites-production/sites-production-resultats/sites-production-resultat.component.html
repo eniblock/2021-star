@@ -7,7 +7,7 @@
 
 <div class="sites-production-resultat-detail" *ngIf="showDetails">
   <div class="row">
-    <div class="header col-12 col-lg-4">
+    <div class="header col-12 col-lg-3">
       <div class="p-4">
         <app-icon-technology-type class="float-end" style="margin-top: -.25em;"
                                   [technologyType]="resultat?.technologyType"
@@ -18,36 +18,24 @@
         <div class="text-center my-4 text-white">
           {{ resultat?.producerMarketParticipantName }}
         </div>
-        <div class="text-center mt-5 pt-3 text-white" *ngIf="reserveBidsToShow.length == 0">
+        <div class="text-center mt-5 pt-3 text-white" *ngIf="!currentReserveBid">
           <strong>Aucun tarif unitaire de valorisation</strong>
         </div>
-        <div class="text-center mt-5 pt-3 text-white" *ngIf="reserveBidsToShow.length > 0">
-          <div [class]="last ? '' : 'pb-5'" *ngFor="let rb of reserveBidsToShow; let last = last;">
-            <div class="priceAndDate">
-              <strong>{{ rb.energyPriceAmount + ' ' + rb.priceMeasureUnitName }}</strong>
-              <br/>
-              <span *ngIf="!rb.validityPeriodEndDateTime">{{ (rb.validityPeriodStartDateTime | date:'shortDate') }}</span>
-              <span *ngIf="rb.validityPeriodEndDateTime">{{ (rb.validityPeriodStartDateTime | date:'shortDate') + " → " + (rb.validityPeriodEndDateTime | date:'shortDate') }}</span>
-            </div>
-            <ul class="sites-production-resultat-detail-liste-fichiers mt-3" *ngIf="rb.attachments != null && rb.attachments.length > 0">
-              <li class="my-1" *ngFor="let f of rb.attachments">
-                <span class="far fa-file me-2"></span>
-                <app-sites-production-resultat-file-link [fileId]="f"></app-sites-production-resultat-file-link>
-              </li>
-            </ul>
+        <div class="text-center mt-5 pt-3 text-white" *ngIf="currentReserveBid">
+          <div>
+            <p class="price">
+              <strong>{{ currentReserveBid.energyPriceAmount + ' ' + currentReserveBid.priceMeasureUnitName }}</strong>
+            </p>
+            <p class="dates">
+              <span *ngIf="!currentReserveBid.validityPeriodEndDateTime">{{ (currentReserveBid.validityPeriodStartDateTime | date:'shortDate') + " → XX/XX/XXXX" }}</span>
+              <span *ngIf="currentReserveBid.validityPeriodEndDateTime">{{ (currentReserveBid.validityPeriodStartDateTime | date:'shortDate') + " → " + (currentReserveBid.validityPeriodEndDateTime | date:'shortDate') }}</span>
+            </p>
           </div>
-          <div class="mt-5">
-            <a class="text-white pointer" (click)="switchShowAllReserveBids()">
-              <ng-container *ngIf="!showAllReservids">
-                <i class="fa-solid fa-eye me-2"></i>
-                Afficher tout
-              </ng-container>
-              <ng-container *ngIf="showAllReservids">
-                <i class="fa-solid fa-eye-slash me-2"></i>
-                Masquer les tarifs
-              </ng-container>
-            </a>
-          </div>
+          <ul class="sites-production-resultat-detail-liste-fichiers mt-3" *ngIf="currentReserveBid.attachments != null && currentReserveBid.attachments.length > 0">
+            <li class="my-1" *ngFor="let f of currentReserveBid.attachments; let index = index">
+            <app-sites-production-resultat-file-link [fileId]="f" [fileNameForced]="'fichier-' + (index+1)"></app-sites-production-resultat-file-link>
+          </li>
+          </ul>
         </div>
         <div class="text-center mt-5" *ngIf="typeInstance == InstanceEnum.PRODUCER">
           <a class="boutonNavigation-white" (click)="ajoutTarif()">
@@ -56,7 +44,7 @@
         </div>
       </div>
     </div>
-    <div class="body col-12 col-lg-8">
+    <div class="body col-12 col-lg-9">
       <div class="p-4">
         <div class="row mb-4">
           <div class="col-12">
@@ -117,6 +105,69 @@
         <div class="row my-3" *ngIf="resultat?.typeSite == TypeSiteEnum.HTB">
           <div class="col-6 label">Code site / CART</div>
           <div class="col-6">{{ resultat?.siteIecCode }}</div>
+        </div>
+      </div>
+
+      <div class="p-4">
+        <div class="row my-3">
+
+          <h3>
+            Historique des tarifs
+            <button
+              mat-icon-button
+              matTooltip="Le renseignement du tarif unitaire de valorisation est nécessaire pour le calcul du montant de l’indemnisation pour les limitations éligibles. La date de fin d’un tarif est par défaut indéfinie (xx/xx/xxxx). Un tarif validé s’applique jusqu’à la validation du tarif à la date d’effet postérieure la plus proche.Ex: Un tarif validé, dont la date d’effet est le 01/01/2022 a pour date de fin le 31/12/2022, si le tarif validé à la date d’effet postérieure le plus proche a pour date d’effet le 01/01/2023"
+            >
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+          </h3>
+
+          <span *ngIf="!reserveBids || reserveBids.length == 0">Aucun tarif...</span>
+
+          <table mat-table [dataSource]="reserveBids" class="tarifs" *ngIf="reserveBids && reserveBids.length > 0">
+
+            <ng-container matColumnDef="tarifUnitaire">
+              <th mat-header-cell *matHeaderCellDef> Tarif Unitaire </th>
+              <td mat-cell *matCellDef="let element"> {{ element.energyPriceAmount + ' ' + element.priceMeasureUnitName }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dateEffet">
+              <th mat-header-cell *matHeaderCellDef> Date d'effet </th>
+              <td mat-cell *matCellDef="let element"> {{ element.validityPeriodStartDateTime | date:'shortDate' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dateFin">
+              <th mat-header-cell *matHeaderCellDef> Date de fin </th>
+              <td mat-cell *matCellDef="let element"> {{ element.validityPeriodEndDateTime ? (element.validityPeriodEndDateTime | date:'shortDate') : 'XX/XX/XXXX'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef> Status </th>
+              <td mat-cell *matCellDef="let element">
+                <app-form-reserve-bid-status *ngIf="canModifyReservebidStatus" [reserveBid]="element" (statusHasChanged)="reserveBidStatusChange()"></app-form-reserve-bid-status>
+                <app-tarif-status [reserveBidStatus]="element.reserveBidStatus" *ngIf="!canModifyReservebidStatus"></app-tarif-status>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="documents">
+              <th mat-header-cell *matHeaderCellDef> Documents joints </th>
+              <td mat-cell *matCellDef="let element">
+                <div *ngIf="element.attachments != null && element.attachments.length > 0">
+                  <div class="" *ngFor="let f of element.attachments; let index = index">
+                    <app-sites-production-resultat-file-link [fileId]="f" [fileNameForced]="'fichier-' + (index+1)"></app-sites-production-resultat-file-link>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dateSoumission">
+              <th mat-header-cell *matHeaderCellDef> Date de soumission </th>
+              <td mat-cell *matCellDef="let element"> {{ element.createdDateTime | date:'shortDate' }} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
         </div>
       </div>
     </div>

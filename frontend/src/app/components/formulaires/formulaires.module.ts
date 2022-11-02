@@ -23,6 +23,7 @@ import { FormEneEniFormComponent } from './form-ene-eni/form-ene-eni-form/form-e
 import { FormEneEniComponent } from './form-ene-eni/form-ene-eni.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {FormAjoutTarifUnitaireComponent} from "./form-ajout-tarif-unitaire/form-ajout-tarif-unitaire.component";
+import { FormReserveBidStatusComponent } from './form-reserve-bid-status/form-reserve-bid-status.component';
 
 @NgModule({
   imports: [
@@ -52,16 +53,18 @@ import {FormAjoutTarifUnitaireComponent} from "./form-ajout-tarif-unitaire/form-
     FormEneEniFormComponent,
     FormEneEniComponent,
     FormAjoutTarifUnitaireComponent,
+    FormReserveBidStatusComponent,
   ],
-  exports: [
-    FormSitesProductionRechercheComponent,
-    FormOrdreDebutLimitationComponent,
-    FormOrdreFinLimitationComponent,
-    FormOrdreDebutEtFinLimitationComponent,
-    FormLimitationsRechercheComponent,
-    FormCourbeComptageReferenceComponent,
-    FormEneEniComponent,
-    FormAjoutTarifUnitaireComponent,
-  ],
+    exports: [
+        FormSitesProductionRechercheComponent,
+        FormOrdreDebutLimitationComponent,
+        FormOrdreFinLimitationComponent,
+        FormOrdreDebutEtFinLimitationComponent,
+        FormLimitationsRechercheComponent,
+        FormCourbeComptageReferenceComponent,
+        FormEneEniComponent,
+        FormAjoutTarifUnitaireComponent,
+        FormReserveBidStatusComponent,
+    ],
 })
 export class FormulairesModule {}

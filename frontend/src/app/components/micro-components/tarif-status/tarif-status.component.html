@@ -1,0 +1,5 @@
+<mat-chip-list>
+  <mat-chip color="accent" [disableRipple]="true" *ngIf="reserveBidStatus == ReserveBidStatusEnum.NEW">{{ ReserveBidStatusEnum.NEW | ReserveBidStatus }}</mat-chip>
+  <mat-chip class="bg-success" [disableRipple]="true" *ngIf="reserveBidStatus == ReserveBidStatusEnum.VALIDATED" selected>{{ ReserveBidStatusEnum.VALIDATED | ReserveBidStatus }}</mat-chip>
+  <mat-chip color="warn" [disableRipple]="true" *ngIf="reserveBidStatus == ReserveBidStatusEnum.REFUSED" selected>{{ ReserveBidStatusEnum.REFUSED | ReserveBidStatus }}</mat-chip>
+</mat-chip-list>

@@ -9,7 +9,7 @@ import {
 } from "../../../components/formulaires/form-ajout-tarif-unitaire/form-ajout-tarif-unitaire.component";
 import {FormulaireReserveBid, ReserveBid} from "../../../models/ReserveBid";
 import {ReserveBidService} from "../../../services/api/reserve-bid.service";
-import {DateHelper} from "../../../helpers/date.helper";
+import {ReserveBidStatus} from "../../../models/enum/ReserveBidStatus.enum";
 
 @Component({
   selector: 'app-sites-production-resultat',
@@ -21,16 +21,16 @@ export class SitesProductionResultatComponent implements OnInit {
   @Output() reserveBidChange = new EventEmitter<FormulaireReserveBid>();
 
   InstanceEnum = Instance;
-
-  TypeSiteEnum = TypeSite;
+  TypeSiteEnum = TypeSite
   typeInstance?: Instance;
 
   showDetails = false;
+  canModifyReservebidStatus = false;
 
-  allReserveBids?: ReserveBid[];
+  reserveBids?: ReserveBid[];
   currentReserveBid?: ReserveBid;
-  reserveBidsToShow: ReserveBid[] = [];
-  showAllReservids = false;
+
+  displayedColumns = ['tarifUnitaire', 'dateEffet', 'dateFin', 'status', 'documents', 'dateSoumission']
 
 
   constructor(
@@ -43,6 +43,9 @@ export class SitesProductionResultatComponent implements OnInit {
   ngOnInit() {
     this.instanceService.getTypeInstance().subscribe((typeInstance) => {
       this.typeInstance = typeInstance;
+      this.canModifyReservebidStatus =
+        typeInstance == Instance.TSO && this.resultat?.typeSite == TypeSite.HTB
+        || typeInstance == Instance.DSO && this.resultat?.typeSite == TypeSite.HTA;
     });
   }
 
@@ -70,31 +73,39 @@ export class SitesProductionResultatComponent implements OnInit {
   }
 
   private initReserveBids(reserveBids: ReserveBid[] | null) {
-    this.allReserveBids = reserveBids
-      ?.sort((r1, r2) => r1.validityPeriodStartDateTime.localeCompare(r2.validityPeriodStartDateTime));
-    if (reserveBids != null) {
-      let currentDate = new Date();
-      for (let rb of reserveBids) {
-        if (currentDate.getTime() >= new Date(rb.validityPeriodStartDateTime).getTime()) {
-          this.currentReserveBid = rb;
-        } else {
-          break;
-        }
+    if (reserveBids == null) {
+      return;
+    }
+    // Order reserveBids
+    this.reserveBids = reserveBids.sort((r1, r2) =>
+      r1.validityPeriodStartDateTime == r2.validityPeriodStartDateTime
+        ? r1.createdDateTime.localeCompare(r2.createdDateTime)
+        : r1.validityPeriodStartDateTime.localeCompare(r2.validityPeriodStartDateTime)
+    );
+    // Find current reserveBid and compute dates
+    let currentDate = new Date();
+    for (let rb of this.reserveBids) {
+      if ((currentDate.getTime() >= new Date(rb.validityPeriodStartDateTime).getTime()) && (rb.reserveBidStatus == ReserveBidStatus.VALIDATED)) {
+        this.currentReserveBid = rb;
       }
     }
-    this.updateReserveBidsToShow();
-  }
-
-  private updateReserveBidsToShow() {
-    if (this.showAllReservids) {
-      this.reserveBidsToShow = this.allReserveBids ? this.allReserveBids : [];
-    } else {
-      this.reserveBidsToShow = this.currentReserveBid ? [this.currentReserveBid] : [];
+    // Compute validityPeriodEndDateTime
+    let lastReserveBid: ReserveBid | null = null;
+    for (let i = this.reserveBids.length - 1; i >= 0; i--) {
+      let currentReserveBid = this.reserveBids[i];
+      if (currentReserveBid.reserveBidStatus == ReserveBidStatus.VALIDATED) {
+        if (lastReserveBid) {
+          let d = new Date(lastReserveBid.validityPeriodStartDateTime);
+          d.setDate(d.getDate() - 1);
+          currentReserveBid.validityPeriodEndDateTime = d as any;
+        }
+        lastReserveBid = currentReserveBid;
+      }
     }
   }
 
-  switchShowAllReserveBids() {
-    this.showAllReservids = !this.showAllReservids;
-    this.updateReserveBidsToShow()
+  reserveBidStatusChange() {
+    this.open();
   }
+
 }

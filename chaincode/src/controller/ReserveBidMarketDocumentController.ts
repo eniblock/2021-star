@@ -191,7 +191,7 @@ export class ReserveBidMarketDocumentController {
             for (var [targetExistingSite, ] of existingSitesRef) {
                 await ReserveBidMarketDocumentService.write(params, reserveBidObj, targetExistingSite);
                 await AttachmentFileController.createObjByList(params, reserveBidCreationObj.attachmentFileList, targetExistingSite);
-                await SiteReserveBidIndexersController.addReserveBidReference(params, reserveBidObj, targetExistingSite);
+                await SiteReserveBidIndexersController.addModifyReserveBidReference(params, reserveBidObj, targetExistingSite);
 
             }
         }
@@ -451,7 +451,7 @@ export class ReserveBidMarketDocumentController {
                     await ReserveBidMarketDocumentService.write(params, reserveBidObj, key);
 
                     if (newStatus === ReserveBidStatus.VALIDATED) {
-                        await SiteReserveBidIndexersController.modifyReserveBidReference(params, reserveBidObj, key);
+                        await SiteReserveBidIndexersController.addModifyReserveBidReference(params, reserveBidObj, key);
 
 
                         const activationDocumentIdList: string[] = await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, key);

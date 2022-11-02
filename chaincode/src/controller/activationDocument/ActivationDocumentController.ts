@@ -17,10 +17,10 @@ import { ActivationDocumentService } from '../service/ActivationDocumentService'
 import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
 import { StarPrivateDataService } from '../service/StarPrivateDataService';
 import { StarDataService } from '../service/StarDataService';
-import { ActivationEnergyAmountIndexersController, SiteActivationIndexersController } from '../dataIndexersController';
+import { ActivationCompositeKeyIndexersController, ActivationEnergyAmountIndexersController, SiteActivationIndexersController } from '../dataIndexersController';
 import { ActivationDocumentCompositeKey } from '../../model/activationDocument/activationDocumentCompositeKey';
 import { QueryStateService } from '../service/QueryStateService';
-import { ActivationDocumentCompositeKeyIndex } from '../../model/activationDocument/activationDocumentCompositeKeyIndex';
+import { ActivationDocumentCompositeKeyAbstract, IndexedData } from '../../model/dataIndexers';
 
 export class ActivationDocumentController {
     public static async getActivationDocumentByProducer(
@@ -67,9 +67,9 @@ export class ActivationDocumentController {
         inputStr: string): Promise<string> {
         params.logger.info('============= START : get ActivationDocument By Composite Key ===========');
 
-        const activationDocumentCompositeKeyObj: ActivationDocumentCompositeKey =ActivationDocumentCompositeKey.formatString(inputStr);
+        const activationDocumentCompositeKeyObj: ActivationDocumentCompositeKey = ActivationDocumentCompositeKey.formatString(inputStr);
 
-        const activationDocumentCompositeKeyId = ActivationDocumentService.getActivationDocumentCompositeKeyId(activationDocumentCompositeKeyObj);
+        const activationDocumentCompositeKeyId = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(activationDocumentCompositeKeyObj);
         const objResult = await this.getActivationDocumentObjByCompositeKey(params, activationDocumentCompositeKeyId);
         const formated = JSON.stringify(objResult);
 
@@ -90,7 +90,7 @@ export class ActivationDocumentController {
         const resultList: ActivationDocument[] = [];
         if (activationDocumentCompositeKeyList) {
             for (var activationDocumentCompositeKeyObj of activationDocumentCompositeKeyList) {
-                const activationDocumentCompositeKeyId = ActivationDocumentService.getActivationDocumentCompositeKeyId(activationDocumentCompositeKeyObj);
+                const activationDocumentCompositeKeyId = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(activationDocumentCompositeKeyObj);
                 const objResult = await this.getActivationDocumentObjByCompositeKey(params, activationDocumentCompositeKeyId);
                 if (objResult && objResult.activationDocumentMrid && objResult.activationDocumentMrid.length > 0) {
                     resultList.push(objResult);
@@ -112,15 +112,16 @@ export class ActivationDocumentController {
         activationDocumentCompositeKeyId: string): Promise<ActivationDocument> {
         params.logger.debug('============= START : get ActivationDocument obj By Composite Key ===========');
 
-        const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.DATA_INDEXER, id: activationDocumentCompositeKeyId});
-        const dataReference = result.values().next().value;
+        var activationDocument: ActivationDocument = null;
+        var activationDocumentCompositeKeyIndex: ActivationDocumentCompositeKeyAbstract = null;
 
-        var activationDocumentCompositeKeyIndex: ActivationDocumentCompositeKeyIndex = null;
-        if (dataReference && dataReference.data) {
-            activationDocumentCompositeKeyIndex = dataReference.data;
+        try {
+            const indexedData: IndexedData = await ActivationCompositeKeyIndexersController.getByCompositeKey(params, activationDocumentCompositeKeyId);
+            activationDocumentCompositeKeyIndex = indexedData.indexedDataAbstractMap.values().next().value;
+        } catch (err) {
+
         }
 
-        var activationDocument: ActivationDocument = null;
         if (activationDocumentCompositeKeyIndex
             && activationDocumentCompositeKeyIndex.activationDocumentCompositeKey === activationDocumentCompositeKeyId
             && activationDocumentCompositeKeyIndex.activationDocumentMrid
@@ -188,6 +189,29 @@ export class ActivationDocumentController {
         params.logger.info('=============  END  : get ActivationDocument By Query ===========');
         return formated;
     }
+
+
+
+    public static async getAll(params: STARParameters): Promise<DataReference[]> {
+        params.logger.info('============= START : get all ActivationDocumentController ===========');
+
+        const collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+
+        const dataList: DataReference[] = [];
+        for (const collection of collections) {
+            const allResults = await QueryStateService.getAllPrivateData(params, DocType.ACTIVATION_DOCUMENT, collection);
+            if (allResults && allResults.length > 0) {
+                for (const result of allResults) {
+                    dataList.push({collection: collection, data: result, docType: DocType.ACTIVATION_DOCUMENT})
+                }
+            }
+        }
+
+        params.logger.info('=============  END  : get all ActivationDocumentController ===========');
+
+        return dataList;
+    }
+
 
 
 
@@ -430,7 +454,7 @@ export class ActivationDocumentController {
         }
 
         const compositeKey = ActivationDocumentCompositeKey.formatActivationDocument(activationDocumentObj);
-        const activationDocumentCompositeKeyId = ActivationDocumentService.getActivationDocumentCompositeKeyId(compositeKey);
+        const activationDocumentCompositeKeyId = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(compositeKey);
 
         if (!definedTarget || definedTarget.length === 0) {
             //Only control when it's an original creation (by list)

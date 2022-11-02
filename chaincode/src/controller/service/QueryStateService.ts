@@ -275,4 +275,22 @@ export class QueryStateService {
     }
 
 
+
+    public static async getAllPrivateData(
+        params: STARParameters,
+        dataType: string,
+        target: string): Promise<any[]> {
+        params.logger.debug('============= START : getAllPrivateData %s QueryStateService ===========', dataType);
+
+        const query = `{"selector": {"docType": "${dataType}"}}`;
+
+        const iterator = await this.getPrivateQueryResult(params, {query: query, collection: target});
+        const allResults = await this.formatResultToArray(iterator);
+
+        params.logger.debug('=============  END  : getAllPrivateData %s QueryStateService ===========', dataType);
+        return allResults;
+    }
+
+
+
 }

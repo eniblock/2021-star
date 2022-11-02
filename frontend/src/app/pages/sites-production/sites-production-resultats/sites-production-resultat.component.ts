@@ -21,16 +21,16 @@ export class SitesProductionResultatComponent implements OnInit {
   @Output() reserveBidChange = new EventEmitter<FormulaireReserveBid>();
 
   InstanceEnum = Instance;
-
   TypeSiteEnum = TypeSite;
   typeInstance?: Instance;
 
   showDetails = false;
+  canModifyReservebidStatus = false;
 
   reserveBids?: ReserveBid[];
   currentReserveBid?: ReserveBid;
 
-  displayedColumns=['tarifUnitaire', 'dateEffet', 'dateFin', 'status', 'documents', 'dateSoumission']
+  displayedColumns = ['tarifUnitaire', 'dateEffet', 'dateFin', 'status', 'documents', 'dateSoumission']
 
 
   constructor(
@@ -43,6 +43,9 @@ export class SitesProductionResultatComponent implements OnInit {
   ngOnInit() {
     this.instanceService.getTypeInstance().subscribe((typeInstance) => {
       this.typeInstance = typeInstance;
+      this.canModifyReservebidStatus =
+        typeInstance == Instance.TSO && this.resultat?.typeSite == TypeSite.HTB
+        || typeInstance == Instance.DSO && this.resultat?.typeSite == TypeSite.HTA;
     });
   }
 

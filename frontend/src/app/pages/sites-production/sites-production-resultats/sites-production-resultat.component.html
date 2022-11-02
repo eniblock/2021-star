@@ -25,6 +25,8 @@
           <div class="priceAndDate">
             <strong>{{ currentReserveBid.energyPriceAmount + ' ' + currentReserveBid.priceMeasureUnitName }}</strong>
             <br/>
+            <app-tarif-status [reserveBidStatus]="currentReserveBid.reserveBidStatus"></app-tarif-status>
+            <br/>
             <span *ngIf="!currentReserveBid.validityPeriodEndDateTime">{{ (currentReserveBid.validityPeriodStartDateTime | date:'shortDate') + " → XX/XX/XXXX" }}</span>
             <span *ngIf="currentReserveBid.validityPeriodEndDateTime">{{ (currentReserveBid.validityPeriodStartDateTime | date:'shortDate') + " → " + (currentReserveBid.validityPeriodEndDateTime | date:'shortDate') }}</span>
           </div>

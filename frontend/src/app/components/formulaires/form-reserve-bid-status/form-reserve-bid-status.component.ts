@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ReserveBidStatus} from "../../../models/enum/ReserveBidStatus.enum";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ReserveBidService} from "../../../services/api/reserve-bid.service";
@@ -12,6 +12,7 @@ import {ReserveBid} from "../../../models/ReserveBid";
 export class FormReserveBidStatusComponent implements OnInit {
 
   @Input() reserveBid?: ReserveBid;
+  @Output() statusHasChanged = new EventEmitter<any>()
 
   form: FormGroup = this.formBuilder.group({
     reserveBidStatus: ['', Validators.required],
@@ -41,9 +42,11 @@ export class FormReserveBidStatusComponent implements OnInit {
       .subscribe(
         (ok) => {
           this.loading = false;
+          this.statusHasChanged.emit();
         },
         (error) => {
           this.loading = false;
+          this.statusHasChanged.emit();
         }
       );
   }

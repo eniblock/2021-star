@@ -104,4 +104,8 @@ export class SitesProductionResultatComponent implements OnInit {
     }
   }
 
+  reserveBidStatusChange() {
+    this.open();
+  }
+
 }

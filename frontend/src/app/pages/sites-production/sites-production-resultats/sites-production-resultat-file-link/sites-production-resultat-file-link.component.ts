@@ -11,7 +11,10 @@ import {mergeMap} from "rxjs/operators";
 export class SitesProductionResultatFileLinkComponent implements OnInit {
 
   @Input() fileId: string = "";
+  @Input() fileNameForced?: string;
+
   fileName: string = "";
+  fileNamePrinted: string = "";
   fileUrl: string = "";
 
   constructor(
@@ -21,6 +24,7 @@ export class SitesProductionResultatFileLinkComponent implements OnInit {
 
   ngOnInit(): void {
     this.fileName = this.reserveBidService.getFileName(this.fileId);
+    this.fileNamePrinted = this.fileNameForced ? this.fileNameForced : this.fileName;
     this.fileUrl = this.reserveBidService.getFileUrl(this.fileId);
   }
 

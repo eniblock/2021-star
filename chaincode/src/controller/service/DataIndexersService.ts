@@ -1,15 +1,14 @@
 
-import { DocType } from "../../enums/DocType";
-import { IndexedData } from "../../model/dataIndexers";
-import { IndexedDataJson } from "../../model/dataIndexersJson";
-import { DataReference } from "../../model/dataReference";
+import { DocType } from '../../enums/DocType';
+import { IndexedData } from '../../model/dataIndex/dataIndexers';
+import { IndexedDataJson } from '../../model/dataIndexersJson';
+import { DataReference } from '../../model/dataReference';
 
 import { STARParameters } from '../../model/starParameters';
 
-import { StarPrivateDataService } from "./StarPrivateDataService";
+import { StarPrivateDataService } from './StarPrivateDataService';
 
 export class DataIndexersService {
-
 
     public static async get(
         params: STARParameters,
@@ -17,15 +16,16 @@ export class DataIndexersService {
         target: string): Promise<IndexedData> {
         params.logger.debug('============= START : get DataIndexersService ===========');
 
-
-        var objJSON: IndexedDataJson;
+        let objJSON: IndexedDataJson;
         if (target && target.length > 0) {
             // params.logger.debug('getObj');
-            objJSON = await StarPrivateDataService.getObj(params, {id: indexId, collection: target, docType: DocType.DATA_INDEXER});
+            objJSON = await StarPrivateDataService.getObj(
+                params, {id: indexId, collection: target, docType: DocType.DATA_INDEXER});
         } else {
             // params.logger.debug('getObjRefbyId');
 
-            const objRef = await StarPrivateDataService.getObjRefbyId(params, {id: indexId, docType: DocType.DATA_INDEXER});
+            const objRef = await StarPrivateDataService.getObjRefbyId(
+                params, {id: indexId, docType: DocType.DATA_INDEXER});
             // params.logger.debug('objRef: ', JSON.stringify(objRef));
 
             if (objRef) {
@@ -37,7 +37,6 @@ export class DataIndexersService {
         params.logger.debug('=============  END  : get DataIndexersService ===========');
         return obj;
     }
-
 
     public static async write(
         params: STARParameters,
@@ -56,8 +55,6 @@ export class DataIndexersService {
 
         params.logger.debug('=============  END  : write DataIndexersService ===========');
     }
-
-
 
     public static async delete(
         params: STARParameters,

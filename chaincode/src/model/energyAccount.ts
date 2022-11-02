@@ -12,48 +12,6 @@ export class EnergyAccountPoint {
 }
 
 export class EnergyAccount {
-    public static formatString(inputString: string) : EnergyAccount {
-        let energyAccountObj: EnergyAccount;
-        try {
-            energyAccountObj = JSON.parse(inputString);
-        } catch (error) {
-            throw new Error(`ERROR ${DocType.ENERGY_ACCOUNT} -> Input string NON-JSON value`);
-        }
-
-        try {
-            EnergyAccount.schema.validateSync(
-                energyAccountObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
-        return energyAccountObj;
-    }
-
-    public static formatListString(inputString: string) : EnergyAccount[] {
-        let energyAccountList: EnergyAccount[] = [];
-        try {
-            energyAccountList = JSON.parse(inputString);
-        } catch (error) {
-            throw new Error(`ERROR ${DocType.ENERGY_ACCOUNT} by list -> Input string NON-JSON value`);
-        }
-
-        if (energyAccountList && energyAccountList.length > 0) {
-            for (var energyAccountObj of energyAccountList) {
-                try {
-                    EnergyAccount.schema.validateSync(
-                        energyAccountObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
-            }
-        }
-        return energyAccountList;
-    }
-
 
     public static readonly schema = Yup.object().shape({
         areaDomain: Yup.string().required('areaDomain is a compulsory string').typeError('areaDomain is a compulsory string'),
@@ -91,6 +49,47 @@ export class EnergyAccount {
             },
         )).required(),
     });
+    public static formatString(inputString: string): EnergyAccount {
+        let energyAccountObj: EnergyAccount;
+        try {
+            energyAccountObj = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR ${DocType.ENERGY_ACCOUNT} -> Input string NON-JSON value`);
+        }
+
+        try {
+            EnergyAccount.schema.validateSync(
+                energyAccountObj,
+                {strict: true, abortEarly: false},
+            );
+        } catch (error) {
+            throw error;
+        }
+        return energyAccountObj;
+    }
+
+    public static formatListString(inputString: string): EnergyAccount[] {
+        let energyAccountList: EnergyAccount[] = [];
+        try {
+            energyAccountList = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR ${DocType.ENERGY_ACCOUNT} by list -> Input string NON-JSON value`);
+        }
+
+        if (energyAccountList && energyAccountList.length > 0) {
+            for (const energyAccountObj of energyAccountList) {
+                try {
+                    EnergyAccount.schema.validateSync(
+                        energyAccountObj,
+                        {strict: true, abortEarly: false},
+                    );
+                } catch (error) {
+                    throw error;
+                }
+            }
+        }
+        return energyAccountList;
+    }
 
     public docType?: string;
     public energyAccountMarketDocumentMrid: string; // PK

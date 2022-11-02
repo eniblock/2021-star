@@ -2,7 +2,7 @@ import { AttachmentFile } from './attachmentFile';
 import { ReserveBidMarketDocument } from './reserveBidMarketDocument';
 
 export class ReserveBidMarketDocumentCreation {
-    public static formatString(inputString: string) : ReserveBidMarketDocumentCreation {
+    public static formatString(inputString: string): ReserveBidMarketDocumentCreation {
         let reserveBidCreationObj: ReserveBidMarketDocumentCreation;
         try {
             reserveBidCreationObj = JSON.parse(inputString);
@@ -16,11 +16,11 @@ export class ReserveBidMarketDocumentCreation {
                 {strict: true, abortEarly: false},
             );
             if (reserveBidCreationObj.attachmentFileList) {
-                for (var attachmentFile of reserveBidCreationObj.attachmentFileList) {
+                for (const attachmentFile of reserveBidCreationObj.attachmentFileList) {
                     AttachmentFile.schema.validateSync(
                         attachmentFile,
                         {strict: true, abortEarly: false},
-                    )
+                    );
                 }
             }
         } catch (error) {
@@ -28,7 +28,6 @@ export class ReserveBidMarketDocumentCreation {
         }
         return reserveBidCreationObj;
     }
-
 
     public reserveBid: ReserveBidMarketDocument;
     public attachmentFileList?: AttachmentFile[];

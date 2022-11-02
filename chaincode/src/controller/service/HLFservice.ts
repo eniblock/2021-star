@@ -1,7 +1,7 @@
-import { Context } from "fabric-contract-api";
+import { Context } from 'fabric-contract-api';
 
+import { ParametersType } from '../../enums/ParametersType';
 import { STARParameters } from '../../model/starParameters';
-import { ParametersType } from "../../enums/ParametersType";
 
 export class HLFServices {
     public static async getCollectionOrDefault(
@@ -9,7 +9,7 @@ export class HLFServices {
         docType: string,
         target: string = ''): Promise<string> {
 
-        var collection: string = '';
+        let collection: string = '';
         if (!target || target.length === 0) {
             const collectionMap: Map<string, string[]> = params.values.get(docType);
 
@@ -29,7 +29,7 @@ export class HLFServices {
         target: string): Promise<string> {
 
         const collectionMap: Map<string, string[]> = params.values.get(docType);
-        var collection: string = '';
+        let collection: string = '';
         if (collectionMap) {
             if (!target || target.length === 0) {
                 collection = collectionMap.get(ParametersType.DEFAULT)[0];
@@ -43,13 +43,12 @@ export class HLFServices {
         return collection;
     }
 
-
     public static async getCollectionsOrDefault(
         params: STARParameters,
         docType: string,
         target: string[] = []): Promise<string[]> {
 
-        var collections: string[];
+        let collections: string[];
         if (!target || target.length === 0) {
             const collectionMap: Map<string, string[]> = params.values.get(docType);
             if (collectionMap) {
@@ -71,7 +70,7 @@ export class HLFServices {
         target: string): Promise<string[]> {
 
         const collectionMap: Map<string, string[]> = params.values.get(docType);
-        var collections: string[];
+        let collections: string[];
         if (collectionMap) {
             if (!target || target.length === 0) {
                 collections = collectionMap.get(ParametersType.DEFAULT);
@@ -88,12 +87,10 @@ export class HLFServices {
         return await ctx.clientIdentity.getMSPID();
     }
 
-
-
     public static getUserRole(params: STARParameters): string {
         const identity = params.values.get(ParametersType.IDENTITY);
         const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
-        var roleUser: string;
+        let roleUser: string;
         if (roleTable.has(identity)) {
             roleUser = roleTable.get(identity);
         } else if (roleTable.has(identity.toLowerCase())) {
@@ -106,7 +103,7 @@ export class HLFServices {
 
     public static getUserRoleById(params: STARParameters, id: string): string {
         const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
-        var roleUser: string;
+        let roleUser: string;
         if (roleTable.has(id)) {
             roleUser = roleTable.get(id);
         } else if (roleTable.has(id.toLowerCase())) {
@@ -118,16 +115,14 @@ export class HLFServices {
         return roleUser;
     }
 
-
-
     public static async setLogLevel(params: STARParameters, loglevel: string): Promise<void> {
-        if (!["WARNING", "INFO", "DEBUG"].includes(loglevel)) {
-            throw new Error("defined log level can only be : WARNING or INFO or DEBUG");
+        if (!['WARNING', 'INFO', 'DEBUG'].includes(loglevel)) {
+            throw new Error('defined log level can only be : WARNING or INFO or DEBUG');
         }
 
         params.loggerMgt.setLevel(loglevel);
 
-        params.logger.warn("!!! new log level define: ", loglevel);
+        params.logger.warn('!!! new log level define: ', loglevel);
     }
 
 }

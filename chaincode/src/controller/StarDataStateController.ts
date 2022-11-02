@@ -1,49 +1,53 @@
-import { DataActionType } from "../enums/DataActionType";
-import { DocType } from "../enums/DocType";
-import { EligibilityStatusType } from "../enums/EligibilityStatusType";
-import { ParametersType } from "../enums/ParametersType";
+import { DataActionType } from '../enums/DataActionType';
+import { DocType } from '../enums/DocType';
+import { EligibilityStatusType } from '../enums/EligibilityStatusType';
+import { ParametersType } from '../enums/ParametersType';
 
-import { ActivationDocument } from "../model/activationDocument/activationDocument";
-import { AttachmentFile } from "../model/attachmentFile";
-import { DataReference } from "../model/dataReference";
-import { Site } from "../model/site";
-import { STARParameters } from "../model/starParameters";
+import { ActivationDocument } from '../model/activationDocument/activationDocument';
+import { AttachmentFile } from '../model/attachmentFile';
+import { DataReference } from '../model/dataReference';
+import { Site } from '../model/site';
+import { STARParameters } from '../model/starParameters';
 
-import { EligibilityController } from "./activationDocument/EligibilityController";
-import { OrderManagerController } from "./activationDocument/OrderManagerController";
-import { ReconciliationController } from "./activationDocument/ReconciliationController";
-import { AttachmentFileController } from "./AttachmentFileController";
-import { ActivationCompositeKeyIndexersController, ActivationEnergyAmountIndexersController, DataIndexersController, SiteActivationIndexersController, SiteReserveBidIndexersController } from "./dataIndexersController";
-import { EnergyAccountController } from "./EnergyAccountController";
-import { EnergyAmountController } from "./EnergyAmountController";
-import { ReferenceEnergyAccountController } from "./ReferenceEnergyAccountController";
-import { ReserveBidMarketDocumentController } from "./ReserveBidMarketDocumentController";
-import { ActivationDocumentEligibilityService } from "./service/ActivationDocumentEligibilityService";
-import { ActivationDocumentService } from "./service/ActivationDocumentService";
-import { CommonService } from "./service/CommonService";
-import { SiteController } from "./SiteController";
+import { EligibilityController } from './activationDocument/EligibilityController';
+import { OrderManagerController } from './activationDocument/OrderManagerController';
+import { ReconciliationController } from './activationDocument/ReconciliationController';
+import { AttachmentFileController } from './AttachmentFileController';
+import { ActivationCompositeKeyIndexersController } from './dataIndex/ActivationCompositeKeyIndexersController';
+import { ActivationEnergyAmountIndexersController } from './dataIndex/ActivationEnergyAmountIndexersController';
+import { SiteActivationIndexersController } from './dataIndex/SiteActivationIndexersController';
+import { SiteReserveBidIndexersController } from './dataIndex/SiteReserveBidIndexersController';
+import { EnergyAccountController } from './EnergyAccountController';
+import { EnergyAmountController } from './EnergyAmountController';
+import { ReferenceEnergyAccountController } from './ReferenceEnergyAccountController';
+import { ReserveBidMarketDocumentController } from './ReserveBidMarketDocumentController';
+import { ActivationDocumentEligibilityService } from './service/ActivationDocumentEligibilityService';
+import { ActivationDocumentService } from './service/ActivationDocumentService';
+import { CommonService } from './service/CommonService';
+import { SiteController } from './SiteController';
 
 export class StarDataStateController {
     public static async getStarDataState(
         params: STARParameters): Promise<string> {
         params.logger.info('============= START : getStarDataState StarDataStateController ===========');
 
-        const orderReferencesReconciliation: DataReference[] = await ReconciliationController.getReconciliationState(params);
+        const orderReferencesReconciliation: DataReference[] =
+            await ReconciliationController.getReconciliationState(params);
 
-        const orderReferencesMap: Map<string, DataReference> = ActivationDocumentService.dataReferenceArrayToMap(orderReferencesReconciliation);
+        const orderReferencesMap: Map<string, DataReference> =
+            ActivationDocumentService.dataReferenceArrayToMap(orderReferencesReconciliation);
 
-        params.logger.debug("# # # # # # # # # # # #")
-        params.logger.debug("from Reconciliation")
-        params.logger.debug([...orderReferencesMap])
-        params.logger.debug("# # # # # # # # # # # #")
+        params.logger.debug('# # # # # # # # # # # #');
+        params.logger.debug('from Reconciliation');
+        params.logger.debug([...orderReferencesMap]);
+        params.logger.debug('# # # # # # # # # # # #');
 
         const automaticEligibles = await EligibilityController.getAutomaticEligibles(params);
 
-        params.logger.debug("# # # # # # # # # # # #")
-        params.logger.debug("from Automatic Eligility")
-        params.logger.debug([...automaticEligibles])
-        params.logger.debug("# # # # # # # # # # # #")
-
+        params.logger.debug('# # # # # # # # # # # #');
+        params.logger.debug('from Automatic Eligility');
+        params.logger.debug([...automaticEligibles]);
+        params.logger.debug('# # # # # # # # # # # #');
 
         if (automaticEligibles && automaticEligibles.length > 0) {
             for (const automaticEligible of automaticEligibles) {
@@ -51,10 +55,13 @@ export class StarDataStateController {
                     && automaticEligible.data.activationDocumentMrid
                     && automaticEligible.data.activationDocumentMrid.length > 0) {
 
-                    if (orderReferencesMap.has(automaticEligible.data.activationDocumentMrid)){
-                        const newOrderReferenceValue = orderReferencesMap.get(automaticEligible.data.activationDocumentMrid);
+                    if (orderReferencesMap.has(automaticEligible.data.activationDocumentMrid)) {
+                        const newOrderReferenceValue =
+                            orderReferencesMap.get(automaticEligible.data.activationDocumentMrid);
                         newOrderReferenceValue.data.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
-                        newOrderReferenceValue.data = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, newOrderReferenceValue.data);
+                        newOrderReferenceValue.data =
+                            await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(
+                                params, newOrderReferenceValue.data);
 
                         orderReferencesMap.set(automaticEligible.data.activationDocumentMrid, newOrderReferenceValue);
                     } else {
@@ -64,17 +71,17 @@ export class StarDataStateController {
             }
         }
 
-        params.logger.debug("# # # # # # # # # # # #")
-        params.logger.debug("after merge automatic elibigility")
-        params.logger.debug([...orderReferencesMap])
-        params.logger.debug("# # # # # # # # # # # #")
+        params.logger.debug('# # # # # # # # # # # #');
+        params.logger.debug('after merge automatic elibigility');
+        params.logger.debug([...orderReferencesMap]);
+        params.logger.debug('# # # # # # # # # # # #');
 
         const orderReferences = await EligibilityController.getEligibilityStatusState(params, orderReferencesMap);
 
         const listReserveBidStatusToUpdate = await ReserveBidMarketDocumentController.getWithoutStatusOutOfTime(params);
 
         if (listReserveBidStatusToUpdate && listReserveBidStatusToUpdate.length > 0) {
-            for (var reserveBidStatusToUpdate of listReserveBidStatusToUpdate) {
+            for (const reserveBidStatusToUpdate of listReserveBidStatusToUpdate) {
                 reserveBidStatusToUpdate.dataAction = DataActionType.UPDATE;
                 orderReferences.push(reserveBidStatusToUpdate);
             }
@@ -90,7 +97,6 @@ export class StarDataStateController {
         //     }
         // }
 
-
         // const orderReferencesFinal: DataReference[] = [];
         // if (orderReferences && orderReferences.length > 0) {
         //     for (const orderReference of orderReferences) {
@@ -101,20 +107,17 @@ export class StarDataStateController {
         // }
         // var state_str = JSON.stringify(orderReferencesFinal);
 
-        var state_str = JSON.stringify(orderReferences);
+        const stateStr = JSON.stringify(orderReferences);
 
-        params.logger.debug("#######################")
-        params.logger.debug(state_str)
-        params.logger.debug("#######################")
+        params.logger.debug('#######################');
+        params.logger.debug(stateStr);
+        params.logger.debug('#######################');
 
         params.logger.info('=============  END  : getStarDataState StarDataStateController ===========');
 
-        return state_str;
+        return stateStr;
 
     }
-
-
-
 
     public static async executeStarDataOrders(
         params: STARParameters,
@@ -131,7 +134,7 @@ export class StarDataStateController {
         }
 
         if (updateOrders && updateOrders.length > 0 ) {
-            //VALIDATION AND INITIALIZATION STEP
+            // VALIDATION AND INITIALIZATION STEP
             for (const updateOrder of updateOrders) {
                 DataReference.schema.validateSync(
                     updateOrder,
@@ -164,19 +167,18 @@ export class StarDataStateController {
                 //     params.addInMemoryPool(data.energyAccountMarketDocumentMrid, updateOrder);
                 // }
             }
-            //Calculate common parameters only 1 time
-            //ReserveBidParameters
-            const reserveBid_validation_time_max: number = params.values.get(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX);
-            var dateRef = CommonService.increaseDateDays(new Date(), reserveBid_validation_time_max);
+            // Calculate common parameters only 1 time
+            // ReserveBidParameters
+            const reserveBidValidationTimeMax: number =
+                params.values.get(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX);
+            let dateRef = CommonService.increaseDateDays(new Date(), reserveBidValidationTimeMax);
             dateRef = CommonService.setHoursEndDay(dateRef);
 
-            const reserveBid_out_of_time_status: string = params.values.get(ParametersType.RESERVE_BID_OUT_OF_TIME_STATUS);
-
-
+            const reserveBidOutOfTimeStatus: string = params.values.get(ParametersType.RESERVE_BID_OUT_OF_TIME_STATUS);
 
             // PROCESS Step
             for (const updateOrder of updateOrders) {
-                const dateIn = new Date()
+                const dateIn = new Date();
                 if (updateOrder.docType === DocType.ACTIVATION_DOCUMENT) {
                     params.logger.info(`UpdateOrder : ${updateOrder.docType} - ${updateOrder.data.activationDocumentMrid}`);
                     await OrderManagerController.executeOrder(params, updateOrder);
@@ -190,7 +192,8 @@ export class StarDataStateController {
                     await EnergyAmountController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.RESERVE_BID_MARKET_DOCUMENT) {
                     params.logger.info(`UpdateOrder : ${updateOrder.docType} - ${updateOrder.data.reserveBidMrid}`);
-                    await ReserveBidMarketDocumentController.executeOrder(params, updateOrder, dateRef, reserveBid_out_of_time_status);
+                    await ReserveBidMarketDocumentController.executeOrder(
+                        params, updateOrder, dateRef, reserveBidOutOfTimeStatus);
                 } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
                     await AttachmentFileController.createByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.INDEX_ACTIVATION_COMPOSITE_KEY) {
@@ -202,7 +205,7 @@ export class StarDataStateController {
                 } else if (updateOrder.docType === DocType.INDEX_SITE_RESERVE_BID) {
                     await SiteReserveBidIndexersController.executeOrder(params, updateOrder);
                 }
-                const dateOut = new Date()
+                const dateOut = new Date();
                 params.logger.info(`UpdateOrder : ${updateOrder.docType} done : ${dateIn}/${dateOut} !`);
 
             }

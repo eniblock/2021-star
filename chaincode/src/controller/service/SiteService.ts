@@ -1,17 +1,16 @@
 
-import { ParametersType } from "../../enums/ParametersType";
-import { DocType } from "../../enums/DocType";
+import { DocType } from '../../enums/DocType';
+import { ParametersType } from '../../enums/ParametersType';
 
-import { Site } from "../../model/site";
+import { Site } from '../../model/site';
 import { STARParameters } from '../../model/starParameters';
 
-import { QueryStateService } from "./QueryStateService";
-import { HLFServices } from "./HLFservice";
-import { StarPrivateDataService } from "./StarPrivateDataService";
-import { DataReference } from "../../model/dataReference";
+import { DataReference } from '../../model/dataReference';
+import { HLFServices } from './HLFservice';
+import { QueryStateService } from './QueryStateService';
+import { StarPrivateDataService } from './StarPrivateDataService';
 
 export class SiteService {
-
 
     public static async write(
         params: STARParameters,
@@ -20,12 +19,11 @@ export class SiteService {
         params.logger.debug('============= START : write SiteService ===========');
 
         siteObj.docType = DocType.SITE;
-        await StarPrivateDataService.write(params, {id: siteObj.meteringPointMrid, dataObj: siteObj, collection: target});
+        await StarPrivateDataService.write(
+            params, {id: siteObj.meteringPointMrid, dataObj: siteObj, collection: target});
 
         params.logger.debug('=============  END  : write SiteService ===========');
     }
-
-
 
     public static async getQueryStringResult(
         params: STARParameters,
@@ -39,85 +37,46 @@ export class SiteService {
         return formated;
     }
 
-
-
     public static async getQueryArrayResult(
         params: STARParameters,
         query: string): Promise<any>  {
         params.logger.debug('============= START : getPrivateQueryArrayResult SiteService ===========');
 
-        const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
-        var allResults = [];
-        var allResultsId: string[] = [];
+        const collections: string[] =
+            await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        const allResults = [];
+        const allResultsId: string[] = [];
 
         if (collections) {
-            for (var i=0; i<collections.length; i++) {
+            for (const collection of collections) {
                 // params.logger.debug("collection : ", collections[i])
-                let results: Site[] = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, collection: collections[i]});
-                params.logger.debug("results :", JSON.stringify(results))
-                for (var result of results) {
+                const results: Site[] = await QueryStateService.getPrivateQueryArrayResult(params, {query, collection});
+                params.logger.debug('results :', JSON.stringify(results));
+                for (const result of results) {
                     if (result
                         && result.meteringPointMrid
-                        && result.meteringPointMrid !== ""
+                        && result.meteringPointMrid !== ''
                         && !allResultsId.includes(result.meteringPointMrid)) {
 
                             allResultsId.push(result.meteringPointMrid);
                             allResults.push(result);
                         }
                 }
-                params.logger.debug("allResults :", JSON.stringify(allResults))
-                params.logger.debug("allResultsId :", JSON.stringify(allResultsId))
+                params.logger.debug('allResults :', JSON.stringify(allResults));
+                params.logger.debug('allResultsId :', JSON.stringify(allResultsId));
             }
         }
 
         params.logger.debug('=============  END  : getPrivateQueryArrayResult SiteService ===========');
         return allResults;
     }
-
-
-    private static async getQueryArrayResultByRef(
-        params: STARParameters,
-        query: string): Promise<DataReference[]>  {
-        params.logger.debug('============= START : getPrivateQueryArrayResult SiteService ===========');
-
-        const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
-        var allResults : DataReference[] = [];
-        var allResultsId: string[] = [];
-
-        if (collections) {
-            for (var i=0; i<collections.length; i++) {
-                // params.logger.debug("collection : ", collections[i])
-                let results: Site[] = await QueryStateService.getPrivateQueryArrayResult(params, {query: query, collection: collections[i]});
-                params.logger.debug("results :", JSON.stringify(results))
-                for (var result of results) {
-                    if (result
-                        && result.meteringPointMrid
-                        && result.meteringPointMrid !== ""
-                        && !allResultsId.includes(result.meteringPointMrid)) {
-
-                            allResultsId.push(result.meteringPointMrid);
-                            allResults.push({data: result, collection: collections[i], docType: DocType.SITE});
-                        }
-                }
-                params.logger.debug("allResults :", JSON.stringify(allResults))
-                params.logger.debug("allResultsId :", JSON.stringify(allResultsId))
-            }
-        }
-
-        params.logger.debug('=============  END  : getPrivateQueryArrayResult SiteService ===========');
-        return allResults;
-    }
-
-
-
-
 
     public static async getAll(params: STARParameters): Promise<DataReference[]> {
         params.logger.debug('============= START : getAll %s SiteService ===========');
 
         const query = `{"selector": {"docType": "${DocType.SITE}"}}`;
 
-        params.logger.debug("query: ", query);
+        params.logger.debug('query: ', query);
 
         const arrayResult = await this.getQueryArrayResultByRef(params, query);
 
@@ -125,6 +84,38 @@ export class SiteService {
         return arrayResult;
     }
 
+    private static async getQueryArrayResultByRef(
+        params: STARParameters,
+        query: string): Promise<DataReference[]>  {
+        params.logger.debug('============= START : getPrivateQueryArrayResult SiteService ===========');
 
+        const collections: string[] =
+            await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        const allResults: DataReference[] = [];
+        const allResultsId: string[] = [];
+
+        if (collections) {
+            for (const collection of collections) {
+                // params.logger.debug("collection : ", collections[i])
+                const results: Site[] = await QueryStateService.getPrivateQueryArrayResult(params, {query, collection});
+                params.logger.debug('results :', JSON.stringify(results));
+                for (const result of results) {
+                    if (result
+                        && result.meteringPointMrid
+                        && result.meteringPointMrid !== ''
+                        && !allResultsId.includes(result.meteringPointMrid)) {
+
+                            allResultsId.push(result.meteringPointMrid);
+                            allResults.push({data: result, collection, docType: DocType.SITE});
+                        }
+                }
+                params.logger.debug('allResults :', JSON.stringify(allResults));
+                params.logger.debug('allResultsId :', JSON.stringify(allResultsId));
+            }
+        }
+
+        params.logger.debug('=============  END  : getPrivateQueryArrayResult SiteService ===========');
+        return allResults;
+    }
 
 }

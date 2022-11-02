@@ -2,9 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Context } from 'fabric-contract-api';
+import { Logger } from 'winston';
 import * as Yup from 'yup';
 import { DataReference } from './dataReference';
-import { Logger } from 'winston';
 
 export class STARParameters {
     public static readonly schema = Yup.object().shape({
@@ -13,20 +13,19 @@ export class STARParameters {
     });
 
     public docType?: string;
-    public values: Map<string,any>;
+    public values: Map<string, any>;
     public ctx: Context;
     public loggerMgt: any;
     public logger: Logger;
-
 
     /*
     * Memory Pool Management
     */
     private memoryPool: Map<string, Map<string, DataReference>> = new Map();
-    //Map< DataId , Map < CollectionId, DataRef > >
+    // Map< DataId , Map < CollectionId, DataRef > >
 
-    public addInMemoryPool(key:string, dataReference: DataReference) {
-        var poolelt = this.memoryPool.get(key);
+    public addInMemoryPool(key: string, dataReference: DataReference) {
+        let poolelt = this.memoryPool.get(key);
         if (!poolelt) {
             poolelt = new Map();
         }
@@ -35,7 +34,7 @@ export class STARParameters {
         this.memoryPool.set(key, poolelt);
     }
 
-    public getFromMemoryPool(key:string): Map<string, DataReference> {
+    public getFromMemoryPool(key: string): Map<string, DataReference> {
         const poolelt = this.memoryPool.get(key);
         return poolelt;
     }

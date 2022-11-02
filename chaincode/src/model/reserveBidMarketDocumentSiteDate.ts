@@ -1,7 +1,13 @@
 import * as Yup from 'yup';
 
 export class ReserveBidMarketDocumentSiteDate {
-    public static formatString(inputString: string) : ReserveBidMarketDocumentSiteDate {
+
+    public static readonly schema = Yup.object().shape({
+        meteringPointMrid: Yup.string().required('meteringPointMrid is a compulsory string.').typeError('meteringPointMrid must be a string'),
+        referenceDateTime: Yup.string().required('referenceDateTime is a compulsory string.').typeError('referenceDateTime must be a string'),
+    });
+
+    public static formatString(inputString: string): ReserveBidMarketDocumentSiteDate {
         let reserveBidObj: ReserveBidMarketDocumentSiteDate;
         try {
             reserveBidObj = JSON.parse(inputString);
@@ -20,7 +26,7 @@ export class ReserveBidMarketDocumentSiteDate {
         return reserveBidObj;
     }
 
-    public static formatListString(inputString: string) : ReserveBidMarketDocumentSiteDate[] {
+    public static formatListString(inputString: string): ReserveBidMarketDocumentSiteDate[] {
         let reserveBidList: ReserveBidMarketDocumentSiteDate[] = [];
         try {
             reserveBidList = JSON.parse(inputString);
@@ -29,7 +35,7 @@ export class ReserveBidMarketDocumentSiteDate {
         }
 
         if (reserveBidList && reserveBidList.length > 0) {
-            for (var reserveBidObj of reserveBidList) {
+            for (const reserveBidObj of reserveBidList) {
                 try {
                     ReserveBidMarketDocumentSiteDate.schema.validateSync(
                         reserveBidObj,
@@ -42,12 +48,6 @@ export class ReserveBidMarketDocumentSiteDate {
         }
         return reserveBidList;
     }
-
-    public static readonly schema = Yup.object().shape({
-        meteringPointMrid: Yup.string().required('meteringPointMrid is a compulsory string.').typeError('meteringPointMrid must be a string'),
-        referenceDateTime: Yup.string().required('referenceDateTime is a compulsory string.').typeError('referenceDateTime must be a string'),
-    });
-
 
     public meteringPointMrid: string;
     public referenceDateTime?: string;

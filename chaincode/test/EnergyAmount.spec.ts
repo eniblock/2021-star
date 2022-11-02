@@ -21,9 +21,10 @@ import { DocType } from '../src/enums/DocType';
 import { HLFServices } from '../src/controller/service/HLFservice';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { CommonService } from '../src/controller/service/CommonService';
-import { EnergyAmountAbstract, IndexedData } from '../src/model/dataIndexers';
-import { ActivationEnergyAmountIndexersController } from '../src/controller/dataIndexersController';
 import { IndexedDataJson } from '../src/model/dataIndexersJson';
+import { EnergyAmountAbstract } from '../src/model/dataIndex/energyAmountAbstract';
+import { IndexedData } from '../src/model/dataIndex/dataIndexers';
+import { ActivationEnergyAmountIndexersController } from '../src/controller/dataIndex/ActivationEnergyAmountIndexersController';
 
 
 class TestLoggerMgt {

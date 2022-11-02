@@ -1,17 +1,16 @@
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { ParametersType } from '../enums/ParametersType';
 
-import { STARParameters } from '../model/starParameters';
-import { Site } from '../model/site';
-import { Producer } from '../model/producer';
 import { DataReference } from '../model/dataReference';
+import { Producer } from '../model/producer';
+import { Site } from '../model/site';
+import { STARParameters } from '../model/starParameters';
 
+import { DocType } from '../enums/DocType';
+import { IdArgument } from '../model/arguments/idArgument';
 import { SiteService } from './service/SiteService';
 import { StarDataService } from './service/StarDataService';
-import { DocType } from '../enums/DocType';
 import { StarPrivateDataService } from './service/StarPrivateDataService';
-import { IdArgument } from '../model/arguments/idArgument';
-import { QueryStateService } from './service/QueryStateService';
 
 export class SiteController {
     public static async createSite(
@@ -25,8 +24,6 @@ export class SiteController {
         params.logger.info('=============  END  : createSite SiteController ===========');
     }
 
-
-
     public static async createSiteByReference(
         params: STARParameters,
         dataReference: DataReference): Promise<void> {
@@ -36,8 +33,6 @@ export class SiteController {
 
         params.logger.debug('=============  END  : createSite By Reference SiteController ===========');
     }
-
-
 
     public static async createSiteObj(
         params: STARParameters,
@@ -63,15 +58,17 @@ export class SiteController {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
         }
         try {
-            await StarDataService.getObj(params, {id:siteObj.systemOperatorMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
-        } catch(error) {
+            await StarDataService.getObj(
+                params, {id: siteObj.systemOperatorMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+        } catch (error) {
             throw new Error(error.message.concat(' for site creation'));
         }
 
-        let producerObj : Producer;
+        let producerObj: Producer;
         try {
-            producerObj = await StarDataService.getObj(params, {id: siteObj.producerMarketParticipantMrid, docType: DocType.PRODUCER});
-        } catch(error) {
+            producerObj = await StarDataService.getObj(
+                params, {id: siteObj.producerMarketParticipantMrid, docType: DocType.PRODUCER});
+        } catch (error) {
             throw new Error(error.message.concat(' for site creation'));
         }
 
@@ -83,10 +80,6 @@ export class SiteController {
             siteObj.meteringPointMrid,
         );
     }
-
-
-
-
 
     public static async updateSite(
         params: STARParameters,
@@ -116,26 +109,29 @@ export class SiteController {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
         }
 
-        var existingSitesRef:Map<string, DataReference>;
+        let existingSitesRef: Map<string, DataReference>;
         try {
-            existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: siteObj.meteringPointMrid});
-        } catch(error) {
+            existingSitesRef = await StarPrivateDataService.getObjRefbyId(
+                params, {docType: DocType.SITE, id: siteObj.meteringPointMrid});
+        } catch (error) {
             throw new Error(error.message.concat(' for site update'));
         }
 
         try {
-            await StarDataService.getObj(params, {id: siteObj.systemOperatorMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
-        } catch(error) {
+            await StarDataService.getObj(
+                params, {id: siteObj.systemOperatorMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+        } catch (error) {
             throw new Error(error.message.concat(' for site update'));
         }
 
         try {
-            await StarDataService.getObj(params, {id: siteObj.producerMarketParticipantMrid, docType: DocType.PRODUCER});
-        } catch(error) {
+            await StarDataService.getObj(
+                params, {id: siteObj.producerMarketParticipantMrid, docType: DocType.PRODUCER});
+        } catch (error) {
             throw new Error(error.message.concat(' for site update'));
         }
 
-        for (var [key, ] of existingSitesRef) {
+        for (const [key ] of existingSitesRef) {
             await SiteService.write(params, siteObj, key);
         }
 
@@ -144,16 +140,13 @@ export class SiteController {
         );
     }
 
-
-
-
-
     public static async querySite(
         params: STARParameters,
         siteId: string): Promise<string> {
         params.logger.info('============= START : Query %s Site ===========', siteId);
 
-        const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: siteId});
+        const result: Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(
+            params, {docType: DocType.SITE, id: siteId});
         const dataReference = result.values().next().value;
 
         // params.logger.debug(siteId, JSON.stringify(dataReference.data));
@@ -162,18 +155,15 @@ export class SiteController {
         return JSON.stringify(dataReference.data);
     }
 
-
-
-
-
     public static async siteExists(
         params: STARParameters,
         siteId: string): Promise<boolean> {
         params.logger.info('============= START : siteExists %s Site ===========', siteId);
 
-        var booleanResult = false;
+        let booleanResult = false;
         try {
-            const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: siteId});
+            const result: Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(
+                params, {docType: DocType.SITE, id: siteId});
             if (result
                 && result.values().next().value
                 && result.values().next().value.data
@@ -191,8 +181,6 @@ export class SiteController {
         return booleanResult;
     }
 
-
-
     public static async getSiteById(
         params: STARParameters,
         arg: IdArgument): Promise<Site> {
@@ -203,7 +191,7 @@ export class SiteController {
         if (arg.collection && arg.collection.length > 0) {
             siteObj = await StarPrivateDataService.getObj(params, arg);
         } else {
-            const result:Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, arg);
+            const result: Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(params, arg);
             const dataReference = result.values().next().value;
             if (dataReference && dataReference.data) {
                 siteObj = dataReference.data;
@@ -215,7 +203,6 @@ export class SiteController {
         return siteObj;
     }
 
-
     public static async getAllObjRef( params: STARParameters): Promise<DataReference[]> {
         params.logger.info('============= START : getAllProducer ProducerController ===========');
 
@@ -225,7 +212,6 @@ export class SiteController {
 
         return arrayResult;
     }
-
 
     public static async getSitesBySystemOperator(
         params: STARParameters,
@@ -238,9 +224,6 @@ export class SiteController {
         params.logger.info('=============  END  : getSite By SystemOperator ===========');
         return allResults;
     }
-
-
-
 
     public static async getSitesByProducer(
         params: STARParameters,
@@ -255,19 +238,15 @@ export class SiteController {
         return allResults;
     }
 
-
-
-
     public static async getSitesByQuery(
         params: STARParameters,
         query: string): Promise<any> {
         params.logger.info('============= START : getSite By Query ===========');
 
-        let results = await SiteService.getQueryArrayResult(params, query);
+        const results = await SiteService.getQueryArrayResult(params, query);
 
         params.logger.info('=============  END  : getSite By Query ===========');
         return results;
     }
-
 
 }

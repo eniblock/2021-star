@@ -1,44 +1,37 @@
-import { DocType } from "../../enums/DocType";
-import { ParametersType } from "../../enums/ParametersType";
-import { RoleType } from "../../enums/RoleType";
+import { DocType } from '../../enums/DocType';
+import { ParametersType } from '../../enums/ParametersType';
+import { RoleType } from '../../enums/RoleType';
 
-import { ActivationDocument } from "../../model/activationDocument/activationDocument";
-import { EnergyAmount } from "../../model/energyAmount";
-import { HistoryCriteria, TypeCriteria } from "../../model/activationDocument/historyCriteria";
-import { HistoryInformation } from "../../model/activationDocument/historyInformation";
-import { Producer } from "../../model/producer";
-import { Site } from "../../model/site";
-import { STARParameters } from "../../model/starParameters";
+import { ActivationDocument } from '../../model/activationDocument/activationDocument';
+import { HistoryCriteria } from '../../model/activationDocument/historyCriteria';
+import { HistoryInformation } from '../../model/activationDocument/historyInformation';
+import { EnergyAmount } from '../../model/energyAmount';
+import { Producer } from '../../model/producer';
+import { Site } from '../../model/site';
+import { STARParameters } from '../../model/starParameters';
 
-import { ActivationDocumentController } from "./ActivationDocumentController";
-import { EnergyAmountController } from "../EnergyAmountController";
-import { ProducerController } from "../ProducerController";
+import { EnergyAmountController } from '../EnergyAmountController';
+import { ProducerController } from '../ProducerController';
+import { ActivationDocumentController } from './ActivationDocumentController';
 
-import { ActivationDocumentEligibilityService } from "../service/ActivationDocumentEligibilityService";
-import { ActivationDocumentService } from "../service/ActivationDocumentService";
-import { HLFServices } from "../service/HLFservice";
-import { QueryStateService } from "../service/QueryStateService";
-import { SiteService } from "../service/SiteService";
-import { StarPrivateDataService } from "../service/StarPrivateDataService";
-import { StarDataService } from "../service/StarDataService";
-import { DataReference } from "../../model/dataReference";
-import { ReserveBidMarketDocument } from "../../model/reserveBidMarketDocument";
-import { ReserveBidMarketDocumentController } from "../ReserveBidMarketDocumentController";
-import { ReserveBidMarketDocumentSiteDate } from "../../model/reserveBidMarketDocumentSiteDate";
-import { OrganizationTypeMsp } from "../../enums/OrganizationMspType";
-import { EligibilityStatusType } from "../../enums/EligibilityStatusType";
-import { SystemOperatorController } from "../SystemOperatorController";
+import { EligibilityStatusType } from '../../enums/EligibilityStatusType';
+import { OrganizationTypeMsp } from '../../enums/OrganizationMspType';
+import { DataReference } from '../../model/dataReference';
+import { ReserveBidMarketDocument } from '../../model/reserveBidMarketDocument';
+import { ReserveBidMarketDocumentController } from '../ReserveBidMarketDocumentController';
+import { ActivationDocumentEligibilityService } from '../service/ActivationDocumentEligibilityService';
+import { ActivationDocumentService } from '../service/ActivationDocumentService';
+import { HLFServices } from '../service/HLFservice';
+import { QueryStateService } from '../service/QueryStateService';
+import { SiteService } from '../service/SiteService';
+import { StarDataService } from '../service/StarDataService';
+import { StarPrivateDataService } from '../service/StarPrivateDataService';
+import { SystemOperatorController } from '../SystemOperatorController';
 
-import { BalancingDocument } from "../../model/balancingDocument";
-import { BalancingDocumentController } from "../BalancingDocumentController";
-
-export class HistoryInformationInBuilding {
-    public historyInformation: Map<string, HistoryInformation> = new Map();
-    public eligibilityToDefine: string[] = [];
-    public eligibilityDefined: string[] = [];
-    public reconciliated: string[] = [];
-    public others: string[] = [];
-}
+import { TypeCriteria } from '../../model/activationDocument/typeCriteria';
+import { BalancingDocument } from '../../model/balancingDocument';
+import { BalancingDocumentController } from '../BalancingDocumentController';
+import { HistoryInformationInBuilding } from './HistoryInformationInBuilding';
 
 export class HistoryController {
 
@@ -48,11 +41,10 @@ export class HistoryController {
 
         params.logger.info('============= START : getHistoryByQuery ===========');
 
-
         let criteriaObj: HistoryCriteria;
-        var result : HistoryInformation[];
+        let result: HistoryInformation[];
 
-        if (inputStr && inputStr !=="") {
+        if (inputStr && inputStr !== '') {
             try {
                 criteriaObj = JSON.parse(inputStr);
             } catch (error) {
@@ -72,47 +64,47 @@ export class HistoryController {
                 const query = await HistoryController.buildActivationDocumentQuery(params, criteriaObj);
                 params.logger.debug('**********************************************');
                 params.logger.debug('criteriaObj :', JSON.stringify(criteriaObj));
-                params.logger.debug("History query: ", query);
+                params.logger.debug('History query: ', query);
 
-                const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+                const collections: string[] = await HLFServices.getCollectionsFromParameters(
+                    params, ParametersType.DATA_TARGET, ParametersType.ALL);
 
-                const allActivationDocument: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(params, query, collections);
+                const allActivationDocument: ActivationDocument[] =
+                    await ActivationDocumentService.getQueryArrayResult(params, query, collections);
 
                 const allValidActivationDocument: ActivationDocument[] = [];
-                //Filter to keep only valid documents (and store in memory pool)
+                // Filter to keep only valid documents (and store in memory pool)
                 if (allActivationDocument && allActivationDocument.length > 0) {
-                    for (var document of allActivationDocument) {
+                    for (const document of allActivationDocument) {
                         if (document && document.activationDocumentMrid) {
                             allValidActivationDocument.push(document);
-                            params.addInMemoryPool(document.activationDocumentMrid, {collection: '', docType: DocType.ACTIVATION_DOCUMENT, data: document});
+                            params.addInMemoryPool(document.activationDocumentMrid,
+                                {collection: '',
+                                data: document,
+                                docType: DocType.ACTIVATION_DOCUMENT});
                         }
                     }
                 }
-                params.logger.debug("allValidActivationDocument: ", JSON.stringify(allValidActivationDocument));
+                params.logger.debug('allValidActivationDocument: ', JSON.stringify(allValidActivationDocument));
                 params.logger.debug('**********************************************');
 
                 if (allValidActivationDocument && allValidActivationDocument.length > 0) {
-                    const informationInBuilding: HistoryInformationInBuilding = await HistoryController.consolidate(params, allValidActivationDocument, criteriaObj);
+                    const informationInBuilding: HistoryInformationInBuilding =
+                        await HistoryController.consolidate(params, allValidActivationDocument, criteriaObj);
                     result = await HistoryController.generateOutput(params, informationInBuilding);
 
                 }
             }
         }
 
-        params.logger.debug("###############################################")
-        params.logger.debug(JSON.stringify(result))
-        params.logger.debug("###############################################")
+        params.logger.debug('###############################################');
+        params.logger.debug(JSON.stringify(result));
+        params.logger.debug('###############################################');
 
         params.logger.info('============= END  : getHistoryByQuery ===========');
 
         return result;
     }
-
-
-
-
-
-
 
     private static async consolidateRegisteredResourceListCriteria(
         params: STARParameters,
@@ -131,64 +123,64 @@ export class HistoryController {
         }
         if (criteriaObj.producerMarketParticipantName) {
             producerMarketParticipantList.push(criteriaObj.producerMarketParticipantName);
-            const allProdId = await ProducerController.getProducerByName(params, criteriaObj.producerMarketParticipantName);
+            const allProdId = await ProducerController.getProducerByName(
+                params, criteriaObj.producerMarketParticipantName);
             if (allProdId) {
-                for (var prodId of allProdId) {
+                for (const prodId of allProdId) {
                     if (prodId && prodId.producerMarketParticipantMrid) {
                         producerMarketParticipantList.push(prodId.producerMarketParticipantMrid);
 
-                        params.addInMemoryPool(prodId.producerMarketParticipantMrid, {docType: DocType.PRODUCER, data: prodId, collection:''});
+                        params.addInMemoryPool(prodId.producerMarketParticipantMrid, {
+                            collection: '', data: prodId, docType: DocType.PRODUCER});
                     }
                 }
             }
         }
 
-
-        //build meteringPointMrid List by substration
+        // build meteringPointMrid List by substration
         // to check if originAutomationRegisteredResourceMrid defines a substration value
         const substrationMeteringPointMridList: string[] = [];
         if (criteriaObj.originAutomationRegisteredResourceMrid) {
-            var substation_args: string[] = [];
-            substation_args.push(`"substationMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
-            const substation_querySite = await QueryStateService.buildQuery({documentType: DocType.SITE, queryArgs: substation_args});
-            const substation_siteList: Site[] = await SiteService.getQueryArrayResult(params, substation_querySite);
-            for (var substation_site of substation_siteList) {
-                substrationMeteringPointMridList.push(substation_site.meteringPointMrid);
+            const substationArgs: string[] = [];
+            substationArgs.push(`"substationMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
+            const substationQuerySite = await QueryStateService.buildQuery(
+                {documentType: DocType.SITE, queryArgs: substationArgs});
+            const substationSiteList: Site[] = await SiteService.getQueryArrayResult(params, substationQuerySite);
+            for (const substationSite of substationSiteList) {
+                substrationMeteringPointMridList.push(substationSite.meteringPointMrid);
             }
         }
 
-
-        var args: string[] = [];
+        const args: string[] = [];
 
         if (criteriaObj.meteringPointMrid) {
             args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
         }
         if (producerMarketParticipantList && producerMarketParticipantList.length > 0) {
-            const producerMarketParticipantList_str = JSON.stringify(producerMarketParticipantList);
-            args.push(`"producerMarketParticipantMrid": { "$in" : ${producerMarketParticipantList_str} }`);
+            const producerMarketParticipantListStr = JSON.stringify(producerMarketParticipantList);
+            args.push(`"producerMarketParticipantMrid": { "$in" : ${producerMarketParticipantListStr} }`);
         }
         if (criteriaObj.siteName
             && (role === RoleType.Role_Producer) ) {
             args.push(`"siteName":"${criteriaObj.siteName}"`);
         }
 
-
         criteriaObj.registeredResourceList = [];
         if (args.length > 0) {
             const querySite = await QueryStateService.buildQuery({documentType: DocType.SITE, queryArgs: args});
             const siteList: Site[] = await SiteService.getQueryArrayResult(params, querySite);
 
-            for (var site of siteList) {
-                if (substrationMeteringPointMridList.length == 0
+            for (const site of siteList) {
+                if (substrationMeteringPointMridList.length === 0
                     || substrationMeteringPointMridList.includes(site.meteringPointMrid)) {
 
                     criteriaObj.registeredResourceList.push(site.substationMrid);
                     criteriaObj.registeredResourceList.push(site.meteringPointMrid);
                 }
-                params.addInMemoryPool(site.meteringPointMrid, {docType: DocType.SITE, data: site, collection:''});
+                params.addInMemoryPool(site.meteringPointMrid, {docType: DocType.SITE, data: site, collection: ''});
             }
         } else if (substrationMeteringPointMridList.length > 0) {
-            for (var id of substrationMeteringPointMridList) {
+            for (const id of substrationMeteringPointMridList) {
                 criteriaObj.registeredResourceList.push(id);
                 criteriaObj.registeredResourceList.push(id);
             }
@@ -199,14 +191,13 @@ export class HistoryController {
         return criteriaObj;
     }
 
-
-
-
-    private static async buildActivationDocumentQuery(params: STARParameters, criteriaObj: HistoryCriteria) : Promise<string> {
+    private static async buildActivationDocumentQuery(
+        params: STARParameters,
+        criteriaObj: HistoryCriteria): Promise<string> {
 
         params.logger.debug('============= START : buildActivationDocumentQuery ===========');
 
-        var args: string[] = [];
+        const args: string[] = [];
 
         if (criteriaObj) {
 
@@ -219,8 +210,8 @@ export class HistoryController {
 
                     const listId: string[] = JSON.parse(JSON.stringify(criteriaObj.registeredResourceList));
                     listId.push(criteriaObj.originAutomationRegisteredResourceMrid);
-                    const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);
-                    criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
+                    const registeredResourceListStr = JSON.stringify(criteriaObj.registeredResourceList);
+                    criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceListStr} }`);
 
                 } else {
                     criteriaPlaceList.push(`"registeredResourceMrid":"${criteriaObj.originAutomationRegisteredResourceMrid}"`);
@@ -230,8 +221,8 @@ export class HistoryController {
                 || criteriaObj.meteringPointMrid
                 || criteriaObj.siteName) {
 
-                const registeredResourceList_str = JSON.stringify(criteriaObj.registeredResourceList);
-                criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceList_str} }`);
+                const registeredResourceListStr = JSON.stringify(criteriaObj.registeredResourceList);
+                criteriaPlaceList.push(`"registeredResourceMrid": { "$in" : ${registeredResourceListStr} }`);
             }
 
             const criteriaPlace = await QueryStateService.buildORCriteria(criteriaPlaceList);
@@ -249,23 +240,22 @@ export class HistoryController {
                 args.push(criteriaActivationType);
             }
 
-
             if (criteriaObj.activationReasonList
                 && criteriaObj.activationReasonList.length > 0) {
 
                 const activationReasonCriteriaList: string[] = [];
-                for (var activationReason of criteriaObj.activationReasonList) {
+                for (const activationReason of criteriaObj.activationReasonList) {
                     const criteriaReason = await HistoryController.prepareTypeCriteriaArg(activationReason);
                     if (criteriaReason && criteriaReason.length > 0) {
                         activationReasonCriteriaList.push(criteriaReason);
                     }
                 }
                 if (activationReasonCriteriaList && activationReasonCriteriaList.length > 0) {
-                    const activationReasonCriteria = await QueryStateService.buildORCriteria(activationReasonCriteriaList);
+                    const activationReasonCriteria =
+                        await QueryStateService.buildORCriteria(activationReasonCriteriaList);
                     args.push(activationReasonCriteria);
                 }
             }
-
 
         }
 
@@ -274,28 +264,21 @@ export class HistoryController {
         return await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
     }
 
-
-    private static async prepareTypeCriteriaArg(typeCriteria : TypeCriteria): Promise<string> {
+    private static async prepareTypeCriteriaArg(typeCriteria: TypeCriteria): Promise<string> {
         if (typeCriteria
             && typeCriteria.businessType && typeCriteria.businessType.length > 0
             && typeCriteria.messageType && typeCriteria.messageType.length > 0
             && typeCriteria.reasonCode && typeCriteria.reasonCode.length > 0) {
 
             const activationTypeList: string[] = [];
-            activationTypeList.push(`"businessType":"${typeCriteria.businessType}"`)
-            activationTypeList.push(`"messageType":"${typeCriteria.messageType}"`)
-            activationTypeList.push(`"reasonCode":"${typeCriteria.reasonCode}"`)
+            activationTypeList.push(`"businessType":"${typeCriteria.businessType}"`);
+            activationTypeList.push(`"messageType":"${typeCriteria.messageType}"`);
+            activationTypeList.push(`"reasonCode":"${typeCriteria.reasonCode}"`);
 
             return await QueryStateService.buildANDCriteria(activationTypeList);
         }
-        return "";
+        return '';
     }
-
-
-
-
-
-
 
     private static async consolidate(
         params: STARParameters,
@@ -304,7 +287,7 @@ export class HistoryController {
 
         params.logger.debug('============= START : consolidate ===========');
 
-        var historyInformationInBuilding: HistoryInformationInBuilding = new HistoryInformationInBuilding();
+        let historyInformationInBuilding: HistoryInformationInBuilding = new HistoryInformationInBuilding();
 
         // if (allActivationDocument && allActivationDocument.length > 0) {
         //     params.logger.debug("----------------")
@@ -321,79 +304,95 @@ export class HistoryController {
         // }
 
         for (const activationDocumentQueryValue of allActivationDocument) {
-            params.logger.debug("ooo activationDocumentQueryValue.activationDocumentMrid : ", activationDocumentQueryValue.activationDocumentMrid);
+            params.logger.debug('ooo activationDocumentQueryValue.activationDocumentMrid : ',
+                activationDocumentQueryValue.activationDocumentMrid);
 
-            const activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocumentQueryValue);
+            const activationDocument =
+                await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(
+                    params, activationDocumentQueryValue);
 
-            var activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+            let activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
 
-            var subOrderList: ActivationDocument[] = [];
+            const subOrderList: ActivationDocument[] = [];
             if (activationDocument && activationDocument.subOrderList) {
-                for(var activationDocumentMrid of activationDocument.subOrderList) {
+                for (const activationDocumentMrid of activationDocument.subOrderList) {
 
-                    var subOrder: ActivationDocument = null;
+                    let subOrder: ActivationDocument = null;
                     try {
-                        subOrder = await ActivationDocumentController.getActivationDocumentById(params, activationDocumentMrid);
-                    } catch(error) {
-                        //do nothing, but empty document : suborder information is not in accessible collection
+                        subOrder = await ActivationDocumentController.getActivationDocumentById(
+                            params, activationDocumentMrid);
+                    } catch (error) {
+                        // do nothing, but empty document : suborder information is not in accessible collection
                     }
                     if (subOrder && subOrder.activationDocumentMrid) {
                         subOrderList.push(subOrder);
                     }
                 }
             }
-            //Manage Yello Page to get Site Information
-            var siteRegistered: Site = null;
+            // Manage Yello Page to get Site Information
+            let siteRegistered: Site = null;
             try {
-                params.logger.debug("ooo search site activationDocumentForInformation.registeredResourceMrid : ", activationDocumentForInformation.registeredResourceMrid);
+                params.logger.debug('ooo search site activationDocumentForInformation.registeredResourceMrid : ',
+                    activationDocumentForInformation.registeredResourceMrid);
 
-                const existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
-                const siteObjRef:DataReference = existingSitesRef.values().next().value;
+                const existingSitesRef = await StarPrivateDataService.getObjRefbyId(
+                    params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
+                const siteObjRef: DataReference = existingSitesRef.values().next().value;
                 if (siteObjRef && siteObjRef.docType === DocType.SITE) {
                     siteRegistered = siteObjRef.data;
                 }
             } catch (error) {
-                //DO nothing except "Not accessible information"
+                // DO nothing except "Not accessible information"
             }
             if (!siteRegistered && subOrderList && subOrderList.length > 0) {
-                //If no site found, search information by SubOrder Id
+                // If no site found, search information by SubOrder Id
                 activationDocumentForInformation = JSON.parse(JSON.stringify(subOrderList[0]));
                 try {
-                    params.logger.debug("ooo search site by subOrderList[0]");
-                    params.logger.debug("ooo search site activationDocumentForInformation.registeredResourceMrid : ", activationDocumentForInformation.registeredResourceMrid);
+                    params.logger.debug('ooo search site by subOrderList[0]');
+                    params.logger.debug('ooo search site activationDocumentForInformation.registeredResourceMrid : ',
+                        activationDocumentForInformation.registeredResourceMrid);
 
-                    const existingSitesRef =await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
+                    const existingSitesRef = await StarPrivateDataService.getObjRefbyId(
+                        params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
                     const siteObjRef = existingSitesRef.values().next().value;
                     if (siteObjRef && siteObjRef.docType === DocType.SITE) {
                         siteRegistered = siteObjRef.data;
                     }
                 } catch (error) {
-                    //DO nothing except "Not accessible information"
+                    // DO nothing except "Not accessible information"
                 }
             }
             if (!siteRegistered) {
-                //If still no site found, back to initial value
+                // If still no site found, back to initial value
                 activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
             }
 
             //
             // FILTER
             //
-            //Build a filtrer to check if it needs to go further in consolidation
-            var keepInformation = true;
+            // Build a filtrer to check if it needs to go further in consolidation
+            let keepInformation = true;
 
             if (criteriaObj.originAutomationRegisteredResourceMrid) {
-                const keepInformationOrigin1 = (activationDocument.originAutomationRegisteredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
-                const keepInformationOrigin2 = (subOrderList
-                                                && subOrderList.length > 0
-                                                && subOrderList[0].originAutomationRegisteredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+                const keepInformationOrigin1 =
+                    (activationDocument.originAutomationRegisteredResourceMrid ===
+                        criteriaObj.originAutomationRegisteredResourceMrid);
+                const keepInformationOrigin2 =
+                    (subOrderList
+                    && subOrderList.length > 0
+                    && subOrderList[0].originAutomationRegisteredResourceMrid ===
+                        criteriaObj.originAutomationRegisteredResourceMrid);
 
-                const keepInformationRegistered1 = (activationDocument.registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
-                const keepInformationRegistered2 = (subOrderList
-                                                    && subOrderList.length > 0
-                                                    && subOrderList[0].registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+                const keepInformationRegistered1 =
+                    (activationDocument.registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+                const keepInformationRegistered2 =
+                    (subOrderList
+                    && subOrderList.length > 0
+                    && subOrderList[0].registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
 
-                const keepInformationSubstration = (siteRegistered && siteRegistered.substationMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+                const keepInformationSubstration =
+                    (siteRegistered && siteRegistered.substationMrid ===
+                        criteriaObj.originAutomationRegisteredResourceMrid);
 
                 keepInformation = keepInformationOrigin1
                                 || keepInformationOrigin2
@@ -408,11 +407,14 @@ export class HistoryController {
                 || criteriaObj.meteringPointMrid
                 || criteriaObj.siteName) {
 
-                keepInformation = keepInformation && siteRegistered && criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
+                keepInformation =
+                    keepInformation
+                    && siteRegistered
+                    && criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
             }
 
             if (subOrderList && subOrderList.length > 0) {
-                //Keep only if it's a perfect match
+                // Keep only if it's a perfect match
                 keepInformation = keepInformation
                                     && activationDocument.subOrderList
                                     && activationDocument.subOrderList.length > 0
@@ -422,11 +424,9 @@ export class HistoryController {
                                     && subOrderList[0].subOrderList.includes(activationDocument.activationDocumentMrid);
             }
 
-
-
-            //END OF FILTER
-            //If information doesn't to be kept
-            //the process doesn't care about this document
+            // END OF FILTER
+            // If information doesn't to be kept
+            // the process doesn't care about this document
             if (keepInformation) {
                 historyInformationInBuilding =
                     await this.consolidateFiltered(
@@ -444,11 +444,6 @@ export class HistoryController {
         return historyInformationInBuilding;
     }
 
-
-
-
-
-
     private static async consolidateFiltered(
         params: STARParameters,
         historyInformationInBuilding: HistoryInformationInBuilding,
@@ -461,13 +456,19 @@ export class HistoryController {
 
         const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
         const identity: string = params.values.get(ParametersType.IDENTITY);
-        var roleUser: string = roleTable.get(identity.toLowerCase());
+        let roleUser: string = roleTable.get(identity.toLowerCase());
 
         try {
-            if (identity === OrganizationTypeMsp.PRODUCER && siteRegistered && siteRegistered.producerMarketParticipantMrid) {
-                const systemOperator = await SystemOperatorController.getSystemOperatorObjById(params, siteRegistered.systemOperatorMarketParticipantMrid);
-                if (systemOperator && systemOperator.systemOperatorMarketParticipantName){
-                    const roleSystemOperator = roleTable.get(systemOperator.systemOperatorMarketParticipantName.toLowerCase());
+            if (identity === OrganizationTypeMsp.PRODUCER
+                && siteRegistered
+                && siteRegistered.producerMarketParticipantMrid) {
+
+                const systemOperator = await SystemOperatorController.getSystemOperatorObjById(
+                    params, siteRegistered.systemOperatorMarketParticipantMrid);
+
+                if (systemOperator && systemOperator.systemOperatorMarketParticipantName) {
+                    const roleSystemOperator = roleTable.get(
+                        systemOperator.systemOperatorMarketParticipantName.toLowerCase());
                     if (roleSystemOperator === RoleType.Role_DSO) {
                         roleUser = RoleType.Role_DSOProducer;
                     } else if (roleSystemOperator === RoleType.Role_TSO) {
@@ -476,55 +477,48 @@ export class HistoryController {
                 }
             }
         } catch (error) {
-            //DO nothing keep roleUser value as it is
+            // DO nothing keep roleUser value as it is
         }
 
         params.logger.debug('roleUser: ', roleUser);
 
-
-        var producer: Producer = null;
+        let producer: Producer = null;
         try {
             if (siteRegistered && siteRegistered.producerMarketParticipantMrid) {
-                producer = await StarDataService.getObj(params, {id: siteRegistered.producerMarketParticipantMrid, docType: DocType.PRODUCER});
+                producer = await StarDataService.getObj(
+                    params, {id: siteRegistered.producerMarketParticipantMrid, docType: DocType.PRODUCER});
             }
         } catch (error) {
-            //DO nothing except "Not accessible information"
+            // DO nothing except "Not accessible information"
         }
         if (!producer) {
             try {
                 if (activationDocumentForInformation.receiverMarketParticipantMrid) {
-                    const prod = await StarDataService.getObj(params, {id: activationDocumentForInformation.receiverMarketParticipantMrid});
+                    const prod = await StarDataService.getObj(
+                        params, {id: activationDocumentForInformation.receiverMarketParticipantMrid});
                     if (prod) {
-                        const untypedValue = JSON.parse(JSON.stringify(prod))
+                        const untypedValue = JSON.parse(JSON.stringify(prod));
                         if (untypedValue && untypedValue.producerMarketParticipantMrid) {
                             producer = {
                                 producerMarketParticipantMrid: prod.producerMarketParticipantMrid,
                                 producerMarketParticipantName: prod.producerMarketParticipantName,
-                                producerMarketParticipantRoleType: prod.producerMarketParticipantRoleType
-                            }
-                        // } else if (untypedValue && untypedValue.systemOperatorMarketParticipantMrid) {
-
-                        //     producer = {
-                        //         producerMarketParticipantMrid: untypedValue.systemOperatorMarketParticipantMrid,
-                        //         producerMarketParticipantName: untypedValue.systemOperatorMarketParticipantName,
-                        //         producerMarketParticipantRoleType: untypedValue.systemOperatorMarketParticipantRoleType
-                        //     }
+                                producerMarketParticipantRoleType: prod.producerMarketParticipantRoleType,
+                            };
                         }
                     }
 
                 }
             } catch (error) {
-                //DO nothing except "Not accessible information"
+                // DO nothing except "Not accessible information"
             }
         }
 
         params.logger.debug('producer: ', JSON.stringify(producer));
 
-
-        var displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
+        let displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
 
         if (roleUser === RoleType.Role_TSO || roleUser === RoleType.Role_TSOProducer) {
-            if(!producer) {
+            if (!producer) {
                 displayedSourceName = activationDocument.registeredResourceMrid;
 
             } else if (subOrderList
@@ -565,10 +559,9 @@ export class HistoryController {
         //     }
         // }
 
+        let energyAmount: EnergyAmount = null;
 
-        var energyAmount: EnergyAmount = null;
-
-        var calculateEnergyAmount: boolean = true;
+        let calculateEnergyAmount: boolean = true;
         if (identity === OrganizationTypeMsp.PRODUCER) {
             calculateEnergyAmount =
                 (activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted
@@ -576,46 +569,52 @@ export class HistoryController {
         }
 
         try {
-            if (calculateEnergyAmount && activationDocumentForInformation && activationDocumentForInformation.activationDocumentMrid) {
-                energyAmount = await EnergyAmountController.getByActivationDocument(params, activationDocumentForInformation.activationDocumentMrid);
+            if (calculateEnergyAmount
+                && activationDocumentForInformation
+                && activationDocumentForInformation.activationDocumentMrid) {
+                energyAmount = await EnergyAmountController.getByActivationDocument(
+                    params, activationDocumentForInformation.activationDocumentMrid);
             }
 
         } catch (error) {
-            //DO nothing except "Not accessible information"
+            // DO nothing except "Not accessible information"
         }
 
         params.logger.debug('energyAmount: ', JSON.stringify(energyAmount));
 
-        var reserveBid: ReserveBidMarketDocument = null;
+        let reserveBid: ReserveBidMarketDocument = null;
         try {
-                reserveBid = await ReserveBidMarketDocumentController.getByActivationDocument(params, activationDocument);
+                reserveBid = await ReserveBidMarketDocumentController.getByActivationDocument(
+                    params, activationDocument);
         } catch (err) {
-            //DO nothing except "Not accessible information"
+            // DO nothing except "Not accessible information"
         }
 
         params.logger.debug('reserveBid: ', JSON.stringify(reserveBid));
 
         let balancingDocument: BalancingDocument = null;
         try {
-            balancingDocument = await BalancingDocumentController.getByActivationDocumentMrId(params, activationDocument.activationDocumentMrid);
-        }catch (err) {
-                //DO nothing except "Not accessible information"
+            balancingDocument = await BalancingDocumentController.getByActivationDocumentMrId(
+                params, activationDocument.activationDocumentMrid);
+        } catch (err) {
+                // DO nothing except "Not accessible information"
         }
 
         params.logger.debug('balancingDocument: ', JSON.stringify(balancingDocument));
 
         const information: HistoryInformation = {
             activationDocument: JSON.parse(JSON.stringify(activationDocument)),
-            subOrderList: JSON.parse(JSON.stringify(subOrderList)),
-            site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
-            producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
-            energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
-            reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
             balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
-            displayedSourceName: displayedSourceName
+            displayedSourceName,
+            energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
+            producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
+            reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
+            site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
+            subOrderList: JSON.parse(JSON.stringify(subOrderList)),
         };
 
-        historyInformationInBuilding.historyInformation.set(information.activationDocument.activationDocumentMrid, information);
+        historyInformationInBuilding.historyInformation.set(
+            information.activationDocument.activationDocumentMrid, information);
 
         siteRegistered = null;
         producer = null;
@@ -630,7 +629,7 @@ export class HistoryController {
 
             historyInformationInBuilding.eligibilityToDefine.push(key);
         } else if (information.activationDocument.eligibilityStatus
-            && information.activationDocument.eligibilityStatus !== "") {
+            && information.activationDocument.eligibilityStatus !== '') {
 
             historyInformationInBuilding.eligibilityDefined.push(key);
         } else if (information.subOrderList
@@ -645,54 +644,41 @@ export class HistoryController {
         return historyInformationInBuilding;
     }
 
-
-
-
-
-
-
-    private static buildKey(activationDocument: ActivationDocument) : string {
-        const key = "".concat(activationDocument.startCreatedDateTime)
-        .concat("ZYXYZ")
+    private static buildKey(activationDocument: ActivationDocument): string {
+        const key = ''.concat(activationDocument.startCreatedDateTime)
+        .concat('ZYXYZ')
         .concat(activationDocument.endCreatedDateTime)
-        .concat("ZYXYZ")
+        .concat('ZYXYZ')
         .concat(activationDocument.activationDocumentMrid);
 
         return key;
     }
 
+    private static getActivationDocumentMridFromKey(key: string): string {
+        let activationDocumentMrid: string = '';
 
-
-
-    private static getActivationDocumentMridFromKey(key: string) : string {
-        var activationDocumentMrid: string = "";
-
-        const keyArray = key.split("ZYXYZ");
+        const keyArray = key.split('ZYXYZ');
         activationDocumentMrid = keyArray[2];
 
         return activationDocumentMrid;
     }
 
-
-
-
-
     private static async generateOutput(
         params: STARParameters,
-        informationInBuilding : HistoryInformationInBuilding): Promise<HistoryInformation[]> {
+        informationInBuilding: HistoryInformationInBuilding): Promise<HistoryInformation[]> {
 
         params.logger.debug('============= START : generateOutput ===========');
 
-        var finalinformation: HistoryInformation[] = [];
+        const finalinformation: HistoryInformation[] = [];
         const embeddedInformation: string[] = [];
 
-        //Build sorted index
+        // Build sorted index
         informationInBuilding.eligibilityToDefine.sort();
         informationInBuilding.eligibilityDefined.sort();
         informationInBuilding.reconciliated.sort();
         informationInBuilding.others.sort();
 
-        for (var key of informationInBuilding.eligibilityToDefine) {
+        for (const key of informationInBuilding.eligibilityToDefine) {
             const activationDocumentMrid = this.getActivationDocumentMridFromKey(key);
 
             if (!embeddedInformation.includes(activationDocumentMrid)) {
@@ -701,7 +687,7 @@ export class HistoryController {
                 if (information) {
                     embeddedInformation.push(information.activationDocument.activationDocumentMrid);
                     if (information.subOrderList) {
-                        for (var subOrder of information.subOrderList) {
+                        for (const subOrder of information.subOrderList) {
                             embeddedInformation.push(subOrder.activationDocumentMrid);
                         }
                     }
@@ -711,7 +697,7 @@ export class HistoryController {
             }
 
         }
-        for (var key of informationInBuilding.eligibilityDefined) {
+        for (const key of informationInBuilding.eligibilityDefined) {
             const activationDocumentMrid = this.getActivationDocumentMridFromKey(key);
 
             if (!embeddedInformation.includes(activationDocumentMrid)) {
@@ -720,7 +706,7 @@ export class HistoryController {
                 if (information) {
                     embeddedInformation.push(information.activationDocument.activationDocumentMrid);
                     if (information.subOrderList) {
-                        for (var subOrder of information.subOrderList) {
+                        for (const subOrder of information.subOrderList) {
                             embeddedInformation.push(subOrder.activationDocumentMrid);
                         }
                     }
@@ -730,7 +716,7 @@ export class HistoryController {
             }
 
         }
-        for (var key of informationInBuilding.reconciliated) {
+        for (const key of informationInBuilding.reconciliated) {
             const activationDocumentMrid = this.getActivationDocumentMridFromKey(key);
 
             if (!embeddedInformation.includes(activationDocumentMrid)) {
@@ -739,7 +725,7 @@ export class HistoryController {
                 if (information) {
                     embeddedInformation.push(information.activationDocument.activationDocumentMrid);
                     if (information.subOrderList) {
-                        for (var subOrder of information.subOrderList) {
+                        for (const subOrder of information.subOrderList) {
                             embeddedInformation.push(subOrder.activationDocumentMrid);
                         }
                     }
@@ -749,7 +735,7 @@ export class HistoryController {
             }
 
         }
-        for (var key of informationInBuilding.others) {
+        for (const key of informationInBuilding.others) {
             const activationDocumentMrid = this.getActivationDocumentMridFromKey(key);
 
             if (!embeddedInformation.includes(activationDocumentMrid)) {
@@ -758,7 +744,7 @@ export class HistoryController {
                 if (information) {
                     embeddedInformation.push(information.activationDocument.activationDocumentMrid);
                     if (information.subOrderList) {
-                        for (var subOrder of information.subOrderList) {
+                        for (const subOrder of information.subOrderList) {
                             embeddedInformation.push(subOrder.activationDocumentMrid);
                         }
                     }
@@ -773,7 +759,5 @@ export class HistoryController {
 
         return finalinformation;
     }
-
-
 
 }

@@ -1,15 +1,13 @@
-import { DocType } from "../../enums/DocType";
+import { DocType } from '../../enums/DocType';
 
-import { Producer } from "../../model/producer";
-import { STARParameters } from "../../model/starParameters";
+import { Producer } from '../../model/producer';
+import { STARParameters } from '../../model/starParameters';
 
-import { StarDataService } from "./StarDataService";
+import { StarDataService } from './StarDataService';
 
 export class ProducerService {
 
-
     // const prodObj = await StarDataService.getObj(ctx, params, prodId, DocType.PRODUCER);
-
 
     public static async write(
         params: STARParameters,
@@ -18,6 +16,5 @@ export class ProducerService {
         producerObj.docType = DocType.PRODUCER;
         await StarDataService.write(params, {id: producerObj.producerMarketParticipantMrid, dataObj: producerObj});
     }
-
 
 }

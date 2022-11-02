@@ -1,13 +1,13 @@
-import { DocType } from "../../enums/DocType";
-import { ParametersType } from "../../enums/ParametersType";
-import { IdArgument } from "../../model/arguments/idArgument";
-import { BalancingDocument } from "../../model/balancingDocument";
+import { DocType } from '../../enums/DocType';
+import { ParametersType } from '../../enums/ParametersType';
+import { IdArgument } from '../../model/arguments/idArgument';
+import { BalancingDocument } from '../../model/balancingDocument';
 
-import { STARParameters } from "../../model/starParameters";
-import { HLFServices } from "./HLFservice";
-import { QueryStateService } from "./QueryStateService";
+import { STARParameters } from '../../model/starParameters';
+import { HLFServices } from './HLFservice';
+import { QueryStateService } from './QueryStateService';
 
-import { StarPrivateDataService } from "./StarPrivateDataService";
+import { StarPrivateDataService } from './StarPrivateDataService';
 
 export class BalancingDocumentService {
 
@@ -19,12 +19,11 @@ export class BalancingDocumentService {
 
         balancingObj.docType = DocType.BALANCING_DOCUMENT;
 
-        await StarPrivateDataService.write(params, {id: balancingObj.balancingDocumentMrid, dataObj: balancingObj, collection: target});
+        await StarPrivateDataService.write(
+            params, {id: balancingObj.balancingDocumentMrid, dataObj: balancingObj, collection: target});
 
         params.logger.debug('=============  END  : write BalancingDocumentService ===========');
     }
-
-
 
     public static async delete(
         params: STARParameters,
@@ -38,7 +37,6 @@ export class BalancingDocumentService {
         params.logger.debug('=============  END  : Delete %s BalancingDocumentService ===========', arg.id);
     }
 
-
     public static async getQueryArrayResult(
         params: STARParameters,
         query: string,
@@ -49,20 +47,22 @@ export class BalancingDocumentService {
         if (target && target.length > 0) {
             collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
         } else {
-            collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+            collections = await HLFServices.getCollectionsFromParameters(
+                params, ParametersType.DATA_TARGET, ParametersType.ALL);
         }
 
-        var allResults: BalancingDocument[] = [];
-        var allResultsId: string[] = [];
+        const allResults: BalancingDocument[] = [];
+        const allResultsId: string[] = [];
 
         if (collections) {
-            for (var i=0; i<collections.length; i++) {
-                let results: BalancingDocument[] = await QueryStateService.getPrivateQueryArrayResult(params, {query:query, collection: collections[i]});
+            for (const collection of collections) {
+                const results: BalancingDocument[] =
+                    await QueryStateService.getPrivateQueryArrayResult(params, {query, collection});
 
-                for (var result of results) {
+                for (const result of results) {
                     if (result
                         && result.balancingDocumentMrid
-                        && result.balancingDocumentMrid !== ""
+                        && result.balancingDocumentMrid !== ''
                         && !allResultsId.includes(result.balancingDocumentMrid)) {
                             allResultsId.push(result.balancingDocumentMrid);
                             allResults.push(result);
@@ -74,7 +74,5 @@ export class BalancingDocumentService {
         params.logger.debug('=============  END  : getQueryArrayResult EnergyAccountService ===========');
         return allResults;
     }
-
-
 
 }

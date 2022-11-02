@@ -1,12 +1,12 @@
+import { DocType } from '../../enums/DocType';
+import { ParametersType } from '../../enums/ParametersType';
+import { ActivationDocument } from '../../model/activationDocument/activationDocument';
+import { DataReference } from '../../model/dataReference';
 import { STARParameters } from '../../model/starParameters';
-import { ParametersType } from "../../enums/ParametersType";
-import { ActivationDocument } from "../../model/activationDocument/activationDocument";
-import { QueryStateService } from "./QueryStateService";
-import { HLFServices } from "./HLFservice";
-import { DataReference } from "../../model/dataReference";
-import { DocType } from "../../enums/DocType";
-import { StarPrivateDataService } from "./StarPrivateDataService";
-import { ActivationCompositeKeyIndexersController } from '../dataIndexersController';
+import { ActivationCompositeKeyIndexersController } from '../dataIndex/ActivationCompositeKeyIndexersController';
+import { HLFServices } from './HLFservice';
+import { QueryStateService } from './QueryStateService';
+import { StarPrivateDataService } from './StarPrivateDataService';
 
 export class ActivationDocumentService {
 
@@ -16,7 +16,11 @@ export class ActivationDocumentService {
         target: string = ''): Promise<void> {
 
         activationDocumentObj.docType = DocType.ACTIVATION_DOCUMENT;
-        await StarPrivateDataService.write(params, {id:activationDocumentObj.activationDocumentMrid, dataObj:activationDocumentObj, collection:target});
+        await StarPrivateDataService.write(
+            params, {
+                collection: target,
+                dataObj: activationDocumentObj,
+                id: activationDocumentObj.activationDocumentMrid});
 
         await ActivationCompositeKeyIndexersController.addCompositeKeyReference(params, activationDocumentObj, target);
     }
@@ -25,18 +29,21 @@ export class ActivationDocumentService {
         params: STARParameters,
         activationDocumentObj: ActivationDocument,
         target: string): Promise<void> {
-        params.logger.debug('============= START : Delete %s ActivationDocumentService ===========', activationDocumentObj.activationDocumentMrid);
+        params.logger.debug
+            ('============= START : Delete %s ActivationDocumentService ===========',
+            activationDocumentObj.activationDocumentMrid);
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, target);
 
         await params.ctx.stub.deletePrivateData(collection, activationDocumentObj.activationDocumentMrid);
 
-        await ActivationCompositeKeyIndexersController.deleteCompositeKeyReference(params, activationDocumentObj, target);
+        await ActivationCompositeKeyIndexersController.deleteCompositeKeyReference(
+            params, activationDocumentObj, target);
 
-        params.logger.debug('=============  END  : Delete %s ActivationDocumentService ===========', activationDocumentObj.activationDocumentMrid);
+        params.logger.debug
+            ('=============  END  : Delete %s ActivationDocumentService ===========',
+            activationDocumentObj.activationDocumentMrid);
     }
-
-
 
     public static async getQueryArrayResult(
         params: STARParameters,
@@ -45,11 +52,12 @@ export class ActivationDocumentService {
         params.logger.debug('============= START : getQueryResult ActivationDocumentService ===========');
 
         const collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, target);
-        var allResults: any[] = [];
+        let allResults: any[] = [];
 
         if (collections) {
             for (const collection of collections) {
-                const collectionResults = await QueryStateService.getPrivateQueryArrayResult(params, { query:query, collection:collection});
+                const collectionResults =
+                    await QueryStateService.getPrivateQueryArrayResult(params, { query, collection});
                 allResults = [].concat(allResults, collectionResults);
             }
         }
@@ -58,9 +66,7 @@ export class ActivationDocumentService {
         return allResults;
     }
 
-
-
-    public static dataReferenceArrayToMap(dataReferenceArray:DataReference[]): Map<string, DataReference> {
+    public static dataReferenceArrayToMap(dataReferenceArray: DataReference[]): Map<string, DataReference> {
         const returnedMap: Map<string, DataReference> = new Map();
 
         if (dataReferenceArray && dataReferenceArray.length > 0) {
@@ -68,7 +74,7 @@ export class ActivationDocumentService {
                 if (dataReference.data
                     && dataReference.data.activationDocumentMrid
                     && dataReference.data.activationDocumentMrid.length > 0
-                    && !returnedMap.has(dataReference.data.activationDocumentMrid)){
+                    && !returnedMap.has(dataReference.data.activationDocumentMrid)) {
 
                         returnedMap.set(dataReference.data.activationDocumentMrid, dataReference);
                 }

@@ -1,21 +1,19 @@
+import { DocType } from '../enums/DocType';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { ParametersType } from '../enums/ParametersType';
-import { DocType } from '../enums/DocType';
 
+import { DataReference } from '../model/dataReference';
 import { EnergyAccount } from '../model/energyAccount';
 import { Site } from '../model/site';
-import { SystemOperator } from '../model/systemOperator';
 import { STARParameters } from '../model/starParameters';
-import { DataReference } from '../model/dataReference';
+import { SystemOperator } from '../model/systemOperator';
 
 import { QueryStateService } from './service/QueryStateService';
 import { ReferenceEnergyAccountService } from './service/ReferenceEnergyAccountService';
-import { StarPrivateDataService } from './service/StarPrivateDataService';
 import { StarDataService } from './service/StarDataService';
+import { StarPrivateDataService } from './service/StarPrivateDataService';
 
 export class ReferenceEnergyAccountController {
-
-
 
     public static async createReferenceEnergyAccount(
         params: STARParameters,
@@ -41,21 +39,18 @@ export class ReferenceEnergyAccountController {
         );
     }
 
-
-
     public static async createReferenceEnergyAccountByReference(
         params: STARParameters,
         dataReference: DataReference) {
         params.logger.debug('============= START : Create ReferenceEnergyAccount by Reference ===========');
 
-        await ReferenceEnergyAccountController.createReferenceEnergyAccountObj(params, dataReference.data, dataReference.collection);
+        await ReferenceEnergyAccountController.createReferenceEnergyAccountObj(
+            params, dataReference.data, dataReference.collection);
 
         params.logger.debug('============= END   : Create %s ReferenceEnergyAccount by Reference ===========',
             dataReference.data.energyAccountMarketDocumentMrid,
         );
     }
-
-
 
     public static async createReferenceEnergyAccountObj(
         params: STARParameters,
@@ -68,7 +63,6 @@ export class ReferenceEnergyAccountController {
             throw new Error(`Organisation, ${identity} does not have write access for Reference Energy Account.`);
         }
 
-
         if (!energyObj.marketEvaluationPointMrid) {
             throw new Error(`ERROR createReferenceEnergyAccount, missing marketEvaluationPointMrid.`);
         } else if (!energyObj.processType) {
@@ -76,10 +70,11 @@ export class ReferenceEnergyAccountController {
         }
 
         let siteObj: Site;
-        var existingSitesRef:Map<string, DataReference>;
+        let existingSitesRef: Map<string, DataReference>;
         try {
-            existingSitesRef = await StarPrivateDataService.getObjRefbyId(params, {docType: DocType.SITE, id: energyObj.meteringPointMrid});
-            var siteObjRef:DataReference;
+            existingSitesRef = await StarPrivateDataService.getObjRefbyId(
+                params, {docType: DocType.SITE, id: energyObj.meteringPointMrid});
+            let siteObjRef: DataReference;
             if (target && target.length > 0) {
                 siteObjRef = existingSitesRef.get(target);
             } else {
@@ -92,7 +87,8 @@ export class ReferenceEnergyAccountController {
 
         let systemOperatorObj: SystemOperator;
         try {
-            systemOperatorObj = await StarDataService.getObj(params, {id: energyObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+            systemOperatorObj = await StarDataService.getObj(
+                params, {id: energyObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
             throw new Error('ERROR createReferenceEnergyAccount : '.concat(error.message).concat(` for Reference Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
@@ -109,8 +105,8 @@ export class ReferenceEnergyAccountController {
 
         if (target && target.length > 0) {
             await ReferenceEnergyAccountService.write(params, energyObj, target);
-        }else {
-            for (var [key, ] of existingSitesRef) {
+        } else {
+            for (const [key ] of existingSitesRef) {
                 await ReferenceEnergyAccountService.write(params, energyObj, key);
             }
         }
@@ -119,9 +115,6 @@ export class ReferenceEnergyAccountController {
             energyObj.energyAccountMarketDocumentMrid,
         );
     }
-
-
-
 
     public static async getReferenceEnergyAccountForSystemOperator(
         params: STARParameters,
@@ -139,7 +132,6 @@ export class ReferenceEnergyAccountController {
 
     }
 
-
     public static async getReferenceEnergyAccountForSystemOperatorObj(
         params: STARParameters,
         meteringPointMrid: string,
@@ -155,7 +147,7 @@ export class ReferenceEnergyAccountController {
 
         const dateUp = new Date(startCreatedDateTime);
 
-        dateUp.setUTCHours(0,0,0,0);
+        dateUp.setUTCHours(0, 0, 0, 0);
         // params.logger.log('dateUp=', JSON.stringify(dateUp));
         const dateDown = new Date(dateUp.getTime() + 86399999);
         // params.logger.log('dateDown=', JSON.stringify(dateDown));
@@ -166,10 +158,11 @@ export class ReferenceEnergyAccountController {
             throw new Error('ERROR createReferenceEnergyAccount : '.concat(error.message));
         }
 
-        var args: string[] = [];
+        const args: string[] = [];
         args.push(`"meteringPointMrid": "${meteringPointMrid}"`);
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-        const query = await QueryStateService.buildQuery({documentType: DocType.REFERENCE_ENERGY_ACCOUNT,  queryArgs: args, sort: [`"createdDateTime":"desc"`]});
+        const query = await QueryStateService.buildQuery(
+            {documentType: DocType.REFERENCE_ENERGY_ACCOUNT,  queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
         const allResults = await ReferenceEnergyAccountService.getQueryArrayResult(params, query, target);
 
@@ -177,9 +170,6 @@ export class ReferenceEnergyAccountController {
 
         return allResults;
     }
-
-
-
 
     public static async getReferenceEnergyAccountByProducer(
         params: STARParameters,
@@ -194,16 +184,17 @@ export class ReferenceEnergyAccountController {
         }
         const dateUp = new Date(startCreatedDateTime);
 
-        dateUp.setUTCHours(0,0,0,0);
+        dateUp.setUTCHours(0, 0, 0, 0);
         // params.logger.log('dateUp=', JSON.stringify(dateUp));
         const dateDown = new Date(dateUp.getTime() + 86399999);
         // params.logger.log('dateDown=', JSON.stringify(dateDown));
 
-        var args: string[] = [];
+        const args: string[] = [];
         args.push(`"meteringPointMrid": "${meteringPointMrid}"`);
         args.push(`"receiverMarketParticipantMrid": "${producerEicCode}"`);
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
-        const query = await QueryStateService.buildQuery({documentType:DocType.REFERENCE_ENERGY_ACCOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
+        const query = await QueryStateService.buildQuery(
+            {documentType: DocType.REFERENCE_ENERGY_ACCOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
         const allResults = await ReferenceEnergyAccountService.getQueryStringResult(params, query);
 

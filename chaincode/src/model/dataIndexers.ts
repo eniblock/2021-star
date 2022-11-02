@@ -1,4 +1,5 @@
-import * as Yup from 'yup';
+import { DocType } from "../enums/DocType";
+import { IndexedDataJson } from "./dataIndexersJson";
 
 export class ReserveBidMarketDocumentAbstract {
     public reserveBidMrid: string;
@@ -23,13 +24,17 @@ export class EnergyAmountAbstract {
 
 export class IndexedData {
 
-    public static readonly schema = Yup.object().shape({
-        docType: Yup.string().notRequired(),
-        indexId: Yup.string().required('indexId is required').typeError('indexId must be a string'),
-        indexedDataAbstractList: Yup.array().notRequired()
-    });
+    public static fromJson(jsonIndexedData : IndexedDataJson): IndexedData {
+        // const indexedDataAbstractMap: Map<string, any> = JSON.parse(jsonIndexedData.jsonIndexedDataAbstractMap);
+        const indexedDataAbstractMap: Map<string, any> = new Map(JSON.parse(jsonIndexedData.jsonIndexedDataAbstractMap));
 
-    public docType?: string;
+        return {
+            docType: DocType.DATA_INDEXER,
+            indexId: jsonIndexedData.indexId,
+            indexedDataAbstractMap: indexedDataAbstractMap};
+    }
+
+    public docType: string;
     public indexId: string;
-    public indexedDataAbstractList?: any[];
+    public indexedDataAbstractMap: Map<string, any> = new Map();
 }

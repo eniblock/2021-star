@@ -20,7 +20,7 @@ export class ReserveBidMarketDocumentService {
         reserveBidObj.docType = DocType.RESERVE_BID_MARKET_DOCUMENT;
         await StarPrivateDataService.write(params, {id: reserveBidObj.reserveBidMrid, dataObj: reserveBidObj, collection: target});
 
-        params.logger.debug('============= START : write ReserveBidMarketDocumentService ===========');
+        params.logger.debug('=============  END  : write ReserveBidMarketDocumentService ===========');
     }
 
 

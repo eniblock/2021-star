@@ -759,16 +759,20 @@ export class EnergyAmountController {
             }
 
             if (activNRJAmountIndx
-                && activNRJAmountIndx.indexedDataAbstractList
-                && activNRJAmountIndx.indexedDataAbstractList.length > 0) {
+                && activNRJAmountIndx.indexedDataAbstractMap
+                && activNRJAmountIndx.indexedDataAbstractMap.values) {
 
-                const energyAmountAbstract: EnergyAmountAbstract = activNRJAmountIndx.indexedDataAbstractList[0];
-                const energyAmountMarketDocumentMrid: string = energyAmountAbstract.energyAmountMarketDocumentMrid;
+                try {
+                    const energyAmountAbstract: EnergyAmountAbstract = activNRJAmountIndx.indexedDataAbstractMap.values().next().value;
+                    const energyAmountMarketDocumentMrid: string = energyAmountAbstract.energyAmountMarketDocumentMrid;
 
-                if (energyAmountMarketDocumentMrid
-                    && energyAmountMarketDocumentMrid.length > 0) {
+                    if (energyAmountMarketDocumentMrid
+                        && energyAmountMarketDocumentMrid.length > 0) {
 
-                        energyAmout = await this.getObjById(params, energyAmountMarketDocumentMrid, target);
+                            energyAmout = await this.getObjById(params, energyAmountMarketDocumentMrid, target);
+                    }
+                } catch (err) {
+                    //DO nothing except "Not accessible information"
                 }
             }
 

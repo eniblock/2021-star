@@ -8,35 +8,17 @@ import { StarPrivateDataService } from "./service/StarPrivateDataService";
 import { ActivationDocument } from "../model/activationDocument/activationDocument";
 import { EnergyAmount } from "../model/energyAmount";
 import { DataReference } from "../model/dataReference";
-import { SiteController } from "./SiteController";
-import { ReserveBidMarketDocumentController } from "./ReserveBidMarketDocumentController";
-import { Site } from "../model/site";
 
 export class DataIndexersController {
-    public static async get(
+    public static async getIndexer(
         params: STARParameters,
         indexId: string,
-        target: string = ''): Promise<IndexedData> {
-        params.logger.debug('============= START : get DataIndexersController ===========');
+        target: string): Promise<IndexedData> {
+        params.logger.debug('============= START : getIndexer DataIndexersController ===========');
 
+        const obj: IndexedData = await DataIndexersService.get(params, indexId, target);
 
-        var obj: IndexedData;
-        if (target && target.length > 0) {
-            // params.logger.debug('getObj');
-            obj = await StarPrivateDataService.getObj(params, {id: indexId, collection: target, docType: DocType.DATA_INDEXER});
-        } else {
-            // params.logger.debug('getObjRefbyId');
-
-            const objRef = await StarPrivateDataService.getObjRefbyId(params, {id: indexId, docType: DocType.DATA_INDEXER});
-            // params.logger.debug('objRef: ', JSON.stringify(objRef));
-
-            if (objRef) {
-                obj = objRef.values().next().value.data;
-            }
-        }
-
-
-        params.logger.debug('=============  END  : get DataIndexersController ===========');
+        params.logger.debug('=============  END  : getIndexer DataIndexersController ===========');
         return obj;
     }
 
@@ -45,12 +27,13 @@ export class DataIndexersController {
         params: STARParameters,
         indexId: string,
         obj: any,
-        target: string = '') {
+        objId: string,
+        target: string) {
         params.logger.debug('============= START : addReference DataIndexersController ===========');
 
         var ref: IndexedData = null;
         try {
-            ref = await this.get(params, indexId, target);
+            ref = await this.getIndexer(params, indexId, target);
         } catch (err) {
             //ref doesn't exist and needs to be created
             err = null;
@@ -62,11 +45,11 @@ export class DataIndexersController {
 
             ref = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList:[],
+                indexedDataAbstractMap: new Map(),
                 indexId:indexId};
         }
 
-        ref.indexedDataAbstractList.push(obj);
+        ref.indexedDataAbstractMap.set(objId, obj);
 
         await DataIndexersService.write(params, ref, target);
 
@@ -79,13 +62,13 @@ export class DataIndexersController {
         params: STARParameters,
         indexId: string,
         obj: any,
-        idToModify: string,
-        target: string = '') {
+        objId: string,
+        target: string) {
         params.logger.debug('============= START : modifyReference DataIndexersController ===========');
 
         var ref: IndexedData = null;
         try {
-            ref = await this.get(params, indexId, target);
+            ref = await this.getIndexer(params, indexId, target);
         } catch (err) {
             //ref doesn't exist and needs to be created
             err = null;
@@ -97,23 +80,11 @@ export class DataIndexersController {
 
             ref = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList:[],
+                indexedDataAbstractMap: new Map(),
                 indexId:indexId};
         }
-        var found = false;
 
-        for (var i=0; i< ref.indexedDataAbstractList.length && !found; i++) {
-            const eltValue = JSON.stringify(ref.indexedDataAbstractList[i]);
-
-            if (eltValue.includes(idToModify)) {
-                ref.indexedDataAbstractList[i] = obj;
-                found = true;
-            }
-        }
-
-        if (!found) {
-            ref.indexedDataAbstractList.push(obj);
-        }
+        ref.indexedDataAbstractMap.set(objId, obj);
 
         await DataIndexersService.write(params, ref, target);
 
@@ -125,45 +96,37 @@ export class DataIndexersController {
     public static async deleteReference(
         params: STARParameters,
         indexId: string,
-        dataToDeleteId: string,
-        target: string = '') {
+        objId: string,
+        target: string) {
         params.logger.debug('============= START : deleteReference DataIndexersController ===========');
 
-        if (indexId.includes(dataToDeleteId)) {
+        if (indexId.includes(objId)) {
             await DataIndexersService.delete(params, indexId, target);
             return;
         }
 
         var ref: IndexedData = null;
         try {
-            ref = await this.get(params, indexId, target);
+            ref = await this.getIndexer(params, indexId, target);
         } catch (err) {
             //ref doesn't exist and doesn't need to be deleted
             err = null;
             return;
         }
 
+        if (ref
+            && ref.indexedDataAbstractMap
+            && ref.indexedDataAbstractMap.keys()) {
 
-        if (ref) {
-            if (ref.indexedDataAbstractList
-                && ref.indexedDataAbstractList.length > 0) {
+            if (objId && objId.length > 0) {
+                ref.indexedDataAbstractMap.delete(objId);
+                let keys = [...ref.indexedDataAbstractMap.keys()];
 
-                const indexedDataAbstractList  = [];
-
-                for (var elt of ref.indexedDataAbstractList) {
-                    const eltValue = JSON.stringify(elt);
-                    if (!eltValue.includes(dataToDeleteId)) {
-                        indexedDataAbstractList.push(elt);
-                    }
+                if (keys.length > 0) {
+                    await DataIndexersService.write(params, ref, target);
+                } else {
+                    await DataIndexersService.delete(params, indexId, target);
                 }
-
-                ref.indexedDataAbstractList = indexedDataAbstractList;
-            }
-
-            if (ref.indexedDataAbstractList.length > 0) {
-                await DataIndexersService.write(params, ref, target);
-            } else {
-                await DataIndexersService.delete(params, indexId, target);
             }
         }
 
@@ -177,15 +140,21 @@ export class DataIndexersController {
         params.logger.debug('============= START : executeOrder DataIndexersController ===========');
 
         if (updateOrder.data) {
-            IndexedData.schema.validateSync(
-                updateOrder.data,
-                {strict: true, abortEarly: false},
-            );
-
             const indexData:IndexedData = updateOrder.data;
-            if (indexData.indexedDataAbstractList && indexData.indexedDataAbstractList.length > 0) {
-                for (const abstract of indexData.indexedDataAbstractList) {
-                    this.addReference(params, indexData.indexId, abstract, updateOrder.collection);
+
+            if (indexData.indexId
+                && indexData.indexId.length > 0
+                && indexData.indexedDataAbstractMap
+                && indexData.indexedDataAbstractMap.values) {
+
+                for (const abstract of indexData.indexedDataAbstractMap.values()) {
+                    if (abstract.reserveBidMrid &&  abstract.reserveBidMrid.length > 0) {
+                        this.addReference(params, indexData.indexId, abstract, abstract.reserveBidMrid, updateOrder.collection);
+                    } else if (abstract.activationDocumentMrid &&  abstract.activationDocumentMrid.length > 0) {
+                        this.addReference(params, indexData.indexId, abstract, abstract.activationDocumentMrid, updateOrder.collection);
+                    } else if (abstract.energyAmountMarketDocumentMrid &&  abstract.energyAmountMarketDocumentMrid.length > 0) {
+                        this.addReference(params, indexData.indexId, abstract, abstract.energyAmountMarketDocumentMrid, updateOrder.collection);
+                    }
                 }
             }
         }
@@ -221,7 +190,7 @@ export class SiteReserveBidIndexersController {
         params.logger.debug('indexId: ', indexId);
         params.logger.debug('target: ', target);
 
-        const obj: IndexedData = await DataIndexersController.get(params, indexId, target);
+        const obj: IndexedData = await DataIndexersController.getIndexer(params, indexId, target);
 
         params.logger.debug('obj: ', JSON.stringify(obj));
 
@@ -242,7 +211,7 @@ export class SiteReserveBidIndexersController {
             validityPeriodStartDateTime:reserveBidObj.validityPeriodStartDateTime,
             createdDateTime:reserveBidObj.createdDateTime};
         const indexId = this.getKey(reserveBidObj.meteringPointMrid);
-        await DataIndexersController.addReference(params, indexId, reserveBidMarketDocumentAbstract, target);
+        await DataIndexersController.addReference(params, indexId, reserveBidMarketDocumentAbstract, reserveBidObj.reserveBidMrid, target);
 
         params.logger.debug('=============  END  : addReserveBidReference SiteReserveBidIndexersController ===========');
     }
@@ -374,7 +343,7 @@ export class SiteActivationIndexersController {
         params.logger.debug('============= START : get SiteActivationIndexersController ===========');
 
         const indexId = this.getKeyStr(meteringPointMrid, referenceDate);
-        const obj: IndexedData = await DataIndexersController.get(params, indexId, target);
+        const obj: IndexedData = await DataIndexersController.getIndexer(params, indexId, target);
 
         params.logger.debug('=============  END  : get SiteActivationIndexersController ===========');
         return obj;
@@ -409,7 +378,7 @@ export class SiteActivationIndexersController {
             while (refDate <= maxDate) {
                 const indexId = this.getKey(meteringPointMrid, refDate);
                 try {
-                    const obj: IndexedData = await DataIndexersController.get(params, indexId, target);
+                    const obj: IndexedData = await DataIndexersController.getIndexer(params, indexId, target);
                     objList.push(obj);
                 } catch (err) {
                     //Do Nothing
@@ -436,7 +405,7 @@ export class SiteActivationIndexersController {
                 {activationDocumentMrid: activationDocumentObj.activationDocumentMrid, startCreatedDateTime: activationDocumentObj.startCreatedDateTime};
             const indexId = this.getKeyStr(activationDocumentObj.registeredResourceMrid, activationDocumentObj.startCreatedDateTime);
 
-            await DataIndexersController.addReference(params, indexId, activationAbstract, target);
+            await DataIndexersController.addReference(params, indexId, activationAbstract, activationDocumentObj.activationDocumentMrid, target);
 
             var maxDateStr: string = "";
             try {
@@ -500,7 +469,7 @@ export class ActivationEnergyAmountIndexersController {
         params.logger.debug('============= START : get ActivationNRJAmountIndexersController ===========');
 
         const indexId = this.getKey(activationDocumentId);
-        const obj: IndexedData = await DataIndexersController.get(params, indexId, target);
+        const obj: IndexedData = await DataIndexersController.getIndexer(params, indexId, target);
 
         params.logger.debug('=============  END  : get ActivationNRJAmountIndexersController ===========');
         return obj;
@@ -516,7 +485,7 @@ export class ActivationEnergyAmountIndexersController {
         const valueAbstract : EnergyAmountAbstract =
             {energyAmountMarketDocumentMrid:energyAmountObj.energyAmountMarketDocumentMrid};
         const indexId = this.getKey(energyAmountObj.activationDocumentMrid);
-        await DataIndexersController.addReference(params, indexId, valueAbstract, target);
+        await DataIndexersController.addReference(params, indexId, valueAbstract, energyAmountObj.activationDocumentMrid, target);
 
         params.logger.debug('=============  END  : addEnergyAmountReference ActivationNRJAmountIndexersController ===========');
     }

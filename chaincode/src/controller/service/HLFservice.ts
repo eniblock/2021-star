@@ -96,9 +96,28 @@ export class HLFServices {
         var roleUser: string;
         if (roleTable.has(identity)) {
             roleUser = roleTable.get(identity);
+        } else if (roleTable.has(identity.toLowerCase())) {
+            roleUser = roleTable.get(identity.toLowerCase());
+        } else if (roleTable.has(identity.toUpperCase())) {
+            roleUser = roleTable.get(identity.toUpperCase());
         }
         return roleUser;
     }
+
+    public static getUserRoleById(params: STARParameters, id: string): string {
+        const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
+        var roleUser: string;
+        if (roleTable.has(id)) {
+            roleUser = roleTable.get(id);
+        } else if (roleTable.has(id.toLowerCase())) {
+            roleUser = roleTable.get(id.toLowerCase());
+        } else if (roleTable.has(id.toUpperCase())) {
+            roleUser = roleTable.get(id.toUpperCase());
+        }
+
+        return roleUser;
+    }
+
 
 
     public static async setLogLevel(params: STARParameters, loglevel: string): Promise<void> {

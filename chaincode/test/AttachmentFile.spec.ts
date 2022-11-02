@@ -8,7 +8,6 @@ const expect = chai.expect;
 import { ChaincodeStub, ClientIdentity } from 'fabric-shim'
 
 import { Star } from '../src/star'
-import { EnergyAccount } from '../src/model/energyAccount';
 import { STARParameters } from '../src/model/starParameters';
 
 import { ParametersController } from '../src/controller/ParametersController';
@@ -16,8 +15,6 @@ import { ParametersType } from '../src/enums/ParametersType';
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 
 import { Values } from './Values';
-import { DocType } from '../src/enums/DocType';
-import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { HLFServices } from '../src/controller/service/HLFservice';
 import { AttachmentFile } from '../src/model/attachmentFile';
 

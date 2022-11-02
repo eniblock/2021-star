@@ -29,6 +29,7 @@ import { ActivationDocumentCompositeKey } from '../src/model/activationDocument/
 import { ActivationDocumentService } from '../src/controller/service/ActivationDocumentService';
 import { ActivationDocumentCompositeKeyIndex } from '../src/model/activationDocument/activationDocumentCompositeKeyIndex';
 import { CommonService } from '../src/controller/service/CommonService';
+import { IndexedDataJson } from '../src/model/dataIndexersJson';
 
 class TestLoggerMgt {
     public getLogger(arg: string): any {
@@ -431,9 +432,11 @@ describe('Star Tests ActivationDocument', () => {
 
             const expectedIndexer: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract],
+                indexedDataAbstractMap : new Map(),
                 indexId: SiteActivationIndexersController.getKey(expected.registeredResourceMrid, new Date(expected.startCreatedDateTime as string))
             };
+            expectedIndexer.indexedDataAbstractMap?.set(expected.activationDocumentMrid, indexedDataAbstract);
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
 
             const expectedDateMax: ActivationDocumentDateMax = {
                 dateTime: expected.startCreatedDateTime as string,
@@ -457,7 +460,7 @@ describe('Star Tests ActivationDocument', () => {
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
             // params.logger.info("oo")
-            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
             // params.logger.info("ooooooooo")
@@ -481,8 +484,8 @@ describe('Star Tests ActivationDocument', () => {
 
             transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
                 "enedis-producer",
-                expectedIndexer.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer))
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON))
             );
 
             transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
@@ -562,9 +565,12 @@ describe('Star Tests ActivationDocument', () => {
 
             const expectedIndexer1: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract1],
+                indexedDataAbstractMap : new Map(),
                 indexId: SiteActivationIndexersController.getKey(expected.registeredResourceMrid, new Date(expected.startCreatedDateTime as string))
             };
+            expectedIndexer1.indexedDataAbstractMap?.set(expected.activationDocumentMrid, indexedDataAbstract1);
+            const expectedIndexer1JSON = IndexedDataJson.toJson(expectedIndexer1);
+
 
             const expectedDateMax1: ActivationDocumentDateMax = {
                 dateTime: expected.startCreatedDateTime as string,
@@ -581,9 +587,11 @@ describe('Star Tests ActivationDocument', () => {
 
             const expectedIndexer2: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract2],
+                indexedDataAbstractMap : new Map(),
                 indexId: SiteActivationIndexersController.getKey(expected2.registeredResourceMrid, new Date(expected2.startCreatedDateTime as string))
             };
+            expectedIndexer2.indexedDataAbstractMap.set(expected2.activationDocumentMrid, indexedDataAbstract2);
+            const expectedIndexer2JSON = IndexedDataJson.toJson(expectedIndexer2)
 
             const expectedDateMax2: ActivationDocumentDateMax = {
                 dateTime: expected2.startCreatedDateTime as string,
@@ -607,7 +615,7 @@ describe('Star Tests ActivationDocument', () => {
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
             // params.logger.info("oo")
-            // params.logger.info(JSON.stringify(expectedIndexer1))
+            // params.logger.info(JSON.stringify(expectedIndexer1JSON))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
             // params.logger.info("ooooooooo")
@@ -628,7 +636,7 @@ describe('Star Tests ActivationDocument', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(6).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(6).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexer2))
+            // params.logger.info(JSON.stringify(expectedIndexer2JSON))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(7).args);
             // params.logger.info("ooooooooo")
@@ -652,8 +660,8 @@ describe('Star Tests ActivationDocument', () => {
 
             transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
                 "enedis-producer",
-                expectedIndexer1.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer1))
+                expectedIndexer1JSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer1JSON))
             );
 
 
@@ -677,8 +685,8 @@ describe('Star Tests ActivationDocument', () => {
 
             transactionContext.stub.putPrivateData.getCall(6).should.have.been.calledWithExactly(
                 "enedis-producer",
-                expectedIndexer2.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer2))
+                expectedIndexer2JSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer2JSON))
             );
 
             transactionContext.stub.putPrivateData.getCall(7).should.have.been.calledWithExactly(
@@ -859,9 +867,11 @@ describe('Star Tests ActivationDocument', () => {
 
             const expectedIndexer: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract],
+                indexedDataAbstractMap : new Map(),
                 indexId: SiteActivationIndexersController.getKey(expected.registeredResourceMrid, new Date(expected.startCreatedDateTime as string))
             };
+            expectedIndexer.indexedDataAbstractMap?.set(expected.activationDocumentMrid, indexedDataAbstract);
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
 
             const expectedDateMax: ActivationDocumentDateMax = {
                 dateTime: expected.startCreatedDateTime as string,
@@ -885,7 +895,7 @@ describe('Star Tests ActivationDocument', () => {
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
             // params.logger.info("oo")
-            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
             // params.logger.info("ooooooooo")
@@ -909,8 +919,8 @@ describe('Star Tests ActivationDocument', () => {
 
             transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
                 "producer-rte",
-                expectedIndexer.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer))
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON))
             );
 
             transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
@@ -1237,14 +1247,14 @@ describe('Star Tests ActivationDocument', () => {
 
             const activationDocument01_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
             activationDocument01_garbage.docType=DocType.ACTIVATION_DOCUMENT;
-            activationDocument01_garbage.startCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument01_garbage.startCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
             activationDocument01_garbage.potentialParent= true;
             activationDocument01_garbage.potentialChild= false;
 
             const activationDocument02_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
             activationDocument02_garbage.docType=DocType.ACTIVATION_DOCUMENT;
-            activationDocument02_garbage.startCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott+1);
-            activationDocument02_garbage.endCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.startCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.endCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott+1);
             activationDocument02_garbage.potentialParent= false;
             activationDocument02_garbage.potentialChild= true;
 
@@ -1292,14 +1302,14 @@ describe('Star Tests ActivationDocument', () => {
 
             var activationDocument01_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate2));
             activationDocument01_garbage.docType=DocType.ACTIVATION_DOCUMENT;
-            activationDocument01_garbage.startCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument01_garbage.startCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott+1);
             activationDocument01_garbage.potentialParent= true;
             activationDocument01_garbage.potentialChild= false;
 
             const activationDocument02_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
             activationDocument02_garbage.docType=DocType.ACTIVATION_DOCUMENT;
-            activationDocument02_garbage.startCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott+1);
-            activationDocument02_garbage.endCreatedDateTime = CommonService.reduceDateTimeStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.startCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott+1);
+            activationDocument02_garbage.endCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott+1);
             activationDocument02_garbage.potentialParent= false;
             activationDocument02_garbage.potentialChild= true;
 
@@ -1919,7 +1929,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal(`${DocType.ACTIVATION_DOCUMENT} : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
+                expect(err.message).to.equal(`Error : Activation Document - updateByOrders - Unknown document cannot be Updated ${activationDocument_Producer.activationDocumentMrid}`);
             }
         });
 
@@ -1943,7 +1953,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal(`${DocType.ACTIVATION_DOCUMENT} : ${activationDocument_Producer.activationDocumentMrid} does not exist`);
+                expect(err.message).to.equal(`Error : Activation Document - updateByOrders - Unknown document cannot be Updated ${activationDocument_Producer.activationDocumentMrid}`);
             }
         });
 

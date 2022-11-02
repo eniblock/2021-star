@@ -23,6 +23,7 @@ import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { CommonService } from '../src/controller/service/CommonService';
 import { EnergyAmountAbstract, IndexedData } from '../src/model/dataIndexers';
 import { ActivationEnergyAmountIndexersController } from '../src/controller/dataIndexersController';
+import { IndexedDataJson } from '../src/model/dataIndexersJson';
 
 
 class TestLoggerMgt {
@@ -294,9 +295,11 @@ describe('Star Tests EnergyAmount', () => {
 
             const expectedIndexer: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract],
+                indexedDataAbstractMap : new Map(),
                 indexId: ActivationEnergyAmountIndexersController.getKey(expected.activationDocumentMrid),
             }
+            expectedIndexer.indexedDataAbstractMap.set(expected.activationDocumentMrid, indexedDataAbstract);
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
 
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
@@ -307,7 +310,7 @@ describe('Star Tests EnergyAmount', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(exceptedIndexer))
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
             // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
@@ -318,8 +321,8 @@ describe('Star Tests EnergyAmount', () => {
 
             transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
                 collection,
-                expectedIndexer.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer))
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON))
             );
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
@@ -355,9 +358,11 @@ describe('Star Tests EnergyAmount', () => {
 
             const expectedIndexer: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract],
+                indexedDataAbstractMap : new Map(),
                 indexId: ActivationEnergyAmountIndexersController.getKey(expected.activationDocumentMrid),
             }
+            expectedIndexer.indexedDataAbstractMap?.set(expected.activationDocumentMrid, indexedDataAbstract);
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
 
             const indexedDataAbstract2: EnergyAmountAbstract = {
                 energyAmountMarketDocumentMrid: expected2.energyAmountMarketDocumentMrid
@@ -365,9 +370,11 @@ describe('Star Tests EnergyAmount', () => {
 
             const expectedIndexer2: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract, indexedDataAbstract2],
+                indexedDataAbstractMap : new Map(),
                 indexId: ActivationEnergyAmountIndexersController.getKey(expected2.activationDocumentMrid),
             }
+            expectedIndexer2.indexedDataAbstractMap?.set(expected.activationDocumentMrid, indexedDataAbstract2);
+            const expectedIndexer2JSON = IndexedDataJson.toJson(expectedIndexer2);
 
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
@@ -378,7 +385,7 @@ describe('Star Tests EnergyAmount', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
             // params.logger.info("ooooooooo")
@@ -388,7 +395,7 @@ describe('Star Tests EnergyAmount', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexer2))
+            // params.logger.info(JSON.stringify(expectedIndexer2JSON))
             // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
@@ -399,8 +406,8 @@ describe('Star Tests EnergyAmount', () => {
 
             transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
                 collection,
-                expectedIndexer.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer))
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON))
             );
 
             transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
@@ -411,8 +418,8 @@ describe('Star Tests EnergyAmount', () => {
 
             transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
                 collection,
-                expectedIndexer2.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer2))
+                expectedIndexer2JSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexer2JSON))
             );
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(4);
@@ -557,7 +564,9 @@ describe('Star Tests EnergyAmount', () => {
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTB_ActivationDocument_Valid.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
 
-            const dateStart = CommonService.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
+            const dateStartInit = CommonService.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
+            const dateStart = CommonService.setHoursStartDayStr(dateStartInit);
+
             const dateEnd = CommonService.reduceDateTimeStr(dateStart, -23*60*60*1000);
             try {
                 energyamount.timeInterval = `${dateStart}/${dateEnd}`;
@@ -720,7 +729,9 @@ describe('Star Tests EnergyAmount', () => {
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], Values.HTA_EnergyAmount.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
 
-            const dateStart = CommonService.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
+            const dateStartInit = CommonService.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid.startCreatedDateTime))  as string, 30);
+            const dateStart = CommonService.setHoursStartDayStr(dateStartInit);
+
             const dateEnd = CommonService.reduceDateDaysStr(JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid.endCreatedDateTime))  as string, 30);
             try {
                 const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount));
@@ -759,9 +770,12 @@ describe('Star Tests EnergyAmount', () => {
 
             const expectedIndexer: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract],
+                indexedDataAbstractMap : new Map(),
                 indexId: ActivationEnergyAmountIndexersController.getKey(expected.activationDocumentMrid),
             }
+            expectedIndexer.indexedDataAbstractMap.set(expected.activationDocumentMrid, indexedDataAbstract);
+
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer)
 
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
@@ -772,7 +786,7 @@ describe('Star Tests EnergyAmount', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(exceptedIndexer))
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
             // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
@@ -783,8 +797,8 @@ describe('Star Tests EnergyAmount', () => {
 
             transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
                 collections[0],
-                expectedIndexer.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer))
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON))
             );
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);

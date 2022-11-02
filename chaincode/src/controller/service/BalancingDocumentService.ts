@@ -21,7 +21,7 @@ export class BalancingDocumentService {
 
         await StarPrivateDataService.write(params, {id: balancingObj.balancingDocumentMrid, dataObj: balancingObj, collection: target});
 
-        params.logger.debug('============= START : write BalancingDocumentService ===========');
+        params.logger.debug('=============  END  : write BalancingDocumentService ===========');
     }
 
 

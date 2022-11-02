@@ -200,7 +200,7 @@ export class Values {
 
     public static HTA_site_valid: Site = {
         meteringPointMrid: 'PDLHTA10000289766',
-        systemOperatorMarketParticipantMrid: '17V0000009927464',
+        systemOperatorMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         producerMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
         technologyType: 'Eolien',
         siteType: 'Injection',
@@ -219,7 +219,7 @@ export class Values {
 
     public static HTA_site_valid_ProdA: Site = {
         meteringPointMrid: 'PDLHTA20000289766',
-        systemOperatorMarketParticipantMrid: '17V0000009927464',
+        systemOperatorMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         producerMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
         technologyType: 'Eolien',
         siteType: 'Injection',
@@ -238,7 +238,7 @@ export class Values {
 
     public static HTA_site_valid_ProdB: Site = {
         meteringPointMrid: 'PDLHTA30000289766',
-        systemOperatorMarketParticipantMrid: '17V0000009927464',
+        systemOperatorMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         producerMarketParticipantMrid: '17X000001309745X',
         technologyType: 'Eolien',
         siteType: 'Injection',

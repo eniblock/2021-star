@@ -11,6 +11,7 @@ export class StarDataService {
 
         const dataAsBytes = await params.ctx.stub.getState(arg.id);
         if (!dataAsBytes || dataAsBytes.length === 0) {
+            params.logger.debug('=============  END  : getRaw with Error ===========');
             throw new Error(`${arg.docType} : ${arg.id} does not exist`);
         }
 
@@ -46,6 +47,7 @@ export class StarDataService {
                     const poolRef : DataReference = {collection: "XoX", docType: arg.docType, data: dataObj};
                     params.addInMemoryPool(poolKey, poolRef);
                 } catch (error) {
+                    params.logger.debug('=============  END  : getObj with Error ===========');
                     throw new Error(`ERROR ${arg.docType} -> Input string NON-JSON value`);
                 }
             }

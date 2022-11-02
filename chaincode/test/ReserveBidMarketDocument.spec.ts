@@ -36,6 +36,7 @@ import { BalancingDocument } from '../src/model/balancingDocument';
 import { BalancingDocumentController } from '../src/controller/BalancingDocumentController';
 import { ReserveBidStatus } from '../src/enums/ReserveBidStatus';
 import { RoleType } from '../src/enums/RoleType';
+import { IndexedDataJson } from '../src/model/dataIndexersJson';
 
 
 
@@ -250,9 +251,12 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const expectedIndexer: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract],
+                indexedDataAbstractMap : new Map(),
                 indexId: SiteReserveBidIndexersController.getKey(expected.meteringPointMrid)
             };
+            expectedIndexer.indexedDataAbstractMap.set(expected.reserveBidMrid, indexedDataAbstract);
+
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
 
 
             // params.logger.info("-----------")
@@ -269,7 +273,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
             // params.logger.info("-----------")
 
 
@@ -285,8 +289,8 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             );
             transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
                 "enedis-producer",
-                expectedIndexer.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer))
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON))
             );
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(3);
@@ -333,9 +337,11 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const expectedIndexer: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract],
+                indexedDataAbstractMap : new Map(),
                 indexId: SiteReserveBidIndexersController.getKey(expected.meteringPointMrid)
             };
+            expectedIndexer.indexedDataAbstractMap.set(expected.reserveBidMrid, indexedDataAbstract);
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
 
 
             // params.logger.info("-----------")
@@ -347,7 +353,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexer))
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
             // params.logger.info("-----------")
 
 
@@ -358,8 +364,8 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             );
             transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
                 "enedis-producer",
-                expectedIndexer.indexId,
-                Buffer.from(JSON.stringify(expectedIndexer))
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON))
             );
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
@@ -560,17 +566,22 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 createdDateTime: reserveBidObj.createdDateTime
             };
 
+            const indexId: string = SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid);
             const indexedData: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract],
-                indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
+                indexedDataAbstractMap : new Map(),
+                indexId: indexId
             };
+            indexedData.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, indexedDataAbstract);
+            const indexedDataJSON = IndexedDataJson.toJson(indexedData);
+
+            transactionContext.stub.getState.withArgs(reserveBidObj.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             for (const collectionName of collectionNames) {
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
-                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedDataJSON)));
             }
 
 
@@ -580,7 +591,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
             } catch (err) {
                 // params.logger.info('err: ', err.message)
-                expect(err.message).to.equal(`Organisation, ${RoleType.Role_DSO} does not have write access for HTB(HV) sites`);
+                expect(err.message).to.equal(`Error : ReserveBid Status Update - Organisation, ${RoleType.Role_DSO} does not have right to change ${RoleType.Role_TSO} information`);
             }
 
 
@@ -601,17 +612,22 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 createdDateTime: reserveBidObj.createdDateTime
             };
 
+            const indexId: string = SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid);
             const indexedData: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract],
-                indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
+                indexedDataAbstractMap : new Map(),
+                indexId: indexId
             };
+            indexedData.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, indexedDataAbstract);
+            const indexedDataJSON = IndexedDataJson.toJson(indexedData);
+
+            transactionContext.stub.getState.withArgs(reserveBidObj.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             for (const collectionName of collectionNames) {
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
-                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedDataJSON)));
             }
 
 
@@ -621,7 +637,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
             } catch (err) {
                 // params.logger.info('err: ', err.message)
-                expect(err.message).to.equal(`Organisation, ${RoleType.Role_TSO} does not have write access for HTA(MV) sites`);
+                expect(err.message).to.equal(`Error : ReserveBid Status Update - Organisation, ${RoleType.Role_TSO} does not have right to change ${RoleType.Role_DSO} information`);
             }
 
 
@@ -651,15 +667,20 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const indexedData: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract, indexedDataAbstract2],
+                indexedDataAbstractMap : new Map(),
                 indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
             };
+            indexedData.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, indexedDataAbstract);
+            indexedData.indexedDataAbstractMap.set(Values.HTA_ReserveBidMarketDocument_2_Full.reserveBidMrid, indexedDataAbstract2);
+            const indexedDataJSON = IndexedDataJson.toJson(indexedData);
+
+            transactionContext.stub.getState.withArgs(reserveBidObj.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             for (const collectionName of collectionNames) {
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
-                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedDataJSON)));
             }
 
 
@@ -698,15 +719,21 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const indexedData: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract, indexedDataAbstract2],
+                indexedDataAbstractMap : new Map(),
                 indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
             };
+            indexedData.indexedDataAbstractMap.set(indexedDataAbstract.reserveBidMrid, indexedDataAbstract);
+            indexedData.indexedDataAbstractMap.set(indexedDataAbstract2.reserveBidMrid, indexedDataAbstract2);
+            const indexedDataJSON = IndexedDataJson.toJson(indexedData);
+
+
+            transactionContext.stub.getState.withArgs(reserveBidObj.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             for (const collectionName of collectionNames) {
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
-                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedDataJSON)));
             }
 
 
@@ -724,7 +751,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             expect(ret).to.eql(expected);
 
-            const expectedIndexedData: IndexedData = JSON.parse(JSON.stringify(indexedData));
+            const expectedIndexedData: IndexedData = IndexedData.fromJson(IndexedDataJson.toJson(indexedData));
 
             const expectedIndexedDataAbstract: ReserveBidMarketDocumentAbstract = {
                 reserveBidMrid: expected.reserveBidMrid,
@@ -733,7 +760,10 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 createdDateTime: expected.createdDateTime
             };
 
-            expectedIndexedData.indexedDataAbstractList = [expectedIndexedDataAbstract, indexedDataAbstract2];
+            expectedIndexedData.indexedDataAbstractMap.set(expectedIndexedDataAbstract.reserveBidMrid, expectedIndexedDataAbstract);
+            expectedIndexedData.indexedDataAbstractMap.set(indexedDataAbstract2.reserveBidMrid, indexedDataAbstract2);
+
+            const expectedIndexedDataJSON = IndexedDataJson.toJson(expectedIndexedData);
 
             var i: number = 0;
             for (const collectionName of collectionNames) {
@@ -746,7 +776,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 // params.logger.info(transactionContext.stub.putPrivateData.getCall(i+1).args);
                 // params.logger.info("ooooooooo")
                 // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(i+1).args[2].toString()).toString('utf8'));
-                // params.logger.info(JSON.stringify(expectedIndexedData))
+                // params.logger.info(JSON.stringify(expectedIndexedDataJSON))
 
                 transactionContext.stub.putPrivateData.getCall(i).should.have.been.calledWithExactly(
                     collectionName,
@@ -755,13 +785,13 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 );
                 transactionContext.stub.putPrivateData.getCall(i+1).should.have.been.calledWithExactly(
                     collectionName,
-                    indexedData.indexId,
-                    Buffer.from(JSON.stringify(expectedIndexedData))
+                    expectedIndexedDataJSON.indexId,
+                    Buffer.from(JSON.stringify(expectedIndexedDataJSON))
                 );
 
                 i=i+2;
             }
-            // params.logger.info("-----------")
+            params.logger.info("-----------")
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(2*collectionNames.length);
 
@@ -796,13 +826,17 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const indexedData: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract, indexedDataAbstract2],
+                indexedDataAbstractMap : new Map(),
                 indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
             };
+            indexedData.indexedDataAbstractMap.set(indexedDataAbstract.reserveBidMrid, indexedDataAbstract);
+            indexedData.indexedDataAbstractMap.set(indexedDataAbstract2.reserveBidMrid, indexedDataAbstract2);
+            const indexedDataJSON = IndexedDataJson.toJson(indexedData);
+
+            transactionContext.stub.getState.withArgs(reserveBidObj.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
-
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedDataJSON)));
 
 
             /// Add Max Date in transaction Context
@@ -815,7 +849,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             transactionContext.stub.getPrivateData.withArgs(collectionNames[0], maxDateId).resolves(Buffer.from(JSON.stringify(maxDate)));
 
 
-            //Add Avaliable Activation Document in transaction context
+            //Add Available Activation Document in transaction context
             const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
             //New date after ReserveBidDate
             const newDate = CommonService.increaseDateDaysStr(reserveBidObj.validityPeriodStartDateTime as string, 1)
@@ -832,10 +866,13 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const energyAmountAbstract : EnergyAmountAbstract = {energyAmountMarketDocumentMrid:energyAmountObj.energyAmountMarketDocumentMrid};
             const energyAmountIndexedData: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList:[energyAmountAbstract],
+                indexedDataAbstractMap : new Map(),
                 indexId:energyAmountIndexKey
             };
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyAmountIndexKey).resolves(Buffer.from(JSON.stringify(energyAmountIndexedData)));
+            energyAmountIndexedData.indexedDataAbstractMap.set(energyAmountAbstract.energyAmountMarketDocumentMrid, energyAmountAbstract);
+            const energyAmountIndexedDataJSON = IndexedDataJson.toJson(energyAmountIndexedData);
+
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], energyAmountIndexKey).resolves(Buffer.from(JSON.stringify(energyAmountIndexedDataJSON)));
 
 
             /// Add Indexed Activation Document in transaction Context
@@ -846,11 +883,13 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const indexedDataActivation: IndexedData = {
                 docType: DocType.DATA_INDEXER,
+                indexedDataAbstractMap : new Map(),
                 indexId: indexedActivationDataId,
-                indexedDataAbstractList : [activationAbstract],
             };
+            indexedDataActivation.indexedDataAbstractMap.set(activationAbstract.activationDocumentMrid, activationAbstract);
+            const indexedDataActivationJSON = IndexedDataJson.toJson(indexedDataActivation);
 
-            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], indexedActivationDataId).resolves(Buffer.from(JSON.stringify(indexedDataActivation)));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], indexedActivationDataId).resolves(Buffer.from(JSON.stringify(indexedDataActivationJSON)));
 
 
             const newStatus = ReserveBidStatus.VALIDATED;
@@ -867,7 +906,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             expect(ret).to.eql(expected);
 
-            const expectedIndexedData: IndexedData = JSON.parse(JSON.stringify(indexedData));
+            const expectedIndexedData: IndexedData = IndexedData.fromJson(IndexedDataJson.toJson(indexedData));
 
             const expectedIndexedDataAbstract: ReserveBidMarketDocumentAbstract = {
                 reserveBidMrid: expected.reserveBidMrid,
@@ -876,7 +915,10 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 createdDateTime: expected.createdDateTime
             };
 
-            expectedIndexedData.indexedDataAbstractList = [expectedIndexedDataAbstract, indexedDataAbstract2];
+            expectedIndexedData.indexedDataAbstractMap.set(expectedIndexedDataAbstract.reserveBidMrid, expectedIndexedDataAbstract);
+            expectedIndexedData.indexedDataAbstractMap.set(indexedDataAbstract2.reserveBidMrid, indexedDataAbstract2);
+
+            const expectedIndexedDataJson :IndexedDataJson = IndexedDataJson.toJson(expectedIndexedData);
 
 
             // const expectedIndexer: IndexedData = {
@@ -915,7 +957,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexedData))
+            // params.logger.info(JSON.stringify(expectedIndexedDataJson))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
             // params.logger.info("ooooooooo")
@@ -930,8 +972,8 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             );
             transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
                 "enedis-producer",
-                expectedIndexedData.indexId,
-                Buffer.from(JSON.stringify(expectedIndexedData))
+                expectedIndexedDataJson.indexId,
+                Buffer.from(JSON.stringify(expectedIndexedDataJson))
             );
             transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
                 "enedis-producer",
@@ -968,15 +1010,21 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const indexedData: IndexedData = {
                 docType: DocType.DATA_INDEXER,
-                indexedDataAbstractList: [indexedDataAbstract, indexedDataAbstract2],
+                indexedDataAbstractMap : new Map(),
                 indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
             };
+
+            indexedData.indexedDataAbstractMap.set(indexedDataAbstract.reserveBidMrid, indexedDataAbstract);
+            indexedData.indexedDataAbstractMap.set(indexedDataAbstract2.reserveBidMrid, indexedDataAbstract2);
+            const indexedDataJSON = IndexedDataJson.toJson(indexedData);
+
+            transactionContext.stub.getState.withArgs(reserveBidObj.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
             for (const collectionName of collectionNames) {
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
                 transactionContext.stub.getPrivateData.withArgs(collectionName, reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
-                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedData)));
+                transactionContext.stub.getPrivateData.withArgs(collectionName, indexedData.indexId).resolves(Buffer.from(JSON.stringify(indexedDataJSON)));
             }
 
 
@@ -994,11 +1042,18 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             expect(ret).to.eql(expected);
 
-            const expectedIndexedData: IndexedData = JSON.parse(JSON.stringify(indexedData));
-            expectedIndexedData.indexedDataAbstractList = [indexedDataAbstract2];
+            const expectedIndexedData: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractMap : new Map(),
+                indexId: SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid)
+            };
+
+            expectedIndexedData.indexedDataAbstractMap.set(indexedDataAbstract2.reserveBidMrid, indexedDataAbstract2);
+            const expectedIndexedDataJson = IndexedDataJson.toJson(expectedIndexedData);
 
 
             var i: number = 0;
+
             for (const collectionName of collectionNames) {
                 // params.logger.info("-----------")
                 // params.logger.info(transactionContext.stub.putPrivateData.getCall(i).args);
@@ -1009,7 +1064,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 // params.logger.info(transactionContext.stub.putPrivateData.getCall(i+1).args);
                 // params.logger.info("ooooooooo")
                 // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(i+1).args[2].toString()).toString('utf8'));
-                // params.logger.info(JSON.stringify(expectedIndexedData))
+                // params.logger.info(JSON.stringify(expectedIndexedDataJson))
 
                 transactionContext.stub.putPrivateData.getCall(i).should.have.been.calledWithExactly(
                     collectionName,
@@ -1019,7 +1074,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 transactionContext.stub.putPrivateData.getCall(i+1).should.have.been.calledWithExactly(
                     collectionName,
                     indexedData.indexId,
-                    Buffer.from(JSON.stringify(expectedIndexedData))
+                    Buffer.from(JSON.stringify(expectedIndexedDataJson))
                 );
 
                 i=i+2;

@@ -1,6 +1,7 @@
 import { DataActionType } from "../enums/DataActionType";
 import { DocType } from "../enums/DocType";
 import { EligibilityStatusType } from "../enums/EligibilityStatusType";
+import { ParametersType } from "../enums/ParametersType";
 
 import { ActivationDocument } from "../model/activationDocument/activationDocument";
 import { AttachmentFile } from "../model/attachmentFile";
@@ -19,6 +20,7 @@ import { ReferenceEnergyAccountController } from "./ReferenceEnergyAccountContro
 import { ReserveBidMarketDocumentController } from "./ReserveBidMarketDocumentController";
 import { ActivationDocumentEligibilityService } from "./service/ActivationDocumentEligibilityService";
 import { ActivationDocumentService } from "./service/ActivationDocumentService";
+import { CommonService } from "./service/CommonService";
 import { SiteController } from "./SiteController";
 
 export class StarDataStateController {
@@ -162,6 +164,16 @@ export class StarDataStateController {
                 //     params.addInMemoryPool(data.energyAccountMarketDocumentMrid, updateOrder);
                 // }
             }
+            //Calculate common parameters only 1 time
+            //ReserveBidParameters
+            const reserveBid_validation_time_max: number = params.values.get(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX);
+            var dateRef = CommonService.increaseDateDays(new Date(), reserveBid_validation_time_max);
+            dateRef = CommonService.setHoursEndDay(dateRef);
+
+            const reserveBid_out_of_time_status: string = params.values.get(ParametersType.RESERVE_BID_OUT_OF_TIME_STATUS);
+
+
+
             // PROCESS Step
             for (const updateOrder of updateOrders) {
                 const dateIn = new Date()
@@ -178,7 +190,7 @@ export class StarDataStateController {
                     await EnergyAmountController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.RESERVE_BID_MARKET_DOCUMENT) {
                     params.logger.info(`UpdateOrder : ${updateOrder.docType} - ${updateOrder.data.reserveBidMrid}`);
-                    await ReserveBidMarketDocumentController.executeOrder(params, updateOrder);
+                    await ReserveBidMarketDocumentController.executeOrder(params, updateOrder, dateRef, reserveBid_out_of_time_status);
                 } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
                     await AttachmentFileController.createByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.DATA_INDEXER) {

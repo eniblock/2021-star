@@ -29,6 +29,7 @@ import { HLFServices } from "./service/HLFservice";
 import { ReserveBidStatus } from "../enums/ReserveBidStatus";
 import { CommonService } from "./service/CommonService";
 import { DataActionType } from "../enums/DataActionType";
+import { SystemOperatorController } from "./SystemOperatorController";
 
 
 export class ReserveBidMarketDocumentController {
@@ -207,7 +208,7 @@ export class ReserveBidMarketDocumentController {
         reserveBidObj: ReserveBidMarketDocument,
         target: string = ''): Promise<string[]> {
 
-        params.logger.debug('=============  END  : CreateObj ReserveBidMarketDocumentController ===========');
+        params.logger.debug('============= START : findEveryConcernedActivationDocumentIdList ReserveBidMarketDocumentController ===========');
         const activationDocumentMridList: string[] = [];
 
         const indexDocRefList: IndexedData[] =
@@ -217,11 +218,10 @@ export class ReserveBidMarketDocumentController {
             reserveBidObj.validityPeriodStartDateTime,
             target);
 
-
         if (indexDocRefList && indexDocRefList.length > 0) {
             for (var indexDocRef of indexDocRefList) {
-                if (indexDocRef.indexedDataAbstractList && indexDocRef.indexedDataAbstractList.length > 0) {
-                    for (var indexedDataElt of indexDocRef.indexedDataAbstractList) {
+                if (indexDocRef.indexedDataAbstractMap && indexDocRef.indexedDataAbstractMap.values) {
+                    for (var indexedDataElt of indexDocRef.indexedDataAbstractMap.values()) {
                         var indexedDataAbstract: ActivationDocumentAbstract = indexedDataElt;
                         const reserveBidDate = new Date(reserveBidObj.validityPeriodStartDateTime);
                         const indexedDataDate = new Date(indexedDataAbstract.startCreatedDateTime);
@@ -233,7 +233,7 @@ export class ReserveBidMarketDocumentController {
             }
         }
 
-        params.logger.debug('=============  END  : CreateObj ReserveBidMarketDocumentController ===========');
+        params.logger.debug('=============  END  : findEveryConcernedActivationDocumentIdList ReserveBidMarketDocumentController ===========');
         return activationDocumentMridList;
     }
 
@@ -430,15 +430,10 @@ export class ReserveBidMarketDocumentController {
                 return JSON.stringify(reserveBidObj);
             }
 
-            const siteObj = await StarPrivateDataService.getObj(params, {docType: DocType.SITE, id: reserveBidObj.meteringPointMrid});
-            if (siteObj.marketEvaluationPointMrid && siteObj.schedulingEntityRegisteredResourceMrid) {
-                if (userRole !== RoleType.Role_TSO) {
-                    throw new Error(`Organisation, ${userRole} does not have write access for HTB(HV) sites`);
-                }
-            } else if (!siteObj.marketEvaluationPointMrid && !siteObj.schedulingEntityRegisteredResourceMrid) {
-                if (userRole !== RoleType.Role_DSO) {
-                    throw new Error(`Organisation, ${userRole} does not have write access for HTA(MV) sites`);
-                }
+            const systemOperator = await SystemOperatorController.getSystemOperatorObjById(params, reserveBidObj.senderMarketParticipantMrid);
+            const systemOperatorRole = HLFServices.getUserRoleById(params, systemOperator.systemOperatorMarketParticipantName);
+            if (systemOperatorRole != userRole) {
+                throw new Error(`Error : ReserveBid Status Update - Organisation, ${userRole} does not have right to change ${systemOperatorRole} information`);
             }
 
             if (reserveBidObj
@@ -666,8 +661,8 @@ export class ReserveBidMarketDocumentController {
             }
 
             if (indexedSiteReserveBidList
-                && indexedSiteReserveBidList.indexedDataAbstractList
-                && indexedSiteReserveBidList.indexedDataAbstractList.length > 0) {
+                && indexedSiteReserveBidList.indexedDataAbstractMap
+                && indexedSiteReserveBidList.indexedDataAbstractMap.values) {
 
                 const dateDoc = new Date(activationDocumentObj.startCreatedDateTime);
 
@@ -676,7 +671,7 @@ export class ReserveBidMarketDocumentController {
                 }
 
                 var reserveBidAbstractRef: ReserveBidMarketDocumentAbstract = null;
-                for (const reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractList) {
+                for (const reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractMap.values()) {
                     params.logger.debug('reserveBidAbstract: ', JSON.stringify(reserveBidAbstract));
 
                     const check = this.checkActivationDocument(activationDocumentObj, reserveBidAbstract);
@@ -981,7 +976,9 @@ export class ReserveBidMarketDocumentController {
 
     public static async executeOrder(
         params: STARParameters,
-        updateOrder: DataReference) {
+        updateOrder: DataReference,
+        dateRef: Date,
+        reserveBid_out_of_time_status: string) {
         params.logger.debug('============= START : executeOrder ReserveBidMarketDocumentController ===========');
 
         if (updateOrder.data) {
@@ -992,7 +989,7 @@ export class ReserveBidMarketDocumentController {
 
             if (updateOrder.dataAction === DataActionType.UPDATE) {
                 const reserveBidObj:ReserveBidMarketDocument = updateOrder.data;
-                await ReserveBidMarketDocumentController.executeUpdateOrder(params, reserveBidObj, updateOrder.collection);
+                await ReserveBidMarketDocumentController.executeUpdateOrder(params, reserveBidObj, dateRef, reserveBid_out_of_time_status);
             } else {
                 await ReserveBidMarketDocumentController.createByReference(params, updateOrder);
             }
@@ -1006,7 +1003,8 @@ export class ReserveBidMarketDocumentController {
     private static async executeUpdateOrder(
         params: STARParameters,
         reserveBidObj:ReserveBidMarketDocument,
-        target: string) {
+        dateRef: Date,
+        reserveBid_out_of_time_status: string) {
         params.logger.debug('============= START : executeUpdateOrder ReserveBidMarketDocumentController ===========');
 
         if (reserveBidObj.reserveBidMrid
@@ -1014,13 +1012,7 @@ export class ReserveBidMarketDocumentController {
             && reserveBidObj.createdDateTime
             && reserveBidObj.createdDateTime.length > 0) {
 
-            const reserveBid_validation_time_max: number = params.values.get(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX);
-            var dateRef = CommonService.increaseDateDays(new Date(), reserveBid_validation_time_max);
-            dateRef = CommonService.setHoursEndDay(dateRef);
-
             const reserveBidDateCreation = new Date(reserveBidObj.createdDateTime);
-
-            const reserveBid_out_of_time_status: string = params.values.get(ParametersType.RESERVE_BID_OUT_OF_TIME_STATUS);
 
             if (reserveBidDateCreation <= dateRef
                 && (!reserveBidObj.reserveBidStatus

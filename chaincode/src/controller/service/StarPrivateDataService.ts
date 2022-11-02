@@ -15,9 +15,11 @@ export class StarPrivateDataService {
         try {
             dataAsBytes = await params.ctx.stub.getPrivateData(arg.collection, arg.id);
         } catch (error) {
+            params.logger.debug('=============  END  : getPrivateData error ===========');
             throw new Error(`${arg.docType} : ${arg.id} does not exist (error)`);
         }
         if (!dataAsBytes || dataAsBytes.length === 0) {
+            params.logger.debug('=============  END  : getPrivateData empty ===========');
             throw new Error(`${arg.docType} : ${arg.id} does not exist (empty)`);
         }
 
@@ -58,6 +60,7 @@ export class StarPrivateDataService {
                     const poolRef : DataReference = {collection: arg.collection, docType: arg.docType, data: dataObj};
                     params.addInMemoryPool(poolKey, poolRef);
                 } catch (error) {
+                    params.logger.debug('=============  END  : getObj with Error ===========');
                     throw new Error(`ERROR ${arg.docType} -> Input string NON-JSON value`);
                 }
             }
@@ -106,6 +109,7 @@ export class StarPrivateDataService {
                         collectionResult = await StarPrivateDataService.getObj(params, {id: arg.id, collection: collection, docType: arg.docType});
                     } catch (error) {
                         if (error && error.message && error.message.includes("NON-JSON")) {
+                            params.logger.debug('=============  END  : getObjRefbyId with Error ===========');
                             throw error;
                         }
                         error = null;
@@ -138,6 +142,7 @@ export class StarPrivateDataService {
             // params.logger.debug("values: ", JSON.stringify(result.values()))
             // params.logger.debug("next: ", JSON.stringify(result.values().next()))
             // params.logger.debug("value: ", JSON.stringify(result.values().next().value))
+            params.logger.debug('=============  END  : getObjRefbyId with Error ===========');
             throw new Error(`${arg.docType} : ${arg.id} does not exist (not found in any collection).`);
         }
 

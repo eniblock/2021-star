@@ -99,7 +99,6 @@ export class SitesProductionResultatComponent implements OnInit {
         lastReserveBid = currentReserveBid;
       }
     }
-    console.log(this.reserveBids)
   }
 
 }

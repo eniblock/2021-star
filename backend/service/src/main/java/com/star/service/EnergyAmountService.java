@@ -159,19 +159,9 @@ public class EnergyAmountService {
                     currentErrors.addAll(validator.validate(currentEnergyAmount).stream().map(violation ->
                             messageSource.getMessage("import.error",
                                     new String[]{fichier.getFileName(), violation.getMessage()}, null)).collect(toList()));
-                    if (creation && DSO.equals(instance)) {
-                        String activationDocumentMrid = currentEnergyAmount.getActivationDocumentMrid();
-                        if (isBlank(activationDocumentMrid)) {
-                            currentErrors.add(messageSource.getMessage("import.error",
-                                    new String[]{fichier.getFileName(), "ActivationDocumentMrid est obligatoire."}, null));
-                        } else {
-                            String[] splittedActivationDocumentMrid = activationDocumentMrid.split("_");
-                            if (splittedActivationDocumentMrid == null ||
-                                    (splittedActivationDocumentMrid != null && splittedActivationDocumentMrid.length != 5)) {
-                                currentErrors.add(messageSource.getMessage("import.file.energy.amount.activationDocumentMrid.enedis.error",
-                                        new String[]{}, null));
-                            }
-                        }
+                    if (creation && DSO.equals(instance) && isBlank(currentEnergyAmount.getActivationDocumentMrid())) {
+                        currentErrors.add(messageSource.getMessage("import.error",
+                                new String[]{fichier.getFileName(), "ActivationDocumentMrid est obligatoire."}, null));
                     }
                     // Vérifier que l'ID du document est fourni quand on est en modification
                     if (!creation && StringUtils.isBlank(currentEnergyAmount.getActivationDocumentMrid())) {
@@ -300,20 +290,17 @@ public class EnergyAmountService {
             return;
         }
         if (creation) {
-            String energyAmountMarketDocumentMrid = randomUUID().toString();
-            log.debug("Initialisation du champ energyAmountMarketDocumentMrid : {}", energyAmountMarketDocumentMrid);
-            energyAmount.setEnergyAmountMarketDocumentMrid(energyAmountMarketDocumentMrid);
+            energyAmount.setEnergyAmountMarketDocumentMrid(randomUUID().toString());
             if (TSO.equals(instance)) {
                 if (isBlank(energyAmount.getActivationDocumentMrid())) {
                     String activationDocumentMrid = randomUUID().toString();
-                    log.debug("Cas d'initialisation de l'ActivationDocumentMrid pour un appel TSO (RTE). activationDocumentMrid = {}", activationDocumentMrid);
+                    log.info("Cas d'initialisation de l'ActivationDocumentMrid pour un appel TSO (RTE). activationDocumentMrid = {}", activationDocumentMrid);
                     energyAmount.setActivationDocumentMrid(activationDocumentMrid);
                 } else {
-                    log.debug("appel TSO (RTE) - l'ActivationDocumentMrid est déjà rempli. activationDocumentMrid = {}. Inutile de l'initialiser", energyAmount.getActivationDocumentMrid());
+                    log.info("appel TSO (RTE) - l'ActivationDocumentMrid est déjà rempli. activationDocumentMrid = {}. Inutile de l'initialiser", energyAmount.getActivationDocumentMrid());
                 }
-
             } else {
-                log.debug("Cas d'appel pour DSO (ENEDIS). On n'initialise pas activationDocumentMrid (clé composite). activationDocumentMrid = {}", energyAmount.getActivationDocumentMrid());
+                log.info("Cas d'appel pour DSO (ENEDIS). On n'initialise pas activationDocumentMrid (clé composite). activationDocumentMrid = {}", energyAmount.getActivationDocumentMrid());
             }
         }
         energyAmount.setDocType(ENERGY_AMOUNT.getDocType());

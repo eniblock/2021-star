@@ -1,7 +1,5 @@
 package com.star.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
@@ -26,11 +24,7 @@ public class ReconciliationRepository {
     @Autowired
     private Contract contract;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-
-    public String getReconciliation() throws ContractException, JsonProcessingException {
+    public String getReconciliation() throws ContractException {
         log.info("Appel de GetActivationDocumentReconciliationState pour obtenir l'état de la réconciliation");
        byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
        return response == null ? null : new String(response, StandardCharsets.UTF_8);

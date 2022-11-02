@@ -674,7 +674,7 @@ export class ReserveBidMarketDocumentController {
                 for (const reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractMap.values()) {
                     params.logger.debug('reserveBidAbstract: ', JSON.stringify(reserveBidAbstract));
 
-                    const check = this.checkActivationDocument(activationDocumentObj, reserveBidAbstract);
+                    const check = await this.checkActivationDocument(activationDocumentObj, reserveBidAbstract);
                     params.logger.debug('check: ', JSON.stringify(check));
 
                     if (check) {

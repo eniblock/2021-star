@@ -61,6 +61,7 @@ while [[ $OUTPUT_ENEDIS ]]; do
         fi
 
         VALUE_OUTPUT="[$START$VALUE_OUTPUT$END]"
+        VALUE_OUTPUT=$(echo $VALUE_OUTPUT | sed "s/\\\\\\\\\"/\\\\\\\\\\\\\"/g")
 
         if [[ $VALUE_OUTPUT != "[]" ]]
         then
@@ -160,6 +161,7 @@ while [[ $OUTPUT_RTE ]]; do
         fi
 
         VALUE_OUTPUT="[$START$VALUE_OUTPUT$END]"
+        VALUE_OUTPUT=$(echo $VALUE_OUTPUT | sed "s/\\\\\\\\\"/\\\\\\\\\\\\\"/g")
 
         if [[ $VALUE_OUTPUT != "[]" ]]
         then

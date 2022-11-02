@@ -13,7 +13,7 @@ import { EligibilityController } from "./activationDocument/EligibilityControlle
 import { OrderManagerController } from "./activationDocument/OrderManagerController";
 import { ReconciliationController } from "./activationDocument/ReconciliationController";
 import { AttachmentFileController } from "./AttachmentFileController";
-import { DataIndexersController, SiteReserveBidIndexersController } from "./dataIndexersController";
+import { ActivationCompositeKeyIndexersController, ActivationEnergyAmountIndexersController, DataIndexersController, SiteActivationIndexersController, SiteReserveBidIndexersController } from "./dataIndexersController";
 import { EnergyAccountController } from "./EnergyAccountController";
 import { EnergyAmountController } from "./EnergyAmountController";
 import { ReferenceEnergyAccountController } from "./ReferenceEnergyAccountController";
@@ -193,8 +193,14 @@ export class StarDataStateController {
                     await ReserveBidMarketDocumentController.executeOrder(params, updateOrder, dateRef, reserveBid_out_of_time_status);
                 } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
                     await AttachmentFileController.createByReference(params, updateOrder);
-                } else if (updateOrder.docType === DocType.DATA_INDEXER) {
-                    await DataIndexersController.executeOrder(params, updateOrder);
+                } else if (updateOrder.docType === DocType.INDEX_ACTIVATION_COMPOSITE_KEY) {
+                    await ActivationCompositeKeyIndexersController.executeOrder(params, updateOrder);
+                } else if (updateOrder.docType === DocType.INDEX_ACTIVATION_ENERGYAMOUNT) {
+                    await ActivationEnergyAmountIndexersController.executeOrder(params, updateOrder);
+                } else if (updateOrder.docType === DocType.INDEX_SITE_ACTIVATION) {
+                    await SiteActivationIndexersController.executeOrder(params, updateOrder);
+                } else if (updateOrder.docType === DocType.INDEX_SITE_RESERVE_BID) {
+                    await SiteReserveBidIndexersController.executeOrder(params, updateOrder);
                 }
                 const dateOut = new Date()
                 params.logger.info(`UpdateOrder : ${updateOrder.docType} done : ${dateIn}/${dateOut} !`);

@@ -879,7 +879,9 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const indexedActivationDataId = SiteActivationIndexersController.getKey(reserveBidObj.meteringPointMrid, new Date(reserveBidObj.validityPeriodStartDateTime as string));
 
             const activationAbstract: ActivationDocumentAbstract =
-                {activationDocumentMrid: activationDocumentObj.activationDocumentMrid, startCreatedDateTime: activationDocumentObj.startCreatedDateTime};
+                {activationDocumentMrid: activationDocumentObj.activationDocumentMrid,
+                    startCreatedDateTime: activationDocumentObj.startCreatedDateTime,
+                    registeredResourceMrid: activationDocumentObj.registeredResourceMrid};
 
             const indexedDataActivation: IndexedData = {
                 docType: DocType.DATA_INDEXER,

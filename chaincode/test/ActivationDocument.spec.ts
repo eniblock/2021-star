@@ -23,11 +23,10 @@ import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { EligibilityStatus } from '../src/model/activationDocument/eligibilityStatus';
 import { EligibilityStatusType } from '../src/enums/EligibilityStatusType';
 import { HLFServices } from '../src/controller/service/HLFservice';
-import { ActivationDocumentAbstract, ActivationDocumentDateMax, IndexedData } from '../src/model/dataIndexers';
-import { SiteActivationIndexersController } from '../src/controller/dataIndexersController';
+import { ActivationDocumentAbstract, ActivationDocumentCompositeKeyAbstract, ActivationDocumentDateMax, IndexedData } from '../src/model/dataIndexers';
+import { ActivationCompositeKeyIndexersController, SiteActivationIndexersController } from '../src/controller/dataIndexersController';
 import { ActivationDocumentCompositeKey } from '../src/model/activationDocument/activationDocumentCompositeKey';
 import { ActivationDocumentService } from '../src/controller/service/ActivationDocumentService';
-import { ActivationDocumentCompositeKeyIndex } from '../src/model/activationDocument/activationDocumentCompositeKeyIndex';
 import { CommonService } from '../src/controller/service/CommonService';
 import { IndexedDataJson } from '../src/model/dataIndexersJson';
 
@@ -417,9 +416,8 @@ describe('Star Tests ActivationDocument', () => {
             expected.eligibilityStatusEditable = false;
             expected.docType = DocType.ACTIVATION_DOCUMENT;
 
-            const activationDocumentCompositeKey = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
-            const compositeKeyIndex: ActivationDocumentCompositeKeyIndex = {
-                docType: DocType.DATA_INDEXER,
+            const activationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyAbstract = {
                 activationDocumentCompositeKey: activationDocumentCompositeKey,
                 activationDocumentMrid: expected.activationDocumentMrid
             }
@@ -427,7 +425,8 @@ describe('Star Tests ActivationDocument', () => {
 
             const indexedDataAbstract: ActivationDocumentAbstract = {
                 activationDocumentMrid: expected.activationDocumentMrid,
-                startCreatedDateTime: expected.startCreatedDateTime as string
+                startCreatedDateTime: expected.startCreatedDateTime as string,
+                registeredResourceMrid: expected.registeredResourceMrid
             };
 
             const expectedIndexer: IndexedData = {
@@ -543,16 +542,14 @@ describe('Star Tests ActivationDocument', () => {
             expected2.docType = DocType.ACTIVATION_DOCUMENT;
 
 
-            const activationDocumentCompositeKey1 = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
-            const activationDocumentCompositeKey2 = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected2)));
+            const activationDocumentCompositeKey1 = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
+            const activationDocumentCompositeKey2 = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected2)));
 
-            const compositeKeyIndex1: ActivationDocumentCompositeKeyIndex = {
-                docType: DocType.DATA_INDEXER,
+            const compositeKeyIndex1: ActivationDocumentCompositeKeyAbstract = {
                 activationDocumentCompositeKey: activationDocumentCompositeKey1,
                 activationDocumentMrid: expected.activationDocumentMrid
             }
-            const compositeKeyIndex2: ActivationDocumentCompositeKeyIndex = {
-                docType: DocType.DATA_INDEXER,
+            const compositeKeyIndex2: ActivationDocumentCompositeKeyAbstract = {
                 activationDocumentCompositeKey: activationDocumentCompositeKey2,
                 activationDocumentMrid: expected2.activationDocumentMrid
             }
@@ -560,7 +557,8 @@ describe('Star Tests ActivationDocument', () => {
 
             const indexedDataAbstract1: ActivationDocumentAbstract = {
                 activationDocumentMrid: expected.activationDocumentMrid,
-                startCreatedDateTime: expected.startCreatedDateTime as string
+                startCreatedDateTime: expected.startCreatedDateTime as string,
+                registeredResourceMrid: expected.registeredResourceMrid
             };
 
             const expectedIndexer1: IndexedData = {
@@ -582,7 +580,8 @@ describe('Star Tests ActivationDocument', () => {
 
             const indexedDataAbstract2: ActivationDocumentAbstract = {
                 activationDocumentMrid: expected2.activationDocumentMrid,
-                startCreatedDateTime: expected2.startCreatedDateTime as string
+                startCreatedDateTime: expected2.startCreatedDateTime as string,
+                registeredResourceMrid: expected2.registeredResourceMrid
             };
 
             const expectedIndexer2: IndexedData = {
@@ -851,9 +850,8 @@ describe('Star Tests ActivationDocument', () => {
             expected.docType = DocType.ACTIVATION_DOCUMENT;
 
 
-            const activationDocumentCompositeKey = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
-            const compositeKeyIndex: ActivationDocumentCompositeKeyIndex = {
-                docType: DocType.DATA_INDEXER,
+            const activationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyAbstract = {
                 activationDocumentCompositeKey: activationDocumentCompositeKey,
                 activationDocumentMrid: expected.activationDocumentMrid
             }
@@ -862,7 +860,8 @@ describe('Star Tests ActivationDocument', () => {
 
             const indexedDataAbstract: ActivationDocumentAbstract = {
                 activationDocumentMrid: expected.activationDocumentMrid,
-                startCreatedDateTime: expected.startCreatedDateTime as string
+                startCreatedDateTime: expected.startCreatedDateTime as string,
+                registeredResourceMrid: expected.registeredResourceMrid
             };
 
             const expectedIndexer: IndexedData = {
@@ -1716,9 +1715,8 @@ describe('Star Tests ActivationDocument', () => {
             expectedValue_Producer.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
             expectedValue_Producer.eligibilityStatusEditable = false;
 
-            const activationDocumentCompositeKey = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expectedValue_Producer)));
-            const compositeKeyIndex: ActivationDocumentCompositeKeyIndex = {
-                docType: DocType.DATA_INDEXER,
+            const activationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expectedValue_Producer)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyAbstract = {
                 activationDocumentCompositeKey: activationDocumentCompositeKey,
                 activationDocumentMrid: expectedValue_Producer.activationDocumentMrid
             }
@@ -1786,9 +1784,8 @@ describe('Star Tests ActivationDocument', () => {
             expectedValue_Producer.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
             expectedValue_Producer.eligibilityStatusEditable = false;
 
-            const activationDocumentCompositeKey = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expectedValue_Producer)));
-            const compositeKeyIndex: ActivationDocumentCompositeKeyIndex = {
-                docType: DocType.DATA_INDEXER,
+            const activationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expectedValue_Producer)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyAbstract = {
                 activationDocumentCompositeKey: activationDocumentCompositeKey,
                 activationDocumentMrid: expectedValue_Producer.activationDocumentMrid
             }
@@ -1858,9 +1855,8 @@ describe('Star Tests ActivationDocument', () => {
             expectedValue_TSO.eligibilityStatus = EligibilityStatusType.EligibilityRefused;
             expectedValue_TSO.eligibilityStatusEditable = false;
 
-            const activationDocumentCompositeKey = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument_TSO)));
-            const compositeKeyIndex: ActivationDocumentCompositeKeyIndex = {
-                docType: DocType.DATA_INDEXER,
+            const activationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument_TSO)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyAbstract = {
                 activationDocumentCompositeKey: activationDocumentCompositeKey,
                 activationDocumentMrid: activationDocument_TSO.activationDocumentMrid
             }
@@ -2067,16 +2063,14 @@ describe('Star Tests ActivationDocument', () => {
 
             await star.UpdateActivationDocumentByOrders(transactionContext, updateOrders_str);
 
-            const activationDocumentCompositeKey1 = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument_Producer)));
-            const activationDocumentCompositeKey2 = ActivationDocumentService.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument_TSO)));
+            const activationDocumentCompositeKey1 = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument_Producer)));
+            const activationDocumentCompositeKey2 = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument_TSO)));
 
-            const compositeKeyIndex1: ActivationDocumentCompositeKeyIndex = {
-                docType: DocType.DATA_INDEXER,
+            const compositeKeyIndex1: ActivationDocumentCompositeKeyAbstract = {
                 activationDocumentCompositeKey: activationDocumentCompositeKey1,
                 activationDocumentMrid: activationDocument_Producer.activationDocumentMrid
             }
-            const compositeKeyIndex2: ActivationDocumentCompositeKeyIndex = {
-                docType: DocType.DATA_INDEXER,
+            const compositeKeyIndex2: ActivationDocumentCompositeKeyAbstract = {
                 activationDocumentCompositeKey: activationDocumentCompositeKey2,
                 activationDocumentMrid: activationDocument_TSO.activationDocumentMrid
             }

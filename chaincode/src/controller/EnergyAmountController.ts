@@ -21,6 +21,7 @@ import { BalancingDocumentController } from './BalancingDocumentController';
 import { ActivationEnergyAmountIndexersController, DataIndexersController } from './dataIndexersController';
 import { EnergyAmountAbstract, IndexedData } from '../model/dataIndexers';
 import { IdArgument } from '../model/arguments/idArgument';
+import { HLFServices } from './service/HLFservice';
 
 export class EnergyAmountController {
     public static async executeOrder(
@@ -781,5 +782,28 @@ export class EnergyAmountController {
         params.logger.debug('=============  END  : get EnergyAmount By ActivationDocument ===========');
         return energyAmout;
     }
+
+
+
+    public static async getAll(params: STARParameters): Promise<DataReference[]> {
+        params.logger.info('============= START : get all EnergyAmountController ===========');
+
+        const collections = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+
+        const dataList: DataReference[] = [];
+        for (const collection of collections) {
+            const allResults = await QueryStateService.getAllPrivateData(params, DocType.ENERGY_AMOUNT, collection);
+            if (allResults && allResults.length > 0) {
+                for (const result of allResults) {
+                    dataList.push({collection: collection, data: result, docType: DocType.ENERGY_AMOUNT})
+                }
+            }
+        }
+
+        params.logger.info('=============  END  : get all EnergyAmountController ===========');
+
+        return dataList;
+    }
+
 
 }

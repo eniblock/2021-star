@@ -11,7 +11,15 @@ export class ReserveBidMarketDocumentAbstract {
 export class ActivationDocumentAbstract {
     public activationDocumentMrid: string;
     public startCreatedDateTime: string;
+    public registeredResourceMrid: string;
 }
+
+export class ActivationDocumentCompositeKeyAbstract {
+    public activationDocumentCompositeKey: string;
+    public activationDocumentMrid: string;
+}
+
+
 
 export class ActivationDocumentDateMax{
     public docType: string

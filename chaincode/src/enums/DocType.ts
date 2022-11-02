@@ -18,6 +18,10 @@ export enum DocType {
     QUERY_RESULT = 'queryResult',
     /* index to get data without query */
     DATA_INDEXER = 'dataIndexer',
+    INDEX_SITE_RESERVE_BID = 'indexSiteReserveBid',
+    INDEX_SITE_ACTIVATION = 'indexSiteActivation',
+    INDEX_ACTIVATION_COMPOSITE_KEY = 'indexActivationCompositeKey',
+    INDEX_ACTIVATION_ENERGYAMOUNT = 'indexActivationEnergyAmount',
     INDEXER_MAX_DATE = 'indexerMaxDate',
 
 }

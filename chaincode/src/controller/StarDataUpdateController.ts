@@ -105,6 +105,7 @@ export class StarDataUpdateController {
 
                 activationDocumentList.push(referencedDocument);
 
+                // TEMP
                 // const linkedData =
                 //     await EligibilityController.getCreationLinkedData(params, referencedDocument, 'enedis-producer');
                 // for (const data of linkedData) {

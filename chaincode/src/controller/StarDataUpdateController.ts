@@ -83,27 +83,20 @@ export class StarDataUpdateController {
 
         const activationDocumentList: DataReference[] = [];
 
-        const collections: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
-        const collectionList = collections.get(OrganizationTypeMsp.PRODUCER);
+        const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","eligibilityStatus":"true"}}`;
 
-        if (collectionList && collectionList.length > 0) {
-            for (const collection of collectionList) {
-                const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","eligibilityStatus":"true"}}`;
+        const formatedResults: ActivationDocument[] =
+            await ActivationDocumentController.getActivationDocumentObjByQuery(params, query, ['enedis-producer']);
 
-                const formatedResults: ActivationDocument[] =
-                    await ActivationDocumentController.getActivationDocumentObjByQuery(params, query, [collection]);
-
-                if (formatedResults && formatedResults.length > 0) {
-                    for (const formatedResult of formatedResults) {
-                        activationDocumentList.push(
-                            {collection,
-                            data: formatedResult,
-                            dataAction: DataActionType.COLLECTION_CHANGE,
-                            docType: DocType.ACTIVATION_DOCUMENT});
-                    }
-                }
+        if (formatedResults && formatedResults.length > 0) {
+            for (const formatedResult of formatedResults) {
+                activationDocumentList.push(
+                    {collection: 'enedis-producer-rte',
+                    data: formatedResult,
+                    dataAction: DataActionType.COLLECTION_CHANGE,
+                    docType: DocType.ACTIVATION_DOCUMENT,
+                    previousCollection: 'enedis-producer'});
             }
-
         }
 
         params.logger.info('=============  END  : getActivationDocumentToShare StarDataUpdateController ===========');

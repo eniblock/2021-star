@@ -1,9 +1,14 @@
 import { DataActionType } from '../enums/DataActionType';
 import { DocType } from '../enums/DocType';
+import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
+import { ParametersType } from '../enums/ParametersType';
+import { ActivationDocument } from '../model/activationDocument/activationDocument';
 import { IndexedData } from '../model/dataIndex/dataIndexers';
 
 import { DataReference } from '../model/dataReference';
 import { STARParameters } from '../model/starParameters';
+import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
+import { OrderManagerController } from './activationDocument/OrderManagerController';
 import { ActivationCompositeKeyIndexersController } from './dataIndex/ActivationCompositeKeyIndexersController';
 import { ActivationEnergyAmountIndexersController } from './dataIndex/ActivationEnergyAmountIndexersController';
 import { DataIndexersController } from './dataIndex/DataIndexersController';
@@ -19,7 +24,8 @@ export class StarDataUpdateController {
 
         let stateStr = '[]';
         // const listOfIndexers = await this.getAllIndexersToDelete(params);
-        const listOfIndexers = await this.getAllIndexersToCreate(params);
+        // const listOfIndexers = await this.getAllIndexersToCreate(params);
+        const listOfIndexers = await this.getActivationDocumentToShare(params);
         stateStr = JSON.stringify(listOfIndexers);
 
         params.logger.info('=============  END  : getStarDataToUpdate StarDataUpdateController ===========');
@@ -50,26 +56,59 @@ export class StarDataUpdateController {
                     {strict: true, abortEarly: false},
                 );
 
-                if (updateOrder.dataAction === DataActionType.DELETE
+                if (updateOrder.docType === DocType.ACTIVATION_DOCUMENT) {
+                    await OrderManagerController.executeOrder(params, updateOrder);
+                } else if (updateOrder.dataAction === DataActionType.DELETE
                     && updateOrder.docType === DocType.DATA_INDEXER) {
                     const indexer: IndexedData = updateOrder.data;
                     await DataIndexersService.delete(params, indexer.indexId, updateOrder.collection);
-                } else {
-                    if (updateOrder.docType === DocType.INDEX_ACTIVATION_COMPOSITE_KEY) {
-                        await ActivationCompositeKeyIndexersController.executeOrder(params, updateOrder);
-                    } else if (updateOrder.docType === DocType.INDEX_ACTIVATION_ENERGYAMOUNT) {
-                        await ActivationEnergyAmountIndexersController.executeOrder(params, updateOrder);
-                    } else if (updateOrder.docType === DocType.INDEX_SITE_ACTIVATION) {
-                        await SiteActivationIndexersController.executeOrder(params, updateOrder);
-                    } else if (updateOrder.docType === DocType.INDEX_SITE_RESERVE_BID) {
-                        await SiteReserveBidIndexersController.executeOrder(params, updateOrder);
-                    }
+                } else if (updateOrder.docType === DocType.INDEX_ACTIVATION_COMPOSITE_KEY) {
+                    await ActivationCompositeKeyIndexersController.executeOrder(params, updateOrder);
+                } else if (updateOrder.docType === DocType.INDEX_ACTIVATION_ENERGYAMOUNT) {
+                    await ActivationEnergyAmountIndexersController.executeOrder(params, updateOrder);
+                } else if (updateOrder.docType === DocType.INDEX_SITE_ACTIVATION) {
+                    await SiteActivationIndexersController.executeOrder(params, updateOrder);
+                } else if (updateOrder.docType === DocType.INDEX_SITE_RESERVE_BID) {
+                    await SiteReserveBidIndexersController.executeOrder(params, updateOrder);
                 }
+
             }
         }
 
         params.logger.info('=============  END  : executeStarDataOrders StarDataUpdateController ===========');
         }
+
+    private static async getActivationDocumentToShare(params: STARParameters): Promise<DataReference[]> {
+        params.logger.info('============= START : getActivationDocumentToShare StarDataUpdateController ===========');
+
+        const activationDocumentList: DataReference[] = [];
+
+        const collections: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
+        const collectionList = collections.get(OrganizationTypeMsp.PRODUCER);
+
+        if (collectionList && collectionList.length > 0) {
+            for (const collection of collectionList) {
+                const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","eligibilityStatus":"true"}}`;
+
+                const formatedResults: ActivationDocument[] =
+                    await ActivationDocumentController.getActivationDocumentObjByQuery(params, query, [collection]);
+
+                if (formatedResults && formatedResults.length > 0) {
+                    for (const formatedResult of formatedResults) {
+                        activationDocumentList.push(
+                            {collection,
+                            data: formatedResult,
+                            dataAction: DataActionType.COLLECTION_CHANGE,
+                            docType: DocType.ACTIVATION_DOCUMENT});
+                    }
+                }
+            }
+
+        }
+
+        params.logger.info('=============  END  : getActivationDocumentToShare StarDataUpdateController ===========');
+        return activationDocumentList;
+    }
 
     private static async getAllIndexersToDelete(params: STARParameters): Promise<DataReference[]> {
         params.logger.info('============= START : getAllIndexersToDelete StarDataUpdateController ===========');

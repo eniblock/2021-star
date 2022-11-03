@@ -176,22 +176,51 @@ export class ActivationDocumentController {
 
     public static async getActivationDocumentByQuery(
         params: STARParameters,
-        query: string): Promise<string> {
+        query: string,
+        targets: string[] = []): Promise<string> {
         params.logger.info('============= START : get ActivationDocument By Query ===========');
 
-        const collections: string[] =
-            await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        let collections: string[];
+        if (targets && targets.length > 0) {
+            collections = targets;
+        } else {
+            collections =
+                await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        }
 
-        params.logger.debug('query: ', query);
-        const allResults: any[] = await ActivationDocumentService.getQueryArrayResult(params, query, collections);
         const formatedResults: ActivationDocument[] =
-            await ActivationDocumentEligibilityService.formatActivationDocuments(params, allResults);
+            await this.getActivationDocumentObjByQuery(params, query, collections);
 
         const formated = JSON.stringify(formatedResults);
 
         params.logger.info('=============  END  : get ActivationDocument By Query ===========');
         return formated;
     }
+
+    public static async getActivationDocumentObjByQuery(
+        params: STARParameters,
+        query: string,
+        targets: string[] = []): Promise<ActivationDocument[]> {
+        params.logger.info('============= START : get ActivationDocument Obj By Query ===========');
+
+        let collections: string[];
+        if (targets && targets.length > 0) {
+            collections = targets;
+        } else {
+            collections =
+                await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        }
+
+        params.logger.debug('query: ', query);
+        const allResults: any[] =
+            await ActivationDocumentService.getQueryArrayResult(params, query, collections);
+        const formatedResults: ActivationDocument[] =
+            await ActivationDocumentEligibilityService.formatActivationDocuments(params, allResults);
+
+        params.logger.info('=============  END  : get ActivationDocument Obj By Query ===========');
+        return formatedResults;
+    }
+
 
     public static async getAll(params: STARParameters): Promise<DataReference[]> {
         params.logger.info('============= START : get all ActivationDocumentController ===========');

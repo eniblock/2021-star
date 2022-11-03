@@ -99,6 +99,12 @@ export class QueryStateService {
         return ORCriteria;
     }
 
+    /*******************************
+     *                             *
+     *         PUBLIC DATA         *
+     *                             *
+     *******************************/
+
     public static async getQueryArrayResult(
         params: STARParameters,
         arg: QueryArgument): Promise<any[]>  {
@@ -158,6 +164,12 @@ export class QueryStateService {
         params.logger.debug('=============  END  : getAllStates %s QueryStateService ===========', dataType);
         return arrayResult;
     }
+
+    /*******************************
+     *                             *
+     *        PRIVATE DATA         *
+     *                             *
+     *******************************/
 
     public static async getPrivateQueryArrayResult(
         params: STARParameters,
@@ -226,6 +238,8 @@ export class QueryStateService {
         }
         return allResults;
     }
+
+    // PRIVATE METHODS
 
     /*******************************
      *                             *

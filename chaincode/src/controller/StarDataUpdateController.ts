@@ -97,15 +97,15 @@ export class StarDataUpdateController {
                     docType: DocType.ACTIVATION_DOCUMENT,
                     previousCollection: 'enedis-producer'};
 
-                const requirements =
-                    await EligibilityController.getCreationRequierments(params, referencedDocument, 'enedis-producer');
-                for (const requirement of requirements) {
-                    activationDocumentList.push(requirement);
-                }
+                // const requirements =
+                //     await EligibilityController.getCreationRequierments(
+                //        params, referencedDocument, 'enedis-producer');
+                // for (const requirement of requirements) {
+                //     activationDocumentList.push(requirement);
+                // }
 
                 activationDocumentList.push(referencedDocument);
 
-                // TEMP
                 // const linkedData =
                 //     await EligibilityController.getCreationLinkedData(params, referencedDocument, 'enedis-producer');
                 // for (const data of linkedData) {

@@ -361,13 +361,33 @@ export class ReserveBidMarketDocumentController {
                     if (newStatus === ReserveBidStatus.VALIDATED) {
                         await SiteReserveBidIndexersController.addModifyReserveBidReference(params, reserveBidObj, key);
 
+                        params.logger.info('11s:',
+                            reserveBidObj.reserveBidMrid,
+                            new Date());
+
                         const activationDocumentIdList: string[] =
                             await this.findEveryConcernedActivationDocumentIdList(params, reserveBidObj, key);
+
+                        params.logger.info('11e:',
+                            reserveBidObj.reserveBidMrid,
+                            new Date());
+
                         if (activationDocumentIdList && activationDocumentIdList.length > 0) {
                             for (const activationDocumentId of activationDocumentIdList) {
 
+                                params.logger.info('12s:',
+                                    reserveBidObj.reserveBidMrid,
+                                    activationDocumentId,
+                                    new Date());
+
                                 await BalancingDocumentController.createOrUpdateById(
                                     params, activationDocumentId, reserveBidObj, null, key);
+
+                                params.logger.info('12e:',
+                                    reserveBidObj.reserveBidMrid,
+                                    activationDocumentId,
+                                    new Date());
+
                             }
                         }
                     } else if (newStatus === ReserveBidStatus.REFUSED) {
@@ -990,7 +1010,9 @@ export class ReserveBidMarketDocumentController {
                 && (!reserveBidObj.reserveBidStatus
                     || reserveBidObj.reserveBidStatus.length === 0)) {
 
+                params.logger.info('01s:', reserveBidObj.reserveBidMrid, new Date());
                 await this.updateStatus(params, reserveBidObj.reserveBidMrid, reserveBidOutOfTimeStatus);
+                params.logger.info('01e:', reserveBidObj.reserveBidMrid, new Date());
             }
         }
 

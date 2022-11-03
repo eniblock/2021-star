@@ -609,7 +609,16 @@ export class ReserveBidMarketDocumentController {
 
         params.logger.debug('============= START : get Obj ByMeteringPointMrid ReserveBidMarketDocumentController ===========');
 
-        const query = `{"selector": {"docType": "${DocType.RESERVE_BID_MARKET_DOCUMENT}", "meteringPointMrid": "${meteringPointMrid}"}}`;
+        const args: string[] = [];
+        args.push(`"meteringPointMrid":"${meteringPointMrid}"`);
+
+        const query = await QueryStateService.buildQuery(
+            {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
+            queryArgs: args,
+            sort: [`"validityPeriodStartDateTime":"desc"`, `"createdDateTime":"desc"`]});
+
+        // const query = `{"selector": {"docType": "${DocType.RESERVE_BID_MARKET_DOCUMENT}"
+        //         , "meteringPointMrid": "${meteringPointMrid}"}}`;
 
         params.logger.debug('query: ', query);
 

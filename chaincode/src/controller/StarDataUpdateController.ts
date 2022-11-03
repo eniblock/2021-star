@@ -105,11 +105,11 @@ export class StarDataUpdateController {
 
                 activationDocumentList.push(referencedDocument);
 
-                const linkedData =
-                    await EligibilityController.getCreationLinkedData(params, referencedDocument, 'enedis-producer');
-                for (const data of linkedData) {
-                    activationDocumentList.push(data);
-                }
+                // const linkedData =
+                //     await EligibilityController.getCreationLinkedData(params, referencedDocument, 'enedis-producer');
+                // for (const data of linkedData) {
+                //     activationDocumentList.push(data);
+                // }
 
             }
         }

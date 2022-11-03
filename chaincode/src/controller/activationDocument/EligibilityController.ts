@@ -268,105 +268,7 @@ export class EligibilityController {
         return eligibilityReferences;
     }
 
-    private static generateTarget(
-        params: STARParameters,
-        targetArrayValue: string[]): string {
-
-        let targetKey: string = '';
-        let targetValue: string = '';
-
-        // params.logger.debug("------------------")
-        // params.logger.debug(JSON.stringify(targetArrayValue))
-        // params.logger.debug("------------------")
-
-        targetArrayValue = [...new Set(targetArrayValue)];
-        if (targetArrayValue && targetArrayValue.length > 0 ) {
-            const finalTargetArrayValues: string[] = [];
-            for (const value of targetArrayValue) {
-                if (!finalTargetArrayValues.includes(value.toLowerCase())) {
-                    finalTargetArrayValues.push(value.toLowerCase());
-                }
-            }
-            finalTargetArrayValues.sort();
-            targetKey = finalTargetArrayValues.join(ParametersController.targetJoinSeparator);
-        }
-
-        targetKey = targetKey.toLowerCase();
-
-        // params.logger.debug("------------------")
-        // params.logger.debug(targetKey)
-        // params.logger.debug("------------------")
-
-        const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
-        if (collectionMap) {
-            const collection = collectionMap.get(targetKey);
-            if (collection && collection.length > 0) {
-                targetValue = collection[0];
-            }
-        }
-
-        return targetValue;
-    }
-
-    private static async findDataTarget(
-        params: STARParameters,
-        activationDocument: ActivationDocument,
-        currentTarget: string,
-        activationDocumentRefMap: Map<string, DataReference>= null): Promise<string> {
-
-        params.logger.debug('============= START : findDataDestination - EligibilityController ===========');
-
-        currentTarget = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, currentTarget);
-
-        let finalTarget: string = '';
-        let targetArrayValue: string[];
-
-        if (currentTarget) {
-            targetArrayValue = currentTarget.split(ParametersController.targetJoinSeparator);
-        }
-
-        let parentDocument: ActivationDocument;
-        let parentDocumentRef: DataReference;
-        if (activationDocumentRefMap && activationDocument
-            && activationDocument.subOrderList && activationDocument.subOrderList.length > 0) {
-            parentDocumentRef = activationDocumentRefMap.get(activationDocument.subOrderList[0]);
-            if (parentDocumentRef && parentDocumentRef.data) {
-                parentDocument = parentDocumentRef.data;
-            }
-        }
-
-        if (!parentDocument
-            && activationDocument
-            && activationDocument.subOrderList
-            && activationDocument.subOrderList.length > 0) {
-
-            const parentDocumentMapRef: Map<string, DataReference> =
-                await StarPrivateDataService.getObjRefbyId(
-                    params, {docType: DocType.ACTIVATION_DOCUMENT, id: activationDocument.subOrderList[0]});
-            parentDocumentRef = parentDocumentMapRef.values().next().value;
-            if (parentDocumentRef && parentDocumentRef.data) {
-                parentDocument = parentDocumentRef.data;
-            }
-        }
-
-        let sender: SystemOperator;
-        if (parentDocument && parentDocument.senderMarketParticipantMrid) {
-            sender =
-                await StarDataService.getObj(
-                    params, {id: parentDocument.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
-        }
-
-        if (sender && sender.systemOperatorMarketParticipantName) {
-            targetArrayValue.push(sender.systemOperatorMarketParticipantName.toLowerCase());
-        }
-
-        finalTarget = EligibilityController.generateTarget(params, targetArrayValue);
-
-        params.logger.debug('=============  END  : findDataDestination - EligibilityController ===========');
-        return finalTarget;
-    }
-
-    private static async getCreationRequierments(
+    public static async getCreationRequierments(
         params: STARParameters,
         referencedDocument: DataReference,
         initialTarget: string): Promise<DataReference[]>  {
@@ -400,7 +302,7 @@ export class EligibilityController {
         return requiredReferences;
     }
 
-    private static async getCreationLinkedData(
+    public static async getCreationLinkedData(
         params: STARParameters,
         referencedDocument: DataReference,
         initialTarget: string): Promise<DataReference[]>  {
@@ -545,6 +447,104 @@ export class EligibilityController {
 
         params.logger.debug('============= END  : getCreationLinkedData - EligibilityController ===========');
         return requiredReferences;
+    }
+
+    private static generateTarget(
+        params: STARParameters,
+        targetArrayValue: string[]): string {
+
+        let targetKey: string = '';
+        let targetValue: string = '';
+
+        // params.logger.debug("------------------")
+        // params.logger.debug(JSON.stringify(targetArrayValue))
+        // params.logger.debug("------------------")
+
+        targetArrayValue = [...new Set(targetArrayValue)];
+        if (targetArrayValue && targetArrayValue.length > 0 ) {
+            const finalTargetArrayValues: string[] = [];
+            for (const value of targetArrayValue) {
+                if (!finalTargetArrayValues.includes(value.toLowerCase())) {
+                    finalTargetArrayValues.push(value.toLowerCase());
+                }
+            }
+            finalTargetArrayValues.sort();
+            targetKey = finalTargetArrayValues.join(ParametersController.targetJoinSeparator);
+        }
+
+        targetKey = targetKey.toLowerCase();
+
+        // params.logger.debug("------------------")
+        // params.logger.debug(targetKey)
+        // params.logger.debug("------------------")
+
+        const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
+        if (collectionMap) {
+            const collection = collectionMap.get(targetKey);
+            if (collection && collection.length > 0) {
+                targetValue = collection[0];
+            }
+        }
+
+        return targetValue;
+    }
+
+    private static async findDataTarget(
+        params: STARParameters,
+        activationDocument: ActivationDocument,
+        currentTarget: string,
+        activationDocumentRefMap: Map<string, DataReference>= null): Promise<string> {
+
+        params.logger.debug('============= START : findDataDestination - EligibilityController ===========');
+
+        currentTarget = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, currentTarget);
+
+        let finalTarget: string = '';
+        let targetArrayValue: string[];
+
+        if (currentTarget) {
+            targetArrayValue = currentTarget.split(ParametersController.targetJoinSeparator);
+        }
+
+        let parentDocument: ActivationDocument;
+        let parentDocumentRef: DataReference;
+        if (activationDocumentRefMap && activationDocument
+            && activationDocument.subOrderList && activationDocument.subOrderList.length > 0) {
+            parentDocumentRef = activationDocumentRefMap.get(activationDocument.subOrderList[0]);
+            if (parentDocumentRef && parentDocumentRef.data) {
+                parentDocument = parentDocumentRef.data;
+            }
+        }
+
+        if (!parentDocument
+            && activationDocument
+            && activationDocument.subOrderList
+            && activationDocument.subOrderList.length > 0) {
+
+            const parentDocumentMapRef: Map<string, DataReference> =
+                await StarPrivateDataService.getObjRefbyId(
+                    params, {docType: DocType.ACTIVATION_DOCUMENT, id: activationDocument.subOrderList[0]});
+            parentDocumentRef = parentDocumentMapRef.values().next().value;
+            if (parentDocumentRef && parentDocumentRef.data) {
+                parentDocument = parentDocumentRef.data;
+            }
+        }
+
+        let sender: SystemOperator;
+        if (parentDocument && parentDocument.senderMarketParticipantMrid) {
+            sender =
+                await StarDataService.getObj(
+                    params, {id: parentDocument.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+        }
+
+        if (sender && sender.systemOperatorMarketParticipantName) {
+            targetArrayValue.push(sender.systemOperatorMarketParticipantName.toLowerCase());
+        }
+
+        finalTarget = EligibilityController.generateTarget(params, targetArrayValue);
+
+        params.logger.debug('=============  END  : findDataDestination - EligibilityController ===========');
+        return finalTarget;
     }
 
 }

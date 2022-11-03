@@ -8,6 +8,7 @@ import { IndexedData } from '../model/dataIndex/dataIndexers';
 import { DataReference } from '../model/dataReference';
 import { STARParameters } from '../model/starParameters';
 import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
+import { EligibilityController } from './activationDocument/EligibilityController';
 import { OrderManagerController } from './activationDocument/OrderManagerController';
 import { ActivationCompositeKeyIndexersController } from './dataIndex/ActivationCompositeKeyIndexersController';
 import { ActivationEnergyAmountIndexersController } from './dataIndex/ActivationEnergyAmountIndexersController';
@@ -90,12 +91,26 @@ export class StarDataUpdateController {
 
         if (formatedResults && formatedResults.length > 0) {
             for (const formatedResult of formatedResults) {
-                activationDocumentList.push(
-                    {collection: 'enedis-producer-rte',
+                const referencedDocument: DataReference = {collection: 'enedis-producer-rte',
                     data: formatedResult,
                     dataAction: DataActionType.COLLECTION_CHANGE,
                     docType: DocType.ACTIVATION_DOCUMENT,
-                    previousCollection: 'enedis-producer'});
+                    previousCollection: 'enedis-producer'};
+
+                const requirements =
+                    await EligibilityController.getCreationRequierments(params, referencedDocument, 'enedis-producer');
+                for (const requirement of requirements) {
+                    activationDocumentList.push(requirement);
+                }
+
+                activationDocumentList.push(referencedDocument);
+
+                const linkedData =
+                    await EligibilityController.getCreationLinkedData(params, referencedDocument, 'enedis-producer');
+                for (const data of linkedData) {
+                    activationDocumentList.push(data);
+                }
+
             }
         }
 

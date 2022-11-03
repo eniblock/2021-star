@@ -28,10 +28,10 @@ import { StarDataService } from '../service/StarDataService';
 import { StarPrivateDataService } from '../service/StarPrivateDataService';
 import { SystemOperatorController } from '../SystemOperatorController';
 
+import { HistoryInformationInBuilding } from '../../model/activationDocument/historyInformationInBuilding';
 import { TypeCriteria } from '../../model/activationDocument/typeCriteria';
 import { BalancingDocument } from '../../model/balancingDocument';
 import { BalancingDocumentController } from '../BalancingDocumentController';
-import { HistoryInformationInBuilding } from './HistoryInformationInBuilding';
 
 export class HistoryController {
 

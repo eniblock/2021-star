@@ -1,4 +1,4 @@
-import { HistoryInformation } from '../../model/activationDocument/historyInformation';
+import { HistoryInformation } from './historyInformation';
 
 export class HistoryInformationInBuilding {
     public historyInformation: Map<string, HistoryInformation> = new Map();

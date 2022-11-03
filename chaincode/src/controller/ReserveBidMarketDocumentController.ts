@@ -331,6 +331,21 @@ export class ReserveBidMarketDocumentController {
             if (dataReference && dataReference.data) {
                 reserveBidObj = dataReference.data;
             }
+
+            try {
+                ReserveBidMarketDocument.schema.validateSync(
+                    reserveBidObj,
+                    {strict: true, abortEarly: false},
+                );
+            } catch (error) {
+                throw error;
+            }
+
+            if (!reserveBidObj
+                || reserveBidObj.reserveBidMrid !== reserveBidMrid) {
+                // nothing to do, reserveBidwas not found
+                return;
+            }
             if (reserveBidObj.reserveBidStatus === newStatus) {
                 // nothing to do newStatus is already active Status
                 return JSON.stringify(reserveBidObj);

@@ -212,17 +212,8 @@ export class BalancingDocumentController {
                 && activationDocument.activationDocumentMrid.length > 0) {
 
                 try {
-                    params.logger.info('23s:',
-                        reserveBid.reserveBidMrid,
-                        new Date());
-
                     energyAmount = await EnergyAmountController.getByActivationDocument(
                         params, activationDocument.activationDocumentMrid, target);
-
-                    params.logger.info('23e:',
-                        reserveBid.reserveBidMrid,
-                        new Date());
-
                 } catch (err) {
                     // Document not found
                     err = null;
@@ -239,17 +230,8 @@ export class BalancingDocumentController {
                 && activationDocument.activationDocumentMrid.length > 0) {
 
                 try {
-                    params.logger.info('24s:',
-                        reserveBid.reserveBidMrid,
-                        new Date());
-
                     reserveBid = await ReserveBidMarketDocumentController.getByActivationDocument(
                         params, activationDocument, target);
-
-                    params.logger.info('24e:',
-                        reserveBid.reserveBidMrid,
-                        new Date());
-
                 } catch (err) {
                     // Document not found
                     err = null;
@@ -257,15 +239,7 @@ export class BalancingDocumentController {
             }
         }
 
-        params.logger.info('25s:',
-            reserveBid.reserveBidMrid,
-            new Date());
-
         await this.createOrUpdateObj(params, activationDocument, reserveBid, energyAmount, target);
-
-        params.logger.info('25e:',
-            reserveBid.reserveBidMrid,
-            new Date());
 
         params.logger.debug
             ('=============  END  : consolidateAndCreateOrUpdate BalancingDocumentController ===========');

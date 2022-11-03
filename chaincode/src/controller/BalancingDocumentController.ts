@@ -140,9 +140,6 @@ export class BalancingDocumentController {
         params.logger.debug('=============  END  : createOrUpdate BalancingDocumentController ===========');
     }
 
-
-
-
     private static async searchObjByCriteria(
         params: STARParameters,
         criteriaObj: BalancingDocumentSearchCriteria): Promise<BalancingDocument[]> {

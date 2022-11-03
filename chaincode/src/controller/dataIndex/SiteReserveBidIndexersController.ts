@@ -1,5 +1,6 @@
 import { DocType } from '../../enums/DocType';
 import { ParametersType } from '../../enums/ParametersType';
+import { ReserveBidStatus } from '../../enums/ReserveBidStatus';
 import { IndexedData } from '../../model/dataIndex/dataIndexers';
 import { ReserveBidMarketDocumentAbstract } from '../../model/dataIndex/reserveBidMarketDocumentAbstract';
 import { IndexedDataJson } from '../../model/dataIndexersJson';
@@ -86,26 +87,29 @@ export class SiteReserveBidIndexersController {
                             params, meteringPointMrid, siteRef.collection);
                     if (reserveBidList && reserveBidList.length > 0) {
                         for (const reserveBidObj of reserveBidList) {
-                            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                            if (reserveBidObj.reserveBidStatus === ReserveBidStatus.VALIDATED) {
+                                const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
                                     createdDateTime: reserveBidObj.createdDateTime,
                                     reserveBidMrid: reserveBidObj.reserveBidMrid,
                                     reserveBidStatus: reserveBidObj.reserveBidStatus,
                                     validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime,
                                 };
-                            const indexId = this.getKey(reserveBidObj.meteringPointMrid);
+                                const indexId = this.getKey(reserveBidObj.meteringPointMrid);
 
-                            const indexData: IndexedData = {
-                                docType: DocType.DATA_INDEXER,
-                                indexId,
-                                indexedDataAbstractMap: new Map(),
-                            };
+                                const indexData: IndexedData = {
+                                    docType: DocType.DATA_INDEXER,
+                                    indexId,
+                                    indexedDataAbstractMap: new Map(),
+                                };
 
-                            indexData.indexedDataAbstractMap.set(indexId, reserveBidMarketDocumentAbstract);
+                                indexData.indexedDataAbstractMap.set(indexId, reserveBidMarketDocumentAbstract);
 
-                            states.push(
-                                {collection: siteRef.collection,
-                                data: IndexedDataJson.toJson(indexData),
-                                docType: DocType.INDEX_SITE_RESERVE_BID});
+                                states.push(
+                                    {collection: siteRef.collection,
+                                    data: IndexedDataJson.toJson(indexData),
+                                    docType: DocType.INDEX_SITE_RESERVE_BID});
+
+                            }
                         }
                     }
                 } catch (err) {

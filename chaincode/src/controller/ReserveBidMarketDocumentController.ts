@@ -166,8 +166,10 @@ export class ReserveBidMarketDocumentController {
                 await ReserveBidMarketDocumentService.write(params, reserveBidObj, targetExistingSite);
                 await AttachmentFileController.createObjByList(
                     params, reserveBidCreationObj.attachmentFileList, targetExistingSite);
-                await SiteReserveBidIndexersController.addModifyReserveBidReference(
-                    params, reserveBidObj, targetExistingSite);
+                if (reserveBidObj.reserveBidStatus === ReserveBidStatus.VALIDATED) {
+                    await SiteReserveBidIndexersController.addModifyReserveBidReference(
+                        params, reserveBidObj, targetExistingSite);
+                }
 
             }
         }
@@ -536,7 +538,7 @@ export class ReserveBidMarketDocumentController {
                                 || reserveBidAbstractRef.reserveBidMrid.length === 0) {
 
                                 if (!reserveBidAbstract.reserveBidStatus
-                                    || reserveBidAbstract.reserveBidStatus !== ReserveBidStatus.REFUSED) {
+                                    || reserveBidAbstract.reserveBidStatus === ReserveBidStatus.VALIDATED) {
 
                                     reserveBidAbstractRef = reserveBidAbstract;
                                 }
@@ -552,7 +554,7 @@ export class ReserveBidMarketDocumentController {
                                     || !dateCreationBidRefOk) {
 
                                     if (!reserveBidAbstract.reserveBidStatus
-                                        || reserveBidAbstract.reserveBidStatus !== ReserveBidStatus.REFUSED) {
+                                        || reserveBidAbstract.reserveBidStatus === ReserveBidStatus.VALIDATED) {
 
                                         reserveBidAbstractRef = reserveBidAbstract;
                                     }
@@ -562,7 +564,7 @@ export class ReserveBidMarketDocumentController {
                                         || (dateCreationBidOk && dateCreationBidRefOk
                                             && dateCreationBid > dateCreationBidRef))
                                     && (!reserveBidAbstract.reserveBidStatus
-                                        || reserveBidAbstract.reserveBidStatus !== ReserveBidStatus.REFUSED)) {
+                                        || reserveBidAbstract.reserveBidStatus === ReserveBidStatus.VALIDATED)) {
                                     reserveBidAbstractRef = reserveBidAbstract;
                                 }
 

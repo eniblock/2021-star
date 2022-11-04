@@ -186,6 +186,7 @@ public class SiteService {
         importSiteResult.getDatas().forEach(site -> {
             site.setSiteName(site.getSiteName().replaceAll(STRING_REGEX, " "));
             site.setProducerMarketParticipantName(StringUtils.EMPTY);
+            site.setSystemOperatorMarketParticipantName(StringUtils.EMPTY);
             if (site.getTechnologyType() != null) {
                 site.setTechnologyType(TechnologyTypeEnum.fromValue(site.getTechnologyType()).getLabel());
             }

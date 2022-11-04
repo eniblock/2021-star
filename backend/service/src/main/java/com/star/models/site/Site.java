@@ -76,7 +76,6 @@ public class Site implements ImportCSV {
     private String systemOperatorCustomerServiceName;
     private String systemOperatorMarketParticipantName;
     private String producerMarketParticipantName;
-
     public static boolean isSiteHTA(String meteringPointMrid) {
         return equalsIgnoreCase(Site.CODE_SITE_HTA, substring(meteringPointMrid, 0, 3));
     }

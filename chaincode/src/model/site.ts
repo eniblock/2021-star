@@ -27,7 +27,7 @@ export class Site {
         systemOperatorCustomerServiceName: Yup.string().notRequired(),
         systemOperatorEntityFlexibilityDomainMrid: Yup.string().notRequired(),
         systemOperatorEntityFlexibilityDomainName: Yup.string().notRequired(),
-        systemOperatorMarketParticipantName: Yup.string().notRequired(),
+        // systemOperatorMarketParticipantName: Yup.string().notRequired(),
     });
 
     public static formatString(inputString: string): Site {

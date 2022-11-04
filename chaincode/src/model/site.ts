@@ -90,5 +90,7 @@ export class Site {
     public systemOperatorEntityFlexibilityDomainMrid?: string;
     public systemOperatorEntityFlexibilityDomainName?: string;
     public systemOperatorCustomerServiceName?: string;
+    public systemOperatorMarketParticipantName?: string;
     public producerMarketParticipantName?: string;
+
 }

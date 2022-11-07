@@ -803,7 +803,7 @@ export class ReserveBidMarketDocumentController {
 
         const reserveBidValidationTimeMax: number =
             params.values.get(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX);
-        let dateRef = CommonService.increaseDateDays(new Date(), reserveBidValidationTimeMax);
+        let dateRef = CommonService.reduceDateDays(new Date(), reserveBidValidationTimeMax);
         dateRef = CommonService.setHoursEndDay(dateRef);
         const referenceDateTime =  JSON.stringify(dateRef);
 

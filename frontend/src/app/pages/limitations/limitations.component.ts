@@ -3,7 +3,7 @@ import {Instance} from 'src/app/models/enum/Instance.enum';
 import {InstanceService} from 'src/app/services/api/instance.service';
 import {
   FormulaireRechercheHistoriqueLimitation,
-  RechercheHistoriqueLimitationEntiteAnnotated,
+  RechercheHistoriqueLimitationEntiteWithAnnotation,
 } from 'src/app/models/RechercheHistoriqueLimitation';
 import {
   flatHistoriqueLimitation,
@@ -22,8 +22,8 @@ import {TypeLimitation} from "../../models/enum/TypeLimitation.enum";
 export class LimitationsComponent implements OnInit {
   formRecherche?: FormulaireRechercheHistoriqueLimitation;
 
-  researchResultsWithOnlyOneSuborder?: RechercheHistoriqueLimitationEntiteAnnotated[]; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder
-  researchResultsWithOnlyOneSuborderFiltered?: RechercheHistoriqueLimitationEntiteAnnotated[];
+  researchResultsWithOnlyOneSuborder?: RechercheHistoriqueLimitationEntiteWithAnnotation[]; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder
+  researchResultsWithOnlyOneSuborderFiltered?: RechercheHistoriqueLimitationEntiteWithAnnotation[];
 
   motifNameFilter: string | null = null;
   typeLimitationFilter: TypeLimitation | null = null;

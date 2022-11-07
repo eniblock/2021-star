@@ -1,0 +1,22 @@
+export interface BalancingDocument {
+  balancingDocumentMrid: string,
+  activationDocumentMrid: string,
+  energyAmountMarketDocumentMrid: string,
+  reserveBidMrid: string,
+  revisionNumber: string,
+  messageType: string,
+  processsType: string,
+  senderMarketParticipantMrid: string,
+  receiverMarketParticipantMrid: string,
+  createdDateTime: string,
+  period: string,
+  businessType: string,
+  quantityMeasureUnitName: string,
+  priceMeasureUnitName: string,
+  currencyUnitName: string,
+  meteringPointMrid: string,
+  direction: string,
+  quantity: number,
+  activationPriceAmount: number,
+  financialPriceAmount: number
+}

@@ -55,7 +55,7 @@
 
   <ng-container matColumnDef="montantIndemnisation">
     <th mat-header-cell *matHeaderCellDef> {{ 'montantIndemnisation' | LimitationTableFieldPipe }} </th>
-    <td mat-cell *matCellDef="let element"> {{ '...' }} </td>
+    <td mat-cell *matCellDef="let element" class="text-center"> {{ element.balancingDocument ? element.balancingDocument.financialPriceAmount + ' ' + element.balancingDocument.currencyUnitName : '' }} </td>
   </ng-container>
 
   <ng-container matColumnDef="typeLimitation">
@@ -65,7 +65,7 @@
 
   <ng-container matColumnDef="quantity">
     <th mat-header-cell *matHeaderCellDef> {{ 'quantity' | LimitationTableFieldPipe }} </th>
-    <td mat-cell *matCellDef="let element">
+    <td mat-cell *matCellDef="let element" class="text-center">
       {{ element.energyAmount?.quantity}}
       <button mat-raised-button class="bg-primary text-white" (click)="chargerEne(element)" *ngIf="instance == InstanceEnum.TSO && element.energyAmount == null && element.hasSite && element.site?.typeSite == TypeSiteEnum.HTB">
         <i [class]="'fa-solid fa-pen'"></i>
@@ -75,7 +75,7 @@
 
   <ng-container matColumnDef="tarifUnitaire">
     <th mat-header-cell *matHeaderCellDef> {{ 'tarifUnitaire' | LimitationTableFieldPipe }} </th>
-    <td mat-cell *matCellDef="let element"> {{ element.reserveBidMarketDocument != null ? element.reserveBidMarketDocument.energyPriceAmount + ' ' + element.reserveBidMarketDocument.priceMeasureUnitName : '' }}</td>
+    <td mat-cell *matCellDef="let element" class="text-center"> {{ element.reserveBidMarketDocument != null ? element.reserveBidMarketDocument.energyPriceAmount + ' ' + element.reserveBidMarketDocument.priceMeasureUnitName : '' }}</td>
   </ng-container>
 
   <ng-container matColumnDef="motif">

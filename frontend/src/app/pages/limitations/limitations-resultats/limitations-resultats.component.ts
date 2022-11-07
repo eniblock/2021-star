@@ -6,7 +6,7 @@ import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {LimitationsGraphComponent} from '../limitations-graph/limitations-graph.component';
 import {
   RechercheHistoriqueLimitationEntite,
-  RechercheHistoriqueLimitationEntiteAnnotated
+  RechercheHistoriqueLimitationEntiteWithAnnotation
 } from 'src/app/models/RechercheHistoriqueLimitation';
 import {SystemOperator} from "../../../models/SystemOperator";
 import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
@@ -23,7 +23,7 @@ import {TypeImport} from "../../charger/charger.component";
   styleUrls: ['./limitations-resultats.component.css'],
 })
 export class LimitationsResultatsComponent implements OnChanges {
-  @Input() data: RechercheHistoriqueLimitationEntiteAnnotated[] = [];
+  @Input() data: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
   @Input() systemOperators: SystemOperator[] = [];
   @Input() columnsToDisplay: string[] = [];
 

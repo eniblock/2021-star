@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {TypeLimitation} from "../../../models/enum/TypeLimitation.enum";
-import {RechercheHistoriqueLimitationEntiteAnnotated} from "../../../models/RechercheHistoriqueLimitation";
+import {RechercheHistoriqueLimitationEntiteWithAnnotation} from "../../../models/RechercheHistoriqueLimitation";
 import {SortHelper} from "../../../helpers/sort.helper";
 
 @Component({
@@ -13,7 +13,7 @@ export class LimitationsFilterOnResultsComponent implements OnInit, OnChanges {
 
   @Output() typeLimitationChange = new EventEmitter<TypeLimitation | null>();
   @Output() motifNameChange = new EventEmitter<string | null>();
-  @Input() researchResult: RechercheHistoriqueLimitationEntiteAnnotated[] = [];
+  @Input() researchResult: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
 
   form: FormGroup = this.formBuilder.group({
     typeLimitation: [],

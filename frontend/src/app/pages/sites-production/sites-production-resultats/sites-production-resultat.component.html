@@ -140,8 +140,8 @@
               <td mat-cell *matCellDef="let element"> {{ element.validityPeriodEndDateTime ? (element.validityPeriodEndDateTime | date:'shortDate') : 'XX/XX/XXXX'}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef> Status </th>
+            <ng-container matColumnDef="statut">
+              <th mat-header-cell *matHeaderCellDef> Statut </th>
               <td mat-cell *matCellDef="let element">
                 <app-form-reserve-bid-status *ngIf="canModifyReservebidStatus" [reserveBid]="element" (statusHasChanged)="reserveBidStatusChange()"></app-form-reserve-bid-status>
                 <app-tarif-status [reserveBidStatus]="element.reserveBidStatus" *ngIf="!canModifyReservebidStatus"></app-tarif-status>
@@ -161,7 +161,7 @@
 
             <ng-container matColumnDef="dateSoumission">
               <th mat-header-cell *matHeaderCellDef> Date de soumission </th>
-              <td mat-cell *matCellDef="let element"> {{ element.createdDateTime | date:'shortDate' }} </td>
+              <td mat-cell *matCellDef="let element"> {{ element.createdDateTime | date:'shortDate' }}, {{ element.createdDateTime | date:'mediumTime' }} </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

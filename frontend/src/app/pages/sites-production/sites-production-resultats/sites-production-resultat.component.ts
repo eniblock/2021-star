@@ -30,7 +30,7 @@ export class SitesProductionResultatComponent implements OnInit {
   reserveBids?: ReserveBid[];
   currentReserveBid?: ReserveBid;
 
-  displayedColumns = ['tarifUnitaire', 'dateEffet', 'dateFin', 'status', 'documents', 'dateSoumission']
+  displayedColumns = ['tarifUnitaire', 'dateEffet', 'dateFin', 'statut', 'documents', 'dateSoumission']
 
 
   constructor(

@@ -3,7 +3,6 @@ import {PATH_ROUTE} from 'src/app/app-routing.module';
 import {InstanceService} from 'src/app/services/api/instance.service';
 import {KeycloakService} from "../../../services/common/keycloak.service";
 import {Instance} from "../../../models/enum/Instance.enum";
-import {getTypesDeRechercheSimple} from "../../../models/enum/TypeDeRechercheSimple.enum";
 import {UrlService} from "../../../services/common/url.service";
 import {EnvironmentType} from "../../../models/enum/EnvironmentType.enum";
 
@@ -19,6 +18,7 @@ export class MenuComponent implements OnInit {
 
   participantName: string = "";
   username?: string;
+  version: string = "0.0.0";
 
   typeInstance?: Instance;
   environmentType?: EnvironmentType;
@@ -33,11 +33,18 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.instanceService.getTypeInstance()
       .subscribe((typeInstance) => this.typeInstance = typeInstance);
+    
     this.instanceService.getParticipantName()
       .subscribe(participantName => this.participantName = participantName);
+
     this.keycloakService.getUserProfile()
-      .subscribe(userProfile => this.username = userProfile != null ? userProfile.username : "")
+      .subscribe(userProfile => this.username = userProfile != null ? userProfile.username : "");
+
     this.environmentType = this.urlService.getEnvironmentType();
+
+    fetch('../../../../assets/conf/conf.json')
+      .then(res => res.json())
+      .then(conf => this.version = conf.version);
   }
 
   deconnexion() {

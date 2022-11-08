@@ -33,7 +33,7 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.instanceService.getTypeInstance()
       .subscribe((typeInstance) => this.typeInstance = typeInstance);
-    
+
     this.instanceService.getParticipantName()
       .subscribe(participantName => this.participantName = participantName);
 

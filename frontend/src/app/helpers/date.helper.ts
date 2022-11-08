@@ -66,4 +66,12 @@ export class DateHelper {
     return t.substring(0, t.indexOf('.')) + 'Z';
   }
 
+  public static getDateFirstDayOfPreviousMonth() {
+    const now = new Date();
+    if (now.getMonth() == 0) {
+      return new Date(now.getFullYear() - 1, 11, 1);
+    } else {
+      return new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    }
+  }
 }

@@ -10,6 +10,7 @@ import {ProducerService} from "../../../services/api/producer.service";
 import {SiteService} from "../../../services/api/site.service";
 import {SortHelper} from "../../../helpers/sort.helper";
 import {environment} from "../../../../environments/environment";
+import {DateHelper} from "../../../helpers/date.helper";
 
 @Component({
   selector: 'app-form-limitations-recherche',
@@ -28,7 +29,7 @@ export class FormLimitationsRechercheComponent implements OnInit {
       producerMarketParticipantName: [''],
       siteName: [''],
       meteringPointMrid: [''],
-      startCreatedDateTime: [''],
+      startCreatedDateTime: [DateHelper.getDateFirstDayOfPreviousMonth()],
       endCreatedDateTime: [''],
     },
     {validator: this.validateDates}

@@ -248,22 +248,6 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const expectedFile: AttachmentFile = JSON.parse(JSON.stringify(attachmentFile));
 
-            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
-                createdDateTime: expected.createdDateTime,
-                reserveBidMrid: expected.reserveBidMrid,
-                reserveBidStatus: expected.reserveBidStatus,
-                validityPeriodStartDateTime: expected.validityPeriodStartDateTime,
-            };
-
-            const expectedIndexer: IndexedData = {
-                docType: DocType.DATA_INDEXER,
-                indexedDataAbstractMap : new Map(),
-                indexId: SiteReserveBidIndexersController.getKey(expected.meteringPointMrid)
-            };
-            expectedIndexer.indexedDataAbstractMap.set(expected.reserveBidMrid, indexedDataAbstract);
-
-            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
-
 
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
@@ -275,11 +259,6 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expectedFile))
-            // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
-            // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexerJSON))
             // params.logger.info("-----------")
 
 
@@ -293,13 +272,8 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 expectedFile.fileId,
                 Buffer.from(JSON.stringify(expectedFile))
             );
-            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedIndexerJSON.indexId,
-                Buffer.from(JSON.stringify(expectedIndexerJSON))
-            );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(3);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
 
         });
 
@@ -334,32 +308,12 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             expected.reserveBidStatus = '';
             // params.logger.log('expected=', expected)
 
-            const indexedDataAbstract: ReserveBidMarketDocumentAbstract = {
-                createdDateTime: expected.createdDateTime,
-                reserveBidMrid: expected.reserveBidMrid,
-                reserveBidStatus: expected.reserveBidStatus,
-                validityPeriodStartDateTime: expected.validityPeriodStartDateTime,
-            };
-
-            const expectedIndexer: IndexedData = {
-                docType: DocType.DATA_INDEXER,
-                indexedDataAbstractMap : new Map(),
-                indexId: SiteReserveBidIndexersController.getKey(expected.meteringPointMrid)
-            };
-            expectedIndexer.indexedDataAbstractMap.set(expected.reserveBidMrid, indexedDataAbstract);
-            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
-
 
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expected))
-            // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
-            // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexerJSON))
             // params.logger.info("-----------")
 
 
@@ -368,13 +322,8 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 expected.reserveBidMrid,
                 Buffer.from(JSON.stringify(expected))
             );
-            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
-                "enedis-producer",
-                expectedIndexerJSON.indexId,
-                Buffer.from(JSON.stringify(expectedIndexerJSON))
-            );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
 
         });
 
@@ -1286,7 +1235,14 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             const reserveBidObj1:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
             const reserveBidObj2:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_2_Full));
 
-            const query = `{"selector": {"docType": "${DocType.RESERVE_BID_MARKET_DOCUMENT}", "meteringPointMrid": "${reserveBidObj1.meteringPointMrid}"}}`;
+            const args: string[] = [];
+            args.push(`"meteringPointMrid":"${reserveBidObj1.meteringPointMrid}"`);
+
+            const query = await QueryStateService.buildQuery(
+                {documentType: DocType.RESERVE_BID_MARKET_DOCUMENT,
+                queryArgs: args,
+                sort: [`"validityPeriodStartDateTime":"desc"`, `"createdDateTime":"desc"`]});
+
             const iterator = Values.getQueryMockArrayValues([reserveBidObj1, reserveBidObj2], mockHandler);
 
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);

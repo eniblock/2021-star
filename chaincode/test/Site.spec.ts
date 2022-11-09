@@ -185,8 +185,16 @@ describe('Star Tests SITES', () => {
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
 
             const siteInput = JSON.parse(JSON.stringify(Values.HTB_site_valid));
+            siteInput.systemOperatorMarketParticipantName = Values.HTB_systemoperator.systemOperatorMarketParticipantName;
             siteInput.producerMarketParticipantName = Values.HTB_Producer.producerMarketParticipantName;
             siteInput.docType = DocType.SITE;
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(siteInput))
+            // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.should.have.been.calledOnceWithExactly(collectionNames[0], siteInput.meteringPointMrid, Buffer.from(JSON.stringify(siteInput)));
         });
@@ -205,6 +213,7 @@ describe('Star Tests SITES', () => {
             const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
 
             const siteInput: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            siteInput.systemOperatorMarketParticipantName = Values.HTA_systemoperator.systemOperatorMarketParticipantName;
             siteInput.producerMarketParticipantName = Values.HTA_Producer.producerMarketParticipantName;
             siteInput.docType = DocType.SITE;
 

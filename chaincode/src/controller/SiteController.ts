@@ -11,6 +11,7 @@ import { IdArgument } from '../model/arguments/idArgument';
 import { SiteService } from './service/SiteService';
 import { StarDataService } from './service/StarDataService';
 import { StarPrivateDataService } from './service/StarPrivateDataService';
+import { SystemOperator } from '../model/systemOperator';
 
 export class SiteController {
     public static async createSite(
@@ -36,7 +37,7 @@ export class SiteController {
 
     public static async createSiteObj(
         params: STARParameters,
-        siteObj: any,
+        siteObj: Site,
         target: string = ''): Promise<void> {
         params.logger.debug('============= START : createSiteObj SiteController ===========');
 
@@ -57,8 +58,10 @@ export class SiteController {
         } else {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
         }
+
+        let systemOperator: SystemOperator;
         try {
-            await StarDataService.getObj(
+            systemOperator = await StarDataService.getObj(
                 params, {id: siteObj.systemOperatorMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
             throw new Error(error.message.concat(' for site creation'));
@@ -72,7 +75,12 @@ export class SiteController {
             throw new Error(error.message.concat(' for site creation'));
         }
 
-        siteObj.producerMarketParticipantName = producerObj.producerMarketParticipantName;
+        if (systemOperator && systemOperator.systemOperatorMarketParticipantName) {
+            siteObj.systemOperatorMarketParticipantName = systemOperator.systemOperatorMarketParticipantName;
+        }
+        if (producerObj && producerObj.producerMarketParticipantName) {
+            siteObj.producerMarketParticipantName = producerObj.producerMarketParticipantName;
+        }
 
         await SiteService.write(params, siteObj, target);
 
@@ -117,19 +125,30 @@ export class SiteController {
             throw new Error(error.message.concat(' for site update'));
         }
 
+        let systemOperator: SystemOperator;
         try {
-            await StarDataService.getObj(
+            systemOperator = await StarDataService.getObj(
                 params, {id: siteObj.systemOperatorMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
             throw new Error(error.message.concat(' for site update'));
         }
 
+        let producerObj: Producer;
         try {
-            await StarDataService.getObj(
+            producerObj = await StarDataService.getObj(
                 params, {id: siteObj.producerMarketParticipantMrid, docType: DocType.PRODUCER});
         } catch (error) {
             throw new Error(error.message.concat(' for site update'));
         }
+
+        if (systemOperator && systemOperator.systemOperatorMarketParticipantName) {
+            siteObj.systemOperatorMarketParticipantName = systemOperator.systemOperatorMarketParticipantName;
+        }
+        if (producerObj && producerObj.producerMarketParticipantName) {
+            siteObj.producerMarketParticipantName = producerObj.producerMarketParticipantName;
+        }
+
+
 
         for (const [key ] of existingSitesRef) {
             await SiteService.write(params, siteObj, key);

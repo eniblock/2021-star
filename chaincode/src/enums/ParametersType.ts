@@ -44,4 +44,7 @@
 
     BALANCING_DOCUMENT = 'balancingDocument',
     BALANCING_DOCUMENT_PREFIX = 'balancingDocumentPrefix',
+
+    FEEDBACK_PRODUCER_PREFIX = 'feedbackProducerPrefix',
+    FEEDBACK_PRODUCER_VALIDITY_PERIOD = 'feedbackProducerValidityPeriod',
   }

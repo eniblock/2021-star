@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { DocType } from '../enums/DocType';
 
 export class FeedbackProducer {
 
@@ -26,7 +27,28 @@ export class FeedbackProducer {
         feedbackElements: Yup.string().notRequired().typeError('feedbackElements must be a string'),
     });
 
-    public docType?: string;
+
+    public static formatString(inputString: string): FeedbackProducer {
+        let feedbackProducerObj: FeedbackProducer;
+        try {
+            feedbackProducerObj = JSON.parse(inputString);
+        } catch (error) {
+            throw new Error(`ERROR ${DocType.FEEDBACK_PRODUCER} -> Input string NON-JSON value`);
+        }
+
+        try {
+            FeedbackProducer.schema.validateSync(
+                feedbackProducerObj,
+                {strict: true, abortEarly: false},
+            );
+        } catch (error) {
+            throw error;
+        }
+        return feedbackProducerObj;
+    }
+
+
+    public docType?: string = DocType.FEEDBACK_PRODUCER;
 
     public feedbackProducerMrid: string;
     public activationDocumentMrid: string;
@@ -39,8 +61,8 @@ export class FeedbackProducer {
     public receiverMarketParticipantMrid?: string;
 
     public createdDateTime?: string;
-    public validityPeriodStartDateTime: string;
-    public validityPeriodEndDateTime: string;
+    public validityPeriodStartDateTime?: string;
+    public validityPeriodEndDateTime?: string;
 
     public feedback?: string;
     public feedbackAnswer?: string;

@@ -24,6 +24,7 @@ import { HLFServices } from '../service/HLFservice';
 import { QueryStateService } from '../service/QueryStateService';
 import { StarDataService } from '../service/StarDataService';
 import { StarPrivateDataService } from '../service/StarPrivateDataService';
+import { FeedbackProducerController } from '../FeedbackProducerController';
 
 export class ActivationDocumentController {
     public static async getActivationDocumentByProducer(
@@ -251,7 +252,7 @@ export class ActivationDocumentController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
+            throw new Error(`Organisation, ${identity} does not have rights for Activation Document`);
         }
 
         const activationDocumentObj: ActivationDocument = ActivationDocument.formatString(inputStr);
@@ -267,7 +268,7 @@ export class ActivationDocumentController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
+            throw new Error(`Organisation, ${identity} does not have rights for Activation Document`);
         }
 
         ActivationDocument.schema.validateSync(
@@ -288,7 +289,7 @@ export class ActivationDocumentController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
+            throw new Error(`Organisation, ${identity} does not have rights for Activation Document`);
         }
 
         const activationDocumentList: ActivationDocument[] = ActivationDocument.formatListString(inputStr);
@@ -309,6 +310,8 @@ export class ActivationDocumentController {
         params.logger.debug('============= START : Delete createActivationDocumentObj ===========');
 
         await ActivationDocumentService.delete(params, activationDocumentObj, target);
+
+        await FeedbackProducerController.delete(params, activationDocumentObj.activationDocumentMrid, target);
 
         await SiteActivationIndexersController.deleteActivationReference(
             params,
@@ -341,11 +344,11 @@ export class ActivationDocumentController {
 
         // if (identity === OrganizationTypeMsp.RTE &&
         //     activationDocumentObj.measurementUnitName !== MeasurementUnitType.MW) {
-        //     throw new Error(`Organisation, ${identity} does not have write access for KW orders`);
+        //     throw new Error(`Organisation, ${identity} does not have rights for KW orders`);
         // }
         // if (identity === OrganizationTypeMsp.ENEDIS &&
         //     activationDocumentObj.measurementUnitName !== MeasurementUnitType.KW) {
-        //     throw new Error(`Organisation, ${identity} does not have write access for MW orders`);
+        //     throw new Error(`Organisation, ${identity} does not have rights for MW orders`);
         // }
 
         let systemOperatorObj: SystemOperator;
@@ -545,6 +548,7 @@ export class ActivationDocumentController {
 
         await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);
         await SiteActivationIndexersController.addActivationReference(params, activationDocumentObj, targetDocument);
+        await FeedbackProducerController.createFeedbackProducerObj(params, activationDocumentObj, targetDocument);
 
         params.logger.debug('=============  END  : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,

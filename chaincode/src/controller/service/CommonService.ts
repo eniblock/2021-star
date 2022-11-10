@@ -41,12 +41,22 @@ export class CommonService {
 
     public static setHoursStartDayStr(dateref: string): string {
         // params.logger.info("dateref : ", dateref);
-        const newDate = new Date(Date.parse(dateref));
+        let newDate = new Date(Date.parse(dateref));
+
+        newDate = this.setHoursStartDay(newDate);
+        // params.logger.info("newDate : ", newDate);
+
+        return JSON.parse(JSON.stringify(newDate));
+    }
+
+    public static setHoursStartDay(dateref: Date): Date {
+        // params.logger.info("dateref : ", dateref);
+        const newDate = new Date(dateref);
 
         newDate.setUTCHours(0, 0, 0, 0);
         // params.logger.info("newDate : ", newDate);
 
-        return JSON.parse(JSON.stringify(newDate));
+        return newDate;
     }
 
     public static setHoursEndDayStr(dateref: string): string {

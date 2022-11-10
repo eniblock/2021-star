@@ -23,6 +23,8 @@ import { BalancingDocumentController } from './BalancingDocumentController';
 import { ActivationEnergyAmountIndexersController } from './dataIndex/ActivationEnergyAmountIndexersController';
 import { CommonService } from './service/CommonService';
 import { HLFServices } from './service/HLFservice';
+import { FeedbackProducer } from '../model/feedbackProducer';
+import { FeedbackProducerController } from './FeedbackProducerController';
 
 export class EnergyAmountController {
     public static async executeOrder(
@@ -66,7 +68,7 @@ export class EnergyAmountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Amount.`);
         }
 
         const energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
@@ -88,6 +90,8 @@ export class EnergyAmountController {
             await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
 
             await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
+
+            await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
         }
 
         params.logger.info('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
@@ -103,7 +107,7 @@ export class EnergyAmountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Amount.`);
         }
 
         const energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
@@ -128,6 +132,8 @@ export class EnergyAmountController {
                     await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
 
                     await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
+
+                    await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
                 }
             }
         }
@@ -142,7 +148,7 @@ export class EnergyAmountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Amount.`);
         }
 
         await EnergyAmountController.checkEnergyAmout(
@@ -154,10 +160,15 @@ export class EnergyAmountController {
         await ActivationEnergyAmountIndexersController.addEnergyAmountReference(
             params, dataReference.data, dataReference.collection);
 
+        await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, dataReference.data, dataReference.collection);
+
         params.logger.debug('============= END   : createTSOEnergyAmount %s EnergyAmountController ===========',
             dataReference.data.energyAmountMarketDocumentMrid,
         );
     }
+
+
+
 
     public static async updateTSOEnergyAmount(
         params: STARParameters,
@@ -166,7 +177,7 @@ export class EnergyAmountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Amount.`);
         }
 
         const energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
@@ -185,12 +196,18 @@ export class EnergyAmountController {
             await EnergyAmountService.write(params, energyObj, key);
 
             await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
+
+            await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
         }
 
         params.logger.info('============= END   : updateTSOEnergyAmount %s EnergyAmountController ===========',
             energyObj.energyAmountMarketDocumentMrid,
         );
     }
+
+
+
+
 
     public static async updateTSOEnergyAmountList(
         params: STARParameters,
@@ -199,7 +216,7 @@ export class EnergyAmountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Amount.`);
         }
 
         const energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
@@ -221,12 +238,18 @@ export class EnergyAmountController {
                     await EnergyAmountService.write(params, energyObj, key);
 
                     await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
+
+                    await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
                 }
             }
         }
 
         params.logger.info('============= END   : updateTSOEnergyAmountList %s EnergyAmountController ===========');
     }
+
+
+
+
 
     public static async createDSOEnergyAmount(
         params: STARParameters,
@@ -235,7 +258,7 @@ export class EnergyAmountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Amount.`);
         }
 
         const energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
@@ -257,6 +280,8 @@ export class EnergyAmountController {
             await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
 
             await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
+
+            await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
         }
 
         params.logger.debug('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
@@ -271,7 +296,7 @@ export class EnergyAmountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Amount.`);
         }
 
         const energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
@@ -296,6 +321,8 @@ export class EnergyAmountController {
                     await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
 
                     await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
+
+                    await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
                 }
             }
         }
@@ -310,7 +337,7 @@ export class EnergyAmountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Amount.`);
         }
 
         await EnergyAmountController.checkEnergyAmout(
@@ -322,8 +349,11 @@ export class EnergyAmountController {
         await ActivationEnergyAmountIndexersController.addEnergyAmountReference(
             params, dataReference.data, dataReference.collection);
 
+
+        await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, dataReference.data, dataReference.collection);
+
         params.logger.debug('============= END   : createDSOEnergyAmount %s EnergyAmountController ===========',
-        dataReference.data.energyAmountMarketDocumentMrid,
+            dataReference.data.energyAmountMarketDocumentMrid,
         );
     }
 
@@ -334,7 +364,7 @@ export class EnergyAmountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Amount.`);
         }
 
         const energyList: EnergyAmount[] = EnergyAmount.formatListString(inputStr);
@@ -356,6 +386,8 @@ export class EnergyAmountController {
                     await EnergyAmountService.write(params, energyObj, key);
 
                     await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
+
+                    await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
                 }
             }
         }
@@ -370,7 +402,7 @@ export class EnergyAmountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Amount.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Amount.`);
         }
 
         const energyObj: EnergyAmount = EnergyAmount.formatString(inputStr);
@@ -389,6 +421,8 @@ export class EnergyAmountController {
             await EnergyAmountService.write(params, energyObj, key);
 
             await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
+
+            await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
         }
 
         params.logger.info('============= END   : updateDSOEnergyAmount %s EnergyAmountController ===========',

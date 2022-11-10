@@ -29,6 +29,8 @@ const energyAccountTimeIntervalStart = 'PT';
 const energyAccountTimeIntervalMinutes = 'M';
 const energyAccountTimeIntervalSeconds = 'S';
 
+const feedbackProducerValidityPeriod: number = 7 * 5; // nb of days for 5 full weeks
+
 const roleEnedis = RoleType.Role_DSO;
 const roleProducer = RoleType.Role_Producer;
 const roleRte = RoleType.Role_TSO;
@@ -111,6 +113,13 @@ export class ParametersController {
         parameters.values.set(ParametersType.BALANCING_DOCUMENT, balancingDocument);
 
         parameters.values.set(ParametersType.BALANCING_DOCUMENT_PREFIX, 'BaDoc_');
+
+
+        parameters.values.set(ParametersType.FEEDBACK_PRODUCER_PREFIX, 'FeedBack_');
+
+        parameters.values.set(ParametersType.FEEDBACK_PRODUCER_VALIDITY_PERIOD, feedbackProducerValidityPeriod);
+
+
 
         if (identity === OrganizationTypeMsp.ENEDIS) {
             /*

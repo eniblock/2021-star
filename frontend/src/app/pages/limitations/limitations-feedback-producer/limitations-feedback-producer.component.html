@@ -1,0 +1,9 @@
+<button mat-icon-button
+        (click)="commentaireProducer()"
+        *ngIf="instance == InstanceEnum.PRODUCER "
+>
+  Jusqu'au {{ activation?.feedbackProducer?.validityPeriodStartDateTime }}
+</button>
+
+
+<!--<i class="fa-solid fa-message"></i>-->

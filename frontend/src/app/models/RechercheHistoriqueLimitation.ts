@@ -5,6 +5,7 @@ import {OrdreLimitation} from "./OrdreLimitation";
 import {ReserveBid} from "./ReserveBid";
 import {TypeLimitation} from "./enum/TypeLimitation.enum";
 import {BalancingDocument} from "./BalancingDocument";
+import {FeedbackProducer} from "./FeedbackProducer";
 
 export interface TypeCriteria {
   messageType: string,
@@ -33,6 +34,7 @@ export interface RechercheHistoriqueLimitationEntite {
   displayedSourceName: string,
   reserveBidMarketDocument: ReserveBid | null,
   balancingDocument: BalancingDocument,
+  feedbackProducer: FeedbackProducer,
 }
 
 export interface RechercheHistoriqueLimitationEntiteWithAnnotation extends RechercheHistoriqueLimitationEntite {

@@ -14,7 +14,7 @@ import {TechnologyType} from "../../models/enum/TechnologyType.enum";
 import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
 import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
 
-const MOCK = false;
+const MOCK = true;
 
 @Injectable({
   providedIn: 'root',
@@ -148,6 +148,21 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         activationPriceAmount: 14,
         financialPriceAmount: 210
       },
+      feedbackProducer: {
+        feedbackProducerMrid: "f1",
+        activationDocumentMrid: "string",
+        messageType: "string",
+        processType: "string",
+        revisionNumber: "1",
+        senderMarketParticipantMrid: "string",
+        receiverMarketParticipantMrid: "string",
+        createdDateTime: "string",
+        validityPeriodStartDateTime: "2022-11-07T13:46:40",
+        validityPeriodEndDateTime: "2024-11-07T13:46:40",
+        feedback: "",
+        feedbackAnswer: "",
+        feedbackElements: "",
+      }
     },
 
     {
@@ -267,6 +282,21 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         quantity: 15,
         activationPriceAmount: 14,
         financialPriceAmount: 210
+      },
+      feedbackProducer: {
+        feedbackProducerMrid: "f1",
+        activationDocumentMrid: "string",
+        messageType: "string",
+        processType: "string",
+        revisionNumber: "1",
+        senderMarketParticipantMrid: "string",
+        receiverMarketParticipantMrid: "string",
+        createdDateTime: "string",
+        validityPeriodStartDateTime: "2022-11-07T13:46:40",
+        validityPeriodEndDateTime: "2024-11-07T13:46:40",
+        feedback: "",
+        feedbackAnswer: "",
+        feedbackElements: "",
       },
     },
   ]);

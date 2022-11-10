@@ -1,11 +1,11 @@
 <form [formGroup]="form" *ngIf="!loading">
 
   <mat-form-field appearance="outline">
-    <mat-label>Status</mat-label>
+    <mat-label>Statut</mat-label>
     <mat-select formControlName="reserveBidStatus" (selectionChange)="changeStatus()">
       <mat-option [value]="ReserveBidStatusEnum.NEW" disabled>{{ ReserveBidStatusEnum.NEW | ReserveBidStatus }}</mat-option>
-      <mat-option [value]="ReserveBidStatusEnum.VALIDATED">{{ ReserveBidStatusEnum.VALIDATED | ReserveBidStatus }}</mat-option>
-      <mat-option [value]="ReserveBidStatusEnum.REFUSED" [disabled]="this.form.get('reserveBidStatus')?.value == ReserveBidStatusEnum.VALIDATED">{{ ReserveBidStatusEnum.REFUSED | ReserveBidStatus }}</mat-option>
+      <mat-option [value]="ReserveBidStatusEnum.VALIDATED" [disabled]="this.form.get('reserveBidStatus')?.value == ReserveBidStatusEnum.REFUSED">{{ ReserveBidStatusEnum.VALIDATED | ReserveBidStatus }}</mat-option>
+      <mat-option [value]="ReserveBidStatusEnum.REFUSED">{{ ReserveBidStatusEnum.REFUSED | ReserveBidStatus }}</mat-option>
     </mat-select>
   </mat-form-field>
 

@@ -119,7 +119,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
             } catch (err) {
                 // params.logger.info('err: ', err.message)
-                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.ENEDIS} does not have write access to create a reserve bid market document`);
+                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.ENEDIS} does not have rights to create a reserve bid market document`);
             }
 
         });
@@ -151,7 +151,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
             } catch (err) {
                 // params.logger.info('err: ', err.message)
-                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} does not have write access to create a reserve bid market document`);
+                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} does not have rights to create a reserve bid market document`);
             }
 
         });
@@ -501,13 +501,13 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
             } catch (err) {
                 // params.logger.info('err: ', err.message)
-                expect(err.message).to.equal(`Organisation, ${RoleType.Role_Producer} does not have write access to create a reserve bid market document`);
+                expect(err.message).to.equal(`Organisation, ${RoleType.Role_Producer} does not have rights to create a reserve bid market document`);
             }
         });
 
 
 
-        it('should return ERROR on UpdateStatus - Enedis does not have write access for HTB', async () => {
+        it('should return ERROR on UpdateStatus - Enedis does not have rights for HTB', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
@@ -553,7 +553,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
         });
 
 
-        it('should return ERROR on UpdateStatus - RTE does not have write access for HTA', async () => {
+        it('should return ERROR on UpdateStatus - RTE does not have rights for HTA', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 

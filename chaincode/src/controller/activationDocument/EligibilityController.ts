@@ -38,7 +38,7 @@ export class EligibilityController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Activation Document`);
+            throw new Error(`Organisation, ${identity} does not have rights for Activation Document`);
         }
 
         let statusToUpdate: EligibilityStatus;

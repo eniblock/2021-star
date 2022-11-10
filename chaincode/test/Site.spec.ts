@@ -135,7 +135,7 @@ describe('Star Tests SITES', () => {
                 await star.CreateSite(transactionContext, JSON.stringify(Values.HTB_site_valid));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMSP does not have write access for HTB(HV) sites');
+                expect(err.message).to.equal('Organisation, FakeMSP does not have rights for HTB(HV) sites');
             }
         });
 
@@ -241,7 +241,7 @@ describe('Star Tests SITES', () => {
                 await star.CreateSite(transactionContext, JSON.stringify(Values.HTA_site_valid));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMSP does not have write access for HTA(MV) sites');
+                expect(err.message).to.equal('Organisation, FakeMSP does not have rights for HTA(MV) sites');
             }
         });
 

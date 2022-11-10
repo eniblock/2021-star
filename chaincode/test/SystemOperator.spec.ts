@@ -99,7 +99,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
                 // params.logger.info(err.message)
-                const msg = 'Organisation, '.concat(Values.FakeMSP).concat(' does not have write access to create a system operator');
+                const msg = 'Organisation, '.concat(Values.FakeMSP).concat(' does not have rights to create a system operator');
                 expect(err.message).to.equal(msg);
             }
         });
@@ -120,7 +120,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTA_systemoperator));
             } catch(err) {
                 // params.logger.info(err.message)
-                const msg = 'Organisation, '.concat(OrganizationTypeMsp.RTE).concat(' does not have write access for ').concat(OrganizationTypeMsp.ENEDIS);
+                const msg = 'Organisation, '.concat(OrganizationTypeMsp.RTE).concat(' does not have rights for ').concat(OrganizationTypeMsp.ENEDIS);
                 expect(err.message).to.equal(msg);
             }
         });
@@ -131,7 +131,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.CreateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
                 // params.logger.info(err.message)
-                const msg = 'Organisation, '.concat(OrganizationTypeMsp.ENEDIS).concat(' does not have write access for ').concat(OrganizationTypeMsp.RTE);
+                const msg = 'Organisation, '.concat(OrganizationTypeMsp.ENEDIS).concat(' does not have rights for ').concat(OrganizationTypeMsp.RTE);
                 expect(err.message).to.equal(msg);
             }
         });
@@ -222,7 +222,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.UpdateSystemOperator(transactionContext, JSON.stringify(Values.HTB_systemoperator));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMSP does not have write access to update a system operator');
+                expect(err.message).to.equal('Organisation, FakeMSP does not have rights to update a system operator');
             }
         });
 
@@ -237,7 +237,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
             } catch(err) {
                 // params.logger.info(err.message)
-                const msg = 'Organisation, '.concat(OrganizationTypeMsp.RTE).concat(' does not have write access for ').concat(OrganizationTypeMsp.ENEDIS);
+                const msg = 'Organisation, '.concat(OrganizationTypeMsp.RTE).concat(' does not have rights for ').concat(OrganizationTypeMsp.ENEDIS);
                 expect(err.message).to.equal(msg);
             }
         });
@@ -253,7 +253,7 @@ describe('Star Tests SYSTEM OPERATORS', () => {
                 await star.UpdateSystemOperator(transactionContext, JSON.stringify(systemoperator));
             } catch(err) {
                 // params.logger.info(err.message)
-                const msg = 'Organisation, '.concat(OrganizationTypeMsp.ENEDIS).concat(' does not have write access for ').concat(OrganizationTypeMsp.RTE);
+                const msg = 'Organisation, '.concat(OrganizationTypeMsp.ENEDIS).concat(' does not have rights for ').concat(OrganizationTypeMsp.RTE);
                 expect(err.message).to.equal(msg);
             }
         });

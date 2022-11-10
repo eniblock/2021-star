@@ -24,7 +24,6 @@ import { RoleType } from '../enums/RoleType';
 import { AttachmentFileWithStatus } from '../model/attachmentFileWithStatus';
 import { ActivationDocumentAbstract } from '../model/dataIndex/activationDocumentAbstract';
 import { ReserveBidMarketDocumentAbstract } from '../model/dataIndex/reserveBidMarketDocumentAbstract';
-import { BalancingDocumentController } from './BalancingDocumentController';
 import { SiteActivationIndexersController } from './dataIndex/SiteActivationIndexersController';
 import { SiteReserveBidIndexersController } from './dataIndex/SiteReserveBidIndexersController';
 import { CommonService } from './service/CommonService';
@@ -116,7 +115,7 @@ export class ReserveBidMarketDocumentController {
         }
 
         if (!isRecopy && identity !== OrganizationTypeMsp.PRODUCER) {
-            throw new Error(`Organisation, ${identity} does not have write access to create a reserve bid market document`);
+            throw new Error(`Organisation, ${identity} does not have rights to create a reserve bid market document`);
         }
 
         // Get existing sites
@@ -314,7 +313,7 @@ export class ReserveBidMarketDocumentController {
         const userRole = HLFServices.getUserRole(params);
 
         if (userRole !== RoleType.Role_DSO && userRole !== RoleType.Role_TSO) {
-            throw new Error(`Organisation, ${userRole} does not have write access to create a reserve bid market document`);
+            throw new Error(`Organisation, ${userRole} does not have rights to create a reserve bid market document`);
         }
 
         if (newStatus !== ReserveBidStatus.VALIDATED

@@ -127,7 +127,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                 // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, '
                     .concat(Values.FakeMSP)
-                    .concat(' does not have write access for Reference Energy Account.'));
+                    .concat(' does not have rights for Reference Energy Account.'));
             }
         });
 
@@ -179,7 +179,7 @@ describe('Star Tests ReferenceEnergyAccount', () => {
                 await star.CreateReferenceEnergyAccount(transactionContext, JSON.stringify(energy_account));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('Reference Energy Account, mismatch sender: rte does not have write access for Reference Energy Account '
+                expect(err.message).to.equal('Reference Energy Account, mismatch sender: rte does not have rights for Reference Energy Account '
                     .concat(energy_account.energyAccountMarketDocumentMrid).concat(' creation.'));
             }
         });

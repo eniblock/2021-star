@@ -240,7 +240,7 @@ describe('Star Tests ActivationDocument', () => {
                 // params.logger.info(err.message)
                 expect(err.message).to.equal('Organisation, '
                     .concat(Values.FakeMSP)
-                    .concat(' does not have write access for Activation Document'));
+                    .concat(' does not have rights for Activation Document'));
             }
         });
 
@@ -253,7 +253,7 @@ describe('Star Tests ActivationDocument', () => {
         //         await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
         //     } catch(err) {
         //         params.logger.info(err.message)
-        //         expect(err.message).to.equal('Organisation, enedis does not have write access for MW orders');
+        //         expect(err.message).to.equal('Organisation, enedis does not have rights for MW orders');
         //     }
         // });
 

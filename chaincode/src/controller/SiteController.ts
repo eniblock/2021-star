@@ -49,11 +49,11 @@ export class SiteController {
         const identity = params.values.get(ParametersType.IDENTITY);
         if (siteObj.marketEvaluationPointMrid && siteObj.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.RTE) {
-                throw new Error(`Organisation, ${identity} does not have write access for HTB(HV) sites`);
+                throw new Error(`Organisation, ${identity} does not have rights for HTB(HV) sites`);
             }
         } else if (!siteObj.marketEvaluationPointMrid && !siteObj.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.ENEDIS) {
-                throw new Error(`Organisation, ${identity} does not have write access for HTA(MV) sites`);
+                throw new Error(`Organisation, ${identity} does not have rights for HTA(MV) sites`);
             }
         } else {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);
@@ -107,11 +107,11 @@ export class SiteController {
         const identity = params.values.get(ParametersType.IDENTITY);
         if (siteObj.marketEvaluationPointMrid && siteObj.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.RTE) {
-                throw new Error(`Organisation, ${identity} does not have write access for HTB(HV) sites`);
+                throw new Error(`Organisation, ${identity} does not have rights for HTB(HV) sites`);
             }
         } else if (!siteObj.marketEvaluationPointMrid && !siteObj.schedulingEntityRegisteredResourceMrid) {
             if (identity !== OrganizationTypeMsp.ENEDIS) {
-                throw new Error(`Organisation, ${identity} does not have write access for HTA(MV) sites`);
+                throw new Error(`Organisation, ${identity} does not have rights for HTA(MV) sites`);
             }
         } else {
             throw new Error(`marketEvaluationPointMrid and schedulingEntityRegisteredResourceMrid must be both present for HTB site or absent for HTA site.`);

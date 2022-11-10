@@ -14,6 +14,7 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
   InstanceEnum = Instance;
 
   instance?: Instance;
+  buttonCreationFeedbackDisabled = true;
 
   constructor(
     private instanceService: InstanceService,
@@ -24,6 +25,14 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
     this.instanceService.getTypeInstance().subscribe((instance) => {
       this.instance = instance;
     });
+
+    if (this.activation) {
+      const now = new Date();
+      const dateFin = new Date(this.activation.feedbackProducer.validityPeriodEndDateTime);
+      this.buttonCreationFeedbackDisabled = now.getTime() > dateFin.getTime();
+    } else {
+      this.buttonCreationFeedbackDisabled = true;
+    }
   }
 
   commentaireProducer() {

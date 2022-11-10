@@ -1,9 +1,10 @@
 <button mat-raised-button
-        class="bg-dark text-white"
+        [class]="!buttonCreationFeedbackDisabled ? 'bg-dark text-white' : ''"
         (click)="commentaireProducer()"
+        [disabled]="buttonCreationFeedbackDisabled"
         *ngIf="instance == InstanceEnum.PRODUCER && (!activation?.feedbackProducer?.feedback)"
 >
-  <div style="line-height: 20px !important; margin:6px">Jusqu'au<br/>{{ activation?.feedbackProducer?.validityPeriodStartDateTime | date:'shortDate' }}</div>
+  <div style="line-height: 20px !important; margin:6px">Jusqu'au<br/>{{ activation?.feedbackProducer?.validityPeriodEndDateTime | date:'shortDate' }}</div>
 </button>
 
 

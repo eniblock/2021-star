@@ -1,9 +1,14 @@
-<button mat-icon-button
+<button mat-raised-button
+        class="bg-dark text-white"
         (click)="commentaireProducer()"
-        *ngIf="instance == InstanceEnum.PRODUCER "
+        *ngIf="instance == InstanceEnum.PRODUCER && (!activation?.feedbackProducer?.feedback)"
 >
-  Jusqu'au {{ activation?.feedbackProducer?.validityPeriodStartDateTime }}
+  <div style="line-height: 20px !important; margin:6px">Jusqu'au<br/>{{ activation?.feedbackProducer?.validityPeriodStartDateTime | date:'shortDate' }}</div>
 </button>
 
 
 <!--<i class="fa-solid fa-message"></i>-->
+
+<!--
+  * disabled le bouton si la date est depassee
+-->

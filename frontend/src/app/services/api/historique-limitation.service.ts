@@ -159,7 +159,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         createdDateTime: "string",
         validityPeriodStartDateTime: "2022-11-07T13:46:40",
         validityPeriodEndDateTime: "2024-11-07T13:46:40",
-        feedback: "",
+        feedback: "undefined",
         feedbackAnswer: "",
         feedbackElements: "",
       }

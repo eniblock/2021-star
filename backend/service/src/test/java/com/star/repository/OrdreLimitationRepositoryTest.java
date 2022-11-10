@@ -1,12 +1,8 @@
 package com.star.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
-import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.models.limitation.OrdreLimitation;
-import com.star.models.limitation.OrdreLimitationEligibilityStatus;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,7 +15,6 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
@@ -34,13 +29,7 @@ class OrdreLimitationRepositoryTest extends AbstractTest {
     private ArgumentCaptor<String> functionNameArgumentCaptor;
 
     @Captor
-    private ArgumentCaptor<String> reconciliationArgumentCaptor;
-
-    @Captor
     private ArgumentCaptor<String> objectArgumentCaptor;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     void testSaveOrdreLimitationEmptyList() throws TechnicalException {

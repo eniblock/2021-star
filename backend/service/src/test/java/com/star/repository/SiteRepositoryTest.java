@@ -1,5 +1,6 @@
 package com.star.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
 import com.star.models.site.Site;
@@ -48,23 +49,25 @@ class SiteRepositoryTest extends AbstractTest {
     }
 
     @Test
-    void testSaveSite() throws InterruptedException, TimeoutException, ContractException, TechnicalException {
+    void testSaveSite() throws InterruptedException, TimeoutException, ContractException, TechnicalException, JsonProcessingException {
         // GIVEN
-
+        Site site = getSite();
         // WHEN
-        siteRepository.saveSites(Arrays.asList(getSite()));
+        siteRepository.saveSites(Arrays.asList(site));
 
         // THEN
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
                 objectArgumentCaptor.capture());
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(SiteRepository.CREATE_SITE);
+        assertThat(objectArgumentCaptor.getValue()).isNotNull();
+        assertThat(objectArgumentCaptor.getValue()).isEqualTo(objectMapper.writeValueAsString(site));
     }
 
 
     @Test
-    void testUpdateSite() throws InterruptedException, TimeoutException, ContractException, TechnicalException {
+    void testUpdateSite() throws InterruptedException, TimeoutException, ContractException, TechnicalException, JsonProcessingException {
         // GIVEN
-
+        Site site = getSite();
 
         // WHEN
         siteRepository.updateSites(Arrays.asList(getSite()));
@@ -73,6 +76,8 @@ class SiteRepositoryTest extends AbstractTest {
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
                 objectArgumentCaptor.capture());
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(SiteRepository.UPDATE_SITE);
+        assertThat(objectArgumentCaptor.getValue()).isNotNull();
+        assertThat(objectArgumentCaptor.getValue()).isEqualTo(objectMapper.writeValueAsString(site));
     }
 
     @Test

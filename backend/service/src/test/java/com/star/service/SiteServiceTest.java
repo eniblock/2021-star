@@ -2,7 +2,6 @@ package com.star.service;
 
 import com.star.AbstractTest;
 import com.star.enums.TechnologyTypeEnum;
-import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.producer.Producer;
 import com.star.models.site.ImportSiteResult;
@@ -26,7 +25,6 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.star.enums.InstanceEnum.DSO;
 import static com.star.enums.InstanceEnum.TSO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

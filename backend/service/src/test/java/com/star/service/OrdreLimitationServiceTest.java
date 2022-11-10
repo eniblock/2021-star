@@ -291,7 +291,7 @@ class OrdreLimitationServiceTest extends AbstractTest {
         String fileName = "ordre-fin-limitation-ok-test-eligibilityStatus.json";
 
         // WHEN
-       ordreLimitationService.importOrdreFinLimitation(asList(createFichierOrdre(fileName, ordreFinLimitationEligibilityStatusKo)), DSO);
+        ordreLimitationService.importOrdreFinLimitation(asList(createFichierOrdre(fileName, ordreFinLimitationEligibilityStatusKo)), DSO);
 
 
         // THEN

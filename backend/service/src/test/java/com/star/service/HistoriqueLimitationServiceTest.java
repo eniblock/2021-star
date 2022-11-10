@@ -2,7 +2,6 @@ package com.star.service;
 
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
-import com.star.models.common.OrderDirection;
 import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.repository.HistoriqueLimitationRepository;
 import org.junit.jupiter.api.Test;

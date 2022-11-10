@@ -19,6 +19,7 @@ import com.star.models.producer.Producer;
 import com.star.repository.EnergyAmountRepository;
 import com.star.service.helpers.QueryBuilderHelper;
 import com.star.utils.DateUtils;
+import com.star.utils.InfoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -57,7 +58,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 public class EnergyAmountService {
 
-    private static final String REVISION_NUMBER = "1";
     private static final String ARE_DOMAIN_HTA = "17X100A100A0001A"; // TSO
 
     @Autowired
@@ -305,7 +305,7 @@ public class EnergyAmountService {
         }
         energyAmount.setDocType(ENERGY_AMOUNT.getDocType());
         if (energyAmount.getRevisionNumber() == null) {
-            energyAmount.setRevisionNumber(REVISION_NUMBER);
+            energyAmount.setRevisionNumber(InfoUtils.REVISION_NUMBER);
         }
         if (energyAmount.getDocStatus() == null) {
             energyAmount.setDocStatus(EMPTY);

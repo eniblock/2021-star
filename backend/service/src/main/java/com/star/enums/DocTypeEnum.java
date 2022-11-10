@@ -10,7 +10,8 @@ public enum DocTypeEnum {
     ACTIVATION_DOCUMENT("activationDocument", "_design/indexActivationDocumentDoc"),
     ENERGY_ACCOUNT("energyAccount", "_design/indexEnergyAccountDoc"),
     ENERGY_AMOUNT("energyAmount", "_design/indexEnergyAmountDoc"),
-    YELLOW_PAGES("yellowPages", "_design/indexYellowPagesDoc");
+    YELLOW_PAGES("yellowPages", "_design/indexYellowPagesDoc"),
+    FEEDBACK("feedBack", "_design/indexFeedBackDoc");
     private String docType;
     private String indexName;
 

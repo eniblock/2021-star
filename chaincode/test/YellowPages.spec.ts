@@ -114,7 +114,7 @@ describe('Star Tests YELLOW PAGES', () => {
                 await star.CreateYellowPages(transactionContext, JSON.stringify(Values.HTA_yellowPage));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMSP does not have write access for Yellow Pages.');
+                expect(err.message).to.equal('Organisation, FakeMSP does not have rights for Yellow Pages.');
             }
         });
 

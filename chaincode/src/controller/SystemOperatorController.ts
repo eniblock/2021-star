@@ -19,7 +19,7 @@ export class SystemOperatorController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access to create a system operator`);
+            throw new Error(`Organisation, ${identity} does not have rights to create a system operator`);
         }
 
         let systemOperatorObj: SystemOperator;
@@ -35,7 +35,7 @@ export class SystemOperatorController {
         );
 
         if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
-            throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
+            throw new Error(`Organisation, ${identity} does not have rights for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
         await SystemOperatorService.write(params, systemOperatorObj);
@@ -63,7 +63,7 @@ export class SystemOperatorController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access to update a system operator`);
+            throw new Error(`Organisation, ${identity} does not have rights to update a system operator`);
         }
 
         let systemOperatorObj: SystemOperator;
@@ -79,7 +79,7 @@ export class SystemOperatorController {
         );
 
         if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
-            throw new Error(`Organisation, ${identity} does not have write access for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
+            throw new Error(`Organisation, ${identity} does not have rights for ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 
         await this.getSystemOperatorObjById(params, systemOperatorObj.systemOperatorMarketParticipantMrid);

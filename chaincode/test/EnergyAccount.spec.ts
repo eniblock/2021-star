@@ -335,7 +335,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, JSON.stringify(nrj));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have write access for Energy Account.`);
+                expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have rights for Energy Account.`);
             }
         });
 
@@ -658,7 +658,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('Energy Account, sender: enedis does not have write access for ea4cef73-ff6b-400b-8957-d34000eb30a3 creation. (Wrong SystemOperator)');
+                expect(err.message).to.equal('Energy Account, sender: enedis does not have rights for ea4cef73-ff6b-400b-8957-d34000eb30a3 creation. (Wrong SystemOperator)');
             }
         });
 
@@ -759,7 +759,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, JSON.stringify(Values.HTB_EnergyAccount_a3));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMSP does not have write access for Energy Account.');
+                expect(err.message).to.equal('Organisation, FakeMSP does not have rights for Energy Account.');
             }
         });
 
@@ -810,7 +810,7 @@ describe('Star Tests EnergyAccount', () => {
                 await star.CreateEnergyAccount(transactionContext, energyaccount_str);
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('Energy Account, sender: rte does not have write access for ea4cef73-ff6b-400b-8957-d34000eb30a3 creation. (Wrong SystemOperator)');
+                expect(err.message).to.equal('Energy Account, sender: rte does not have rights for ea4cef73-ff6b-400b-8957-d34000eb30a3 creation. (Wrong SystemOperator)');
             }
         });
 

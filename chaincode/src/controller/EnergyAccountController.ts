@@ -291,7 +291,7 @@ export class EnergyAccountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Energy Account.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Energy Account.`);
         }
 
         const processTypeComptage: string[] = params.values.get(ParametersType.PROCESS_TYPE_COMPTAGE);
@@ -346,7 +346,7 @@ export class EnergyAccountController {
 
         if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(
-                `Energy Account, sender: ${identity} does not have write access for ${energyObj.energyAccountMarketDocumentMrid}. (Wrong SystemOperator)`,
+                `Energy Account, sender: ${identity} does not have rights for ${energyObj.energyAccountMarketDocumentMrid}. (Wrong SystemOperator)`,
             );
         }
 

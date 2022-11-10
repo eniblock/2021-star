@@ -143,7 +143,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateTSOEnergyAmount(transactionContext, JSON.stringify(Values.HTB_EnergyAmount));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have write access for Energy Amount.`);
+                expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have rights for Energy Amount.`);
             }
         });
 
@@ -591,7 +591,7 @@ describe('Star Tests EnergyAmount', () => {
                 await star.CreateDSOEnergyAmount(transactionContext, JSON.stringify(Values.HTA_EnergyAmount));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have write access for Energy Amount.`);
+                expect(err.message).to.equal(`Organisation, ${Values.FakeMSP} does not have rights for Energy Amount.`);
             }
         });
 

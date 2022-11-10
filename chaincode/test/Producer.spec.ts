@@ -77,7 +77,7 @@ describe('Star Tests PRODUCERS', () => {
                 await star.CreateProducer(transactionContext, JSON.stringify(Values.HTB_Producer));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMspID does not have write access to create a producer');
+                expect(err.message).to.equal('Organisation, FakeMspID does not have rights to create a producer');
             }
         });
 
@@ -197,7 +197,7 @@ describe('Star Tests PRODUCERS', () => {
                 await star.UpdateProducer(transactionContext, JSON.stringify(Values.HTB_Producer));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('Organisation, FakeMSP does not have write access to update a producer');
+                expect(err.message).to.equal('Organisation, FakeMSP does not have rights to update a producer');
             }
         });
 

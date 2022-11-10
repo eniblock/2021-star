@@ -60,7 +60,7 @@ export class ReferenceEnergyAccountController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE) {
-            throw new Error(`Organisation, ${identity} does not have write access for Reference Energy Account.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Reference Energy Account.`);
         }
 
         if (!energyObj.marketEvaluationPointMrid) {
@@ -95,7 +95,7 @@ export class ReferenceEnergyAccountController {
 
         if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(
-                `Reference Energy Account, mismatch sender: ${identity} does not have write access for Reference Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`,
+                `Reference Energy Account, mismatch sender: ${identity} does not have rights for Reference Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`,
             );
         }
 

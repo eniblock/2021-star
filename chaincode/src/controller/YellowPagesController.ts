@@ -20,7 +20,7 @@ export class YellowPagesController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access for Yellow Pages.`);
+            throw new Error(`Organisation, ${identity} does not have rights for Yellow Pages.`);
         }
 
         let yellowPageObj: YellowPages;

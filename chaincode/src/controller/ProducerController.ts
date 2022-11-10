@@ -18,7 +18,7 @@ export class ProducerController {
 
         // const identity = params.values.get(ParametersType.IDENTITY);
         // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-        //     throw new Error(`Organisation, ${identity} does not have write access to create a producer`);
+        //     throw new Error(`Organisation, ${identity} does not have rights to create a producer`);
         // }
 
         const producerObj = Producer.formatString(inputStr);
@@ -35,7 +35,7 @@ export class ProducerController {
 
         // const identity = params.values.get(ParametersType.IDENTITY);
         // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-        //     throw new Error(`Organisation, ${identity} does not have write access to create a producer`);
+        //     throw new Error(`Organisation, ${identity} does not have rights to create a producer`);
         // }
 
         const producerList: Producer[] = Producer.formatListString(inputStr);
@@ -56,7 +56,7 @@ export class ProducerController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access to update a producer`);
+            throw new Error(`Organisation, ${identity} does not have rights to update a producer`);
         }
 
         const producerObj = Producer.formatString(inputStr);
@@ -76,7 +76,7 @@ export class ProducerController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-            throw new Error(`Organisation, ${identity} does not have write access to update a producer`);
+            throw new Error(`Organisation, ${identity} does not have rights to update a producer`);
         }
 
         const producerList: Producer[] = Producer.formatListString(inputStr);

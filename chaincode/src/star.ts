@@ -27,6 +27,7 @@ import { BalancingDocumentController } from './controller/BalancingDocumentContr
 import { ReserveBidMarketDocumentController } from './controller/ReserveBidMarketDocumentController';
 import { HLFServices } from './controller/service/HLFservice';
 import { StarDataUpdateController } from './controller/StarDataUpdateController';
+import { FeedbackProducerController } from './controller/FeedbackProducerController';
 
 export class Star extends Contract {
 
@@ -862,5 +863,41 @@ export class Star extends Contract {
             throw error;
         }
     }
+
+
+    /*
+        inputStr : activationDocumentMrid the id of the document
+                    feedbackStr the comment sent by the producer
+    */
+    public static async UpdateFeedbackProducer(
+        ctx: Context,
+        activationDocumentMrid: string,
+        feedbackStr: string) {
+
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await FeedbackProducerController.updateFeedbackProducer(params, activationDocumentMrid, feedbackStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : activationDocumentMrid the id of the document
+                    answerStr the answer of DSO/TSO to the comment written by the producer
+    */
+    public static async updateFeedbackProducerAnswer(
+        ctx: Context,
+        activationDocumentMrid: string,
+        answerStr: string) {
+
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await FeedbackProducerController.updateFeedbackProducerAnswer(params, activationDocumentMrid, answerStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
 }

@@ -5,6 +5,7 @@ export enum DocType {
     BALANCING_DOCUMENT = 'balancingDocument',
     ENERGY_ACCOUNT = 'energyAccount',
     ENERGY_AMOUNT = 'energyAmount',
+    FEEDBACK_PRODUCER = 'feedbackProducer',
     PRODUCER = 'producer',
     REFERENCE_ENERGY_ACCOUNT = 'referenceEnergyAccount',
     RESERVE_BID_MARKET_DOCUMENT = 'reserveBidMarketDocument',

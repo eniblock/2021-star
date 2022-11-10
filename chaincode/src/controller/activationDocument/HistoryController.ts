@@ -32,6 +32,8 @@ import { HistoryInformationInBuilding } from '../../model/activationDocument/his
 import { TypeCriteria } from '../../model/activationDocument/typeCriteria';
 import { BalancingDocument } from '../../model/balancingDocument';
 import { BalancingDocumentController } from '../BalancingDocumentController';
+import { FeedbackProducer } from '../../model/feedbackProducer';
+import { FeedbackProducerController } from '../FeedbackProducerController';
 
 export class HistoryController {
 
@@ -602,11 +604,23 @@ export class HistoryController {
 
         params.logger.debug('balancingDocument: ', JSON.stringify(balancingDocument));
 
+
+        let feedbackProducer: FeedbackProducer = null;
+        try {
+            feedbackProducer = await FeedbackProducerController.getByActivationDocumentMrId(
+                params, activationDocument.activationDocumentMrid);
+        } catch (err) {
+                // DO nothing except "Not accessible information"
+        }
+
+        params.logger.debug('feedbackProducer: ', JSON.stringify(feedbackProducer));
+
         const information: HistoryInformation = {
             activationDocument: JSON.parse(JSON.stringify(activationDocument)),
             balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
             displayedSourceName,
             energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
+            feedbackProducer: feedbackProducer ? JSON.parse(JSON.stringify(feedbackProducer)) : null,
             producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
             reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
             site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,

@@ -1,0 +1,49 @@
+VERSION 0.6
+
+deps:
+    FROM openjdk:11
+    WORKDIR /workspace/app
+
+    COPY mvnw .
+    COPY .mvn .mvn
+    COPY pom.xml .
+    COPY api/pom.xml api/
+    COPY service/pom.xml service/
+
+    RUN --mount=type=cache,target=/root/.m2 \
+        ./mvnw dependency:go-offline -B
+    # cache build dependencies, without the sources
+    RUN --mount=type=cache,target=/root/.m2 \
+        ./mvnw package -DskipTests -B || true
+
+build:
+    FROM +deps
+    COPY api/src api/src/
+    COPY service/src service/src/
+    RUN --mount=type=cache,target=/root/.m2 \
+        ./mvnw  package -DskipTests -B
+    SAVE ARTIFACT /workspace/app/api/target/api*.jar
+
+docker:
+    FROM openjdk:11
+    # required to validate rte certificates
+    RUN cd /usr/local/share/ca-certificates/ \
+        && wget https://globalsign.tbs-certificats.com/gsrsaovsslca2018.crt \
+        && update-ca-certificates
+    VOLUME /tmp
+    COPY +build/api*.jar /app/api.jar
+    ENTRYPOINT ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005","-jar","/app/api.jar"]
+    ARG tag=latest
+    ARG ref=eniblock/2021-star-backend:${tag}
+    SAVE IMAGE --push ${ref}
+
+dev:
+    FROM +docker
+    ENTRYPOINT ["java", "-jar","/app/api.jar"]
+    ARG ref
+    SAVE IMAGE --push ${ref}
+
+test:
+    FROM +build
+    RUN --mount=type=cache,target=/root/.m2 \
+        ./mvnw test

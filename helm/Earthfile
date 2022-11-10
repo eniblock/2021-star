@@ -1,0 +1,11 @@
+VERSION 0.6
+
+ARG helmhelper=github.com/eniblock/build/helm:develop
+IMPORT $helmhelper AS helmper
+
+lint:
+    DO helmper+LINT --helmdir=./star --login=false --environment=rte-dev
+
+publish:
+    ARG tag=latest
+    DO helmper+PUBLISH_HELM --image=ghcr.io/eniblock/star --helmdir=./star --path_value=.keycloak.image.tag --tag=${tag}

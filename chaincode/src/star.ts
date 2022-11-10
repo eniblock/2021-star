@@ -886,7 +886,7 @@ export class Star extends Contract {
         inputStr : activationDocumentMrid the id of the document
                     answerStr the answer of DSO/TSO to the comment written by the producer
     */
-    public static async updateFeedbackProducerAnswer(
+    public static async UpdateFeedbackProducerAnswer(
         ctx: Context,
         activationDocumentMrid: string,
         answerStr: string) {

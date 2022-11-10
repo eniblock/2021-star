@@ -496,11 +496,18 @@ export class ActivationDocumentController {
         const dsoChild: boolean =
             (RoleType.Role_DSO === roleSystemOperator
             && activationDocumentObj.startCreatedDateTime !== '');
+        params.logger.debug("roleSystemOperator:", roleSystemOperator);
+        params.logger.debug("dsoChild:", dsoChild);
+
         const tsoChild: boolean =
             (RoleType.Role_TSO === roleSystemOperator
             && activationDocumentObj.orderEnd === true
             && !activationDocumentObj.startCreatedDateTime);
+        params.logger.debug("tsoChild:", tsoChild);
+
+
         activationDocumentObj.potentialChild = dsoChild || tsoChild;
+        params.logger.debug("activationDocumentObj.potentialChild:", activationDocumentObj.potentialChild);
 
         activationDocumentObj.eligibilityStatus =
             ActivationDocumentEligibilityService.statusInternationalValue(activationDocumentObj.eligibilityStatus);

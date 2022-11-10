@@ -214,7 +214,10 @@ export class EligibilityController {
                 initialTarget = referencedDocument.collection;
 
                 if (activationDocument
-                    && activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted) {
+                    && (activationDocument.eligibilityStatus.toLocaleLowerCase()
+                            === EligibilityStatusType.EligibilityAccepted.toLocaleLowerCase()
+                        || activationDocument.eligibilityStatus.toLocaleLowerCase()
+                            === EligibilityStatusType.FREligibilityAccepted.toLocaleLowerCase())) {
                     targetDocument =
                         await EligibilityController.findDataTarget(
                             params, activationDocument, initialTarget, orderReferencesMap);

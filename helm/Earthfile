@@ -1,11 +1,51 @@
 VERSION 0.6
 
 ARG helmhelper=github.com/eniblock/build/helm:develop
-IMPORT $helmhelper AS helmper
+IMPORT $helmhelper AS helm
+
+ARG repository=ghcr.io/eniblock/star
+
+deps:
+    DO helm+BASE
+    DO helm+UPDATE --helmdir=./star
+
+LINT:
+    COMMAND
+    FROM +deps
+    COPY star ./
+    ARG --required environment
+    RUN lint star ./ --values values-enedis-${environment}.yaml
+    RUN lint star ./ --values values-producer-${environment}.yaml
+    RUN lint star ./ --values values-rte-${environment}.yaml
+
+lint-dev:
+    DO +LINT --environment=dev
+lint-testing:
+    DO +LINT --environment=testing
+lint-staging:
+    DO +LINT --environment=staging
+lint-prod:
+    DO +LINT --environment=prod
 
 lint:
-    DO helmper+LINT --helmdir=./star --login=false --environment=rte-dev
+    BUILD +lint-dev
+    BUILD +lint-testing
+    BUILD +lint-staging
+    BUILD +lint-prod
+
+build:
+    FROM +deps
+    ARG tag=0.1.0-local
+    DO helm+BUILD --helmdir=./star --tag=${tag} --patch_values=.keycloak.image.tag
+    SAVE ARTIFACT /app/*-${tag}.tgz
+
+save-package:
+    FROM scratch
+    COPY +build/*.tgz /
+    SAVE ARTIFACT /*.tgz AS LOCAL ./
 
 publish:
-    ARG tag=latest
-    DO helmper+PUBLISH_HELM --image=ghcr.io/eniblock/star --helmdir=./star --path_value=.keycloak.image.tag --tag=${tag}
+    ARG tag=0.1.0-local
+    FROM +build --tag=${tag}
+    DO helm+LOGIN
+    DO helm+PUBLISH --repository=$repository

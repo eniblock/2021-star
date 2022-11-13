@@ -17,12 +17,12 @@ resource "helm_release" "monitoring" {
   repository       = "https://prometheus-community.github.io/helm-charts"
   values = [
     templatefile("${path.module}/helm/prometheus.tpl", {
-      alerting_username       = data.vault_generic_secret.monitoring.data["username"],
-      alerting_password       = data.vault_generic_secret.monitoring.data["password"],
-      app_name                = local.name,
-      environment             = local.env,
-      grafana_admin_password  = random_password.grafana_password.result
-      domain                  = "${local.monitoring_domain}"
+      alerting_username      = data.vault_generic_secret.monitoring.data["username"],
+      alerting_password      = data.vault_generic_secret.monitoring.data["password"],
+      app_name               = local.name,
+      environment            = local.env,
+      grafana_admin_password = random_password.grafana_password.result
+      domain                 = "${local.monitoring_domain}"
     })
   ]
   depends_on = [

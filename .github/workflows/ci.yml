@@ -97,3 +97,13 @@ jobs:
          --secret registry_password=${{ github.token }} \
          ./helm+publish \
          --tag=${{ steps.setup.outputs.tag }}
+
+  ############################ deploy ############################
+
+  deploy-testing:
+    if: github.ref == 'refs/heads/develop'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+        ENVIRONMENT: testing
+    secrets: inherit

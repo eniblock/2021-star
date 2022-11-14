@@ -1,0 +1,33 @@
+name: ci
+on:
+  workflow_call:
+        inputs:
+            ENVIRONMENT:
+                required: true
+                type: string
+
+jobs:
+  deploy:
+    runs-on: [self-hosted]
+    environment: ${{ inputs.ENVIRONMENT }}
+    concurrency: ${{ inputs.ENVIRONMENT }}
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/nft
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Update the application
+      env:
+        KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        KUBECONFIG2: ${{ secrets.KUBECONFIG2 }}
+      run: |
+        earthly \
+          --secret dockerhub_password=${{ secrets.DOCKERHUB_TOKEN }} \
+          --secret github_token=${{ secrets.GITHUB_TOKEN }} \
+          --secret SOPS_AGE_KEY=${{ secrets.AGE_KEY }} \
+          --secret kubeconfig="$KUBECONFIG" \
+          --secret kubeconfig2="$KUBECONFIG2" \
+          ./helm+deploy \
+          --environment ${{ inputs.ENVIRONMENT }} \
+          --tag ${{ steps.setup.outputs.tag }}

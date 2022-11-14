@@ -94,8 +94,7 @@ frontend:
     # Overrides the image tag whose default is the chart appVersion.
     # tag: ""
 
-  imagePullSecrets:
-    - name: gitlab-registry
+  imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
 
@@ -164,8 +163,7 @@ ingress:
 keycloak:
   image:
     repository: eniblock/2021-star-keycloak
-  imagePullSecrets:
-    - name: gitlab-registry
+  imagePullSecrets: []
   ingress:
     enabled: true
     secretName: "{{ .Release.Name }}-tls"

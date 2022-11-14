@@ -27,7 +27,7 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
       this.instance = instance;
     });
 
-    if (this.activation) {
+    if (this.activation && this.activation.feedbackProducer) {
       const now = new Date();
       const dateFin = new Date(this.activation.feedbackProducer.validityPeriodEndDateTime);
       this.buttonCreationFeedbackDisabled = now.getTime() > dateFin.getTime();

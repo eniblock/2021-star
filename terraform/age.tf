@@ -1,9 +1,9 @@
 resource "age_secret_key" "main" {
-  for_each = toset(keys(local.environment_config))
+  for_each = terraform.workspace != "sbg5" ? {} : local.environment_config
 }
 
 resource "vault_kv_secret_v2" "age" {
-  for_each = local.environment_config
+  for_each = terraform.workspace != "sbg5" ? {} : local.environment_config
   mount = "secret"
   name  = "projects/star/${each.key}/age.key"
   data_json = jsonencode(

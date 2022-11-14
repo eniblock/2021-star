@@ -1,5 +1,5 @@
 resource "github_repository_environment" "environment" {
-  for_each    = local.environment_config
+  for_each = terraform.workspace != "sbg5" ? {} : local.environment_config
   environment = each.key
   repository  = "2021-star"
   deployment_branch_policy {
@@ -9,7 +9,7 @@ resource "github_repository_environment" "environment" {
 }
 
 resource "github_actions_environment_secret" "kubeconfig" {
-  for_each        = local.environment_config
+  for_each = terraform.workspace != "sbg5" ? {} : local.environment_config
   environment     = github_repository_environment.environment[each.key].environment
   repository      = "2021-star"
   secret_name     = "KUBECONFIG"
@@ -17,7 +17,7 @@ resource "github_actions_environment_secret" "kubeconfig" {
 }
 
 resource "github_actions_environment_secret" "kubeconfig2" {
-  for_each        = local.environment_config
+  for_each = terraform.workspace != "sbg5" ? {} : local.environment_config
   environment     = github_repository_environment.environment[each.key].environment
   repository      = "2021-star"
   secret_name     = "KUBECONFIG2"
@@ -25,7 +25,7 @@ resource "github_actions_environment_secret" "kubeconfig2" {
 }
 
 resource "github_actions_environment_secret" "age_key" {
-  for_each        = local.environment_config
+  for_each = terraform.workspace != "sbg5" ? {} : local.environment_config
   environment     = github_repository_environment.environment[each.key].environment
   repository      = "2021-star"
   secret_name     = "AGE_KEY"
@@ -33,7 +33,7 @@ resource "github_actions_environment_secret" "age_key" {
 }
 
 resource "github_repository_file" "age_pub_key" {
-  for_each            = local.environment_config
+  for_each = terraform.workspace != "sbg5" ? {} : local.environment_config
   repository          = "2021-star"
   branch              = "develop"
   file                = ".${each.key}.pubkey"

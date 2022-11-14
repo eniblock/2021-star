@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException;
 @Repository
 public class FeedBackRepository {
 
-    public static final String CREATE_FEEDBACK = "CreateFeedBack";
+    public static final String CREATE_FEEDBACK = "UpdateFeedbackProducer";
 
     @Autowired
     private Contract contract;
@@ -43,7 +43,7 @@ public class FeedBackRepository {
         }
         log.info("Sauvegarde du feedBack {} ", feedBack);
         try {
-            contract.submitTransaction(CREATE_FEEDBACK, objectMapper.writeValueAsString(feedBack));
+            contract.submitTransaction(CREATE_FEEDBACK, feedBack.getActivationDocumentMrid(), objectMapper.writeValueAsString(feedBack));
         } catch (TimeoutException timeoutException) {
             throw new TechnicalException("Erreur technique (Timeout exception) lors de la création du feedback ", timeoutException);
         } catch (InterruptedException interruptedException) {

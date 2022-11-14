@@ -2,6 +2,10 @@ import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {RechercheHistoriqueLimitationEntite} from "../../../models/RechercheHistoriqueLimitation";
 import {Instance} from "../../../models/enum/Instance.enum";
 import {InstanceService} from "../../../services/api/instance.service";
+import {MatBottomSheet} from "@angular/material/bottom-sheet";
+import {
+  FormFeedbackProducerComponent
+} from "../../../components/formulaires/form-feedback-producer/form-feedback-producer.component";
 
 @Component({
   selector: 'app-limitations-feedback-producer',
@@ -9,7 +13,7 @@ import {InstanceService} from "../../../services/api/instance.service";
   styleUrls: ['./limitations-feedback-producer.component.css']
 })
 export class LimitationsFeedbackProducerComponent implements OnChanges {
-  @Input() activation?: RechercheHistoriqueLimitationEntite;
+  @Input() historiqueLimitation?: RechercheHistoriqueLimitationEntite;
 
   InstanceEnum = Instance;
 
@@ -19,6 +23,7 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
 
   constructor(
     private instanceService: InstanceService,
+    private bottomSheet: MatBottomSheet,
   ) {
   }
 
@@ -27,11 +32,11 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
       this.instance = instance;
     });
 
-    if (this.activation && this.activation.feedbackProducer) {
+    if (this.historiqueLimitation && this.historiqueLimitation.feedbackProducer) {
       const now = new Date();
-      const dateFin = new Date(this.activation.feedbackProducer.validityPeriodEndDateTime);
+      const dateFin = new Date(this.historiqueLimitation.feedbackProducer.validityPeriodEndDateTime);
       this.buttonCreationFeedbackDisabled = now.getTime() > dateFin.getTime();
-      this.showButton = (this.activation.energyAmount?.quantity && this.activation.reserveBidMarketDocument?.energyPriceAmount && this.activation.balancingDocument.financialPriceAmount) as any;
+      this.showButton = (this.historiqueLimitation.energyAmount?.quantity && this.historiqueLimitation.reserveBidMarketDocument?.energyPriceAmount && this.historiqueLimitation.balancingDocument.financialPriceAmount) as any;
     } else {
       this.buttonCreationFeedbackDisabled = true;
       this.showButton = false;
@@ -39,6 +44,16 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
   }
 
   commentaire() {
-    console.log(this.activation);
+    const bottomSheetRef = this.bottomSheet.open(FormFeedbackProducerComponent, {
+      data: {
+        historiqueLimitation: this.historiqueLimitation,
+      }
+    });
+    bottomSheetRef.afterDismissed().subscribe((data) => {
+      if (data) {
+        console.log(data);
+      }
+    });
   }
+
 }

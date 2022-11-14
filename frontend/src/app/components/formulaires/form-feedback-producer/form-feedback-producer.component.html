@@ -1,0 +1,17 @@
+<form [formGroup]="form" (submit)="onSubmit()">
+
+  <h2>...</h2>
+
+  <div class="row">
+
+    <div class="col-12 text-center mt-3">
+      <button mat-raised-button color="primary"
+              [disabled]="form.invalid || loading" type="submit">
+        Ajouter
+        <i class="fa-solid fa-hourglass ms-2" *ngIf="loading"></i>
+      </button>
+    </div>
+
+  </div>
+
+</form>

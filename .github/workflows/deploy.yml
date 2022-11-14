@@ -1,16 +1,16 @@
 name: ci
 on:
   workflow_call:
-        inputs:
-            ENVIRONMENT:
-                required: true
-                type: string
+    inputs:
+      environment:
+        required: true
+        type: string
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.ENVIRONMENT }}
-    concurrency: ${{ inputs.ENVIRONMENT }}
+    environment: ${{ inputs.environment }}
+    concurrency: ${{ inputs.environment }}
     steps:
     - uses: eniblock/build/actions/setup@develop
       id: setup
@@ -29,5 +29,5 @@ jobs:
           --secret kubeconfig="$KUBECONFIG" \
           --secret kubeconfig2="$KUBECONFIG2" \
           ./helm+deploy \
-          --environment ${{ inputs.ENVIRONMENT }} \
+          --environment ${{ inputs.environment }} \
           --tag ${{ steps.setup.outputs.tag }}

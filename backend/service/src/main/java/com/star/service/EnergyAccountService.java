@@ -13,6 +13,7 @@ import com.star.models.energyaccount.EnergyAccountCriteria;
 import com.star.models.energyaccount.ImportEnergyAccountResult;
 import com.star.repository.EnergyAccountRepository;
 import com.star.service.helpers.QueryBuilderHelper;
+import com.star.utils.InfoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -45,8 +46,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 @Service
 public class EnergyAccountService {
-
-    private static final String REVISION_NUMBER = "1";
 
     @Autowired
     private MessageSource messageSource;
@@ -133,7 +132,7 @@ public class EnergyAccountService {
                 energyAccount.setEndCreatedDateTime(splitDates[1]);
                 energyAccount.setDocType(ENERGY_ACCOUNT.getDocType());
                 if (energyAccount.getRevisionNumber() == null) {
-                    energyAccount.setRevisionNumber(REVISION_NUMBER);
+                    energyAccount.setRevisionNumber(InfoUtils.REVISION_NUMBER);
                 }
                 if (energyAccount.getMarketEvaluationPointMrid() == null) {
                     energyAccount.setMarketEvaluationPointMrid(EMPTY);

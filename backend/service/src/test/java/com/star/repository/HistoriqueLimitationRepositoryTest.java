@@ -1,17 +1,9 @@
 package com.star.repository;
 
 import com.star.AbstractTest;
-import com.star.exception.TechnicalException;
-import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
-import org.hyperledger.fabric.gateway.ContractException;
-import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)

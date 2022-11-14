@@ -1,5 +1,6 @@
 package com.star.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.AbstractTest;
 import com.star.enums.DocTypeEnum;
 import com.star.exception.TechnicalException;
@@ -50,7 +51,7 @@ class YellowPagesRepositoryTest extends AbstractTest {
     }
 
     @Test
-    void testSaveYellowPagesRepository() throws InterruptedException, TimeoutException, ContractException, TechnicalException {
+    void testSaveYellowPagesRepository() throws InterruptedException, TimeoutException, ContractException, TechnicalException, JsonProcessingException {
         // GIVEN
         YellowPages yellowPages = YellowPages.builder().docType(DocTypeEnum.YELLOW_PAGES.getDocType())
                 .originAutomationRegisteredResourceMrid(ORIGIN_AUTOMATION_REGISTERED_RESOURCE_MRID)
@@ -64,6 +65,8 @@ class YellowPagesRepositoryTest extends AbstractTest {
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
                 objectArgumentCaptor.capture());
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(yellowPagesRepository.CREATE_YELLOW_PAGES);
+        assertThat(objectArgumentCaptor.getValue()).isNotNull();
+        assertThat(objectArgumentCaptor.getValue()).isEqualTo(objectMapper.writeValueAsString(yellowPages));
     }
 
     @Test

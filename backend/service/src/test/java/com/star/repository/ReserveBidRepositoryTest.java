@@ -1,7 +1,6 @@
 package com.star.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
 import com.star.models.reservebid.ReserveBid;
@@ -32,9 +31,6 @@ class ReserveBidRepositoryTest extends AbstractTest {
 
     @Captor
     private ArgumentCaptor<String> objectArgumentCaptor;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     void testSaveNullReserveBid() throws TechnicalException {

@@ -1,11 +1,9 @@
 package com.star.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
 import com.star.models.energyaccount.EnergyAccount;
-import com.star.models.energyaccount.EnergyAccountProducerCriteria;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -29,9 +27,6 @@ import static org.mockito.Mockito.verifyNoInteractions;
 class EnergyAccountRepositoryTest extends AbstractTest {
     @Autowired
     private EnergyAccountRepository energyAccountRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Captor
     private ArgumentCaptor<String> functionNameArgumentCaptor;

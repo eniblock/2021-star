@@ -10,6 +10,7 @@ import com.star.models.reservebid.ImportReserveBidResult;
 import com.star.models.reservebid.ReserveBid;
 import com.star.models.reservebid.ReserveBidMarketDocumentCreation;
 import com.star.repository.ReserveBidRepository;
+import com.star.utils.InfoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,8 +50,6 @@ public class ReserveBidService {
             .map(ReserveBidStatusEnum::name)
             .collect(toList());
 
-    private static final String REVISION_NUMBER = "1";
-
     @Autowired
     private MessageSource messageSource;
 
@@ -87,7 +86,7 @@ public class ReserveBidService {
                 reserveBid.setCreatedDateTime(LocalDateTime.now().toString());
             }
             if (StringUtils.isBlank(reserveBid.getRevisionNumber())) {
-                reserveBid.setRevisionNumber(REVISION_NUMBER);
+                reserveBid.setRevisionNumber(InfoUtils.REVISION_NUMBER);
             }
             if (isBlank(reserveBid.getMessageType())) {
                 reserveBid.setMessageType(EMPTY);

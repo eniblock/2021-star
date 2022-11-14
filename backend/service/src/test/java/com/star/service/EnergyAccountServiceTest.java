@@ -34,7 +34,7 @@ class EnergyAccountServiceTest extends AbstractTest {
     void testFindEnergyAccount() throws TechnicalException {
         // GIVEN
         EnergyAccountCriteria energyAccountCriteria = EnergyAccountCriteria.builder().
-        endCreatedDateTime("endDate").meteringPointMrid("PRM-645").startCreatedDateTime("startDate").build();
+                endCreatedDateTime("endDate").meteringPointMrid("PRM-645").startCreatedDateTime("startDate").build();
 
         // WHEN
         energyAccountService.findEnergyAccount(energyAccountCriteria);

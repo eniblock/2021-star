@@ -1,5 +1,6 @@
 package com.star.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.star.AbstractTest;
 import com.star.exception.TechnicalException;
 import com.star.models.participant.SystemOperator;
@@ -15,6 +16,7 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 /**
@@ -49,7 +51,7 @@ class MarketParticipantRepositoryTest extends AbstractTest {
     }
 
     @Test
-    void testSaveMarketParticipants() throws TechnicalException, InterruptedException, TimeoutException, ContractException {
+    void testSaveMarketParticipants() throws TechnicalException, InterruptedException, TimeoutException, ContractException, JsonProcessingException {
         // GIVEN
         SystemOperator systemOperator = new SystemOperator();
         systemOperator.setSystemOperatorMarketParticipantMrid(DSO_MARKET_PARTICIPANT_MRID);
@@ -63,12 +65,16 @@ class MarketParticipantRepositoryTest extends AbstractTest {
         Mockito.verify(contract, Mockito.times(1)).submitTransaction(functionNameArgumentCaptor.capture(),
                 objectArgumentCaptor.capture());
         assertThat(functionNameArgumentCaptor.getValue()).isEqualTo(MarketParticipantRepository.CREATE_SYSTEM_OPERATOR);
+        assertThat(objectArgumentCaptor.getValue()).isNotNull();
+        assertThat(objectArgumentCaptor.getValue()).isEqualTo(objectMapper.writeValueAsString(systemOperator));
     }
 
 //    @Test
-//    public void testGetSystemOperators() throws ContractException, JsonProcessingException {
+//    public void testGetSystemOperators() throws ContractException, TechnicalException {
 //        // GIVEN
 //        SystemOperator systemOperator = new SystemOperator();
+//        systemOperator.setSystemOperatorMarketParticipantName("name");
+//        systemOperator.setSystemOperatorMarketParticipantMrid("Mrid");
 //        Mockito.when(contract.evaluateTransaction(any())).thenReturn(systemOperator.toString().getBytes());
 //
 //        // WHEN

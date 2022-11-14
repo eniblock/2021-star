@@ -19,6 +19,7 @@ import com.star.models.limitation.OrdreLimitationCriteria;
 import com.star.models.limitation.OrdreLimitationEligibilityStatus;
 import com.star.repository.OrdreLimitationRepository;
 import com.star.utils.DateUtils;
+import com.star.utils.InfoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -42,6 +43,7 @@ import java.util.List;
 
 import static com.star.enums.DocTypeEnum.ACTIVATION_DOCUMENT;
 import static com.star.utils.DateUtils.toLocalDateTime;
+import static com.star.utils.InfoUtils.REVISION_NUMBER;
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -64,7 +66,6 @@ public class OrdreLimitationService {
 
     private static final String IMPORT_ERROR = "import.error";
     private static final String IMPORT_JSON_ERROR = "import.read.json.error";
-    private static final String REVISION_NUMBER = "1";
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
     @Autowired
     private ImportUtilsService importUtilsService;
@@ -140,7 +141,7 @@ public class OrdreLimitationService {
                     ordreDebutLimitation.setReceiverMarketParticipantMrid(EMPTY);
                 }
                 if (ordreDebutLimitation.getRevisionNumber() == null) {
-                    ordreDebutLimitation.setRevisionNumber(REVISION_NUMBER);
+                    ordreDebutLimitation.setRevisionNumber(InfoUtils.REVISION_NUMBER);
                 }
                 if (ordreDebutLimitation.getSenderMarketParticipantMrid() == null) {
                     ordreDebutLimitation.setSenderMarketParticipantMrid(EMPTY);

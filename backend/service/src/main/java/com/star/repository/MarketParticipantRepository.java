@@ -67,7 +67,7 @@ public class MarketParticipantRepository {
             byte[] response = contract.evaluateTransaction(GET_ALL_SYSTEM_OPERATOR);
             return Arrays.asList(objectMapper.readValue(new String(response), SystemOperator[].class));
         } catch (JsonProcessingException exception) {
-            throw new TechnicalException("Erreur technique lors de création du market participant", exception);
+            throw new TechnicalException("Erreur technique lors de la récupération du market participant", exception);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }

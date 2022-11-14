@@ -14,7 +14,7 @@ import {TechnologyType} from "../../models/enum/TechnologyType.enum";
 import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
 import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
 
-const MOCK = true;
+const MOCK = false;
 
 @Injectable({
   providedIn: 'root',
@@ -124,7 +124,26 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
       },
       subOrderList: [],
       displayedSourceName: "displayedSourceName1",
-      reserveBidMarketDocument: null,
+      reserveBidMarketDocument: {
+        reserveBidMrid: 'string',
+        meteringPointMrid: 'string',
+        revisionNumber: 'string',
+        messageType: 'string',
+        processType: 'string',
+        senderMarketParticipantMrid: 'string',
+        receiverMarketParticipantMrid: 'string',
+        createdDateTime: 'string',
+        validityPeriodStartDateTime: 'string',
+        validityPeriodEndDateTime: 'string',
+        businessType: 'string',
+        quantityMeasureUnitName: 'string',
+        priceMeasureUnitName: '€/MWh',
+        currencyUnitName: 'string',
+        flowDirection: 'string',
+        energyPriceAmount: 1.23,
+        attachments: [],
+        reserveBidStatus: ReserveBidStatus.VALIDATED
+      },
       balancingDocument: {
         docType: "balancingDocument",
         balancingDocumentMrid: "BaDoc_26056d50-db4f-4e29-8075-d83fa47fb7a8",
@@ -159,8 +178,8 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         createdDateTime: "string",
         validityPeriodStartDateTime: "2022-11-07T13:46:40",
         validityPeriodEndDateTime: "2024-11-07T13:46:40",
-        feedback: "undefined",
-        feedbackAnswer: "",
+        feedback: "coucou",
+        feedbackAnswer: "hello !",
         feedbackElements: "",
       }
     },

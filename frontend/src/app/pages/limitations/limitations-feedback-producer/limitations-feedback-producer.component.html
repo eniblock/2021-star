@@ -1,11 +1,16 @@
 <button mat-raised-button
         [class]="!buttonCreationFeedbackDisabled ? 'bg-dark text-white' : ''"
-        (click)="commentaireProducer()"
+        (click)="commentaire()"
         [disabled]="buttonCreationFeedbackDisabled"
-        *ngIf="instance == InstanceEnum.PRODUCER && (!activation?.feedbackProducer?.feedback)"
+        *ngIf="showButton && instance == InstanceEnum.PRODUCER && (!activation?.feedbackProducer?.feedback)"
 >
   <div style="line-height: 20px !important; margin:6px">Jusqu'au<br/>{{ activation?.feedbackProducer?.validityPeriodEndDateTime | date:'shortDate' }}</div>
 </button>
 
-
-<!--<i class="fa-solid fa-message"></i>-->
+<button mat-raised-button
+        [class]="activation?.feedbackProducer?.feedbackAnswer ? 'bg-success text-white' : 'bg-orange text-white'"
+        (click)="commentaire()"
+        *ngIf="showButton && (activation?.feedbackProducer?.feedback)"
+>
+  <i class="fa-solid fa-message"></i>
+</button>

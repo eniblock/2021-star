@@ -14,6 +14,7 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
   InstanceEnum = Instance;
 
   instance?: Instance;
+  showButton = false;
   buttonCreationFeedbackDisabled = true;
 
   constructor(
@@ -30,13 +31,14 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
       const now = new Date();
       const dateFin = new Date(this.activation.feedbackProducer.validityPeriodEndDateTime);
       this.buttonCreationFeedbackDisabled = now.getTime() > dateFin.getTime();
+      this.showButton = (this.activation.energyAmount?.quantity && this.activation.reserveBidMarketDocument?.energyPriceAmount && this.activation.balancingDocument.financialPriceAmount) as any;
     } else {
       this.buttonCreationFeedbackDisabled = true;
+      this.showButton = false;
     }
   }
 
-  commentaireProducer() {
+  commentaire() {
     console.log(this.activation);
   }
-
 }

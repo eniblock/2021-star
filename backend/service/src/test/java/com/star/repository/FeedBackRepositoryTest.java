@@ -46,7 +46,7 @@ public class FeedBackRepositoryTest extends AbstractTest {
     void testSaveFeedBack() throws InterruptedException, TimeoutException, ContractException, TechnicalException, JsonProcessingException {
         // GIVEN
         FeedBack feedBack = FeedBack.builder().activationDocumentMrid("AJB12-340K-AHVTE-2345").feedback("feedback")
-                .messageType("B30").processsType("A42").revisionNumber("1").build();
+                .messageType("B30").processType("A42").revisionNumber("1").build();
         // WHEN
         feedBackRepository.saveFeedBack(feedBack);
 

@@ -21,7 +21,7 @@ public class FeedBackDTO {
     private String feedbackProducerMrid;
     private String activationDocumentMrid;
     private String messageType;
-    private String processsType;
+    private String processType;
     private String revisionNumber;
     private String senderMarketParticipantMrid;
     private String receiverMarketParticipantMrid;

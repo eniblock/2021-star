@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted]
+    runs-on: ubuntu-latest
     environment: ${{ inputs.ENVIRONMENT }}
     concurrency: ${{ inputs.ENVIRONMENT }}
     steps:

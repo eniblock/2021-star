@@ -1,0 +1,109 @@
+name: ci
+on:
+  push:
+    branches:
+      - "**"
+
+env:
+  # EARTHLY_REMOTE_CACHE: cache.registry/${{ github.repository }}/${{ github.job }}/${{ github.ref_name }}:cache
+  # EARTHLY_CACHE_FROM: cache.registry/${{ github.repository }}/${{ github.job }}/develop:cache
+  EARTHLY_STRICT: "true"
+  EARTHLY_PUSH: "true"
+
+jobs:
+
+  ############################ tests ############################
+
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./backend+test
+
+  lint-helm:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./helm+lint
+
+
+  ############################ docker ############################
+
+  docker-backend:
+    runs-on: ubuntu-latest
+    needs: [test-backend, lint-helm]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/star
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./backend+docker --tag=${{ steps.setup.outputs.tag }}
+
+  docker-keycloak:
+    runs-on: ubuntu-latest
+    needs: [test-backend, lint-helm]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/star
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./keycloak+docker --tag=${{ steps.setup.outputs.tag }}
+
+  docker-frontend:
+    runs-on: ubuntu-latest
+    needs: [test-backend, lint-helm]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/star
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./frontend+docker --tag=${{ steps.setup.outputs.tag }}
+
+  docker-chaincode:
+    runs-on: ubuntu-latest
+    needs: [test-backend, lint-helm]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/star
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./chaincode+docker --tag=${{ steps.setup.outputs.tag }}
+
+  ############################ helm ############################
+
+  helm-publish:
+    runs-on: ubuntu-latest
+    needs: [docker-backend, docker-keycloak, docker-frontend, docker-chaincode]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/star
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build/Publish the helm charts
+      run: |
+         earthly \
+         --secret registry_username=notused \
+         --secret registry_password=${{ github.token }} \
+         ./helm+publish \
+         --tag=${{ steps.setup.outputs.tag }}
+
+  ############################ deploy ############################
+
+  deploy-testing:
+    if: github.ref == 'refs/heads/develop'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+        ENVIRONMENT: testing
+    secrets: inherit

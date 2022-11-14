@@ -18,7 +18,7 @@ resource "helm_release" "ingress" {
     templatefile("${path.module}/helm/ingress.tpl", {
     })
   ]
-  timeout    = 3000
+  timeout = 3000
   depends_on = [
     kubernetes_namespace.ingress,
     null_resource.prometheus_crds_apply,
@@ -58,7 +58,7 @@ resource "null_resource" "lb_ingress_ip_address" {
 }
 
 data "local_file" "lb_ingress_ip_address_file" {
-    filename = "${path.module}/lb_ingress_ip_${local.env}.txt"
+  filename = "${path.module}/lb_ingress_ip_${local.env}.txt"
   depends_on = [
     null_resource.lb_ingress_ip_address,
   ]

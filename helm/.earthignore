@@ -1,0 +1,5 @@
+*/charts/*
+Earthfile
+.dockerignore
+.earthignore
+.tiltignore

@@ -4,7 +4,7 @@ provider "kubernetes" {
 
 provider "helm" {
   kubernetes {
-      config_path = "~/.kube/${local.name}-${local.env}.yaml"
+    config_path = "~/.kube/${local.name}-${local.env}.yaml"
   }
 }
 
@@ -23,6 +23,15 @@ data "vault_generic_secret" "cloudflare" {
 provider "cloudflare" {
   email     = data.vault_generic_secret.cloudflare.data["username"]
   api_token = data.vault_generic_secret.cloudflare.data["api-token"]
+}
+
+data "vault_generic_secret" "github" {
+  path = "secret/credentials/github"
+}
+
+provider "github" {
+  owner = "eniblock"
+  token = data.vault_generic_secret.github.data["token-infrastructure"]
 }
 
 terraform {
@@ -46,6 +55,14 @@ terraform {
     local = {
       source  = "hashicorp/local"
       version = "~> 1.4"
+    }
+    github = {
+      source  = "integrations/github"
+      version = "5.5.0"
+    }
+    age = {
+      source  = "clementblaise/age"
+      version = "0.1.1"
     }
   }
 }

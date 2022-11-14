@@ -30,7 +30,7 @@ peer:
       orderer_address: orderer1.orderer.testing.star.eniblock.fr:443
       channel: star
       image:
-        repository: registry.gitlab.com/xdev-tech/star/chaincode
+        repository: eniblock/2021-star-chaincode
       command:
         - sh
         - -c

@@ -25,7 +25,7 @@ public class FeedBack {
     @NotBlank(message = "Le champ messageType est obligatoire")
     private String messageType;
     @NotBlank(message = "Le champ processsType est obligatoire")
-    private String processsType;
+    private String processType;
     private String revisionNumber;
     @NotBlank(message = "Le champ senderMarketParticipantMrid est obligatoire")
     private String senderMarketParticipantMrid;

@@ -47,7 +47,7 @@ class FeedBackServiceTest extends AbstractTest {
     void testCreateFeedBackWithoutMandatoriesDatas() {
         // GIVEN
         FeedBack feedBack = FeedBack.builder().activationDocumentMrid("AJB12-340K-AHVTE-2345").feedback("feedback")
-                .messageType("B30").processsType("A42").revisionNumber("1").build();
+                .messageType("B30").processType("A42").revisionNumber("1").build();
 
         // WHEN
         Assertions.assertThrows(BusinessException.class, () -> feedBackService.create(feedBack));
@@ -60,7 +60,7 @@ class FeedBackServiceTest extends AbstractTest {
     void testImportSiteOk() throws TechnicalException {
         // GIVEN
         FeedBack feedBack = FeedBack.builder().activationDocumentMrid("AJB12-340K-AHVTE-2345").feedback("feedback")
-                .messageType("B30").processsType("A42").senderMarketParticipantMrid("senderMrid")
+                .messageType("B30").processType("A42").senderMarketParticipantMrid("senderMrid")
                 .receiverMarketParticipantMrid("receiverMrid").validityPeriodStartDateTime("startDate")
                 .validityPeriodEndDateTime("endDate").build();
 
@@ -73,7 +73,7 @@ class FeedBackServiceTest extends AbstractTest {
         assertThat(feedBackArgumentCaptor.getValue()).extracting(
                 "activationDocumentMrid", "feedback", "messageType", "processsType", "senderMarketParticipantMrid",
                 "receiverMarketParticipantMrid", "validityPeriodStartDateTime", "validityPeriodEndDateTime")
-                .containsExactly(feedBack.getActivationDocumentMrid(), feedBack.getFeedback(), feedBack.getMessageType(), feedBack.getProcesssType(),
+                .containsExactly(feedBack.getActivationDocumentMrid(), feedBack.getFeedback(), feedBack.getMessageType(), feedBack.getProcessType(),
                         feedBack.getSenderMarketParticipantMrid(), feedBack.getReceiverMarketParticipantMrid(), feedBack.getValidityPeriodStartDateTime(),
                         feedBack.getValidityPeriodEndDateTime());
 

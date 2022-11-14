@@ -28,6 +28,7 @@ export class FormFeedbackProducerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.bottomSheetParams.historiqueLimitation)
   }
 
   onSubmit() {
@@ -36,7 +37,7 @@ export class FormFeedbackProducerComponent implements OnInit {
 
     // modif ok
     this.loading = false;
-    this.bottomsheet.dismiss();
+    this.bottomsheet.dismiss("MON FEEDBACK MODIFIE");
 
     //TODO : PREVOIR SI l'appel du service est KO => loading = false
   }

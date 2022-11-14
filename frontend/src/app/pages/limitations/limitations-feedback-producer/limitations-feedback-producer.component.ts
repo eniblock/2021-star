@@ -51,6 +51,7 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
     });
     bottomSheetRef.afterDismissed().subscribe((data) => {
       if (data) {
+        //TODO : METTRE A JOUR LE FEEDBACK !!!
         console.log(data);
       }
     });

@@ -15,7 +15,7 @@ jobs:
     - uses: eniblock/build/actions/setup@develop
       id: setup
       with:
-        helmdir: helm/nft
+        helmdir: helm/star
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Update the application
       env:

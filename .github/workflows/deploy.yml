@@ -1,14 +1,14 @@
 name: ci
 on:
   workflow_call:
-    inputs:
-      ENVIRONMENT:
-        required: true
-        type: string
+        inputs:
+            ENVIRONMENT:
+                required: true
+                type: string
 
 jobs:
   deploy:
-    runs-on: [self-hosted]
+    runs-on: ubuntu-latest
     environment: ${{ inputs.ENVIRONMENT }}
     concurrency: ${{ inputs.ENVIRONMENT }}
     steps:

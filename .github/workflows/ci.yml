@@ -100,6 +100,8 @@ jobs:
 
   ############################ deploy ############################
 
+  # testing
+
   deploy-enedis-testing:
     if: github.ref == 'refs/heads/develop'
     needs: [helm-publish]
@@ -122,4 +124,30 @@ jobs:
     uses: './.github/workflows/deploy.yml'
     with:
       environment: rte-testing
+    secrets: inherit
+
+  # staging
+
+  deploy-enedis-staging:
+    if: github.ref == 'refs/heads/staging'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: enedis-staging
+    secrets: inherit
+
+  deploy-producer-staging:
+    if: github.ref == 'refs/heads/staging'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: enedis-staging
+    secrets: inherit
+
+  deploy-rte-staging:
+    if: github.ref == 'refs/heads/staging'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: rte-staging
     secrets: inherit

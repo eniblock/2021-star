@@ -5,8 +5,8 @@ on:
       - "**"
 
 env:
-  # EARTHLY_REMOTE_CACHE: cache.registry/${{ github.repository }}/${{ github.job }}/${{ github.ref_name }}:cache
-  # EARTHLY_CACHE_FROM: cache.registry/${{ github.repository }}/${{ github.job }}/develop:cache
+  EARTHLY_REMOTE_CACHE: cache.registry/${{ github.repository }}/${{ github.job }}/${{ github.ref_name }}:cache
+  EARTHLY_CACHE_FROM: cache.registry/${{ github.repository }}/${{ github.job }}/develop:cache
   EARTHLY_STRICT: "true"
   EARTHLY_PUSH: "true"
 
@@ -15,7 +15,7 @@ jobs:
   ############################ tests ############################
 
   test-backend:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     steps:
     - uses: eniblock/build/actions/setup@develop
       id: setup
@@ -24,7 +24,7 @@ jobs:
     - run: earthly ./backend+test
 
   lint-helm:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     steps:
     - uses: eniblock/build/actions/setup@develop
       id: setup
@@ -36,7 +36,7 @@ jobs:
   ############################ docker ############################
 
   docker-backend:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [test-backend, lint-helm]
     steps:
     - uses: eniblock/build/actions/setup@develop
@@ -47,7 +47,7 @@ jobs:
     - run: earthly ./backend+docker --tag=${{ steps.setup.outputs.tag }}
 
   docker-keycloak:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [test-backend, lint-helm]
     steps:
     - uses: eniblock/build/actions/setup@develop
@@ -58,7 +58,7 @@ jobs:
     - run: earthly ./keycloak+docker --tag=${{ steps.setup.outputs.tag }}
 
   docker-frontend:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [test-backend, lint-helm]
     steps:
     - uses: eniblock/build/actions/setup@develop
@@ -69,7 +69,7 @@ jobs:
     - run: earthly ./frontend+docker --tag=${{ steps.setup.outputs.tag }}
 
   docker-chaincode:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [test-backend, lint-helm]
     steps:
     - uses: eniblock/build/actions/setup@develop
@@ -82,7 +82,7 @@ jobs:
   ############################ helm ############################
 
   helm-publish:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: [docker-backend, docker-keycloak, docker-frontend, docker-chaincode]
     steps:
     - uses: eniblock/build/actions/setup@develop

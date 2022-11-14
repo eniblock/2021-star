@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - "**"
+    tags:
+      - "*"
 
 env:
   EARTHLY_REMOTE_CACHE: cache.registry/${{ github.repository }}/${{ github.job }}/${{ github.ref_name }}:cache

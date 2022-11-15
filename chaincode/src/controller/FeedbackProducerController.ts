@@ -14,10 +14,33 @@ import { StarPrivateDataService } from './service/StarPrivateDataService';
 import { CommonService } from './service/CommonService';
 import { IdArgument } from '../model/arguments/idArgument';
 import { EnergyAmount } from '../model/energyAmount';
+import { DataActionType } from '../enums/DataActionType';
 
 
 
 export class FeedbackProducerController {
+    public static async executeOrder(
+        params: STARParameters,
+        updateOrder: DataReference) {
+        params.logger.debug('============= START : executeOrder FeedbackProducerController ===========');
+
+        if (updateOrder.data) {
+            FeedbackProducer.schema.validateSync(
+                updateOrder.data,
+                {strict: true, abortEarly: false},
+            );
+            const feedbackProducer: FeedbackProducer = updateOrder.data;
+
+            if (updateOrder.dataAction === DataActionType.COLLECTION_CHANGE) {
+                await FeedbackProducerService.delete(params, feedbackProducer.feedbackProducerMrid, updateOrder.previousCollection);
+                await FeedbackProducerService.write(params, feedbackProducer, updateOrder.collection);
+            }
+        }
+
+        params.logger.debug('============= END   : executeOrder FeedbackProducerController ===========');
+    }
+
+
     // public static async createFeedbackProducer(
     //     params: STARParameters,
     //     inputStr: string): Promise<void> {
@@ -113,7 +136,8 @@ export class FeedbackProducerController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
 
-        if (identity !== OrganizationTypeMsp.ENEDIS || identity !== OrganizationTypeMsp.RTE) {
+        if (identity.toLowerCase() !== OrganizationTypeMsp.ENEDIS.toLowerCase()
+            && identity.toLowerCase() !== OrganizationTypeMsp.RTE.toLowerCase()) {
             throw new Error(`Organisation, ${identity} does not have rights to fix validity Period for FeedbackProducer`);
         }
 
@@ -303,11 +327,12 @@ export class FeedbackProducerController {
 
     public static async getByActivationDocumentMrId(
         params: STARParameters,
-        activationDocumentMrid: string): Promise<FeedbackProducer> {
+        activationDocumentMrid: string,
+        target: string = ''): Promise<FeedbackProducer> {
 
         const feedbackProducerMrid = this.getFeedbackProducerMrid(params, activationDocumentMrid);
 
-        return await this.getObjById(params, feedbackProducerMrid);
+        return await this.getObjById(params, feedbackProducerMrid, target);
     }
 
 

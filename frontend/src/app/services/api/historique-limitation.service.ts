@@ -14,7 +14,7 @@ import {TechnologyType} from "../../models/enum/TechnologyType.enum";
 import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
 import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
 
-const MOCK = false;
+const MOCK = true;
 
 @Injectable({
   providedIn: 'root',
@@ -177,9 +177,9 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         receiverMarketParticipantMrid: "string",
         createdDateTime: "string",
         validityPeriodStartDateTime: "2022-11-07T13:46:40",
-        validityPeriodEndDateTime: "2024-11-07T13:46:40",
-        feedback: "coucou",
-        feedbackAnswer: "hello !",
+        validityPeriodEndDateTime: "2024-11-08T13:46:40",
+        feedback: "",
+        feedbackAnswer: "",
         feedbackElements: "",
       }
     },

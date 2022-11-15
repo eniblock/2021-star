@@ -1,6 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from "@angular/material/bottom-sheet";
-import {RechercheHistoriqueLimitationEntite} from "../../../models/RechercheHistoriqueLimitation";
 import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
@@ -20,7 +19,10 @@ export class FormFeedbackProducerComponent implements OnInit {
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA)
     public bottomSheetParams: {
-      historiqueLimitation: RechercheHistoriqueLimitationEntite;
+      activationDocumentMrid: string,
+      feedbackElements: string,
+      feedback: string,
+      feedbackAnswer: string,
     },
     private formBuilder: FormBuilder,
     private bottomsheet: MatBottomSheetRef<FormFeedbackProducerComponent>,
@@ -28,7 +30,7 @@ export class FormFeedbackProducerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.bottomSheetParams.historiqueLimitation)
+    console.log(this.bottomSheetParams)
   }
 
   onSubmit() {

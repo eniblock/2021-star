@@ -46,7 +46,10 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
   commentaire() {
     const bottomSheetRef = this.bottomSheet.open(FormFeedbackProducerComponent, {
       data: {
-        historiqueLimitation: this.historiqueLimitation,
+        activationDocumentMrid: this.historiqueLimitation?.activationDocument.activationDocumentMrid,
+        feedbackElements: this.historiqueLimitation?.feedbackProducer.feedbackElements,
+        feedback: this.historiqueLimitation?.feedbackProducer.feedback,
+        feedbackAnswer: this.historiqueLimitation?.feedbackProducer.feedbackAnswer,
       }
     });
     bottomSheetRef.afterDismissed().subscribe((data) => {

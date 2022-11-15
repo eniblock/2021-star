@@ -14,7 +14,7 @@ import {TechnologyType} from "../../models/enum/TechnologyType.enum";
 import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
 import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
 
-const MOCK = true;
+const MOCK = false;
 
 @Injectable({
   providedIn: 'root',

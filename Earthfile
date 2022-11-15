@@ -4,6 +4,7 @@ sonar:
     FROM sonarsource/sonar-scanner-cli
     RUN apk add yq
     COPY . ./
+    COPY --if-exists .git .git
     COPY ./backend+build/api-*.jar ./
     RUN echo sonar.projectVersion=$(yq eval .version helm/star/Chart.yaml) >> sonar-project.properties
     ENV SONAR_HOST_URL=https://sonarcloud.io

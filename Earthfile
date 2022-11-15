@@ -3,6 +3,7 @@ VERSION 0.6
 sonar:
     FROM sonarsource/sonar-scanner-cli
     RUN apk add yq
+    RUN git config --global --add safe.directory /usr/src
     COPY . ./
     COPY --if-exists .git .git
     COPY ./backend+build/api-*.jar ./

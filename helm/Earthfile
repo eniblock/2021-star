@@ -1,0 +1,105 @@
+VERSION 0.6
+
+ARG helmhelper=github.com/eniblock/build/helm:develop
+IMPORT $helmhelper AS helm
+
+ARG deployhelper=github.com/eniblock/build/deploy:develop
+IMPORT $deployhelper AS deploy
+
+ARG repository=ghcr.io/eniblock/star
+
+ARG hlf_k8s_repo=registry.gitlab.com/xdev-tech/xdev-enterprise-business-network/hlf-k8s/helm
+ARG hlf_k8s_version=0.2.0-develop.63
+
+deps:
+    DO helm+BASE
+    DO helm+UPDATE --helmdir=./star
+
+LINT:
+    COMMAND
+    FROM +deps
+    COPY star ./
+    ARG --required environment
+    RUN lint star ./ --values values-enedis-${environment}.yaml
+    RUN lint star ./ --values values-producer-${environment}.yaml
+    RUN lint star ./ --values values-rte-${environment}.yaml
+
+lint-dev:
+    DO +LINT --environment=dev
+lint-testing:
+    DO +LINT --environment=testing
+lint-staging:
+    DO +LINT --environment=staging
+lint-prod:
+    DO +LINT --environment=prod
+
+lint:
+    BUILD +lint-dev
+    BUILD +lint-testing
+    BUILD +lint-staging
+    BUILD +lint-prod
+
+build:
+    FROM +deps
+    ARG tag=0.1.0-local
+    DO helm+BUILD --helmdir=./star --tag=${tag} --patch_values=.keycloak.image.tag
+    SAVE ARTIFACT /app/*-${tag}.tgz
+
+save-package:
+    FROM scratch
+    COPY +build/*.tgz /
+    SAVE ARTIFACT /*.tgz AS LOCAL ./
+
+publish:
+    ARG tag=0.1.0-local
+    FROM +build --tag=${tag}
+    DO helm+LOGIN
+    DO helm+PUBLISH --repository=$repository
+
+deploy:
+    DO deploy+SETUP
+    ARG --required environment
+    ARG --required tag
+    COPY hlf-ord/*-${environment}.yaml ./hlf-ord/
+    COPY hlf-peer/*-${environment}-*.yaml ./hlf-peer/
+    COPY star/*-${environment}.yaml ./star/
+    RUN --secret SOPS_AGE_KEY \
+        sops -d -i star/secrets-${environment}.yaml \
+        && sops -d -i star/users-${environment}.yaml
+    ENV KUBECONFIG=/tmp/kubeconfig.json
+    RUN --mount type=secret,target=/tmp/kubeconfig.json,id=+secrets/kubeconfig \
+        kubectl delete -n ${environment} job --all
+    RUN --mount type=secret,target=/tmp/kubeconfig.json,id=+secrets/kubeconfig2 \
+        kubectl delete -n ${environment} job --all
+    # orderer
+    RUN --mount type=secret,target=/tmp/kubeconfig.json,id=+secrets/kubeconfig \
+        helm upgrade --install --wait --timeout 8m \
+            $(yq e .releaseName hlf-ord/values-${environment}.yaml) \
+            oci://${hlf_k8s_repo}/hlf-ord --version ${hlf_k8s_version} \
+            -n $(yq e .namespace hlf-ord/values-${environment}.yaml) \
+            --post-renderer kbld --post-renderer-args "-f-" \
+            --values hlf-ord/values-${environment}.yaml
+    # peers
+    RUN --mount type=secret,target=/tmp/kubeconfig.json,id=+secrets/kubeconfig \
+        helm upgrade --install --wait --timeout 8m \
+            peer1 oci://${hlf_k8s_repo}/hlf-peer --version ${hlf_k8s_version} \
+            -n ${environment} \
+            --post-renderer kbld --post-renderer-args "-f-" \
+            --values hlf-peer/values-${environment}-peer1.yaml \
+            --set "peer.chaincodes[0].image.tag=${tag}"
+    RUN --mount type=secret,target=/tmp/kubeconfig.json,id=+secrets/kubeconfig2 \
+        helm upgrade --install --wait --timeout 8m \
+            peer2 oci://${hlf_k8s_repo}/hlf-peer --version ${hlf_k8s_version} \
+            -n ${environment} \
+            --post-renderer kbld --post-renderer-args "-f-" \
+            --values hlf-peer/values-${environment}-peer2.yaml \
+            --set "peer.chaincodes[0].image.tag=${tag}"
+    # star
+    RUN --mount type=secret,target=/tmp/kubeconfig.json,id=+secrets/kubeconfig \
+        helm upgrade --timeout 1200s --install --wait \
+            star oci://${repository} --version ${tag} \
+            -n ${environment} \
+            --post-renderer kbld --post-renderer-args "-f-" \
+            --values star/values-${environment}.yaml \
+            --values star/secrets-${environment}.yaml \
+            --values star/users-${environment}.yaml

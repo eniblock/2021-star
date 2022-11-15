@@ -17,7 +17,7 @@ backend:
   instance: tso
 
   image:
-    repository: "registry.gitlab.com/xdev-tech/star/backend"
+    repository: "eniblock/2021-star-backend"
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     # tag:
@@ -89,13 +89,12 @@ backend:
 frontend:
   enabled: true
   image:
-    repository: "registry.gitlab.com/xdev-tech/star/frontend"
+    repository: "eniblock/2021-star-frontend"
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     # tag: ""
 
-  imagePullSecrets:
-    - name: gitlab-registry
+  imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
 
@@ -163,9 +162,8 @@ ingress:
 
 keycloak:
   image:
-    repository: registry.gitlab.com/xdev-tech/star/keycloak
-  imagePullSecrets:
-    - name: gitlab-registry
+    repository: eniblock/2021-star-keycloak
+  imagePullSecrets: []
   ingress:
     enabled: true
     secretName: "{{ .Release.Name }}-tls"

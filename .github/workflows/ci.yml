@@ -1,0 +1,181 @@
+name: ci
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "*"
+
+env:
+  EARTHLY_REMOTE_CACHE: cache.registry/${{ github.repository }}/${{ github.job }}/${{ github.ref_name }}:cache
+  EARTHLY_CACHE_FROM: cache.registry/${{ github.repository }}/${{ github.job }}/develop:cache
+  EARTHLY_STRICT: "true"
+  EARTHLY_PUSH: "true"
+
+jobs:
+
+  ############################ tests ############################
+
+  test-backend:
+    runs-on: [self-hosted]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./backend+test
+
+  lint-helm:
+    runs-on: [self-hosted]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./helm+lint
+
+
+  ############################ docker ############################
+
+  docker-backend:
+    runs-on: [self-hosted]
+    needs: [test-backend, lint-helm]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/star
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./backend+docker --tag=${{ steps.setup.outputs.tag }}
+
+  docker-keycloak:
+    runs-on: [self-hosted]
+    needs: [test-backend, lint-helm]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/star
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./keycloak+docker --tag=${{ steps.setup.outputs.tag }}
+
+  docker-frontend:
+    runs-on: [self-hosted]
+    needs: [test-backend, lint-helm]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/star
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./frontend+docker --tag=${{ steps.setup.outputs.tag }}
+
+  docker-chaincode:
+    runs-on: [self-hosted]
+    needs: [test-backend, lint-helm]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/star
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./chaincode+docker --tag=${{ steps.setup.outputs.tag }}
+
+  ############################ helm ############################
+
+  helm-publish:
+    runs-on: [self-hosted]
+    needs: [docker-backend, docker-keycloak, docker-frontend, docker-chaincode]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        helmdir: helm/star
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build/Publish the helm charts
+      run: |
+         earthly \
+         --secret registry_username=notused \
+         --secret registry_password=${{ github.token }} \
+         ./helm+publish \
+         --tag=${{ steps.setup.outputs.tag }}
+
+  ############################ deploy ############################
+
+  # testing
+
+  deploy-enedis-testing:
+    if: github.ref == 'refs/heads/develop'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: enedis-testing
+    secrets: inherit
+
+  deploy-producer-testing:
+    if: github.ref == 'refs/heads/develop'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: enedis-testing
+    secrets: inherit
+
+  deploy-rte-testing:
+    if: github.ref == 'refs/heads/develop'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: rte-testing
+    secrets: inherit
+
+  # staging
+
+  deploy-enedis-staging:
+    if: github.ref == 'refs/heads/staging'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: enedis-staging
+    secrets: inherit
+
+  deploy-producer-staging:
+    if: github.ref == 'refs/heads/staging'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: enedis-staging
+    secrets: inherit
+
+  deploy-rte-staging:
+    if: github.ref == 'refs/heads/staging'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: rte-staging
+    secrets: inherit
+
+  # prod
+
+  deploy-enedis-prod:
+    if: github.ref == 'refs/heads/prod'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: enedis-prod
+    secrets: inherit
+
+  deploy-producer-prod:
+    if: github.ref == 'refs/heads/prod'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: enedis-prod
+    secrets: inherit
+
+  deploy-rte-prod:
+    if: github.ref == 'refs/heads/prod'
+    needs: [helm-publish]
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: rte-prod
+    secrets: inherit

@@ -16,12 +16,12 @@ resource "helm_release" "logging" {
   repository = "https://grafana.github.io/helm-charts"
   values = [
     templatefile("${path.module}/helm/loki.tpl", {
-      s3_key             = data.vault_generic_secret.log_s3_key.data["log_s3_key"],
-      s3_secret          = data.vault_generic_secret.log_s3_key.data["log_s3_secret"],
-      container_region     = "${local.s3_container_region}",
+      s3_key           = data.vault_generic_secret.log_s3_key.data["log_s3_key"],
+      s3_secret        = data.vault_generic_secret.log_s3_key.data["log_s3_secret"],
+      container_region = "${local.s3_container_region}",
     })
   ]
-  timeout    = 3000
+  timeout = 3000
   depends_on = [
     kubernetes_namespace.logging,
   ]

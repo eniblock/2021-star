@@ -9,7 +9,7 @@ resource "helm_release" "cert-manager" {
     templatefile("${path.module}/helm/cert-manager.tpl", {
     })
   ]
-  timeout    = 3000
+  timeout = 3000
   provisioner "local-exec" {
     command = "sleep 300"
   }
@@ -23,5 +23,5 @@ resource "helm_release" "letsencrypt" {
   depends_on = [
     helm_release.cert-manager,
   ]
-  timeout    = 3000
+  timeout = 3000
 }

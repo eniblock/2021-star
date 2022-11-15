@@ -78,7 +78,7 @@ testem.log
 Thumbs.db
 
 # secrets
-secrets-*.yaml
+/secrets-*.yaml
 
 #Temporary files
 *.tmp
@@ -95,3 +95,4 @@ test/temp
 
 # velero credentials
 infrastructure/creds*
+/terraform/kubeconfig/

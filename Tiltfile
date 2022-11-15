@@ -43,23 +43,24 @@ else:
             run('nginx -s reload', trigger=['./frontend/nginx.conf']),
         ]
     }
-custom_build('registry.gitlab.com/xdev-tech/star/frontend',
+custom_build('eniblock/2021-star-frontend',
          'earthly ./frontend/+' + target + ' --ref=$EXPECTED_REF',
          ['frontend'],
          ignore=['frontend/dist'],
          **extra_front_opts)
 
 # backend build
-image_build(
-    'registry.gitlab.com/xdev-tech/star/backend',
-    'backend',
-    target='dev'
+custom_build(
+    'eniblock/2021-star-backend',
+    'earthly ./backend/+dev --ref=$EXPECTED_REF',
+    ['backend'],
 )
 
 # keycloak build
-image_build(
-    'registry.gitlab.com/xdev-tech/star/keycloak',
-    'keycloak',
+custom_build(
+    'eniblock/2021-star-keycloak',
+    'earthly ./keycloak/+docker --ref=$EXPECTED_REF',
+    ['keycloak'],
     live_update=[
         sync('keycloak/configurator/', '/tf/'),
         # sync('keycloak/themes/base/login/', '/opt/keycloak/themes/base/login/'),
@@ -114,9 +115,10 @@ local_resource('helm lint',
 hlf_k8s_version = read_yaml(".gitlab-ci.yml")["variables"]["HLF_K8S_VERSION"]
 
 # image build
-image_build(
-    'registry.gitlab.com/xdev-tech/star/chaincode',
-    'chaincode',
+custom_build(
+    'eniblock/2021-star-chaincode',
+    'earthly ./chaincode/+docker --ref=$EXPECTED_REF',
+    ['chaincode'],
 )
 
 if cfg.get('dev-hlf-k8s'):

@@ -55,7 +55,7 @@ public class FeedBackController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<Void> createReserveBid(@NotNull @RequestBody FeedBackDTO feedBackDTO) throws BusinessException, TechnicalException {
+    public ResponseEntity<Void> createFeedback(@NotNull @RequestBody FeedBackDTO feedBackDTO) throws BusinessException, TechnicalException {
         log.info("Traitement du feedback DTO {}", feedBackDTO);
         feedBackDTO.setSenderMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));
         feedBackService.create(feedBackMapper.dtoToBean(feedBackDTO));

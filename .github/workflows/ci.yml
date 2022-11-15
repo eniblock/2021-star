@@ -6,12 +6,6 @@ on:
     tags:
       - "*"
 
-env:
-  EARTHLY_REMOTE_CACHE: cache.registry/${{ github.repository }}/${{ github.job }}/${{ github.ref_name }}:cache
-  EARTHLY_CACHE_FROM: cache.registry/${{ github.repository }}/${{ github.job }}/develop:cache
-  EARTHLY_STRICT: "true"
-  EARTHLY_PUSH: "true"
-
 jobs:
 
   ############################ tests ############################

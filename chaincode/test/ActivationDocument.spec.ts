@@ -32,6 +32,8 @@ import { ActivationDocumentAbstract } from '../src/model/dataIndex/activationDoc
 import { IndexedData } from '../src/model/dataIndex/dataIndexers';
 import { SiteActivationIndexersController } from '../src/controller/dataIndex/SiteActivationIndexersController';
 import { ActivationDocumentDateMax } from '../src/model/dataIndex/activationDocumentDateMax';
+import { FeedbackProducer } from '../src/model/feedbackProducer';
+import { FeedbackProducerController } from '../src/controller/FeedbackProducerController';
 
 class TestLoggerMgt {
     public getLogger(arg: string): any {
@@ -447,6 +449,18 @@ describe('Star Tests ActivationDocument', () => {
             };
             const expectedDateMaxId: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
 
+            const expectedFeedbackProducer: FeedbackProducer = {
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, expected.activationDocumentMrid),
+                activationDocumentMrid: expected.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                receiverMarketParticipantMrid: expected.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: expected.senderMarketParticipantMrid,
+                createdDateTime: expected.startCreatedDateTime,
+                docType: DocType.FEEDBACK_PRODUCER
+            }
+
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
             // params.logger.info("ooooooooo")
@@ -469,6 +483,12 @@ describe('Star Tests ActivationDocument', () => {
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
             // params.logger.info("oo")
             // params.logger.info(JSON.stringify(expectedDateMax))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(4).args[2].toString()).toString('utf8'));
+            // params.logger.info("oo")
+            // params.logger.info(JSON.stringify(expectedFeedbackProducer))
             // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
@@ -495,7 +515,13 @@ describe('Star Tests ActivationDocument', () => {
                 Buffer.from(JSON.stringify(expectedDateMax)),
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(4);
+            transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
+                'enedis-producer',
+                expectedFeedbackProducer.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expectedFeedbackProducer)),
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(5);
         });
 
         it('should return SUCCESS CreateActivationDocumentListe 2 docs HTA', async () => {
@@ -603,6 +629,31 @@ describe('Star Tests ActivationDocument', () => {
             };
             const expectedDateMaxId2: string = SiteActivationIndexersController.getMaxKey(expected2.registeredResourceMrid);
 
+            const expectedFeedbackProducer: FeedbackProducer = {
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, expected.activationDocumentMrid),
+                activationDocumentMrid: expected.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                receiverMarketParticipantMrid: expected.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: expected.senderMarketParticipantMrid,
+                createdDateTime: expected.startCreatedDateTime,
+                docType: DocType.FEEDBACK_PRODUCER
+            }
+
+            const expectedFeedbackProducer2: FeedbackProducer = {
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, expected2.activationDocumentMrid),
+                activationDocumentMrid: expected2.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                receiverMarketParticipantMrid: expected2.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: expected2.senderMarketParticipantMrid,
+                createdDateTime: expected2.startCreatedDateTime,
+                docType: DocType.FEEDBACK_PRODUCER
+            }
+
+
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
             // params.logger.info("ooooooooo")
@@ -628,24 +679,35 @@ describe('Star Tests ActivationDocument', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(4).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(4).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expected2))
+            // params.logger.info(JSON.stringify(expectedFeedbackProducer))
             // params.logger.info("-----------")
+
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(5).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(5).args[2].toString()).toString('utf8'));
-            // params.logger.info("oo")
-            // params.logger.info(JSON.stringify(compositeKeyIndexed2JSON))
+            // params.logger.info(JSON.stringify(expected2))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(6).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(6).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expectedIndexer2JSON))
+            // params.logger.info("oo")
+            // params.logger.info(JSON.stringify(compositeKeyIndexed2JSON))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(7).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(7).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexer2JSON))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(8).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(8).args[2].toString()).toString('utf8'));
             // params.logger.info("oo")
             // params.logger.info(JSON.stringify(expectedDateMax2))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(9).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(9).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedFeedbackProducer2))
             // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
@@ -674,29 +736,43 @@ describe('Star Tests ActivationDocument', () => {
 
             transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
                 'enedis-producer',
+                expectedFeedbackProducer.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expectedFeedbackProducer)),
+            );
+
+
+
+            transactionContext.stub.putPrivateData.getCall(5).should.have.been.calledWithExactly(
+                'enedis-producer',
                 expected2.activationDocumentMrid,
                 Buffer.from(JSON.stringify(expected2)),
             );
 
-            transactionContext.stub.putPrivateData.getCall(5).should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(6).should.have.been.calledWithExactly(
                 'enedis-producer',
                 compositeKeyIndexed2JSON.indexId,
                 Buffer.from(JSON.stringify(compositeKeyIndexed2JSON)),
             );
 
-            transactionContext.stub.putPrivateData.getCall(6).should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(7).should.have.been.calledWithExactly(
                 'enedis-producer',
                 expectedIndexer2JSON.indexId,
                 Buffer.from(JSON.stringify(expectedIndexer2JSON)),
             );
 
-            transactionContext.stub.putPrivateData.getCall(7).should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(8).should.have.been.calledWithExactly(
                 'enedis-producer',
                 expectedDateMaxId2,
                 Buffer.from(JSON.stringify(expectedDateMax2)),
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(8);
+            transactionContext.stub.putPrivateData.getCall(9).should.have.been.calledWithExactly(
+                'enedis-producer',
+                expectedFeedbackProducer2.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expectedFeedbackProducer2)),
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(10);
 
         });
 
@@ -885,6 +961,19 @@ describe('Star Tests ActivationDocument', () => {
             };
             const expectedDateMaxId: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
 
+            const expectedFeedbackProducer: FeedbackProducer = {
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, Values.HTB_ActivationDocument_JustStartDate.activationDocumentMrid),
+                activationDocumentMrid: Values.HTB_ActivationDocument_JustStartDate.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                receiverMarketParticipantMrid: Values.HTB_ActivationDocument_JustStartDate.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: Values.HTB_ActivationDocument_JustStartDate.senderMarketParticipantMrid,
+                createdDateTime: Values.HTB_ActivationDocument_JustStartDate.startCreatedDateTime,
+                docType: DocType.FEEDBACK_PRODUCER
+            }
+
+
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
             // params.logger.info("ooooooooo")
@@ -908,6 +997,12 @@ describe('Star Tests ActivationDocument', () => {
             // params.logger.info("oo")
             // params.logger.info(JSON.stringify(expectedDateMax))
             // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(4).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedFeedbackProducer))
+            // params.logger.info("-----------")
+
 
             transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
                 'producer-rte',
@@ -933,7 +1028,13 @@ describe('Star Tests ActivationDocument', () => {
                 Buffer.from(JSON.stringify(expectedDateMax)),
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(4);
+            transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
+                'producer-rte',
+                expectedFeedbackProducer.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expectedFeedbackProducer)),
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(5);
         });
 
     });

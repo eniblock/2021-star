@@ -1,0 +1,22 @@
+name: sonar
+on:
+  # Trigger analysis when pushing in master or pull requests, and when creating
+  # a pull request.
+  push:
+    branches:
+      - master
+  pull_request:
+      types: [opened, synchronize, reopened]
+jobs:
+  sonarcloud:
+    runs-on: [self-hosted]
+    steps:
+    - uses: eniblock/build/actions/setup@develop
+      id: setup
+      with:
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: |
+        earthly \
+          --secret GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+          --secret SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} \
+          +sonar

@@ -7,6 +7,7 @@ import { AttachmentFile } from '../src/model/attachmentFile';
 import { BalancingDocument } from '../src/model/balancingDocument';
 import { EnergyAccount } from '../src/model/energyAccount';
 import { EnergyAmount } from '../src/model/energyAmount';
+import { FeedbackProducer } from '../src/model/feedbackProducer';
 import { Producer } from '../src/model/producer';
 import { ReserveBidMarketDocument } from '../src/model/reserveBidMarketDocument';
 import { Site } from '../src/model/site';
@@ -757,6 +758,64 @@ export class Values {
         financialPriceAmount: 1764,
     };
 
+
+    /*********************************************/
+    /*           FEEDBACK PRODUCER               */
+    /*********************************************/
+    public static HTA_FeedbackProducer: FeedbackProducer = {
+        feedbackProducerMrid: 'FeedBack_' + Values.HTA_ActivationDocument_Valid.activationDocumentMrid,
+        activationDocumentMrid: Values.HTA_ActivationDocument_Valid.activationDocumentMrid,
+        messageType: "B30",
+        processType: "A42",
+        revisionNumber: "0",
+        receiverMarketParticipantMrid: Values.HTA_ActivationDocument_Valid.receiverMarketParticipantMrid,
+        senderMarketParticipantMrid: Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid,
+        createdDateTime: Values.HTA_ActivationDocument_Valid.startCreatedDateTime,
+        validityPeriodEndDateTime: CommonService.increaseDateDaysStr(JSON.parse(JSON.stringify(Values.getEndDate())), 1),
+        docType: DocType.FEEDBACK_PRODUCER
+    }
+
+    public static HTB_FeedbackProducer: FeedbackProducer = {
+        feedbackProducerMrid: 'FeedBack_' + Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
+        activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
+        messageType: "B30",
+        processType: "A42",
+        revisionNumber: "0",
+        receiverMarketParticipantMrid: Values.HTB_ActivationDocument_Valid.receiverMarketParticipantMrid,
+        senderMarketParticipantMrid: Values.HTB_ActivationDocument_Valid.senderMarketParticipantMrid,
+        createdDateTime: Values.HTB_ActivationDocument_Valid.startCreatedDateTime,
+        validityPeriodEndDateTime: CommonService.increaseDateDaysStr(JSON.parse(JSON.stringify(Values.getEndDate())), 1),
+        docType: DocType.FEEDBACK_PRODUCER
+    }
+
+    public static HTA_FeedbackProducerWithComment: FeedbackProducer = {
+        feedbackProducerMrid: 'FeedBack_' + Values.HTA_ActivationDocument_Valid.activationDocumentMrid,
+        activationDocumentMrid: Values.HTA_ActivationDocument_Valid.activationDocumentMrid,
+        feedback: 'feedbackComment',
+        messageType: "B30",
+        processType: "A42",
+        revisionNumber: "0",
+        receiverMarketParticipantMrid: Values.HTA_ActivationDocument_Valid.receiverMarketParticipantMrid,
+        senderMarketParticipantMrid: Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid,
+        createdDateTime: Values.HTA_ActivationDocument_Valid.startCreatedDateTime,
+        validityPeriodEndDateTime: CommonService.increaseDateDaysStr(JSON.parse(JSON.stringify(Values.getEndDate())), 1),
+        docType: DocType.FEEDBACK_PRODUCER
+    }
+
+    public static HTB_FeedbackProducerWithComment: FeedbackProducer = {
+        feedbackProducerMrid: 'FeedBack_' + Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
+        activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
+        feedback: 'feedbackComment',
+        messageType: "B30",
+        processType: "A42",
+        revisionNumber: "0",
+        receiverMarketParticipantMrid: Values.HTB_ActivationDocument_Valid.receiverMarketParticipantMrid,
+        senderMarketParticipantMrid: Values.HTB_ActivationDocument_Valid.senderMarketParticipantMrid,
+        createdDateTime: Values.HTB_ActivationDocument_Valid.startCreatedDateTime,
+        validityPeriodEndDateTime: CommonService.increaseDateDaysStr(JSON.parse(JSON.stringify(Values.getEndDate())), 1),
+        docType: DocType.FEEDBACK_PRODUCER
+    }
+
     /*********************************************/
     /*                 TOOLS                     */
     /*********************************************/
@@ -781,7 +840,7 @@ export class Values {
 
     public static getStartDate(): Date {
         const dateStart: Date = new Date();
-        const offset: number = 0 - new Date().getTimezoneOffset();
+        const offset: number = 0 - dateStart.getTimezoneOffset();
         dateStart.setHours(0, 0 + offset, 0, 1);
         // dateStart.setHours(0,0,0,1);
 
@@ -805,7 +864,7 @@ export class Values {
 
     private static getEndDate(): Date {
         const dateEnd = Values.getStartDate();
-        const offset: number = 0 - new Date().getTimezoneOffset();
+        const offset: number = 0 - dateEnd.getTimezoneOffset();
 
         // dateEnd is dateStart at 23h29'10''001
         dateEnd.setHours(23, 29 + offset, 10);

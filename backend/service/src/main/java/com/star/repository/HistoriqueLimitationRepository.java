@@ -40,6 +40,7 @@ public class HistoriqueLimitationRepository {
         try {
             ordreLimitationRepository.reconciliate();
             byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_HISTORY, objectMapper.writeValueAsString(criteria));
+            log.debug(new String(response));
             returnedArray = (response != null && response.length != 0) ?
                     objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
                     })

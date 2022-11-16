@@ -91,7 +91,7 @@ public class SiteRepository {
         try {
             byte[] response = contract.evaluateTransaction(GET_SITE_BY_QUERY, query);
             if (response != null) {
-                log.debug(new String(response));
+                log.info(new String(response));
             }
             return response != null ? objectMapper.readValue(new String(response), new TypeReference<Site[]>() {
             }) : null;

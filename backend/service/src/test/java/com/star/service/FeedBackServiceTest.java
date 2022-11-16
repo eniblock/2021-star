@@ -56,27 +56,4 @@ class FeedBackServiceTest extends AbstractTest {
         verifyNoInteractions(contract);
     }
 
-    @Test
-    void testImportSiteOk() throws TechnicalException {
-        // GIVEN
-        FeedBack feedBack = FeedBack.builder().activationDocumentMrid("AJB12-340K-AHVTE-2345").feedback("feedback")
-                .messageType("B30").processType("A42").senderMarketParticipantMrid("senderMrid")
-                .receiverMarketParticipantMrid("receiverMrid").validityPeriodStartDateTime("startDate")
-                .validityPeriodEndDateTime("endDate").build();
-
-        // WHEN
-        feedBackService.create(feedBack);
-
-        // THEN
-        verify(feedBackRepository, Mockito.times(1)).saveFeedBack(feedBackArgumentCaptor.capture());
-        assertThat(feedBackArgumentCaptor.getValue()).isNotNull();
-        assertThat(feedBackArgumentCaptor.getValue()).extracting(
-                "activationDocumentMrid", "feedback", "messageType", "processsType", "senderMarketParticipantMrid",
-                "receiverMarketParticipantMrid", "validityPeriodStartDateTime", "validityPeriodEndDateTime")
-                .containsExactly(feedBack.getActivationDocumentMrid(), feedBack.getFeedback(), feedBack.getMessageType(), feedBack.getProcessType(),
-                        feedBack.getSenderMarketParticipantMrid(), feedBack.getReceiverMarketParticipantMrid(), feedBack.getValidityPeriodStartDateTime(),
-                        feedBack.getValidityPeriodEndDateTime());
-
-    }
-
 }

@@ -90,13 +90,19 @@ public class SiteRepository {
     public Site[] findSiteByQuery(String query) throws BusinessException, TechnicalException {
         try {
             byte[] response = contract.evaluateTransaction(GET_SITE_BY_QUERY, query);
-            if (response != null) {
-                log.info(new String(response));
-            }
             return response != null ? objectMapper.readValue(new String(response), new TypeReference<Site[]>() {
             }) : null;
         } catch (JsonProcessingException exception) {
             throw new TechnicalException("Erreur technique lors de la recherche des sites", exception);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
+    }
+
+    public String test(String query) throws TechnicalException {
+        try {
+            byte[] response = contract.evaluateTransaction(GET_SITE_BY_QUERY, query);
+            return response != null ? new String(response) : null;
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }

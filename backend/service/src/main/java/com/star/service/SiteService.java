@@ -117,32 +117,6 @@ public class SiteService {
     }
 
 
-    public String test(SiteCrteria criteria, Sort sort) throws BusinessException, TechnicalException {
-        boolean useIndex = false;
-        Sort.Order producerMarketParticipantNameOrder = sort.getOrderFor("producerMarketParticipantName");
-        Sort.Order technologyTypeOrder = sort.getOrderFor("technologyType");
-        var selectors = new ArrayList<Selector>();
-        selectors.add(Expression.eq("docType", SITE.getDocType()));
-        addCriteria(selectors, criteria);
-        var queryBuilder = QueryBuilderHelper.toQueryBuilder(selectors);
-        if (technologyTypeOrder != null) {
-            useIndex = true;
-            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(technologyTypeOrder.getProperty()));
-            queryBuilder.useIndex(SITE.getIndexName(), "indexTechnologyType");
-        } else if (producerMarketParticipantNameOrder != null) {
-            useIndex = true;
-            queryBuilder.sort(com.cloudant.client.api.query.Sort.asc(producerMarketParticipantNameOrder.getProperty()));
-            queryBuilder.useIndex(SITE.getIndexName(), "indexProducerMarketParticipantName");
-        }
-        if (!useIndex) {
-            queryBuilder.useIndex(SITE.getIndexName());
-        }
-        String query = queryBuilder.build();
-        log.debug("Transaction query: " + query);
-        return siteRepository.test(query);
-    }
-
-
     private void addCriteria(List<Selector> selectors, SiteCrteria siteCrteria) throws BusinessException {
         if (isNotBlank(siteCrteria.getSiteName())) {
             selectors.add(Expression.eq("siteName", siteCrteria.getSiteName()));

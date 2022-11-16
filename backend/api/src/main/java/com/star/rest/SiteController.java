@@ -152,42 +152,4 @@ public class SiteController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(siteMapper.beanToDtos(siteService.findSite(criteria, sort)));
     }
-
-
-    @Operation(summary = "Find site by criteria.")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Found site", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
-    @GetMapping("/test")
-    public ResponseEntity<String> test(
-            @Parameter(description = "Number of page per response")
-            @RequestParam(value = "order", required = false) String order,
-            @RequestParam(value = "technologyType", required = false) List<TechnologyTypeEnum> technologyType,
-            @Parameter(description = "producerMarketParticipantMrid search criteria")
-            @RequestParam(value = "producerMarketParticipantMrid", required = false) String producerMarketParticipantMrid,
-            @Parameter(description = "producerMarketParticipantName search criteria")
-            @RequestParam(value = "producerMarketParticipantName", required = false) String producerMarketParticipantName,
-            @Parameter(description = "siteName search criteria")
-            @RequestParam(value = "siteName", required = false) String siteName,
-            @Parameter(description = "substationName search criteria")
-            @RequestParam(value = "substationName", required = false) String substationName,
-            @Parameter(description = "substationMrid search criteria")
-            @RequestParam(value = "substationMrid", required = false) String substationMrid,
-            @Parameter(description = "siteIecCode search criteria")
-            @RequestParam(value = "siteIecCode", required = false) String siteIecCode,
-            @Parameter(description = "meteringPointMrId search criteria")
-            @RequestParam(value = "meteringPointMrId", required = false) String meteringPointMrId) throws BusinessException, TechnicalException {
-        Sort sort = order == null ? Sort.unsorted() : Sort.by(order);
-        SiteCrteria criteria = SiteCrteria.builder().meteringPointMrId(meteringPointMrId).producerMarketParticipantMrid(producerMarketParticipantMrid)
-                .producerMarketParticipantName(producerMarketParticipantName).siteIecCode(siteIecCode).substationMrid(substationMrid)
-                .substationName(substationName).siteName(siteName).technologyType(technologyType).instance(instance).build();
-        if (PRODUCER.equals(instance)) {
-            criteria.setProducerMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(siteService.test(criteria, sort));
-    }
-
-
 }

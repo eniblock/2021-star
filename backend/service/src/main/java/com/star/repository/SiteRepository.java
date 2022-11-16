@@ -98,13 +98,4 @@ public class SiteRepository {
             throw new BusinessException(contractException.getMessage());
         }
     }
-
-    public String test(String query) throws TechnicalException {
-        try {
-            byte[] response = contract.evaluateTransaction(GET_SITE_BY_QUERY, query);
-            return response != null ? new String(response) : null;
-        } catch (ContractException contractException) {
-            throw new BusinessException(contractException.getMessage());
-        }
-    }
 }

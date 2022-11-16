@@ -18,10 +18,10 @@ export class FormEneEniComponent implements OnInit {
   constructor(
     private instanceService: InstanceService
   ) {
-    this.instanceService.getTypeInstance().subscribe(instance => this.instance = instance);
   }
 
   ngOnInit(): void {
+    this.instanceService.getTypeInstance().subscribe(instance => this.instance = instance);
   }
 
 }

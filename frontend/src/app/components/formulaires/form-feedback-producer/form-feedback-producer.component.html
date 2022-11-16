@@ -1,20 +1,35 @@
-<form [formGroup]="form" (submit)="onSubmit()">
+<h2>Commentaires</h2>
 
-  <h2>Commentaires</h2>
+<ng-container *ngIf="this.bottomSheetParams.feedbackElements">
+  <h3>Type de commentaire</h3>
+  {{ this.bottomSheetParams.feedbackElements }}
+</ng-container>
 
-  <h3>Nouveau message</h3>
-  <h3>Réponse</h3>
+<ng-container *ngIf="this.bottomSheetParams.feedback">
+  <h3 class="mt-4">Retour producteur</h3>
+  {{ this.bottomSheetParams.feedback }}
+</ng-container>
 
-  <div class="row">
+<ng-container *ngIf="this.bottomSheetParams.feedbackAnswer">
+  <h3 class="mt-4">Réponse</h3>
+  {{ this.bottomSheetParams.feedbackAnswer }}
+</ng-container>
 
-    <div class="col-12 text-center mt-3">
-      <button mat-raised-button color="primary"
-              [disabled]="form.invalid || loading" type="submit">
-        Ajouter
-        <i class="fa-solid fa-hourglass ms-2" *ngIf="loading"></i>
-      </button>
+
+<ng-container *ngIf="afficherFormulaire">
+  <form [formGroup]="form" (submit)="onSubmit()">
+
+    <div class="row">
+
+      <div class="col-12 text-center mt-3">
+        <button mat-raised-button color="primary"
+                [disabled]="form.invalid || loading" type="submit">
+          Ajouter
+          <i class="fa-solid fa-hourglass ms-2" *ngIf="loading"></i>
+        </button>
+      </div>
+
     </div>
 
-  </div>
-
-</form>
+  </form>
+</ng-container>

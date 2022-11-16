@@ -1,6 +1,8 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from "@angular/material/bottom-sheet";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {InstanceService} from "../../../services/api/instance.service";
+import {Instance} from "../../../models/enum/Instance.enum";
 
 @Component({
   selector: 'app-form-feedback-producer',
@@ -14,6 +16,8 @@ export class FormFeedbackProducerComponent implements OnInit {
     //validityPeriodStartDateTime: ['', Validators.required],
   });
 
+  afficherFormulaire = false;
+  instance?: Instance;
   loading = false;
 
   constructor(
@@ -26,11 +30,22 @@ export class FormFeedbackProducerComponent implements OnInit {
     },
     private formBuilder: FormBuilder,
     private bottomsheet: MatBottomSheetRef<FormFeedbackProducerComponent>,
+    private instanceService: InstanceService,
   ) {
   }
 
   ngOnInit(): void {
-    console.log(this.bottomSheetParams)
+    this.instanceService.getTypeInstance().subscribe(instance => {
+      this.instance = instance;
+      this.init();
+    });
+  }
+
+  init() {
+    this.afficherFormulaire =
+      this.instance == Instance.PRODUCER && !this.bottomSheetParams.feedback
+      ||
+      this.instance != Instance.PRODUCER && !!this.bottomSheetParams.feedback && !this.bottomSheetParams.feedbackAnswer;
   }
 
   onSubmit() {

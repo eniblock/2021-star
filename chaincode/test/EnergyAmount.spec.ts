@@ -25,6 +25,8 @@ import { IndexedDataJson } from '../src/model/dataIndexersJson';
 import { EnergyAmountAbstract } from '../src/model/dataIndex/energyAmountAbstract';
 import { IndexedData } from '../src/model/dataIndex/dataIndexers';
 import { ActivationEnergyAmountIndexersController } from '../src/controller/dataIndex/ActivationEnergyAmountIndexersController';
+import { FeedbackProducer } from '../src/model/feedbackProducer';
+import { FeedbackProducerController } from '../src/controller/FeedbackProducerController';
 
 
 class TestLoggerMgt {
@@ -162,6 +164,8 @@ describe('Star Tests EnergyAmount', () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
             const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
@@ -218,6 +222,8 @@ describe('Star Tests EnergyAmount', () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
             const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
@@ -246,6 +252,8 @@ describe('Star Tests EnergyAmount', () => {
         it('should return ERROR CreateTSOEnergyAmount error in Interval End Date after Activation Document End.', async () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
@@ -277,6 +285,8 @@ describe('Star Tests EnergyAmount', () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
             const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET);
@@ -302,6 +312,25 @@ describe('Star Tests EnergyAmount', () => {
             expectedIndexer.indexedDataAbstractMap.set(expected.activationDocumentMrid, indexedDataAbstract);
             const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
 
+            let validityPeriodStartDateTime = CommonService.setHoursStartDayStr(Values.HTB_EnergyAmount.createdDateTime);
+            const nbDaysValidityComment: number = params.values.get(ParametersType.FEEDBACK_PRODUCER_VALIDITY_PERIOD);
+            let validityPeriodEndDateTime = CommonService.increaseDateDaysStr(validityPeriodStartDateTime, nbDaysValidityComment);
+            validityPeriodEndDateTime = CommonService.setHoursEndDayStr(validityPeriodEndDateTime);
+
+            const expectedFeedbackProducer: FeedbackProducer = {
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, Values.HTB_ActivationDocument_Valid.activationDocumentMrid),
+                activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "1",
+                receiverMarketParticipantMrid: Values.HTB_EnergyAmount.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: Values.HTB_EnergyAmount.senderMarketParticipantMrid,
+                createdDateTime: Values.HTB_EnergyAmount.createdDateTime,
+                validityPeriodStartDateTime: validityPeriodStartDateTime,
+                validityPeriodEndDateTime: validityPeriodEndDateTime,
+                docType: DocType.FEEDBACK_PRODUCER
+            }
+
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
             // params.logger.info("ooooooooo")
@@ -312,6 +341,10 @@ describe('Star Tests EnergyAmount', () => {
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expectedIndexerJSON))
+            // params.logger.info("-----------")
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedFeedbackProducer))
             // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
@@ -326,7 +359,13 @@ describe('Star Tests EnergyAmount', () => {
                 Buffer.from(JSON.stringify(expectedIndexerJSON))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                collection,
+                expectedFeedbackProducer.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expectedFeedbackProducer)),
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(3);
         });
 
 
@@ -336,6 +375,8 @@ describe('Star Tests EnergyAmount', () => {
             const energyamount:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
             const energyamount2:EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount_2));
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
@@ -377,6 +418,45 @@ describe('Star Tests EnergyAmount', () => {
             expectedIndexer2.indexedDataAbstractMap?.set(expected.activationDocumentMrid, indexedDataAbstract2);
             const expectedIndexer2JSON = IndexedDataJson.toJson(expectedIndexer2);
 
+            let validityPeriodStartDateTime1 = CommonService.setHoursStartDayStr(Values.HTB_EnergyAmount.createdDateTime);
+            const nbDaysValidityComment1: number = params.values.get(ParametersType.FEEDBACK_PRODUCER_VALIDITY_PERIOD);
+            let validityPeriodEndDateTime1 = CommonService.increaseDateDaysStr(validityPeriodStartDateTime1, nbDaysValidityComment1);
+            validityPeriodEndDateTime1 = CommonService.setHoursEndDayStr(validityPeriodEndDateTime1);
+
+            const expectedFeedbackProducer1: FeedbackProducer = {
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, Values.HTB_ActivationDocument_Valid.activationDocumentMrid),
+                activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "1",
+                receiverMarketParticipantMrid: Values.HTB_EnergyAmount.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: Values.HTB_EnergyAmount.senderMarketParticipantMrid,
+                createdDateTime: Values.HTB_EnergyAmount.createdDateTime,
+                validityPeriodStartDateTime: validityPeriodStartDateTime1,
+                validityPeriodEndDateTime: validityPeriodEndDateTime1,
+                docType: DocType.FEEDBACK_PRODUCER
+            }
+
+            let validityPeriodStartDateTime2 = CommonService.setHoursStartDayStr(Values.HTB_EnergyAmount_2.createdDateTime);
+            const nbDaysValidityComment2: number = params.values.get(ParametersType.FEEDBACK_PRODUCER_VALIDITY_PERIOD);
+            let validityPeriodEndDateTime2 = CommonService.increaseDateDaysStr(validityPeriodStartDateTime2, nbDaysValidityComment2);
+            validityPeriodEndDateTime2 = CommonService.setHoursEndDayStr(validityPeriodEndDateTime2);
+
+            const expectedFeedbackProducer2: FeedbackProducer = {
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, Values.HTB_ActivationDocument_Valid.activationDocumentMrid),
+                activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "1",
+                receiverMarketParticipantMrid: Values.HTB_EnergyAmount_2.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: Values.HTB_EnergyAmount_2.senderMarketParticipantMrid,
+                createdDateTime: Values.HTB_EnergyAmount.createdDateTime,
+                validityPeriodStartDateTime: validityPeriodStartDateTime2,
+                validityPeriodEndDateTime: validityPeriodEndDateTime2,
+                docType: DocType.FEEDBACK_PRODUCER
+            }
+
+
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
             // params.logger.info("ooooooooo")
@@ -391,12 +471,22 @@ describe('Star Tests EnergyAmount', () => {
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expected2))
+            // params.logger.info(JSON.stringify(expectedFeedbackProducer1))
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected2))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(4).args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expectedIndexer2JSON))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(5).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(5).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedFeedbackProducer2))
             // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
@@ -413,17 +503,29 @@ describe('Star Tests EnergyAmount', () => {
 
             transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
                 collection,
+                expectedFeedbackProducer1.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expectedFeedbackProducer1))
+            );
+
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
+                collection,
                 expected2.energyAmountMarketDocumentMrid,
                 Buffer.from(JSON.stringify(expected2))
             );
 
-            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
+            transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
                 collection,
                 expectedIndexer2JSON.indexId,
                 Buffer.from(JSON.stringify(expectedIndexer2JSON))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(4);
+            transactionContext.stub.putPrivateData.getCall(5).should.have.been.calledWithExactly(
+                collection,
+                expectedFeedbackProducer2.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expectedFeedbackProducer2))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(6);
         });
 
 
@@ -498,6 +600,8 @@ describe('Star Tests EnergyAmount', () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
             const collections: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             transactionContext.stub.getPrivateData.withArgs(collections[0],
@@ -753,6 +857,8 @@ describe('Star Tests EnergyAmount', () => {
 
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+
             const collectionsActivationDocument: string[] = await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
             transactionContext.stub.getPrivateData.withArgs(collectionsActivationDocument[0],
                 Values.HTA_ActivationDocument_Valid.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_ActivationDocument_Valid)));
@@ -778,6 +884,25 @@ describe('Star Tests EnergyAmount', () => {
 
             const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer)
 
+            let validityPeriodStartDateTime = CommonService.setHoursStartDayStr(Values.HTA_EnergyAmount.createdDateTime);
+            const nbDaysValidityComment: number = params.values.get(ParametersType.FEEDBACK_PRODUCER_VALIDITY_PERIOD);
+            let validityPeriodEndDateTime = CommonService.increaseDateDaysStr(validityPeriodStartDateTime, nbDaysValidityComment);
+            validityPeriodEndDateTime = CommonService.setHoursEndDayStr(validityPeriodEndDateTime);
+
+            const expectedFeedbackProducer: FeedbackProducer = {
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, Values.HTA_ActivationDocument_Valid.activationDocumentMrid),
+                activationDocumentMrid: Values.HTA_ActivationDocument_Valid.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "1",
+                receiverMarketParticipantMrid: Values.HTA_EnergyAmount.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: Values.HTA_EnergyAmount.senderMarketParticipantMrid,
+                createdDateTime: Values.HTA_EnergyAmount.createdDateTime,
+                validityPeriodStartDateTime: validityPeriodStartDateTime,
+                validityPeriodEndDateTime: validityPeriodEndDateTime,
+                docType: DocType.FEEDBACK_PRODUCER
+            }
+
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
             // params.logger.info("ooooooooo")
@@ -788,6 +913,10 @@ describe('Star Tests EnergyAmount', () => {
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expectedIndexerJSON))
+            // params.logger.info("-----------")
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedFeedbackProducer))
             // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
@@ -802,7 +931,14 @@ describe('Star Tests EnergyAmount', () => {
                 Buffer.from(JSON.stringify(expectedIndexerJSON))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                collections[0],
+                expectedFeedbackProducer.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expectedFeedbackProducer)),
+            );
+
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(3);
         });
     });
 

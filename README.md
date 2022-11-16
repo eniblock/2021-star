@@ -1,14 +1,15 @@
 # STAR (Smart Traceability of the Activations of Renewable generation flexibilities)
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=xdev-tech_star&metric=bugs)](https://sonarcloud.io/dashboard?id=xdev-tech_star)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=xdev-tech_star&metric=code_smells)](https://sonarcloud.io/dashboard?id=xdev-tech_star)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=xdev-tech_star&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=xdev-tech_star)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=xdev-tech_star&metric=ncloc)](https://sonarcloud.io/dashboard?id=xdev-tech_star)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=xdev-tech_star&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=xdev-tech_star)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=xdev-tech_star&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=xdev-tech_star)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=xdev-tech_star&metric=security_rating)](https://sonarcloud.io/dashboard?id=xdev-tech_star)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=xdev-tech_star&metric=sqale_index)](https://sonarcloud.io/dashboard?id=xdev-tech_star)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=xdev-tech_star&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=xdev-tech_star)
+![GitHub Actions CI](https://github.com/eniblock/2021-star/actions/workflows/ci.yml/badge.svg)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=eniblock_2021-star&metric=bugs)](https://sonarcloud.io/dashboard?id=eniblock_2021-star)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=eniblock_2021-star&metric=code_smells)](https://sonarcloud.io/dashboard?id=eniblock_2021-star)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=eniblock_2021-star&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=eniblock_2021-star)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=eniblock_2021-star&metric=ncloc)](https://sonarcloud.io/dashboard?id=eniblock_2021-star)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=eniblock_2021-star&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=eniblock_2021-star)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=eniblock_2021-star&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=eniblock_2021-star)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=eniblock_2021-star&metric=security_rating)](https://sonarcloud.io/dashboard?id=eniblock_2021-star)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=eniblock_2021-star&metric=sqale_index)](https://sonarcloud.io/dashboard?id=eniblock_2021-star)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=eniblock_2021-star&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=eniblock_2021-star)
 
 
 ## Development

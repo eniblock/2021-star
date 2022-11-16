@@ -548,7 +548,14 @@ export class ActivationDocumentController {
 
         await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);
         await SiteActivationIndexersController.addActivationReference(params, activationDocumentObj, targetDocument);
-        await FeedbackProducerController.createFeedbackProducerObj(params, activationDocumentObj, targetDocument);
+
+        if (!definedTarget || definedTarget.length === 0) {
+            // Only control when it's an original creation (by list)
+            // Don't create Feedback when it's a creation by reference (and then by order after reconciliation)
+            // Feedback follows its own duplication process
+
+            await FeedbackProducerController.createFeedbackProducerObj(params, activationDocumentObj, targetDocument);
+        }
 
         params.logger.debug('=============  END  : Create %s createActivationDocumentObj ===========',
             activationDocumentObj.activationDocumentMrid,

@@ -19,6 +19,7 @@ import { SiteActivationIndexersController } from './dataIndex/SiteActivationInde
 import { SiteReserveBidIndexersController } from './dataIndex/SiteReserveBidIndexersController';
 import { EnergyAccountController } from './EnergyAccountController';
 import { EnergyAmountController } from './EnergyAmountController';
+import { FeedbackProducerController } from './FeedbackProducerController';
 import { ReferenceEnergyAccountController } from './ReferenceEnergyAccountController';
 import { ReserveBidMarketDocumentController } from './ReserveBidMarketDocumentController';
 import { ActivationDocumentEligibilityService } from './service/ActivationDocumentEligibilityService';
@@ -188,6 +189,8 @@ export class StarDataStateController {
                     await ReferenceEnergyAccountController.createReferenceEnergyAccountByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
                     await EnergyAmountController.executeOrder(params, updateOrder);
+                } else if (updateOrder.docType === DocType.FEEDBACK_PRODUCER) {
+                    await FeedbackProducerController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.RESERVE_BID_MARKET_DOCUMENT) {
                     await ReserveBidMarketDocumentController.executeOrder(
                         params, updateOrder, dateRef, reserveBidOutOfTimeStatus);

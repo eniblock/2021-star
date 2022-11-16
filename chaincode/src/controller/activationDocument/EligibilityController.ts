@@ -10,6 +10,7 @@ import { EligibilityStatus } from '../../model/activationDocument/eligibilitySta
 import { AttachmentFile } from '../../model/attachmentFile';
 import { DataReference } from '../../model/dataReference';
 import { EnergyAmount } from '../../model/energyAmount';
+import { FeedbackProducer } from '../../model/feedbackProducer';
 import { ReserveBidMarketDocument } from '../../model/reserveBidMarketDocument';
 import { STARParameters } from '../../model/starParameters';
 import { SystemOperator } from '../../model/systemOperator';
@@ -17,6 +18,7 @@ import { AttachmentFileController } from '../AttachmentFileController';
 
 import { EnergyAccountController } from '../EnergyAccountController';
 import { EnergyAmountController } from '../EnergyAmountController';
+import { FeedbackProducerController } from '../FeedbackProducerController';
 import { ParametersController } from '../ParametersController';
 import { ReferenceEnergyAccountController } from '../ReferenceEnergyAccountController';
 import { ReserveBidMarketDocumentController } from '../ReserveBidMarketDocumentController';
@@ -214,6 +216,8 @@ export class EligibilityController {
                 initialTarget = referencedDocument.collection;
 
                 if (activationDocument
+                    && activationDocument.eligibilityStatus
+                    && activationDocument.eligibilityStatus.length > 0
                     && (activationDocument.eligibilityStatus.toLocaleLowerCase()
                             === EligibilityStatusType.EligibilityAccepted.toLocaleLowerCase()
                         || activationDocument.eligibilityStatus.toLocaleLowerCase()
@@ -390,6 +394,28 @@ export class EligibilityController {
                 data: energyAmount,
                 dataAction: DataActionType.COLLECTION_CHANGE,
                 docType: DocType.ENERGY_AMOUNT,
+                previousCollection: initialTarget,
+            };
+
+            requiredReferences.push(dataReference);
+        }
+
+        /*****************
+         * FEEDBACK PRODUCER
+         ****************/
+        const feedBackProducer: FeedbackProducer =
+            await FeedbackProducerController.getByActivationDocumentMrId(
+                params, activationDocument.activationDocumentMrid, initialTarget);
+
+        if (feedBackProducer
+            && feedBackProducer.feedbackProducerMrid
+            && feedBackProducer.feedbackProducerMrid.length > 0) {
+
+            const dataReference: DataReference = {
+                collection: referencedDocument.collection,
+                data: feedBackProducer,
+                dataAction: DataActionType.COLLECTION_CHANGE,
+                docType: DocType.FEEDBACK_PRODUCER,
                 previousCollection: initialTarget,
             };
 

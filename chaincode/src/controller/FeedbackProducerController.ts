@@ -228,7 +228,8 @@ export class FeedbackProducerController {
             throw new Error('ERROR updateFeedbackProducer : '.concat(error.message));
         }
 
-        const feedbackProducerObj: FeedbackProducer = existingFeedbackProducersRef.values().next().value;
+        const feedbackProducerRef: DataReference = existingFeedbackProducersRef.values().next().value;
+        const feedbackProducerObj: FeedbackProducer = feedbackProducerRef.data;
 
         const endDate: Date = new Date(feedbackProducerObj.validityPeriodEndDateTime);
         const today: Date = new Date();
@@ -265,7 +266,8 @@ export class FeedbackProducerController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
 
-        if (identity !== OrganizationTypeMsp.ENEDIS || identity !== OrganizationTypeMsp.RTE) {
+        if (identity.toLowerCase() !== OrganizationTypeMsp.ENEDIS.toLowerCase()
+            && identity.toLowerCase() !== OrganizationTypeMsp.RTE.toLowerCase()) {
             throw new Error(`Organisation, ${identity} does not have rights to give elements to the comment of the Activation Document`);
         }
 
@@ -283,7 +285,8 @@ export class FeedbackProducerController {
             throw new Error('ERROR updateFeedbackProducerAnswer : '.concat(error.message));
         }
 
-        const feedbackProducerObj: FeedbackProducer = existingFeedbackProducersRef.values().next().value;
+        const feedbackProducerRef: DataReference = existingFeedbackProducersRef.values().next().value;
+        const feedbackProducerObj: FeedbackProducer = feedbackProducerRef.data;
 
         if (feedbackProducerObj
             && feedbackProducerObj.feedbackProducerMrid

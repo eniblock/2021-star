@@ -869,10 +869,11 @@ export class Star extends Contract {
         inputStr : activationDocumentMrid the id of the document
                     feedbackStr the comment sent by the producer
     */
-    public static async UpdateFeedbackProducer(
+    public async UpdateFeedbackProducer(
         ctx: Context,
         activationDocumentMrid: string,
-        feedbackStr: string) {
+        feedbackStr: string,
+        feedbackElements: string = '') {
 
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
@@ -886,7 +887,7 @@ export class Star extends Contract {
         inputStr : activationDocumentMrid the id of the document
                     answerStr the answer of DSO/TSO to the comment written by the producer
     */
-    public static async UpdateFeedbackProducerAnswer(
+    public async UpdateFeedbackProducerAnswer(
         ctx: Context,
         activationDocumentMrid: string,
         answerStr: string) {

@@ -17,13 +17,27 @@
 
 
 <ng-container *ngIf="afficherFormulaire">
-  <h3>Poster un message</h3>
+  <h3 class="mt-4">Poster un message</h3>
 
   <mat-stepper #stepperRef [linear]="true" class="disabledHeaderNavigation">
 
     <mat-step [stepControl]="form" label="Formulaire">
       <form [formGroup]="form">
         <div class="row">
+
+          <mat-form-field class="col-12" appearance="outline" *ngIf="instance == InstanceEnum.PRODUCER">
+            <mat-label>Type de commentaire</mat-label>
+            <mat-select formControlName="elements" multiple>
+              <mat-option value="a">aaa</mat-option>
+              <mat-option value="b">bbb</mat-option>
+              <mat-option value="c">ccc</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="col-12" appearance="outline">
+            <mat-label>Message</mat-label>
+            <input matInput placeholder="Message" formControlName="message">
+          </mat-form-field>
 
           <div class="col-12 text-center mt-3">
             <button mat-raised-button color="primary" [disabled]="!form.valid" matStepperNext>Suivant</button>
@@ -33,11 +47,12 @@
       </form>
     </mat-step>
 
-
     <mat-step label="Résumé">
 
-      <div class="row panel-message p-4 mt-3">
-      le resumé
+      <div class="row">
+        <div class="col-12">
+          le resumé
+        </div>
       </div>
 
       <div class="col-12 text-center mt-4">

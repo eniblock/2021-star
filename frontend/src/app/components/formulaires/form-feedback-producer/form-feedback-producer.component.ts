@@ -1,10 +1,9 @@
-import {Component, Inject, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from "@angular/material/bottom-sheet";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {InstanceService} from "../../../services/api/instance.service";
 import {Instance} from "../../../models/enum/Instance.enum";
 import {MatStepper} from "@angular/material/stepper";
-import {DateHelper} from "../../../helpers/date.helper";
 
 @Component({
   selector: 'app-form-feedback-producer',
@@ -14,13 +13,15 @@ import {DateHelper} from "../../../helpers/date.helper";
 export class FormFeedbackProducerComponent implements OnInit {
 
   form: FormGroup = this.formBuilder.group({
-    //energyPriceAmount: ['', [Validators.required, Validators.pattern('[0-9]*[\,\.]?[0-9]*')]],
-    //validityPeriodStartDateTime: ['', Validators.required],
+    elements: ['', Validators.required],
+    message: ['', Validators.required],
   });
 
   afficherFormulaire = false;
   instance?: Instance;
   loading = false;
+
+  InstanceEnum = Instance;
 
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA)
@@ -39,15 +40,19 @@ export class FormFeedbackProducerComponent implements OnInit {
   ngOnInit(): void {
     this.instanceService.getTypeInstance().subscribe(instance => {
       this.instance = instance;
-      this.init();
+      this.initComponent();
     });
   }
 
-  init() {
+  initComponent() {
     this.afficherFormulaire =
       this.instance == Instance.PRODUCER && !this.bottomSheetParams.feedback
       ||
       this.instance != Instance.PRODUCER && !!this.bottomSheetParams.feedback && !this.bottomSheetParams.feedbackAnswer;
+
+    if (this.instance != Instance.PRODUCER) {
+      this.form.get("elements")?.removeValidators(Validators.required);
+    }
   }
 
   onSubmit(stepperRef: MatStepper) {

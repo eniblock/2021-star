@@ -17,19 +17,39 @@
 
 
 <ng-container *ngIf="afficherFormulaire">
-  <form [formGroup]="form" (submit)="onSubmit()">
+  <h3>Poster un message</h3>
 
-    <div class="row">
+  <mat-stepper #stepperRef [linear]="true" class="disabledHeaderNavigation">
 
-      <div class="col-12 text-center mt-3">
-        <button mat-raised-button color="primary"
-                [disabled]="form.invalid || loading" type="submit">
-          Ajouter
+    <mat-step [stepControl]="form" label="Formulaire">
+      <form [formGroup]="form">
+        <div class="row">
+
+          <div class="col-12 text-center mt-3">
+            <button mat-raised-button color="primary" [disabled]="!form.valid" matStepperNext>Suivant</button>
+          </div>
+
+        </div>
+      </form>
+    </mat-step>
+
+
+    <mat-step label="Résumé">
+
+      <div class="row panel-message p-4 mt-3">
+      le resumé
+      </div>
+
+      <div class="col-12 text-center mt-4">
+        <button mat-raised-button class="me-3 text-primary" matStepperPrevious>Modifier</button>
+        <button mat-raised-button color="primary" [disabled]="form.invalid || loading" (click)="onSubmit(stepperRef)">
+          Charger les données
           <i class="fa-solid fa-hourglass ms-2" *ngIf="loading"></i>
         </button>
       </div>
 
-    </div>
+    </mat-step>
 
-  </form>
+  </mat-stepper>
+
 </ng-container>

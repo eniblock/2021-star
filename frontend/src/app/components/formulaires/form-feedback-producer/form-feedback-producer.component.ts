@@ -3,6 +3,8 @@ import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from "@angular/material/bottom
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {InstanceService} from "../../../services/api/instance.service";
 import {Instance} from "../../../models/enum/Instance.enum";
+import {MatStepper} from "@angular/material/stepper";
+import {DateHelper} from "../../../helpers/date.helper";
 
 @Component({
   selector: 'app-form-feedback-producer',
@@ -48,7 +50,7 @@ export class FormFeedbackProducerComponent implements OnInit {
       this.instance != Instance.PRODUCER && !!this.bottomSheetParams.feedback && !this.bottomSheetParams.feedbackAnswer;
   }
 
-  onSubmit() {
+  onSubmit(stepperRef: MatStepper) {
     this.loading = true;
 
 

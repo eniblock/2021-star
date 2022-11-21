@@ -16,9 +16,18 @@ export class FeedbackProducerService {
   postFeedbackProducer(activationDocumentMrid: string, message: string, elements: string): Observable<void> {
     const formData = {
       activationDocumentMrid: activationDocumentMrid,
-      message: message,
-      elements: elements,
+      feedbackStr: message,
+      feedbackElements: elements,
     };
     return this.httpClient.post<void>(`${environment.serverUrl}/feedback`, formData);
+  }
+
+  postFeedbackProducerAnswer(activationDocumentMrid: string, message: string) {
+    const formData = {
+      activationDocumentMrid: activationDocumentMrid,
+      answerStr: message,
+    };
+    return this.httpClient.post<void>(`${environment.serverUrl}/feedback/answer`, formData);
+
   }
 }

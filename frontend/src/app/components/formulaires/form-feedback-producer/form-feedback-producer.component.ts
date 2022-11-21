@@ -6,7 +6,6 @@ import {Instance} from "../../../models/enum/Instance.enum";
 import {MatStepper} from "@angular/material/stepper";
 import {environment} from "../../../../environments/environment";
 import {FeedbackProducerService} from "../../../services/api/feedback-producer.service";
-import {DateHelper} from "../../../helpers/date.helper";
 import {feedbackElements} from "../../../rules/feedback-elements";
 
 @Component({
@@ -72,16 +71,30 @@ export class FormFeedbackProducerComponent implements OnInit {
   onSubmit(stepperRef: MatStepper) {
     this.loading = true;
     const message = this.form.get('message')?.value;
-    const elements = this.form.get('elements')?.value.reduce((acc: string, val: string) => acc + "|" + val);
-    this.feedbackProducerService.postFeedbackProducer(this.bottomSheetParams.activationDocumentMrid, message, elements).subscribe(
-      (ok) => {
-        this.loading = false;
-        this.bottomsheet.dismiss({message: message, elements: elements});
-      },
-      (error) => {
-        this.loading = false;
-      }
-    );
+    if (this.instance == Instance.PRODUCER) {
+      // Producer give feedback
+      const elements = this.form.get('elements')?.value.reduce((acc: string, val: string) => acc + "|" + val);
+      this.feedbackProducerService.postFeedbackProducer(this.bottomSheetParams.activationDocumentMrid, message, elements).subscribe(
+        (ok) => {
+          this.loading = false;
+          this.bottomsheet.dismiss({message: message, elements: elements, messageAnswer: null});
+        },
+        (error) => {
+          this.loading = false;
+        }
+      );
+    } else {
+      // The answer
+      this.feedbackProducerService.postFeedbackProducerAnswer(this.bottomSheetParams.activationDocumentMrid, message).subscribe(
+        (ok) => {
+          this.loading = false;
+          this.bottomsheet.dismiss({message: null, elements: null, messageAnswer: message});
+        },
+        (error) => {
+          this.loading = false;
+        }
+      );
+    }
   }
 
 }

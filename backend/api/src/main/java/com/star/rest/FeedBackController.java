@@ -53,11 +53,13 @@ public class FeedBackController {
                     @ApiResponse(responseCode = "201", description = "Create successfully a feedback", content = {@Content(mediaType = "application/json")}),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
-    @PostMapping
+    @PostMapping()
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<Void> createFeedback(@NotNull @RequestBody FeedBackDTO feedBackDTO) throws BusinessException, TechnicalException {
+    public ResponseEntity<Void> createFeedbackProducer(@NotNull @RequestBody FeedBackDTO feedBackDTO) throws BusinessException, TechnicalException {
         log.info("Traitement du feedback DTO {}", feedBackDTO);
         // TODO : le body ne doit pas avoir cette forme !!!
+
+        // TODO : remove blanks au debut et à la fin
         var x = 1 / (3 - 3);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

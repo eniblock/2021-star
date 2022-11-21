@@ -5,6 +5,7 @@ import {InstanceService} from "../../../services/api/instance.service";
 import {Instance} from "../../../models/enum/Instance.enum";
 import {MatStepper} from "@angular/material/stepper";
 import {environment} from "../../../../environments/environment";
+import {FeedbackProducerService} from "../../../services/api/feedback-producer.service";
 
 @Component({
   selector: 'app-form-feedback-producer',
@@ -36,6 +37,7 @@ export class FormFeedbackProducerComponent implements OnInit {
     private formBuilder: FormBuilder,
     private bottomsheet: MatBottomSheetRef<FormFeedbackProducerComponent>,
     private instanceService: InstanceService,
+    private feedbackProducerService: FeedbackProducerService,
   ) {
   }
 
@@ -60,12 +62,17 @@ export class FormFeedbackProducerComponent implements OnInit {
   onSubmit(stepperRef: MatStepper) {
     this.loading = true;
 
-
-    // modif ok
-    this.loading = false;
-    this.bottomsheet.dismiss("MON FEEDBACK MODIFIE");
-
-    //TODO : PREVOIR SI l'appel du service est KO => loading = false
+    const message = this.form.get('message')?.value;
+    const elements = this.form.get('elements')?.value.reduce((acc: string, val: string) => acc + "|" + val);
+    this.feedbackProducerService.postFeedbackProducer(this.bottomSheetParams.activationDocumentMrid, message, elements).subscribe(
+      (ok) => {
+        this.loading = false;
+        this.bottomsheet.dismiss({message: message, elements: elements});
+      },
+      (error) => {
+        this.loading = false;
+      }
+    );
   }
 
 }

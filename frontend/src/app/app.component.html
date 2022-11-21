@@ -1,12 +1,12 @@
 <!-- Chargement Keycloak -->
-<mat-progress-bar mode="indeterminate" *ngIf="connecting"></mat-progress-bar>
+<mat-progress-bar mode="indeterminate" *ngIf="connecting || cacheLoading"></mat-progress-bar>
 
 <!-- Application -->
-<app-page-template *ngIf="!connecting && authenticated">
+<app-page-template *ngIf="!connecting && !cacheLoading && authenticated">
   <router-outlet></router-outlet>
 </app-page-template>
 
 <!-- Keycloak connection error -->
-<ng-container *ngIf="!connecting && !authenticated">
+<ng-container *ngIf="!connecting && !cacheLoading  && !authenticated">
   <p>Authentication error!</p>
 </ng-container>

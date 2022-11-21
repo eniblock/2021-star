@@ -3,6 +3,11 @@ import {Component, OnInit} from '@angular/core';
 import localeFr from '@angular/common/locales/fr';
 import {KeycloakService} from "./services/common/keycloak.service";
 import {tap} from "rxjs/operators";
+import {SystemOperatorService} from "./services/api/system-operator.service";
+import {InstanceService} from "./services/api/instance.service";
+import {ProducerService} from "./services/api/producer.service";
+import {SiteService} from "./services/api/site.service";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -12,10 +17,15 @@ import {tap} from "rxjs/operators";
 export class AppComponent implements OnInit {
 
   connecting: boolean = true;
+  cacheLoading: boolean = true;
   authenticated: boolean = false;
 
   constructor(
     private keycloakService: KeycloakService,
+    private systemOperatorService: SystemOperatorService,
+    private instanceService: InstanceService,
+    private producerService: ProducerService,
+    private siteService: SiteService,
   ) {
   }
 
@@ -30,9 +40,24 @@ export class AppComponent implements OnInit {
       .subscribe(
         authenticated => {
           this.authenticated = authenticated;
+          this.loadCaches()
         },
         error => console.error('Keycloak initialization error!', error)
       );
+  }
 
+  loadCaches() {
+    // Load caches
+    forkJoin([
+      this.systemOperatorService.getSystemOperators(),
+      this.instanceService.getTypeInstance(),
+      this.instanceService.getParticipantMrid(),
+      this.instanceService.getParticipantName(),
+      this.producerService.getProducerNames(),
+      this.siteService.getSites()
+    ]).subscribe(
+      ok => {
+        this.cacheLoading = false;
+      });
   }
 }

@@ -6,7 +6,7 @@ import {Instance} from "../../../models/enum/Instance.enum";
 import {MatStepper} from "@angular/material/stepper";
 import {environment} from "../../../../environments/environment";
 import {FeedbackProducerService} from "../../../services/api/feedback-producer.service";
-import {feedbackElements} from "../../../rules/feedback-elements";
+import {FeedbackElements} from "../../../rules/feedback-elements";
 
 @Component({
   selector: 'app-form-feedback-producer',
@@ -23,10 +23,11 @@ export class FormFeedbackProducerComponent implements OnInit {
   afficherFormulaire = false;
   instance?: Instance;
   loading = false;
+  feedbackElements: string[] = [];
 
   InstanceEnum = Instance;
   tailleMaxMessageFeedbackProducer = environment.tailleMaxMessageFeedbackProducer;
-  feedbackElements = feedbackElements;
+  AllFeedbackElements = FeedbackElements;
 
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA)
@@ -59,6 +60,8 @@ export class FormFeedbackProducerComponent implements OnInit {
     if (this.instance != Instance.PRODUCER) {
       this.form.get("elements")?.removeValidators(Validators.required);
     }
+
+    this.feedbackElements = this.bottomSheetParams.feedbackElements == null ? [] : this.bottomSheetParams.feedbackElements.split("|");
   }
 
   toResume(stepperRef: MatStepper) {

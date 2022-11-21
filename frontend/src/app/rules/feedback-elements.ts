@@ -1,4 +1,4 @@
-export const feedbackElements = [
+export const FeedbackElements = [
   "Horodate début de limitation",
   "Horodate fin de limitation",
   "Horodate début & fin de limitation",

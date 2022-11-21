@@ -179,9 +179,9 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         createdDateTime: "string",
         validityPeriodStartDateTime: "2022-11-07T13:46:40",
         validityPeriodEndDateTime: "2024-11-08T13:46:40",
-        feedback: "",
+        feedback: "ezaeazaez\ndzijdaz\nooiio",
         feedbackAnswer: "",
-        feedbackElements: "",
+        feedbackElements: "dqsdsd|poipoi|poi",
         indeminityStatus: IndeminityStatus.InProgress,
       }
     },

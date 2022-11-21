@@ -2,17 +2,19 @@
 
 <ng-container *ngIf="this.bottomSheetParams.feedbackElements">
   <h3>Type de commentaire</h3>
-  {{ this.bottomSheetParams.feedbackElements }}
+  <ul>
+    <li *ngFor="let elem of feedbackElements">{{elem}}</li>
+  </ul>
 </ng-container>
 
 <ng-container *ngIf="this.bottomSheetParams.feedback">
   <h3 class="mt-4">Retour producteur</h3>
-  {{ this.bottomSheetParams.feedback }}
+  <span [innerText]="this.bottomSheetParams.feedback"></span>
 </ng-container>
 
 <ng-container *ngIf="this.bottomSheetParams.feedbackAnswer">
   <h3 class="mt-4">Réponse</h3>
-  {{ this.bottomSheetParams.feedbackAnswer }}
+  <span [innerText]="this.bottomSheetParams.feedbackAnswer"></span>
 </ng-container>
 
 
@@ -29,12 +31,12 @@
             <mat-label>Type de commentaire</mat-label>
             <mat-select formControlName="elements" multiple>
               <mat-select-trigger>
-                {{ form.value.elements?.length>0 ? form.value.elements[0] : ''}}
+                {{ form.value.elements?.length > 0 ? form.value.elements[0] : ''}}
                 <span *ngIf="form.value.elements?.length > 1">
                   (+{{form.value.elements.length - 1}} {{form.value.elements.length === 2 ? 'autre' : 'autres'}})
                 </span>
               </mat-select-trigger>
-              <mat-option [value]="elem" *ngFor="let elem of feedbackElements">{{elem}}</mat-option>
+              <mat-option [value]="elem" *ngFor="let elem of AllFeedbackElements">{{elem}}</mat-option>
             </mat-select>
           </mat-form-field>
 
@@ -45,7 +47,8 @@
           </mat-form-field>
 
           <div class="col-12 text-center mt-3">
-            <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="toResume(stepperRef)">Suivant</button>
+            <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="toResume(stepperRef)">Suivant
+            </button>
           </div>
 
         </div>

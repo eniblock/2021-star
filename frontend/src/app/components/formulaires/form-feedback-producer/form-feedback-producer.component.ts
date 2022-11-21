@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {InstanceService} from "../../../services/api/instance.service";
 import {Instance} from "../../../models/enum/Instance.enum";
 import {MatStepper} from "@angular/material/stepper";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-form-feedback-producer',
@@ -14,7 +15,7 @@ export class FormFeedbackProducerComponent implements OnInit {
 
   form: FormGroup = this.formBuilder.group({
     elements: ['', Validators.required],
-    message: ['', Validators.required],
+    message: ['', [Validators.required, Validators.maxLength(environment.tailleMaxMessageFeedbackProducer)]],
   });
 
   afficherFormulaire = false;
@@ -22,6 +23,7 @@ export class FormFeedbackProducerComponent implements OnInit {
   loading = false;
 
   InstanceEnum = Instance;
+  tailleMaxMessageFeedbackProducer = environment.tailleMaxMessageFeedbackProducer;
 
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA)

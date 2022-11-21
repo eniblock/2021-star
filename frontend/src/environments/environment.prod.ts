@@ -17,4 +17,5 @@ export const environment = {
   // Duree d'affichage des messages d'erreur / de succès (en secondes)
   snackBarSuccessTime: 5 * 1000,
   snackBarErrorTime: 2 * 60 * 1000,
+  tailleMaxMessageFeedbackProducer: 400,
 };

@@ -7,6 +7,7 @@ import {MatStepper} from "@angular/material/stepper";
 import {environment} from "../../../../environments/environment";
 import {FeedbackProducerService} from "../../../services/api/feedback-producer.service";
 import {DateHelper} from "../../../helpers/date.helper";
+import {feedbackElements} from "../../../rules/feedback-elements";
 
 @Component({
   selector: 'app-form-feedback-producer',
@@ -26,6 +27,7 @@ export class FormFeedbackProducerComponent implements OnInit {
 
   InstanceEnum = Instance;
   tailleMaxMessageFeedbackProducer = environment.tailleMaxMessageFeedbackProducer;
+  feedbackElements = feedbackElements;
 
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA)

@@ -28,9 +28,13 @@
           <mat-form-field class="col-12" appearance="outline" *ngIf="instance == InstanceEnum.PRODUCER">
             <mat-label>Type de commentaire</mat-label>
             <mat-select formControlName="elements" multiple>
-              <mat-option value="a">aaa</mat-option>
-              <mat-option value="b">bbb</mat-option>
-              <mat-option value="c">ccc</mat-option>
+              <mat-select-trigger>
+                {{ form.value.elements?.length>0 ? form.value.elements[0] : ''}}
+                <span *ngIf="form.value.elements?.length > 1">
+                  (+{{form.value.elements.length - 1}} {{form.value.elements.length === 2 ? 'autre' : 'autres'}})
+                </span>
+              </mat-select-trigger>
+              <mat-option [value]="elem" *ngFor="let elem of feedbackElements">{{elem}}</mat-option>
             </mat-select>
           </mat-form-field>
 

@@ -1,6 +1,7 @@
 package com.star.mapper.feedback;
 
 import com.star.dto.feedback.FeedBackDTO;
+import com.star.dto.feedback.IndemnityStatus;
 import com.star.models.feedback.FeedBack;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -14,10 +15,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface FeedBackMapper {
 
+    @Mapping(target = "indeminityStatus", source = "indeminityStatus", defaultValue = "IN_PROGRESS")
     FeedBackDTO beanToDto(FeedBack feedBack);
-
-    @InheritInverseConfiguration
-    @Mapping(target = "docType", ignore = true)
-    FeedBack dtoToBean(FeedBackDTO feedBackDTO);
-
 }

@@ -57,8 +57,8 @@ public class FeedBackController {
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<Void> createFeedback(@NotNull @RequestBody FeedBackDTO feedBackDTO) throws BusinessException, TechnicalException {
         log.info("Traitement du feedback DTO {}", feedBackDTO);
-        feedBackDTO.setSenderMarketParticipantMrid(securityComponent.getProducerMarketParticipantMrid(true));
-        feedBackService.create(feedBackMapper.dtoToBean(feedBackDTO));
+        // TODO : le body ne doit pas avoir cette forme !!!
+        var x = 1 / (3 - 3);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

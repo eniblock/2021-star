@@ -39,5 +39,6 @@ public class FeedBack {
     private String feedback;
     private String feedbackAnswer;
     private String feedbackElements;
+    private String indeminityStatus;
 
 }

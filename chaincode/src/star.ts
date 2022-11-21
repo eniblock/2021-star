@@ -877,7 +877,7 @@ export class Star extends Contract {
 
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await FeedbackProducerController.updateFeedbackProducer(params, activationDocumentMrid, feedbackStr));
+            return (await FeedbackProducerController.updateFeedbackProducer(params, activationDocumentMrid, feedbackStr, feedbackElements));
         } catch (error) {
             throw error;
         }

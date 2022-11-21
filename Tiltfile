@@ -186,6 +186,7 @@ if not os.path.exists(secret_path):
 
 k8s_yaml(read_file(secret_path))
 
+
 #### orderers ####
 
 for org in ['enedis', 'producer', 'rte']:

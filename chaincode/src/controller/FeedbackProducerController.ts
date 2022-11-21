@@ -205,7 +205,8 @@ export class FeedbackProducerController {
     public static async updateFeedbackProducer(
         params: STARParameters,
         activationDocumentMrid: string,
-        feedbackStr: string): Promise<void> {
+        feedbackStr: string,
+        feedbackElements: string = ''): Promise<void> {
         params.logger.info('============= START : updateFeedbackProducer FeedbackProducerController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
@@ -241,7 +242,16 @@ export class FeedbackProducerController {
             && feedbackProducerObj.feedbackProducerMrid
             && feedbackProducerObj.feedbackProducerMrid === feedbackProducerMrid) {
 
+            if (feedbackProducerObj.feedback && feedbackProducerObj.feedback.length > 0) {
+                throw new Error(`ERROR updateFeedbackProducer : comment ${feedbackProducerObj.feedbackProducerMrid} is already filled and cannot be changed`);
+            }
+
             feedbackProducerObj.feedback = feedbackStr;
+
+            if (feedbackElements && feedbackElements.length > 0) {
+                feedbackProducerObj.feedbackElements = feedbackElements;
+            }
+
             feedbackProducerObj.revisionNumber= '2';
 
             for (const [key ] of existingFeedbackProducersRef) {
@@ -309,6 +319,10 @@ export class FeedbackProducerController {
 
             if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
                 throw new Error(`Organisation, ${identity} cannot send elements for Feedback manager by ${systemOperatorObj.systemOperatorMarketParticipantName}`);
+            }
+
+            if (feedbackProducerObj.feedbackAnswer && feedbackProducerObj.feedbackAnswer.length > 0) {
+                throw new Error(`ERROR updateFeedbackProducer : comment answer ${feedbackProducerObj.feedbackProducerMrid} is already filled and cannot be changed`);
             }
 
             feedbackProducerObj.feedbackAnswer = answerStr;

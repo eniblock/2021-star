@@ -103,3 +103,8 @@ deploy:
             --values star/values-${environment}.yaml \
             --values star/secrets-${environment}.yaml \
             --values star/users-${environment}.yaml
+    # tag deployed images
+    DO deploy+TAG_DEPLOYED \
+        --repositories="${repository} eniblock/2021-star-backend eniblock/2021-star-chaincode eniblock/2021-star-keycloak eniblock/2021-star-frontend" \
+        --tag=${tag} \
+        --environment=${environment}

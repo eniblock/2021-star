@@ -6,6 +6,7 @@ import {Instance} from "../../../models/enum/Instance.enum";
 import {MatStepper} from "@angular/material/stepper";
 import {environment} from "../../../../environments/environment";
 import {FeedbackProducerService} from "../../../services/api/feedback-producer.service";
+import {DateHelper} from "../../../helpers/date.helper";
 
 @Component({
   selector: 'app-form-feedback-producer',
@@ -59,9 +60,15 @@ export class FormFeedbackProducerComponent implements OnInit {
     }
   }
 
+  toResume(stepperRef: MatStepper) {
+    let message = this.form.get('message')?.value;
+    message = message != null ? message.trim() : message;
+    this.form.get('message')?.setValue(message);
+    stepperRef.next();
+  }
+
   onSubmit(stepperRef: MatStepper) {
     this.loading = true;
-
     const message = this.form.get('message')?.value;
     const elements = this.form.get('elements')?.value.reduce((acc: string, val: string) => acc + "|" + val);
     this.feedbackProducerService.postFeedbackProducer(this.bottomSheetParams.activationDocumentMrid, message, elements).subscribe(

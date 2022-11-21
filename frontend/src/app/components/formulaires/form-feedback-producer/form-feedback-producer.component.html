@@ -41,7 +41,7 @@
           </mat-form-field>
 
           <div class="col-12 text-center mt-3">
-            <button mat-raised-button color="primary" [disabled]="!form.valid" matStepperNext>Suivant</button>
+            <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="toResume(stepperRef)">Suivant</button>
           </div>
 
         </div>
@@ -51,15 +51,23 @@
     <mat-step label="Résumé">
 
       <div class="row">
-        <div class="col-12">
-          le resumé
+
+        <div class="col-12 my-2">
+          Type de commentaire :
+          <span class="fw-bold">{{ form.value.elements }}</span>
         </div>
+
+        <div class="col-12 my-2">
+          Message : <br/>
+          <span class="fw-bold" [innerText]="form.value.message"></span>
+        </div>
+
       </div>
 
       <div class="col-12 text-center mt-4">
         <button mat-raised-button class="me-3 text-primary" matStepperPrevious>Modifier</button>
         <button mat-raised-button color="primary" [disabled]="form.invalid || loading" (click)="onSubmit(stepperRef)">
-          Charger les données
+          Envoyer
           <i class="fa-solid fa-hourglass ms-2" *ngIf="loading"></i>
         </button>
       </div>

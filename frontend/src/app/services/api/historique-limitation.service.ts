@@ -13,6 +13,7 @@ import {EligibilityStatus} from "../../models/enum/EligibilityStatus.enum";
 import {TechnologyType} from "../../models/enum/TechnologyType.enum";
 import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
 import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
+import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
 
 const MOCK = false;
 
@@ -181,6 +182,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         feedback: "",
         feedbackAnswer: "",
         feedbackElements: "",
+        indeminityStatus: IndeminityStatus.InProgress,
       }
     },
 
@@ -316,6 +318,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         feedback: "",
         feedbackAnswer: "",
         feedbackElements: "",
+        indeminityStatus: IndeminityStatus.InProgress,
       },
     },
   ]);

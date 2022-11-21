@@ -15,6 +15,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface FeedBackMapper {
 
-    @Mapping(target = "indeminityStatus", source = "indeminityStatus", defaultValue = "IN_PROGRESS")
+    @Mapping(target = "indeminityStatus", source = "indeminityStatus", defaultValue = "InProgress")
     FeedBackDTO beanToDto(FeedBack feedBack);
 }

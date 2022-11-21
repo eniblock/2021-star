@@ -1,3 +1,5 @@
+import {IndeminityStatus} from "./enum/IndeminityStatus.enum";
+
 export interface FeedbackProducer {
   feedbackProducerMrid: string;
   activationDocumentMrid: string;
@@ -16,4 +18,6 @@ export interface FeedbackProducer {
   feedback?: string;
   feedbackAnswer?: string;
   feedbackElements?: string;
+
+  indeminityStatus: IndeminityStatus;
 }

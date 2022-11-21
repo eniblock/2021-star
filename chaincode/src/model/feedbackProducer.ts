@@ -25,6 +25,8 @@ export class FeedbackProducer {
         feedback: Yup.string().notRequired().typeError('feedback must be a string'),
         feedbackAnswer: Yup.string().notRequired().typeError('feedbackAnswer must be a string'),
         feedbackElements: Yup.string().notRequired().typeError('feedbackElements must be a string'),
+
+        indeminityStatus: Yup.string().notRequired().typeError('indeminityStatus must be a string'),
     });
 
 
@@ -67,4 +69,6 @@ export class FeedbackProducer {
     public feedback?: string;
     public feedbackAnswer?: string;
     public feedbackElements?: string;
+
+    public indeminityStatus?: string;
 }

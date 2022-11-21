@@ -27,6 +27,7 @@ import { IndexedData } from '../src/model/dataIndex/dataIndexers';
 import { ActivationEnergyAmountIndexersController } from '../src/controller/dataIndex/ActivationEnergyAmountIndexersController';
 import { FeedbackProducer } from '../src/model/feedbackProducer';
 import { FeedbackProducerController } from '../src/controller/FeedbackProducerController';
+import { IndeminityStatus } from '../src/enums/IndemnityStatus';
 
 
 class TestLoggerMgt {
@@ -318,17 +319,18 @@ describe('Star Tests EnergyAmount', () => {
             validityPeriodEndDateTime = CommonService.setHoursEndDayStr(validityPeriodEndDateTime);
 
             const expectedFeedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
                 feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, Values.HTB_ActivationDocument_Valid.activationDocumentMrid),
                 activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
                 messageType: "B30",
                 processType: "A42",
                 revisionNumber: "1",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
                 receiverMarketParticipantMrid: Values.HTB_EnergyAmount.receiverMarketParticipantMrid,
                 senderMarketParticipantMrid: Values.HTB_EnergyAmount.senderMarketParticipantMrid,
                 createdDateTime: Values.HTB_EnergyAmount.createdDateTime,
                 validityPeriodStartDateTime: validityPeriodStartDateTime,
                 validityPeriodEndDateTime: validityPeriodEndDateTime,
-                docType: DocType.FEEDBACK_PRODUCER
             }
 
             // params.logger.info("-----------")
@@ -424,17 +426,18 @@ describe('Star Tests EnergyAmount', () => {
             validityPeriodEndDateTime1 = CommonService.setHoursEndDayStr(validityPeriodEndDateTime1);
 
             const expectedFeedbackProducer1: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
                 feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, Values.HTB_ActivationDocument_Valid.activationDocumentMrid),
                 activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
                 messageType: "B30",
                 processType: "A42",
                 revisionNumber: "1",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
                 receiverMarketParticipantMrid: Values.HTB_EnergyAmount.receiverMarketParticipantMrid,
                 senderMarketParticipantMrid: Values.HTB_EnergyAmount.senderMarketParticipantMrid,
                 createdDateTime: Values.HTB_EnergyAmount.createdDateTime,
                 validityPeriodStartDateTime: validityPeriodStartDateTime1,
                 validityPeriodEndDateTime: validityPeriodEndDateTime1,
-                docType: DocType.FEEDBACK_PRODUCER
             }
 
             let validityPeriodStartDateTime2 = CommonService.setHoursStartDayStr(Values.HTB_EnergyAmount_2.createdDateTime);
@@ -443,17 +446,18 @@ describe('Star Tests EnergyAmount', () => {
             validityPeriodEndDateTime2 = CommonService.setHoursEndDayStr(validityPeriodEndDateTime2);
 
             const expectedFeedbackProducer2: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
                 feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, Values.HTB_ActivationDocument_Valid.activationDocumentMrid),
                 activationDocumentMrid: Values.HTB_ActivationDocument_Valid.activationDocumentMrid,
                 messageType: "B30",
                 processType: "A42",
                 revisionNumber: "1",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
                 receiverMarketParticipantMrid: Values.HTB_EnergyAmount_2.receiverMarketParticipantMrid,
                 senderMarketParticipantMrid: Values.HTB_EnergyAmount_2.senderMarketParticipantMrid,
                 createdDateTime: Values.HTB_EnergyAmount.createdDateTime,
                 validityPeriodStartDateTime: validityPeriodStartDateTime2,
                 validityPeriodEndDateTime: validityPeriodEndDateTime2,
-                docType: DocType.FEEDBACK_PRODUCER
             }
 
 
@@ -890,17 +894,18 @@ describe('Star Tests EnergyAmount', () => {
             validityPeriodEndDateTime = CommonService.setHoursEndDayStr(validityPeriodEndDateTime);
 
             const expectedFeedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
                 feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, Values.HTA_ActivationDocument_Valid.activationDocumentMrid),
                 activationDocumentMrid: Values.HTA_ActivationDocument_Valid.activationDocumentMrid,
                 messageType: "B30",
                 processType: "A42",
                 revisionNumber: "1",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
                 receiverMarketParticipantMrid: Values.HTA_EnergyAmount.receiverMarketParticipantMrid,
                 senderMarketParticipantMrid: Values.HTA_EnergyAmount.senderMarketParticipantMrid,
                 createdDateTime: Values.HTA_EnergyAmount.createdDateTime,
                 validityPeriodStartDateTime: validityPeriodStartDateTime,
-                validityPeriodEndDateTime: validityPeriodEndDateTime,
-                docType: DocType.FEEDBACK_PRODUCER
+                validityPeriodEndDateTime: validityPeriodEndDateTime
             }
 
             // params.logger.info("-----------")

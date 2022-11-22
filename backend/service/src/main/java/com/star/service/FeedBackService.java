@@ -3,6 +3,7 @@ package com.star.service;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.feedback.FeedBackPostMessage;
+import com.star.models.feedback.FeedBackPostMessageAnswer;
 import com.star.repository.FeedBackRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -50,5 +51,16 @@ public class FeedBackService {
             throw new BusinessException(StringUtils.join(errors, ","));
         }
         feedBackRepository.postMessage(feedBackPostMessage);
+    }
+
+    public void postMessageAnswer(@Valid FeedBackPostMessageAnswer feedBackPostMessageAnswer) throws TechnicalException {
+        Validator validator = validatorFactory.getValidator();
+        List<String> errors = new ArrayList<>();
+        errors.addAll(validator.validate(feedBackPostMessageAnswer).stream().map(violation -> violation.getPropertyPath() + StringUtils.SPACE + violation.getMessage())
+                .collect(Collectors.toList()));
+        if (isNotEmpty(errors)) {
+            throw new BusinessException(StringUtils.join(errors, ","));
+        }
+        feedBackRepository.postMessageAnswer(feedBackPostMessageAnswer);
     }
 }

@@ -1,5 +1,6 @@
 package com.star.rest;
 
+import com.star.dto.feedback.FeedBackPostMessageAnswerDTO;
 import com.star.dto.feedback.FeedBackPostMessageDTO;
 import com.star.exception.TechnicalException;
 import com.star.mapper.feedback.FeedBackMapper;
@@ -52,6 +53,25 @@ public class FeedBackController {
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<Void> createFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageDTO feedBackDTO) throws TechnicalException {
         feedBackService.postMessage(feedBackMapper.dtoToBean(feedBackDTO));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * API de création d'un reserve bid.
+     *
+     * @param feedBackAnswerDTO
+     * @return
+     */
+    @Operation(summary = "Answer a feedback.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "201", description = "Create successfully a feedback", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    @PostMapping("/answer")
+    @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
+    public ResponseEntity<Void> answerFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageAnswerDTO feedBackAnswerDTO) throws TechnicalException {
+        feedBackService.postMessageAnswer(feedBackMapper.dtoToBean(feedBackAnswerDTO));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

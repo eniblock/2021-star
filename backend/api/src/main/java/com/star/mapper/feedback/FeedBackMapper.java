@@ -1,9 +1,11 @@
 package com.star.mapper.feedback;
 
 import com.star.dto.feedback.FeedBackDTO;
+import com.star.dto.feedback.FeedBackPostMessageAnswerDTO;
 import com.star.dto.feedback.FeedBackPostMessageDTO;
 import com.star.models.feedback.FeedBack;
 import com.star.models.feedback.FeedBackPostMessage;
+import com.star.models.feedback.FeedBackPostMessageAnswer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -19,4 +21,6 @@ public interface FeedBackMapper {
     FeedBackDTO beanToDto(FeedBack feedBack);
 
     FeedBackPostMessage dtoToBean(FeedBackPostMessageDTO feedBackDTO);
+
+    FeedBackPostMessageAnswer dtoToBean(FeedBackPostMessageAnswerDTO feedBackAnswerDTO);
 }

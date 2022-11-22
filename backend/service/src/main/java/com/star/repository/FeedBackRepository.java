@@ -1,10 +1,9 @@
 package com.star.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
-import com.star.models.feedback.FeedBack;
+import com.star.models.feedback.FeedBackPostMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.ContractException;
@@ -21,7 +20,7 @@ import java.util.concurrent.TimeoutException;
 @Repository
 public class FeedBackRepository {
 
-    public static final String CREATE_FEEDBACK = "UpdateFeedbackProducer";
+    public static final String UPADTE_FEEDBACK_PRODUCER = "UpdateFeedbackProducer";
 
     @Autowired
     private Contract contract;
@@ -37,23 +36,20 @@ public class FeedBackRepository {
      * @throws BusinessException
      * @throws TechnicalException
      */
-    public FeedBack saveFeedBack(FeedBack feedBack) throws BusinessException, TechnicalException {
-        if (feedBack == null) {
-            return null;
+    public void postMessage(FeedBackPostMessage feedBackPostMessage) throws BusinessException, TechnicalException {
+        if (feedBackPostMessage == null) {
+            return;
         }
-        log.info("Sauvegarde du feedBack {} ", feedBack);
+        log.info("Sauvegarde du feedBack {} ", feedBackPostMessage);
         try {
-            contract.submitTransaction(CREATE_FEEDBACK, feedBack.getActivationDocumentMrid(), objectMapper.writeValueAsString(feedBack));
+            contract.submitTransaction(UPADTE_FEEDBACK_PRODUCER, feedBackPostMessage.getActivationDocumentMrid(), feedBackPostMessage.getFeedback(), feedBackPostMessage.getFeedbackElements());
         } catch (TimeoutException timeoutException) {
             throw new TechnicalException("Erreur technique (Timeout exception) lors de la création du feedback ", timeoutException);
         } catch (InterruptedException interruptedException) {
             log.error("Erreur technique (Interrupted Exception) lors de la création du feedback ", interruptedException);
             Thread.currentThread().interrupt();
-        } catch (JsonProcessingException jsonProcessingException) {
-            throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la création du feedback ", jsonProcessingException);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }
-        return feedBack;
     }
 }

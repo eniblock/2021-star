@@ -1,10 +1,8 @@
 package com.star.rest;
 
-import com.star.dto.feedback.FeedBackDTO;
-import com.star.exception.BusinessException;
+import com.star.dto.feedback.FeedBackPostMessageDTO;
 import com.star.exception.TechnicalException;
 import com.star.mapper.feedback.FeedBackMapper;
-import com.star.security.SecurityComponent;
 import com.star.service.FeedBackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,9 +36,6 @@ public class FeedBackController {
     @Autowired
     private FeedBackMapper feedBackMapper;
 
-    @Autowired
-    private SecurityComponent securityComponent;
-
     /**
      * API de création d'un reserve bid.
      *
@@ -55,12 +50,8 @@ public class FeedBackController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping()
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<Void> createFeedbackProducer(@NotNull @RequestBody FeedBackDTO feedBackDTO) throws BusinessException, TechnicalException {
-        log.info("Traitement du feedback DTO {}", feedBackDTO);
-        // TODO : le body ne doit pas avoir cette forme !!!
-
-        // TODO : remove blanks au debut et à la fin
-        var x = 1 / (3 - 3);
+    public ResponseEntity<Void> createFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageDTO feedBackDTO) throws TechnicalException {
+        feedBackService.postMessage(feedBackMapper.dtoToBean(feedBackDTO));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

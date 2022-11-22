@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {environment} from 'src/environments/environment';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class FeedbackProducerService {
   postFeedbackProducer(activationDocumentMrid: string, message: string, elements: string): Observable<void> {
     const formData = {
       activationDocumentMrid: activationDocumentMrid,
-      feedbackStr: message,
+      feedback: message,
       feedbackElements: elements,
     };
     return this.httpClient.post<void>(`${environment.serverUrl}/feedback`, formData);
@@ -27,7 +27,7 @@ export class FeedbackProducerService {
       activationDocumentMrid: activationDocumentMrid,
       answerStr: message,
     };
-    return this.httpClient.post<void>(`${environment.serverUrl}/feedback/answer`, formData);
-
+    return of(null);
+    //////////return this.httpClient.post<void>(`${environment.serverUrl}/feedback/answer`, formData);
   }
 }

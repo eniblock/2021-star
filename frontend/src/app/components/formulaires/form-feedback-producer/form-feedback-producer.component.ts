@@ -8,6 +8,12 @@ import {environment} from "../../../../environments/environment";
 import {FeedbackProducerService} from "../../../services/api/feedback-producer.service";
 import {FeedbackElements} from "../../../rules/feedback-elements";
 
+export interface FormFeedbackProducerBottomSheetResponse {
+  message: string | null,
+  elements: string | null,
+  messageAnswer: string | null,
+};
+
 @Component({
   selector: 'app-form-feedback-producer',
   templateUrl: './form-feedback-producer.component.html',
@@ -38,7 +44,7 @@ export class FormFeedbackProducerComponent implements OnInit {
       feedbackAnswer: string,
     },
     private formBuilder: FormBuilder,
-    private bottomsheet: MatBottomSheetRef<FormFeedbackProducerComponent>,
+    private bottomsheet: MatBottomSheetRef<FormFeedbackProducerComponent, FormFeedbackProducerBottomSheetResponse>,
     private instanceService: InstanceService,
     private feedbackProducerService: FeedbackProducerService,
   ) {
@@ -77,12 +83,15 @@ export class FormFeedbackProducerComponent implements OnInit {
     if (this.instance == Instance.PRODUCER) {
       // Producer give feedback
       const elements = this.form.get('elements')?.value.reduce((acc: string, val: string) => acc + "|" + val);
+      console.log(111111111111)
       this.feedbackProducerService.postFeedbackProducer(this.bottomSheetParams.activationDocumentMrid, message, elements).subscribe(
         (ok) => {
+          console.log(222222222222222222)
           this.loading = false;
           this.bottomsheet.dismiss({message: message, elements: elements, messageAnswer: null});
         },
         (error) => {
+          console.log(333333333333)
           this.loading = false;
         }
       );

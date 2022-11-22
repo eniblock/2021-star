@@ -1,9 +1,9 @@
 package com.star.mapper.feedback;
 
 import com.star.dto.feedback.FeedBackDTO;
-import com.star.dto.feedback.IndemnityStatus;
+import com.star.dto.feedback.FeedBackPostMessageDTO;
 import com.star.models.feedback.FeedBack;
-import org.mapstruct.InheritInverseConfiguration;
+import com.star.models.feedback.FeedBackPostMessage;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -17,4 +17,6 @@ public interface FeedBackMapper {
 
     @Mapping(target = "indeminityStatus", source = "indeminityStatus", defaultValue = "InProgress")
     FeedBackDTO beanToDto(FeedBack feedBack);
+
+    FeedBackPostMessage dtoToBean(FeedBackPostMessageDTO feedBackDTO);
 }

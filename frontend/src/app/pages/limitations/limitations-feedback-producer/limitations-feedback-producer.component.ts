@@ -4,6 +4,7 @@ import {Instance} from "../../../models/enum/Instance.enum";
 import {InstanceService} from "../../../services/api/instance.service";
 import {MatBottomSheet} from "@angular/material/bottom-sheet";
 import {
+  FormFeedbackProducerBottomSheetResponse,
   FormFeedbackProducerComponent
 } from "../../../components/formulaires/form-feedback-producer/form-feedback-producer.component";
 
@@ -52,10 +53,17 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
         feedbackAnswer: this.historiqueLimitation?.feedbackProducer.feedbackAnswer,
       }
     });
-    bottomSheetRef.afterDismissed().subscribe((data) => {
+    bottomSheetRef.afterDismissed().subscribe((data: FormFeedbackProducerBottomSheetResponse) => {
       if (data) {
-        //TODO : METTRE A JOUR LE FEEDBACK !!!
-        console.log(data);
+        if (data.message) {
+          this.historiqueLimitation!.feedbackProducer.feedback = data.message;
+        }
+        if (data.elements) {
+          this.historiqueLimitation!.feedbackProducer.feedbackElements = data.elements;
+        }
+        if (data.messageAnswer) {
+          this.historiqueLimitation!.feedbackProducer.feedbackAnswer = data.messageAnswer;
+        }
       }
     });
   }

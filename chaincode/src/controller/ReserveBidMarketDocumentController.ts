@@ -549,6 +549,12 @@ export class ReserveBidMarketDocumentController {
                                     params.logger.info('2.9- dateCreationBidOk: ', JSON.stringify(dateCreationBidOk));
                                     params.logger.info('2.A- dateCreationBidRefOk: ', JSON.stringify(dateCreationBidRefOk));
 
+                                    params.logger.info('C.1- dateBidRef.getTime() !== dateBidRef.getTime(): ', JSON.stringify(dateBidRef.getTime() !== dateBidRef.getTime()));
+                                    params.logger.info('C.2- dateBidRef < dateBid: ', JSON.stringify(dateBidRef < dateBid));
+                                    params.logger.info('C.3- dateBidRef === dateBid: ', JSON.stringify(dateBidRef === dateBid));
+                                    params.logger.info('C.4- dateBidRef == dateBid: ', JSON.stringify(dateBidRef == dateBid));
+                                    params.logger.info('C.5- dateCreationBid > dateCreationBidRef: ', JSON.stringify(dateCreationBid > dateCreationBidRef));
+
                                     if (dateBidRef.getTime() !== dateBidRef.getTime()) {
 
                                         reserveBidAbstractRef = reserveBidAbstract;

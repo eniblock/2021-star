@@ -21,15 +21,31 @@ export class SiteReserveBidIndexersController {
     public static async get(
         params: STARParameters,
         meteringPointMrid: string,
-        target: string = ''): Promise<IndexedData> {
+        collections: string[]): Promise<IndexedData> {
         params.logger.debug('============= START : get SiteReserveBidIndexersController ===========');
 
         const indexId = this.getKey(meteringPointMrid);
 
-        const obj: IndexedData = await DataIndexersController.getIndexer(params, indexId, target);
+        var returnedObj: IndexedData = null;
+
+        for (const target of collections) {
+            const obj: IndexedData = await DataIndexersController.getIndexer(params, indexId, target);
+            if (!returnedObj
+                || !returnedObj.indexId
+                || returnedObj.indexId.length === 0) {
+
+                returnedObj = obj;
+            } else {
+                for (const [key, value] of obj.indexedDataAbstractMap) {
+                    if (!returnedObj.indexedDataAbstractMap.has(key)) {
+                        returnedObj.indexedDataAbstractMap.set(key, value);
+                    }
+                }
+            }
+        }
 
         params.logger.debug('=============  END  : get SiteReserveBidIndexersController ===========');
-        return obj;
+        return returnedObj;
     }
 
     public static async addModifyReserveBidReference(

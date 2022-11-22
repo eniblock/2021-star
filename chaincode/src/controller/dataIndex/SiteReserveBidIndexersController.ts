@@ -34,6 +34,7 @@ export class SiteReserveBidIndexersController {
             collections =
                 await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
         }
+        collections = collections.concat('');
 
         var returnedObj: IndexedData = {
             docType: DocType.DATA_INDEXER,
@@ -42,13 +43,22 @@ export class SiteReserveBidIndexersController {
         };
 
         for (const target of collections) {
+            params.logger.info('get 1, target: ', target);
             const obj: IndexedData = await DataIndexersController.getIndexer(params, indexId, target);
 
+            params.logger.info('get 2, obj: ', JSON.stringify(obj));
+            params.logger.info('get 3, obj.indexedDataAbstractMap: ', JSON.stringify([...obj.indexedDataAbstractMap]));
+
             for (const [key] of obj.indexedDataAbstractMap) {
+                params.logger.info('get 4, key: ', JSON.stringify(key));
                 if (!returnedObj.indexedDataAbstractMap.has(key)) {
-                    returnedObj.indexedDataAbstractMap.set(key, obj.indexedDataAbstractMap.get(key));
+                    const value = obj.indexedDataAbstractMap.get(key);
+                    params.logger.info('get 5, do it: ', JSON.stringify(value));
+                    returnedObj.indexedDataAbstractMap.set(key, value);
                 }
             }
+
+            params.logger.info('get 6, returnedObj.indexedDataAbstractMap: ', JSON.stringify([...returnedObj.indexedDataAbstractMap]));
         }
 
         params.logger.debug('=============  END  : get SiteReserveBidIndexersController ===========');
@@ -58,7 +68,7 @@ export class SiteReserveBidIndexersController {
     public static async addModifyReserveBidReference(
         params: STARParameters,
         reserveBidObj: ReserveBidMarketDocument,
-        target: string = '') {
+        target) {
         params.logger.debug
             ('============= START : addReserveBidReference SiteReserveBidIndexersController ===========');
 
@@ -78,7 +88,7 @@ export class SiteReserveBidIndexersController {
     public static async deleteReserveBidReference(
         params: STARParameters,
         reserveBidObj: ReserveBidMarketDocument,
-        target: string = '') {
+        target) {
         params.logger.debug('============= START : deleteReserveBidReference SiteReserveBidIndexersController ===========');
 
         const indexId = this.getKey(reserveBidObj.meteringPointMrid);

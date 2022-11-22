@@ -285,8 +285,8 @@ export class ReconciliationController {
                         params.logger.debug('dateActivationDocument: ', dateActivationDocument);
                         params.logger.debug('datePlusPCTMT: ', datePlusPCTMT);
 
-                        if (dateMinusPCTMT.getTime() <= dateActivationDocument.getTime()
-                            && dateActivationDocument.getTime() <= datePlusPCTMT.getTime()) {
+                        if (dateMinusPCTMT <= dateActivationDocument
+                            && dateActivationDocument <= datePlusPCTMT) {
                                 possibleParents.push(linkedParent);
                         }
                     }
@@ -351,8 +351,8 @@ export class ReconciliationController {
                 for (const linkedParent of linkedParents) {
                     const activationDocument: ActivationDocument = linkedParent.data;
                     const dateActivationDocument = new Date(activationDocument.startCreatedDateTime);
-                    if (dateYesterday.getTime() <= dateActivationDocument.getTime()
-                        && dateActivationDocument.getTime() <= queryDate.getTime()) {
+                    if (dateYesterday <= dateActivationDocument
+                        && dateActivationDocument <= queryDate) {
                             possibleParents.push(linkedParent);
                     }
                 }

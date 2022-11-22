@@ -481,14 +481,18 @@ export class ReserveBidMarketDocumentController {
 
         let reserveBidValue: ReserveBidMarketDocument = null;
 
+        params.logger.info('0.0- Init');
         if (activationDocumentObj && activationDocumentObj.registeredResourceMrid) {
             let indexedSiteReserveBidList: IndexedData;
             try {
+                params.logger.info('0.1- Call');
                 indexedSiteReserveBidList = await SiteReserveBidIndexersController.get(
                     params, activationDocumentObj.registeredResourceMrid, target);
             } catch (err) {
+                params.logger.info('0.2- Error');
                 // DO nothing except "Not accessible information"
             }
+            params.logger.info('0.3- indexedSiteReserveBidList : ', JSON.stringify(indexedSiteReserveBidList));
 
             if (indexedSiteReserveBidList
                 && indexedSiteReserveBidList.indexedDataAbstractMap

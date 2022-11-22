@@ -41,6 +41,7 @@ export class SiteReserveBidIndexersController {
             indexId: indexId,
             indexedDataAbstractMap: new Map()
         };
+        params.logger.info('get 0, collections: ', JSON.stringify(collections));
 
         for (const target of collections) {
             params.logger.info('get 1, target: ', target);

@@ -494,33 +494,45 @@ export class ReserveBidMarketDocumentController {
                 && indexedSiteReserveBidList.indexedDataAbstractMap
                 && indexedSiteReserveBidList.indexedDataAbstractMap.values) {
 
+                params.logger.info('1.0- indexedSiteReserveBidList : ', JSON.stringify(indexedSiteReserveBidList));
+                params.logger.info('1.1- indexedSiteReserveBidList.indexedDataAbstractMap : ', JSON.stringify([...indexedSiteReserveBidList.indexedDataAbstractMap]));
+
                 const dateDoc = new Date(activationDocumentObj.startCreatedDateTime);
+                params.logger.info('1.2- dateDoc: ', JSON.stringify(dateDoc));
 
                 if (dateDoc.getTime() !== dateDoc.getTime()) {
+                    params.logger.info('1.3- OUCH');
                     return;
                 }
 
                 let reserveBidAbstractRef: ReserveBidMarketDocumentAbstract = null;
                 for (const reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractMap.values()) {
-                    params.logger.debug('reserveBidAbstract: ', JSON.stringify(reserveBidAbstract));
+                    params.logger.info('2.0- reserveBidAbstract: ', JSON.stringify(reserveBidAbstract));
                     if (reserveBidAbstract.reserveBidStatus === ReserveBidStatus.VALIDATED) {
-                        const check = await this.checkActivationDocument(activationDocumentObj, reserveBidAbstract);
-                        params.logger.debug('check: ', JSON.stringify(check));
+                        const check = await this.checkDataConsistance(activationDocumentObj, reserveBidAbstract);
+                        params.logger.info('2.1- check: ', JSON.stringify(check));
 
                         if (check) {
                             const dateBid = new Date(reserveBidAbstract.validityPeriodStartDateTime);
                             const dateCreationBid = new Date(reserveBidAbstract.createdDateTime);
 
+                            params.logger.info('2.2- dateBid: ', JSON.stringify(dateBid));
+                            params.logger.info('2.3- dateCreationBid: ', JSON.stringify(dateCreationBid));
+
                             if (dateBid.getTime() === dateBid.getTime()
                                 && dateBid <= dateDoc) {
+
+                                params.logger.info('2.4- Goooo');
 
                                 if (!reserveBidAbstractRef
                                     || !reserveBidAbstractRef.reserveBidMrid
                                     || reserveBidAbstractRef.reserveBidMrid.length === 0) {
 
                                     reserveBidAbstractRef = reserveBidAbstract;
+                                    params.logger.info('2.5- Init');
 
                                 } else {
+                                    params.logger.info('2.6- 2nd Chance');
                                     const dateBidRef = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
                                     const dateCreationBidRef = new Date(reserveBidAbstractRef.createdDateTime);
 
@@ -528,10 +540,16 @@ export class ReserveBidMarketDocumentController {
                                     const dateCreationBidRefOk =
                                         (dateCreationBidRef.getTime() === dateCreationBidRef.getTime());
 
+                                    params.logger.info('2.7- dateBidRef: ', JSON.stringify(dateBidRef));
+                                    params.logger.info('2.8- dateCreationBidRef: ', JSON.stringify(dateCreationBidRef));
+                                    params.logger.info('2.9- dateCreationBidOk: ', JSON.stringify(dateCreationBidOk));
+                                    params.logger.info('2.A- dateCreationBidRefOk: ', JSON.stringify(dateCreationBidRefOk));
+
                                     if (dateBidRef.getTime() !== dateBidRef.getTime()
                                         || !dateCreationBidRefOk) {
 
                                         reserveBidAbstractRef = reserveBidAbstract;
+                                        params.logger.info('2.B- 2nd level init');
 
                                     } else if (dateBidRef < dateBid
                                         && ((!dateCreationBidOk && !dateCreationBidRefOk)
@@ -539,6 +557,7 @@ export class ReserveBidMarketDocumentController {
                                             || (dateCreationBidOk && dateCreationBidRefOk
                                                 && dateCreationBid > dateCreationBidRef))) {
                                         reserveBidAbstractRef = reserveBidAbstract;
+                                        params.logger.info('2.C- final level init');
                                     }
 
                                 }
@@ -549,9 +568,13 @@ export class ReserveBidMarketDocumentController {
 
                 }
 
+                params.logger.info('3.0- final value: ', JSON.stringify(reserveBidAbstractRef));
+
                 if (reserveBidAbstractRef
                     && reserveBidAbstractRef.reserveBidMrid
                     && reserveBidAbstractRef.reserveBidMrid.length > 0) {
+
+                    params.logger.info('3.1- fishing: ',reserveBidAbstractRef.reserveBidMrid, target);
 
                     reserveBidValue = await this.getObjById(params, reserveBidAbstractRef.reserveBidMrid, target);
                 }
@@ -957,7 +980,7 @@ export class ReserveBidMarketDocumentController {
         return reserveBidObj;
     }
 
-    private static async checkActivationDocument(
+    private static async checkDataConsistance(
         activationDocument: ActivationDocument,
         reserveBidObj: ReserveBidMarketDocumentAbstract): Promise<boolean> {
 
@@ -977,20 +1000,7 @@ export class ReserveBidMarketDocumentController {
             return false;
         }
 
-        let dateActivationDocument: Date = null;
-        if (activationDocument.startCreatedDateTime && activationDocument.startCreatedDateTime.length > 0) {
-            dateActivationDocument = new Date(activationDocument.startCreatedDateTime);
-        } else {
-            // If no start date in Activation Document no Process to do
-            return false;
-        }
-
-        const dateReserveBid: Date = new Date(reserveBidObj.validityPeriodStartDateTime);
-        if (dateActivationDocument >= dateReserveBid) {
-            checkValue = true;
-        }
-
-        return checkValue;
+        return true;
     }
 
     private static async executeUpdateOrder(

@@ -549,19 +549,33 @@ export class ReserveBidMarketDocumentController {
                                     params.logger.info('2.9- dateCreationBidOk: ', JSON.stringify(dateCreationBidOk));
                                     params.logger.info('2.A- dateCreationBidRefOk: ', JSON.stringify(dateCreationBidRefOk));
 
-                                    if (dateBidRef.getTime() !== dateBidRef.getTime()
-                                        || !dateCreationBidRefOk) {
+                                    if (dateBidRef.getTime() !== dateBidRef.getTime()) {
 
                                         reserveBidAbstractRef = reserveBidAbstract;
                                         params.logger.info('2.B- 2nd level init');
 
-                                    } else if (dateBidRef < dateBid
-                                        && ((!dateCreationBidOk && !dateCreationBidRefOk)
-                                            || (dateCreationBidOk && !dateCreationBidRefOk)
-                                            || (dateCreationBidOk && dateCreationBidRefOk
-                                                && dateCreationBid > dateCreationBidRef))) {
+                                    } else if (!dateCreationBidRefOk) {
+
                                         reserveBidAbstractRef = reserveBidAbstract;
-                                        params.logger.info('2.C- final level init');
+                                        params.logger.info('2.C- 2nd level init');
+
+                                    } else if (dateBidRef < dateBid) {
+
+                                        reserveBidAbstractRef = reserveBidAbstract;
+                                        params.logger.info('2.D- 2nd level init');
+
+                                    } else if (dateBidRef === dateBid) {
+
+                                        params.logger.info('2.E- Equality');
+
+                                        if (dateCreationBidOk
+                                            && dateCreationBidRefOk
+                                            && dateCreationBid > dateCreationBidRef) {
+
+                                            reserveBidAbstractRef = reserveBidAbstract;
+                                            params.logger.info('2.F- final level init');
+                                        }
+
                                     }
 
                                 }

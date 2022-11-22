@@ -76,17 +76,9 @@ export class BalancingDocumentController {
 
         if (activationDocumentMrid && activationDocumentMrid.length > 0) {
             try {
-                params.logger.info('21s:',
-                    reserveBid.reserveBidMrid,
-                    new Date());
-
                 activationDocument =
                     await ActivationDocumentController.getActivationDocumentById(
                         params, activationDocumentMrid, target);
-
-                params.logger.info('21e:',
-                    reserveBid.reserveBidMrid,
-                    new Date());
 
             } catch (err) {
                 // Document not found
@@ -116,18 +108,9 @@ export class BalancingDocumentController {
                 && energyAmount.activationDocumentMrid.length > 0) {
 
                 try {
-                    params.logger.info('22s:',
-                        reserveBid.reserveBidMrid,
-                        new Date());
-
                     activationDocument =
                         await ActivationDocumentController.getActivationDocumentById(
                             params, energyAmount.activationDocumentMrid, target);
-
-                    params.logger.info('22e:',
-                        reserveBid.reserveBidMrid,
-                        new Date());
-
                 } catch (err) {
                     // Document not found
                     err = null;

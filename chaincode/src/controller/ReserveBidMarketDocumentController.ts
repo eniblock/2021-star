@@ -481,62 +481,45 @@ export class ReserveBidMarketDocumentController {
 
         let reserveBidValue: ReserveBidMarketDocument = null;
 
-        params.logger.info('0.0- Init');
         if (activationDocumentObj && activationDocumentObj.registeredResourceMrid) {
             let indexedSiteReserveBidList: IndexedData;
             try {
-                params.logger.info('0.1- Call');
                 indexedSiteReserveBidList = await SiteReserveBidIndexersController.get(
                     params, activationDocumentObj.registeredResourceMrid, target);
             } catch (err) {
-                params.logger.info('0.2- Error');
                 // DO nothing except "Not accessible information"
             }
-            params.logger.info('0.3- indexedSiteReserveBidList : ', JSON.stringify(indexedSiteReserveBidList));
 
             if (indexedSiteReserveBidList
                 && indexedSiteReserveBidList.indexedDataAbstractMap
                 && indexedSiteReserveBidList.indexedDataAbstractMap.values) {
 
-                params.logger.info('1.0- indexedSiteReserveBidList : ', JSON.stringify(indexedSiteReserveBidList));
-                params.logger.info('1.1- indexedSiteReserveBidList.indexedDataAbstractMap : ', JSON.stringify([...indexedSiteReserveBidList.indexedDataAbstractMap]));
 
                 const dateDoc = new Date(activationDocumentObj.startCreatedDateTime);
-                params.logger.info('1.2- dateDoc: ', JSON.stringify(dateDoc));
 
                 if (dateDoc.getTime() !== dateDoc.getTime()) {
-                    params.logger.info('1.3- OUCH');
                     return;
                 }
 
                 let reserveBidAbstractRef: ReserveBidMarketDocumentAbstract = null;
                 for (const reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractMap.values()) {
-                    params.logger.info('2.0- reserveBidAbstract: ', JSON.stringify(reserveBidAbstract));
                     if (reserveBidAbstract.reserveBidStatus === ReserveBidStatus.VALIDATED) {
                         const check = await this.checkDataConsistance(activationDocumentObj, reserveBidAbstract);
-                        params.logger.info('2.1- check: ', JSON.stringify(check));
 
                         if (check) {
                             const dateBid = new Date(reserveBidAbstract.validityPeriodStartDateTime);
                             const dateCreationBid = new Date(reserveBidAbstract.createdDateTime);
 
-                            params.logger.info('2.2- dateBid: ', JSON.stringify(dateBid));
-                            params.logger.info('2.3- dateCreationBid: ', JSON.stringify(dateCreationBid));
-
                             if (dateBid.getTime() === dateBid.getTime()
-                                && dateBid <= dateDoc) {
-
-                                params.logger.info('2.4- Goooo');
+                                && dateBid.getTime() <= dateDoc.getTime()) {
 
                                 if (!reserveBidAbstractRef
                                     || !reserveBidAbstractRef.reserveBidMrid
                                     || reserveBidAbstractRef.reserveBidMrid.length === 0) {
 
                                     reserveBidAbstractRef = reserveBidAbstract;
-                                    params.logger.info('2.5- Init');
 
                                 } else {
-                                    params.logger.info('2.6- 2nd Chance');
                                     const dateBidRef = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
                                     const dateCreationBidRef = new Date(reserveBidAbstractRef.createdDateTime);
 
@@ -544,43 +527,25 @@ export class ReserveBidMarketDocumentController {
                                     const dateCreationBidRefOk =
                                         (dateCreationBidRef.getTime() === dateCreationBidRef.getTime());
 
-                                    params.logger.info('2.7- dateBidRef: ', JSON.stringify(dateBidRef));
-                                    params.logger.info('2.8- dateCreationBidRef: ', JSON.stringify(dateCreationBidRef));
-                                    params.logger.info('2.9- dateCreationBidOk: ', JSON.stringify(dateCreationBidOk));
-                                    params.logger.info('2.A- dateCreationBidRefOk: ', JSON.stringify(dateCreationBidRefOk));
-
-                                    params.logger.info('C.1- dateBidRef.getTime() !== dateBidRef.getTime(): ', JSON.stringify(dateBidRef.getTime() !== dateBidRef.getTime()));
-                                    params.logger.info('C.2- dateBidRef < dateBid: ', JSON.stringify(dateBidRef < dateBid));
-                                    params.logger.info('C.3- dateBidRef === dateBid: ', JSON.stringify(dateBidRef === dateBid));
-                                    params.logger.info('C.4- dateBidRef == dateBid: ', JSON.stringify(dateBidRef == dateBid));
-                                    params.logger.info('C.5- JSON.stringify(dateBidRef) === JSON.stringify(dateBid): ', JSON.stringify(JSON.stringify(dateBidRef) === JSON.stringify(dateBid)));
-                                    params.logger.info('C.6- dateCreationBid > dateCreationBidRef: ', JSON.stringify(dateCreationBid > dateCreationBidRef));
-
                                     if (dateBidRef.getTime() !== dateBidRef.getTime()) {
 
                                         reserveBidAbstractRef = reserveBidAbstract;
-                                        params.logger.info('2.B- 2nd level init');
 
                                     } else if (!dateCreationBidRefOk) {
 
                                         reserveBidAbstractRef = reserveBidAbstract;
-                                        params.logger.info('2.C- 2nd level init');
 
-                                    } else if (dateBidRef < dateBid) {
+                                    } else if (dateBidRef.getTime() < dateBid.getTime()) {
 
                                         reserveBidAbstractRef = reserveBidAbstract;
-                                        params.logger.info('2.D- 2nd level init');
 
-                                    } else if (JSON.stringify(dateBidRef) === JSON.stringify(dateBid)) {
-
-                                        params.logger.info('2.E- Equality');
+                                    } else if (dateBidRef.getTime() === dateBid.getTime()) {
 
                                         if (dateCreationBidOk
                                             && dateCreationBidRefOk
                                             && dateCreationBid > dateCreationBidRef) {
 
                                             reserveBidAbstractRef = reserveBidAbstract;
-                                            params.logger.info('2.F- final level init');
                                         }
 
                                     }
@@ -593,13 +558,9 @@ export class ReserveBidMarketDocumentController {
 
                 }
 
-                params.logger.info('3.0- final value: ', JSON.stringify(reserveBidAbstractRef));
-
                 if (reserveBidAbstractRef
                     && reserveBidAbstractRef.reserveBidMrid
                     && reserveBidAbstractRef.reserveBidMrid.length > 0) {
-
-                    params.logger.info('3.1- fishing: ',reserveBidAbstractRef.reserveBidMrid, target);
 
                     reserveBidValue = await this.getObjById(params, reserveBidAbstractRef.reserveBidMrid, target);
                 }

@@ -481,19 +481,11 @@ export class ReserveBidMarketDocumentController {
 
         let reserveBidValue: ReserveBidMarketDocument = null;
 
-        let collections: string[];
-        if (target && target.length > 0) {
-            collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
-        } else {
-            collections =
-                await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
-        }
-
         if (activationDocumentObj && activationDocumentObj.registeredResourceMrid) {
             let indexedSiteReserveBidList: IndexedData;
             try {
                 indexedSiteReserveBidList = await SiteReserveBidIndexersController.get(
-                    params, activationDocumentObj.registeredResourceMrid, collections);
+                    params, activationDocumentObj.registeredResourceMrid, target);
             } catch (err) {
                 // DO nothing except "Not accessible information"
             }

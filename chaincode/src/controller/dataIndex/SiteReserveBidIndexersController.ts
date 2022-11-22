@@ -9,6 +9,7 @@ import { ReserveBidMarketDocument } from '../../model/reserveBidMarketDocument';
 import { Site } from '../../model/site';
 import { STARParameters } from '../../model/starParameters';
 import { ReserveBidMarketDocumentController } from '../ReserveBidMarketDocumentController';
+import { HLFServices } from '../service/HLFservice';
 import { SiteController } from '../SiteController';
 import { DataIndexersController } from './DataIndexersController';
 
@@ -21,25 +22,31 @@ export class SiteReserveBidIndexersController {
     public static async get(
         params: STARParameters,
         meteringPointMrid: string,
-        collections: string[]): Promise<IndexedData> {
+        target: string = ''): Promise<IndexedData> {
         params.logger.debug('============= START : get SiteReserveBidIndexersController ===========');
 
         const indexId = this.getKey(meteringPointMrid);
 
-        var returnedObj: IndexedData = null;
+        let collections: string[];
+        if (target && target.length > 0) {
+            collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
+        } else {
+            collections =
+                await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        }
+
+        var returnedObj: IndexedData = {
+            docType: DocType.DATA_INDEXER,
+            indexId: indexId,
+            indexedDataAbstractMap: new Map()
+        };
 
         for (const target of collections) {
             const obj: IndexedData = await DataIndexersController.getIndexer(params, indexId, target);
-            if (!returnedObj
-                || !returnedObj.indexId
-                || returnedObj.indexId.length === 0) {
 
-                returnedObj = obj;
-            } else {
-                for (const [key, value] of obj.indexedDataAbstractMap) {
-                    if (!returnedObj.indexedDataAbstractMap.has(key)) {
-                        returnedObj.indexedDataAbstractMap.set(key, value);
-                    }
+            for (const [key] of obj.indexedDataAbstractMap) {
+                if (!returnedObj.indexedDataAbstractMap.has(key)) {
+                    returnedObj.indexedDataAbstractMap.set(key, obj.indexedDataAbstractMap.get(key));
                 }
             }
         }

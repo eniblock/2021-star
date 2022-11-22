@@ -79,11 +79,21 @@ export class HistoryController {
                 if (allActivationDocument && allActivationDocument.length > 0) {
                     for (const document of allActivationDocument) {
                         if (document && document.activationDocumentMrid) {
-                            allValidActivationDocument.push(document);
                             params.addInMemoryPool(document.activationDocumentMrid,
                                 {collection: '',
                                 data: document,
                                 docType: DocType.ACTIVATION_DOCUMENT});
+
+                            if (document.subOrderList && document.subOrderList.length > 1) {
+                                const subOrderList = document.subOrderList;
+                                for (const subOrder of subOrderList) {
+                                    const singleChildDocument: ActivationDocument= JSON.parse(JSON.stringify(document));
+                                    singleChildDocument.subOrderList = [subOrder];
+                                    allValidActivationDocument.push(singleChildDocument);
+                                }
+                            } else {
+                                allValidActivationDocument.push(document);
+                            }
                         }
                     }
                 }
@@ -595,11 +605,16 @@ export class HistoryController {
         params.logger.debug('reserveBid: ', JSON.stringify(reserveBid));
 
         let balancingDocument: BalancingDocument = null;
-        try {
-            balancingDocument = await BalancingDocumentController.getByActivationDocumentMrId(
-                params, activationDocument.activationDocumentMrid);
-        } catch (err) {
-                // DO nothing except "Not accessible information"
+        if (identity !== OrganizationTypeMsp.PRODUCER
+            || activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted
+            || activationDocument.eligibilityStatus === EligibilityStatusType.FREligibilityAccepted) {
+
+            try {
+                balancingDocument = await BalancingDocumentController.getByActivationDocumentMrId(
+                    params, activationDocument.activationDocumentMrid);
+            } catch (err) {
+                    // DO nothing except "Not accessible information"
+            }
         }
 
         params.logger.debug('balancingDocument: ', JSON.stringify(balancingDocument));

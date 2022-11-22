@@ -873,7 +873,7 @@ export class Star extends Contract {
         ctx: Context,
         activationDocumentMrid: string,
         feedbackStr: string,
-        feedbackElements: string = '') {
+        feedbackElements: string) {
 
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);

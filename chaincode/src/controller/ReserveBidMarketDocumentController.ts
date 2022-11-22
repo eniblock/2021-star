@@ -553,7 +553,8 @@ export class ReserveBidMarketDocumentController {
                                     params.logger.info('C.2- dateBidRef < dateBid: ', JSON.stringify(dateBidRef < dateBid));
                                     params.logger.info('C.3- dateBidRef === dateBid: ', JSON.stringify(dateBidRef === dateBid));
                                     params.logger.info('C.4- dateBidRef == dateBid: ', JSON.stringify(dateBidRef == dateBid));
-                                    params.logger.info('C.5- dateCreationBid > dateCreationBidRef: ', JSON.stringify(dateCreationBid > dateCreationBidRef));
+                                    params.logger.info('C.5- JSON.stringify(dateBidRef) === JSON.stringify(dateBid): ', JSON.stringify(JSON.stringify(dateBidRef) === JSON.stringify(dateBid)));
+                                    params.logger.info('C.6- dateCreationBid > dateCreationBidRef: ', JSON.stringify(dateCreationBid > dateCreationBidRef));
 
                                     if (dateBidRef.getTime() !== dateBidRef.getTime()) {
 
@@ -570,7 +571,7 @@ export class ReserveBidMarketDocumentController {
                                         reserveBidAbstractRef = reserveBidAbstract;
                                         params.logger.info('2.D- 2nd level init');
 
-                                    } else if (dateBidRef === dateBid) {
+                                    } else if (JSON.stringify(dateBidRef) === JSON.stringify(dateBid)) {
 
                                         params.logger.info('2.E- Equality');
 

@@ -69,7 +69,7 @@ public class FeedBackController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping("/answer")
-    @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<Void> answerFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageAnswerDTO feedBackAnswerDTO) throws TechnicalException {
         feedBackService.postMessageAnswer(feedBackMapper.dtoToBean(feedBackAnswerDTO));
         return new ResponseEntity<>(HttpStatus.CREATED);

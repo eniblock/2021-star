@@ -45,21 +45,26 @@ export class SiteReserveBidIndexersController {
 
         for (const target of collections) {
             params.logger.info('get 1, target: ', target);
-            const obj: IndexedData = await DataIndexersController.getIndexer(params, indexId, target);
+            var obj: IndexedData;
+            try {
+                obj = await DataIndexersController.getIndexer(params, indexId, target);
 
-            params.logger.info('get 2, obj: ', JSON.stringify(obj));
-            params.logger.info('get 3, obj.indexedDataAbstractMap: ', JSON.stringify([...obj.indexedDataAbstractMap]));
+                params.logger.info('get 2, obj: ', JSON.stringify(obj));
+                params.logger.info('get 3, obj.indexedDataAbstractMap: ', JSON.stringify([...obj.indexedDataAbstractMap]));
 
-            for (const [key] of obj.indexedDataAbstractMap) {
-                params.logger.info('get 4, key: ', JSON.stringify(key));
-                if (!returnedObj.indexedDataAbstractMap.has(key)) {
-                    const value = obj.indexedDataAbstractMap.get(key);
-                    params.logger.info('get 5, do it: ', JSON.stringify(value));
-                    returnedObj.indexedDataAbstractMap.set(key, value);
+                for (const [key] of obj.indexedDataAbstractMap) {
+                    params.logger.info('get 4, key: ', JSON.stringify(key));
+                    if (!returnedObj.indexedDataAbstractMap.has(key)) {
+                        const value = obj.indexedDataAbstractMap.get(key);
+                        params.logger.info('get 5, do it: ', JSON.stringify(value));
+                        returnedObj.indexedDataAbstractMap.set(key, value);
+                    }
                 }
-            }
 
-            params.logger.info('get 6, returnedObj.indexedDataAbstractMap: ', JSON.stringify([...returnedObj.indexedDataAbstractMap]));
+                params.logger.info('get 6, returnedObj.indexedDataAbstractMap: ', JSON.stringify([...returnedObj.indexedDataAbstractMap]));
+            } catch (err) {
+                // do Nothing
+            }
         }
 
         params.logger.debug('=============  END  : get SiteReserveBidIndexersController ===========');

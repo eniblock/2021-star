@@ -234,7 +234,7 @@ export class FeedbackProducerController {
 
         const endDate: Date = new Date(feedbackProducerObj.validityPeriodEndDateTime);
         const today: Date = new Date();
-        if (endDate < today) {
+        if (endDate.getTime() < today.getTime()) {
             throw new Error(`ERROR updateFeedbackProducer : comment could only be sent before ${feedbackProducerObj.validityPeriodEndDateTime}`);
         }
 

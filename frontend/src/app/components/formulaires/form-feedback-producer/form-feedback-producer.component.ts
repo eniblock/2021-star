@@ -83,15 +83,12 @@ export class FormFeedbackProducerComponent implements OnInit {
     if (this.instance == Instance.PRODUCER) {
       // Producer give feedback
       const elements = this.form.get('elements')?.value.reduce((acc: string, val: string) => acc + "|" + val);
-      console.log(111111111111)
       this.feedbackProducerService.postFeedbackProducer(this.bottomSheetParams.activationDocumentMrid, message, elements).subscribe(
         (ok) => {
-          console.log(222222222222222222)
           this.loading = false;
           this.bottomsheet.dismiss({message: message, elements: elements, messageAnswer: null});
         },
         (error) => {
-          console.log(333333333333)
           this.loading = false;
         }
       );

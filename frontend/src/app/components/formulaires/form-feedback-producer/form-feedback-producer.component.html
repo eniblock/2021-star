@@ -9,12 +9,22 @@
 
 <ng-container *ngIf="this.bottomSheetParams.feedback">
   <h3 class="mt-4">Retour producteur</h3>
-  <span [innerText]="this.bottomSheetParams.feedback"></span>
+  <form class="row greyForm">
+    <mat-form-field class="col-12" appearance="outline">
+      <mat-label>Message du producteur</mat-label>
+      <textarea matInput cdkTextareaAutosize>{{this.bottomSheetParams.feedback}}</textarea>
+    </mat-form-field>
+  </form>
 </ng-container>
 
 <ng-container *ngIf="this.bottomSheetParams.feedbackAnswer">
   <h3 class="mt-4">Réponse du gestionnaire</h3>
-  <span [innerText]="this.bottomSheetParams.feedbackAnswer"></span>
+  <form class="row greyForm">
+    <mat-form-field class="col-12" appearance="outline">
+      <mat-label>Message du gestionnaire</mat-label>
+      <textarea matInput cdkTextareaAutosize>{{this.bottomSheetParams.feedbackAnswer}}</textarea>
+    </mat-form-field>
+  </form>
 </ng-container>
 
 

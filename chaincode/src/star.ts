@@ -878,6 +878,7 @@ export class Star extends Contract {
             // const params: STARParameters = await ParametersController.getParameterValues(ctx);
             // return (await StarDataStateController.getStarDataState(params));
             // // return (await StarDataUpdateController.getStarDataToUpdate(params));
+            return "[]";
         } catch (error) {
             throw error;
         }

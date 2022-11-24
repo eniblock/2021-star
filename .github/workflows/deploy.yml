@@ -17,6 +17,7 @@ jobs:
       with:
         helmdir: helm/star
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+        raw_version_on_branch: prod
     - name: Update the application
       env:
         KUBECONFIG: ${{ secrets.KUBECONFIG }}

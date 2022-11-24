@@ -1,0 +1,24 @@
+name: ci
+on:
+  push:
+    branches:
+      - "prod"
+
+jobs:
+  deploy-enedis-prod:
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: enedis-prod
+    secrets: inherit
+
+  deploy-producer-prod:
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: producer-prod
+    secrets: inherit
+
+  deploy-rte-prod:
+    uses: './.github/workflows/deploy.yml'
+    with:
+      environment: rte-prod
+    secrets: inherit

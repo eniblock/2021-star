@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - "**"
+      - "!prod"
     tags:
       - "*"
 
@@ -148,28 +149,4 @@ jobs:
       environment: rte-staging
     secrets: inherit
 
-  # prod
-
-  deploy-enedis-prod:
-    if: github.ref == 'refs/heads/prod'
-    needs: [helm-publish]
-    uses: './.github/workflows/deploy.yml'
-    with:
-      environment: enedis-prod
-    secrets: inherit
-
-  deploy-producer-prod:
-    if: github.ref == 'refs/heads/prod'
-    needs: [helm-publish]
-    uses: './.github/workflows/deploy.yml'
-    with:
-      environment: producer-prod
-    secrets: inherit
-
-  deploy-rte-prod:
-    if: github.ref == 'refs/heads/prod'
-    needs: [helm-publish]
-    uses: './.github/workflows/deploy.yml'
-    with:
-      environment: rte-prod
-    secrets: inherit
+  # see prod.yml for the prod environments

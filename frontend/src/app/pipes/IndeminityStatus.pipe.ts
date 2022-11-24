@@ -20,13 +20,13 @@ export class IndeminityStatusPipe implements PipeTransform {
       case IndeminityStatus.InProgress:
         return 'En cours';
       case IndeminityStatus.Agreement:
-        return 'Accord pour indemnisation';
+        return 'Accord pour\nindemnisation';
       case IndeminityStatus.Processed:
-        return 'Enedis - Traité';
+        return 'Traité';
       case IndeminityStatus.WaitingInvoice:
-        return 'RTE - Commande émise';
+        return 'Commande émise';
       case IndeminityStatus.InvoiceSent:
-        return 'Facture envoyée par le producteur (RTE)';
+        return 'Facture envoyée';
     }
     return 'OrdreRechercheSitesProduction inconnu';
   }

@@ -11,31 +11,40 @@ export class LimitationStatusComponent implements OnChanges {
   @Input() indeminityStatus?: IndeminityStatus;
 
   btnClass = "";
-  btnDisabled = true;
+  statusClass = "";
+
+  isClickable = false;
 
   constructor() {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.btnDisabled = false;
 
     switch (this.indeminityStatus) {
-      case IndeminityStatus.Processed:
-        this.btnClass = "bg-grey";
+      case IndeminityStatus.InProgress:
+        this.btnClass = "";
+        this.statusClass = "";
         break;
       case IndeminityStatus.Agreement:
-        this.btnClass = "bg-grey";
+        this.btnClass = "";
+        this.statusClass = "";
         break;
       case IndeminityStatus.Processed:
-        this.btnClass = "bg-success";
+        this.btnClass = "bg-success text-white";
+        this.statusClass = "text-success";
         break;
       case IndeminityStatus.WaitingInvoice:
-        this.btnClass = "bg-orange";
+        this.btnClass = "bg-orange text-white";
+        this.statusClass = "text-orange";
         break;
       case IndeminityStatus.InvoiceSent:
-        this.btnClass = "bg-success";
+        this.btnClass = "bg-success text-white";
+        this.statusClass = "text-success";
         break;
     }
   }
 
+  onClick() {
+    console.log("CLICK!")
+  }
 }

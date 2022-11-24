@@ -135,5 +135,10 @@ public class ReserveBidController {
             @PathVariable("newStatus") String newStatus) throws BusinessException, TechnicalException {
         reserveBidService.updateStatus(reserveBidMrid, newStatus);
         return  new ResponseEntity<>(HttpStatus.OK);
+
+        // TODO : creer dans le service une methode "updateBalancingDocumentState " qui appelle GetBalancingDocumentState puis UpdateBalancingDocumentByOrders
+        // s'inspirer de :
+        //    public static final String GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE = "GetActivationDocumentReconciliationState";
+        //    public static final String UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS = "UpdateActivationDocumentByOrders";
     }
 }

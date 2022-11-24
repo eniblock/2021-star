@@ -1,5 +1,7 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {IndeminityStatus} from "../../../models/enum/IndeminityStatus.enum";
+import {InstanceService} from "../../../services/api/instance.service";
+import {Instance} from "../../../models/enum/Instance.enum";
 
 @Component({
   selector: 'app-limitation-status',
@@ -10,36 +12,41 @@ export class LimitationStatusComponent implements OnChanges {
 
   @Input() indeminityStatus?: IndeminityStatus;
 
-  btnClass = "";
   statusClass = "";
+  canChangeStatus = false;
 
-  isClickable = false;
-
-  constructor() {
+  constructor(
+    private instanceService: InstanceService,
+  ) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.instanceService.getTypeInstance().subscribe(instance => {
+      this.initComponent(instance);
+    })
+  }
 
+  private initComponent(instance: Instance) {
     switch (this.indeminityStatus) {
       case IndeminityStatus.InProgress:
-        this.btnClass = "";
         this.statusClass = "";
+        this.canChangeStatus = false;
         break;
       case IndeminityStatus.Agreement:
-        this.btnClass = "";
         this.statusClass = "";
+        this.canChangeStatus = instance == Instance.DSO || instance == Instance.TSO;
         break;
       case IndeminityStatus.Processed:
-        this.btnClass = "bg-success text-white";
         this.statusClass = "text-success";
+        this.canChangeStatus = false;
         break;
       case IndeminityStatus.WaitingInvoice:
-        this.btnClass = "bg-orange text-white";
         this.statusClass = "text-orange";
+        this.canChangeStatus = instance == Instance.PRODUCER;
         break;
       case IndeminityStatus.InvoiceSent:
-        this.btnClass = "bg-success text-white";
         this.statusClass = "text-success";
+        this.canChangeStatus = false;
         break;
     }
   }

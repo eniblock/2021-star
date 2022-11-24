@@ -1,5 +1,6 @@
-<button mat-raised-button [class]="btnClass" (click)="onClick()" *ngIf="isClickable" [innerText]="indeminityStatus | IndeminityStatus">
+<button mat-stroked-button disabled [class]="statusClass" [innerText]="indeminityStatus | IndeminityStatus">
 </button>
 
-<button mat-stroked-button disabled [class]="statusClass" *ngIf="!isClickable" [innerText]="indeminityStatus | IndeminityStatus">
-</button>
+<div *ngIf="canChangeStatus">
+  CHANGER STATUS
+</div>

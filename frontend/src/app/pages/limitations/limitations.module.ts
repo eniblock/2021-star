@@ -26,6 +26,7 @@ import {
   LimitationsFilterOnResultsComponent
 } from './limitations-filter-on-results/limitations-filter-on-results.component';
 import { LimitationsFeedbackProducerComponent } from './limitations-feedback-producer/limitations-feedback-producer.component';
+import { LimitationStatusComponent } from './limitation-status/limitation-status.component';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import { LimitationsFeedbackProducerComponent } from './limitations-feedback-pro
     LimitationsIndemnisationChooseYesNoComponent,
     LimitationsFilterOnResultsComponent,
     LimitationsFeedbackProducerComponent,
+    LimitationStatusComponent,
   ],
 })
 export class LimitationsModule {

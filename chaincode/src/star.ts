@@ -359,6 +359,9 @@ export class Star extends Contract {
         }
     }
 
+
+
+
     public async GetActivationDocumentBySystemOperator(
         ctx: Context,
         inputStr: string) {
@@ -863,6 +866,39 @@ export class Star extends Contract {
             throw error;
         }
     }
+
+
+
+    /*
+        inputStr : ReserveBidMrid - string
+        output : "any[]"
+    */
+    public async GetBalancingDocumentState(ctx: Context, inputStr: string) {
+        try {
+            // const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            // return (await StarDataStateController.getStarDataState(params));
+            // // return (await StarDataUpdateController.getStarDataToUpdate(params));
+            return "[]";
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /*
+        inputStr : "any[]" // GetBalancingDocumentState return
+        output :
+    */
+        public async UpdateBalancingDocumentByOrders(ctx: Context, inputStr: string) {
+        try {
+            // const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            // return (await StarDataStateController.executeStarDataOrders(params, inputStr));
+            // // return (await StarDataUpdateController.executeStarDataOrders(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
 
 
     /*

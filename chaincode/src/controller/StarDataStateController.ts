@@ -88,6 +88,17 @@ export class StarDataStateController {
             }
         }
 
+        // Add Indeminity Status to Update
+
+        const dataIndemnityStatus = await FeedbackProducerController.getIndemnityStatusState(params);
+
+        if (dataIndemnityStatus && dataIndemnityStatus.length > 0) {
+            for (const dataIndemnityStatusRef of dataIndemnityStatus) {
+                orderReferences.push(dataIndemnityStatusRef);
+            }
+        }
+
+
         // //Add Indexed Data References (to fill lack in data if needed)
 
         // const dataIndexerReferences = await SiteReserveBidIndexersController.getState(params);

@@ -7,11 +7,13 @@ import com.star.models.balancing.BalancingDocumentCriteria;
 import com.star.repository.BalancingDocumentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -53,5 +55,9 @@ public class BalancingDocumentService {
             balancingDocumentCriteria.setMeteringPointMrid(EMPTY);
         }
         return balancingDocumentRepository.findBalancingDocumentByCriteria(balancingDocumentCriteria);
+    }
+
+    public void reconciliateBalancingDocument(String reserveBidMrid) throws ContractException, InterruptedException, TimeoutException {
+        balancingDocumentRepository.reconciliateBalancingDocument(reserveBidMrid);
     }
 }

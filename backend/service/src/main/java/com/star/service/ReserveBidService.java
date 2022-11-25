@@ -14,6 +14,7 @@ import com.star.utils.InfoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import static java.util.UUID.randomUUID;
@@ -58,6 +60,9 @@ public class ReserveBidService {
 
     @Autowired
     private ReserveBidRepository reserveBidRepository;
+
+    @Autowired
+    private BalancingDocumentService balancingDocumentService;
 
     private ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
 
@@ -154,7 +159,7 @@ public class ReserveBidService {
         return reserveBidRepository.getFile(fileId);
     }
 
-    public void updateStatus(String reserveBidMrid, String newStatus) throws TechnicalException, BusinessException{
+    public void updateStatus(String reserveBidMrid, String newStatus) throws TechnicalException, BusinessException, ContractException, InterruptedException, TimeoutException {
         Assert.notNull(reserveBidMrid, "reserveBidMrid must be non null");
         Assert.notNull(newStatus, "newStatus must be non null");
         if (StringUtils.isNotBlank(newStatus) && !RESERVE_BID_STATUS_LIST.contains(upperCase(newStatus))) {
@@ -162,5 +167,6 @@ public class ReserveBidService {
                     new String[]{}, null), null, null));
         }
         reserveBidRepository.updateStatus(reserveBidMrid, newStatus);
+        balancingDocumentService.reconciliateBalancingDocument(reserveBidMrid);
     }
 }

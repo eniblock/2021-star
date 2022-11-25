@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -23,6 +24,8 @@ import java.util.List;
 @Repository
 public class BalancingDocumentRepository {
     public static final String SEARCH_BALANCING_DOCUMENT_BY_CRITERIA = "SearchBalancingDocumentByCriteria";
+    public static final String GET_BALANCING_DOCUMENT_STATE = "GetBalancingDocumentState";
+    public static final String UPDATE_BALANCING_DOCUMENTS_BY_ORDERS = "UpdateBalancingDocumentByOrders";
 
     @Autowired
     private Contract contract;
@@ -45,5 +48,14 @@ public class BalancingDocumentRepository {
             throw new BusinessException(contractException.getMessage());
         }
         return balancingDocuments;
+    }
+
+    public void reconciliateBalancingDocument(String reserveBidMrid) throws ContractException, InterruptedException, TimeoutException {
+        log.info("Appel de reconciliateBalancingDocument pour effectuer une réconciliation des balancingDocuments");
+        byte[] evaluateTransaction = contract.evaluateTransaction(GET_BALANCING_DOCUMENT_STATE, reserveBidMrid);
+        if (evaluateTransaction != null && evaluateTransaction.length > 2) {
+            log.info("Lancement de la reconciliation des balancingDocuments");
+            contract.submitTransaction(UPDATE_BALANCING_DOCUMENTS_BY_ORDERS, new String(evaluateTransaction));
+        }
     }
 }

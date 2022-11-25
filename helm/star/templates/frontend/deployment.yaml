@@ -58,6 +58,17 @@ spec:
             failureThreshold: 50
           resources:
             {{- toYaml .Values.frontend.resources | nindent 12 }}
+          volumeMounts:
+            - name: conf
+              mountPath: /usr/share/nginx/html/assets/conf/
+            {{- if .Values.global.dev }}
+            - name: conf
+              mountPath: /app/src/assets/conf/
+            {{- end }}
+      volumes:
+        - name: conf
+          configMap:
+            name: {{ include "star.fullname" . }}-frontend
       {{- with .Values.frontend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

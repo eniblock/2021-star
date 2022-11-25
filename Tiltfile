@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# get some color in earthly outputs
+os.environ['FORCE_COLOR'] = '1'
+
 secret_settings(disable_scrub=True)
 
 config.define_bool("dev-frontend")

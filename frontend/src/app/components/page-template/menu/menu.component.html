@@ -39,7 +39,7 @@
 <div class="mt-auto mb-2 mx-3">
   <div class="participantName mb-1">{{ participantName }}</div>
   <div class="username mb-2">{{ username }}</div>
-  <div class="version mb-2">Version : {{ version }}</div>
+  <div class="version mb-2"><a [href]="'https://github.com/eniblock/2021-star/releases/tag/' + version">{{ version }}</a></div>
   <mat-divider class="mb-4"></mat-divider>
   <a class="deconnexion" (click)="deconnexion()">
     <div class="text-center">

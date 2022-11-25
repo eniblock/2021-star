@@ -5,6 +5,8 @@ nameOverride: ""
 fullnameOverride: ""
 image:
   tag: null
+global:
+  dev: false
 
 backend:
   enabled: true

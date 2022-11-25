@@ -25,7 +25,12 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              {
+                "followSymlinks": true,
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "./assets/"
+              }
             ],
             "styles": [
               "./node_modules/@fortawesome/fontawesome-free/css/all.min.css",

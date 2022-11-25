@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
@@ -132,7 +134,7 @@ public class ReserveBidController {
             @Parameter(description = "Reserve bid Id to update")
             @PathVariable("reserveBidMrid") String reserveBidMrid,
             @Parameter(description = "New status of the reserveBid")
-            @PathVariable("newStatus") String newStatus) throws BusinessException, TechnicalException {
+            @PathVariable("newStatus") String newStatus) throws BusinessException, TechnicalException, ContractException, InterruptedException, TimeoutException {
         reserveBidService.updateStatus(reserveBidMrid, newStatus);
         return  new ResponseEntity<>(HttpStatus.OK);
     }

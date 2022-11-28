@@ -13,7 +13,7 @@ import {ReserveBidService} from "../../../services/api/reserve-bid.service";
 })
 export class FormAjoutTarifUnitaireComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({
-    energyPriceAmount: ['', [Validators.required, Validators.pattern('[0-9]*[\,\.]?[0-9]*')]],
+    energyPriceAmount: ['', [Validators.required, Validators.pattern('[0-9]*[\,\.]?[0-9]{0,3}')]],
     validityPeriodStartDateTime: ['', Validators.required],
   });
 

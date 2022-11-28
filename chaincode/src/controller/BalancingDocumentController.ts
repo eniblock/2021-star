@@ -1,3 +1,4 @@
+import { DataActionType } from '../enums/DataActionType';
 import { DocType } from '../enums/DocType';
 import { ParametersType } from '../enums/ParametersType';
 import { ActivationDocument } from '../model/activationDocument/activationDocument';
@@ -52,6 +53,9 @@ export class BalancingDocumentController {
         return balancingObj;
     }
 
+
+
+
     public static async deleteByActivationDocumentMrId(
         params: STARParameters,
         activationDocumentMrid: string,
@@ -63,6 +67,54 @@ export class BalancingDocumentController {
 
         params.logger.debug('=============  END  : deleteByActivationDocumentMrId BalancingDocumentController ===========');
     }
+
+
+
+    public static async updateBalancingDocumentByOrders(
+        params: STARParameters,
+        orderListStr: string) {
+        params.logger.info('============= START : updateBalancingDocumentByOrders BalancingDocumentController ===========');
+
+        let updateOrders: DataReference[];
+        try {
+            updateOrders = JSON.parse(orderListStr);
+        } catch (error) {
+        // params.logger.error('error=', error);
+            throw new Error(`ERROR executeStarDataOrders -> Input string NON-JSON value`);
+        }
+
+        if (updateOrders && updateOrders.length > 0 ) {
+            // VALIDATION AND INITIALIZATION STEP
+            for (const updateOrder of updateOrders) {
+                params.logger.debug("updateOrder: ", JSON.stringify(updateOrder))
+                DataReference.schema.validateSync(
+                    updateOrder,
+                    {strict: true, abortEarly: false},
+                );
+                if (updateOrder.docType === DocType.BALANCING_DOCUMENT
+                    && updateOrder.dataAction === DataActionType.UPDATE) {
+
+                    if (updateOrder.data && updateOrder.data.activationDocument) {
+                        const activationDocumentObj: ActivationDocument = updateOrder.data.activationDocument;
+                        params.logger.debug("activationDocumentObj: ", JSON.stringify(activationDocumentObj))
+                        ActivationDocument.schema.validateSync(
+                            activationDocumentObj,
+                            {strict: true, abortEarly: false},
+                        );
+
+                        await this.createOrUpdate(params, activationDocumentObj, null, null);
+                    }
+                }
+
+            }
+        }
+
+        params.logger.info('=============  END  : updateBalancingDocumentByOrders BalancingDocumentController ===========');
+    }
+
+
+
+
 
     public static async createOrUpdateById(
         params: STARParameters,

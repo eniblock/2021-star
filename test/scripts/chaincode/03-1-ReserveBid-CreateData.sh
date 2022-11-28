@@ -7,7 +7,7 @@ source ./zzz-config.sh
 IFS=$OLD_IFS
 
 NB_YEARS=2
-INIT_YEAR="2020" #will start 1 year later
+INIT_YEAR="2015" #will start 1 year later
 
 
 echo "***************************************"

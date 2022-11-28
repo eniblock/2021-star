@@ -223,6 +223,31 @@ export class ActivationDocumentController {
     }
 
 
+    public static async getActivationDocumentRefByQuery(
+        params: STARParameters,
+        query: string,
+        targets: string[] = []): Promise<DataReference[]> {
+        params.logger.info('============= START : get ActivationDocument Reference By Query ===========');
+
+        let collections: string[];
+        if (targets && targets.length > 0) {
+            collections = targets;
+        } else {
+            collections =
+                await HLFServices.getCollectionsFromParameters(params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        }
+
+        params.logger.debug('query: ', query);
+        const allResults: DataReference[] =
+            await ActivationDocumentService.getQueryRefArrayResult(params, query, collections);
+        const formatedResults: DataReference[] =
+            await ActivationDocumentEligibilityService.formatActivationDocumentRefs(params, allResults);
+
+        params.logger.info('=============  END  : get ActivationDocument Reference By Query ===========');
+        return formatedResults;
+    }
+
+
     public static async getAll(params: STARParameters): Promise<DataReference[]> {
         params.logger.info('============= START : get all ActivationDocumentController ===========');
 

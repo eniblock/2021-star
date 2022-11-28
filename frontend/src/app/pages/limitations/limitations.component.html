@@ -11,12 +11,14 @@
 
 <div class="row mt-4" *ngIf="researchResultsWithOnlyOneSuborder && researchResultsWithOnlyOneSuborder.length > 0">
   <div class="col">
-    <div class="mb-3">{{ researchResultsWithOnlyOneSuborder.length }} {{ researchResultsWithOnlyOneSuborder.length>1 ? 'résultats' : 'résultat' }}</div>
+    <div class="mb-4">{{ researchResultsWithOnlyOneSuborder.length }} {{ researchResultsWithOnlyOneSuborder.length>1 ? 'résultats' : 'résultat' }}</div>
     <div class="row">
       <div class="col-6">
+        <h4>Filtres sur l’Historique des Limitations</h4>
         <app-limitations-filter-on-results [researchResult]="researchResultsWithOnlyOneSuborder" (typeLimitationChange)="typeLimitationFilterChange($event)" (motifNameChange)="motifNameFilterChange($event)"></app-limitations-filter-on-results>
       </div>
       <div class="col-6">
+        <h4>Colonnes</h4>
         <app-limitations-column-selector (columnsToDisplayChange)="updateColumnsToDisplay($event)"></app-limitations-column-selector>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { EligibilityStatusType } from '../../enums/EligibilityStatusType';
 import { OrganizationTypeMsp } from '../../enums/OrganizationMspType';
 import { ParametersType } from '../../enums/ParametersType';
 import { ActivationDocument } from '../../model/activationDocument/activationDocument';
+import { DataReference } from '../../model/dataReference';
 import { STARParameters } from '../../model/starParameters';
 import { SystemOperator } from '../../model/systemOperator';
 import { StarDataService } from './StarDataService';
@@ -127,5 +128,19 @@ export class ActivationDocumentEligibilityService {
         }
         return returnedList;
     }
+
+
+    public static async formatActivationDocumentRefs(
+        params: STARParameters,
+        activationDocumentRefs: DataReference[]): Promise<DataReference[]> {
+
+        const returnedList: DataReference[] = [];
+        for (var activationDocumentRef of activationDocumentRefs) {
+            activationDocumentRef.data = await this.outputFormatFRActivationDocument(params, activationDocumentRef.data)
+            returnedList.push(activationDocumentRef);
+        }
+        return returnedList;
+    }
+
 
 }

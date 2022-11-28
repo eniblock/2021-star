@@ -879,15 +879,15 @@ export class ReserveBidMarketDocumentController {
         params.logger.info('============= START : getBalancingDocumentState ReserveBidMarketDocumentController ===========');
 
         const reserveBidObj = await this.getObjById(params, reserveBidMrid);
-        const activationDocumentObjList: ActivationDocument[] = await this.findEveryConcernedActivationDocumentObjList(params, reserveBidObj);
+        const activationDocumentRefList: DataReference[] = await this.findEveryConcernedActivationDocumentObjList(params, reserveBidObj);
 
         const dataReferenceList: DataReference[] = [];
-        if (activationDocumentObjList && activationDocumentObjList.length > 0) {
-            for (const activationDocumentObj of activationDocumentObjList) {
+        if (activationDocumentRefList && activationDocumentRefList.length > 0) {
+            for (const activationDocumentRef of activationDocumentRefList) {
                 const dataReference:DataReference = {
                     docType: DocType.BALANCING_DOCUMENT,
-                    collection: DocType.BALANCING_DOCUMENT,
-                    data: {activationDocument: activationDocumentObj},
+                    collection: activationDocumentRef.collection,
+                    data: {activationDocument: activationDocumentRef.data},
                     dataAction: DataActionType.UPDATE
                 }
                 dataReferenceList.push(dataReference);
@@ -902,7 +902,7 @@ export class ReserveBidMarketDocumentController {
 
     private static async findEveryConcernedActivationDocumentObjList(
         params: STARParameters,
-        reserveBidObj: ReserveBidMarketDocument): Promise<ActivationDocument[]> {
+        reserveBidObj: ReserveBidMarketDocument): Promise<DataReference[]> {
 
         params.logger.debug('============= START : findEveryConcernedActivationDocumentIdList ReserveBidMarketDocumentController ===========');
 
@@ -917,7 +917,7 @@ export class ReserveBidMarketDocumentController {
 
         params.logger.debug('query: ', query);
 
-        const allResults = await ActivationDocumentController.getActivationDocumentObjByQuery(params, query);
+        const allResults = await ActivationDocumentController.getActivationDocumentRefByQuery(params, query);
 
         params.logger.debug('allResults: ', JSON.stringify(allResults));
 

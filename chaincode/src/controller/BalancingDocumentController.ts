@@ -102,7 +102,18 @@ export class BalancingDocumentController {
                             {strict: true, abortEarly: false},
                         );
 
-                        await this.createOrUpdate(params, activationDocumentObj, null, null);
+                        const balancingDocument: BalancingDocument = await this.createOrUpdate(params, activationDocumentObj, null, null, updateOrder.collection);
+
+                        if (!balancingDocument
+                            || !balancingDocument.balancingDocumentMrid
+                            || balancingDocument.balancingDocumentMrid.length === 0) {
+
+                            try {
+                                await this.deleteByActivationDocumentMrId(params, activationDocumentObj.activationDocumentMrid, updateOrder.collection);
+                            } catch (err) {
+                                //Do Nothing
+                            }
+                        }
                     }
                 }
 
@@ -148,7 +159,7 @@ export class BalancingDocumentController {
         activationDocument: ActivationDocument,
         reserveBid: ReserveBidMarketDocument,
         energyAmount: EnergyAmount,
-        target: string = '') {
+        target: string = ''): Promise<BalancingDocument> {
         params.logger.debug('============= START : createOrUpdate BalancingDocumentController ===========');
 
         if (!activationDocument
@@ -170,9 +181,11 @@ export class BalancingDocumentController {
             }
         }
 
-        await this.consolidateAndCreateOrUpdate(params, activationDocument, reserveBid, energyAmount, target);
+        const balancingDocument: BalancingDocument = await this.consolidateAndCreateOrUpdate(params, activationDocument, reserveBid, energyAmount, target);
 
         params.logger.debug('=============  END  : createOrUpdate BalancingDocumentController ===========');
+
+        return balancingDocument;
     }
 
     private static async searchObjByCriteria(
@@ -234,7 +247,7 @@ export class BalancingDocumentController {
         activationDocument: ActivationDocument,
         reserveBid: ReserveBidMarketDocument,
         energyAmount: EnergyAmount,
-        target: string = '') {
+        target: string = '') : Promise<BalancingDocument> {
         params.logger.debug
             ('============= START : consolidateAndCreateOrUpdate BalancingDocumentController ===========');
 
@@ -274,10 +287,11 @@ export class BalancingDocumentController {
             }
         }
 
-        await this.createOrUpdateObj(params, activationDocument, reserveBid, energyAmount, target);
+        const balancingDocument: BalancingDocument = await this.createOrUpdateObj(params, activationDocument, reserveBid, energyAmount, target);
 
         params.logger.debug
             ('=============  END  : consolidateAndCreateOrUpdate BalancingDocumentController ===========');
+        return balancingDocument;
     }
 
     private static async createOrUpdateObj(
@@ -285,9 +299,10 @@ export class BalancingDocumentController {
         activationDocument: ActivationDocument,
         reserveBid: ReserveBidMarketDocument,
         energyAmount: EnergyAmount,
-        target: string = '') {
+        target: string = '') : Promise<BalancingDocument> {
         params.logger.debug('============= START : createOrUpdateObj BalancingDocumentController ===========');
 
+        var balancingDocument: BalancingDocument = null;
         if (activationDocument
             && activationDocument.activationDocumentMrid
             && activationDocument.activationDocumentMrid.length > 0
@@ -298,7 +313,7 @@ export class BalancingDocumentController {
             && reserveBid.reserveBidMrid
             && reserveBid.reserveBidMrid.length > 0) {
 
-            const balancingDocument: BalancingDocument = params.values.get(ParametersType.BALANCING_DOCUMENT);
+            balancingDocument = params.values.get(ParametersType.BALANCING_DOCUMENT);
 
             const balancingDocumentMrid = this.getBalancingDocumentMrid(
                 params, activationDocument.activationDocumentMrid);
@@ -325,6 +340,7 @@ export class BalancingDocumentController {
         }
 
         params.logger.debug('=============  END  : createOrUpdateObj BalancingDocumentController ===========');
+        return balancingDocument;
     }
 
 }

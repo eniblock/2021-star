@@ -42,16 +42,16 @@ echo ""
 VALIDATED="VALIDATED"
 REFUSED="REFUSED"
 
-ENEDIS_LIST_VALIDATED="Bid_PRM_SITE_ENEDIS_AD_1_5110753790
-Bid_PRM_SITE_ENEDIS_AD_1_9586812679
-Bid_PRM_SITE_ENEDIS_AD_2_3038294967
-Bid_PRM_SITE_ENEDIS_AD_2_7533575126
-Bid_PRM_SITE_ENEDIS_AD_3_4156661593
-Bid_PRM_SITE_ENEDIS_AD_3_9489539804
-Bid_PRM_SITE_ENEDIS_AD_4_8259914240
-Bid_PRM_SITE_ENEDIS_AD_4_9272834647"
+ENEDIS_LIST_VALIDATED="Bid_PRM_SITE_ENEDIS_AD_1_1576926537
+Bid_PRM_SITE_ENEDIS_AD_1_9960644006
+Bid_PRM_SITE_ENEDIS_AD_2_7781639566
+Bid_PRM_SITE_ENEDIS_AD_2_9240901180
+Bid_PRM_SITE_ENEDIS_AD_3_4626120187
+Bid_PRM_SITE_ENEDIS_AD_3_7553411743
+Bid_PRM_SITE_ENEDIS_AD_4_0135680689
+Bid_PRM_SITE_ENEDIS_AD_4_6003496490"
 
-ENEDIS_LIST_REFUSED="Bid_PRM_SITE_ENEDIS_AD_3_3227157158"
+ENEDIS_LIST_REFUSED="Bid_PRM_SITE_ENEDIS_AD_2_7781639566"
 
 echo "***********************************"
 echo
@@ -67,24 +67,9 @@ echo "** ENEDIS - RESERVE BID DATA UPDATE"
 echo
 
 
-if $ONLINE_MODE
-then
-    for ID in $ENEDIS_LIST_VALIDATED
-    do
-        echo $ID
-
-        kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
-            peer chaincode invoke \
-                -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
-                --tls $ENEDIS_TLSOPT \
-                -c '{"Args":["UpdateStatusReserveBidMarketDocument","'$ID'","'$VALIDATED'"]}'
-    done
-fi
-
-
 # if $ONLINE_MODE
 # then
-#     for ID in $ENEDIS_LIST_REFUSED
+#     for ID in $ENEDIS_LIST_VALIDATED
 #     do
 #         echo $ID
 
@@ -92,9 +77,24 @@ fi
 #             peer chaincode invoke \
 #                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
 #                 --tls $ENEDIS_TLSOPT \
-#                 -c '{"Args":["UpdateStatusReserveBidMarketDocument","'$ID'","'$REFUSED'"]}'
+#                 -c '{"Args":["UpdateStatusReserveBidMarketDocument","'$ID'","'$VALIDATED'"]}'
 #     done
 # fi
+
+
+if $ONLINE_MODE
+then
+    for ID in $ENEDIS_LIST_REFUSED
+    do
+        echo $ID
+
+        kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+            peer chaincode invoke \
+                -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+                --tls $ENEDIS_TLSOPT \
+                -c '{"Args":["UpdateStatusReserveBidMarketDocument","'$ID'","'$REFUSED'"]}'
+    done
+fi
 
 
 

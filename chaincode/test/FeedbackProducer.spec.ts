@@ -76,7 +76,7 @@ describe('Star Tests FeedbackProducer', () => {
             const feedbackProducerComment: string = '';
 
             try {
-                await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment);
+                await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment, '');
             } catch(err) {
                 // params.logger.info(err.message)
                 expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.ENEDIS} does not have rights to comment Activation Document`);
@@ -93,7 +93,7 @@ describe('Star Tests FeedbackProducer', () => {
             const feedbackProducerComment: string = '';
 
             try {
-                await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment);
+                await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment, '');
             } catch(err) {
                 // params.logger.info(err.message)
                 expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} does not have rights to comment Activation Document`);
@@ -110,7 +110,7 @@ describe('Star Tests FeedbackProducer', () => {
             const feedbackProducerComment: string = '';
 
             try {
-                await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment);
+                await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment, '');
             } catch(err) {
                 // params.logger.info(err.message)
                 expect(err.message).to.equal(`ERROR updateFeedbackProducer : no feedback to update.`);
@@ -127,7 +127,7 @@ describe('Star Tests FeedbackProducer', () => {
             const feedbackProducerComment: string = 'feedbackProducerComment';
 
             try {
-                await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment);
+                await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment, '');
             } catch(err) {
                 // params.logger.info(err.message)
                 expect(err.message).to.equal(
@@ -149,7 +149,7 @@ describe('Star Tests FeedbackProducer', () => {
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
 
             try {
-                await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment);
+                await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment, '');
             } catch(err) {
                 // params.logger.info(err.message)
                 expect(err.message).to.equal(`ERROR updateFeedbackProducer : comment could only be sent before ${feedbackProducer.validityPeriodEndDateTime}`);
@@ -169,7 +169,7 @@ describe('Star Tests FeedbackProducer', () => {
             transactionContext.stub.getPrivateData.withArgs('enedis-producer',
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
 
-            await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment);
+            await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment, '');
 
             const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
             expected.feedback = feedbackProducerComment;
@@ -203,7 +203,7 @@ describe('Star Tests FeedbackProducer', () => {
             transactionContext.stub.getPrivateData.withArgs('producer-rte',
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
 
-            await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment);
+            await star.UpdateFeedbackProducer(transactionContext, feedbackProducer.activationDocumentMrid, feedbackProducerComment, '');
 
             const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
             expected.feedback = feedbackProducerComment;

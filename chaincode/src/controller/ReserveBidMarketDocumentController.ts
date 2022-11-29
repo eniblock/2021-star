@@ -504,7 +504,8 @@ export class ReserveBidMarketDocumentController {
                 let reserveBidAbstractRef: ReserveBidMarketDocumentAbstract = null;
                 for (const reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractMap.values()) {
                     if (reserveBidAbstract.reserveBidStatus === ReserveBidStatus.VALIDATED) {
-                        params.logger.info("reserveBidAbstract.reserveBidStatus: ", reserveBidAbstract.reserveBidStatus, " - ", reserveBidAbstract.reserveBidMrid);
+                        params.logger.debug("reserveBidAbstract.reserveBidStatus: ", reserveBidAbstract.reserveBidStatus, " - ", reserveBidAbstract.reserveBidMrid);
+
                         const check = await this.checkDataConsistance(activationDocumentObj, reserveBidAbstract);
 
                         if (check) {
@@ -523,7 +524,8 @@ export class ReserveBidMarketDocumentController {
                                 }
 
                                 if (reserveBidValueRef.reserveBidStatus === ReserveBidStatus.VALIDATED) {
-                                    params.logger.info("reserveBidValueRef.reserveBidStatus: ", reserveBidValueRef.reserveBidStatus, " - ", reserveBidValueRef.reserveBidMrid);
+                                    params.logger.debug("reserveBidValueRef.reserveBidStatus: ", reserveBidValueRef.reserveBidStatus, " - ", reserveBidValueRef.reserveBidMrid);
+
                                     if (!reserveBidAbstractRef
                                         || !reserveBidAbstractRef.reserveBidMrid
                                         || reserveBidAbstractRef.reserveBidMrid.length === 0) {

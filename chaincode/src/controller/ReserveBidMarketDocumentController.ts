@@ -479,6 +479,7 @@ export class ReserveBidMarketDocumentController {
         params.logger.debug('============= START : getByActivationDocument BalancingDocumentController ===========');
 
         let reserveBidValue: ReserveBidMarketDocument = null;
+        let reserveBidValueRef: ReserveBidMarketDocument = null;
 
         if (activationDocumentObj && activationDocumentObj.registeredResourceMrid) {
             let indexedSiteReserveBidList: IndexedData;
@@ -503,6 +504,7 @@ export class ReserveBidMarketDocumentController {
                 let reserveBidAbstractRef: ReserveBidMarketDocumentAbstract = null;
                 for (const reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractMap.values()) {
                     if (reserveBidAbstract.reserveBidStatus === ReserveBidStatus.VALIDATED) {
+                        params.logger.info("reserveBidAbstract.reserveBidStatus: ", reserveBidAbstract.reserveBidStatus, " - ", reserveBidAbstract.reserveBidMrid);
                         const check = await this.checkDataConsistance(activationDocumentObj, reserveBidAbstract);
 
                         if (check) {
@@ -512,44 +514,61 @@ export class ReserveBidMarketDocumentController {
                             if (dateBid.getTime() === dateBid.getTime()
                                 && dateBid.getTime() <= dateDoc.getTime()) {
 
-                                if (!reserveBidAbstractRef
-                                    || !reserveBidAbstractRef.reserveBidMrid
-                                    || reserveBidAbstractRef.reserveBidMrid.length === 0) {
 
-                                    reserveBidAbstractRef = reserveBidAbstract;
+                                if (reserveBidAbstract
+                                    && reserveBidAbstract.reserveBidMrid
+                                    && reserveBidAbstract.reserveBidMrid.length > 0) {
 
-                                } else {
-                                    const dateBidRef = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
-                                    const dateCreationBidRef = new Date(reserveBidAbstractRef.createdDateTime);
+                                    reserveBidValueRef = await this.getObjById(params, reserveBidAbstract.reserveBidMrid, target);
+                                }
 
-                                    const dateCreationBidOk = (dateCreationBid.getTime() === dateCreationBid.getTime());
-                                    const dateCreationBidRefOk =
-                                        (dateCreationBidRef.getTime() === dateCreationBidRef.getTime());
-
-                                    if (dateBidRef.getTime() !== dateBidRef.getTime()) {
+                                if (reserveBidValueRef.reserveBidStatus === ReserveBidStatus.VALIDATED) {
+                                    params.logger.info("reserveBidValueRef.reserveBidStatus: ", reserveBidValueRef.reserveBidStatus, " - ", reserveBidValueRef.reserveBidMrid);
+                                    if (!reserveBidAbstractRef
+                                        || !reserveBidAbstractRef.reserveBidMrid
+                                        || reserveBidAbstractRef.reserveBidMrid.length === 0) {
 
                                         reserveBidAbstractRef = reserveBidAbstract;
+                                        reserveBidValue = reserveBidValueRef;
 
-                                    } else if (!dateCreationBidRefOk) {
+                                    } else {
+                                        const dateBidRef = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
+                                        const dateCreationBidRef = new Date(reserveBidAbstractRef.createdDateTime);
 
-                                        reserveBidAbstractRef = reserveBidAbstract;
+                                        const dateCreationBidOk = (dateCreationBid.getTime() === dateCreationBid.getTime());
+                                        const dateCreationBidRefOk =
+                                            (dateCreationBidRef.getTime() === dateCreationBidRef.getTime());
 
-                                    } else if (dateBidRef.getTime() < dateBid.getTime()) {
-
-                                        reserveBidAbstractRef = reserveBidAbstract;
-
-                                    } else if (dateBidRef.getTime() === dateBid.getTime()) {
-
-                                        if (dateCreationBidOk
-                                            && dateCreationBidRefOk
-                                            && dateCreationBid > dateCreationBidRef) {
+                                        if (dateBidRef.getTime() !== dateBidRef.getTime()) {
 
                                             reserveBidAbstractRef = reserveBidAbstract;
+                                            reserveBidValue = reserveBidValueRef;
+
+                                        } else if (!dateCreationBidRefOk) {
+
+                                            reserveBidAbstractRef = reserveBidAbstract;
+                                            reserveBidValue = reserveBidValueRef;
+
+                                        } else if (dateBidRef.getTime() < dateBid.getTime()) {
+
+                                            reserveBidAbstractRef = reserveBidAbstract;
+                                            reserveBidValue = reserveBidValueRef;
+
+                                        } else if (dateBidRef.getTime() === dateBid.getTime()) {
+
+                                            if (dateCreationBidOk
+                                                && dateCreationBidRefOk
+                                                && dateCreationBid > dateCreationBidRef) {
+
+                                                reserveBidAbstractRef = reserveBidAbstract;
+                                                reserveBidValue = reserveBidValueRef;
+                                            }
+
                                         }
 
                                     }
-
                                 }
+
                             }
 
                         }
@@ -557,12 +576,12 @@ export class ReserveBidMarketDocumentController {
 
                 }
 
-                if (reserveBidAbstractRef
-                    && reserveBidAbstractRef.reserveBidMrid
-                    && reserveBidAbstractRef.reserveBidMrid.length > 0) {
+                // if (reserveBidAbstractRef
+                //     && reserveBidAbstractRef.reserveBidMrid
+                //     && reserveBidAbstractRef.reserveBidMrid.length > 0) {
 
-                    reserveBidValue = await this.getObjById(params, reserveBidAbstractRef.reserveBidMrid, target);
-                }
+                //     reserveBidValue = await this.getObjById(params, reserveBidAbstractRef.reserveBidMrid, target);
+                // }
             }
 
         }

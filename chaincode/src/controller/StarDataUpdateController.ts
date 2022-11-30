@@ -33,7 +33,15 @@ export class StarDataUpdateController {
 
         stateStr = JSON.stringify(listOfIndexers);
 
+        if (listOfIndexers) {
+            params.logger.info('nb of data to update: ', listOfIndexers.length);
+            if (listOfIndexers.length > 0) {
+                params.logger.info('first data to update: ', JSON.stringify(listOfIndexers[0]));
+            }
+        }
+
         params.logger.info('=============  END  : getStarDataToUpdate StarDataUpdateController ===========');
+
 
         return stateStr;
 

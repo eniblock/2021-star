@@ -6,6 +6,7 @@ import { ActivationDocument } from '../model/activationDocument/activationDocume
 import { IndexedData } from '../model/dataIndex/dataIndexers';
 
 import { DataReference } from '../model/dataReference';
+import { EnergyAmount } from '../model/energyAmount';
 import { STARParameters } from '../model/starParameters';
 import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
 import { EligibilityController } from './activationDocument/EligibilityController';
@@ -15,6 +16,7 @@ import { ActivationEnergyAmountIndexersController } from './dataIndex/Activation
 import { DataIndexersController } from './dataIndex/DataIndexersController';
 import { SiteActivationIndexersController } from './dataIndex/SiteActivationIndexersController';
 import { SiteReserveBidIndexersController } from './dataIndex/SiteReserveBidIndexersController';
+import { EnergyAmountController } from './EnergyAmountController';
 
 import { DataIndexersService } from './service/DataIndexersService';
 
@@ -25,8 +27,10 @@ export class StarDataUpdateController {
 
         let stateStr = '[]';
         // const listOfIndexers = await this.getAllIndexersToDelete(params);
-        const listOfIndexers = await this.getAllIndexersToCreate(params);
+        // const listOfIndexers = await this.getAllIndexersToCreate(params);
         // const listOfIndexers = await this.getActivationDocumentToShare(params);
+        const listOfIndexers = await this.getNeededBalancingToCalculateFromData(params);
+
         stateStr = JSON.stringify(listOfIndexers);
 
         params.logger.info('=============  END  : getStarDataToUpdate StarDataUpdateController ===========');
@@ -168,5 +172,54 @@ export class StarDataUpdateController {
         params.logger.info('=============  END  : getAllIndexersToDelete StarDataUpdateController ===========');
         return indexList;
     }
+
+
+    private static async getNeededBalancingToCalculateFromData(params: STARParameters): Promise<DataReference[]> {
+        params.logger.info('============= START : getNeededBalancingToCalculateFromData StarDataUpdateController ===========');
+
+        const states: DataReference[] = [];
+
+        let allActivationDocumentRef: DataReference[];
+        try {
+            allActivationDocumentRef = await ActivationDocumentController.getAll(params);
+        } catch (err) {
+            // Just return empty list
+            return states;
+        }
+
+        if (allActivationDocumentRef && allActivationDocumentRef.length > 0) {
+            for (const activationDocumentRef of allActivationDocumentRef) {
+                try {
+                    const activationDocument: ActivationDocument = activationDocumentRef.data;
+                    const activationDocumentMrid: string = activationDocument.activationDocumentMrid;
+
+                    var energyAmount: EnergyAmount = null;
+                    try {
+                        energyAmount = await EnergyAmountController.getByActivationDocument(
+                            params, activationDocumentMrid, activationDocumentRef.collection);
+                    } catch (err) {
+                        // Do nothing
+                    }
+
+                    if (energyAmount
+                        && energyAmount.energyAmountMarketDocumentMrid
+                        && energyAmount.energyAmountMarketDocumentMrid.length > 0) {
+
+                        states.push(
+                            {collection: activationDocumentRef.collection,
+                            data: activationDocument,
+                            docType: DocType.BALANCING_DOCUMENT});
+                    }
+
+                } catch (err) {
+                    // Do Nothing ... just cannot manage reserveBid
+                }
+            }
+        }
+
+        params.logger.info('=============  END  : getNeededBalancingToCalculateFromData StarDataUpdateController ===========');
+        return states;
+    }
+
 
 }

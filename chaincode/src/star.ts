@@ -341,8 +341,8 @@ export class Star extends Contract {
     public async UpdateActivationDocumentByOrders(ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            // return (await StarDataStateController.executeStarDataOrders(params, inputStr));
-            return (await StarDataUpdateController.executeStarDataOrders(params, inputStr));
+            return (await StarDataStateController.executeStarDataOrders(params, inputStr));
+            // return (await StarDataUpdateController.executeStarDataOrders(params, inputStr));
         } catch (error) {
             throw error;
         }

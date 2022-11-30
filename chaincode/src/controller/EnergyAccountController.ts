@@ -244,8 +244,45 @@ export class EnergyAccountController {
 
         const results = await EnergyAccountService.getQueryArrayResult(params, query);
 
+        // Filter duplicates data
+        const finalResults = await this.filterEnergyAccountElements(params, results);
+
         params.logger.info('=============  END  : get EnergyAccount Obj By Query ===========');
-        return results;
+        return finalResults;
+    }
+
+    private static async filterEnergyAccountElements(
+        params: STARParameters,
+        energyAccountList: EnergyAccount[]): Promise<EnergyAccount[]> {
+        params.logger.debug('============= START : filterEnergyAccountElements ===========');
+
+        const energyAccountResultList: EnergyAccount[] = [];
+        const mapEnergyAccount: Map<string, EnergyAccount> = new Map();
+
+        if (energyAccountList && energyAccountList.length > 0) {
+            for (const energyAccount of energyAccountList) {
+                var key = energyAccount.meteringPointMrid;
+                key = key.concat(energyAccount.receiverMarketParticipantMrid);
+                key = key.concat(energyAccount.startCreatedDateTime);
+                key = key.concat(energyAccount.endCreatedDateTime);
+
+                if (mapEnergyAccount.has(key)) {
+                    const mapValue = mapEnergyAccount.get(key);
+                    if (energyAccount.createdDateTime >= mapValue.createdDateTime) {
+                        mapEnergyAccount.set(key, JSON.parse(JSON.stringify(energyAccount)));
+                    }
+                } else {
+                    mapEnergyAccount.set(key, JSON.parse(JSON.stringify(energyAccount)));
+                }
+            }
+        }
+
+        for (const energyAccount of mapEnergyAccount.values()) {
+            energyAccountResultList.push(energyAccount);
+        }
+
+        params.logger.debug('=============  END  : filterEnergyAccountElements ===========');
+        return energyAccountResultList;
     }
 
     public static async getEnergyAccountByProducer(

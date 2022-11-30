@@ -594,17 +594,17 @@ export class HistoryController {
 
         params.logger.debug('energyAmount: ', JSON.stringify(energyAmount));
 
-        params.logger.info('search reserveBid for : ', JSON.stringify(activationDocument));
+        params.logger.debug('search reserveBid for : ', JSON.stringify(activationDocument));
         let reserveBid: ReserveBidMarketDocument = null;
         try {
                 reserveBid = await ReserveBidMarketDocumentController.getByActivationDocument(
                     params, activationDocument);
         } catch (err) {
-            params.logger.info('ERROR : ', err);
+            params.logger.debug('ERROR : ', err);
             // DO nothing except "Not accessible information"
         }
 
-        params.logger.info('reserveBid: ', JSON.stringify(reserveBid));
+        params.logger.debug('reserveBid: ', JSON.stringify(reserveBid));
 
         let balancingDocument: BalancingDocument = null;
         if (identity !== OrganizationTypeMsp.PRODUCER

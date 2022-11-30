@@ -9,6 +9,7 @@ import { ReserveBidMarketDocument } from '../../model/reserveBidMarketDocument';
 import { Site } from '../../model/site';
 import { STARParameters } from '../../model/starParameters';
 import { ReserveBidMarketDocumentController } from '../ReserveBidMarketDocumentController';
+import { DataIndexersService } from '../service/DataIndexersService';
 import { HLFServices } from '../service/HLFservice';
 import { SiteController } from '../SiteController';
 import { DataIndexersController } from './DataIndexersController';
@@ -86,7 +87,7 @@ export class SiteReserveBidIndexersController {
     public static async deleteReserveBidReference(
         params: STARParameters,
         reserveBidObj: ReserveBidMarketDocument,
-        target) {
+        target: string) {
         params.logger.debug('============= START : deleteReserveBidReference SiteReserveBidIndexersController ===========');
 
         const indexId = this.getKey(reserveBidObj.meteringPointMrid);
@@ -94,6 +95,7 @@ export class SiteReserveBidIndexersController {
 
         params.logger.debug('=============  END  : deleteReserveBidReference SiteReserveBidIndexersController ===========');
     }
+
 
     // To Rebuild indexes from stored Data
     public static async getNeededIndexesFromData(params: STARParameters): Promise<DataReference[]> {
@@ -113,6 +115,15 @@ export class SiteReserveBidIndexersController {
                 try {
                     const site: Site = siteRef.data;
                     const meteringPointMrid: string = site.meteringPointMrid;
+
+                    const indexId = this.getKey(meteringPointMrid);
+
+                    const indexData: IndexedData = {
+                        docType: DocType.DATA_INDEXER,
+                        indexId,
+                        indexedDataAbstractMap: new Map(),
+                    };
+
                     const reserveBidList: ReserveBidMarketDocument[] =
                         await ReserveBidMarketDocumentController.getObjByMeteringPointMrid(
                             params, meteringPointMrid, siteRef.collection);
@@ -125,24 +136,19 @@ export class SiteReserveBidIndexersController {
                                     reserveBidStatus: reserveBidObj.reserveBidStatus,
                                     validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime,
                                 };
-                                const indexId = this.getKey(reserveBidObj.meteringPointMrid);
 
-                                const indexData: IndexedData = {
-                                    docType: DocType.DATA_INDEXER,
-                                    indexId,
-                                    indexedDataAbstractMap: new Map(),
-                                };
-
-                                indexData.indexedDataAbstractMap.set(indexId, reserveBidMarketDocumentAbstract);
-
-                                states.push(
-                                    {collection: siteRef.collection,
-                                    data: IndexedDataJson.toJson(indexData),
-                                    docType: DocType.INDEX_SITE_RESERVE_BID});
+                                indexData.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
 
                             }
                         }
                     }
+
+
+                    states.push(
+                        {collection: siteRef.collection,
+                        data: IndexedDataJson.toJson(indexData),
+                        docType: DocType.INDEX_SITE_RESERVE_BID});
+
                 } catch (err) {
                     // Do Nothing ... just cannot manage reserveBid
                 }
@@ -153,27 +159,27 @@ export class SiteReserveBidIndexersController {
         return states;
     }
 
+
     public static async executeOrder(
         params: STARParameters,
         updateOrder: DataReference) {
         params.logger.debug('============= START : executeOrder SiteReserveBidIndexersController ===========');
 
         if (updateOrder.data) {
-            const indexDataJson: IndexedDataJson = updateOrder.data;
-            const indexData: IndexedData = IndexedData.fromJson(indexDataJson);
+            const indexData: IndexedData = updateOrder.data;
 
             if (indexData.indexId
                 && indexData.indexId.length > 0
-                && indexData.indexedDataAbstractMap
-                && indexData.indexedDataAbstractMap.values) {
+                && indexData.indexedDataAbstractMap) {
 
-                const [valueAbstract, dataId] = indexData.indexedDataAbstractMap.entries().next().value;
-                await DataIndexersController.addModifyReference(
-                    params, indexData.indexId, valueAbstract, dataId, updateOrder.collection);
+                await DataIndexersService.write(params, indexData, updateOrder.collection);
+
             }
         }
 
         params.logger.debug('============= END   : executeOrder SiteReserveBidIndexersController ===========');
     }
+
+
 
 }

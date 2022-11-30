@@ -25,8 +25,8 @@ export class StarDataUpdateController {
 
         let stateStr = '[]';
         // const listOfIndexers = await this.getAllIndexersToDelete(params);
-        // const listOfIndexers = await this.getAllIndexersToCreate(params);
-        const listOfIndexers = await this.getActivationDocumentToShare(params);
+        const listOfIndexers = await this.getAllIndexersToCreate(params);
+        // const listOfIndexers = await this.getActivationDocumentToShare(params);
         stateStr = JSON.stringify(listOfIndexers);
 
         params.logger.info('=============  END  : getStarDataToUpdate StarDataUpdateController ===========');
@@ -40,6 +40,8 @@ export class StarDataUpdateController {
         inputStr: string) {
 
         params.logger.info('============= START : executeStarDataOrders StarDataUpdateController ===========');
+
+        params.logger.info('inputStr: ', inputStr);
 
         let updateOrders: DataReference[];
         try {
@@ -152,16 +154,16 @@ export class StarDataUpdateController {
         params.logger.info('============= START : getAllIndexersToDelete StarDataUpdateController ===========');
 
         const indexSiteReservBidList = await SiteReserveBidIndexersController.getNeededIndexesFromData(params);
-        const indexSiteActivationList = await SiteActivationIndexersController.getNeededIndexesFromData(params);
-        const indexActivationCompositeKeyList =
-             await ActivationCompositeKeyIndexersController.getNeededIndexesFromData(params);
-        const indexEnergyList = await ActivationEnergyAmountIndexersController.getNeededIndexesFromData(params);
+        // const indexSiteActivationList = await SiteActivationIndexersController.getNeededIndexesFromData(params);
+        // const indexActivationCompositeKeyList =
+        //      await ActivationCompositeKeyIndexersController.getNeededIndexesFromData(params);
+        // const indexEnergyList = await ActivationEnergyAmountIndexersController.getNeededIndexesFromData(params);
 
         let indexList: DataReference[] = [];
         indexList = indexList.concat(indexSiteReservBidList);
-        indexList = indexList.concat(indexSiteActivationList);
-        indexList = indexList.concat(indexActivationCompositeKeyList);
-        indexList = indexList.concat(indexEnergyList);
+        // indexList = indexList.concat(indexSiteActivationList);
+        // indexList = indexList.concat(indexActivationCompositeKeyList);
+        // indexList = indexList.concat(indexEnergyList);
 
         params.logger.info('=============  END  : getAllIndexersToDelete StarDataUpdateController ===========');
         return indexList;

@@ -593,6 +593,10 @@ export class EnergyAmountController {
         target: string = ''): Promise<EnergyAmount> {
         params.logger.debug('============= START : get EnergyAmount By ActivationDocument ===========');
 
+        if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+            params.logger.info('============= START : get EnergyAmount By ActivationDocument ===========');
+        }
+
         let energyAmout: EnergyAmount = null;
 
         if (activationDocumentMrid) {
@@ -601,29 +605,59 @@ export class EnergyAmountController {
                 activNRJAmountIndx = await ActivationEnergyAmountIndexersController.get(
                     params, activationDocumentMrid, target);
             } catch (err) {
+                if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                    params.logger.info('Error in index Search');
+                    params.logger.info('err: ', err);
+                }
                 // DO nothing except "Not accessible information"
             }
 
+            if (activNRJAmountIndx && activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                params.logger.info('activNRJAmountIndx: ', JSON.stringify(activNRJAmountIndx));
+            }
+
             if (activNRJAmountIndx
-                && activNRJAmountIndx.indexedDataAbstractMap
-                && activNRJAmountIndx.indexedDataAbstractMap.values) {
+                && activNRJAmountIndx.indexedDataAbstractMap) {
+
+                if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                    params.logger.info('activNRJAmountIndx.indexedDataAbstractMap: ', JSON.stringify([...activNRJAmountIndx.indexedDataAbstractMap]));
+                }
 
                 try {
                     const energyAmountAbstract: EnergyAmountAbstract =
-                        activNRJAmountIndx.indexedDataAbstractMap.values().next().value;
+                        activNRJAmountIndx.indexedDataAbstractMap.get(activationDocumentMrid);
+
+                    if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                        params.logger.info('energyAmountAbstract: ', JSON.stringify(energyAmountAbstract));
+                    }
+
                     const energyAmountMarketDocumentMrid: string = energyAmountAbstract.energyAmountMarketDocumentMrid;
 
                     if (energyAmountMarketDocumentMrid
                         && energyAmountMarketDocumentMrid.length > 0) {
 
                             energyAmout = await this.getObjById(params, energyAmountMarketDocumentMrid, target);
+                            if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                                params.logger.info('energyAmout: ', JSON.stringify(energyAmout));
+                            }
+
                     }
                 } catch (err) {
                     // DO nothing except "Not accessible information"
+                    if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                        params.logger.info('Error to get Energy Amount');
+                        params.logger.info('err: ', JSON.stringify(err));
+                    }
+
                 }
             }
 
         }
+
+        if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+            params.logger.info('=============  END  : get EnergyAmount By ActivationDocument ===========');
+        }
+
 
         params.logger.debug('=============  END  : get EnergyAmount By ActivationDocument ===========');
         return energyAmout;

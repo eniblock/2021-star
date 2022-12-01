@@ -201,22 +201,45 @@ export class StarDataUpdateController {
                     const activationDocument: ActivationDocument = activationDocumentRef.data;
                     const activationDocumentMrid: string = activationDocument.activationDocumentMrid;
 
+                    if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                        params.logger.info("###########")
+                        params.logger.info("allActivationDocumentRef: ", JSON.stringify(allActivationDocumentRef))
+                        params.logger.info("activationDocument: ", JSON.stringify(activationDocument))
+                    }
+
                     var energyAmount: EnergyAmount = null;
                     try {
                         energyAmount = await EnergyAmountController.getByActivationDocument(
                             params, activationDocumentMrid, activationDocumentRef.collection);
                     } catch (err) {
                         // Do nothing
+                        if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                            params.logger.info('Main Error to get Energy Amount');
+                            params.logger.info('err: ', JSON.stringify(err));
+                        }
+                    }
+
+                    if (energyAmount && activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                        params.logger.info('energyAmount: ', JSON.stringify(energyAmount));
                     }
 
                     if (energyAmount
                         && energyAmount.energyAmountMarketDocumentMrid
                         && energyAmount.energyAmountMarketDocumentMrid.length > 0) {
 
-                        states.push(
-                            {collection: activationDocumentRef.collection,
+                        if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                            params.logger.info('energyAmount.energyAmountMarketDocumentMrid: ', JSON.stringify(energyAmount.energyAmountMarketDocumentMrid));
+                        }
+
+                        const dataReference: DataReference = {collection: activationDocumentRef.collection,
                             data: activationDocument,
-                            docType: DocType.BALANCING_DOCUMENT});
+                            docType: DocType.BALANCING_DOCUMENT}
+
+                        if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                            params.logger.info('dataReference: ', JSON.stringify(dataReference));
+                        }
+
+                        states.push(dataReference);
                     }
 
                 } catch (err) {

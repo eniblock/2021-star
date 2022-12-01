@@ -233,7 +233,8 @@ export class StarDataUpdateController {
 
                         const dataReference: DataReference = {collection: activationDocumentRef.collection,
                             data: activationDocument,
-                            docType: DocType.BALANCING_DOCUMENT}
+                            docType: DocType.BALANCING_DOCUMENT,
+                            dataAction: DataActionType.UPDATE}
 
                         if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
                             params.logger.info('dataReference: ', JSON.stringify(dataReference));

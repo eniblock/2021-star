@@ -115,6 +115,8 @@ export class BalancingDocumentController {
                             } catch (err) {
                                 //Do Nothing
                             }
+                        } else {
+                            params.logger.info("generated balancingDocument : ", JSON.stringify(balancingDocument))
                         }
                     }
                 }

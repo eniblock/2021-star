@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {IndeminityStatus} from "../../../../models/enum/IndeminityStatus.enum";
 import {InstanceService} from "../../../../services/api/instance.service";
 import {Instance} from "../../../../models/enum/Instance.enum";
+import {getNextIndeminityStatus} from "../../../../rules/indeminity-status-rules";
 
 export interface DialogDataLimitationStatus {
   indeminityStatus: IndeminityStatus;
@@ -29,9 +30,8 @@ export class LimitationIndeminityStatusChangeComponent implements OnInit {
   ngOnInit(): void {
     this.instanceService.getTypeInstance().subscribe((typeInstance) => {
       this.instance = typeInstance;
-
-      // TODO !!!!!!!!!!
-      // this.nextStatus= ...
+      const nextStatus = getNextIndeminityStatus(this.data.indeminityStatus, this.instance);
+      this.nextStatus = nextStatus != null ? nextStatus : undefined;
     });
   }
 

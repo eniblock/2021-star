@@ -1,5 +1,6 @@
 <div class="text-center mb-3">Nouvelle valeur de l'éligibilité à indemnisation :</div>
 <div class="text-center">
+  <button mat-raised-button class="me-4 bg-dark text-white" [mat-dialog-close]="undefined">Annuler</button>
   <button mat-raised-button class="me-4 bg-danger text-white" [mat-dialog-close]="EligibilityStatus.NON">{{ EligibilityStatus.NON }}</button>
   <button mat-raised-button class="bg-success text-white" [mat-dialog-close]="EligibilityStatus.OUI">{{ EligibilityStatus.OUI }}</button>
 </div>

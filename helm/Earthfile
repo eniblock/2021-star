@@ -63,9 +63,9 @@ deploy:
     COPY hlf-ord/*-${environment}.yaml ./hlf-ord/
     COPY hlf-peer/*-${environment}-*.yaml ./hlf-peer/
     COPY star/*-${environment}.yaml ./star/
-    RUN --secret SOPS_AGE_KEY \
-        sops -d -i star/secrets-${environment}.yaml \
-        && sops -d -i star/users-${environment}.yaml
+    RUN --secret age_key \
+        env SOPS_AGE_KEY=$age_key sops -d -i star/secrets-${environment}.yaml \
+        && env SOPS_AGE_KEY=$age_key sops -d -i star/users-${environment}.yaml
     ENV KUBECONFIG=/tmp/kubeconfig.json
     RUN --mount type=secret,target=/tmp/kubeconfig.json,id=+secrets/kubeconfig \
         kubectl delete -n ${environment} job --all

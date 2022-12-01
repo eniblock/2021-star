@@ -26,7 +26,7 @@ jobs:
         earthly \
           --secret dockerhub_token=${{ secrets.DOCKERHUB_TOKEN }} \
           --secret github_token=${{ secrets.GITHUB_TOKEN }} \
-          --secret SOPS_AGE_KEY=${{ secrets.AGE_KEY }} \
+          --secret age_key=${{ secrets.AGE_KEY }} \
           --secret kubeconfig="$KUBECONFIG" \
           --secret kubeconfig2="$KUBECONFIG2" \
           ./helm+deploy \

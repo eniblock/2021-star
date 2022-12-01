@@ -84,6 +84,7 @@ export class FormEneEniFormComponent implements OnInit {
     const endDatetime = this.endDatetimeLimitation.toJSON().split('.')[0] + 'Z';
     const form = {
       ...this.form.value,
+      quantity: +(this.form.get('quantity')?.value?.replace(',', '.')),
       timeInterval: startDatetime + '/' + endDatetime,
     };
 

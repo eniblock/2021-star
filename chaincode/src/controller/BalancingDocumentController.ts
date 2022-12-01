@@ -361,7 +361,7 @@ export class BalancingDocumentController {
         activationDocument: ActivationDocument,
         reserveBid: ReserveBidMarketDocument,
         energyAmount: EnergyAmount) : Promise<BalancingDocument> {
-        params.logger.info('============= START : createOrUpdateObj BalancingDocumentController ===========');
+        params.logger.debug('============= START : generateObj BalancingDocumentController ===========');
 
         var balancingDocument: BalancingDocument = null;
         if (activationDocument
@@ -400,7 +400,7 @@ export class BalancingDocumentController {
 
         }
 
-        params.logger.info('=============  END  : createOrUpdateObj BalancingDocumentController ===========');
+        params.logger.debug('=============  END  : generateObj BalancingDocumentController ===========');
         return balancingDocument;
     }
 

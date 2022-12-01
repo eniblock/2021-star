@@ -135,6 +135,8 @@ public class OrdreLimitationRepository {
             if (evaluateTransaction.length > 2) {
                 log.info("Lancement de la reconciliation");
                 contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS, new String(evaluateTransaction));
+            } else {
+                log.info("aucune reconciliation: ", new String(evaluateTransaction));
             }
         }
     }

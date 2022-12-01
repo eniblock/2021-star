@@ -612,8 +612,23 @@ export class HistoryController {
             || activationDocument.eligibilityStatus === EligibilityStatusType.FREligibilityAccepted) {
 
             try {
-                balancingDocument = await BalancingDocumentController.getByActivationDocumentMrId(
-                    params, activationDocument.activationDocumentMrid);
+                if (siteRegistered
+                    && siteRegistered.meteringPointMrid
+                    && siteRegistered.meteringPointMrid.length > 0) {
+
+                    var activationDocumentForBalancing: ActivationDocument= null;
+                    if (activationDocument.registeredResourceMrid === siteRegistered.meteringPointMrid) {
+                        activationDocumentForBalancing = activationDocument;
+                    } else if (subOrderList && subOrderList.length > 0) {
+                        activationDocumentForBalancing = subOrderList[0];
+                    }
+
+                    balancingDocument = await BalancingDocumentController.generateObj(
+                        params,
+                        activationDocumentForBalancing,
+                        reserveBid,
+                        energyAmount);
+                }
             } catch (err) {
                     // DO nothing except "Not accessible information"
             }

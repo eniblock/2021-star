@@ -342,8 +342,8 @@ export class Star extends Contract {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
             // return (await StarDataStateController.executeStarDataOrders(params, inputStr));
-            return (await StarDataUpdateController.executeStarDataOrders(params, inputStr));
-            // return (await BalancingDocumentController.updateBalancingDocumentByOrders(params, inputStr));
+            // return (await StarDataUpdateController.executeStarDataOrders(params, inputStr));
+            return (await BalancingDocumentController.updateBalancingDocumentByOrders(params, inputStr));
         } catch (error) {
             throw error;
         }

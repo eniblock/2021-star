@@ -27,9 +27,9 @@ export class StarDataUpdateController {
 
         let stateStr = '[]';
         // const listOfIndexers = await this.getAllIndexersToDelete(params);
-        const listOfIndexers = await this.getAllIndexersToCreate(params);
+        // const listOfIndexers = await this.getAllIndexersToCreate(params);
         // const listOfIndexers = await this.getActivationDocumentToShare(params);
-        // const listOfIndexers = await this.getNeededBalancingToCalculateFromData(params);
+        const listOfIndexers = await this.getNeededBalancingToCalculateFromData(params);
 
         stateStr = JSON.stringify(listOfIndexers);
 

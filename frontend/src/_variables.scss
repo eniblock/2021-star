@@ -11,6 +11,7 @@ $app-warning: mat.define-palette(mat.$amber-palette);
 $app-success: mat.define-palette(mat.$green-palette, 700);
 $app-info: mat.define-palette(mat.$blue-palette, 400);
 $app-orange: mat.define-palette(mat.$orange-palette, 400);
+$app-gray: mat.define-palette(mat.$gray-palette, 400);
 
 // Create your color vars => can be used everywhere
 $mat-primary: mat.get-color-from-palette($app-primary);
@@ -22,6 +23,7 @@ $mat-warning: mat.get-color-from-palette($app-warning);
 $mat-success: mat.get-color-from-palette($app-success);
 $mat-info: mat.get-color-from-palette($app-info);
 $mat-orange: mat.get-color-from-palette($app-orange);
+$mat-gray: mat.get-color-from-palette($app-gray);
 
 $mat-text: #555555;
 

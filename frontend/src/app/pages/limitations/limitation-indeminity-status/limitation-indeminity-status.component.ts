@@ -2,20 +2,27 @@ import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {IndeminityStatus} from "../../../models/enum/IndeminityStatus.enum";
 import {InstanceService} from "../../../services/api/instance.service";
 import {Instance} from "../../../models/enum/Instance.enum";
+import {MatDialog} from "@angular/material/dialog";
+import {
+  LimitationIndeminityStatusChangeComponent
+} from "./limitation-indeminity-status-change/limitation-indeminity-status-change.component";
+import {canChangeIndeminityStatus} from "../../../rules/indeminity-status-rules";
 
 @Component({
-  selector: 'app-limitation-status',
-  templateUrl: './limitation-status.component.html',
-  styleUrls: ['./limitation-status.component.css']
+  selector: 'app-limitation-indeminity-status',
+  templateUrl: './limitation-indeminity-status.component.html',
+  styleUrls: ['./limitation-indeminity-status.component.css']
 })
-export class LimitationStatusComponent implements OnChanges {
+export class LimitationIndeminityStatusComponent implements OnChanges {
 
   @Input() indeminityStatus?: IndeminityStatus;
 
+  loading = false;
   statusClass = "";
   canChangeStatus = false;
 
   constructor(
+    public dialog: MatDialog,
     private instanceService: InstanceService,
   ) {
   }
@@ -29,29 +36,37 @@ export class LimitationStatusComponent implements OnChanges {
   private initComponent(instance: Instance) {
     switch (this.indeminityStatus) {
       case IndeminityStatus.InProgress:
-        this.statusClass = "";
-        this.canChangeStatus = false;
+        this.statusClass = "text-grey";
         break;
       case IndeminityStatus.Agreement:
-        this.statusClass = "";
-        this.canChangeStatus = instance == Instance.DSO || instance == Instance.TSO;
+        this.statusClass = "text-gray";
         break;
       case IndeminityStatus.Processed:
         this.statusClass = "text-success";
-        this.canChangeStatus = false;
         break;
       case IndeminityStatus.WaitingInvoice:
         this.statusClass = "text-orange";
-        this.canChangeStatus = instance == Instance.PRODUCER;
         break;
       case IndeminityStatus.InvoiceSent:
         this.statusClass = "text-success";
-        this.canChangeStatus = false;
         break;
     }
+    this.canChangeStatus = canChangeIndeminityStatus(this.indeminityStatus, instance);
   }
 
   onClick() {
-    console.log("CLICK!")
+    const dialogRef = this.dialog.open(LimitationIndeminityStatusChangeComponent, {
+      width: '500px',
+      data: {
+        indemnityStatus: this.indeminityStatus,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != undefined) {
+        this.loading = true;
+        console.log('call WS and loading=false')
+      }
+    });
   }
 }

@@ -1,0 +1,5 @@
+<div class="text-center mb-3">Voulez-vous changer le status de l'indemnisation à <strong>{{ nextStatus | IndeminityStatus }}</strong> ?</div>
+<div class="text-center">
+  <button mat-raised-button class="me-4 bg-danger text-white" [mat-dialog-close]="false">Annuler</button>
+  <button mat-raised-button class="bg-success text-white" [mat-dialog-close]="true">Oui</button>
+</div>

@@ -1,0 +1,10 @@
+<button mat-stroked-button disabled [class]="statusClass + ' idemnityStatus'" *ngIf="!canChangeStatus && indeminityStatus">
+  <span [innerText]="indeminityStatus | IndeminityStatus"></span>
+</button>
+
+<button mat-raised-button color="primary" class="idemnityStatus" (click)="onClick()" *ngIf="canChangeStatus && indeminityStatus">
+  <span [innerText]="indeminityStatus | IndeminityStatus"></span>
+  <br/>
+  <i class="fa-solid fa-pen" *ngIf="!loading"></i>
+  <i class="fa-solid fa-hourglass" *ngIf="loading"></i>
+</button>

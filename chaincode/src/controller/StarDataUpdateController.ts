@@ -232,7 +232,7 @@ export class StarDataUpdateController {
                         }
 
                         const dataReference: DataReference = {collection: activationDocumentRef.collection,
-                            data: activationDocument,
+                            data: {"activationDocument":activationDocument},
                             docType: DocType.BALANCING_DOCUMENT,
                             dataAction: DataActionType.UPDATE}
 

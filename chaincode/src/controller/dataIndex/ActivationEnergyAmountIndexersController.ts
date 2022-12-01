@@ -1,12 +1,17 @@
 import { DocType } from '../../enums/DocType';
 import { ParametersType } from '../../enums/ParametersType';
+import { ActivationDocument } from '../../model/activationDocument/activationDocument';
 import { IndexedData } from '../../model/dataIndex/dataIndexers';
 import { EnergyAmountAbstract } from '../../model/dataIndex/energyAmountAbstract';
 import { IndexedDataJson } from '../../model/dataIndexersJson';
 import { DataReference } from '../../model/dataReference';
 import { EnergyAmount } from '../../model/energyAmount';
 import { STARParameters } from '../../model/starParameters';
+import { ActivationDocumentController } from '../activationDocument/ActivationDocumentController';
 import { EnergyAmountController } from '../EnergyAmountController';
+import { DataIndexersService } from '../service/DataIndexersService';
+import { EnergyAmountService } from '../service/EnergyAmountService';
+import { QueryStateService } from '../service/QueryStateService';
 import { DataIndexersController } from './DataIndexersController';
 
 export class ActivationEnergyAmountIndexersController {
@@ -37,8 +42,15 @@ export class ActivationEnergyAmountIndexersController {
         const valueAbstract: EnergyAmountAbstract = {
             energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
         const indexId = this.getKey(energyAmountObj.activationDocumentMrid);
-        await DataIndexersController.addModifyReference(
-            params, indexId, valueAbstract, energyAmountObj.activationDocumentMrid, target);
+
+        const indexData = {
+            docType: DocType.DATA_INDEXER,
+            indexId,
+            indexedDataAbstractMap: new Map()};
+
+        indexData.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+        await DataIndexersService.write(params, indexData, target);
 
         params.logger.debug('=============  END  : addEnergyAmountReference ActivationNRJAmountIndexersController ===========');
     }
@@ -59,32 +71,66 @@ export class ActivationEnergyAmountIndexersController {
     public static async getNeededIndexesFromData(params: STARParameters): Promise<DataReference[]> {
         params.logger.debug('============= START : getNeededIndexFromData ActivationNRJAmountIndexersController ===========');
 
-        const energyAmountRefList = await EnergyAmountController.getAll(params);
-        const indexList: DataReference[] = [];
+        const states: DataReference[] = [];
 
-        if (energyAmountRefList && energyAmountRefList.length > 0) {
-            for (const energyAmountRef of energyAmountRefList) {
+        let allEnergyAmountRef: DataReference[];
+        try {
+            allEnergyAmountRef = await EnergyAmountController.getAll(params);
+        } catch (err) {
+            // Just return empty list
+            return states;
+        }
+
+        const energyAmountRefMap: Map<string, DataReference> = new Map();
+        if (allEnergyAmountRef && allEnergyAmountRef.length > 0) {
+            for (const energyAmountRef of allEnergyAmountRef) {
                 const energyAmountObj: EnergyAmount = energyAmountRef.data;
-                const indexId = this.getKey(energyAmountObj.activationDocumentMrid);
-                const valueAbstract: EnergyAmountAbstract = {
-                    energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
 
-                const ref = {
-                    docType: DocType.DATA_INDEXER,
-                    indexId,
-                    indexedDataAbstractMap: new Map()};
+                if (energyAmountObj.createdDateTime
+                    && energyAmountObj.createdDateTime.length > 0) {
 
-                ref.indexedDataAbstractMap.set(indexId, valueAbstract);
+                    const activationDocumentMrid = energyAmountObj.activationDocumentMrid;
 
-                indexList.push(
-                    {collection: energyAmountRef.collection,
-                    data: IndexedDataJson.toJson(ref),
-                    docType: DocType.INDEX_ACTIVATION_ENERGYAMOUNT});
+                    if (!energyAmountRefMap.has(activationDocumentMrid)) {
+                        energyAmountRefMap.set(activationDocumentMrid, energyAmountRef);
+                    } else {
+                        const storedEnergyAmountRef: DataReference = energyAmountRefMap.get(activationDocumentMrid);
+                        const storedEnergyAmountObj: EnergyAmount = storedEnergyAmountRef.data;
+
+                        if (energyAmountObj.createdDateTime > storedEnergyAmountObj.createdDateTime) {
+                            energyAmountRefMap.set(activationDocumentMrid, energyAmountRef);
+                        }
+                    }
+
+                }
             }
         }
 
+        for (const energyAmountRef of energyAmountRefMap.values()) {
+            const energyAmountObj: EnergyAmount = energyAmountRef.data;
+
+            const indexId = this.getKey(energyAmountObj.activationDocumentMrid);
+
+            const ref = {
+                docType: DocType.DATA_INDEXER,
+                indexId,
+                indexedDataAbstractMap: new Map()};
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+
+            ref.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            states.push(
+                {collection: energyAmountRef.collection,
+                data: IndexedDataJson.toJson(ref),
+                docType: DocType.INDEX_ACTIVATION_ENERGYAMOUNT});
+
+        }
+
+
         params.logger.debug('=============  END  : getNeededIndexFromData ActivationNRJAmountIndexersController ===========');
-        return indexList;
+        return states;
     }
 
     public static async executeOrder(
@@ -93,17 +139,13 @@ export class ActivationEnergyAmountIndexersController {
         params.logger.debug('============= START : executeOrder ActivationNRJAmountIndexersController ===========');
 
         if (updateOrder.data) {
-            const indexDataJson: IndexedDataJson = updateOrder.data;
-            const indexData: IndexedData = IndexedData.fromJson(indexDataJson);
+            const indexData: IndexedData = updateOrder.data;
 
             if (indexData.indexId
                 && indexData.indexId.length > 0
-                && indexData.indexedDataAbstractMap
-                && indexData.indexedDataAbstractMap.values) {
+                && indexData.indexedDataAbstractMap) {
 
-                const [valueAbstract, dataId] = indexData.indexedDataAbstractMap.entries().next().value;
-                await DataIndexersController.addModifyReference(
-                    params, indexData.indexId, valueAbstract, dataId, updateOrder.collection);
+                await DataIndexersService.write(params, indexData, updateOrder.collection);
             }
         }
 

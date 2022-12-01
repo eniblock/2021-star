@@ -27,9 +27,9 @@ export class StarDataUpdateController {
 
         let stateStr = '[]';
         // const listOfIndexers = await this.getAllIndexersToDelete(params);
-        // const listOfIndexers = await this.getAllIndexersToCreate(params);
+        const listOfIndexers = await this.getAllIndexersToCreate(params);
         // const listOfIndexers = await this.getActivationDocumentToShare(params);
-        const listOfIndexers = await this.getNeededBalancingToCalculateFromData(params);
+        // const listOfIndexers = await this.getNeededBalancingToCalculateFromData(params);
 
         stateStr = JSON.stringify(listOfIndexers);
 
@@ -165,17 +165,17 @@ export class StarDataUpdateController {
     private static async getAllIndexersToCreate(params: STARParameters): Promise<DataReference[]> {
         params.logger.info('============= START : getAllIndexersToDelete StarDataUpdateController ===========');
 
-        const indexSiteReservBidList = await SiteReserveBidIndexersController.getNeededIndexesFromData(params);
+        // const indexSiteReservBidList = await SiteReserveBidIndexersController.getNeededIndexesFromData(params);
         // const indexSiteActivationList = await SiteActivationIndexersController.getNeededIndexesFromData(params);
         // const indexActivationCompositeKeyList =
         //      await ActivationCompositeKeyIndexersController.getNeededIndexesFromData(params);
-        // const indexEnergyList = await ActivationEnergyAmountIndexersController.getNeededIndexesFromData(params);
+        const indexEnergyList = await ActivationEnergyAmountIndexersController.getNeededIndexesFromData(params);
 
         let indexList: DataReference[] = [];
-        indexList = indexList.concat(indexSiteReservBidList);
+        // indexList = indexList.concat(indexSiteReservBidList);
         // indexList = indexList.concat(indexSiteActivationList);
         // indexList = indexList.concat(indexActivationCompositeKeyList);
-        // indexList = indexList.concat(indexEnergyList);
+        indexList = indexList.concat(indexEnergyList);
 
         params.logger.info('=============  END  : getAllIndexersToDelete StarDataUpdateController ===========');
         return indexList;

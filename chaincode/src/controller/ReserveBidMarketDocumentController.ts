@@ -897,7 +897,7 @@ export class ReserveBidMarketDocumentController {
         params: STARParameters,
         reserveBidMrid: string): Promise<DataReference[]> {
 
-        params.logger.info('============= START : getBalancingDocumentState ReserveBidMarketDocumentController ===========');
+        params.logger.info(`============= START : getBalancingDocumentState ${reserveBidMrid} ReserveBidMarketDocumentController ===========`);
 
         const reserveBidObj = await this.getObjById(params, reserveBidMrid);
         const activationDocumentRefList: DataReference[] = await this.findEveryConcernedActivationDocumentObjList(params, reserveBidObj);
@@ -905,6 +905,7 @@ export class ReserveBidMarketDocumentController {
         const dataReferenceList: DataReference[] = [];
         if (activationDocumentRefList && activationDocumentRefList.length > 0) {
             for (const activationDocumentRef of activationDocumentRefList) {
+                params.logger.info(`need Balancing update about ${reserveBidMrid}: ${activationDocumentRef.data.activationDocumentMrid} (${activationDocumentRef.collection})`);
                 const dataReference:DataReference = {
                     docType: DocType.BALANCING_DOCUMENT,
                     collection: activationDocumentRef.collection,

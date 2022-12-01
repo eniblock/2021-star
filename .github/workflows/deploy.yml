@@ -24,7 +24,7 @@ jobs:
         KUBECONFIG2: ${{ secrets.KUBECONFIG2 }}
       run: |
         earthly \
-          --secret dockerhub_password=${{ secrets.DOCKERHUB_TOKEN }} \
+          --secret dockerhub_token=${{ secrets.DOCKERHUB_TOKEN }} \
           --secret github_token=${{ secrets.GITHUB_TOKEN }} \
           --secret SOPS_AGE_KEY=${{ secrets.AGE_KEY }} \
           --secret kubeconfig="$KUBECONFIG" \

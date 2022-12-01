@@ -6,6 +6,7 @@ import {
 } from "../../models/RechercheHistoriqueLimitation";
 import {Observable, of} from "rxjs";
 import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root',
@@ -15,19 +16,10 @@ export class IndeminityStatusService {
   }
 
   public updateIndeminisationStatus(activationDocumentMrid: string): Observable<IndeminityStatus> {
-    console.log(activationDocumentMrid);
-    return of(IndeminityStatus.Processed);
+    const formData = {
+      activationDocumentMrid: activationDocumentMrid,
+    };
+    return this.httpClient.post<IndeminityStatus>(`${environment.serverUrl}/indemnityStatusUpdate`, formData);
   }
-
-  /*
-  public async UpdateActivationDocumentIndeminityStatus(ctx: Context, inputStr: string) {
-    try {
-      const params: STARParameters = await ParametersController.getParameterValues(ctx);
-      return (await FeedbackProducerController.updateIndeminityStatus(params, inputStr));
-    } catch (error) {
-      throw error;
-    }
-  }
-   */
 
 }

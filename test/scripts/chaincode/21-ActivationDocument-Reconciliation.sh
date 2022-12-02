@@ -35,7 +35,7 @@ echo
 
 OUTPUT_ENEDIS_TOPRINT=$(echo $OUTPUT_ENEDIS | sed "s/\\\\\"/\"/g")
 
-# echo $OUTPUT_ENEDIS_TOPRINT
+echo $OUTPUT_ENEDIS_TOPRINT
 
 echo
 echo
@@ -44,23 +44,36 @@ echo
 
 OUTPUT_ENEDIS="${OUTPUT_ENEDIS:1:-1}"
 
+# echo $OUTPUT_ENEDIS
 
-DELIMITER="}},{"
+# echo
+# echo
+# echo
+
+
+DELIMITER=",{\\\"collection\\\""
 OUTPUT_ENEDIS=$OUTPUT_ENEDIS$DELIMITER
 
 START=""
-END="}}"
+END=""
 
 while [[ $OUTPUT_ENEDIS ]]; do
         VALUE_OUTPUT=( "${OUTPUT_ENEDIS%%"$DELIMITER"*}" );
         OUTPUT_ENEDIS=${OUTPUT_ENEDIS#*"$DELIMITER"};
 
-        if [[ "[$OUTPUT_ENEDIS]" == "[]" ]]
-        then
-                END=""
-        fi
+
+        # if [[ "[$OUTPUT_ENEDIS]" == "[]" ]]
+        # then
+        #         END=""
+        # fi
 
         VALUE_OUTPUT="[$START$VALUE_OUTPUT$END]"
+
+        # echo
+        # echo $VALUE_OUTPUT
+        # echo
+
+
         VALUE_OUTPUT=$(echo $VALUE_OUTPUT | sed "s/\\\\\\\\\"/\\\\\\\\\\\\\"/g")
 
         if [[ $VALUE_OUTPUT != "[]" ]]
@@ -97,12 +110,11 @@ while [[ $OUTPUT_ENEDIS ]]; do
                         -c '{"Args":["UpdateActivationDocumentByOrders","'$VALUE_OUTPUT'"]}'
 
         fi
-        START="{"
+        START="{\\\"collection\\\""
 
         echo
         echo "wait $PAUSE_TIME"
         sleep $PAUSE_TIME
-
 done;
 
 
@@ -144,23 +156,28 @@ echo
 OUTPUT_RTE="${OUTPUT_RTE:1:-1}"
 
 
-DELIMITER="}},{"
+DELIMITER=",{\\\"collection\\\""
 OUTPUT_RTE=$OUTPUT_RTE$DELIMITER
 
 START=""
-END="}}"
+END=""
 
 
 while [[ $OUTPUT_RTE ]]; do
         VALUE_OUTPUT=( "${OUTPUT_RTE%%"$DELIMITER"*}" );
         OUTPUT_RTE=${OUTPUT_RTE#*"$DELIMITER"};
 
-        if [[ "[$OUTPUT_RTE]" == "[]" ]]
-        then
-                END=""
-        fi
+        # if [[ "[$OUTPUT_RTE]" == "[]" ]]
+        # then
+        #         END=""
+        # fi
 
         VALUE_OUTPUT="[$START$VALUE_OUTPUT$END]"
+
+        # echo
+        # echo $VALUE_OUTPUT
+        # echo
+
         VALUE_OUTPUT=$(echo $VALUE_OUTPUT | sed "s/\\\\\\\\\"/\\\\\\\\\\\\\"/g")
 
         if [[ $VALUE_OUTPUT != "[]" ]]
@@ -197,7 +214,12 @@ while [[ $OUTPUT_RTE ]]; do
                         -c '{"Args":["UpdateActivationDocumentByOrders","'$VALUE_OUTPUT'"]}'
 
         fi
-        START="{"
+        START="{\\\"collection\\\""
+
+
+        echo
+        echo "wait $PAUSE_TIME"
+        sleep $PAUSE_TIME
 done;
 
 

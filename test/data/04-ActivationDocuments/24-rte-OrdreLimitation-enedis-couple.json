@@ -4,8 +4,8 @@
     "registeredResourceMrid": "SUB_RTE4ENEDIS_3",
     "orderValue": "RTEtoEnedis_Reconciliation",
     "measurementUnitName": "MW",
-    "startCreatedDateTime": "2025-03-03T03:03:03Z",
-    "endCreatedDateTime": "2025-03-03T03:53:53Z",
+    "startCreatedDateTime": "2022-06-03T03:03:03Z",
+    "endCreatedDateTime": "2022-06-03T03:53:53Z",
     "revisionNumber": "",
     "messageType": "A54",
     "businessType" : "C55",
@@ -13,5 +13,20 @@
     "orderEnd": false,
     "senderMarketParticipantMrid": "SYSOP_RTE_AD_3",
     "receiverMarketParticipantMrid": "SYSOP_ENEDIS_AD_3"
+  },
+  {
+    "originAutomationRegisteredResourceMrid": "Reconciliation_With2Enedis",
+    "registeredResourceMrid": "SUB_RTE4ENEDIS_4",
+    "orderValue": "RTEtoEnedis_Reconciliation",
+    "measurementUnitName": "MW",
+    "startCreatedDateTime": "2022-07-06T06:06:06Z",
+    "endCreatedDateTime": "2022-07-06T06:56:56Z",
+    "revisionNumber": "",
+    "messageType": "A54",
+    "businessType" : "C55",
+    "reasonCode": "A70",
+    "orderEnd": false,
+    "senderMarketParticipantMrid": "SYSOP_RTE_AD_6",
+    "receiverMarketParticipantMrid": "SYSOP_ENEDIS_AD_6"
   }
 ]

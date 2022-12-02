@@ -86,22 +86,6 @@ export class FormOrdreFinLimitationSaisieManuelleComponent implements OnInit {
 
   reset(stepperRef: MatStepper) {
     stepperRef.reset();
-
-    /*
-    this.form.reset();
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
-    this.form.updateValueAndValidity();
-
-    this.form.get('test')?.markAsPristine();
-    this.form.get('test')?.markAsUntouched();
-
-    Object.keys(this.form.controls).forEach((key) => {
-      const control = this.form.controls[key];
-      control.markAsPristine();
-      control.markAsUntouched();
-    });
-    */
   }
 
   selectionMessageType() {

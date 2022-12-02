@@ -26,6 +26,8 @@ import {
   LimitationsFilterOnResultsComponent
 } from './limitations-filter-on-results/limitations-filter-on-results.component';
 import { LimitationsFeedbackProducerComponent } from './limitations-feedback-producer/limitations-feedback-producer.component';
+import { LimitationIndeminityStatusComponent } from './limitation-indeminity-status/limitation-indeminity-status.component';
+import { LimitationIndeminityStatusChangeComponent } from './limitation-indeminity-status/limitation-indeminity-status-change/limitation-indeminity-status-change.component';
 
 @NgModule({
   imports: [
@@ -54,6 +56,8 @@ import { LimitationsFeedbackProducerComponent } from './limitations-feedback-pro
     LimitationsIndemnisationChooseYesNoComponent,
     LimitationsFilterOnResultsComponent,
     LimitationsFeedbackProducerComponent,
+    LimitationIndeminityStatusComponent,
+    LimitationIndeminityStatusChangeComponent,
   ],
 })
 export class LimitationsModule {

@@ -1,7 +1,7 @@
 export enum IndeminityStatus {
-  InProgress = 'InProgress',
-  Agreement = 'Agreement',
-  Processed = 'Processed',
-  WaitingInvoice = 'WaitingInvoice',
-  InvoiceSent = 'InvoiceSent',
+  InProgress = 'InProgress', // En cours
+  Agreement = 'Agreement', // Accord
+  Processed = 'Processed', // Traité Enedis
+  WaitingInvoice = 'WaitingInvoice', // Traité RTE en attente retour producteur
+  InvoiceSent = 'InvoiceSent', // Traité RTE et retour producteur effectué
 }

@@ -88,6 +88,16 @@ export class StarDataStateController {
             }
         }
 
+        // Add Indeminity Status to Update
+
+        const dataIndemnityStatus = await FeedbackProducerController.getIndemnityStatusState(params);
+
+        if (dataIndemnityStatus && dataIndemnityStatus.length > 0) {
+            for (const dataIndemnityStatusRef of dataIndemnityStatus) {
+                orderReferences.push(dataIndemnityStatusRef);
+            }
+        }
+        
         const stateStr = JSON.stringify(orderReferences);
 
         params.logger.debug('#######################');

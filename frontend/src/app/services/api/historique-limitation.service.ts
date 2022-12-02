@@ -182,7 +182,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         feedback: "ezaeazaez\ndzijdaz\nooiio",
         feedbackAnswer: "",
         feedbackElements: "dqsdsd|poipoi|poi",
-        indeminityStatus: IndeminityStatus.InProgress,
+        indeminityStatus: IndeminityStatus.Agreement,//Agreement   WaitingInvoice
       }
     },
 

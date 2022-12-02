@@ -17,6 +17,7 @@ import { EnergyAmount } from '../model/energyAmount';
 import { DataActionType } from '../enums/DataActionType';
 import { IndeminityStatus } from '../enums/IndemnityStatus';
 import { RoleType } from '../enums/RoleType';
+import { QueryStateService } from './service/QueryStateService';
 
 
 
@@ -27,15 +28,24 @@ export class FeedbackProducerController {
         params.logger.debug('============= START : executeOrder FeedbackProducerController ===========');
 
         if (updateOrder.data) {
-            FeedbackProducer.schema.validateSync(
-                updateOrder.data,
-                {strict: true, abortEarly: false},
-            );
-            const feedbackProducer: FeedbackProducer = updateOrder.data;
 
-            if (updateOrder.dataAction === DataActionType.COLLECTION_CHANGE) {
-                await FeedbackProducerService.delete(params, feedbackProducer.feedbackProducerMrid, updateOrder.previousCollection);
-                await FeedbackProducerService.write(params, feedbackProducer, updateOrder.collection);
+            if (updateOrder.dataAction == DataActionType.UPDATE) {
+                if (updateOrder.data.activationDocumentMrid
+                    && updateOrder.data.activationDocumentMrid.length > 0) {
+
+                    await FeedbackProducerController.updateIndeminityStatus(params, updateOrder.data.activationDocumentMrid);
+                }
+            } else {
+                FeedbackProducer.schema.validateSync(
+                    updateOrder.data,
+                    {strict: true, abortEarly: false},
+                );
+                const feedbackProducer: FeedbackProducer = updateOrder.data;
+
+                if (updateOrder.dataAction === DataActionType.COLLECTION_CHANGE) {
+                    await FeedbackProducerService.delete(params, feedbackProducer.feedbackProducerMrid, updateOrder.previousCollection);
+                    await FeedbackProducerService.write(params, feedbackProducer, updateOrder.collection);
+                }
             }
         }
 
@@ -448,6 +458,44 @@ export class FeedbackProducerController {
     }
 
 
+    public static async getIndemnityStatusState(
+        params: STARParameters): Promise<DataReference[]> {
+        params.logger.debug('============= START : getIndemnityStatusState - FeedbackProducerController ===========');
+        const indemnityReferences: DataReference[] = [];
+
+        let today = JSON.parse(JSON.stringify(new Date()))
+        today = CommonService.setHoursEndDayStr(today);
+
+        const args: string[] = [];
+
+        const argOrIndemnityStatus: string[] = [];
+        argOrIndemnityStatus.push(`"indeminityStatus":"${IndeminityStatus.IN_PROGRESS}"`);
+        argOrIndemnityStatus.push(`"indeminityStatus":""`);
+        argOrIndemnityStatus.push(`"indeminityStatus":{"$exists": false}`);
+        args.push(await QueryStateService.buildORCriteria(argOrIndemnityStatus));
+
+        args.push(`"validityPeriodEndDateTime":{"$exists": true}`);
+        args.push(`"validityPeriodEndDateTime":{"$lte":${JSON.stringify(today)}}`);
+        const query = await QueryStateService.buildQuery({documentType: DocType.FEEDBACK_PRODUCER, queryArgs: args});
+
+        const allResults: FeedbackProducer[] = await FeedbackProducerService.getQueryArrayResult(params, query);
+
+        if (allResults && allResults.length > 0) {
+            for (let result of allResults) {
+                const dataReference: DataReference = {
+                    collection: DocType.FEEDBACK_PRODUCER,
+                    data: {'activationDocumentMrid':result.activationDocumentMrid},
+                    dataAction: DataActionType.UPDATE,
+                    docType: DocType.FEEDBACK_PRODUCER,
+
+                };
+                indemnityReferences.push(dataReference);
+            }
+        }
+
+        params.logger.debug('=============  END  : getIndemnityStatusState - FeedbackProducerController ===========');
+        return indemnityReferences;
+    }
 
 
     public static async getByActivationDocumentMrId(

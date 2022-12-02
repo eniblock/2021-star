@@ -19,6 +19,7 @@ const ALL_TSO_COLUMNS_ID: string[] = [
   'montantIndemnisation',
   'motif',
   'commentaires',
+  'statusIndemnisation',
 ];
 
 const ALL_DSO_COLUMNS_ID: string[] = [
@@ -37,6 +38,7 @@ const ALL_DSO_COLUMNS_ID: string[] = [
   'montantIndemnisation',
   'motif',
   'commentaires',
+  'statusIndemnisation',
 ];
 
 const ALL_PRODUCER_COLUMNS_ID: string[] = [
@@ -53,6 +55,7 @@ const ALL_PRODUCER_COLUMNS_ID: string[] = [
   'montantIndemnisation',
   'motif',
   'commentaires',
+  'statusIndemnisation',
 ];
 
 @Component({

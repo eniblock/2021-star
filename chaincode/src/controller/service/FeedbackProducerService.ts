@@ -2,7 +2,6 @@
 import { DocType } from '../../enums/DocType';
 import { ParametersType } from '../../enums/ParametersType';
 
-import { DataReference } from '../../model/dataReference';
 import { FeedbackProducer } from '../../model/feedbackProducer';
 import { STARParameters } from '../../model/starParameters';
 
@@ -42,5 +41,44 @@ export class FeedbackProducerService {
         params.logger.debug
             ('=============  END  : Delete %s FeedbackProducerService ===========',
                 feedbackProducerMrid);
+    }
+
+
+    public static async getQueryArrayResult(
+        params: STARParameters,
+        query: string,
+        target: string = ''): Promise<FeedbackProducer[]>  {
+        params.logger.debug('============= START : getQueryArrayResult FeedbackProducerService ===========');
+
+        let collections: string[];
+        if (target && target.length > 0) {
+            collections = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET, [target]);
+        } else {
+            collections = await HLFServices.getCollectionsFromParameters(
+                params, ParametersType.DATA_TARGET, ParametersType.ALL);
+        }
+
+        const allResults: FeedbackProducer[] = [];
+        const allResultsId: string[] = [];
+
+        if (collections) {
+            for (const collection of collections) {
+                const results:FeedbackProducer[] = await QueryStateService.getPrivateQueryArrayResult(
+                    params, {query, collection});
+
+                for (const result of results) {
+                    if (result
+                        && result.feedbackProducerMrid
+                        && result.feedbackProducerMrid !== ''
+                        && !allResultsId.includes(result.feedbackProducerMrid)) {
+                            allResultsId.push(result.feedbackProducerMrid);
+                            allResults.push(result);
+                        }
+                }
+            }
+        }
+
+        params.logger.debug('=============  END  : getQueryArrayResult FeedbackProducerService ===========');
+        return allResults;
     }
 }

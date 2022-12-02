@@ -343,6 +343,7 @@ export class Star extends Contract {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
             return (await StarDataStateController.executeStarDataOrders(params, inputStr));
             // return (await StarDataUpdateController.executeStarDataOrders(params, inputStr));
+            // return (await BalancingDocumentController.updateBalancingDocumentByOrders(params, inputStr));
         } catch (error) {
             throw error;
         }
@@ -861,7 +862,8 @@ export class Star extends Contract {
         ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await BalancingDocumentController.searchByCriteria(params, inputStr));
+            return "[]";
+            // return (await BalancingDocumentController.searchByCriteria(params, inputStr));
         } catch (error) {
             throw error;
         }
@@ -876,7 +878,7 @@ export class Star extends Contract {
     public async GetBalancingDocumentState(ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.getBalancingDocumentState(params, inputStr));
+            // return (await ReserveBidMarketDocumentController.getBalancingDocumentState(params, inputStr));
             return "[]";
         } catch (error) {
             throw error;
@@ -890,7 +892,8 @@ export class Star extends Contract {
         public async UpdateBalancingDocumentByOrders(ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await BalancingDocumentController.updateBalancingDocumentByOrders(params, inputStr));
+            return "{}";
+            // return (await BalancingDocumentController.updateBalancingDocumentByOrders(params, inputStr));
         } catch (error) {
             throw error;
         }

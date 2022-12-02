@@ -97,28 +97,7 @@ export class StarDataStateController {
                 orderReferences.push(dataIndemnityStatusRef);
             }
         }
-
-
-        // //Add Indexed Data References (to fill lack in data if needed)
-
-        // const dataIndexerReferences = await SiteReserveBidIndexersController.getState(params);
-
-        // if (dataIndexerReferences && dataIndexerReferences.length > 0) {
-        //     for (const dataIndexerRef of dataIndexerReferences) {
-        //         orderReferences.push(dataIndexerRef);
-        //     }
-        // }
-
-        // const orderReferencesFinal: DataReference[] = [];
-        // if (orderReferences && orderReferences.length > 0) {
-        //     for (const orderReference of orderReferences) {
-        //         if (orderReference.docType != DocType.ACTIVATION_DOCUMENT) {
-        //             orderReferencesFinal.push(orderReference);
-        //         }
-        //     }
-        // }
-        // var state_str = JSON.stringify(orderReferencesFinal);
-
+        
         const stateStr = JSON.stringify(orderReferences);
 
         params.logger.debug('#######################');
@@ -207,14 +186,6 @@ export class StarDataStateController {
                         params, updateOrder, dateRef, reserveBidOutOfTimeStatus);
                 } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
                     await AttachmentFileController.createByReference(params, updateOrder);
-                } else if (updateOrder.docType === DocType.INDEX_ACTIVATION_COMPOSITE_KEY) {
-                    await ActivationCompositeKeyIndexersController.executeOrder(params, updateOrder);
-                } else if (updateOrder.docType === DocType.INDEX_ACTIVATION_ENERGYAMOUNT) {
-                    await ActivationEnergyAmountIndexersController.executeOrder(params, updateOrder);
-                } else if (updateOrder.docType === DocType.INDEX_SITE_ACTIVATION) {
-                    await SiteActivationIndexersController.executeOrder(params, updateOrder);
-                } else if (updateOrder.docType === DocType.INDEX_SITE_RESERVE_BID) {
-                    await SiteReserveBidIndexersController.executeOrder(params, updateOrder);
                 }
             }
         }

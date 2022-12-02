@@ -6,6 +6,7 @@ import { ActivationDocument } from '../model/activationDocument/activationDocume
 import { IndexedData } from '../model/dataIndex/dataIndexers';
 
 import { DataReference } from '../model/dataReference';
+import { EnergyAmount } from '../model/energyAmount';
 import { STARParameters } from '../model/starParameters';
 import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
 import { EligibilityController } from './activationDocument/EligibilityController';
@@ -15,6 +16,7 @@ import { ActivationEnergyAmountIndexersController } from './dataIndex/Activation
 import { DataIndexersController } from './dataIndex/DataIndexersController';
 import { SiteActivationIndexersController } from './dataIndex/SiteActivationIndexersController';
 import { SiteReserveBidIndexersController } from './dataIndex/SiteReserveBidIndexersController';
+import { EnergyAmountController } from './EnergyAmountController';
 
 import { DataIndexersService } from './service/DataIndexersService';
 
@@ -26,10 +28,20 @@ export class StarDataUpdateController {
         let stateStr = '[]';
         // const listOfIndexers = await this.getAllIndexersToDelete(params);
         // const listOfIndexers = await this.getAllIndexersToCreate(params);
-        const listOfIndexers = await this.getActivationDocumentToShare(params);
+        // const listOfIndexers = await this.getActivationDocumentToShare(params);
+        const listOfIndexers = await this.getNeededBalancingToCalculateFromData(params);
+
         stateStr = JSON.stringify(listOfIndexers);
 
+        if (listOfIndexers) {
+            params.logger.info('nb of data to update: ', listOfIndexers.length);
+            if (listOfIndexers.length > 0) {
+                params.logger.info('first data to update: ', JSON.stringify(listOfIndexers[0]));
+            }
+        }
+
         params.logger.info('=============  END  : getStarDataToUpdate StarDataUpdateController ===========');
+
 
         return stateStr;
 
@@ -40,6 +52,8 @@ export class StarDataUpdateController {
         inputStr: string) {
 
         params.logger.info('============= START : executeStarDataOrders StarDataUpdateController ===========');
+
+        params.logger.info('inputStr: ', inputStr);
 
         let updateOrders: DataReference[];
         try {
@@ -151,20 +165,93 @@ export class StarDataUpdateController {
     private static async getAllIndexersToCreate(params: STARParameters): Promise<DataReference[]> {
         params.logger.info('============= START : getAllIndexersToDelete StarDataUpdateController ===========');
 
-        const indexSiteReservBidList = await SiteReserveBidIndexersController.getNeededIndexesFromData(params);
-        const indexSiteActivationList = await SiteActivationIndexersController.getNeededIndexesFromData(params);
-        const indexActivationCompositeKeyList =
-             await ActivationCompositeKeyIndexersController.getNeededIndexesFromData(params);
+        // const indexSiteReservBidList = await SiteReserveBidIndexersController.getNeededIndexesFromData(params);
+        // const indexSiteActivationList = await SiteActivationIndexersController.getNeededIndexesFromData(params);
+        // const indexActivationCompositeKeyList =
+        //      await ActivationCompositeKeyIndexersController.getNeededIndexesFromData(params);
         const indexEnergyList = await ActivationEnergyAmountIndexersController.getNeededIndexesFromData(params);
 
         let indexList: DataReference[] = [];
-        indexList = indexList.concat(indexSiteReservBidList);
-        indexList = indexList.concat(indexSiteActivationList);
-        indexList = indexList.concat(indexActivationCompositeKeyList);
+        // indexList = indexList.concat(indexSiteReservBidList);
+        // indexList = indexList.concat(indexSiteActivationList);
+        // indexList = indexList.concat(indexActivationCompositeKeyList);
         indexList = indexList.concat(indexEnergyList);
 
         params.logger.info('=============  END  : getAllIndexersToDelete StarDataUpdateController ===========');
         return indexList;
     }
+
+
+    private static async getNeededBalancingToCalculateFromData(params: STARParameters): Promise<DataReference[]> {
+        params.logger.info('============= START : getNeededBalancingToCalculateFromData StarDataUpdateController ===========');
+
+        const states: DataReference[] = [];
+
+        let allActivationDocumentRef: DataReference[];
+        try {
+            allActivationDocumentRef = await ActivationDocumentController.getAll(params);
+        } catch (err) {
+            // Just return empty list
+            return states;
+        }
+
+        if (allActivationDocumentRef && allActivationDocumentRef.length > 0) {
+            for (const activationDocumentRef of allActivationDocumentRef) {
+                try {
+                    const activationDocument: ActivationDocument = activationDocumentRef.data;
+                    const activationDocumentMrid: string = activationDocument.activationDocumentMrid;
+
+                    if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                        params.logger.info("###########")
+                        params.logger.info("allActivationDocumentRef: ", JSON.stringify(allActivationDocumentRef))
+                        params.logger.info("activationDocument: ", JSON.stringify(activationDocument))
+                    }
+
+                    var energyAmount: EnergyAmount = null;
+                    try {
+                        energyAmount = await EnergyAmountController.getByActivationDocument(
+                            params, activationDocumentMrid, activationDocumentRef.collection);
+                    } catch (err) {
+                        // Do nothing
+                        if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                            params.logger.info('Main Error to get Energy Amount');
+                            params.logger.info('err: ', JSON.stringify(err));
+                        }
+                    }
+
+                    if (energyAmount && activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                        params.logger.info('energyAmount: ', JSON.stringify(energyAmount));
+                    }
+
+                    if (energyAmount
+                        && energyAmount.energyAmountMarketDocumentMrid
+                        && energyAmount.energyAmountMarketDocumentMrid.length > 0) {
+
+                        if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                            params.logger.info('energyAmount.energyAmountMarketDocumentMrid: ', JSON.stringify(energyAmount.energyAmountMarketDocumentMrid));
+                        }
+
+                        const dataReference: DataReference = {collection: activationDocumentRef.collection,
+                            data: {"activationDocument":activationDocument},
+                            docType: DocType.BALANCING_DOCUMENT,
+                            dataAction: DataActionType.UPDATE}
+
+                        if (activationDocumentMrid === '18340de9-83d8-464e-93b0-f8dc715dc730') {
+                            params.logger.info('dataReference: ', JSON.stringify(dataReference));
+                        }
+
+                        states.push(dataReference);
+                    }
+
+                } catch (err) {
+                    // Do Nothing ... just cannot manage reserveBid
+                }
+            }
+        }
+
+        params.logger.info('=============  END  : getNeededBalancingToCalculateFromData StarDataUpdateController ===========');
+        return states;
+    }
+
 
 }

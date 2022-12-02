@@ -91,155 +91,155 @@ describe('Star Tests Balancing Document', () => {
 
 
 
-    // /*
-    //     inputStr : BalancingDocumentSearchCriteria
-    //     output : BalancingDocument[]
-    // */
-    // public async SearchBalancingDocumentByCriteria(ctx: Context, inputStr: string)
-    describe('Test SearchBalancingDocumentByCriteria', () => {
+    // // /*
+    // //     inputStr : BalancingDocumentSearchCriteria
+    // //     output : BalancingDocument[]
+    // // */
+    // // public async SearchBalancingDocumentByCriteria(ctx: Context, inputStr: string)
+    // describe('Test SearchBalancingDocumentByCriteria', () => {
 
-        it('should return ERROR', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+    //     it('should return ERROR', async () => {
+    //         transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+    //         const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            const criteriaObj: BalancingDocumentSearchCriteria = {};
+    //         const criteriaObj: BalancingDocumentSearchCriteria = {};
 
-            try {
-                await star.SearchBalancingDocumentByCriteria(transactionContext, JSON.stringify(criteriaObj));
-            } catch (err) {
-                // params.logger.log('err=', err)
-                expect(err.message).to.equal(`Balancing Document Search criteria needs, at least, 1 criteria`);
-            }
-        });
-
-
-
-        it('should return success on meteringPointMrid', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-
-            const balancingDocument: BalancingDocument = JSON.parse(JSON.stringify(Values.BalancingDocument_1));
-
-            const criteriaObj: BalancingDocumentSearchCriteria = {meteringPointMrid:balancingDocument.meteringPointMrid};
-            const query = await prepareSearchQuery(criteriaObj);
-
-            const iterator = Values.getQueryMockArrayValues([balancingDocument], mockHandler);
-
-            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator);
+    //         try {
+    //             await star.SearchBalancingDocumentByCriteria(transactionContext, JSON.stringify(criteriaObj));
+    //         } catch (err) {
+    //             // params.logger.log('err=', err)
+    //             expect(err.message).to.equal(`Balancing Document Search criteria needs, at least, 1 criteria`);
+    //         }
+    //     });
 
 
 
-            let ret = await star.SearchBalancingDocumentByCriteria(transactionContext, JSON.stringify(criteriaObj));
-            ret = JSON.parse(ret);
-            // params.logger.log('ret=', ret)
+    //     it('should return success on meteringPointMrid', async () => {
+    //         transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+    //         const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            expect(ret.length).to.equal(1);
+    //         const balancingDocument: BalancingDocument = JSON.parse(JSON.stringify(Values.BalancingDocument_1));
 
-            const excepted1: BalancingDocument = JSON.parse(JSON.stringify(balancingDocument));
-            const expected: [BalancingDocument] = [excepted1];
-            // params.logger.log('expected=', expected)
+    //         const criteriaObj: BalancingDocumentSearchCriteria = {meteringPointMrid:balancingDocument.meteringPointMrid};
+    //         const query = await prepareSearchQuery(criteriaObj);
 
-            expect(ret).to.eql(expected);
-        });
+    //         const iterator = Values.getQueryMockArrayValues([balancingDocument], mockHandler);
 
-
-
-        it('should return success on activationDocumentMrid', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-
-            const balancingDocument: BalancingDocument = JSON.parse(JSON.stringify(Values.BalancingDocument_1));
-
-            const criteriaObj: BalancingDocumentSearchCriteria = {activationDocumentMrid:balancingDocument.activationDocumentMrid};
-            const query = await prepareSearchQuery(criteriaObj);
-
-            const iterator = Values.getQueryMockArrayValues([balancingDocument], mockHandler);
-
-            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator);
+    //         const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+    //         transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator);
 
 
 
-            let ret = await star.SearchBalancingDocumentByCriteria(transactionContext, JSON.stringify(criteriaObj));
-            ret = JSON.parse(ret);
-            // params.logger.log('ret=', ret)
+    //         let ret = await star.SearchBalancingDocumentByCriteria(transactionContext, JSON.stringify(criteriaObj));
+    //         ret = JSON.parse(ret);
+    //         // params.logger.log('ret=', ret)
 
-            expect(ret.length).to.equal(1);
+    //         expect(ret.length).to.equal(1);
 
-            const excepted1: BalancingDocument = JSON.parse(JSON.stringify(balancingDocument));
-            const expected: [BalancingDocument] = [excepted1];
-            // params.logger.log('expected=', expected)
+    //         const excepted1: BalancingDocument = JSON.parse(JSON.stringify(balancingDocument));
+    //         const expected: [BalancingDocument] = [excepted1];
+    //         // params.logger.log('expected=', expected)
 
-            expect(ret).to.eql(expected);
-        });
-
-
-
-        it('should return success on startCreatedDateTime', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-
-            const balancingDocument: BalancingDocument = JSON.parse(JSON.stringify(Values.BalancingDocument_1));
-
-            const startCreatedDateTime = CommonService.reduceDateDaysStr(balancingDocument.createdDateTime as string, 1);
-            const criteriaObj: BalancingDocumentSearchCriteria = {startCreatedDateTime:startCreatedDateTime};
-            const query = await prepareSearchQuery(criteriaObj);
-
-            const iterator = Values.getQueryMockArrayValues([balancingDocument], mockHandler);
-
-            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator);
+    //         expect(ret).to.eql(expected);
+    //     });
 
 
 
-            let ret = await star.SearchBalancingDocumentByCriteria(transactionContext, JSON.stringify(criteriaObj));
-            ret = JSON.parse(ret);
-            // params.logger.log('ret=', ret)
+    //     it('should return success on activationDocumentMrid', async () => {
+    //         transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+    //         const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
 
-            expect(ret.length).to.equal(1);
+    //         const balancingDocument: BalancingDocument = JSON.parse(JSON.stringify(Values.BalancingDocument_1));
 
-            const excepted1: BalancingDocument = JSON.parse(JSON.stringify(balancingDocument));
-            const expected: [BalancingDocument] = [excepted1];
-            // params.logger.log('expected=', expected)
+    //         const criteriaObj: BalancingDocumentSearchCriteria = {activationDocumentMrid:balancingDocument.activationDocumentMrid};
+    //         const query = await prepareSearchQuery(criteriaObj);
 
-            expect(ret).to.eql(expected);
-        });
+    //         const iterator = Values.getQueryMockArrayValues([balancingDocument], mockHandler);
 
-
-
-        it('should return success on startCreatedDateTime and endCreatedDateTime', async () => {
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
-            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
-
-            const balancingDocument: BalancingDocument = JSON.parse(JSON.stringify(Values.BalancingDocument_1));
-
-            const startCreatedDateTime = CommonService.reduceDateDaysStr(balancingDocument.createdDateTime as string, 1);
-            const endCreatedDateTime = CommonService.increaseDateDaysStr(balancingDocument.createdDateTime as string, 1);
-            const criteriaObj: BalancingDocumentSearchCriteria = {startCreatedDateTime:startCreatedDateTime, endCreatedDateTime: endCreatedDateTime};
-            const query = await prepareSearchQuery(criteriaObj);
-
-            const iterator = Values.getQueryMockArrayValues([balancingDocument], mockHandler);
-
-            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
-            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator);
+    //         const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+    //         transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator);
 
 
 
-            let ret = await star.SearchBalancingDocumentByCriteria(transactionContext, JSON.stringify(criteriaObj));
-            ret = JSON.parse(ret);
-            // params.logger.log('ret=', ret)
+    //         let ret = await star.SearchBalancingDocumentByCriteria(transactionContext, JSON.stringify(criteriaObj));
+    //         ret = JSON.parse(ret);
+    //         // params.logger.log('ret=', ret)
 
-            expect(ret.length).to.equal(1);
+    //         expect(ret.length).to.equal(1);
 
-            const excepted1: BalancingDocument = JSON.parse(JSON.stringify(balancingDocument));
-            const expected: [BalancingDocument] = [excepted1];
-            // params.logger.log('expected=', expected)
+    //         const excepted1: BalancingDocument = JSON.parse(JSON.stringify(balancingDocument));
+    //         const expected: [BalancingDocument] = [excepted1];
+    //         // params.logger.log('expected=', expected)
 
-            expect(ret).to.eql(expected);
-        });
+    //         expect(ret).to.eql(expected);
+    //     });
 
-    });
+
+
+    //     it('should return success on startCreatedDateTime', async () => {
+    //         transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+    //         const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+    //         const balancingDocument: BalancingDocument = JSON.parse(JSON.stringify(Values.BalancingDocument_1));
+
+    //         const startCreatedDateTime = CommonService.reduceDateDaysStr(balancingDocument.createdDateTime as string, 1);
+    //         const criteriaObj: BalancingDocumentSearchCriteria = {startCreatedDateTime:startCreatedDateTime};
+    //         const query = await prepareSearchQuery(criteriaObj);
+
+    //         const iterator = Values.getQueryMockArrayValues([balancingDocument], mockHandler);
+
+    //         const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+    //         transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator);
+
+
+
+    //         let ret = await star.SearchBalancingDocumentByCriteria(transactionContext, JSON.stringify(criteriaObj));
+    //         ret = JSON.parse(ret);
+    //         // params.logger.log('ret=', ret)
+
+    //         expect(ret.length).to.equal(1);
+
+    //         const excepted1: BalancingDocument = JSON.parse(JSON.stringify(balancingDocument));
+    //         const expected: [BalancingDocument] = [excepted1];
+    //         // params.logger.log('expected=', expected)
+
+    //         expect(ret).to.eql(expected);
+    //     });
+
+
+
+    //     it('should return success on startCreatedDateTime and endCreatedDateTime', async () => {
+    //         transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+    //         const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+    //         const balancingDocument: BalancingDocument = JSON.parse(JSON.stringify(Values.BalancingDocument_1));
+
+    //         const startCreatedDateTime = CommonService.reduceDateDaysStr(balancingDocument.createdDateTime as string, 1);
+    //         const endCreatedDateTime = CommonService.increaseDateDaysStr(balancingDocument.createdDateTime as string, 1);
+    //         const criteriaObj: BalancingDocumentSearchCriteria = {startCreatedDateTime:startCreatedDateTime, endCreatedDateTime: endCreatedDateTime};
+    //         const query = await prepareSearchQuery(criteriaObj);
+
+    //         const iterator = Values.getQueryMockArrayValues([balancingDocument], mockHandler);
+
+    //         const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+    //         transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionNames[0], query).resolves(iterator);
+
+
+
+    //         let ret = await star.SearchBalancingDocumentByCriteria(transactionContext, JSON.stringify(criteriaObj));
+    //         ret = JSON.parse(ret);
+    //         // params.logger.log('ret=', ret)
+
+    //         expect(ret.length).to.equal(1);
+
+    //         const excepted1: BalancingDocument = JSON.parse(JSON.stringify(balancingDocument));
+    //         const expected: [BalancingDocument] = [excepted1];
+    //         // params.logger.log('expected=', expected)
+
+    //         expect(ret).to.eql(expected);
+    //     });
+
+    // });
 
 
 

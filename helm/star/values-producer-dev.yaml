@@ -20,7 +20,7 @@ keycloak:
           last_name: producer
           email: userproducer@star.com
           initial_password: kcuserproducer1!
-          producerMarketParticipantMrid: 17Y100A100R0629X
+          producerMarketParticipantMrid: 17Y100A101R0629X
 
 mail:
   dev: true

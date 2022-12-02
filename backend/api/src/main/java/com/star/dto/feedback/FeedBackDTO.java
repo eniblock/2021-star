@@ -31,4 +31,5 @@ public class FeedBackDTO {
     private String feedback;
     private String feedbackAnswer;
     private String feedbackElements;
+    private IndemnityStatus indeminityStatus;
 }

@@ -15,6 +15,7 @@ export const LIMITATIONS_TABLE_COLUMNS_DEF = [
   { id: 'indemnisation', champ: 'Eligible indemnisation' },
   { id: 'montantIndemnisation', champ: 'Montant indemnisation' },
   { id: 'tarifUnitaire', champ: 'Tarif unitaire' },
+  { id: 'commentaires', champ: 'Commentaires' },
 ];
 
 @Pipe({

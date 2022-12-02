@@ -10,7 +10,6 @@ import {
 } from 'src/app/models/RechercheHistoriqueLimitation';
 import {SystemOperator} from "../../../models/SystemOperator";
 import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
-import {TechnologyType} from 'src/app/models/enum/TechnologyType.enum';
 import {DateHelper} from "../../../helpers/date.helper";
 import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
 import {Router} from "@angular/router";
@@ -30,8 +29,7 @@ export class LimitationsResultatsComponent implements OnChanges {
   InstanceEnum = Instance;
   TypeSiteEnum = TypeSite;
 
-  dataComputed: any = [];
-  dataComputedSorted: any = [];
+  dataSorted: any = [];
 
   instance?: Instance;
 
@@ -45,52 +43,8 @@ export class LimitationsResultatsComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.instanceService.getTypeInstance().subscribe((instance) => {
       this.instance = instance;
-      this.computeData();
+      this.dataSorted = [...this.data];
     });
-  }
-
-  private computeData() {
-    this.dataComputed = this.fillMissingData(this.data);
-    this.dataComputedSorted = [...this.dataComputed];
-  }
-
-  private fillMissingData(data: RechercheHistoriqueLimitationEntite[]) {
-    let dataForComputation = [];
-    for (let d of data) {
-      if (d) {
-        if (!d.site) {
-          d.hasSite = false;
-          d.site = {
-            typeSite: TypeSite.HTB,
-            producerMarketParticipantMrid: '---',
-            producerMarketParticipantName: '---',
-            siteName: '---',
-            technologyType: TechnologyType.PHOTOVOLTAIQUE,
-            meteringPointMrid: '---',
-            siteAdminMrid: '---',
-            siteLocation: '---',
-            siteType: '---',
-            substationName: '---',
-            substationMrid: '---',
-            systemOperatorEntityFlexibilityDomainMrid: '---',
-            systemOperatorEntityFlexibilityDomainName: '---',
-            systemOperatorCustomerServiceName: '---'
-          }
-        } else {
-          d.hasSite = true;
-        }
-        if (!d.producer) {
-          d.producer = {
-            producerMarketParticipantMrid: '---',
-            producerMarketParticipantName: '---',
-            producerMarketParticipantRoleType: '---'
-          }
-          //d.activationDocument.originAutomationRegisteredResourceMrid = '---';
-        }
-      }
-      dataForComputation.push(d);
-    }
-    return dataForComputation;
   }
 
   showGraph(activation: RechercheHistoriqueLimitationEntite) {
@@ -117,7 +71,7 @@ export class LimitationsResultatsComponent implements OnChanges {
   public sortChange(sort: Sort) {
     // 1) No sort case
     if (sort.direction == "") {
-      this.dataComputedSorted = [...this.dataComputed];
+      this.dataSorted = [...this.data];
       return;
     }
 
@@ -142,7 +96,7 @@ export class LimitationsResultatsComponent implements OnChanges {
 
     // 3) Sort data
     if (sortFunction != null) {
-      this.dataComputedSorted = [...this.dataComputed].sort((d1: any, d2: any) => sortFunction(d1, d2));
+      this.dataSorted = [...this.data].sort((d1: any, d2: any) => sortFunction(d1, d2));
     }
   }
 
@@ -157,4 +111,7 @@ export class LimitationsResultatsComponent implements OnChanges {
       });
   }
 
+  prettyPrint(element: any) {
+    return element === null ? "" : element;
+  }
 }

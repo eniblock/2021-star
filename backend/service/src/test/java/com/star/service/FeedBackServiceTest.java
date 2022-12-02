@@ -4,6 +4,7 @@ import com.star.AbstractTest;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
 import com.star.models.feedback.FeedBack;
+import com.star.models.feedback.FeedBackPostMessage;
 import com.star.repository.FeedBackRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class FeedBackServiceTest extends AbstractTest {
         // GIVEN
 
         // WHEN
-        Assertions.assertThrows(IllegalArgumentException.class, () -> feedBackService.create(null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> feedBackService.postMessage(null));
 
         // THEN
     }
@@ -46,11 +47,11 @@ class FeedBackServiceTest extends AbstractTest {
     @Test
     void testCreateFeedBackWithoutMandatoriesDatas() {
         // GIVEN
-        FeedBack feedBack = FeedBack.builder().activationDocumentMrid("AJB12-340K-AHVTE-2345").feedback("feedback")
-                .messageType("B30").processType("A42").revisionNumber("1").build();
+        FeedBackPostMessage feedBackPostMessage = FeedBackPostMessage.builder().activationDocumentMrid("AJB12-340K-AHVTE-2345").feedback("feedback")
+                .feedbackElements("").build();
 
         // WHEN
-        Assertions.assertThrows(BusinessException.class, () -> feedBackService.create(feedBack));
+        Assertions.assertThrows(BusinessException.class, () -> feedBackService.postMessage(feedBackPostMessage));
 
         // THEN
         verifyNoInteractions(contract);

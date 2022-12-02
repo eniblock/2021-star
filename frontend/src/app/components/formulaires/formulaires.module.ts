@@ -24,6 +24,7 @@ import { FormEneEniComponent } from './form-ene-eni/form-ene-eni.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {FormAjoutTarifUnitaireComponent} from "./form-ajout-tarif-unitaire/form-ajout-tarif-unitaire.component";
 import { FormReserveBidStatusComponent } from './form-reserve-bid-status/form-reserve-bid-status.component';
+import { FormFeedbackProducerComponent } from './form-feedback-producer/form-feedback-producer.component';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import { FormReserveBidStatusComponent } from './form-reserve-bid-status/form-re
     FormEneEniComponent,
     FormAjoutTarifUnitaireComponent,
     FormReserveBidStatusComponent,
+    FormFeedbackProducerComponent,
   ],
     exports: [
         FormSitesProductionRechercheComponent,

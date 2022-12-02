@@ -19,6 +19,7 @@ import { DocType } from '../src/enums/DocType';
 import { FeedbackProducer } from '../src/model/feedbackProducer';
 import { HLFServices } from '../src/controller/service/HLFservice';
 import { CommonService } from '../src/controller/service/CommonService';
+import { IndeminityStatus } from '../src/enums/IndemnityStatus';
 
 
 class TestLoggerMgt {
@@ -452,6 +453,344 @@ describe('Star Tests FeedbackProducer', () => {
             );
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+    });
+
+
+
+
+
+
+
+
+    describe('Test updateIndeminityStatus', () => {
+        it('should return ERROR updateIndeminityStatus PRODUCER - no rights.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
+
+            try {
+                await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+            } catch (err) {
+                expect(err.message).to.equal(
+                    `ERROR: Indemnity Status for the Activation Document ${feedbackProducer.activationDocumentMrid} cannot be updated by ${OrganizationTypeMsp.PRODUCER.toLowerCase()}`);
+            }
+
+        });
+
+
+
+
+        it('should return ERROR updateIndeminityStatus RTE - data not exists.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            try {
+                await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+            } catch (err) {
+                expect(err.message).to.equal(
+                    `ERROR update Indeminity Status : feedbackProducer : ${feedbackProducer.feedbackProducerMrid} does not exist (not found in any collection).`);
+            }
+
+        });
+
+
+
+        it('should return ERROR updateIndeminityStatus RTE - System Operator not exists.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            try {
+                await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+            } catch (err) {
+                expect(err.message).to.equal(
+                    `ERROR update Indeminity Status : systemOperator : ${feedbackProducer.senderMarketParticipantMrid} does not exist for Activation Document ${feedbackProducer.activationDocumentMrid} update Indeminity Status.`);
+            }
+
+        });
+
+
+
+        it('should return ERROR updateIndeminityStatus RTE - Organisation.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+            transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+
+
+            try {
+                await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+            } catch (err) {
+                expect(err.message).to.equal(
+                    `Organisation, ${OrganizationTypeMsp.RTE} cannot update Indeminity Status for Feedback manager by ${Values.HTA_systemoperator.systemOperatorMarketParticipantName}`);
+            }
+
+        });
+
+
+        it('should return ERROR updateIndeminityStatus ENEDIS - Organisation.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTA_FeedbackProducer));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+            transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
+
+            try {
+                await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+            } catch (err) {
+                expect(err.message).to.equal(
+                    `Organisation, ${OrganizationTypeMsp.ENEDIS} cannot update Indeminity Status for Feedback manager by ${Values.HTB_systemoperator.systemOperatorMarketParticipantName}`);
+            }
+
+        });
+
+
+        it('should return SUCCESS updateIndeminityStatus AGREEMENT ENEDIS.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTA_FeedbackProducer));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+            transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+
+
+            const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+
+            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            // params.logger.info("xxxxx")
+            // params.logger.info("ret: ", ret)
+            // params.logger.info("xxxxx")
+
+            expect(ret).to.equal(IndeminityStatus.AGREEMENT);
+
+            const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
+            expected.indeminityStatus = IndeminityStatus.AGREEMENT;
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                'enedis-producer',
+                expected.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+
+        it('should return SUCCESS updateIndeminityStatus PROCESSED ENEDIS.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTA_FeedbackProducer));
+            feedbackProducer.indeminityStatus = IndeminityStatus.AGREEMENT;
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+            transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+
+
+            const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+
+            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            // params.logger.info("xxxxx")
+            // params.logger.info("ret: ", ret)
+            // params.logger.info("xxxxx")
+
+            expect(ret).to.equal(IndeminityStatus.PROCESSED);
+
+            const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
+            expected.indeminityStatus = IndeminityStatus.PROCESSED;
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                'enedis-producer',
+                expected.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+
+
+        it('should return SUCCESS updateIndeminityStatus OVER PROCESSED ENEDIS.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTA_FeedbackProducer));
+            feedbackProducer.indeminityStatus = IndeminityStatus.PROCESSED;
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+            transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+
+
+            const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+
+            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            // params.logger.info("xxxxx")
+            // params.logger.info("ret: ", ret)
+            // params.logger.info("xxxxx")
+
+            expect(ret).to.equal('');
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(0);
+        });
+
+
+
+
+        it('should return SUCCESS updateIndeminityStatus AGREEMENT RTE.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+            transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
+
+            const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+
+            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            // params.logger.info("xxxxx")
+            // params.logger.info("ret: ", ret)
+            // params.logger.info("xxxxx")
+
+            expect(ret).to.equal(IndeminityStatus.AGREEMENT);
+
+            const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
+            expected.indeminityStatus = IndeminityStatus.AGREEMENT;
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                'producer-rte',
+                expected.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+
+        it('should return SUCCESS updateIndeminityStatus WAITING_INVOICE RTE.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            feedbackProducer.indeminityStatus = IndeminityStatus.AGREEMENT;
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+            transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
+
+            const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+
+            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            // params.logger.info("xxxxx")
+            // params.logger.info("ret: ", ret)
+            // params.logger.info("xxxxx")
+
+            expect(ret).to.equal(IndeminityStatus.WAITING_INVOICE);
+
+            const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
+            expected.indeminityStatus = IndeminityStatus.WAITING_INVOICE;
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                'producer-rte',
+                expected.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+
+        it('should return SUCCESS updateIndeminityStatus INVOICE_SENT RTE.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            feedbackProducer.indeminityStatus = IndeminityStatus.WAITING_INVOICE;
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+            transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
+
+            const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+
+            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            // params.logger.info("xxxxx")
+            // params.logger.info("ret: ", ret)
+            // params.logger.info("xxxxx")
+
+            expect(ret).to.equal(IndeminityStatus.INVOICE_SENT);
+
+            const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
+            expected.indeminityStatus = IndeminityStatus.INVOICE_SENT;
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                'producer-rte',
+                expected.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+
+        it('should return SUCCESS updateIndeminityStatus OVER INVOICE_SENT RTE.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            feedbackProducer.indeminityStatus = IndeminityStatus.INVOICE_SENT;
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+            transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
+
+            const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+
+            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            // params.logger.info("xxxxx")
+            // params.logger.info("ret: ", ret)
+            // params.logger.info("xxxxx")
+
+            expect(ret).to.equal('');
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(0);
         });
 
     });

@@ -34,6 +34,7 @@ import { SiteActivationIndexersController } from '../src/controller/dataIndex/Si
 import { ActivationDocumentDateMax } from '../src/model/dataIndex/activationDocumentDateMax';
 import { FeedbackProducer } from '../src/model/feedbackProducer';
 import { FeedbackProducerController } from '../src/controller/FeedbackProducerController';
+import { IndeminityStatus } from '../src/enums/IndemnityStatus';
 
 class TestLoggerMgt {
     public getLogger(arg: string): any {
@@ -450,15 +451,16 @@ describe('Star Tests ActivationDocument', () => {
             const expectedDateMaxId: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
 
             const expectedFeedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
                 feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, expected.activationDocumentMrid),
                 activationDocumentMrid: expected.activationDocumentMrid,
                 messageType: "B30",
                 processType: "A42",
                 revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
                 receiverMarketParticipantMrid: expected.receiverMarketParticipantMrid,
                 senderMarketParticipantMrid: expected.senderMarketParticipantMrid,
                 createdDateTime: expected.startCreatedDateTime,
-                docType: DocType.FEEDBACK_PRODUCER
             }
 
             // params.logger.info("-----------")
@@ -630,27 +632,29 @@ describe('Star Tests ActivationDocument', () => {
             const expectedDateMaxId2: string = SiteActivationIndexersController.getMaxKey(expected2.registeredResourceMrid);
 
             const expectedFeedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
                 feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, expected.activationDocumentMrid),
                 activationDocumentMrid: expected.activationDocumentMrid,
                 messageType: "B30",
                 processType: "A42",
                 revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
                 receiverMarketParticipantMrid: expected.receiverMarketParticipantMrid,
                 senderMarketParticipantMrid: expected.senderMarketParticipantMrid,
                 createdDateTime: expected.startCreatedDateTime,
-                docType: DocType.FEEDBACK_PRODUCER
             }
 
             const expectedFeedbackProducer2: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
                 feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, expected2.activationDocumentMrid),
                 activationDocumentMrid: expected2.activationDocumentMrid,
                 messageType: "B30",
                 processType: "A42",
                 revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
                 receiverMarketParticipantMrid: expected2.receiverMarketParticipantMrid,
                 senderMarketParticipantMrid: expected2.senderMarketParticipantMrid,
                 createdDateTime: expected2.startCreatedDateTime,
-                docType: DocType.FEEDBACK_PRODUCER
             }
 
 
@@ -962,15 +966,16 @@ describe('Star Tests ActivationDocument', () => {
             const expectedDateMaxId: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
 
             const expectedFeedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
                 feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, Values.HTB_ActivationDocument_JustStartDate.activationDocumentMrid),
                 activationDocumentMrid: Values.HTB_ActivationDocument_JustStartDate.activationDocumentMrid,
                 messageType: "B30",
                 processType: "A42",
                 revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
                 receiverMarketParticipantMrid: Values.HTB_ActivationDocument_JustStartDate.receiverMarketParticipantMrid,
                 senderMarketParticipantMrid: Values.HTB_ActivationDocument_JustStartDate.senderMarketParticipantMrid,
                 createdDateTime: Values.HTB_ActivationDocument_JustStartDate.startCreatedDateTime,
-                docType: DocType.FEEDBACK_PRODUCER
             }
 
 

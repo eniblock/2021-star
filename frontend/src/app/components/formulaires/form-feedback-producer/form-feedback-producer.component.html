@@ -1,0 +1,98 @@
+<h2>Commentaires</h2>
+
+<ng-container *ngIf="this.bottomSheetParams.feedbackElements">
+  <h3>Type de commentaire</h3>
+  <ul>
+    <li *ngFor="let elem of feedbackElements">{{elem}}</li>
+  </ul>
+</ng-container>
+
+<ng-container *ngIf="this.bottomSheetParams.feedback">
+  <h3 class="mt-4">Retour producteur</h3>
+  <form class="row greyForm">
+    <mat-form-field class="col-12" appearance="outline">
+      <mat-label>Message du producteur</mat-label>
+      <textarea matInput cdkTextareaAutosize>{{this.bottomSheetParams.feedback}}</textarea>
+    </mat-form-field>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="this.bottomSheetParams.feedbackAnswer">
+  <h3 class="mt-4">Réponse du gestionnaire</h3>
+  <form class="row greyForm">
+    <mat-form-field class="col-12" appearance="outline">
+      <mat-label>Message du gestionnaire</mat-label>
+      <textarea matInput cdkTextareaAutosize>{{this.bottomSheetParams.feedbackAnswer}}</textarea>
+    </mat-form-field>
+  </form>
+</ng-container>
+
+
+<ng-container *ngIf="afficherFormulaire">
+  <h3 class="mt-4">Poster un message</h3>
+
+  <mat-stepper #stepperRef [linear]="true" class="disabledHeaderNavigation">
+
+    <mat-step [stepControl]="form" label="Formulaire">
+      <form [formGroup]="form">
+        <div class="row">
+
+          <mat-form-field class="col-12" appearance="outline" *ngIf="instance == InstanceEnum.PRODUCER">
+            <mat-label>Type de commentaire</mat-label>
+            <mat-select formControlName="elements" multiple>
+              <mat-select-trigger>
+                {{ form.value.elements?.length > 0 ? form.value.elements[0] : ''}}
+                <span *ngIf="form.value.elements?.length > 1">
+                  (+{{form.value.elements.length - 1}} {{form.value.elements.length === 2 ? 'autre' : 'autres'}})
+                </span>
+              </mat-select-trigger>
+              <mat-option [value]="elem" *ngFor="let elem of AllFeedbackElements">{{elem}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="col-12" appearance="outline">
+            <mat-label>Message</mat-label>
+            <textarea matInput placeholder="Message" rows="10" formControlName="message"></textarea>
+            <mat-hint>{{tailleMaxMessageFeedbackProducer}} caractères max</mat-hint>
+          </mat-form-field>
+
+          <div class="col-12 text-center mt-3">
+            <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="toResume(stepperRef)">Suivant
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step label="Résumé">
+
+      <div class="row">
+
+        <div class="col-12 my-2" *ngIf="instance == InstanceEnum.PRODUCER">
+          Type de commentaire :
+          <ul class="fw-bold">
+            <li *ngFor="let elem of form.value.elements">{{elem}}</li>
+          </ul>
+        </div>
+
+        <div class="col-12 my-2">
+          Message : <br/>
+          <span class="fw-bold" [innerText]="form.value.message"></span>
+        </div>
+
+      </div>
+
+      <div class="col-12 text-center mt-4">
+        <button mat-raised-button class="me-3 text-primary" matStepperPrevious>Modifier</button>
+        <button mat-raised-button color="primary" [disabled]="form.invalid || loading" (click)="onSubmit(stepperRef)">
+          Envoyer
+          <i class="fa-solid fa-hourglass ms-2" *ngIf="loading"></i>
+        </button>
+      </div>
+
+    </mat-step>
+
+  </mat-stepper>
+
+</ng-container>

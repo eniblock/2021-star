@@ -938,4 +938,18 @@ export class Star extends Contract {
     }
 
 
+    /*
+    * inputStr : activationDocumentMrid: string
+    *
+    * output : newStatus : string (IndemnityStatus)
+    */
+    public async UpdateActivationDocumentIndeminityStatus(ctx: Context, inputStr: string) {
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await FeedbackProducerController.updateIndeminityStatus(params, inputStr));
+        } catch (error) {
+            throw error;
+        }
+    }
+
 }

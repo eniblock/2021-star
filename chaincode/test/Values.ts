@@ -1,6 +1,7 @@
 import { StateQueryIterator } from 'fabric-shim/lib/iterators';
 import { CommonService } from '../src/controller/service/CommonService';
 import { DocType } from '../src/enums/DocType';
+import { IndeminityStatus } from '../src/enums/IndemnityStatus';
 import { OrganizationTypeMsp } from '../src/enums/OrganizationMspType';
 import { ActivationDocument } from '../src/model/activationDocument/activationDocument';
 import { AttachmentFile } from '../src/model/attachmentFile';
@@ -768,6 +769,7 @@ export class Values {
         messageType: "B30",
         processType: "A42",
         revisionNumber: "0",
+        indeminityStatus:IndeminityStatus.IN_PROGRESS,
         receiverMarketParticipantMrid: Values.HTA_ActivationDocument_Valid.receiverMarketParticipantMrid,
         senderMarketParticipantMrid: Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid,
         createdDateTime: Values.HTA_ActivationDocument_Valid.startCreatedDateTime,
@@ -781,6 +783,7 @@ export class Values {
         messageType: "B30",
         processType: "A42",
         revisionNumber: "0",
+        indeminityStatus:IndeminityStatus.IN_PROGRESS,
         receiverMarketParticipantMrid: Values.HTB_ActivationDocument_Valid.receiverMarketParticipantMrid,
         senderMarketParticipantMrid: Values.HTB_ActivationDocument_Valid.senderMarketParticipantMrid,
         createdDateTime: Values.HTB_ActivationDocument_Valid.startCreatedDateTime,
@@ -795,6 +798,7 @@ export class Values {
         messageType: "B30",
         processType: "A42",
         revisionNumber: "0",
+        indeminityStatus:IndeminityStatus.IN_PROGRESS,
         receiverMarketParticipantMrid: Values.HTA_ActivationDocument_Valid.receiverMarketParticipantMrid,
         senderMarketParticipantMrid: Values.HTA_ActivationDocument_Valid.senderMarketParticipantMrid,
         createdDateTime: Values.HTA_ActivationDocument_Valid.startCreatedDateTime,
@@ -809,6 +813,7 @@ export class Values {
         messageType: "B30",
         processType: "A42",
         revisionNumber: "0",
+        indeminityStatus:IndeminityStatus.IN_PROGRESS,
         receiverMarketParticipantMrid: Values.HTB_ActivationDocument_Valid.receiverMarketParticipantMrid,
         senderMarketParticipantMrid: Values.HTB_ActivationDocument_Valid.senderMarketParticipantMrid,
         createdDateTime: Values.HTB_ActivationDocument_Valid.startCreatedDateTime,

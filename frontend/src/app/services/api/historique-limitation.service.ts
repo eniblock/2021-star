@@ -13,6 +13,7 @@ import {EligibilityStatus} from "../../models/enum/EligibilityStatus.enum";
 import {TechnologyType} from "../../models/enum/TechnologyType.enum";
 import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
 import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
+import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
 
 const MOCK = false;
 
@@ -124,7 +125,26 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
       },
       subOrderList: [],
       displayedSourceName: "displayedSourceName1",
-      reserveBidMarketDocument: null,
+      reserveBidMarketDocument: {
+        reserveBidMrid: 'string',
+        meteringPointMrid: 'string',
+        revisionNumber: 'string',
+        messageType: 'string',
+        processType: 'string',
+        senderMarketParticipantMrid: 'string',
+        receiverMarketParticipantMrid: 'string',
+        createdDateTime: 'string',
+        validityPeriodStartDateTime: 'string',
+        validityPeriodEndDateTime: 'string',
+        businessType: 'string',
+        quantityMeasureUnitName: 'string',
+        priceMeasureUnitName: '€/MWh',
+        currencyUnitName: 'string',
+        flowDirection: 'string',
+        energyPriceAmount: 1.23,
+        attachments: [],
+        reserveBidStatus: ReserveBidStatus.VALIDATED
+      },
       balancingDocument: {
         docType: "balancingDocument",
         balancingDocumentMrid: "BaDoc_26056d50-db4f-4e29-8075-d83fa47fb7a8",
@@ -148,6 +168,22 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         activationPriceAmount: 14,
         financialPriceAmount: 210
       },
+      feedbackProducer: {
+        feedbackProducerMrid: "f1",
+        activationDocumentMrid: "string",
+        messageType: "string",
+        processType: "string",
+        revisionNumber: "1",
+        senderMarketParticipantMrid: "string",
+        receiverMarketParticipantMrid: "string",
+        createdDateTime: "string",
+        validityPeriodStartDateTime: "2022-11-07T13:46:40",
+        validityPeriodEndDateTime: "2024-11-08T13:46:40",
+        feedback: "ezaeazaez\ndzijdaz\nooiio",
+        feedbackAnswer: "",
+        feedbackElements: "dqsdsd|poipoi|poi",
+        indeminityStatus: IndeminityStatus.InProgress,
+      }
     },
 
     {
@@ -267,6 +303,22 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         quantity: 15,
         activationPriceAmount: 14,
         financialPriceAmount: 210
+      },
+      feedbackProducer: {
+        feedbackProducerMrid: "f1",
+        activationDocumentMrid: "string",
+        messageType: "string",
+        processType: "string",
+        revisionNumber: "1",
+        senderMarketParticipantMrid: "string",
+        receiverMarketParticipantMrid: "string",
+        createdDateTime: "string",
+        validityPeriodStartDateTime: "2022-11-07T13:46:40",
+        validityPeriodEndDateTime: "2024-11-07T13:46:40",
+        feedback: "",
+        feedbackAnswer: "",
+        feedbackElements: "",
+        indeminityStatus: IndeminityStatus.InProgress,
       },
     },
   ]);

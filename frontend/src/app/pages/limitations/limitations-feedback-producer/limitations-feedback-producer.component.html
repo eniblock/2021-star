@@ -1,0 +1,16 @@
+<button mat-raised-button
+        [class]="!buttonCreationFeedbackDisabled ? 'bg-dark text-white' : ''"
+        (click)="commentaire()"
+        [disabled]="buttonCreationFeedbackDisabled"
+        *ngIf="showButton && instance == InstanceEnum.PRODUCER && (!historiqueLimitation?.feedbackProducer?.feedback)"
+>
+  <div style="line-height: 20px !important; margin:6px">Jusqu'au<br/>{{ historiqueLimitation?.feedbackProducer?.validityPeriodEndDateTime | date:'shortDate' }}</div>
+</button>
+
+<button mat-raised-button
+        [class]="historiqueLimitation?.feedbackProducer?.feedbackAnswer ? 'bg-success text-white' : 'bg-orange text-white'"
+        (click)="commentaire()"
+        *ngIf="showButton && (historiqueLimitation?.feedbackProducer?.feedback)"
+>
+  <i class="fa-solid fa-message"></i>
+</button>

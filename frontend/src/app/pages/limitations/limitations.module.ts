@@ -22,7 +22,10 @@ import {
 } from './limitations-indemnisation/limitations-indemnisation-choose-yes-no/limitations-indemnisation-choose-yes-no.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import {LimitationsRoutes} from './limitations.routing';
-import { LimitationsFilterOnResultsComponent } from './limitations-filter-on-results/limitations-filter-on-results.component';
+import {
+  LimitationsFilterOnResultsComponent
+} from './limitations-filter-on-results/limitations-filter-on-results.component';
+import { LimitationsFeedbackProducerComponent } from './limitations-feedback-producer/limitations-feedback-producer.component';
 
 @NgModule({
   imports: [
@@ -50,6 +53,7 @@ import { LimitationsFilterOnResultsComponent } from './limitations-filter-on-res
     LimitationsIndemnisationComponent,
     LimitationsIndemnisationChooseYesNoComponent,
     LimitationsFilterOnResultsComponent,
+    LimitationsFeedbackProducerComponent,
   ],
 })
 export class LimitationsModule {

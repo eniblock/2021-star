@@ -15,6 +15,8 @@ import { CommonService } from './service/CommonService';
 import { IdArgument } from '../model/arguments/idArgument';
 import { EnergyAmount } from '../model/energyAmount';
 import { DataActionType } from '../enums/DataActionType';
+import { IndeminityStatus } from '../enums/IndemnityStatus';
+import { RoleType } from '../enums/RoleType';
 
 
 
@@ -88,12 +90,16 @@ export class FeedbackProducerController {
         }
 
         var feedbackProducerObj:FeedbackProducer = {
+            docType: DocType.FEEDBACK_PRODUCER,
+
             feedbackProducerMrid: this.getFeedbackProducerMrid(params, activationDocumentObj.activationDocumentMrid),
             activationDocumentMrid: activationDocumentObj.activationDocumentMrid,
 
             messageType: 'B30',
             processType: 'A42',
             revisionNumber: '0',
+
+            indeminityStatus: IndeminityStatus.IN_PROGRESS,
 
             receiverMarketParticipantMrid: activationDocumentObj.receiverMarketParticipantMrid,
             senderMarketParticipantMrid: activationDocumentObj.senderMarketParticipantMrid,
@@ -154,12 +160,16 @@ export class FeedbackProducerController {
             feedbackProducerObj =  await this.getObjById(params, feedbackProducerMrid, target);
         } catch(err) {
             feedbackProducerObj= {
+                docType: DocType.FEEDBACK_PRODUCER,
+
                 feedbackProducerMrid: feedbackProducerMrid,
                 activationDocumentMrid: energyObj.activationDocumentMrid,
 
                 messageType: 'B30',
                 processType: 'A42',
                 revisionNumber: '0',
+
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
 
                 receiverMarketParticipantMrid: energyObj.receiverMarketParticipantMrid,
                 senderMarketParticipantMrid: energyObj.senderMarketParticipantMrid,
@@ -337,6 +347,104 @@ export class FeedbackProducerController {
         params.logger.info('=============  END  : Update Answer %s FeedbackProducerController ===========',
             feedbackProducerObj.feedbackProducerMrid,
         );
+    }
+
+
+
+    public static async updateIndeminityStatus(
+        params: STARParameters,
+        activationDocumentMrid: string): Promise<string> {
+
+        params.logger.info('============= START : UpdateIndeminityStatus FeedbackProducerController  ===========',
+            activationDocumentMrid);
+
+        var newStatus = '';
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
+        var userRole: string = '';
+
+        if (roleTable.has(identity.toLowerCase())) {
+            userRole = roleTable.get(identity.toLowerCase());
+        }
+
+        if ( userRole !== RoleType.Role_TSO
+            && userRole !== RoleType.Role_DSO) {
+            throw new Error(`ERROR: Indemnity Status for the Activation Document ${activationDocumentMrid} cannot be updated by ${identity}`);
+        }
+
+        const feedbackProducerMrid = this.getFeedbackProducerMrid(params, activationDocumentMrid);
+        let existingFeedbackProducersRef: Map<string, DataReference>;
+        try {
+            existingFeedbackProducersRef = await StarPrivateDataService.getObjRefbyId(
+                params, {docType: DocType.FEEDBACK_PRODUCER, id: feedbackProducerMrid});
+        } catch (error) {
+            throw new Error('ERROR update Indeminity Status : '.concat(error.message));
+        }
+
+        const feedbackProducerRef: DataReference = existingFeedbackProducersRef.values().next().value;
+        const feedbackProducerObj: FeedbackProducer = feedbackProducerRef.data;
+
+
+        if (feedbackProducerObj
+            && feedbackProducerObj.activationDocumentMrid === activationDocumentMrid) {
+
+            let systemOperatorObj: SystemOperator;
+            try {
+                systemOperatorObj =
+                    await StarDataService.getObj(
+                        params, {id: feedbackProducerObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+            } catch (error) {
+                throw new Error('ERROR update Indeminity Status : '.concat(error.message).concat(` for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`));
+            }
+
+            if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
+                throw new Error(`Organisation, ${identity} cannot update Indeminity Status for Feedback manager by ${systemOperatorObj.systemOperatorMarketParticipantName}`);
+            }
+
+
+            if (!feedbackProducerObj.indeminityStatus
+                || feedbackProducerObj.indeminityStatus.length === 0) {
+
+                feedbackProducerObj.indeminityStatus = IndeminityStatus.IN_PROGRESS;
+            }
+
+            switch (feedbackProducerObj.indeminityStatus) {
+                case IndeminityStatus.IN_PROGRESS:
+                    newStatus = IndeminityStatus.AGREEMENT;
+                    break;
+                case IndeminityStatus.AGREEMENT:
+                    if (userRole === RoleType.Role_TSO) {
+                        newStatus = IndeminityStatus.WAITING_INVOICE;
+                    } else if (userRole === RoleType.Role_DSO) {
+                        newStatus = IndeminityStatus.PROCESSED;
+                    }
+                    break;
+                case IndeminityStatus.WAITING_INVOICE:
+                    if (userRole === RoleType.Role_TSO) {
+                        newStatus = IndeminityStatus.INVOICE_SENT;
+                    }
+                    break;
+                default:
+                    newStatus = '';
+            }
+
+
+            if (newStatus && newStatus.length > 0) {
+                feedbackProducerObj.indeminityStatus = newStatus;
+
+                for (const [key ] of existingFeedbackProducersRef) {
+                    await FeedbackProducerService.write(params, feedbackProducerObj, key);
+                }
+            }
+
+        }
+
+
+        params.logger.info('=============  END  : UpdateIndeminityStatus FeedbackProducerController  ===========',
+            activationDocumentMrid);
+
+        return newStatus;
     }
 
 

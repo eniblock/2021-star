@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
@@ -32,7 +34,7 @@ public class BalancingDocumentDTO {
     private String currencyUnitName;
     private String meteringPointMrid;
     private String direction;
-    private int quantity;
-    private int activationPriceAmount;
-    private int financialPriceAmount;
+    private BigDecimal quantity;
+    private BigDecimal activationPriceAmount;
+    private BigDecimal financialPriceAmount;
 }

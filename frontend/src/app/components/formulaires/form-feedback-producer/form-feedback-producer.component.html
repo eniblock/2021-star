@@ -12,7 +12,7 @@
   <form class="row greyForm">
     <mat-form-field class="col-12" appearance="outline">
       <mat-label>Message du producteur</mat-label>
-      <textarea matInput cdkTextareaAutosize>{{this.bottomSheetParams.feedback}}</textarea>
+      <textarea matInput readonly cdkTextareaAutosize>{{this.bottomSheetParams.feedback}}</textarea>
     </mat-form-field>
   </form>
 </ng-container>
@@ -22,7 +22,7 @@
   <form class="row greyForm">
     <mat-form-field class="col-12" appearance="outline">
       <mat-label>Message du gestionnaire</mat-label>
-      <textarea matInput cdkTextareaAutosize>{{this.bottomSheetParams.feedbackAnswer}}</textarea>
+      <textarea matInput readonly cdkTextareaAutosize>{{this.bottomSheetParams.feedbackAnswer}}</textarea>
     </mat-form-field>
   </form>
 </ng-container>

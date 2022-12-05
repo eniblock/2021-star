@@ -10,7 +10,7 @@ sonar:
     RUN git blame Earthfile
     RUN echo sonar.projectVersion=$(yq eval .version helm/star/Chart.yaml) >> sonar-project.properties
     ENV SONAR_HOST_URL=https://sonarcloud.io
-    RUN --push
+    RUN --push \
         --mount=type=cache,target=/opt/sonar-scanner/.sonar/cache \
         --secret GITHUB_TOKEN \
         --secret SONAR_TOKEN \

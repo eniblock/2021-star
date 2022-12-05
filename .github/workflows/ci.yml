@@ -14,7 +14,7 @@ jobs:
   test-backend:
     runs-on: [self-hosted]
     steps:
-    - uses: eniblock/build/actions/setup@develop
+    - uses: eniblock/build/actions/setup@4.0
       id: setup
       with:
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -23,7 +23,7 @@ jobs:
   lint-helm:
     runs-on: [self-hosted]
     steps:
-    - uses: eniblock/build/actions/setup@develop
+    - uses: eniblock/build/actions/setup@4.0
       id: setup
       with:
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -36,7 +36,7 @@ jobs:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm]
     steps:
-    - uses: eniblock/build/actions/setup@develop
+    - uses: eniblock/build/actions/setup@4.0
       id: setup
       with:
         helmdir: helm/star
@@ -47,7 +47,7 @@ jobs:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm]
     steps:
-    - uses: eniblock/build/actions/setup@develop
+    - uses: eniblock/build/actions/setup@4.0
       id: setup
       with:
         helmdir: helm/star
@@ -58,7 +58,7 @@ jobs:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm]
     steps:
-    - uses: eniblock/build/actions/setup@develop
+    - uses: eniblock/build/actions/setup@4.0
       id: setup
       with:
         helmdir: helm/star
@@ -69,7 +69,7 @@ jobs:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm]
     steps:
-    - uses: eniblock/build/actions/setup@develop
+    - uses: eniblock/build/actions/setup@4.0
       id: setup
       with:
         helmdir: helm/star
@@ -82,7 +82,7 @@ jobs:
     runs-on: [self-hosted]
     needs: [docker-backend, docker-keycloak, docker-frontend, docker-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@develop
+    - uses: eniblock/build/actions/setup@4.0
       id: setup
       with:
         helmdir: helm/star

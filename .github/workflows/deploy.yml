@@ -12,7 +12,7 @@ jobs:
     environment: ${{ inputs.environment }}
     concurrency: ${{ inputs.environment }}
     steps:
-    - uses: eniblock/build/actions/setup@develop
+    - uses: eniblock/build/actions/setup@4.0
       id: setup
       with:
         helmdir: helm/star

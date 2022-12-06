@@ -103,6 +103,18 @@ jobs:
          --secret registry_password=${{ github.token }} \
          ./helm+publish \
          --tag=${{ steps.setup.outputs.tag }}
+    - name: Generate job summary
+      run: |
+        cat <<"EOF" >> $GITHUB_STEP_SUMMARY
+        ## Helm package
+        Helm package was generated with tag `${{ steps.setup.outputs.tag }}`
+
+        Use it directly with
+
+        ~~~bash
+        helm install star oci://ghcr.io/eniblock/star --version ${{ steps.setup.outputs.tag }}
+        ~~~
+        EOF
 
   ############################ deploy ############################
 

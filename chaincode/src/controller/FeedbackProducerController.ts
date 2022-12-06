@@ -242,6 +242,23 @@ export class FeedbackProducerController {
             throw new Error('ERROR updateFeedbackProducer : no feedback to update.');
         }
 
+        //control if a Balancing exists for this activation Document
+        var balancingDocument: BalancingDocument;
+        try {
+            balancingDocument =
+                await BalancingDocumentController.getObjByActivationDocumentMrid(params, activationDocumentMrid);
+        } catch (err) {
+            throw new Error('ERROR updateFeedbackProducer : '.concat(err.message).concat(` for Activation Document ${activationDocumentMrid}.`));
+        }
+
+        if (!balancingDocument
+            || !balancingDocument.balancingDocumentMrid
+            || balancingDocument.balancingDocumentMrid.length === 0) {
+
+            throw new Error(`ERROR updateFeedbackProducer, no Indeminity found for Activation Document ${activationDocumentMrid}.`);
+        }
+
+
         const feedbackProducerMrid = this.getFeedbackProducerMrid(params, activationDocumentMrid);
         // Get existing Feedback Producer
         let existingFeedbackProducersRef: Map<string, DataReference>;
@@ -268,6 +285,11 @@ export class FeedbackProducerController {
             if (feedbackProducerObj.feedback && feedbackProducerObj.feedback.length > 0) {
                 throw new Error(`ERROR updateFeedbackProducer : comment ${feedbackProducerObj.feedbackProducerMrid} is already filled and cannot be changed`);
             }
+
+            if (feedbackProducerObj.indeminityStatus !== IndeminityStatus.AGREEMENT) {
+                throw new Error(`ERROR updateFeedbackProducer : comment ${feedbackProducerObj.feedbackProducerMrid} cannot be changed with status ${feedbackProducerObj.indeminityStatus}`);
+            }
+
 
             feedbackProducerObj.feedback = feedbackStr;
 
@@ -350,6 +372,7 @@ export class FeedbackProducerController {
 
             feedbackProducerObj.feedbackAnswer = answerStr;
             feedbackProducerObj.revisionNumber= '3';
+            feedbackProducerObj.indeminityStatus = IndeminityStatus.AGREEMENT
 
             for (const [key ] of existingFeedbackProducersRef) {
                 await FeedbackProducerService.write(params, feedbackProducerObj, key);
@@ -543,6 +566,12 @@ export class FeedbackProducerController {
         argOrIndemnityStatus.push(`"indeminityStatus":""`);
         argOrIndemnityStatus.push(`"indeminityStatus":{"$exists": false}`);
         args.push(await QueryStateService.buildORCriteria(argOrIndemnityStatus));
+
+
+        const argOrFeedback: string[] = [];
+        argOrFeedback.push(`"feedback":""`);
+        argOrFeedback.push(`"feedback":{"$exists": false}`);
+        args.push(await QueryStateService.buildORCriteria(argOrFeedback));
 
         args.push(`"validityPeriodEndDateTime":{"$exists": true}`);
         args.push(`"validityPeriodEndDateTime":{"$lte":${JSON.stringify(today)}}`);

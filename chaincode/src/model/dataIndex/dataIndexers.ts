@@ -5,8 +5,13 @@ export class IndexedData {
 
     public static fromJson(jsonIndexedData: IndexedDataJson): IndexedData {
         // const indexedDataAbstractMap: Map<string, any> = JSON.parse(jsonIndexedData.jsonIndexedDataAbstractMap);
-        const indexedDataAbstractMap: Map<string, any> =
-            new Map(JSON.parse(jsonIndexedData.jsonIndexedDataAbstractMap));
+        var indexedDataAbstractMap: Map<string, any> = new Map();
+
+        try {
+            indexedDataAbstractMap = new Map(JSON.parse(jsonIndexedData.jsonIndexedDataAbstractMap));
+        } catch (err) {
+            //Do nothing, just empty map
+        }
 
         return {
             docType: DocType.DATA_INDEXER,

@@ -20,6 +20,17 @@ import { FeedbackProducer } from '../src/model/feedbackProducer';
 import { HLFServices } from '../src/controller/service/HLFservice';
 import { CommonService } from '../src/controller/service/CommonService';
 import { IndeminityStatus } from '../src/enums/IndemnityStatus';
+import { EnergyAmountAbstract } from '../src/model/dataIndex/energyAmountAbstract';
+import { ActivationEnergyAmountIndexersController } from '../src/controller/dataIndex/ActivationEnergyAmountIndexersController';
+import { IndexedDataJson } from '../src/model/dataIndexersJson';
+import { SiteReserveBidIndexersController } from '../src/controller/dataIndex/SiteReserveBidIndexersController';
+import { ReserveBidMarketDocumentAbstract } from '../src/model/dataIndex/reserveBidMarketDocumentAbstract';
+import { ReserveBidStatus } from '../src/enums/ReserveBidStatus';
+import { ReserveBidMarketDocument } from '../src/model/reserveBidMarketDocument';
+import { ActivationDocument } from '../src/model/activationDocument/activationDocument';
+import { EnergyAmount } from '../src/model/energyAmount';
+import { BalancingDocument } from '../src/model/balancingDocument';
+import { BalancingDocumentController } from '../src/controller/BalancingDocumentController';
 
 
 class TestLoggerMgt {
@@ -503,6 +514,60 @@ describe('Star Tests FeedbackProducer', () => {
             transactionContext.stub.getPrivateData.withArgs('producer-rte',
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
 
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTB_ReserveBidMarketDocument_1_Full));;
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBidObj.createdDateTime,
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                reserveBidStatus: reserveBidObj.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(Values.HTB_ReserveBidMarketDocument_1_Full.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
+
+
             try {
                 await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
             } catch (err) {
@@ -522,6 +587,58 @@ describe('Star Tests FeedbackProducer', () => {
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
             transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTB_ReserveBidMarketDocument_1_Full));;
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBidObj.createdDateTime,
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                reserveBidStatus: reserveBidObj.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(Values.HTB_ReserveBidMarketDocument_1_Full.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
 
             try {
                 await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
@@ -541,6 +658,58 @@ describe('Star Tests FeedbackProducer', () => {
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
             transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));;
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBidObj.createdDateTime,
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                reserveBidStatus: reserveBidObj.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
 
             try {
                 await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
@@ -560,6 +729,58 @@ describe('Star Tests FeedbackProducer', () => {
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
             transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));;
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBidObj.createdDateTime,
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                reserveBidStatus: reserveBidObj.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
 
             const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
 
@@ -599,10 +820,62 @@ describe('Star Tests FeedbackProducer', () => {
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
             transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
 
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));;
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBidObj.createdDateTime,
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                reserveBidStatus: reserveBidObj.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
 
             const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
 
-            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             // params.logger.info("xxxxx")
             // params.logger.info("ret: ", ret)
             // params.logger.info("xxxxx")
@@ -612,11 +885,22 @@ describe('Star Tests FeedbackProducer', () => {
             const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
             expected.indeminityStatus = IndeminityStatus.PROCESSED;
 
+            const expectedBalancingDocument: BalancingDocument =
+                await BalancingDocumentController.generateObj(params, activationDocumentObj, reserveBidObj, energyAmountObj);
+            const expectedBalancingDocumentId: string =
+                BalancingDocumentController.getBalancingDocumentMrid(params, activationDocumentObj.activationDocumentMrid);
+
+
             // params.logger.info("-----------")
             // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
             // params.logger.info("ooooooooo")
             // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
             // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+			// params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedBalancingDocument))
             // params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
@@ -625,7 +909,13 @@ describe('Star Tests FeedbackProducer', () => {
                 Buffer.from(JSON.stringify(expected))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                'enedis-producer',
+                expectedBalancingDocumentId,
+                Buffer.from(JSON.stringify(expectedBalancingDocument))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
         });
 
 
@@ -638,6 +928,59 @@ describe('Star Tests FeedbackProducer', () => {
             transactionContext.stub.getPrivateData.withArgs('enedis-producer',
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
             transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));;
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBidObj.createdDateTime,
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                reserveBidStatus: reserveBidObj.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(reserveBidObj.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
 
 
             const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
@@ -662,6 +1005,59 @@ describe('Star Tests FeedbackProducer', () => {
             transactionContext.stub.getPrivateData.withArgs('producer-rte',
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
             transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTB_ReserveBidMarketDocument_1_Full));;
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBidObj.createdDateTime,
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                reserveBidStatus: reserveBidObj.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(Values.HTB_ReserveBidMarketDocument_1_Full.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
 
 
             const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
@@ -702,6 +1098,59 @@ describe('Star Tests FeedbackProducer', () => {
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
             transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTB_ReserveBidMarketDocument_1_Full));;
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBidObj.createdDateTime,
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                reserveBidStatus: reserveBidObj.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(Values.HTB_ReserveBidMarketDocument_1_Full.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
+
 
             const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
 
@@ -741,10 +1190,62 @@ describe('Star Tests FeedbackProducer', () => {
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
             transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTB_ReserveBidMarketDocument_1_Full));;
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBidObj.createdDateTime,
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                reserveBidStatus: reserveBidObj.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(Values.HTB_ReserveBidMarketDocument_1_Full.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
 
             const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
 
-            // const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
             // params.logger.info("xxxxx")
             // params.logger.info("ret: ", ret)
             // params.logger.info("xxxxx")
@@ -754,12 +1255,22 @@ describe('Star Tests FeedbackProducer', () => {
             const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
             expected.indeminityStatus = IndeminityStatus.INVOICE_SENT;
 
-            // params.logger.info("-----------")
-            // params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
-            // params.logger.info("ooooooooo")
-            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
-            // params.logger.info(JSON.stringify(expected))
-            // params.logger.info("-----------")
+            const expectedBalancingDocument: BalancingDocument =
+                await BalancingDocumentController.generateObj(params, activationDocumentObj, reserveBidObj, energyAmountObj);
+            const expectedBalancingDocumentId: string =
+                BalancingDocumentController.getBalancingDocumentMrid(params, activationDocumentObj.activationDocumentMrid);
+
+            params.logger.info("-----------")
+            params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            params.logger.info("ooooooooo")
+            params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            params.logger.info(JSON.stringify(expected))
+            params.logger.info("-----------")
+            params.logger.info(transactionContext.stub.putPrivateData.secondCall.args);
+            params.logger.info("ooooooooo")
+            params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.secondCall.args[2].toString()).toString('utf8'));
+            params.logger.info(JSON.stringify(expectedBalancingDocument))
+            params.logger.info("-----------")
 
             transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
                 'producer-rte',
@@ -767,7 +1278,13 @@ describe('Star Tests FeedbackProducer', () => {
                 Buffer.from(JSON.stringify(expected))
             );
 
-            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+            transactionContext.stub.putPrivateData.secondCall.should.have.been.calledWithExactly(
+                'producer-rte',
+                expectedBalancingDocumentId,
+                Buffer.from(JSON.stringify(expectedBalancingDocument))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
         });
 
 
@@ -780,6 +1297,58 @@ describe('Star Tests FeedbackProducer', () => {
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
             transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
 
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBid:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTB_ReserveBidMarketDocument_1_Full));;
+            reserveBid.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBid.createdDateTime,
+                reserveBidMrid: reserveBid.reserveBidMrid,
+                reserveBidStatus: reserveBid.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBid.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(Values.HTB_ReserveBidMarketDocument_1_Full.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBid.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                reserveBid.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBid)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
 
             const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
 

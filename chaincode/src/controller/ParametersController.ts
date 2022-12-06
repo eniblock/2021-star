@@ -1,5 +1,6 @@
 import { Context } from 'fabric-contract-api';
 import { DocType } from '../enums/DocType';
+import { IndeminityStatus } from '../enums/IndemnityStatus';
 import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
 import { ParametersType } from '../enums/ParametersType';
 import { ReserveBidStatus } from '../enums/ReserveBidStatus';
@@ -120,6 +121,8 @@ export class ParametersController {
         parameters.values.set(ParametersType.FEEDBACK_PRODUCER_VALIDITY_PERIOD, feedbackProducerValidityPeriod);
 
 
+        parameters.values.set(ParametersType.AUTHORIZED_STATUS_ENERGY_AMOUNT, [IndeminityStatus.IN_PROGRESS]);
+        parameters.values.set(ParametersType.AUTHORIZED_STATUS_RESERVEBID, [IndeminityStatus.IN_PROGRESS]);
 
         if (identity === OrganizationTypeMsp.ENEDIS) {
             /*

@@ -47,4 +47,7 @@
 
     FEEDBACK_PRODUCER_PREFIX = 'feedbackProducerPrefix',
     FEEDBACK_PRODUCER_VALIDITY_PERIOD = 'feedbackProducerValidityPeriod',
+
+    AUTHORIZED_STATUS_ENERGY_AMOUNT = 'authorizedStatusEnergyAmount',
+    AUTHORIZED_STATUS_RESERVEBID = 'authorizedStatusReservebid',
   }

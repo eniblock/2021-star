@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {TypeLimitation} from "../../../models/enum/TypeLimitation.enum";
 import {RechercheHistoriqueLimitationEntiteWithAnnotation} from "../../../models/RechercheHistoriqueLimitation";
 import {SortHelper} from "../../../helpers/sort.helper";
+import {IndeminityStatus} from "../../../models/enum/IndeminityStatus.enum";
 
 @Component({
   selector: 'app-limitations-filter-on-results',
@@ -13,15 +14,18 @@ export class LimitationsFilterOnResultsComponent implements OnInit, OnChanges {
 
   @Output() typeLimitationChange = new EventEmitter<TypeLimitation | null>();
   @Output() motifNameChange = new EventEmitter<string | null>();
+  @Output() indeminityStatusChange = new EventEmitter<IndeminityStatus | null>();
   @Input() researchResult: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
 
   form: FormGroup = this.formBuilder.group({
     typeLimitation: [],
     motifName: [],
+    indeminityStatus: [],
   });
 
   TypeLimitationEnum = TypeLimitation;
   motifNames: string[] = [];
+  indeminityStatus: IndeminityStatus[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,10 +36,16 @@ export class LimitationsFilterOnResultsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // Motif names
     this.motifNames = this.researchResult
       .map(n => n.motifName)
       .sort(SortHelper.caseInsensitive);
     this.motifNames = [...new Set(this.motifNames)]; // remove doublons
+    // Indemnity status
+    this.indeminityStatus = this.researchResult
+      .map(n => n.feedbackProducer.indeminityStatus)
+      .sort(SortHelper.caseInsensitive);
+    this.indeminityStatus = [...new Set(this.indeminityStatus)]; // remove doublons
   }
 
   selectionTypeLimitation() {
@@ -48,4 +58,8 @@ export class LimitationsFilterOnResultsComponent implements OnInit, OnChanges {
     this.motifNameChange.emit(motifName);
   }
 
+  selectionIndemnityStatus() {
+    const motifIndeminityStatus = this.form.get("indeminityStatus")?.value;
+    this.indeminityStatusChange.emit(motifIndeminityStatus);
+  }
 }

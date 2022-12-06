@@ -13,6 +13,7 @@ import {DateHelper} from "../../helpers/date.helper";
 import {motifToString} from "../../rules/motif-rules";
 import {getLimitationType} from "../../rules/limitation-type-rules";
 import {TypeLimitation} from "../../models/enum/TypeLimitation.enum";
+import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
 
 @Component({
   selector: 'app-limitations',
@@ -26,6 +27,7 @@ export class LimitationsComponent implements OnInit {
   researchResultsWithOnlyOneSuborderFiltered?: RechercheHistoriqueLimitationEntiteWithAnnotation[];
 
   motifNameFilter: string | null = null;
+  indeminityStatusFilter: IndeminityStatus | null = null;
   typeLimitationFilter: TypeLimitation | null = null;
 
   typeInstance?: Instance;
@@ -88,10 +90,15 @@ export class LimitationsComponent implements OnInit {
     this.filterResults();
   }
 
+  indeminityStatusFilterChange(indeminityStatus: IndeminityStatus | null) {
+    this.indeminityStatusFilter = indeminityStatus;
+    this.filterResults();
+  }
+
   private filterResults() {
     this.researchResultsWithOnlyOneSuborderFiltered = this.researchResultsWithOnlyOneSuborder
       ?.filter(rhl => (this.typeLimitationFilter == null) ? true : rhl.limitationType == this.typeLimitationFilter)
       ?.filter(rhl => (this.motifNameFilter == null) ? true : rhl.motifName == this.motifNameFilter)
+      ?.filter(rhl => (this.indeminityStatusFilter == null) ? true : rhl.feedbackProducer.indeminityStatus == this.indeminityStatusFilter);
   }
-
 }

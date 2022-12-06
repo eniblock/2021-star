@@ -581,14 +581,31 @@ export class FeedbackProducerController {
 
         if (allResults && allResults.length > 0) {
             for (let result of allResults) {
-                const dataReference: DataReference = {
-                    collection: DocType.FEEDBACK_PRODUCER,
-                    data: {'activationDocumentMrid':result.activationDocumentMrid},
-                    dataAction: DataActionType.UPDATE,
-                    docType: DocType.FEEDBACK_PRODUCER,
 
-                };
-                indemnityReferences.push(dataReference);
+                var balancingDocument: BalancingDocument;
+                try {
+                    balancingDocument =
+                        await BalancingDocumentController.getObjByActivationDocumentMrid(params, result.activationDocumentMrid);
+                } catch (err) {
+                    //Do Nothing
+                }
+
+                if (balancingDocument
+                    && balancingDocument.balancingDocumentMrid
+                    && balancingDocument.balancingDocumentMrid.length > 0) {
+
+                    // Only update if a balancing exists
+
+                    const dataReference: DataReference = {
+                        collection: DocType.FEEDBACK_PRODUCER,
+                        data: {'activationDocumentMrid':result.activationDocumentMrid},
+                        dataAction: DataActionType.UPDATE,
+                        docType: DocType.FEEDBACK_PRODUCER,
+
+                    };
+                    indemnityReferences.push(dataReference);
+                }
+
             }
         }
 

@@ -20,6 +20,15 @@ jobs:
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
     - run: earthly ./backend+test
 
+  test-chaincode:
+    runs-on: [self-hosted]
+    steps:
+    - uses: eniblock/build/actions/setup@4.0
+      id: setup
+      with:
+        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - run: earthly ./chaincode+test
+
   lint-helm:
     runs-on: [self-hosted]
     steps:
@@ -34,7 +43,7 @@ jobs:
 
   docker-backend:
     runs-on: [self-hosted]
-    needs: [test-backend, lint-helm]
+    needs: [test-backend, lint-helm, test-chaincode]
     steps:
     - uses: eniblock/build/actions/setup@4.0
       id: setup
@@ -45,7 +54,7 @@ jobs:
 
   docker-keycloak:
     runs-on: [self-hosted]
-    needs: [test-backend, lint-helm]
+    needs: [test-backend, lint-helm, test-chaincode]
     steps:
     - uses: eniblock/build/actions/setup@4.0
       id: setup
@@ -56,7 +65,7 @@ jobs:
 
   docker-frontend:
     runs-on: [self-hosted]
-    needs: [test-backend, lint-helm]
+    needs: [test-backend, lint-helm, test-chaincode]
     steps:
     - uses: eniblock/build/actions/setup@4.0
       id: setup
@@ -67,7 +76,7 @@ jobs:
 
   docker-chaincode:
     runs-on: [self-hosted]
-    needs: [test-backend, lint-helm]
+    needs: [test-backend, lint-helm, test-chaincode]
     steps:
     - uses: eniblock/build/actions/setup@4.0
       id: setup

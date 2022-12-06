@@ -10,8 +10,7 @@
     },
     "scripts": {
         "lint": "tslint -c tslint.json 'src/**/*.ts'",
-        "pretest": "npm run lint",
-        "test": "nyc --reporter=text --reporter=html mocha -r ts-node/register test/**/*.spec.ts",
+        "test": "mocha -r ts-node/register test/*.spec.ts",
         "start": "set -x && fabric-chaincode-node start",
         "build": "tsc",
         "build:watch": "tsc -w",

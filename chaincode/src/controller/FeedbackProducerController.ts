@@ -286,7 +286,7 @@ export class FeedbackProducerController {
                 throw new Error(`ERROR updateFeedbackProducer : comment ${feedbackProducerObj.feedbackProducerMrid} is already filled and cannot be changed`);
             }
 
-            if (feedbackProducerObj.indeminityStatus !== IndeminityStatus.AGREEMENT) {
+            if (feedbackProducerObj.indeminityStatus !== IndeminityStatus.IN_PROGRESS) {
                 throw new Error(`ERROR updateFeedbackProducer : comment ${feedbackProducerObj.feedbackProducerMrid} cannot be changed with status ${feedbackProducerObj.indeminityStatus}`);
             }
 

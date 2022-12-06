@@ -395,12 +395,64 @@ export class BalancingDocumentController {
             balancingDocument.meteringPointMrid = activationDocument.registeredResourceMrid;
             balancingDocument.quantity = Number(energyAmount.quantity);
             balancingDocument.activationPriceAmount = reserveBid.energyPriceAmount;
-            balancingDocument.financialPriceAmount =
+
+            var financialPriceAmount =
                 balancingDocument.quantity * balancingDocument.activationPriceAmount;
+
+            financialPriceAmount = Math.round(financialPriceAmount*1000)/1000;
+
+            balancingDocument.financialPriceAmount = financialPriceAmount;
 
         }
 
         params.logger.debug('=============  END  : generateObj BalancingDocumentController ===========');
+        return balancingDocument;
+    }
+
+
+
+    public static async getObjByActivationDocumentMrid(
+        params: STARParameters,
+        activationDocumentMrid: string,
+        target: string = ''): Promise<BalancingDocument>{
+        params.logger.debug('============= START : getObjByActivationDocumentMrid BalancingDocumentController ===========');
+
+        var activationDocument: ActivationDocument = null;
+        var reserveBid: ReserveBidMarketDocument = null;
+        var energyAmount: EnergyAmount = null;
+
+
+        if (activationDocumentMrid && activationDocumentMrid.length > 0) {
+            try {
+                var activationDocumentRef : DataReference =
+                    await ActivationDocumentController.getActivationDocumentRefById(
+                        params, activationDocumentMrid, target);
+
+                activationDocument = activationDocumentRef.data;
+                target = activationDocumentRef.collection;
+
+                energyAmount = await EnergyAmountController.getByActivationDocument(
+                    params, activationDocument.activationDocumentMrid, target);
+
+                reserveBid = await ReserveBidMarketDocumentController.getByActivationDocument(
+                    params, activationDocument, target);
+
+            } catch (err) {
+                // Data not found
+                err = null;
+            }
+        }
+        params.logger.debug('-------------------------------------------------------')
+        params.logger.debug('-------------------------------------------------------')
+        params.logger.debug('activationDocument: ', activationDocument)
+        params.logger.debug('energyAmount: ', energyAmount)
+        params.logger.debug('reserveBid: ', reserveBid)
+        params.logger.debug('-------------------------------------------------------')
+        params.logger.debug('-------------------------------------------------------')
+
+        const balancingDocument: BalancingDocument = await this.generateObj(params, activationDocument, reserveBid, energyAmount);
+
+        params.logger.debug('=============  END  : getObjByActivationDocumentMrid BalancingDocumentController ===========');
         return balancingDocument;
     }
 

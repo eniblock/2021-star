@@ -18,6 +18,9 @@ import { DataActionType } from '../enums/DataActionType';
 import { IndeminityStatus } from '../enums/IndemnityStatus';
 import { RoleType } from '../enums/RoleType';
 import { QueryStateService } from './service/QueryStateService';
+import { BalancingDocument } from '../model/balancingDocument';
+import { BalancingDocumentController } from './BalancingDocumentController';
+import { BalancingDocumentService } from './service/BalancingDocumentService';
 
 
 
@@ -239,6 +242,23 @@ export class FeedbackProducerController {
             throw new Error('ERROR updateFeedbackProducer : no feedback to update.');
         }
 
+        //control if a Balancing exists for this activation Document
+        var balancingDocument: BalancingDocument;
+        try {
+            balancingDocument =
+                await BalancingDocumentController.getObjByActivationDocumentMrid(params, activationDocumentMrid);
+        } catch (err) {
+            throw new Error('ERROR updateFeedbackProducer : '.concat(err.message).concat(` for Activation Document ${activationDocumentMrid}.`));
+        }
+
+        if (!balancingDocument
+            || !balancingDocument.balancingDocumentMrid
+            || balancingDocument.balancingDocumentMrid.length === 0) {
+
+            throw new Error(`ERROR updateFeedbackProducer, no Indeminity found for Activation Document ${activationDocumentMrid}.`);
+        }
+
+
         const feedbackProducerMrid = this.getFeedbackProducerMrid(params, activationDocumentMrid);
         // Get existing Feedback Producer
         let existingFeedbackProducersRef: Map<string, DataReference>;
@@ -265,6 +285,11 @@ export class FeedbackProducerController {
             if (feedbackProducerObj.feedback && feedbackProducerObj.feedback.length > 0) {
                 throw new Error(`ERROR updateFeedbackProducer : comment ${feedbackProducerObj.feedbackProducerMrid} is already filled and cannot be changed`);
             }
+
+            if (feedbackProducerObj.indeminityStatus !== IndeminityStatus.IN_PROGRESS) {
+                throw new Error(`ERROR updateFeedbackProducer : comment ${feedbackProducerObj.feedbackProducerMrid} cannot be changed with status ${feedbackProducerObj.indeminityStatus}`);
+            }
+
 
             feedbackProducerObj.feedback = feedbackStr;
 
@@ -347,6 +372,7 @@ export class FeedbackProducerController {
 
             feedbackProducerObj.feedbackAnswer = answerStr;
             feedbackProducerObj.revisionNumber= '3';
+            feedbackProducerObj.indeminityStatus = IndeminityStatus.AGREEMENT
 
             for (const [key ] of existingFeedbackProducersRef) {
                 await FeedbackProducerService.write(params, feedbackProducerObj, key);
@@ -357,6 +383,40 @@ export class FeedbackProducerController {
         params.logger.info('=============  END  : Update Answer %s FeedbackProducerController ===========',
             feedbackProducerObj.feedbackProducerMrid,
         );
+    }
+
+
+
+    public static async getIndemnityStatus(
+        params: STARParameters,
+        activationDocumentMrid: string) : Promise<string> {
+
+        params.logger.debug('============= START : getIndemnityStatus FeedbackProducerController  ===========',
+            activationDocumentMrid);
+
+        var status: string = IndeminityStatus.IN_PROGRESS;
+
+        var feedbackProducerObj: FeedbackProducer = null;
+        try {
+            var feedbackProducerObj = await this.getByActivationDocumentMrId(params, activationDocumentMrid);
+        } catch (err) {
+            //Do Nothing, no status
+        }
+
+
+        if (feedbackProducerObj
+            && feedbackProducerObj.activationDocumentMrid
+            && feedbackProducerObj.activationDocumentMrid === activationDocumentMrid
+            && feedbackProducerObj.indeminityStatus
+            && feedbackProducerObj.indeminityStatus.length > 0) {
+
+            status = feedbackProducerObj.indeminityStatus;
+        }
+
+
+        params.logger.debug('=============  END  : getIndemnityStatus FeedbackProducerController  ===========',
+            activationDocumentMrid);
+        return status;
     }
 
 
@@ -388,24 +448,51 @@ export class FeedbackProducerController {
         try {
             existingFeedbackProducersRef = await StarPrivateDataService.getObjRefbyId(
                 params, {docType: DocType.FEEDBACK_PRODUCER, id: feedbackProducerMrid});
-        } catch (error) {
-            throw new Error('ERROR update Indeminity Status : '.concat(error.message));
+        } catch (err) {
+            throw new Error('ERROR update Indeminity Status : '.concat(err.message));
         }
 
-        const feedbackProducerRef: DataReference = existingFeedbackProducersRef.values().next().value;
-        const feedbackProducerObj: FeedbackProducer = feedbackProducerRef.data;
+        var feedbackProducerRef: DataReference = null;
+        if (existingFeedbackProducersRef) {
+
+            feedbackProducerRef = existingFeedbackProducersRef.values().next().value;
+        }
+
+        var feedbackProducerObj: FeedbackProducer = null;
+        if (feedbackProducerRef
+            && feedbackProducerRef.data) {
+
+            feedbackProducerObj = feedbackProducerRef.data;
+        }
 
 
         if (feedbackProducerObj
             && feedbackProducerObj.activationDocumentMrid === activationDocumentMrid) {
+
+            //control if a Balancing exists for this activation Document
+            var balancingDocument: BalancingDocument;
+            try {
+                balancingDocument =
+                    await BalancingDocumentController.getObjByActivationDocumentMrid(params, activationDocumentMrid);
+            } catch (err) {
+                throw new Error('ERROR update Indeminity Status : '.concat(err.message).concat(` for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`));
+            }
+
+            if (!balancingDocument
+                || !balancingDocument.balancingDocumentMrid
+                || balancingDocument.balancingDocumentMrid.length === 0) {
+
+                throw new Error(`ERROR update Indeminity Status, no Indeminity found for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`);
+            }
+
 
             let systemOperatorObj: SystemOperator;
             try {
                 systemOperatorObj =
                     await StarDataService.getObj(
                         params, {id: feedbackProducerObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
-            } catch (error) {
-                throw new Error('ERROR update Indeminity Status : '.concat(error.message).concat(` for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`));
+            } catch (err) {
+                throw new Error('ERROR update Indeminity Status : '.concat(err.message).concat(` for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`));
             }
 
             if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
@@ -419,6 +506,7 @@ export class FeedbackProducerController {
                 feedbackProducerObj.indeminityStatus = IndeminityStatus.IN_PROGRESS;
             }
 
+            var isFinalState: boolean = false;
             switch (feedbackProducerObj.indeminityStatus) {
                 case IndeminityStatus.IN_PROGRESS:
                     newStatus = IndeminityStatus.AGREEMENT;
@@ -428,11 +516,13 @@ export class FeedbackProducerController {
                         newStatus = IndeminityStatus.WAITING_INVOICE;
                     } else if (userRole === RoleType.Role_DSO) {
                         newStatus = IndeminityStatus.PROCESSED;
+                        isFinalState = true;
                     }
                     break;
                 case IndeminityStatus.WAITING_INVOICE:
                     if (userRole === RoleType.Role_TSO) {
                         newStatus = IndeminityStatus.INVOICE_SENT;
+                        isFinalState = true;
                     }
                     break;
                 default:
@@ -445,6 +535,9 @@ export class FeedbackProducerController {
 
                 for (const [key ] of existingFeedbackProducersRef) {
                     await FeedbackProducerService.write(params, feedbackProducerObj, key);
+                    if (isFinalState) {
+                        await BalancingDocumentService.write(params, balancingDocument, key);
+                    }
                 }
             }
 
@@ -474,6 +567,12 @@ export class FeedbackProducerController {
         argOrIndemnityStatus.push(`"indeminityStatus":{"$exists": false}`);
         args.push(await QueryStateService.buildORCriteria(argOrIndemnityStatus));
 
+
+        const argOrFeedback: string[] = [];
+        argOrFeedback.push(`"feedback":""`);
+        argOrFeedback.push(`"feedback":{"$exists": false}`);
+        args.push(await QueryStateService.buildORCriteria(argOrFeedback));
+
         args.push(`"validityPeriodEndDateTime":{"$exists": true}`);
         args.push(`"validityPeriodEndDateTime":{"$lte":${JSON.stringify(today)}}`);
         const query = await QueryStateService.buildQuery({documentType: DocType.FEEDBACK_PRODUCER, queryArgs: args});
@@ -482,14 +581,31 @@ export class FeedbackProducerController {
 
         if (allResults && allResults.length > 0) {
             for (let result of allResults) {
-                const dataReference: DataReference = {
-                    collection: DocType.FEEDBACK_PRODUCER,
-                    data: {'activationDocumentMrid':result.activationDocumentMrid},
-                    dataAction: DataActionType.UPDATE,
-                    docType: DocType.FEEDBACK_PRODUCER,
 
-                };
-                indemnityReferences.push(dataReference);
+                var balancingDocument: BalancingDocument;
+                try {
+                    balancingDocument =
+                        await BalancingDocumentController.getObjByActivationDocumentMrid(params, result.activationDocumentMrid);
+                } catch (err) {
+                    //Do Nothing
+                }
+
+                if (balancingDocument
+                    && balancingDocument.balancingDocumentMrid
+                    && balancingDocument.balancingDocumentMrid.length > 0) {
+
+                    // Only update if a balancing exists
+
+                    const dataReference: DataReference = {
+                        collection: DocType.FEEDBACK_PRODUCER,
+                        data: {'activationDocumentMrid':result.activationDocumentMrid},
+                        dataAction: DataActionType.UPDATE,
+                        docType: DocType.FEEDBACK_PRODUCER,
+
+                    };
+                    indemnityReferences.push(dataReference);
+                }
+
             }
         }
 

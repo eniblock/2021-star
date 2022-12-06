@@ -31,6 +31,10 @@ import { ReserveBidMarketDocumentService } from './service/ReserveBidMarketDocum
 import { StarPrivateDataService } from './service/StarPrivateDataService';
 import { SystemOperatorController } from './SystemOperatorController';
 import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
+import { SiteActivationIndexersController } from './dataIndex/SiteActivationIndexersController';
+import { ActivationDocumentAbstract } from '../model/dataIndex/activationDocumentAbstract';
+import { FeedbackProducer } from '../model/feedbackProducer';
+import { FeedbackProducerController } from './FeedbackProducerController';
 
 export class ReserveBidMarketDocumentController {
 
@@ -135,6 +139,24 @@ export class ReserveBidMarketDocumentController {
             const siteRef: DataReference = existingSitesRef.values().next().value;
             reserveBidObj = await this.fillObj(params, reserveBidObj, siteRef.data);
 
+        }
+
+        //Check for Indeminity Status on every Activation Document
+        var activationDocumentRefList: DataReference[] = await this.findEveryConcernedActivationDocumentObjList(params, reserveBidObj);
+        if (activationDocumentRefList
+            && activationDocumentRefList.length > 0) {
+
+            const authorizedStatusReserveBid: string[] = params.values.get(ParametersType.AUTHORIZED_STATUS_RESERVEBID);
+
+            for (var activationDocumentRef of activationDocumentRefList) {
+                const activationDocument: ActivationDocument = activationDocumentRef.data;
+                var indemnityStatus: string =
+                    await FeedbackProducerController.getIndemnityStatus(params, activationDocument.activationDocumentMrid);
+
+                if (!authorizedStatusReserveBid.includes(indemnityStatus)) {
+                    throw new Error(`ERROR status ${indemnityStatus} does not allow any change in ReserveBid for Site : ${reserveBidObj.meteringPointMrid}.`);
+                }
+            }
         }
 
         if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
@@ -351,6 +373,25 @@ export class ReserveBidMarketDocumentController {
                 return JSON.stringify(reserveBidObj);
             }
 
+            //Check for Indeminity Status on every Activation Document
+            var activationDocumentRefList: DataReference[] = await this.findEveryConcernedActivationDocumentObjList(params, reserveBidObj);
+            if (activationDocumentRefList
+                && activationDocumentRefList.length > 0) {
+
+                const authorizedStatusReserveBid: string[] = params.values.get(ParametersType.AUTHORIZED_STATUS_RESERVEBID);
+
+                for (var activationDocumentRef of activationDocumentRefList) {
+                    const activationDocument: ActivationDocument = activationDocumentRef.data;
+                    var indemnityStatus: string =
+                        await FeedbackProducerController.getIndemnityStatus(params, activationDocument.activationDocumentMrid);
+
+                    if (!authorizedStatusReserveBid.includes(indemnityStatus)) {
+                        throw new Error(`ERROR status ${indemnityStatus} does not allow any change in ReserveBid for Site : ${reserveBidObj.meteringPointMrid}.`);
+                    }
+                }
+            }
+
+
             const systemOperator = await SystemOperatorController.getSystemOperatorObjById(
                 params, reserveBidObj.senderMarketParticipantMrid);
             const systemOperatorRole = HLFServices.getUserRoleById(
@@ -476,7 +517,7 @@ export class ReserveBidMarketDocumentController {
         params: STARParameters,
         activationDocumentObj: ActivationDocument,
         target: string = ''): Promise<ReserveBidMarketDocument> {
-        params.logger.debug('============= START : getByActivationDocument BalancingDocumentController ===========');
+        params.logger.debug('============= START : getByActivationDocument ReserveBidMarketDocumentController ===========');
 
         let reserveBidValue: ReserveBidMarketDocument = null;
         let reserveBidValueRef: ReserveBidMarketDocument = null;
@@ -588,7 +629,7 @@ export class ReserveBidMarketDocumentController {
 
         }
 
-        params.logger.debug('=============  END  : getByActivationDocument BalancingDocumentController ===========');
+        params.logger.debug('=============  END  : getByActivationDocument ReserveBidMarketDocumentController ===========');
         return reserveBidValue;
     }
 
@@ -889,36 +930,36 @@ export class ReserveBidMarketDocumentController {
         return reserveBidObj;
     }
 
-    /*
-        inputStr : ReserveBidMrid - string
-        output : "any[]"
-    */
-    public static async getBalancingDocumentState(
-        params: STARParameters,
-        reserveBidMrid: string): Promise<DataReference[]> {
+    // /*
+    //     inputStr : ReserveBidMrid - string
+    //     output : "any[]"
+    // */
+    // public static async getBalancingDocumentState(
+    //     params: STARParameters,
+    //     reserveBidMrid: string): Promise<DataReference[]> {
 
-        params.logger.info(`============= START : getBalancingDocumentState ${reserveBidMrid} ReserveBidMarketDocumentController ===========`);
+    //     params.logger.info(`============= START : getBalancingDocumentState ${reserveBidMrid} ReserveBidMarketDocumentController ===========`);
 
-        const reserveBidObj = await this.getObjById(params, reserveBidMrid);
-        const activationDocumentRefList: DataReference[] = await this.findEveryConcernedActivationDocumentObjList(params, reserveBidObj);
+    //     const reserveBidObj = await this.getObjById(params, reserveBidMrid);
+    //     const activationDocumentRefList: DataReference[] = await this.findEveryConcernedActivationDocumentObjList(params, reserveBidObj);
 
-        const dataReferenceList: DataReference[] = [];
-        if (activationDocumentRefList && activationDocumentRefList.length > 0) {
-            for (const activationDocumentRef of activationDocumentRefList) {
-                params.logger.info(`need Balancing update about ${reserveBidMrid}: ${activationDocumentRef.data.activationDocumentMrid} (${activationDocumentRef.collection})`);
-                const dataReference:DataReference = {
-                    docType: DocType.BALANCING_DOCUMENT,
-                    collection: activationDocumentRef.collection,
-                    data: {activationDocument: activationDocumentRef.data},
-                    dataAction: DataActionType.UPDATE
-                }
-                dataReferenceList.push(dataReference);
-            }
-        }
+    //     const dataReferenceList: DataReference[] = [];
+    //     if (activationDocumentRefList && activationDocumentRefList.length > 0) {
+    //         for (const activationDocumentRef of activationDocumentRefList) {
+    //             params.logger.info(`need Balancing update about ${reserveBidMrid}: ${activationDocumentRef.data.activationDocumentMrid} (${activationDocumentRef.collection})`);
+    //             const dataReference:DataReference = {
+    //                 docType: DocType.BALANCING_DOCUMENT,
+    //                 collection: activationDocumentRef.collection,
+    //                 data: {activationDocument: activationDocumentRef.data},
+    //                 dataAction: DataActionType.UPDATE
+    //             }
+    //             dataReferenceList.push(dataReference);
+    //         }
+    //     }
 
-        params.logger.info('=============  END  : getBalancingDocumentState ReserveBidMarketDocumentController ===========');
-        return dataReferenceList;
-    }
+    //     params.logger.info('=============  END  : getBalancingDocumentState ReserveBidMarketDocumentController ===========');
+    //     return dataReferenceList;
+    // }
 
 
 
@@ -927,6 +968,70 @@ export class ReserveBidMarketDocumentController {
         reserveBidObj: ReserveBidMarketDocument): Promise<DataReference[]> {
 
         params.logger.debug('============= START : findEveryConcernedActivationDocumentIdList ReserveBidMarketDocumentController ===========');
+
+        const activationDocumentRefList: DataReference[] = [];
+        const indexers: IndexedData[] = await SiteActivationIndexersController.getAndNext(params, reserveBidObj.meteringPointMrid, reserveBidObj.validityPeriodStartDateTime)
+
+        if (indexers
+            && indexers.length > 0) {
+
+            var reserveBidMrid: string = reserveBidObj.reserveBidMrid;
+            var i = 0;
+
+            while (reserveBidMrid === reserveBidObj.reserveBidMrid
+                && i < indexers.length) {
+
+                const index = indexers[i];
+                const indexAbstract = index.indexedDataAbstractMap;
+                for (var abstract of indexAbstract.values()) {
+                    const activationAbstract: ActivationDocumentAbstract = abstract;
+
+                    var activationDocumentRef: DataReference = null;
+                    try {
+                        activationDocumentRef =
+                            await ActivationDocumentController.getActivationDocumentRefById(
+                                params,
+                                activationAbstract.activationDocumentMrid);
+                    } catch (err) {
+                        //Do Nothing
+                    }
+
+                    if (activationDocumentRef
+                        && activationDocumentRef.data
+                        && activationDocumentRef.data.activationDocumentMrid
+                        && activationDocumentRef.data.activationDocumentMrid === activationAbstract.activationDocumentMrid) {
+
+                        const reserveBidObjByActivationDocument : ReserveBidMarketDocument =
+                            await this.getByActivationDocument(params, activationDocumentRef.data);
+
+                        if (reserveBidObjByActivationDocument
+                            && reserveBidObjByActivationDocument.reserveBidMrid
+                            && reserveBidObjByActivationDocument.reserveBidMrid.length > 0) {
+
+                            reserveBidMrid = reserveBidObjByActivationDocument.reserveBidMrid;
+
+                            if (reserveBidMrid === reserveBidObj.reserveBidMrid) {
+                                activationDocumentRefList.push(activationDocumentRef);
+                            }
+                        } else {
+                            reserveBidMrid = '';
+                        }
+
+                    } else {
+                        reserveBidMrid = '';
+                    }
+
+
+                }
+
+
+            }
+
+
+
+        }
+
+
 
         const args: string[] = [];
         args.push(`"registeredResourceMrid":"${reserveBidObj.meteringPointMrid}"`);

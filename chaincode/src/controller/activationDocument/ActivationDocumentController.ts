@@ -146,6 +146,42 @@ export class ActivationDocumentController {
         return activationDocument;
     }
 
+
+    public static async getActivationDocumentRefById(
+        params: STARParameters,
+        activationDocumentMrid: string,
+        target: string = ''): Promise<DataReference> {
+        params.logger.debug('============= START : get ActivationDocument Ref By Id ===========');
+
+        let orderObj: ActivationDocument;
+        if (target && target.length > 0) {
+            orderObj = await StarPrivateDataService.getObj(
+                params, {id: activationDocumentMrid, docType: DocType.ACTIVATION_DOCUMENT, collection: target});
+        } else {
+            const result: Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(
+                params, {docType: DocType.ACTIVATION_DOCUMENT, id: activationDocumentMrid});
+            const dataReference = result.values().next().value;
+            if (dataReference && dataReference.data) {
+                orderObj = dataReference.data;
+            }
+            target = result.keys().next().value;
+
+        }
+
+        let dataFormatedResult: ActivationDocument = null;
+        if (orderObj) {
+            dataFormatedResult =
+                await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, orderObj);
+        }
+
+        params.logger.debug('=============  END  : get ActivationDocument Ref By Id ===========');
+        return {collection: target,
+                docType: DocType.ACTIVATION_DOCUMENT,
+                data: dataFormatedResult};
+    }
+
+
+
     public static async getActivationDocumentById(
         params: STARParameters,
         activationDocumentMrid: string,

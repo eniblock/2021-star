@@ -604,6 +604,7 @@ export class EnergyAmountController {
                 // DO nothing except "Not accessible information"
             }
 
+
             if (activNRJAmountIndx
                 && activNRJAmountIndx.indexedDataAbstractMap) {
 
@@ -707,6 +708,14 @@ export class EnergyAmountController {
 
         if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
             throw new Error(`ERROR manage EnergyAmount mismatch between ${energyType} : ${CommonService.formatDate(dateBegin)} and Activation Document : ${CommonService.formatDate(orderDateStart)} dates.`);
+        }
+
+
+        const indemnityStatus: string = await FeedbackProducerController.getIndemnityStatus(params, energyObj.activationDocumentMrid);
+        const authorizedStatusEnergyAmount: string[] = params.values.get(ParametersType.AUTHORIZED_STATUS_ENERGY_AMOUNT);
+
+        if (!authorizedStatusEnergyAmount.includes(indemnityStatus)) {
+            throw new Error(`ERROR status ${indemnityStatus} does not allow any change in EnergyAmount for Activation Document : ${energyObj.activationDocumentMrid}.`);
         }
 
         params.logger.debug('=============  END  : checkEnergyAmout EnergyAmountController ===========');

@@ -8,6 +8,11 @@ deps:
     COPY package.json package-lock.json ./
     RUN npm ci
 
+test:
+    FROM +deps
+    COPY . .
+    RUN npm run test
+
 docker:
     FROM +deps
     COPY . .

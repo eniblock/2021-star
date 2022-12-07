@@ -115,7 +115,7 @@ local_resource('helm lint',
 
 ############################# hlf #############################
 
-hlf_k8s_version = read_yaml(".gitlab-ci.yml")["variables"]["HLF_K8S_VERSION"]
+hlf_k8s_version = [l for l in str(read_file('./helm/Earthfile')).splitlines() if l.startswith('ARG hlf_k8s_version=')][0].split('=')[1]
 
 # image build
 custom_build(

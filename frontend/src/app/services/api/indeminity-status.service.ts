@@ -19,7 +19,7 @@ export class IndeminityStatusService {
     const formData = {
       activationDocumentMrid: activationDocumentMrid,
     };
-    return this.httpClient.post<IndeminityStatus>(`${environment.serverUrl}/indemnityStatusUpdate`, formData);
+    return this.httpClient.put<IndeminityStatus>(`${environment.serverUrl}/indemnityStatus`, formData, {responseType: 'text'} as any) as any;
   }
 
 }

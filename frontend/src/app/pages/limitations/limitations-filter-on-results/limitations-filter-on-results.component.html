@@ -1,6 +1,6 @@
 <form class="row" [formGroup]="form">
 
-  <mat-form-field class="col-12 col-lg-6" appearance="outline">
+  <mat-form-field class="col-12 col-lg-4" appearance="outline">
     <mat-label>Type de limitation</mat-label>
     <mat-select formControlName="typeLimitation" (selectionChange)="selectionTypeLimitation()">
       <mat-option [value]="null"></mat-option>
@@ -9,11 +9,19 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="col-12 col-lg-6" appearance="outline">
+  <mat-form-field class="col-12 col-lg-4" appearance="outline">
     <mat-label>Motif</mat-label>
     <mat-select formControlName="motifName" (selectionChange)="selectionMotifName()">
       <mat-option [value]="null"></mat-option>
       <mat-option *ngFor="let motifName of motifNames" [value]="motifName">{{ motifName }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="col-12 col-lg-4" appearance="outline">
+    <mat-label>Statut de l'indemnisation</mat-label>
+    <mat-select formControlName="indeminityStatus" (selectionChange)="selectionIndemnityStatus()">
+      <mat-option [value]="null"></mat-option>
+      <mat-option *ngFor="let s of indeminityStatus" [value]="s">{{ s | IndeminityStatus }}</mat-option>
     </mat-select>
   </mat-form-field>
 

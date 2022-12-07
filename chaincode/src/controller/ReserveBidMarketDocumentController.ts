@@ -141,23 +141,23 @@ export class ReserveBidMarketDocumentController {
 
         }
 
-        //Check for Indeminity Status on every Activation Document
-        var activationDocumentRefList: DataReference[] = await this.findEveryConcernedActivationDocumentObjList(params, reserveBidObj);
-        if (activationDocumentRefList
-            && activationDocumentRefList.length > 0) {
+        // //Check for Indeminity Status on every Activation Document
+        // var activationDocumentRefList: DataReference[] = await this.findEveryConcernedActivationDocumentObjList(params, reserveBidObj);
+        // if (activationDocumentRefList
+        //     && activationDocumentRefList.length > 0) {
 
-            const authorizedStatusReserveBid: string[] = params.values.get(ParametersType.AUTHORIZED_STATUS_RESERVEBID);
+        //     const authorizedStatusReserveBid: string[] = params.values.get(ParametersType.AUTHORIZED_STATUS_RESERVEBID);
 
-            for (var activationDocumentRef of activationDocumentRefList) {
-                const activationDocument: ActivationDocument = activationDocumentRef.data;
-                var indemnityStatus: string =
-                    await FeedbackProducerController.getIndemnityStatus(params, activationDocument.activationDocumentMrid);
+        //     for (var activationDocumentRef of activationDocumentRefList) {
+        //         const activationDocument: ActivationDocument = activationDocumentRef.data;
+        //         var indemnityStatus: string =
+        //             await FeedbackProducerController.getIndemnityStatus(params, activationDocument.activationDocumentMrid);
 
-                if (!authorizedStatusReserveBid.includes(indemnityStatus)) {
-                    throw new Error(`ERROR status ${indemnityStatus} does not allow any change in ReserveBid for Site : ${reserveBidObj.meteringPointMrid}.`);
-                }
-            }
-        }
+        //         if (!authorizedStatusReserveBid.includes(indemnityStatus)) {
+        //             throw new Error(`ERROR status ${indemnityStatus} does not allow any change in ReserveBid for Site : ${reserveBidObj.meteringPointMrid}.`);
+        //         }
+        //     }
+        // }
 
         if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
             reserveBidObj.attachmentsWithStatus = [];

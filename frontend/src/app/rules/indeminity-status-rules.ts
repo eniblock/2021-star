@@ -1,16 +1,18 @@
 import {IndeminityStatus} from "../models/enum/IndeminityStatus.enum";
 import {Instance} from "../models/enum/Instance.enum";
+import {RechercheHistoriqueLimitationEntiteWithAnnotation} from "../models/RechercheHistoriqueLimitation";
+import {TypeSite} from "../models/enum/TypeSite.enum";
 
-export const canChangeIndeminityStatus = (currentIndeminityStatus: IndeminityStatus | undefined, instance: Instance | undefined): boolean => {
-  if (currentIndeminityStatus == undefined || instance == undefined) {
+export const canChangeIndeminityStatus = (historiqueLimiation: RechercheHistoriqueLimitationEntiteWithAnnotation | undefined, instance: Instance | undefined): boolean => {
+  if (historiqueLimiation == undefined || historiqueLimiation.feedbackProducer == undefined || instance == undefined) {
     return false;
   }
-  switch (currentIndeminityStatus) {
+  switch (historiqueLimiation.feedbackProducer.indeminityStatus) {
     case IndeminityStatus.InProgress:
       return false;
       break;
     case IndeminityStatus.Agreement:
-      return instance == Instance.DSO || instance == Instance.TSO;
+      return (instance == Instance.DSO && historiqueLimiation?.site?.typeSite == TypeSite.HTA) || (instance == Instance.TSO && historiqueLimiation?.site?.typeSite == TypeSite.HTB);
     case IndeminityStatus.Processed:
       return false;
     case IndeminityStatus.WaitingInvoice:

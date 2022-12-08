@@ -8,6 +8,7 @@ import {
 } from "./limitation-indeminity-status-change/limitation-indeminity-status-change.component";
 import {canChangeIndeminityStatus} from "../../../rules/indeminity-status-rules";
 import {IndeminityStatusService} from "../../../services/api/indeminity-status.service";
+import {RechercheHistoriqueLimitationEntiteWithAnnotation} from "../../../models/RechercheHistoriqueLimitation";
 
 @Component({
   selector: 'app-limitation-indeminity-status',
@@ -15,9 +16,7 @@ import {IndeminityStatusService} from "../../../services/api/indeminity-status.s
   styleUrls: ['./limitation-indeminity-status.component.css']
 })
 export class LimitationIndeminityStatusComponent implements OnChanges {
-
-  @Input() indeminityStatus?: IndeminityStatus;
-  @Input() activationDocumentMrid: string = "";
+  @Input() historiqueLimitation?: RechercheHistoriqueLimitationEntiteWithAnnotation;
 
   instance?: Instance;
   loading = false;
@@ -39,7 +38,7 @@ export class LimitationIndeminityStatusComponent implements OnChanges {
   }
 
   private initComponent() {
-    switch (this.indeminityStatus) {
+    switch (this.historiqueLimitation?.feedbackProducer.indeminityStatus) {
       case IndeminityStatus.InProgress:
         this.statusClass = "text-grey";
         break;
@@ -56,24 +55,26 @@ export class LimitationIndeminityStatusComponent implements OnChanges {
         this.statusClass = "text-success";
         break;
     }
-    this.canChangeStatus = canChangeIndeminityStatus(this.indeminityStatus, this.instance);
+    this.canChangeStatus = canChangeIndeminityStatus(this.historiqueLimitation, this.instance);
   }
 
   onClick() {
     const dialogRef = this.dialog.open(LimitationIndeminityStatusChangeComponent, {
       width: '500px',
       data: {
-        indeminityStatus: this.indeminityStatus,
+        indeminityStatus: this.historiqueLimitation?.feedbackProducer.indeminityStatus,
       },
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != undefined) {
+      if (result != undefined && this.historiqueLimitation != undefined) {
         this.loading = true;
-        this.indeminityStatusService.updateIndeminisationStatus(this.activationDocumentMrid).subscribe(
+        this.indeminityStatusService.updateIndeminisationStatus(this.historiqueLimitation!.activationDocument.activationDocumentMrid).subscribe(
           (result) => {
             this.loading = false;
-            this.indeminityStatus = result;
+            if (this.historiqueLimitation) {
+              this.historiqueLimitation!.feedbackProducer.indeminityStatus = result;
+            }
             this.initComponent();
           },
           (error) => {

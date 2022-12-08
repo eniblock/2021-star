@@ -1,9 +1,9 @@
 import {IndeminityStatus} from "../models/enum/IndeminityStatus.enum";
 import {Instance} from "../models/enum/Instance.enum";
-import {RechercheHistoriqueLimitationEntiteWithAnnotation} from "../models/RechercheHistoriqueLimitation";
+import {RechercheHistoriqueLimitationEntite} from "../models/RechercheHistoriqueLimitation";
 import {TypeSite} from "../models/enum/TypeSite.enum";
 
-export const canChangeIndeminityStatus = (historiqueLimiation: RechercheHistoriqueLimitationEntiteWithAnnotation | undefined, instance: Instance | undefined): boolean => {
+export const canChangeIndeminityStatus = (historiqueLimiation: RechercheHistoriqueLimitationEntite | undefined, instance: Instance | undefined): boolean => {
   if (historiqueLimiation == undefined || historiqueLimiation.feedbackProducer == undefined || instance == undefined) {
     return false;
   }

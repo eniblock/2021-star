@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {IndeminityStatus} from "../../../models/enum/IndeminityStatus.enum";
 import {InstanceService} from "../../../services/api/instance.service";
 import {Instance} from "../../../models/enum/Instance.enum";
@@ -8,15 +8,15 @@ import {
 } from "./limitation-indeminity-status-change/limitation-indeminity-status-change.component";
 import {canChangeIndeminityStatus} from "../../../rules/indeminity-status-rules";
 import {IndeminityStatusService} from "../../../services/api/indeminity-status.service";
-import {RechercheHistoriqueLimitationEntiteWithAnnotation} from "../../../models/RechercheHistoriqueLimitation";
+import {RechercheHistoriqueLimitationEntite} from "../../../models/RechercheHistoriqueLimitation";
 
 @Component({
   selector: 'app-limitation-indeminity-status',
   templateUrl: './limitation-indeminity-status.component.html',
   styleUrls: ['./limitation-indeminity-status.component.css']
 })
-export class LimitationIndeminityStatusComponent implements OnChanges {
-  @Input() historiqueLimitation?: RechercheHistoriqueLimitationEntiteWithAnnotation;
+export class LimitationIndeminityStatusComponent implements OnInit, OnChanges {
+  @Input() historiqueLimitation?: RechercheHistoriqueLimitationEntite;
 
   instance?: Instance;
   loading = false;
@@ -30,11 +30,15 @@ export class LimitationIndeminityStatusComponent implements OnChanges {
   ) {
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnInit(): void {
     this.instanceService.getTypeInstance().subscribe(instance => {
       this.instance = instance;
       this.initComponent();
     })
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.initComponent();
   }
 
   private initComponent() {
@@ -84,4 +88,5 @@ export class LimitationIndeminityStatusComponent implements OnChanges {
       }
     });
   }
+
 }

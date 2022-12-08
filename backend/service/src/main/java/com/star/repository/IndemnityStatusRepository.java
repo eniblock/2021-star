@@ -1,6 +1,5 @@
 package com.star.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
@@ -10,7 +9,6 @@ import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -32,15 +30,11 @@ public class IndemnityStatusRepository {
     public String updateIndemnityStatus(String activationDocumentMrid) throws TechnicalException {
         try {
             byte[] response = contract.submitTransaction(UPDATE_INDEMNITY_STATUS, activationDocumentMrid);
-            return objectMapper.readValue(response, String.class);
+            return new String(response);
         } catch (TimeoutException timeoutException) {
             throw new TechnicalException("Erreur technique (Timeout exception) lors de la mise à jour du statut d'indemnité ", timeoutException);
-        } catch (JsonProcessingException jsonProcessingException) {
-            throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la mise à jour du statut d'indemnité ", jsonProcessingException);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
-        } catch (IOException exception) {
-            throw new TechnicalException("Erreur technique lors de la mise à jour du statut d'indemnité", exception);
         } catch (InterruptedException e) {
             throw new RuntimeException("Erreur technique (Interrupted Exception) lors de la mise à jour du statut d'indemnité ", e);
         }

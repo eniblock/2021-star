@@ -438,10 +438,10 @@ export class FeedbackProducerController {
             userRole = roleTable.get(identity.toLowerCase());
         }
 
-        if ( userRole !== RoleType.Role_TSO
-            && userRole !== RoleType.Role_DSO) {
-            throw new Error(`ERROR: Indemnity Status for the Activation Document ${activationDocumentMrid} cannot be updated by ${identity}`);
-        }
+        // if ( userRole !== RoleType.Role_TSO
+        //     && userRole !== RoleType.Role_DSO) {
+        //     throw new Error(`ERROR: Indemnity Status for the Activation Document ${activationDocumentMrid} cannot be updated by ${identity}`);
+        // }
 
         const feedbackProducerMrid = this.getFeedbackProducerMrid(params, activationDocumentMrid);
         let existingFeedbackProducersRef: Map<string, DataReference>;
@@ -520,7 +520,7 @@ export class FeedbackProducerController {
                     }
                     break;
                 case IndeminityStatus.WAITING_INVOICE:
-                    if (userRole === RoleType.Role_TSO) {
+                    if (userRole === RoleType.Role_Producer) {
                         newStatus = IndeminityStatus.INVOICE_SENT;
                         isFinalState = true;
                     }

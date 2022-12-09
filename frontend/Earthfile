@@ -2,6 +2,13 @@ VERSION 0.6
 
 ARG repository=eniblock/2021-star-frontend
 
+package-lock:
+    FROM node:16-alpine
+    COPY package.json ./
+    RUN --mount=type=cache,target=/root/.npm \
+        npm i
+    SAVE ARTIFACT package-lock.json AS LOCAL package-lock.json
+
 deps:
     FROM node:16-alpine
     RUN apk add fd

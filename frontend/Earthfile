@@ -22,18 +22,14 @@ dev:
     FROM +deps
     COPY . ./
     CMD npm start
-    ARG tag=latest
-    ARG ref=${repository}:${tag}
-    SAVE IMAGE ${ref}
+    ARG --required ref
+    SAVE IMAGE --push ${ref}
 
 build:
     FROM +dev
     RUN npm run build-prod
     RUN fd '.*\.(js|css|html|svg|txt|gif|wasm)$' dist -x gzip -k
     SAVE ARTIFACT --keep-ts /app/dist
-    # cache this target (including the layers from the target dependencies)
-    ARG tag=latest
-    SAVE IMAGE --cache-from=${repository}:cache-build-develop --push ${repository}:cache-build-${tag}
 
 docker:
     FROM nginx:1-alpine
@@ -41,9 +37,4 @@ docker:
     COPY --keep-ts +build/dist/frontend /usr/share/nginx/html
     ARG tag=latest
     ARG ref=${repository}:${tag}
-    ARG buildid=
-    IF [ "${buildid}" = "" ]
-        SAVE IMAGE --cache-from=${repository}:develop --push ${ref}
-    ELSE
-        SAVE IMAGE --cache-from=${repository}:develop --push ${ref} ${ref}.${buildid}
-    END
+    SAVE IMAGE --push ${ref}

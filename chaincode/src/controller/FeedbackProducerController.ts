@@ -528,11 +528,14 @@ export class FeedbackProducerController {
                     }
                     break;
                 default:
-                    newStatus = '';
+                    newStatus = feedbackProducerObj.indeminityStatus;
             }
 
 
-            if (newStatus && newStatus.length > 0) {
+            if (newStatus
+                && newStatus.length > 0
+                && newStatus !== feedbackProducerObj.indeminityStatus) {
+
                 feedbackProducerObj.indeminityStatus = newStatus;
 
                 for (const [key ] of existingFeedbackProducersRef) {

@@ -282,6 +282,13 @@ export class FeedbackProducerController {
             && feedbackProducerObj.feedbackProducerMrid
             && feedbackProducerObj.feedbackProducerMrid === feedbackProducerMrid) {
 
+            if (!feedbackProducerObj.indeminityStatus
+                || feedbackProducerObj.indeminityStatus.length === 0) {
+
+                feedbackProducerObj.indeminityStatus = IndeminityStatus.IN_PROGRESS;
+            }
+
+
             if (feedbackProducerObj.feedback && feedbackProducerObj.feedback.length > 0) {
                 throw new Error(`ERROR updateFeedbackProducer : comment ${feedbackProducerObj.feedbackProducerMrid} is already filled and cannot be changed`);
             }

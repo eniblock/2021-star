@@ -691,18 +691,18 @@ describe('Star Tests FeedbackProducer', () => {
 
 
     describe('Test updateIndeminityStatus', () => {
-        it('should return ERROR updateIndeminityStatus PRODUCER - no rights.', async () => {
-            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
+        // it('should return ERROR updateIndeminityStatus PRODUCER - no rights.', async () => {
+        //     const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+        //     transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
 
-            try {
-                await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
-            } catch (err) {
-                expect(err.message).to.equal(
-                    `ERROR: Indemnity Status for the Activation Document ${feedbackProducer.activationDocumentMrid} cannot be updated by ${OrganizationTypeMsp.PRODUCER.toLowerCase()}`);
-            }
+        //     try {
+        //         await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+        //     } catch (err) {
+        //         expect(err.message).to.equal(
+        //             `ERROR: Indemnity Status for the Activation Document ${feedbackProducer.activationDocumentMrid} cannot be updated by ${OrganizationTypeMsp.PRODUCER.toLowerCase()}`);
+        //     }
 
-        });
+        // });
 
 
 
@@ -1396,10 +1396,10 @@ describe('Star Tests FeedbackProducer', () => {
         });
 
 
-        it('should return SUCCESS updateIndeminityStatus INVOICE_SENT RTE.', async () => {
+        it('should return SUCCESS updateIndeminityStatus INVOICE_SENT PRODUCER.', async () => {
             const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
             feedbackProducer.indeminityStatus = IndeminityStatus.WAITING_INVOICE;
-            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
 
             transactionContext.stub.getPrivateData.withArgs('producer-rte',
                 feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));

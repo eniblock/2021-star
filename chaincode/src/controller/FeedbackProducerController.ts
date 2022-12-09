@@ -486,17 +486,19 @@ export class FeedbackProducerController {
             }
 
 
-            let systemOperatorObj: SystemOperator;
-            try {
-                systemOperatorObj =
-                    await StarDataService.getObj(
-                        params, {id: feedbackProducerObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
-            } catch (err) {
-                throw new Error('ERROR update Indeminity Status : '.concat(err.message).concat(` for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`));
-            }
+            if (userRole !== RoleType.Role_Producer) {
+                let systemOperatorObj: SystemOperator;
+                try {
+                    systemOperatorObj =
+                        await StarDataService.getObj(
+                            params, {id: feedbackProducerObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+                } catch (err) {
+                    throw new Error('ERROR update Indeminity Status : '.concat(err.message).concat(` for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`));
+                }
 
-            if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
-                throw new Error(`Organisation, ${identity} cannot update Indeminity Status for Feedback manager by ${systemOperatorObj.systemOperatorMarketParticipantName}`);
+                if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
+                    throw new Error(`Organisation, ${identity} cannot update Indeminity Status for Feedback manager by ${systemOperatorObj.systemOperatorMarketParticipantName}`);
+                }
             }
 
 

@@ -11,6 +11,7 @@ deps:
 test:
     FROM +deps
     COPY . .
+    ENV FORCE_COLOR=1
     RUN npm run test
 
 docker:

@@ -22,7 +22,7 @@ dev:
     FROM +deps
     COPY . ./
     CMD npm start
-    ARG --required ref
+    ARG ref
     SAVE IMAGE --push ${ref}
 
 build:

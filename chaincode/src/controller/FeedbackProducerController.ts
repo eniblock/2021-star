@@ -451,7 +451,7 @@ export class FeedbackProducerController {
             existingFeedbackProducersRef = await StarPrivateDataService.getObjRefbyId(
                 params, {docType: DocType.FEEDBACK_PRODUCER, id: feedbackProducerMrid});
         } catch (err) {
-            throw new Error('ERROR update Indeminity Status : '.concat(err.message));
+            //Do Nothing
         }
 
         var feedbackProducerRef: DataReference = null;
@@ -477,31 +477,31 @@ export class FeedbackProducerController {
                 balancingDocument =
                     await BalancingDocumentController.getObjByActivationDocumentMrid(params, activationDocumentMrid);
             } catch (err) {
-                throw new Error('ERROR update Indeminity Status : '.concat(err.message).concat(` for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`));
+                //Do Nothing
             }
 
-            if (!balancingDocument
-                || !balancingDocument.balancingDocumentMrid
-                || balancingDocument.balancingDocumentMrid.length === 0) {
+            // if (!balancingDocument
+            //     || !balancingDocument.balancingDocumentMrid
+            //     || balancingDocument.balancingDocumentMrid.length === 0) {
 
-                throw new Error(`ERROR update Indeminity Status, no Indeminity found for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`);
-            }
+            //     throw new Error(`ERROR update Indeminity Status, no Indeminity found for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`);
+            // }
 
 
-            if (userRole !== RoleType.Role_Producer) {
-                let systemOperatorObj: SystemOperator;
-                try {
-                    systemOperatorObj =
-                        await StarDataService.getObj(
-                            params, {id: feedbackProducerObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
-                } catch (err) {
-                    throw new Error('ERROR update Indeminity Status : '.concat(err.message).concat(` for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`));
-                }
+            // if (userRole !== RoleType.Role_Producer) {
+            //     let systemOperatorObj: SystemOperator;
+            //     try {
+            //         systemOperatorObj =
+            //             await StarDataService.getObj(
+            //                 params, {id: feedbackProducerObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+            //     } catch (err) {
+            //         throw new Error('ERROR update Indeminity Status : '.concat(err.message).concat(` for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`));
+            //     }
 
-                if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
-                    throw new Error(`Organisation, ${identity} cannot update Indeminity Status for Feedback manager by ${systemOperatorObj.systemOperatorMarketParticipantName}`);
-                }
-            }
+            //     if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
+            //         throw new Error(`Organisation, ${identity} cannot update Indeminity Status for Feedback manager by ${systemOperatorObj.systemOperatorMarketParticipantName}`);
+            //     }
+            // }
 
 
             if (!feedbackProducerObj.indeminityStatus

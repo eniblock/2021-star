@@ -623,11 +623,24 @@ export class HistoryController {
                         activationDocumentForBalancing = subOrderList[0];
                     }
 
-                    balancingDocument = await BalancingDocumentController.generateObj(
-                        params,
-                        activationDocumentForBalancing,
-                        reserveBid,
-                        energyAmount);
+                    try {
+                        balancingDocument =
+                            await BalancingDocumentController.getObjByActivationDocumentMrid(params, activationDocumentForBalancing.activationDocumentMrid);
+                    } catch (err) {
+                        // Do Nothing
+                    }
+
+                    if (!balancingDocument
+                        || !balancingDocument.balancingDocumentMrid
+                        || balancingDocument.balancingDocumentMrid.length === 0) {
+
+                        balancingDocument = await BalancingDocumentController.generateObj(
+                            params,
+                            activationDocumentForBalancing,
+                            reserveBid,
+                            energyAmount);
+                    }
+
                 }
             } catch (err) {
                     // DO nothing except "Not accessible information"

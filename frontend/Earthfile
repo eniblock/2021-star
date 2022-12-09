@@ -6,6 +6,7 @@ deps:
     FROM node:16-alpine
     RUN apk add fd
     WORKDIR /app
+    ENV FORCE_COLOR=1
     COPY package.json package-lock.json ./
     RUN --mount=type=cache,target=/root/.npm \
         npm ci

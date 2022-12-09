@@ -229,7 +229,7 @@ export class FeedbackProducerController {
         params: STARParameters,
         activationDocumentMrid: string,
         feedbackStr: string,
-        feedbackElements: string = ''): Promise<void> {
+        feedbackElements: string = ''): Promise<string> {
         params.logger.info('============= START : updateFeedbackProducer FeedbackProducerController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
@@ -308,6 +308,7 @@ export class FeedbackProducerController {
         params.logger.info('=============  END  : Update Feedback %s FeedbackProducerController ===========',
             feedbackProducerObj.feedbackProducerMrid,
         );
+        return JSON.stringify(feedbackProducerObj);
     }
 
 
@@ -316,7 +317,7 @@ export class FeedbackProducerController {
     public static async updateFeedbackProducerAnswer(
         params: STARParameters,
         activationDocumentMrid: string,
-        answerStr: string): Promise<void> {
+        answerStr: string): Promise<string> {
         params.logger.info('============= START : updateFeedbackProducerAnswer FeedbackProducerController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
@@ -383,6 +384,7 @@ export class FeedbackProducerController {
         params.logger.info('=============  END  : Update Answer %s FeedbackProducerController ===========',
             feedbackProducerObj.feedbackProducerMrid,
         );
+        return JSON.stringify(feedbackProducerObj);
     }
 
 

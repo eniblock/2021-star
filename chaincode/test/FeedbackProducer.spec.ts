@@ -1205,7 +1205,7 @@ describe('Star Tests FeedbackProducer', () => {
             // params.logger.info("ret: ", ret)
             // params.logger.info("xxxxx")
 
-            expect(ret).to.equal('');
+            expect(ret).to.equal(feedbackProducer.indeminityStatus);
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(0);
         });
@@ -1572,7 +1572,7 @@ describe('Star Tests FeedbackProducer', () => {
             // params.logger.info("ret: ", ret)
             // params.logger.info("xxxxx")
 
-            expect(ret).to.equal('');
+            expect(ret).to.equal(feedbackProducer.indeminityStatus);
 
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(0);
         });

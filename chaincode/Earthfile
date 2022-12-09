@@ -12,7 +12,7 @@ test:
     FROM +deps
     COPY . .
     ENV FORCE_COLOR=1
-    RUN npm run test
+    RUN --no-cache npm run test
 
 docker:
     FROM +deps

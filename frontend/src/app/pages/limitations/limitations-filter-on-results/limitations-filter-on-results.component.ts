@@ -43,7 +43,8 @@ export class LimitationsFilterOnResultsComponent implements OnInit, OnChanges {
     this.motifNames = [...new Set(this.motifNames)]; // remove doublons
     // Indemnity status
     this.indeminityStatus = this.researchResult
-      .map(n => n.feedbackProducer.indeminityStatus)
+      .map(n => n.feedbackProducer?.indeminityStatus)
+      .filter(n => n != null)
       .sort(SortHelper.caseInsensitive);
     this.indeminityStatus = [...new Set(this.indeminityStatus)]; // remove doublons
   }

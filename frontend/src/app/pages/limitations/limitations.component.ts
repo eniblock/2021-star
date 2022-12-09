@@ -99,6 +99,6 @@ export class LimitationsComponent implements OnInit {
     this.researchResultsWithOnlyOneSuborderFiltered = this.researchResultsWithOnlyOneSuborder
       ?.filter(rhl => (this.typeLimitationFilter == null) ? true : rhl.limitationType == this.typeLimitationFilter)
       ?.filter(rhl => (this.motifNameFilter == null) ? true : rhl.motifName == this.motifNameFilter)
-      ?.filter(rhl => (this.indeminityStatusFilter == null) ? true : rhl.feedbackProducer.indeminityStatus == this.indeminityStatusFilter);
+      ?.filter(rhl => (this.indeminityStatusFilter == null) ? true : rhl.feedbackProducer?.indeminityStatus == this.indeminityStatusFilter);
   }
 }

@@ -42,7 +42,7 @@ export class LimitationIndeminityStatusComponent implements OnInit, OnChanges {
   }
 
   private initComponent() {
-    switch (this.historiqueLimitation?.feedbackProducer.indeminityStatus) {
+    switch (this.historiqueLimitation?.feedbackProducer?.indeminityStatus) {
       case IndeminityStatus.InProgress:
         this.statusClass = "text-grey";
         break;

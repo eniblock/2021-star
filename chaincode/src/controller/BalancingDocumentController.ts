@@ -442,13 +442,13 @@ export class BalancingDocumentController {
                 err = null;
             }
         }
-        params.logger.debug('-------------------------------------------------------')
-        params.logger.debug('-------------------------------------------------------')
-        params.logger.debug('activationDocument: ', activationDocument)
-        params.logger.debug('energyAmount: ', energyAmount)
-        params.logger.debug('reserveBid: ', reserveBid)
-        params.logger.debug('-------------------------------------------------------')
-        params.logger.debug('-------------------------------------------------------')
+        params.logger.info('-------------------------------------------------------')
+        params.logger.info('-------------------------------------------------------')
+        params.logger.info('activationDocument: ', activationDocument)
+        params.logger.info('energyAmount: ', energyAmount)
+        params.logger.info('reserveBid: ', reserveBid)
+        params.logger.info('-------------------------------------------------------')
+        params.logger.info('-------------------------------------------------------')
 
         const balancingDocument: BalancingDocument = await this.generateObj(params, activationDocument, reserveBid, energyAmount);
 

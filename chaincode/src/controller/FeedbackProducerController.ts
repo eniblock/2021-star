@@ -255,6 +255,9 @@ export class FeedbackProducerController {
             || !balancingDocument.balancingDocumentMrid
             || balancingDocument.balancingDocumentMrid.length === 0) {
 
+            params.logger.error('activationDocumentMrid: ', activationDocumentMrid);
+            params.logger.error('balancing document: ', JSON.stringify(balancingDocument));
+
             throw new Error(`ERROR updateFeedbackProducer, no Indeminity found for Activation Document ${activationDocumentMrid}.`);
         }
 

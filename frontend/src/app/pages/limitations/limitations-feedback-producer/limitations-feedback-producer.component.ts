@@ -37,7 +37,7 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
       const now = new Date();
       const dateFin = new Date(this.historiqueLimitation.feedbackProducer.validityPeriodEndDateTime);
       this.buttonCreationFeedbackDisabled = now.getTime() > dateFin.getTime();
-      this.showButton = (this.historiqueLimitation.energyAmount?.quantity && this.historiqueLimitation.reserveBidMarketDocument?.energyPriceAmount && this.historiqueLimitation.balancingDocument?.financialPriceAmount) as any;
+      this.showButton = (this.historiqueLimitation.energyAmount?.quantity && this.historiqueLimitation.reserveBidMarketDocument?.energyPriceAmount && (this.historiqueLimitation.balancingDocument && this.historiqueLimitation.balancingDocument!.financialPriceAmount != null)) as any;
     } else {
       this.buttonCreationFeedbackDisabled = true;
       this.showButton = false;

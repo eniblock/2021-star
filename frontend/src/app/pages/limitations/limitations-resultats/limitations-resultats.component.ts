@@ -30,7 +30,7 @@ export class LimitationsResultatsComponent implements OnChanges {
   InstanceEnum = Instance;
   TypeSiteEnum = TypeSite;
 
-  dataSorted: any = [];
+  dataSorted: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
 
   instance?: Instance;
 
@@ -118,7 +118,16 @@ export class LimitationsResultatsComponent implements OnChanges {
 
   feedbackChange(feedbackProducer: FeedbackProducer, historiqueLimitation: RechercheHistoriqueLimitationEntite) {
     if (feedbackProducer) {
-      historiqueLimitation.feedbackProducer = feedbackProducer;
+      let dataIndex = this.data.findIndex(v => v == historiqueLimitation);
+      let dataSortedIndex = this.dataSorted.findIndex(v => v == historiqueLimitation);
+      if (dataIndex != -1) {
+        this.data[dataIndex].feedbackProducer = feedbackProducer;
+      }
+      if (dataSortedIndex != -1) {
+        this.dataSorted[dataSortedIndex].feedbackProducer = feedbackProducer;
+        this.dataSorted[dataSortedIndex] = {...this.dataSorted[dataSortedIndex]}; // To update view
+        this.dataSorted = [...this.dataSorted]; // To update view
+      }
     }
   }
 

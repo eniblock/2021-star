@@ -54,15 +54,15 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
       }
     });
     bottomSheetRef.afterDismissed().subscribe((data: FormFeedbackProducerBottomSheetResponse) => {
-      if (data) {
-        if (data.message) {
-          this.historiqueLimitation!.feedbackProducer.feedback = data.message;
+      if (data && data.feedbackProducer) {
+        if (data.feedbackProducer.feedback) {
+          this.historiqueLimitation!.feedbackProducer.feedback = data.feedbackProducer.feedback;
         }
-        if (data.elements) {
-          this.historiqueLimitation!.feedbackProducer.feedbackElements = data.elements;
+        if (data.feedbackProducer.feedbackElements) {
+          this.historiqueLimitation!.feedbackProducer.feedbackElements = data.feedbackProducer.feedbackElements;
         }
-        if (data.messageAnswer) {
-          this.historiqueLimitation!.feedbackProducer.feedbackAnswer = data.messageAnswer;
+        if (data.feedbackProducer.feedbackAnswer) {
+          this.historiqueLimitation!.feedbackProducer.feedbackAnswer = data.feedbackProducer.feedbackAnswer;
         }
       }
     });

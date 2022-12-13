@@ -1,9 +1,11 @@
 package com.star.rest;
 
+import com.star.dto.feedback.FeedBackDTO;
 import com.star.dto.feedback.FeedBackPostMessageAnswerDTO;
 import com.star.dto.feedback.FeedBackPostMessageDTO;
 import com.star.exception.TechnicalException;
 import com.star.mapper.feedback.FeedBackMapper;
+import com.star.models.feedback.FeedBack;
 import com.star.service.FeedBackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,9 +53,9 @@ public class FeedBackController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping()
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<Void> createFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageDTO feedBackDTO) throws TechnicalException {
-        feedBackService.postMessage(feedBackMapper.dtoToBean(feedBackDTO));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<FeedBackDTO> createFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageDTO feedBackDTO) throws TechnicalException {
+        var feedback = feedBackService.postMessage(feedBackMapper.dtoToBean(feedBackDTO));
+        return ResponseEntity.ok(feedBackMapper.beanToDto(feedback));
     }
 
     /**
@@ -70,9 +72,9 @@ public class FeedBackController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping("/answer")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
-    public ResponseEntity<Void> answerFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageAnswerDTO feedBackAnswerDTO) throws TechnicalException {
-        feedBackService.postMessageAnswer(feedBackMapper.dtoToBean(feedBackAnswerDTO));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<FeedBackDTO> answerFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageAnswerDTO feedBackAnswerDTO) throws TechnicalException {
+        var feedback = feedBackService.postMessageAnswer(feedBackMapper.dtoToBean(feedBackAnswerDTO));
+        return ResponseEntity.ok(feedBackMapper.beanToDto(feedback));
     }
 
 }

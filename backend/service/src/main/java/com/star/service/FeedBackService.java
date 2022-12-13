@@ -2,6 +2,7 @@ package com.star.service;
 
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
+import com.star.models.feedback.FeedBack;
 import com.star.models.feedback.FeedBackPostMessage;
 import com.star.models.feedback.FeedBackPostMessageAnswer;
 import com.star.repository.FeedBackRepository;
@@ -42,7 +43,7 @@ public class FeedBackService {
      * <p>
      * feedBackPostMessage
      */
-    public void postMessage(@Valid FeedBackPostMessage feedBackPostMessage) throws TechnicalException {
+    public FeedBack postMessage(@Valid FeedBackPostMessage feedBackPostMessage) throws TechnicalException {
         Validator validator = validatorFactory.getValidator();
         List<String> errors = new ArrayList<>();
         errors.addAll(validator.validate(feedBackPostMessage).stream().map(violation -> violation.getPropertyPath() + StringUtils.SPACE + violation.getMessage())
@@ -50,10 +51,10 @@ public class FeedBackService {
         if (isNotEmpty(errors)) {
             throw new BusinessException(StringUtils.join(errors, ","));
         }
-        feedBackRepository.postMessage(feedBackPostMessage);
+        return feedBackRepository.postMessage(feedBackPostMessage);
     }
 
-    public void postMessageAnswer(@Valid FeedBackPostMessageAnswer feedBackPostMessageAnswer) throws TechnicalException {
+    public FeedBack postMessageAnswer(@Valid FeedBackPostMessageAnswer feedBackPostMessageAnswer) throws TechnicalException {
         Validator validator = validatorFactory.getValidator();
         List<String> errors = new ArrayList<>();
         errors.addAll(validator.validate(feedBackPostMessageAnswer).stream().map(violation -> violation.getPropertyPath() + StringUtils.SPACE + violation.getMessage())
@@ -61,6 +62,6 @@ public class FeedBackService {
         if (isNotEmpty(errors)) {
             throw new BusinessException(StringUtils.join(errors, ","));
         }
-        feedBackRepository.postMessageAnswer(feedBackPostMessageAnswer);
+        return feedBackRepository.postMessageAnswer(feedBackPostMessageAnswer);
     }
 }

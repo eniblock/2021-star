@@ -1,8 +1,11 @@
 package com.star.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
+import com.star.models.feedback.FeedBack;
 import com.star.models.feedback.FeedBackPostMessage;
 import com.star.models.feedback.FeedBackPostMessageAnswer;
 import lombok.extern.slf4j.Slf4j;
@@ -39,13 +42,14 @@ public class FeedBackRepository {
      * @throws BusinessException
      * @throws TechnicalException
      */
-    public void postMessage(FeedBackPostMessage feedBackPostMessage) throws BusinessException, TechnicalException {
+    public FeedBack postMessage(FeedBackPostMessage feedBackPostMessage) throws BusinessException, TechnicalException {
         if (feedBackPostMessage == null) {
-            return;
+            return null;
         }
         log.info("Sauvegarde du feedBack {} ", feedBackPostMessage);
         try {
-            contract.submitTransaction(UPADTE_FEEDBACK_PRODUCER, feedBackPostMessage.getActivationDocumentMrid(), feedBackPostMessage.getFeedback(), feedBackPostMessage.getFeedbackElements());
+            byte[] response = contract.submitTransaction(UPADTE_FEEDBACK_PRODUCER, feedBackPostMessage.getActivationDocumentMrid(), feedBackPostMessage.getFeedback(), feedBackPostMessage.getFeedbackElements());
+            return response != null ? objectMapper.readValue(new String(response), FeedBack.class) : null;
         } catch (TimeoutException timeoutException) {
             throw new TechnicalException("Erreur technique (Timeout exception) lors de la création du feedback ", timeoutException);
         } catch (InterruptedException interruptedException) {
@@ -53,16 +57,20 @@ public class FeedBackRepository {
             Thread.currentThread().interrupt();
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
+        } catch (JsonProcessingException e) {
+            throw new TechnicalException("Erreur technique lors de la création du feedback", e);
         }
+        return null;
     }
 
-    public void postMessageAnswer(FeedBackPostMessageAnswer feedBackPostMessageAnswer) throws TechnicalException {
+    public FeedBack postMessageAnswer(FeedBackPostMessageAnswer feedBackPostMessageAnswer) throws TechnicalException {
         if (feedBackPostMessageAnswer == null) {
-            return;
+            return null;
         }
         log.info("Sauvegarde du feedBack answer {} ", feedBackPostMessageAnswer);
         try {
-            contract.submitTransaction(UPADTE_FEEDBACK_PRODUCER_ANSWER, feedBackPostMessageAnswer.getActivationDocumentMrid(), feedBackPostMessageAnswer.getFeedbackAnswer());
+            byte[] response = contract.submitTransaction(UPADTE_FEEDBACK_PRODUCER_ANSWER, feedBackPostMessageAnswer.getActivationDocumentMrid(), feedBackPostMessageAnswer.getFeedbackAnswer());
+            return response != null ? objectMapper.readValue(new String(response), FeedBack.class) : null;
         } catch (TimeoutException timeoutException) {
             throw new TechnicalException("Erreur technique (Timeout exception) lors de la création du feedback answer ", timeoutException);
         } catch (InterruptedException interruptedException) {
@@ -70,6 +78,12 @@ public class FeedBackRepository {
             Thread.currentThread().interrupt();
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
+        } catch (JsonProcessingException e) {
+            throw new TechnicalException("Erreur technique lors de la création du feedback answer", e);
         }
+        return null;
+
     }
 }

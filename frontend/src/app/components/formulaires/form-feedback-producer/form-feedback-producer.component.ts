@@ -7,11 +7,10 @@ import {MatStepper} from "@angular/material/stepper";
 import {environment} from "../../../../environments/environment";
 import {FeedbackProducerService} from "../../../services/api/feedback-producer.service";
 import {FeedbackElements} from "../../../rules/feedback-elements";
+import {FeedbackProducer} from "../../../models/FeedbackProducer";
 
 export interface FormFeedbackProducerBottomSheetResponse {
-  message: string | null,
-  elements: string | null,
-  messageAnswer: string | null,
+  feedbackProducer: FeedbackProducer | null
 };
 
 @Component({
@@ -84,9 +83,9 @@ export class FormFeedbackProducerComponent implements OnInit {
       // Producer give feedback
       const elements = this.form.get('elements')?.value.reduce((acc: string, val: string) => acc + "|" + val);
       this.feedbackProducerService.postFeedbackProducer(this.bottomSheetParams.activationDocumentMrid, message, elements).subscribe(
-        (ok) => {
+        (feedbackProducer) => {
           this.loading = false;
-          this.bottomsheet.dismiss({message: message, elements: elements, messageAnswer: null});
+          this.bottomsheet.dismiss({feedbackProducer: feedbackProducer});
         },
         (error) => {
           this.loading = false;
@@ -95,9 +94,9 @@ export class FormFeedbackProducerComponent implements OnInit {
     } else {
       // The answer
       this.feedbackProducerService.postFeedbackProducerAnswer(this.bottomSheetParams.activationDocumentMrid, message).subscribe(
-        (ok) => {
+        (feedbackProducer) => {
           this.loading = false;
-          this.bottomsheet.dismiss({message: null, elements: null, messageAnswer: message});
+          this.bottomsheet.dismiss({feedbackProducer: feedbackProducer});
         },
         (error) => {
           this.loading = false;

@@ -46,6 +46,9 @@ public class IndemnityStatusController {
     public ResponseEntity<String> updateEnergyAccount(
             @Valid @RequestBody IndemnityStatusUpdateDTO indemnityStatusUpdateDTO) throws TechnicalException {
         var result = indemnityStatusService.updateIndemnityStatus(indemnityStatusUpdateDTO.getActivationDocumentMrid());
+        if (result == null || result.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

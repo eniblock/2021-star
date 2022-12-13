@@ -15,6 +15,7 @@ import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
 import {Router} from "@angular/router";
 import {PATH_ROUTE} from "../../../app-routing.module";
 import {TypeImport} from "../../charger/charger.component";
+import {FeedbackProducer} from "../../../models/FeedbackProducer";
 
 @Component({
   selector: 'app-limitations-resultats',
@@ -29,7 +30,7 @@ export class LimitationsResultatsComponent implements OnChanges {
   InstanceEnum = Instance;
   TypeSiteEnum = TypeSite;
 
-  dataSorted: any = [];
+  dataSorted: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
 
   instance?: Instance;
 
@@ -114,4 +115,20 @@ export class LimitationsResultatsComponent implements OnChanges {
   prettyPrint(element: any) {
     return element === null ? "" : element;
   }
+
+  feedbackChange(feedbackProducer: FeedbackProducer, historiqueLimitation: RechercheHistoriqueLimitationEntite) {
+    if (feedbackProducer) {
+      let dataIndex = this.data.findIndex(v => v == historiqueLimitation);
+      let dataSortedIndex = this.dataSorted.findIndex(v => v == historiqueLimitation);
+      if (dataIndex != -1) {
+        this.data[dataIndex].feedbackProducer = feedbackProducer;
+      }
+      if (dataSortedIndex != -1) {
+        this.dataSorted[dataSortedIndex].feedbackProducer = feedbackProducer;
+        this.dataSorted[dataSortedIndex] = {...this.dataSorted[dataSortedIndex]}; // To update view
+        this.dataSorted = [...this.dataSorted]; // To update view
+      }
+    }
+  }
+
 }

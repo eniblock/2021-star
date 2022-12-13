@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {RechercheHistoriqueLimitationEntite} from "../../../models/RechercheHistoriqueLimitation";
 import {Instance} from "../../../models/enum/Instance.enum";
 import {InstanceService} from "../../../services/api/instance.service";
@@ -7,6 +7,7 @@ import {
   FormFeedbackProducerBottomSheetResponse,
   FormFeedbackProducerComponent
 } from "../../../components/formulaires/form-feedback-producer/form-feedback-producer.component";
+import {FeedbackProducer} from "../../../models/FeedbackProducer";
 
 @Component({
   selector: 'app-limitations-feedback-producer',
@@ -15,6 +16,7 @@ import {
 })
 export class LimitationsFeedbackProducerComponent implements OnChanges {
   @Input() historiqueLimitation?: RechercheHistoriqueLimitationEntite;
+  @Output() feedbackChange = new EventEmitter<FeedbackProducer>();
 
   InstanceEnum = Instance;
 
@@ -54,16 +56,17 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
       }
     });
     bottomSheetRef.afterDismissed().subscribe((data: FormFeedbackProducerBottomSheetResponse) => {
-      if (data) {
-        if (data.message) {
-          this.historiqueLimitation!.feedbackProducer.feedback = data.message;
+      if (data && data.feedbackProducer) {
+        if (data.feedbackProducer.feedback) {
+          this.historiqueLimitation!.feedbackProducer.feedback = data.feedbackProducer.feedback;
         }
-        if (data.elements) {
-          this.historiqueLimitation!.feedbackProducer.feedbackElements = data.elements;
+        if (data.feedbackProducer.feedbackElements) {
+          this.historiqueLimitation!.feedbackProducer.feedbackElements = data.feedbackProducer.feedbackElements;
         }
-        if (data.messageAnswer) {
-          this.historiqueLimitation!.feedbackProducer.feedbackAnswer = data.messageAnswer;
+        if (data.feedbackProducer.feedbackAnswer) {
+          this.historiqueLimitation!.feedbackProducer.feedbackAnswer = data.feedbackProducer.feedbackAnswer;
         }
+        this.feedbackChange.emit(data.feedbackProducer);
       }
     });
   }

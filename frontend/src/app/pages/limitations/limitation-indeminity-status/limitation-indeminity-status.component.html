@@ -2,7 +2,7 @@
   <span [innerText]="historiqueLimitation?.feedbackProducer?.indeminityStatus | IndeminityStatus"></span>
 </button>
 
-<button mat-raised-button color="primary" class="idemnityStatus" (click)="onClick()" *ngIf="canChangeStatus && historiqueLimitation?.feedbackProducer?.indeminityStatus">
+<button mat-raised-button color="primary" class="idemnityStatus" [disabled]="loading" (click)="onClick()" *ngIf="canChangeStatus && historiqueLimitation?.feedbackProducer?.indeminityStatus">
   <span [innerText]="historiqueLimitation?.feedbackProducer?.indeminityStatus | IndeminityStatus"></span>
   <br/>
   <i class="fa-solid fa-pen" *ngIf="!loading"></i>

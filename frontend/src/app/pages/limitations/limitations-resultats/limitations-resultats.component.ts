@@ -15,6 +15,7 @@ import {EligibilityStatus} from "../../../models/enum/EligibilityStatus.enum";
 import {Router} from "@angular/router";
 import {PATH_ROUTE} from "../../../app-routing.module";
 import {TypeImport} from "../../charger/charger.component";
+import {FeedbackProducer} from "../../../models/FeedbackProducer";
 
 @Component({
   selector: 'app-limitations-resultats',
@@ -114,4 +115,11 @@ export class LimitationsResultatsComponent implements OnChanges {
   prettyPrint(element: any) {
     return element === null ? "" : element;
   }
+
+  feedbackChange(feedbackProducer: FeedbackProducer, historiqueLimitation: RechercheHistoriqueLimitationEntite) {
+    if (feedbackProducer) {
+      historiqueLimitation.feedbackProducer = feedbackProducer;
+    }
+  }
+
 }

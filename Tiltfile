@@ -16,13 +16,9 @@ env = cfg.get('env', 'dev')
 orgs = cfg.get('orgs', ['rte'])
 
 clk_k8s = 'clk --force-color k8s -c ' + k8s_context() + ' '
-load('ext://kubectl_build', 'image_build', 'kubectl_build_registry_secret',
-     'kubectl_build_enable')
-kubectl_build_enable(
-    local(clk_k8s + 'features --field value --format plain kubectl_build'))
 
 if config.tilt_subcommand == 'up':
-    local(clk_k8s + 'helm-dependency-update helm/star')
+    local(clk_k8s + 'helm dependency-update helm/star')
 # manually download the dependencies
 local_resource('helm dependencies',
                clk_k8s + 'helm-dependency-update helm/star -ft Tiltfile',
@@ -107,10 +103,7 @@ for org in orgs:
             + ' delete pvc --selector=app.kubernetes.io/instance=star --namespace ' + org + ' --wait=false'
         )
 
-local_resource('helm lint',
-            'docker run --rm -t -v $PWD:/app registry.gitlab.com/xdev-tech/build/helm:3.1' +
-            ' lint star helm/star --values helm/star/values-rte-' + env + '.yaml',
-            'helm/star/', allow_parallel=True)
+local_resource('helm lint', 'earthly ./helm/+lint', './helm', allow_parallel=True)
 
 
 ############################# hlf #############################
@@ -125,8 +118,8 @@ custom_build(
 )
 
 if cfg.get('dev-hlf-k8s'):
-    image_build('registry.gitlab.com/xdev-tech/xdev-enterprise-business-network/hlf-k8s/helper', '../hlf-k8s/helper')
-    image_build('registry.gitlab.com/xdev-tech/xdev-enterprise-business-network/hlf-k8s/ccid', '../hlf-k8s/ccid')
+    custom_build('eniblock/hlf-helper', 'earthly ../hlf/helper+docker --ref=$EXPECTED_REF', ["../hlf/helper"])
+    custom_build('eniblock/hlf-ccid', 'earthly ../hlf/ccid+docker --ref=$EXPECTED_REF', ["../hlf/ccid"])
 
 
 load('ext://namespace', 'namespace_create')
@@ -189,48 +182,30 @@ if not os.path.exists(secret_path):
 
 k8s_yaml(read_file(secret_path))
 
+def hlf_k8s_helm(chart, name, namespace, values):
+    if cfg.get('dev-hlf-k8s'):
+        k8s_yaml(helm('../hlf/helm/' + chart, namespace=namespace, name=name, values=values))
+    else:
+        helm_remote(chart, repo_name='oci://ghcr.io/eniblock', version=hlf_k8s_version, namespace=namespace,
+                    release_name=name, values=values)
 
 #### orderers ####
 
 for org in ['enedis', 'producer', 'rte']:
     values = 'helm/hlf-ord/values-' + org + '-dev.yaml'
     orderer = read_yaml(values)['releaseName']
-    helm_remote('hlf-ord',
-        repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-        version=hlf_k8s_version,
-        namespace='orderer',
-        release_name=orderer,
-        values=[values],
-    )
-
+    hlf_k8s_helm('hlf-ord', orderer, 'orderer', [values])
     k8s_resource(orderer + '-hlf-ord', labels=['orderer'])
     if config.tilt_subcommand == 'up':
         local(clk_k8s + 'add-domain ' + orderer + '.orderer.localhost')
     if config.tilt_subcommand == 'down' and not cfg.get("no-volumes"):
         local('kubectl --context ' + k8s_context() + ' -n orderer delete pvc --selector=app.kubernetes.io/instance=' + orderer + ' --wait=false')
 
-
 #### peers ####
 
 for org in ['enedis', 'rte', 'producer']:
     for peer in ['peer1']:
-        if cfg.get('dev-hlf-k8s'):
-            k8s_yaml(
-                helm(
-                    '../hlf-k8s/hlf-peer',
-                    namespace=org,
-                    name=peer,
-                    values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],
-                )
-            )
-        else:
-            helm_remote('hlf-peer',
-                repo_url="https://gitlab.com/api/v4/projects/30449896/packages/helm/dev",
-                version=hlf_k8s_version,
-                namespace=org,
-                release_name=peer,
-                values=['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'],
-            )
+        hlf_k8s_helm('hlf-peer', peer, org, ['helm/hlf-peer/values-' + org + '-' + env + '-' + peer + '.yaml'])
 
         k8s_resource(peer + '-hlf-peer:statefulset:' + org, labels=[org])
         k8s_resource(peer + '-hlf-peer-couchdb:statefulset:' + org, labels=[org])

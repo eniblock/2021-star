@@ -11,8 +11,7 @@ jobs:
   sonarcloud:
     runs-on: [self-hosted]
     steps:
-    - uses: eniblock/build/actions/setup@4.0
-      id: setup
+    - uses: eniblock/build/actions/setup@4.1
       with:
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
         fetch-depth: "0"

@@ -7,6 +7,10 @@ on:
     tags:
       - "*"
 
+env:
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  HELM_DIR: ./helm/star
+
 jobs:
 
   ############################ tests ############################
@@ -14,28 +18,19 @@ jobs:
   test-backend:
     runs-on: [self-hosted]
     steps:
-    - uses: eniblock/build/actions/setup@4.0
-      id: setup
-      with:
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - uses: eniblock/build/actions/setup@4.1
     - run: earthly ./backend+test
 
   test-chaincode:
     runs-on: [self-hosted]
     steps:
-    - uses: eniblock/build/actions/setup@4.0
-      id: setup
-      with:
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - uses: eniblock/build/actions/setup@4.1
     - run: earthly ./chaincode+test
 
   lint-helm:
     runs-on: [self-hosted]
     steps:
-    - uses: eniblock/build/actions/setup@4.0
-      id: setup
-      with:
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - uses: eniblock/build/actions/setup@4.1
     - run: earthly ./helm+lint
 
 
@@ -45,45 +40,29 @@ jobs:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm, test-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@4.0
-      id: setup
-      with:
-        helmdir: helm/star
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-    - run: earthly ./backend+docker --tag=${{ steps.setup.outputs.tag }}
+    - uses: eniblock/build/actions/setup@4.1
+    - run: earthly ./backend+docker --tag=${{ env.TAG }}
 
   docker-keycloak:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm, test-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@4.0
-      id: setup
-      with:
-        helmdir: helm/star
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-    - run: earthly ./keycloak+docker --tag=${{ steps.setup.outputs.tag }}
+    - uses: eniblock/build/actions/setup@4.1
+    - run: earthly ./keycloak+docker --tag=${{ env.TAG }}
 
   docker-frontend:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm, test-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@4.0
-      id: setup
-      with:
-        helmdir: helm/star
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-    - run: earthly ./frontend+docker --tag=${{ steps.setup.outputs.tag }}
+    - uses: eniblock/build/actions/setup@4.1
+    - run: earthly ./frontend+docker --tag=${{ env.TAG }}
 
   docker-chaincode:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm, test-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@4.0
-      id: setup
-      with:
-        helmdir: helm/star
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
-    - run: earthly ./chaincode+docker --tag=${{ steps.setup.outputs.tag }}
+    - uses: eniblock/build/actions/setup@4.1
+    - run: earthly ./chaincode+docker --tag=${{ env.TAG }}
 
   ############################ helm ############################
 
@@ -91,28 +70,23 @@ jobs:
     runs-on: [self-hosted]
     needs: [docker-backend, docker-keycloak, docker-frontend, docker-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@4.0
-      id: setup
-      with:
-        helmdir: helm/star
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - uses: eniblock/build/actions/setup@4.1
     - name: Build/Publish the helm charts
       run: |
          earthly \
-         --secret registry_username=notused \
          --secret registry_password=${{ github.token }} \
          ./helm+publish \
-         --tag=${{ steps.setup.outputs.tag }}
+         --tag=${{ env.TAG }}
     - name: Generate job summary
       run: |
         cat <<"EOF" >> $GITHUB_STEP_SUMMARY
         ## Helm package
-        Helm package was generated with tag `${{ steps.setup.outputs.tag }}`
+        Helm package was generated with tag `${{ env.TAG }}`
 
         Use it directly with
 
         ~~~bash
-        helm install star oci://ghcr.io/eniblock/star --version ${{ steps.setup.outputs.tag }}
+        helm install star oci://ghcr.io/eniblock/star --version ${{ env.TAG }}
         ~~~
         EOF
 

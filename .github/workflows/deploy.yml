@@ -12,8 +12,7 @@ jobs:
     environment: ${{ inputs.environment }}
     concurrency: ${{ inputs.environment }}
     steps:
-    - uses: eniblock/build/actions/setup@4.0
-      id: setup
+    - uses: eniblock/build/actions/setup@4.1
       with:
         helmdir: helm/star
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -31,4 +30,4 @@ jobs:
           --secret kubeconfig2="$KUBECONFIG2" \
           ./helm+deploy \
           --environment ${{ inputs.environment }} \
-          --tag ${{ steps.setup.outputs.tag }}
+          --tag ${{ env.TAG }}

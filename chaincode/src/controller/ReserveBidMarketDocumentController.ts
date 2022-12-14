@@ -527,9 +527,7 @@ export class ReserveBidMarketDocumentController {
             try {
                 indexedSiteReserveBidList = await SiteReserveBidIndexersController.get(
                     params, activationDocumentObj.registeredResourceMrid, target);
-                params.logger.info('indexedSiteReserveBidList: ', JSON.stringify(indexedSiteReserveBidList));
             } catch (err) {
-                params.logger.info('Return Error 01');
                 // DO nothing except "Not accessible information"
             }
 
@@ -537,48 +535,34 @@ export class ReserveBidMarketDocumentController {
                 && indexedSiteReserveBidList.indexedDataAbstractMap
                 && indexedSiteReserveBidList.indexedDataAbstractMap.values) {
 
-                params.logger.info('In IF');
-
                 const dateDoc = new Date(activationDocumentObj.startCreatedDateTime);
 
                 if (dateDoc.getTime() !== dateDoc.getTime()) {
-                    params.logger.info('Return null 02');
                     return;
                 }
 
                 let reserveBidAbstractRef: ReserveBidMarketDocumentAbstract = null;
                 for (const reserveBidAbstract of indexedSiteReserveBidList.indexedDataAbstractMap.values()) {
-                    params.logger.info("reserveBidAbstract.reserveBidStatus: ", reserveBidAbstract.reserveBidStatus, " - ", reserveBidAbstract.reserveBidMrid);
+                    params.logger.debug("reserveBidAbstract.reserveBidStatus: ", reserveBidAbstract.reserveBidStatus, " - ", reserveBidAbstract.reserveBidMrid);
                     if (reserveBidAbstract.reserveBidStatus === ReserveBidStatus.VALIDATED) {
                         const check = await this.checkDataConsistance(activationDocumentObj, reserveBidAbstract);
-                        params.logger.info("check: ", check);
 
                         if (check) {
                             const dateBid = new Date(reserveBidAbstract.validityPeriodStartDateTime);
                             const dateCreationBid = new Date(reserveBidAbstract.createdDateTime);
 
-                            params.logger.info("level 1");
-
                             if (dateBid.getTime() === dateBid.getTime()
                                 && dateBid.getTime() <= dateDoc.getTime()) {
-
-                                params.logger.info("level 1-1");
-
 
                                 if (reserveBidAbstract
                                     && reserveBidAbstract.reserveBidMrid
                                     && reserveBidAbstract.reserveBidMrid.length > 0) {
 
-                                    params.logger.info("level 1-1-1");
                                     reserveBidValueRef = await this.getObjById(params, reserveBidAbstract.reserveBidMrid, target);
-                                    params.logger.info("level 1-1-2");
-
                                 }
-                                params.logger.info("level 1-2");
 
                                 if (reserveBidValueRef.reserveBidStatus === ReserveBidStatus.VALIDATED) {
-                                    params.logger.info("level 1-2-1");
-                                    params.logger.info("reserveBidValueRef.reserveBidStatus: ", reserveBidValueRef.reserveBidStatus, " - ", reserveBidValueRef.reserveBidMrid);
+                                    params.logger.debug("reserveBidValueRef.reserveBidStatus: ", reserveBidValueRef.reserveBidStatus, " - ", reserveBidValueRef.reserveBidMrid);
 
                                     if (!reserveBidAbstractRef
                                         || !reserveBidAbstractRef.reserveBidMrid
@@ -586,10 +570,8 @@ export class ReserveBidMarketDocumentController {
 
                                         reserveBidAbstractRef = reserveBidAbstract;
                                         reserveBidValue = reserveBidValueRef;
-                                        params.logger.info("level 1-2-1-1");
 
                                     } else {
-                                        params.logger.info("level 1-2-1-2");
                                         const dateBidRef = new Date(reserveBidAbstractRef.validityPeriodStartDateTime);
                                         const dateCreationBidRef = new Date(reserveBidAbstractRef.createdDateTime);
 
@@ -598,54 +580,36 @@ export class ReserveBidMarketDocumentController {
                                             (dateCreationBidRef.getTime() === dateCreationBidRef.getTime());
 
                                         if (dateBidRef.getTime() !== dateBidRef.getTime()) {
-                                            params.logger.info("level 1-2-1-2-1");
 
                                             reserveBidAbstractRef = reserveBidAbstract;
                                             reserveBidValue = reserveBidValueRef;
 
                                         } else if (!dateCreationBidRefOk) {
-                                            params.logger.info("level 1-2-1-2-2");
 
                                             reserveBidAbstractRef = reserveBidAbstract;
                                             reserveBidValue = reserveBidValueRef;
 
                                         } else if (dateBidRef.getTime() < dateBid.getTime()) {
-                                            params.logger.info("level 1-2-1-2-3");
 
                                             reserveBidAbstractRef = reserveBidAbstract;
                                             reserveBidValue = reserveBidValueRef;
 
                                         } else if (dateBidRef.getTime() === dateBid.getTime()) {
-                                            params.logger.info("level 1-2-1-2-4");
 
                                             if (dateCreationBidOk
                                                 && dateCreationBidRefOk
                                                 && dateCreationBid > dateCreationBidRef) {
 
-                                                params.logger.info("level 1-2-1-2-4-1");
-
                                                 reserveBidAbstractRef = reserveBidAbstract;
                                                 reserveBidValue = reserveBidValueRef;
                                             }
-                                            params.logger.info("level 1-2-1-2-5");
                                         }
-                                        params.logger.info("level 1-2-1-3");
-
                                     }
-                                    params.logger.info("level 1-2-2");
                                 }
-                                params.logger.info("level 1-3");
-
                             }
-                            params.logger.info("level 2");
-
                         }
-                        params.logger.info("end A");
                     }
-                    params.logger.info("end B");
-
                 }
-                params.logger.info("end C");
 
                 // if (reserveBidAbstractRef
                 //     && reserveBidAbstractRef.reserveBidMrid
@@ -654,10 +618,8 @@ export class ReserveBidMarketDocumentController {
                 //     reserveBidValue = await this.getObjById(params, reserveBidAbstractRef.reserveBidMrid, target);
                 // }
             }
-            params.logger.info("end D");
 
         }
-        params.logger.info("end E");
 
         params.logger.debug('=============  END  : getByActivationDocument ReserveBidMarketDocumentController ===========');
         return reserveBidValue;

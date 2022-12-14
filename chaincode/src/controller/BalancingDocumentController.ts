@@ -435,7 +435,7 @@ export class BalancingDocumentController {
                     params, activationDocument.activationDocumentMrid, target);
 
                 reserveBid = await ReserveBidMarketDocumentController.getByActivationDocument(
-                    params, activationDocument, target);
+                    params, activationDocument);
 
             } catch (err) {
                 // Data not found

@@ -26,15 +26,15 @@ export class BalancingDocumentController {
     }
 
 
-    // public static async searchByCriteria(params: STARParameters, criteria: string): Promise<string> {
-    //     params.logger.debug('============= START : search by criteria BalancingDocumentController ===========');
+    public static async searchByCriteria(params: STARParameters, criteria: string): Promise<string> {
+        params.logger.debug('============= START : search by criteria BalancingDocumentController ===========');
 
-    //     const criteriaObj = BalancingDocumentSearchCriteria.formatString(criteria);
-    //     const allResults = await this.searchObjByCriteria(params, criteriaObj);
+        const criteriaObj = BalancingDocumentSearchCriteria.formatString(criteria);
+        const allResults = await this.searchObjByCriteria(params, criteriaObj);
 
-    //     params.logger.debug('=============  END  : search by criteria BalancingDocumentController ===========');
-    //     return JSON.stringify(allResults);
-    // }
+        params.logger.debug('=============  END  : search by criteria BalancingDocumentController ===========');
+        return JSON.stringify(allResults);
+    }
 
 
     // public static async getByActivationDocumentMrId(
@@ -195,35 +195,35 @@ export class BalancingDocumentController {
     //     return balancingDocument;
     // }
 
-    // private static async searchObjByCriteria(
-    //     params: STARParameters,
-    //     criteriaObj: BalancingDocumentSearchCriteria): Promise<BalancingDocument[]> {
+    private static async searchObjByCriteria(
+        params: STARParameters,
+        criteriaObj: BalancingDocumentSearchCriteria): Promise<BalancingDocument[]> {
 
-    //     params.logger.debug('============= START : search obj by criteria BalancingDocumentController ===========');
+        params.logger.debug('============= START : search obj by criteria BalancingDocumentController ===========');
 
-    //     const args: string[] = [];
-    //     if (criteriaObj.meteringPointMrid && criteriaObj.meteringPointMrid.length > 0) {
-    //         args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
-    //     }
-    //     if (criteriaObj.activationDocumentMrid && criteriaObj.activationDocumentMrid.length > 0) {
-    //         args.push(`"activationDocumentMrid":"${criteriaObj.activationDocumentMrid}"`);
-    //     }
-    //     if (criteriaObj.startCreatedDateTime && criteriaObj.startCreatedDateTime.length > 0) {
-    //         args.push(`"createdDateTime":{"$gte": ${JSON.stringify(criteriaObj.startCreatedDateTime)}}`);
-    //     }
-    //     if (criteriaObj.endCreatedDateTime && criteriaObj.endCreatedDateTime.length > 0) {
-    //         args.push(`"createdDateTime":{"$lte": ${JSON.stringify(criteriaObj.endCreatedDateTime)}}`);
-    //     }
+        const args: string[] = [];
+        if (criteriaObj.meteringPointMrid && criteriaObj.meteringPointMrid.length > 0) {
+            args.push(`"meteringPointMrid":"${criteriaObj.meteringPointMrid}"`);
+        }
+        if (criteriaObj.activationDocumentMrid && criteriaObj.activationDocumentMrid.length > 0) {
+            args.push(`"activationDocumentMrid":"${criteriaObj.activationDocumentMrid}"`);
+        }
+        if (criteriaObj.startCreatedDateTime && criteriaObj.startCreatedDateTime.length > 0) {
+            args.push(`"createdDateTime":{"$gte": ${JSON.stringify(criteriaObj.startCreatedDateTime)}}`);
+        }
+        if (criteriaObj.endCreatedDateTime && criteriaObj.endCreatedDateTime.length > 0) {
+            args.push(`"createdDateTime":{"$lte": ${JSON.stringify(criteriaObj.endCreatedDateTime)}}`);
+        }
 
-    //     if (args.length === 0) {
-    //         throw new Error(`Balancing Document Search criteria needs, at least, 1 criteria`);
-    //     }
+        if (args.length === 0) {
+            throw new Error(`Balancing Document Search criteria needs, at least, 1 criteria`);
+        }
 
-    //     const query = await QueryStateService.buildQuery({documentType: DocType.BALANCING_DOCUMENT, queryArgs: args});
+        const query = await QueryStateService.buildQuery({documentType: DocType.BALANCING_DOCUMENT, queryArgs: args});
 
-    //     params.logger.debug('=============  END  : search obj by criteria BalancingDocumentController ===========');
-    //     return await BalancingDocumentService.getQueryArrayResult(params, query);
-    // }
+        params.logger.debug('=============  END  : search obj by criteria BalancingDocumentController ===========');
+        return await BalancingDocumentService.getQueryArrayResult(params, query);
+    }
 
     // private static async getObjByIdArgument(
     //     params: STARParameters,

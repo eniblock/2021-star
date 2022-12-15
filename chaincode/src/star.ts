@@ -862,8 +862,7 @@ export class Star extends Contract {
         ctx: Context, inputStr: string) {
         try {
             const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return "[]";
-            // return (await BalancingDocumentController.searchByCriteria(params, inputStr));
+            return (await BalancingDocumentController.searchByCriteria(params, inputStr));
         } catch (error) {
             throw error;
         }

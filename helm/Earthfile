@@ -9,7 +9,7 @@ IMPORT $deployhelper AS deploy
 ARG repository=ghcr.io/eniblock/star
 
 ARG hlf_k8s_repo=ghcr.io/eniblock
-ARG hlf_k8s_version=0.2.0-develop.3
+ARG hlf_k8s_version=0.2.0
 
 deps:
     DO helm+BASE

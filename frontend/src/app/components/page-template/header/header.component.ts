@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Instance} from "../../../models/enum/Instance.enum";
+import {InstanceService} from "../../../services/api/instance.service";
+import {ReconciliationService} from "../../../services/api/reconciliation.service";
 
 @Component({
   selector: 'app-header',
@@ -6,9 +9,30 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
+  InstanceEnum = Instance;
+
   hasNotifs = false;
+  typeInstance?: Instance;
 
-  constructor() {}
+  pendingReconciliation = false;
 
-  ngOnInit() {}
+  constructor(
+    private instanceService: InstanceService,
+    private reconciliationService: ReconciliationService,
+  ) {
+    this.instanceService.getTypeInstance()
+      .subscribe((typeInstance) => this.typeInstance = typeInstance);
+  }
+
+  ngOnInit() {
+  }
+
+  reconciliate() {
+    this.pendingReconciliation = true;
+    this.reconciliationService.reconciliate()
+      .subscribe(
+        ok => this.pendingReconciliation = false
+      );
+  }
+
 }

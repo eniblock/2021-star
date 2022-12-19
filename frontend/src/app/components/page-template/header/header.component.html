@@ -2,7 +2,7 @@
 
   <button mat-icon-button class="me-2" (click)="reconciliate()" [disabled]="pendingReconciliation" matTooltip="Lancer la réconciliation" *ngIf="typeInstance != InstanceEnum.PRODUCER">
     <i class="fa-solid fa-handshake lead" *ngIf="!pendingReconciliation"></i>
-    <i class="fa-solid fa-hourglass lead" *ngIf="pendingReconciliation"></i>
+    <i class="fa-solid fa-hourglass" *ngIf="pendingReconciliation"></i>
   </button>
 
   <button mat-icon-button class="me-4">

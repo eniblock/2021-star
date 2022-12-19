@@ -98,3 +98,30 @@ https://enedis.staging.star.eniblock.fr/
 https://producer.staging.star.eniblock.fr/
 
 https://rte.staging.star.eniblock.fr/
+
+
+# Making a release a production
+
+Each release is production must be tagged. The CI checks that the tag and the version number in the `Chart.yaml` file
+are exactly the same, so first make sure `Chart.yaml` contains the expected version.
+
+Then create a tag, normally on the `staging` branch
+
+~~~
+git checkout staging
+# check the version in ./helm/star/Chart.yaml
+git tag -m 1.2.1 1.2.1
+git push --tag
+~~~
+
+Once the artifact are ready, trigger a deployment on the production environments by merging the tag in the `prod`.
+
+~~~
+git checkout prod
+git merge --ff-only 1.2.1
+git push
+~~~
+
+Make sure a reviewer is accepting the deployment in github actions.
+
+Finally, bump the version number in `Chart.yaml` to the next expected version.

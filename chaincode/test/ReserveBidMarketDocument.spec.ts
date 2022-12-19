@@ -43,6 +43,7 @@ import { ActivationDocumentDateMax } from '../src/model/dataIndex/activationDocu
 import { ActivationEnergyAmountIndexersController } from '../src/controller/dataIndex/ActivationEnergyAmountIndexersController';
 import { EnergyAmountAbstract } from '../src/model/dataIndex/energyAmountAbstract';
 import { ActivationDocumentAbstract } from '../src/model/dataIndex/activationDocumentAbstract';
+import { ReserveBidMarketType } from '../src/enums/ReserveBidMarketType';
 
 
 
@@ -96,6 +97,36 @@ describe('Star Tests ReserveBidMarketDocument', () => {
     // */
     // public async CreateReserveBidMarketDocument(ctx: Context, inputStr: string)
     describe('Test CreateReserveBidMarketDocument', () => {
+        it('should return ERROR on CreateReserveBidMarketDocument initial creation by Enedis', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionNames: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+
+            const siteReserveBid: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            transactionContext.stub.getPrivateData.withArgs(collectionNames[0], siteReserveBid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(siteReserveBid)));
+
+            const attachmentFile: AttachmentFile = JSON.parse(JSON.stringify(Values.AttachmentFile_1));
+            const attachmentFileList: AttachmentFile[] = [attachmentFile];
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
+            reserveBidObj.attachments = [attachmentFile.fileId];
+
+            reserveBidObj.marketType = 'XXX';
+
+            const reserveBidCreationObj: ReserveBidMarketDocumentCreation = {
+                reserveBid: reserveBidObj,
+                attachmentFileList: attachmentFileList
+            }
+
+            try {
+                await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
+            } catch (err) {
+                // params.logger.info('err: ', err.message)
+                expect(err.message).to.equal(`MarketType can ony be ${ReserveBidMarketType.OA}, ${ReserveBidMarketType.CR} or ${ReserveBidMarketType.DAILY_MARKET}`);
+            }
+
+        });
+
         it('should return ERROR on CreateReserveBidMarketDocument initial creation by Enedis', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
@@ -293,6 +324,8 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
             const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTA_ReserveBidMarketDocument_1_Full));
             reserveBidObj.attachments = [attachmentFile.fileId];
+
+            reserveBidObj.marketType = ReserveBidMarketType.DAILY_MARKET;
 
             const reserveBidCreationObj: ReserveBidMarketDocumentCreation = {
                 reserveBid: reserveBidObj

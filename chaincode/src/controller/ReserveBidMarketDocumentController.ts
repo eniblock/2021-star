@@ -35,6 +35,7 @@ import { SiteActivationIndexersController } from './dataIndex/SiteActivationInde
 import { ActivationDocumentAbstract } from '../model/dataIndex/activationDocumentAbstract';
 import { FeedbackProducer } from '../model/feedbackProducer';
 import { FeedbackProducerController } from './FeedbackProducerController';
+import { ReserveBidMarketType } from '../enums/ReserveBidMarketType';
 
 export class ReserveBidMarketDocumentController {
 
@@ -92,6 +93,15 @@ export class ReserveBidMarketDocumentController {
             reserveBidObj,
             {strict: true, abortEarly: false},
         );
+
+        if (reserveBidObj.marketType) {
+            if (reserveBidObj.marketType !== ReserveBidMarketType.OA
+                && reserveBidObj.marketType !== ReserveBidMarketType.CR
+                && reserveBidObj.marketType !== ReserveBidMarketType.DAILY_MARKET) {
+
+                throw new Error(`MarketType can ony be ${ReserveBidMarketType.OA}, ${ReserveBidMarketType.CR} or ${ReserveBidMarketType.DAILY_MARKET}`);
+            }
+        }
 
         const identity = params.values.get(ParametersType.IDENTITY);
 

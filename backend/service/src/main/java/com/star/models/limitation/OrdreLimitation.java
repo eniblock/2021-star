@@ -61,6 +61,8 @@ public class OrdreLimitation implements ImportCSV {
     private boolean potentialChild;
     @JsonIgnore
     private boolean receiverRole;
+    @JsonIgnore
+    private boolean senderRole;
 
     @JsonIgnore
     @Override

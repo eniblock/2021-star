@@ -30,6 +30,7 @@ export class ActivationDocument {
             'registeredResourceMrid is required').typeError('registeredResourceMrid must be a string'),
         revisionNumber: Yup.string().notRequired().matches(/^[0-9]*$/),
         senderMarketParticipantMrid: Yup.string().required('senderMarketParticipantMrid is required').typeError('senderMarketParticipantMrid must be a string'),
+        senderRole: Yup.string().notRequired(),
         startCreatedDateTime: Yup.string().notRequired(),
         subOrderList: Yup.array().notRequired(),
         testDateTime: Yup.string().notRequired(),
@@ -90,6 +91,7 @@ export class ActivationDocument {
     public revisionNumber?: string;
     public reasonCode?: string; // optionnal in case of TVC modulation
     public senderMarketParticipantMrid: string; // FK?
+    public senderRole?: string;
     public receiverMarketParticipantMrid: string; // FK?
     public receiverRole?: string;
     public potentialParent?: boolean;

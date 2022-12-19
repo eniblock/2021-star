@@ -38,17 +38,11 @@ public class HistoriqueLimitationRepository {
         log.debug("Appel de la blockchain pour rechercher les historiques de limitation avec les critères : {}", criteria);
         HistoriqueLimitation[] returnedArray = {};
         try {
-            ordreLimitationRepository.reconciliate();
             byte[] response = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_HISTORY, objectMapper.writeValueAsString(criteria));
             returnedArray = (response != null && response.length != 0) ?
                     objectMapper.readValue(new String(response), new TypeReference<HistoriqueLimitation[]>() {
                     })
                     : returnedArray;
-        } catch (TimeoutException timeoutException) {
-            throw new TechnicalException("Erreur technique (Timeout exception) de la recherche des historiques de limitation ", timeoutException);
-        } catch (InterruptedException interruptedException) {
-            log.error("Erreur technique (Interrupted Exception) de la recherche des historiques de limitation ", interruptedException);
-            Thread.currentThread().interrupt();
         } catch (JsonProcessingException jsonProcessingException) {
             throw new TechnicalException("Erreur technique (JsonProcessing Exception) de la recherche des historiques de limitation ", jsonProcessingException);
         } catch (ContractException contractException) {

@@ -140,6 +140,11 @@
               <td mat-cell *matCellDef="let element"> {{ element.validityPeriodEndDateTime ? (element.validityPeriodEndDateTime | date:'shortDate') : 'XX/XX/XXXX'}} </td>
             </ng-container>
 
+            <ng-container matColumnDef="typeTarif">
+              <th mat-header-cell *matHeaderCellDef> Type de tarif </th>
+              <td mat-cell *matCellDef="let element"> {{ element.marketType | MarketType }} </td>
+            </ng-container>
+
             <ng-container matColumnDef="statut">
               <th mat-header-cell *matHeaderCellDef> Statut </th>
               <td mat-cell *matCellDef="let element">

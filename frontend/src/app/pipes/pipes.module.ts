@@ -6,6 +6,7 @@ import {TypeDeRechercheSimplePipe} from './TypeDeRechercheSimple.pipe';
 import {LimitationTableFieldPipe} from './LimitationTableField.pipe';
 import {ReserveBidStatusPipe} from "./ReserveBidStatus.pipe";
 import {IndeminityStatusPipe} from "./IndeminityStatus.pipe";
+import {MarketTypePipe} from "./MarketType.pipe";
 
 @NgModule({
   imports: [CommonModule],
@@ -16,6 +17,7 @@ import {IndeminityStatusPipe} from "./IndeminityStatus.pipe";
     LimitationTableFieldPipe,
     ReserveBidStatusPipe,
     IndeminityStatusPipe,
+    MarketTypePipe,
   ],
   exports: [
     OrdreRechercheSitesProductionPipe,
@@ -24,6 +26,7 @@ import {IndeminityStatusPipe} from "./IndeminityStatus.pipe";
     LimitationTableFieldPipe,
     ReserveBidStatusPipe,
     IndeminityStatusPipe,
+    MarketTypePipe,
   ],
 })
 export class PipesModule {

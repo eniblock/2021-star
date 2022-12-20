@@ -14,6 +14,7 @@ import {TechnologyType} from "../../models/enum/TechnologyType.enum";
 import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
 import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
 import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
+import {MarketType} from "../../models/enum/MarketTypePipe.enum";
 
 const MOCK = false;
 
@@ -143,7 +144,8 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         flowDirection: 'string',
         energyPriceAmount: 1.23,
         attachments: [],
-        reserveBidStatus: ReserveBidStatus.VALIDATED
+        reserveBidStatus: ReserveBidStatus.VALIDATED,
+        marketType:MarketType.OA,
       },
       balancingDocument: {
         docType: "balancingDocument",
@@ -279,7 +281,8 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         flowDirection: 'string',
         energyPriceAmount: 1.23,
         attachments: [],
-        reserveBidStatus: ReserveBidStatus.VALIDATED
+        reserveBidStatus: ReserveBidStatus.VALIDATED,
+        marketType:MarketType.CR,
       },
       balancingDocument: {
         docType: "balancingDocument",

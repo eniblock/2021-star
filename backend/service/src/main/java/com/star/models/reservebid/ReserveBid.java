@@ -42,4 +42,5 @@ public class ReserveBid {
     private Float energyPriceAmount;
     private List<String> attachments;
     private List<AttachmentFileWithStatus> attachmentsWithStatus;
+    private String marketType;
 }

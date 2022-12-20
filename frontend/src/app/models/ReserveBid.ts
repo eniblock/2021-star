@@ -1,4 +1,5 @@
 import {ReserveBidStatus} from "./enum/ReserveBidStatus.enum";
+import {MarketType} from "./enum/MarketTypePipe.enum";
 
 export interface ReserveBid {
   reserveBidMrid: string,
@@ -19,6 +20,7 @@ export interface ReserveBid {
   energyPriceAmount: number,
   attachments: string[],
   reserveBidStatus: ReserveBidStatus,
+  marketType: MarketType,
 }
 
 export interface FormulaireReserveBid {

@@ -20,7 +20,7 @@ export const LIMITATIONS_TABLE_COLUMNS_DEF = [
 ];
 
 @Pipe({
-  name: 'LimitationTableFieldPipe',
+  name: 'LimitationTableField',
 })
 export class LimitationTableFieldPipe implements PipeTransform {
   transform(value?: string): any {

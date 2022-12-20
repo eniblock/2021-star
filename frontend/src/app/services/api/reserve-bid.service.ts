@@ -6,6 +6,7 @@ import {HttpClient} from "@angular/common/http";
 import {FormDataHelper} from "./helpers/formData-helper";
 import {KeycloakService} from "../common/keycloak.service";
 import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
+import {MarketType} from "../../models/enum/MarketTypePipe.enum";
 
 const MOCK = false;
 
@@ -97,7 +98,8 @@ const getMocks = (meteringPointMrid: string): Observable<ReserveBid[] | null> =>
         flowDirection: "string",
         energyPriceAmount: 12,
         attachments: [],
-        reserveBidStatus: ReserveBidStatus.VALIDATED
+        reserveBidStatus: ReserveBidStatus.VALIDATED,
+        marketType:MarketType.OA,
       },
       {
         reserveBidMrid: "reserveBidMrid2",
@@ -120,7 +122,8 @@ const getMocks = (meteringPointMrid: string): Observable<ReserveBid[] | null> =>
           "fichier1.pdf",
           "fichier2.pdf",
         ],
-        reserveBidStatus: ReserveBidStatus.NEW
+        reserveBidStatus: ReserveBidStatus.NEW,
+        marketType:MarketType.CR,
       }
     ]
   )

@@ -39,4 +39,5 @@ public class ReserveBidDTO {
     private Float energyPriceAmount;
     private List<String> attachments;
     private List<AttachmentFileWithStatusDTO> attachmentsWithStatus;
+    private String marketType;
 }

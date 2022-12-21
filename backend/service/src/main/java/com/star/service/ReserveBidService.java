@@ -126,6 +126,9 @@ public class ReserveBidService {
             if (isBlank(reserveBid.getReserveBidStatus())) {
                 reserveBid.setReserveBidStatus(EMPTY);
             }
+            if (isBlank(reserveBid.getMarketType())) {
+                reserveBid.setMarketType(EMPTY);
+            }
             ReserveBidMarketDocumentCreation reserveBidMarketDocumentCreation = new ReserveBidMarketDocumentCreation();
             List<String> attachments = new ArrayList<>();
             List<AttachmentFile> attachmentFileList = new ArrayList<>();

@@ -5,6 +5,7 @@ import {environment} from "../../../../environments/environment";
 import {Fichier, ListeFichiersEtEtat} from "../../micro-components/uploader-fichier/uploader-fichier.component";
 import {FormulaireReserveBid} from "../../../models/ReserveBid";
 import {ReserveBidService} from "../../../services/api/reserve-bid.service";
+import {MarketType} from "../../../models/enum/MarketTypePipe.enum";
 
 @Component({
   selector: 'app-form-ajout-tarif-unitaire',
@@ -15,7 +16,10 @@ export class FormAjoutTarifUnitaireComponent implements OnInit {
   form: FormGroup = this.formBuilder.group({
     energyPriceAmount: ['', [Validators.required, Validators.pattern('[0-9]*[\,\.]?[0-9]{0,3}')]],
     validityPeriodStartDateTime: ['', Validators.required],
+    marketType: [''],
   });
+
+  MarketTypeEnum = MarketType;
 
   loading = false;
 
@@ -53,9 +57,9 @@ export class FormAjoutTarifUnitaireComponent implements OnInit {
       energyPriceAmount: +(this.form.get('energyPriceAmount')?.value?.replace(',', '.')),
       validityPeriodStartDateTime: this.form.get('validityPeriodStartDateTime')?.value,
       meteringPointMrid: this.bottomSheetParams.meteringPointMrid,
+      marketType: this.form.get('marketType')?.value
     };
     const files = this.listeFichiers.map((f) => f.file);
-
     this.reserveBidService.createReserveBid(form, files).subscribe(
       (ok) => {
         this.loading = false;

@@ -42,5 +42,6 @@ public class ReserveBid {
     private Float energyPriceAmount;
     private List<String> attachments;
     private List<AttachmentFileWithStatus> attachmentsWithStatus;
+    @NotNull(message = "Le champ marketType est obligatoire")
     private String marketType;
 }

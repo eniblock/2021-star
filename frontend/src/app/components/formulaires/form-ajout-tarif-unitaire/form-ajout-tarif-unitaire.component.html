@@ -4,17 +4,24 @@
 
   <div class="row">
 
-    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+    <mat-form-field class="col-12 col-lg-4" appearance="outline">
       <mat-label>Tarif unitaire de valorisation de l'énergie</mat-label>
       <input matInput placeholder="Tarif unitaire de valorisation de l'énergie" formControlName="energyPriceAmount">
     </mat-form-field>
 
-    <mat-form-field class="col-12 col-lg-6" appearance="outline">
+    <mat-form-field class="col-12 col-lg-4" appearance="outline">
       <mat-label>Date d'effet</mat-label>
       <input matInput placeholder="Date d'effet" [matDatepicker]="pickerDateEffet"
              formControlName="validityPeriodStartDateTime">
       <mat-datepicker-toggle matSuffix [for]="pickerDateEffet"></mat-datepicker-toggle>
       <mat-datepicker #pickerDateEffet></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="col-12 col-lg-4" appearance="outline">
+      <mat-label>Type de tarif</mat-label>
+      <mat-select formControlName="marketType">
+        <mat-option [value]="mt.value" *ngFor="let mt of MarketTypeEnum | keyvalue">{{ mt.value | MarketType }}</mat-option>
+      </mat-select>
     </mat-form-field>
 
     <app-uploader-fichier class="col-12"
@@ -34,7 +41,8 @@
 
     <div class="col-12 text-center mt-3">
       <button mat-raised-button color="primary"
-              [disabled]="form.invalid || (listeFichiers.length > 0 && (!tailleFichierOk || !extensionFichiersOk)) || loading" type="submit">
+              [disabled]="form.invalid || (listeFichiers.length > 0 && (!tailleFichierOk || !extensionFichiersOk)) || loading"
+              type="submit">
         Ajouter
         <i class="fa-solid fa-hourglass ms-2" *ngIf="loading"></i>
       </button>

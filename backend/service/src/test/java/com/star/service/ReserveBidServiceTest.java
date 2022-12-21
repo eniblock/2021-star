@@ -87,7 +87,8 @@ class ReserveBidServiceTest extends AbstractTest {
         // GIVEN
         ReserveBid reserveBidWithoutEnergyPriceAmount = ReserveBid.builder().meteringPointMrid("3516846511600").messageType("messageType")
                 .processType("processType").senderMarketParticipantMrid("M12JHBHB779").receiverMarketParticipantMrid("R12NJKJNBUB989")
-                .createdDateTime("2022-12-05 12:12:56").priceMeasureUnitName("145€").currencyUnitName("45W").build();
+                .createdDateTime("2022-12-05 12:12:56").priceMeasureUnitName("145€").currencyUnitName("45W")
+                .marketType("CR").build();
 
         // WHEN
         ImportReserveBidResult importReserveBidResult = reserveBidService.createReserveBid(reserveBidWithoutEnergyPriceAmount, null);
@@ -107,7 +108,8 @@ class ReserveBidServiceTest extends AbstractTest {
         Float energyPriceAmount = Float.parseFloat("35.15");
         ReserveBid reserveBid = ReserveBid.builder().meteringPointMrid("3516846511600").messageType("TEST162JB").reserveBidStatus("status")
                 .processType("P31616").senderMarketParticipantMrid("M12JHBHB779").receiverMarketParticipantMrid("R12NJKJNBUB989")
-                .createdDateTime("2022-12-05 12:12:56").priceMeasureUnitName("MW").currencyUnitName("CLIDOIN").energyPriceAmount(energyPriceAmount).build();
+                .createdDateTime("2022-12-05 12:12:56").priceMeasureUnitName("MW").currencyUnitName("CLIDOIN").energyPriceAmount(energyPriceAmount)
+                .marketType("OA").build();
 
         // WHEN
         ImportReserveBidResult importReserveBidResult = reserveBidService.createReserveBid(reserveBid, asList(createFichierOrdre(fileName, fileTestPdf)));

@@ -5,9 +5,9 @@ import com.star.dto.feedback.FeedBackPostMessageAnswerDTO;
 import com.star.dto.feedback.FeedBackPostMessageDTO;
 import com.star.exception.TechnicalException;
 import com.star.mapper.feedback.FeedBackMapper;
-import com.star.models.feedback.FeedBack;
 import com.star.service.FeedBackService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 
@@ -75,6 +72,19 @@ public class FeedBackController {
     public ResponseEntity<FeedBackDTO> answerFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageAnswerDTO feedBackAnswerDTO) throws TechnicalException {
         var feedback = feedBackService.postMessageAnswer(feedBackMapper.dtoToBean(feedBackAnswerDTO));
         return ResponseEntity.ok(feedBackMapper.beanToDto(feedback));
+    }
+
+    @Operation(summary = "Get a producer feedBack.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Found feedBack", content = {@Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    @GetMapping("/{activationDocumentMrid}")
+    public ResponseEntity<FeedBackDTO> getFeedbackProducerByActivationDocumentMrid(
+            @Parameter(description = "activationDocumentMrid of the feedback")
+            @PathVariable String activationDocumentMrid) throws TechnicalException {
+        return ResponseEntity.status(HttpStatus.OK).body(feedBackMapper.beanToDto(feedBackService.findByActivationDocumentMrid(activationDocumentMrid)));
     }
 
 }

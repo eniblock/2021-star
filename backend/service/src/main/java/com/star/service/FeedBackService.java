@@ -64,4 +64,8 @@ public class FeedBackService {
         }
         return feedBackRepository.postMessageAnswer(feedBackPostMessageAnswer);
     }
+
+    public FeedBack findByActivationDocumentMrid(String activationDocumentMrid) throws TechnicalException {
+        return feedBackRepository.findByActivationDocumentMrid(activationDocumentMrid);
+    }
 }

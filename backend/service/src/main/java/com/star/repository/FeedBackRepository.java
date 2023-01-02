@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
+import com.star.models.balancing.BalancingDocument;
 import com.star.models.feedback.FeedBack;
 import com.star.models.feedback.FeedBackPostMessage;
 import com.star.models.feedback.FeedBackPostMessageAnswer;
@@ -14,6 +15,8 @@ import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -27,6 +30,8 @@ public class FeedBackRepository {
     public static final String UPADTE_FEEDBACK_PRODUCER = "UpdateFeedbackProducer";
 
     public static final String UPADTE_FEEDBACK_PRODUCER_ANSWER = "UpdateFeedbackProducerAnswer";
+
+    public static final String GET_FEEDBACK_PRODUCER_BY_ACTIVATION_DOCUMENT_MRID = "GetFeedbackProducerByActivationDocumentMrId";
 
     @Autowired
     private Contract contract;
@@ -85,5 +90,23 @@ public class FeedBackRepository {
         }
         return null;
 
+    }
+
+    public FeedBack findByActivationDocumentMrid(String activationDocumentMrid) throws TechnicalException {
+        log.info("Appel de la blockchain pour rechercher un feedback producer avec le activationDocumentMrid : {}", activationDocumentMrid);
+        if (activationDocumentMrid == null) {
+            return null;
+        }
+        FeedBack feedBack;
+        try {
+            byte[] response = contract.evaluateTransaction(GET_FEEDBACK_PRODUCER_BY_ACTIVATION_DOCUMENT_MRID, activationDocumentMrid);
+            feedBack = (response != null && response.length != 0) ?
+                    objectMapper.readerFor(FeedBack.class).readValue(new String(response)) : null;
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new TechnicalException("Erreur technique (JsonProcessing Exception) de la recherche du feedback ", jsonProcessingException);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
+        return feedBack;
     }
 }

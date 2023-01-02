@@ -899,6 +899,40 @@ export class Star extends Contract {
     }
 
 
+    /*
+    * inputStr : feedbackProducerMrid: string
+    *
+    * output : FeedbackProducer: FeedbackProducer
+    */
+    public async GetFeedbackProducer(
+        ctx: Context,
+        feedbackProducerMrid: string) {
+
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await FeedbackProducerController.getObjById(params, feedbackProducerMrid));
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
+    /*
+    * inputStr : activationDocumentMrid: string
+    *
+    * output : FeedbackProducer: FeedbackProducer
+    */
+    public async GetFeedbackProducerByActivationDocumentMrId(
+        ctx: Context,
+        activationDocumentMrid: string) {
+
+        try {
+            const params: STARParameters = await ParametersController.getParameterValues(ctx);
+            return (await FeedbackProducerController.getByActivationDocumentMrId(params, activationDocumentMrid));
+        } catch (error) {
+            throw error;
+        }
+    }
 
 
     /*

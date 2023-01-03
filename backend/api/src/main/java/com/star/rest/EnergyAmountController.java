@@ -60,7 +60,7 @@ public class EnergyAmountController {
     @Autowired
     private SecurityComponent securityComponent;
 
-    @Operation(summary = "Post an energy amount (file or energy amount object).")
+    @Operation(summary = "Post an energy amount (file or energy amount object). (DSO, TSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Create successfully an energy Amount", content = {@Content(mediaType = "application/json")}),
@@ -93,7 +93,7 @@ public class EnergyAmountController {
         return ResponseEntity.status(isEmpty(importEnergyAmountResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importEnergyAmountResult);
     }
 
-    @Operation(summary = "Update an energy amount (file or energy amount object).")
+    @Operation(summary = "Update an energy amount (file or energy amount object). (DSO, TSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Update successfully an energy Amount", content = {@Content(mediaType = "application/json")}),
@@ -134,7 +134,7 @@ public class EnergyAmountController {
      * @throws BusinessException
      * @throws TechnicalException
      */
-    @Operation(summary = "Find energy amount by criteria.")
+    @Operation(summary = "Find energy amount by criteria. (DSO, TSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Found energy amount", content = {@Content(mediaType = "application/json")}),

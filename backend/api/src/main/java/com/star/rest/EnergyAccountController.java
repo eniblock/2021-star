@@ -62,7 +62,7 @@ public class EnergyAccountController {
      * @param files
      * @return
      */
-    @Operation(summary = "Post an Energy Account.")
+    @Operation(summary = "Post an Energy Account. (DSO, TSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Create successfully an energy Account", content = {@Content(mediaType = "application/json")}),
@@ -84,7 +84,7 @@ public class EnergyAccountController {
      * @return
      * @throws BusinessException
      */
-    @Operation(summary = "Update an Energy Account.")
+    @Operation(summary = "Update an Energy Account. (DSO, TSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Update successfully an energy Account", content = {@Content(mediaType = "application/json")}),
@@ -109,7 +109,7 @@ public class EnergyAccountController {
      * @throws BusinessException
      * @throws TechnicalException
      */
-    @Operation(summary = "Find energy account by criteria.")
+    @Operation(summary = "Find energy account by criteria. (DSO, TSO, PRODUCER)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Found energy account", content = {@Content(mediaType = "application/json")}),

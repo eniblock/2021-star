@@ -1,5 +1,6 @@
 package com.star.mapper.reservebid;
 
+import com.star.dto.reservebid.ReserveBidCreationDTO;
 import com.star.dto.reservebid.ReserveBidDTO;
 import com.star.models.reservebid.ReserveBid;
 import org.mapstruct.Mapper;
@@ -18,6 +19,25 @@ public interface ReserveBidMapper {
     @Mapping(target = "attachments", ignore = true)
     @Mapping(target = "attachmentsWithStatus", ignore = true)
     ReserveBid dtoToBean(ReserveBidDTO reserveBidDTO);
+
+    @Mapping(target = "docType", ignore = true)
+    @Mapping(target = "reserveBidMrid", ignore = true)
+    @Mapping(target = "revisionNumber", ignore = true)
+    @Mapping(target = "messageType", ignore = true)
+    @Mapping(target = "processType", ignore = true)
+    @Mapping(target = "senderMarketParticipantMrid", ignore = true)
+    @Mapping(target = "receiverMarketParticipantMrid", ignore = true)
+    @Mapping(target = "createdDateTime", ignore = true)
+    @Mapping(target = "validityPeriodEndDateTime", ignore = true)
+    @Mapping(target = "businessType", ignore = true)
+    @Mapping(target = "quantityMeasureUnitName", ignore = true)
+    @Mapping(target = "priceMeasureUnitName", ignore = true)
+    @Mapping(target = "currencyUnitName", ignore = true)
+    @Mapping(target = "flowDirection", ignore = true)
+    @Mapping(target = "reserveBidStatus", ignore = true)
+    @Mapping(target = "attachments", ignore = true)
+    @Mapping(target = "attachmentsWithStatus", ignore = true)
+    ReserveBid dtoToBean(ReserveBidCreationDTO reserveBidCreationDTO);
 
     ReserveBidDTO beanToDto(ReserveBid reserveBid);
 

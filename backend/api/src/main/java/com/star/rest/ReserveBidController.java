@@ -1,5 +1,6 @@
 package com.star.rest;
 
+import com.star.dto.reservebid.ReserveBidCreationDTO;
 import com.star.dto.reservebid.ReserveBidDTO;
 import com.star.exception.BusinessException;
 import com.star.exception.TechnicalException;
@@ -59,7 +60,8 @@ public class ReserveBidController {
      * @param files
      * @return
      */
-    @Operation(summary = "Post an Reserve bid.")
+    @Operation(summary = "Post an Reserve Bid. (PRODUCER)",
+            description = "Post a Reserve Bid (and its pdf) that will be validated (or not) by the market participant.\n\nPrecondition : be a producer")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Create successfully a reserve bid", content = {@Content(mediaType = "application/json")}),
@@ -69,11 +71,11 @@ public class ReserveBidController {
     @PostMapping
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportReserveBidResult> createReserveBid(
-            @Parameter(description = "Energy amount object to create")
-            @RequestPart(name = "reserveBid", value = "reserveBid", required = false) @Valid ReserveBidDTO reserveBid,
-            @Parameter(description = "PDF files containing reserveBid data")
+            @Parameter(description = "The Reserve Bid to create")
+            @RequestPart(name = "reserveBid", value = "reserveBid", required = false) @Valid ReserveBidCreationDTO reserveBidCreationDTO,
+            @Parameter(description = "PDF files")
             @RequestPart(name = "files", value = "files", required = false) MultipartFile[] files) throws BusinessException {
-        log.debug("Import du reservebid DTO {}", reserveBid);
+        log.debug("Import du reservebid DTO {}", reserveBidCreationDTO);
         log.debug("Traitement de(s) fichier(s) pour le reservebid DTO {}", files);
         ImportReserveBidResult importReserveBidResult = new ImportReserveBidResult();
         List<FichierImportation> fichiers = new ArrayList<>();
@@ -83,7 +85,7 @@ public class ReserveBidController {
                     fichiers.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
                 }
             }
-            importReserveBidResult = reserveBidService.createReserveBid(reserveBidMapper.dtoToBean(reserveBid), fichiers);
+            importReserveBidResult = reserveBidService.createReserveBid(reserveBidMapper.dtoToBean(reserveBidCreationDTO), fichiers);
         } catch (IOException | TechnicalException exception) {
             log.error("Echec de l'import  du reserveBid {}. Erreur : ", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -91,7 +93,8 @@ public class ReserveBidController {
         return ResponseEntity.status(importReserveBidResult.getReserveBid() == null ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importReserveBidResult);
     }
 
-    @Operation(summary = "Get reserveBids.")
+    @Operation(summary = "Get reserveBids. (TSO, DSO, PRODUCER)",
+            description = "Find Reserve Bids by meteringPointMrid.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Found reserveBid", content = {@Content(mediaType = "application/json")}),
@@ -99,12 +102,13 @@ public class ReserveBidController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping("/{meteringPointMrid}")
     public ResponseEntity<List<ReserveBidDTO>> getReserveBidsBySite(
-            @Parameter(description = "MeteringPointMrid of the reserveBids")
+            @Parameter(description = "MeteringPointMrid of the reserveBids", example = "PRM30001510803649")
             @PathVariable String meteringPointMrid) throws TechnicalException {
         return ResponseEntity.status(HttpStatus.OK).body(reserveBidMapper.beansToDtos(reserveBidService.getReserveBid(meteringPointMrid)));
     }
 
-    @Operation(summary = "Get file.")
+    @Operation(summary = "Get file. (TSO, DSO, PRODUCER)",
+            description = "Get a file that has been uploaded with a reserveBid.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Found file", content = {@Content(mediaType = "application/octet-stream")}),
@@ -112,7 +116,7 @@ public class ReserveBidController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping(value = "/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<byte[]> getDocument(
-            @Parameter(description = "the fileId")
+            @Parameter(description = "the fileId of the file", example = "8bf6ea00-6dd6-46d7-9a60-32431ca76834_my-file.pdf")
             @RequestParam(value = "fileId") String fileId) throws TechnicalException {
 
         AttachmentFile attachmentFile = reserveBidService.getFile(fileId);
@@ -123,13 +127,14 @@ public class ReserveBidController {
         return new ResponseEntity<>(Base64.getDecoder().decode(attachmentFile.getFileContent()), headers, HttpStatus.OK);
     }
 
-    @Operation(summary = "Update an tarif's status.")
+    @Operation(summary = "Update an reserveBid's status. (TSO, DSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Update successfully a status of tarif", content = {@Content(mediaType = "application/json")}),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PutMapping(value = "/{reserveBidMrid}/{newStatus}")
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<Void> updateStatusReserveBid(
             @Parameter(description = "Reserve bid Id to update")
             @PathVariable("reserveBidMrid") String reserveBidMrid,

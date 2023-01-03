@@ -15,7 +15,7 @@
     <properties>
         <image_path/>
         <keycloak.version>18.0.0</keycloak.version>
-        <swagger.version>1.5.2</swagger.version>
+        <swagger.version>1.6.14</swagger.version>
     </properties>
 
     <dependencyManagement>

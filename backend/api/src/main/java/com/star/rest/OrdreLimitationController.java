@@ -64,7 +64,7 @@ public class OrdreLimitationController {
     @Autowired
     private OrdreLimitationEligibilityStatusMapper ordreLimitationEligibilityStatusMapper;
 
-    @Operation(summary = "Post start limitation order.")
+    @Operation(summary = "Post start limitation order. (TSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Post successfully start limitation order", content = {@Content(mediaType = "application/json")}),
@@ -91,7 +91,7 @@ public class OrdreLimitationController {
         return ResponseEntity.status(isEmpty(importOrdreLimitationResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importOrdreLimitationResult);
     }
 
-    @Operation(summary = "List of start limitation orders.")
+    @Operation(summary = "List of start limitation orders. (TSO)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of start limitation orders", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
@@ -102,7 +102,7 @@ public class OrdreLimitationController {
         return ResponseEntity.ok(ordreLimitationService.getOrdreDebutLimitation(instance));
     }
 
-    @Operation(summary = "Post couple Start/End limit order.")
+    @Operation(summary = "Post couple Start/End limit order. (TSO, DSO)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Post  successfully couple Start/End limit order",
                     content = {@Content(mediaType = "application/json")}),
@@ -130,7 +130,7 @@ public class OrdreLimitationController {
     }
 
 
-    @Operation(summary = "Post end limitation order.")
+    @Operation(summary = "Post end limitation order. (TSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Post successfully end limitation order", content = {@Content(mediaType = "application/json")}),
@@ -158,7 +158,7 @@ public class OrdreLimitationController {
     }
 
 
-    @Operation(summary = "Get limit orders.")
+    @Operation(summary = "Get limit orders. (TSO, DSO)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Get limit orders", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
@@ -174,7 +174,7 @@ public class OrdreLimitationController {
     }
 
 
-    @Operation(summary = "Change eligibility status.")
+    @Operation(summary = "Change eligibility status. (TSO, DSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Post successfully start limitation order", content = {@Content(mediaType = "application/json")}),

@@ -22,12 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -109,7 +104,8 @@ public class EnergyAccountController {
      * @throws BusinessException
      * @throws TechnicalException
      */
-    @Operation(summary = "Find energy account by criteria. (DSO, TSO, PRODUCER)")
+    @Operation(summary = "Find energy account by criteria. (DSO, TSO, PRODUCER)",
+            description = "Find energy account that are posted by DSO or TSO.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Found energy account", content = {@Content(mediaType = "application/json")}),
@@ -117,11 +113,11 @@ public class EnergyAccountController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     public ResponseEntity<EnergyAccountDTO[]> findEnergyAccount(
-            @Parameter(description = "meteringPointMrid search criteria")
+            @Parameter(description = "meteringPointMrid search criteria", example = "PDL00000000289772")
             @RequestParam(value = "meteringPointMrid", required = false) String meteringPointMrid,
-            @Parameter(description = "startCreatedDateTime search criteria")
+            @Parameter(description = "startCreatedDateTime search criteria", example = "2019-09-07T15:52:15Z")
             @RequestParam(value = "startCreatedDateTime", required = false) String startCreatedDateTime,
-            @Parameter(description = "endCreatedDateTime search criteria")
+            @Parameter(description = "endCreatedDateTime search criteria", example = "2019-09-08T15:52:15Z")
             @RequestParam(value = "endCreatedDateTime", required = false) String endCreatedDateTime) throws BusinessException, TechnicalException {
         EnergyAccountCriteria energyAccountCriteria = EnergyAccountCriteria.builder().meteringPointMrid(meteringPointMrid)
                 .startCreatedDateTime(startCreatedDateTime).endCreatedDateTime(endCreatedDateTime).build();

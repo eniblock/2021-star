@@ -45,7 +45,7 @@ public class YellowPagesController {
     @Autowired
     private YellowPagesService yellowPagesService;
 
-    @Operation(summary = "Post yellow Pages CSV file.")
+    @Operation(summary = "Post yellow Pages CSV file. (TSO, DSO)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Create successfully yellow pages", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
@@ -65,7 +65,8 @@ public class YellowPagesController {
         return ResponseEntity.status(isEmpty(importYellowPagesResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importYellowPagesResult);
     }
 
-    @Operation(summary = "Get list of yellow pages")
+    @Operation(summary = "Get list of yellow pages. (TSO, DSO, PRODUCER)",
+            description = "Return the list of all yellow pages of the application.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Get list of yellow pages", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),

@@ -45,7 +45,8 @@ public class InstanceController {
      *
      * @return
      */
-    @Operation(summary = "Get current backend instance")
+    @Operation(summary = "Get current backend instance. (TSO, DSO, PRODUCER)",
+            description = "Return the name of the backend instance.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get current backend instance",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping
@@ -58,7 +59,8 @@ public class InstanceController {
      *
      * @return
      */
-    @Operation(summary = "Get the participant name")
+    @Operation(summary = "Get the participant name. (TSO, DSO, PRODUCER)",
+            description = "Return the name of the participant that is connected.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get the participant name",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping("/participantName")
@@ -84,7 +86,8 @@ public class InstanceController {
      *
      * @return
      */
-    @Operation(summary = "Get the participant mrid")
+    @Operation(summary = "Get the participant mrid. (TSO, DSO, PRODUCER)",
+            description = "Return the mrid of the participant that is connected.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get the participant mrid",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping("/participantMrid")

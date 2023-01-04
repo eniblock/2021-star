@@ -59,7 +59,7 @@ public class SiteController {
     @Autowired
     private SecurityComponent securityComponent;
 
-    @Operation(summary = "Post a Site CSV file.")
+    @Operation(summary = "Post a Site CSV file. (TSO, DSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Create successfully site", content = {@Content(mediaType = "application/json")}),
@@ -81,7 +81,7 @@ public class SiteController {
     }
 
 
-    @Operation(summary = "Update a Site CSV file.")
+    @Operation(summary = "Update a Site CSV file. (TSO, DSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Update successfully site", content = {@Content(mediaType = "application/json")}),
@@ -118,7 +118,8 @@ public class SiteController {
      * @throws BusinessException
      * @throws TechnicalException
      */
-    @Operation(summary = "Find site by criteria.")
+    @Operation(summary = "Find sites by criteria. (TSO, DSO, PRODUCER)",
+            description = "Find sites according to the search criteria.")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Found site", content = {@Content(mediaType = "application/json")}),
@@ -126,24 +127,25 @@ public class SiteController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     public ResponseEntity<SiteDTO[]> findSite(
-            @Parameter(description = "Number of page per response")
+            @Parameter(description = "The field used to sort", example = "producerMarketParticipantName")
             @RequestParam(value = "order", required = false) String order,
+            @Parameter(description = "'EOLIEN' or 'PHOTOVOLTAIQUE'", example = "PHOTOVOLTAIQUE")
             @RequestParam(value = "technologyType", required = false) List<TechnologyTypeEnum> technologyType,
-            @Parameter(description = "producerMarketParticipantMrid search criteria")
+            @Parameter(description = "producerMarketParticipantMrid search criteria", example = "17Y100A103R0629X")
             @RequestParam(value = "producerMarketParticipantMrid", required = false) String producerMarketParticipantMrid,
-            @Parameter(description = "producerMarketParticipantName search criteria")
+            @Parameter(description = "producerMarketParticipantName search criteria", example = "MyProducer")
             @RequestParam(value = "producerMarketParticipantName", required = false) String producerMarketParticipantName,
-            @Parameter(description = "siteName search criteria")
+            @Parameter(description = "siteName search criteria", example = "siteDpt")
             @RequestParam(value = "siteName", required = false) String siteName,
-            @Parameter(description = "substationName search criteria")
+            @Parameter(description = "substationName search criteria", example = "CONFOLENS")
             @RequestParam(value = "substationName", required = false) String substationName,
-            @Parameter(description = "substationMrid search criteria")
+            @Parameter(description = "substationMrid search criteria", example = "CONF6")
             @RequestParam(value = "substationMrid", required = false) String substationMrid,
-            @Parameter(description = "siteIecCode search criteria")
+            @Parameter(description = "siteIecCode search criteria", example = "MySiteIecCode")
             @RequestParam(value = "siteIecCode", required = false) String siteIecCode,
-            @Parameter(description = "meteringPointMrId search criteria")
+            @Parameter(description = "meteringPointMrId search criteria", example = "PDL00000000289774")
             @RequestParam(value = "meteringPointMrId", required = false) String meteringPointMrId) throws BusinessException, TechnicalException {
-        Sort sort = order == null ? Sort.unsorted() : Sort.by(order);
+        Sort sort = order == null ? Sort.by("producerMarketParticipantName") : Sort.by(order);
         SiteCrteria criteria = SiteCrteria.builder().meteringPointMrId(meteringPointMrId).producerMarketParticipantMrid(producerMarketParticipantMrid)
                 .producerMarketParticipantName(producerMarketParticipantName).siteIecCode(siteIecCode).substationMrid(substationMrid)
                 .substationName(substationName).siteName(siteName).technologyType(technologyType).instance(instance).build();

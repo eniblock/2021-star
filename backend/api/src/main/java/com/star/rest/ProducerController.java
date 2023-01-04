@@ -56,7 +56,7 @@ public class ProducerController {
     @Autowired
     private SecurityComponent securityComponent;
 
-    @Operation(summary = "Post a producer CSV file.")
+    @Operation(summary = "Post a producer CSV file. (TSO, DSO)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Create successfully producer", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
@@ -75,7 +75,8 @@ public class ProducerController {
         return ResponseEntity.status(isEmpty(importProducerResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importProducerResult);
     }
 
-    @Operation(summary = "Get list of producer")
+    @Operation(summary = "Get list of producers. (TSO, DSO, PRODUCER)",
+            description = "Get the list of producers.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Get list of producer", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),

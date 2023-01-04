@@ -44,7 +44,7 @@ public class MarketParticipantController {
     @Autowired
     private MarketParticipantService marketParticipantService;
 
-    @Operation(summary = "Post a market participant CSV file.")
+    @Operation(summary = "Post a market participant CSV file. (TSO, DSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Create successfully market participant", content = {@Content(mediaType = "application/json")}),
@@ -65,7 +65,8 @@ public class MarketParticipantController {
 
     }
 
-    @Operation(summary = "Get list of market participant")
+    @Operation(summary = "Get list of market participant. (TSO, DSO, PRODUCER)",
+            description = "Get the list of market participants.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get list of market participant",
             content = {@Content(mediaType = "application/json")})})
     @GetMapping

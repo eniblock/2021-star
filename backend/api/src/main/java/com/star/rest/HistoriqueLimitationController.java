@@ -76,26 +76,26 @@ public class HistoriqueLimitationController {
     })
     @GetMapping()
     public ResponseEntity<HistoriqueLimitationDTO[]> findLimitationHistory(
-            @Parameter(description = "originAutomationRegisteredResourceMrid search criteria", example = "")
+            @Parameter(description = "originAutomationRegisteredResourceMrid search criteria", example = "LONGC")
             @RequestParam(required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
-            @Parameter(description = "producerMarketParticipantMrid search criteria", example = "")
+            @Parameter(description = "producerMarketParticipantMrid search criteria", example = "17Y100A101R0629X")
             @RequestParam(required = false, defaultValue = "") String producerMarketParticipantMrid,
-            @Parameter(description = "producerMarketParticipantName search criteria", example = "")
+            @Parameter(description = "producerMarketParticipantName search criteria", example = "myProducerName")
             @RequestParam(required = false, defaultValue = "") String producerMarketParticipantName,
-            @Parameter(description = "siteName search criteria", example = "")
+            @Parameter(description = "siteName search criteria", example = "mySiteName")
             @RequestParam(required = false, defaultValue = "") String siteName,
-            @Parameter(description = "startCreatedDateTime search criteria", example = "")
+            @Parameter(description = "startCreatedDateTime search criteria", example = "2022-11-30T23:00:00Z")
             @RequestParam(required = false, defaultValue = "") String startCreatedDateTime,
-            @Parameter(description = "endCreatedDateTime search criteria", example = "")
+            @Parameter(description = "endCreatedDateTime search criteria", example = "2022-12-31T23:00:00Z")
             @RequestParam(required = false, defaultValue = "") String endCreatedDateTime,
-            @Parameter(description = "activationDocumentMrid search criteria", example = "")
+            @Parameter(description = "activationDocumentMrid search criteria", example = "3f432650-8b06-40d4-b294-3ed774d57249")
             @RequestParam(required = false, defaultValue = "") String activationDocumentMrid,
-            @Parameter(description = "meteringPointMrid search criteria", example = "")
+            @Parameter(description = "meteringPointMrid search criteria", example = "PRM30001510803649")
             @RequestParam(required = false, defaultValue = "") String meteringPointMrid,
-            @Parameter(description = "typeCriteria search criteria", example = "")
-            @RequestParam(required = false, defaultValue = "") String activationType,
+            @Parameter(description = "activationType search criteria", example = "")
+            @RequestParam(required = false, defaultValue = "{\"messageType\":\"D01\",\"businessType\":\"Z01\",\"reasonCode\":\"A70\"}") String activationType,
             @Parameter(description = "activationReasonList search criteria", example = "")
-            @RequestParam(required = false, defaultValue = "") String activationReasonList
+            @RequestParam(required = false, defaultValue = "[{\"messageType\":\"D01\",\"businessType\":\"Z01\",\"reasonCode\":\"A70\"}]") String activationReasonList
     ) throws TechnicalException, JsonProcessingException {
         TypeCriteria typeCriteria = null;
         List<TypeCriteria> typeCriteriaList = new ArrayList<>();

@@ -66,7 +66,7 @@ public class YellowPagesController {
     }
 
     @Operation(summary = "Get list of yellow pages. (TSO, DSO, PRODUCER)",
-            description = "Return the list of all yellow pages of the application.")
+            description = "Return the list of all yellow pages of the application.\n\n Yellow pages represent the correspondence between the RTE automatons and the Poste Source Enedis.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Get list of yellow pages", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),

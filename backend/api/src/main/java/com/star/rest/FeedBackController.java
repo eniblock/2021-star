@@ -42,7 +42,7 @@ public class FeedBackController {
      * @param feedBackDTO
      * @return
      */
-    @Operation(summary = "Post a feedback.")
+    @Operation(summary = "Post a feedback. (PRODUCER)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Create successfully a feedback", content = {@Content(mediaType = "application/json")}),
@@ -61,7 +61,7 @@ public class FeedBackController {
      * @param feedBackAnswerDTO
      * @return
      */
-    @Operation(summary = "Answer a feedback.")
+    @Operation(summary = "Answer a feedback. (TSO, DSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Create successfully a feedback", content = {@Content(mediaType = "application/json")}),
@@ -74,7 +74,7 @@ public class FeedBackController {
         return ResponseEntity.ok(feedBackMapper.beanToDto(feedback));
     }
 
-    @Operation(summary = "Get a producer feedBack.")
+    @Operation(summary = "Get a producer feedBack. (TSO, DSO, PRODUCER)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Found feedBack", content = {@Content(mediaType = "application/json")}),
@@ -82,7 +82,7 @@ public class FeedBackController {
                     @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping("/{activationDocumentMrid}")
     public ResponseEntity<FeedBackDTO> getFeedbackProducerByActivationDocumentMrid(
-            @Parameter(description = "activationDocumentMrid of the feedback")
+            @Parameter(description = "activationDocumentMrid of the feedback", example = "084b5e20-9cd0-4556-9e25-1574f0b864ef")
             @PathVariable String activationDocumentMrid) throws TechnicalException {
         return ResponseEntity.status(HttpStatus.OK).body(feedBackMapper.beanToDto(feedBackService.findByActivationDocumentMrid(activationDocumentMrid)));
     }

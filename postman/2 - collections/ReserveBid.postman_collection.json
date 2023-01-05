@@ -1,0 +1,400 @@
+{
+	"info": {
+		"_postman_id": "1e9796cc-81d0-4d4f-8217-4164bb75e5cd",
+		"name": "ReserveBid",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Producer - Post reserveBid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"contentType": "",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "reserveBid",
+							"value": "{\"energyPriceAmount\":13.345,\"validityPeriodStartDateTime\":\"2023-01-03T23:00:00.000Z\",\"meteringPointMrid\":\"PRM30001510803649\",\"marketType\":\"CR\"}",
+							"contentType": "application/json",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_producer}}/reserveBid",
+					"host": [
+						"{{base_url_producer}}"
+					],
+					"path": [
+						"reserveBid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Producer - Get reserveBids",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"contentType": "",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "reserveBid",
+							"value": "{\"energyPriceAmount\":13.345,\"validityPeriodStartDateTime\":\"2023-01-03T23:00:00.000Z\",\"meteringPointMrid\":\"PRM30001510803649\",\"marketType\":\"CR\"}",
+							"contentType": "application/json",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_producer}}/reserveBid/PRM30001510803649",
+					"host": [
+						"{{base_url_producer}}"
+					],
+					"path": [
+						"reserveBid",
+						"PRM30001510803649"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Producer - Get reserveBid file",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"contentType": "",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "reserveBid",
+							"value": "{\"energyPriceAmount\":13.345,\"validityPeriodStartDateTime\":\"2023-01-03T23:00:00.000Z\",\"meteringPointMrid\":\"PRM30001510803649\",\"marketType\":\"CR\"}",
+							"contentType": "application/json",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_producer}}/reserveBid/file?fileId=",
+					"host": [
+						"{{base_url_producer}}"
+					],
+					"path": [
+						"reserveBid",
+						"file"
+					],
+					"query": [
+						{
+							"key": "fileId",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Get reserveBids",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"contentType": "",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "reserveBid",
+							"value": "{\"energyPriceAmount\":13.345,\"validityPeriodStartDateTime\":\"2023-01-03T23:00:00.000Z\",\"meteringPointMrid\":\"PRM30001510803649\",\"marketType\":\"CR\"}",
+							"contentType": "application/json",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/reserveBid/PRM30001510803649",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"reserveBid",
+						"PRM30001510803649"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Get reserveBid file",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"contentType": "",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "reserveBid",
+							"value": "{\"energyPriceAmount\":13.345,\"validityPeriodStartDateTime\":\"2023-01-03T23:00:00.000Z\",\"meteringPointMrid\":\"PRM30001510803649\",\"marketType\":\"CR\"}",
+							"contentType": "application/json",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/reserveBid/file?fileId=",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"reserveBid",
+						"file"
+					],
+					"query": [
+						{
+							"key": "fileId",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Get reserveBids",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"contentType": "",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "reserveBid",
+							"value": "{\"energyPriceAmount\":13.345,\"validityPeriodStartDateTime\":\"2023-01-03T23:00:00.000Z\",\"meteringPointMrid\":\"PRM30001510803649\",\"marketType\":\"CR\"}",
+							"contentType": "application/json",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/reserveBid/PRM30001510803649",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"reserveBid",
+						"PRM30001510803649"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Get reserveBid file",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"contentType": "",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "reserveBid",
+							"value": "{\"energyPriceAmount\":13.345,\"validityPeriodStartDateTime\":\"2023-01-03T23:00:00.000Z\",\"meteringPointMrid\":\"PRM30001510803649\",\"marketType\":\"CR\"}",
+							"contentType": "application/json",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/reserveBid/file?fileId=",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"reserveBid",
+						"file"
+					],
+					"query": [
+						{
+							"key": "fileId",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Update reserveBid status",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"contentType": "",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "reserveBid",
+							"value": "{\"energyPriceAmount\":13.345,\"validityPeriodStartDateTime\":\"2023-01-03T23:00:00.000Z\",\"meteringPointMrid\":\"PRM30001510803649\",\"marketType\":\"CR\"}",
+							"contentType": "application/json",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/reserveBid/c2d2776c-1fe3-466a-b57a-32a6691ec947/VALIDATED",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"reserveBid",
+						"c2d2776c-1fe3-466a-b57a-32a6691ec947",
+						"VALIDATED"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Update reserveBid status",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"contentType": "",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						},
+						{
+							"key": "reserveBid",
+							"value": "{\"energyPriceAmount\":13.345,\"validityPeriodStartDateTime\":\"2023-01-03T23:00:00.000Z\",\"meteringPointMrid\":\"PRM30001510803649\",\"marketType\":\"CR\"}",
+							"contentType": "application/json",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/reserveBid/c2d2776c-1fe3-466a-b57a-32a6691ec947/VALIDATED",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"reserveBid",
+						"c2d2776c-1fe3-466a-b57a-32a6691ec947",
+						"VALIDATED"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -1,0 +1,114 @@
+{
+	"info": {
+		"_postman_id": "e1199094-d5c8-4248-a5be-34bdcfcf5d0e",
+		"name": "Feedback",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RTE - Feedback",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/feedback/084b5e20-9cd0-4556-9e25-1574f0b864ef",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"feedback",
+						"084b5e20-9cd0-4556-9e25-1574f0b864ef"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Producer - Feedback",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/feedback/084b5e20-9cd0-4556-9e25-1574f0b864ef",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"feedback",
+						"084b5e20-9cd0-4556-9e25-1574f0b864ef"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enedis - Feedback",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/feedback/084b5e20-9cd0-4556-9e25-1574f0b864ef",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"feedback",
+						"084b5e20-9cd0-4556-9e25-1574f0b864ef"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

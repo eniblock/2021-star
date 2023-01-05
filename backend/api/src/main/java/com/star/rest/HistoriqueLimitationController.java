@@ -69,32 +69,32 @@ public class HistoriqueLimitationController {
      * @return
      * @throws TechnicalException
      */
-    @Operation(summary = "Get limitation history.")
+    @Operation(summary = "Get limitation history. (TSO, DSO, PRODUCER)")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limitation history", content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)
     })
     @GetMapping()
     public ResponseEntity<HistoriqueLimitationDTO[]> findLimitationHistory(
-            @Parameter(description = "originAutomationRegisteredResourceMrid search criteria")
+            @Parameter(description = "originAutomationRegisteredResourceMrid search criteria", example = "")
             @RequestParam(required = false, defaultValue = "") String originAutomationRegisteredResourceMrid,
-            @Parameter(description = "producerMarketParticipantMrid search criteria")
+            @Parameter(description = "producerMarketParticipantMrid search criteria", example = "")
             @RequestParam(required = false, defaultValue = "") String producerMarketParticipantMrid,
-            @Parameter(description = "producerMarketParticipantName search criteria")
+            @Parameter(description = "producerMarketParticipantName search criteria", example = "")
             @RequestParam(required = false, defaultValue = "") String producerMarketParticipantName,
-            @Parameter(description = "siteName search criteria")
+            @Parameter(description = "siteName search criteria", example = "")
             @RequestParam(required = false, defaultValue = "") String siteName,
-            @Parameter(description = "startCreatedDateTime search criteria")
+            @Parameter(description = "startCreatedDateTime search criteria", example = "")
             @RequestParam(required = false, defaultValue = "") String startCreatedDateTime,
-            @Parameter(description = "endCreatedDateTime search criteria")
+            @Parameter(description = "endCreatedDateTime search criteria", example = "")
             @RequestParam(required = false, defaultValue = "") String endCreatedDateTime,
-            @Parameter(description = "activationDocumentMrid search criteria")
+            @Parameter(description = "activationDocumentMrid search criteria", example = "")
             @RequestParam(required = false, defaultValue = "") String activationDocumentMrid,
-            @Parameter(description = "meteringPointMrid search criteria")
+            @Parameter(description = "meteringPointMrid search criteria", example = "")
             @RequestParam(required = false, defaultValue = "") String meteringPointMrid,
-            @Parameter(description = "typeCriteria search criteria")
+            @Parameter(description = "typeCriteria search criteria", example = "")
             @RequestParam(required = false, defaultValue = "") String activationType,
-            @Parameter(description = "activationReasonList search criteria")
+            @Parameter(description = "activationReasonList search criteria", example = "")
             @RequestParam(required = false, defaultValue = "") String activationReasonList
     ) throws TechnicalException, JsonProcessingException {
         TypeCriteria typeCriteria = null;

@@ -51,7 +51,7 @@ public class BalancingDocumentController {
      * @throws BusinessException
      * @throws TechnicalException
      */
-    @Operation(summary = "Find balancing document by criteria.")
+    @Operation(summary = "Find balancing document by criteria. (TSO, DSO)")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Found balancing document", content = {@Content(mediaType = "application/json")}),

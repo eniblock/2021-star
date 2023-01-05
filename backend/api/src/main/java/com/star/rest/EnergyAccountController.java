@@ -105,8 +105,8 @@ public class EnergyAccountController {
      * @throws TechnicalException
      */
     @Operation(summary = "Find energy account by criteria. (DSO, TSO, PRODUCER)",
-            description = "Find energy account that are posted by DSO or TSO. \n\n An Energy Account can contain :\n" +
-                    "Metering curve: This curve is loaded for each limitation at the site and day level. If a limitation straddles two days, the network operator will upload two metering curve files to the platform.\n" +
+            description = "Find energy account that are posted by DSO or TSO. \n\n An Energy Account can contain :\n\n" +
+                    "Metering curve: This curve is loaded for each limitation at the site and day level. If a limitation straddles two days, the network operator will upload two metering curve files to the platform.\n\n" +
                     "Reference curve (only for an HV site): Power Load curve, calculated for each measurement step, representing the volume of electricity that the Producer would have produced in the absence of generation limitation")
     @ApiResponses(
             value = {

@@ -60,12 +60,6 @@ public class SiteController {
     private SecurityComponent securityComponent;
 
     @Operation(summary = "Post a Site CSV file. (TSO, DSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Create successfully site", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping("/create")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportSiteResult> importSite(@Parameter(description = "CSV file containing site data.")
@@ -82,12 +76,6 @@ public class SiteController {
 
 
     @Operation(summary = "Update a Site CSV file. (TSO, DSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Update successfully site", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping("/update")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportSiteResult> updateSite(@Parameter(description = "CSV file containing site to update.")
@@ -120,11 +108,6 @@ public class SiteController {
      */
     @Operation(summary = "Find sites by criteria. (TSO, DSO, PRODUCER)",
             description = "Find sites according to the search criteria.")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Found site", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     public ResponseEntity<SiteDTO[]> findSite(
             @Parameter(description = "The field used to sort", example = "producerMarketParticipantName")

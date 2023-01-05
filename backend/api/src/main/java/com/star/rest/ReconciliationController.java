@@ -48,11 +48,6 @@ public class ReconciliationController {
     }
 
     @Operation(summary = "Post a reconciliation.")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Create successfully reconciliation", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     public ResponseEntity<Void> reconciliate() throws BusinessException, InterruptedException, TimeoutException, ContractException {
         reconciliationService.reconciliate();

@@ -58,12 +58,6 @@ public class EnergyAccountController {
      * @return
      */
     @Operation(summary = "Post an Energy Account. (DSO, TSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Create successfully an energy Account", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAccountResult> createEnergyAccount(
@@ -80,12 +74,6 @@ public class EnergyAccountController {
      * @throws BusinessException
      */
     @Operation(summary = "Update an Energy Account. (DSO, TSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Update successfully an energy Account", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PutMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAccountResult> updateEnergyAccount(
@@ -108,11 +96,6 @@ public class EnergyAccountController {
             description = "Find energy account that are posted by DSO or TSO. \n\n An Energy Account can contain :\n\n" +
                     "Metering curve: This curve is loaded for each limitation at the site and day level. If a limitation straddles two days, the network operator will upload two metering curve files to the platform.\n\n" +
                     "Reference curve (only for an HV site): Power Load curve, calculated for each measurement step, representing the volume of electricity that the Producer would have produced in the absence of generation limitation")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Found energy account", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     public ResponseEntity<EnergyAccountDTO[]> findEnergyAccount(
             @Parameter(description = "meteringPointMrid search criteria", example = "PDL00000000289772")

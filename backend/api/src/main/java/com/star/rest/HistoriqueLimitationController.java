@@ -70,10 +70,6 @@ public class HistoriqueLimitationController {
      * @throws TechnicalException
      */
     @Operation(summary = "Get limitation history. (TSO, DSO, PRODUCER)")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get limitation history", content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)
-    })
     @GetMapping()
     public ResponseEntity<HistoriqueLimitationDTO[]> findLimitationHistory(
             @Parameter(description = "originAutomationRegisteredResourceMrid search criteria", example = "LONGC")

@@ -43,11 +43,6 @@ public class FeedBackController {
      * @return
      */
     @Operation(summary = "Post a feedback. (PRODUCER)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Create successfully a feedback", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping()
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<FeedBackDTO> createFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageDTO feedBackDTO) throws TechnicalException {
@@ -62,11 +57,6 @@ public class FeedBackController {
      * @return
      */
     @Operation(summary = "Answer a feedback. (TSO, DSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Create successfully a feedback", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping("/answer")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<FeedBackDTO> answerFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageAnswerDTO feedBackAnswerDTO) throws TechnicalException {
@@ -75,11 +65,6 @@ public class FeedBackController {
     }
 
     @Operation(summary = "Get a producer feedBack. (TSO, DSO, PRODUCER)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Found feedBack", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping("/{activationDocumentMrid}")
     public ResponseEntity<FeedBackDTO> getFeedbackProducerByActivationDocumentMrid(
             @Parameter(description = "activationDocumentMrid of the feedback", example = "084b5e20-9cd0-4556-9e25-1574f0b864ef")

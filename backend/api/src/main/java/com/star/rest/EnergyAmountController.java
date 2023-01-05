@@ -61,12 +61,6 @@ public class EnergyAmountController {
     private SecurityComponent securityComponent;
 
     @Operation(summary = "Post an energy amount (file or energy amount object). (DSO, TSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Create successfully an energy Amount", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAmountResult> createEnergyAmount(
@@ -94,12 +88,6 @@ public class EnergyAmountController {
     }
 
     @Operation(summary = "Update an energy amount (file or energy amount object). (DSO, TSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Update successfully an energy Amount", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PutMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAmountResult> updateEnergyAmount(
@@ -135,11 +123,6 @@ public class EnergyAmountController {
      * @throws TechnicalException
      */
     @Operation(summary = "Find energy amount by criteria. (DSO, TSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Found energy amount", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<EnergyAmountDTO[]> findEnergyAmount(

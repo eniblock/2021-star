@@ -47,8 +47,6 @@ public class InstanceController {
      */
     @Operation(summary = "Get current backend instance. (TSO, DSO, PRODUCER)",
             description = "Return the name of the backend instance.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get current backend instance",
-            content = {@Content(mediaType = "application/json")})})
     @GetMapping
     public ResponseEntity<InstanceEnum> getCurrentInstance() {
         return ResponseEntity.ok(instance);
@@ -61,8 +59,6 @@ public class InstanceController {
      */
     @Operation(summary = "Get the participant name. (TSO, DSO, PRODUCER)",
             description = "Return the name of the participant that is connected.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get the participant name",
-            content = {@Content(mediaType = "application/json")})})
     @GetMapping("/participantName")
     public ResponseEntity<String> getParticipantName() throws TechnicalException {
         if (instance == InstanceEnum.PRODUCER) {
@@ -88,8 +84,6 @@ public class InstanceController {
      */
     @Operation(summary = "Get the participant mrid. (TSO, DSO, PRODUCER)",
             description = "Return the mrid of the participant that is connected.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get the participant mrid",
-            content = {@Content(mediaType = "application/json")})})
     @GetMapping("/participantMrid")
     public ResponseEntity<String> getParticipantMrid() {
         return ResponseEntity.ok(securityComponent.getSystemOperatorMarketParticipantMrid(false));

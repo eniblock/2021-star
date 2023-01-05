@@ -65,12 +65,6 @@ public class OrdreLimitationController {
     private OrdreLimitationEligibilityStatusMapper ordreLimitationEligibilityStatusMapper;
 
     @Operation(summary = "Post start limitation order. (TSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Post successfully start limitation order", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping(DEBUT)
     @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreDebutLimitation(
@@ -92,10 +86,6 @@ public class OrdreLimitationController {
     }
 
     @Operation(summary = "List of start limitation orders. (TSO)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of start limitation orders", content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping(DEBUT)
     @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<List<OrdreLimitation>> getOrdreDebutLimitation() throws BusinessException, TechnicalException {
@@ -103,12 +93,6 @@ public class OrdreLimitationController {
     }
 
     @Operation(summary = "Post couple Start/End limit order. (TSO, DSO)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Post  successfully couple Start/End limit order",
-                    content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping(COUPLE)
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(
@@ -131,12 +115,6 @@ public class OrdreLimitationController {
 
 
     @Operation(summary = "Post end limitation order. (TSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Post successfully end limitation order", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping(FIN)
     @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreFinLimitation(
@@ -159,10 +137,6 @@ public class OrdreLimitationController {
 
 
     @Operation(summary = "Get limit orders. (TSO, DSO)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Get limit orders", content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping()
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<List<OrdreLimitation>> findLimitationOrder(
@@ -175,12 +149,6 @@ public class OrdreLimitationController {
 
 
     @Operation(summary = "Change eligibility status. (TSO, DSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Post successfully start limitation order", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping(ELIGIBILITY_STATUS)
     public ResponseEntity<OrdreLimitation> ordreDebutEligibilityStatus(@RequestBody OrdreLimitationEligibilityStatusDTO ordreLimitationEligibilityStatusDTO) throws BusinessException, TechnicalException {
         return ResponseEntity.ok(ordreLimitationService.ordreDebutEligibilityStatus(

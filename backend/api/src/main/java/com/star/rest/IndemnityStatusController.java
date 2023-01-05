@@ -38,11 +38,6 @@ public class IndemnityStatusController {
      */
     @Operation(summary = "Update the indemnity status of limitation order. (TSO, DSO, PRODUCER)",
             description = "The Producers can change the status of a limitation order when they have sent their invoice. Calling this endpoint can be done by a Producer only if the current status is 'WaitingInvoice'. Then the new status become 'InvoiceSent'.")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Update successfully an energy Account", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PutMapping
     public ResponseEntity<String> getIndemnityStatus(
             @Valid @RequestBody IndemnityStatusUpdateDTO indemnityStatusUpdateDTO) throws TechnicalException {

@@ -52,11 +52,6 @@ public class BalancingDocumentController {
      * @throws TechnicalException
      */
     @Operation(summary = "Find balancing document by criteria. (TSO, DSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Found balancing document", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<List<BalancingDocumentDTO>> findBalancingDocument(

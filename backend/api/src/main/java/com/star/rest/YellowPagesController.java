@@ -46,11 +46,6 @@ public class YellowPagesController {
     private YellowPagesService yellowPagesService;
 
     @Operation(summary = "Post yellow Pages CSV file. (TSO, DSO)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Create successfully yellow pages", content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Error in the file"),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportYellowPagesResult> importYellowPages(@Parameter(description = "CSV file containing yellow page data.")
@@ -67,10 +62,6 @@ public class YellowPagesController {
 
     @Operation(summary = "Get list of yellow pages. (TSO, DSO, PRODUCER)",
             description = "Return the list of all yellow pages of the application.\n\n Yellow pages represent the correspondence between the RTE automatons and the Poste Source Enedis.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Get list of yellow pages", content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Internal error")})
     @GetMapping
     public ResponseEntity<List<YellowPages>> getYellowPages() throws TechnicalException, BusinessException {
         return ResponseEntity.ok(yellowPagesService.getYellowPages());

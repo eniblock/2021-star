@@ -46,10 +46,6 @@ public class LoginController {
     private String clientSecret;
 
     @Operation(summary = "Login and retrieve Token.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Get limit orders", content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     public ResponseEntity<AuthToken> signin(@RequestBody CredentialsDTO credentialsDTO) {
         log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);

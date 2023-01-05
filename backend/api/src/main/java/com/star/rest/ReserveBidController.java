@@ -62,12 +62,6 @@ public class ReserveBidController {
      */
     @Operation(summary = "Post an Reserve Bid. (PRODUCER)",
             description = "Post a Reserve Bid (and its pdf) that will be validated (or not) by the market participant.\n\nPrecondition : be a producer")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Create successfully a reserve bid", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportReserveBidResult> createReserveBid(
@@ -95,11 +89,6 @@ public class ReserveBidController {
 
     @Operation(summary = "Get reserveBids. (TSO, DSO, PRODUCER)",
             description = "Find Reserve Bids by meteringPointMrid.")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Found reserveBid", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping("/{meteringPointMrid}")
     public ResponseEntity<List<ReserveBidDTO>> getReserveBidsBySite(
             @Parameter(description = "MeteringPointMrid of the reserveBids", example = "PRM30001510803649")
@@ -109,11 +98,6 @@ public class ReserveBidController {
 
     @Operation(summary = "Get file. (TSO, DSO, PRODUCER)",
             description = "Get a file that has been uploaded with a reserveBid.")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Found file", content = {@Content(mediaType = "application/octet-stream")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @GetMapping(value = "/file", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<byte[]> getDocument(
             @Parameter(description = "the fileId of the file", example = "8bf6ea00-6dd6-46d7-9a60-32431ca76834_my-file.pdf")
@@ -128,11 +112,6 @@ public class ReserveBidController {
     }
 
     @Operation(summary = "Update an reserveBid's status. (TSO, DSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Update successfully a status of tarif", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PutMapping(value = "/{reserveBidMrid}/{newStatus}")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<Void> updateStatusReserveBid(

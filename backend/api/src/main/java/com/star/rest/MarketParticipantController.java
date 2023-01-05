@@ -45,12 +45,6 @@ public class MarketParticipantController {
     private MarketParticipantService marketParticipantService;
 
     @Operation(summary = "Post a market participant CSV file. (TSO, DSO)")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Create successfully market participant", content = {@Content(mediaType = "application/json")}),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
-                    @ApiResponse(responseCode = "409", description = "Error in the file", content = @Content),
-                    @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportMarketParticipantResult> importMarketParticipant(@RequestParam MultipartFile file) throws BusinessException {
@@ -67,8 +61,6 @@ public class MarketParticipantController {
 
     @Operation(summary = "Get list of market participant. (TSO, DSO, PRODUCER)",
             description = "Get the list of market participants.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Get list of market participant",
-            content = {@Content(mediaType = "application/json")})})
     @GetMapping
     public ResponseEntity<List<SystemOperator>> getMarketParticipants() throws TechnicalException, BusinessException {
         return ResponseEntity.ok(marketParticipantService.getSystemOperators());

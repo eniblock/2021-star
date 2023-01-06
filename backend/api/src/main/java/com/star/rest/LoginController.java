@@ -49,7 +49,7 @@ public class LoginController {
 
     @Operation(summary = "Login and retrieve Token.")
     @PostMapping
-    public ResponseEntity<AuthToken> signin(@RequestBody CredentialsDTO credentialsDTO) {
+    public ResponseEntity<AuthToken> signIn(@RequestBody CredentialsDTO credentialsDTO) {
         log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);
         Assert.notNull(credentialsDTO, "Credentials is required");
         Assert.hasLength(credentialsDTO.getUsername(), "Username is required");

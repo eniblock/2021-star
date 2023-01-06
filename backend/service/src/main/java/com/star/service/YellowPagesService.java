@@ -85,7 +85,7 @@ public class YellowPagesService {
             // Le constructeur peut échouer dans le cas ou le record ne correspond pas à tous les paramètres attendus
             try {
                 yellowPages = new YellowPages();
-                yellowPages.setData(csvRecord);
+                yellowPages.defineData(csvRecord);
             } catch (IllegalArgumentException illegalArgumentException) {
                 importUtilsService.handleConstructorException(fileName, importResult, lineNumber, illegalArgumentException);
             }

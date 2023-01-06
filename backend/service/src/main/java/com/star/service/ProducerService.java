@@ -84,7 +84,7 @@ public class ProducerService {
             // Le constructeur peut échouer dans le cas ou le record ne correspond pas à tous les paramètres attendus
             try {
                 producer = new Producer();
-                producer.setData(csvRecord);
+                producer.defineData(csvRecord);
             } catch (IllegalArgumentException illegalArgumentException) {
                 importUtilsService.handleConstructorException(fileName, importResult, lineNumber, illegalArgumentException);
             }

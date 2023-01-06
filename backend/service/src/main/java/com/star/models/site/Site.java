@@ -91,7 +91,7 @@ public class Site implements ImportCSV {
     }
 
     @Override
-    public void setData(CSVRecord csvRecord) {
+    public void defineData(CSVRecord csvRecord) {
         if (csvRecord == null) {
             throw new IllegalArgumentException("Can not instantiate data from a null csvRecord");
         }

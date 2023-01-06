@@ -71,7 +71,7 @@ public class OrdreLimitation implements ImportCSV {
     }
 
     @Override
-    public void setData(CSVRecord csvRecord) {
+    public void defineData(CSVRecord csvRecord) {
 //        Fichier JSON. Pas de setter ici.
     }
 }

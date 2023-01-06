@@ -85,7 +85,7 @@ public class MarketParticipantService {
             // Le constructeur peut échouer dans le cas ou le record ne correspond pas à tous les paramètres attendus
             try {
                 systemOperator = new SystemOperator();
-                systemOperator.setData(csvRecord);
+                systemOperator.defineData(csvRecord);
             } catch (IllegalArgumentException illegalArgumentException) {
                 importUtilsService.handleConstructorException(fileName, importResult, lineNumber, illegalArgumentException);
             }

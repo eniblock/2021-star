@@ -11,5 +11,5 @@ import java.util.List;
 public interface ImportCSV {
     List<String> getHeaders();
 
-    void setData(CSVRecord csvRecord);
+    void defineData(CSVRecord csvRecord);
 }

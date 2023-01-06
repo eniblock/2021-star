@@ -230,7 +230,7 @@ public class SiteService {
             // Le constructeur peut échouer dans le cas ou le record ne correspond pas à tous les paramètres attendus
             try {
                 site = new Site();
-                site.setData(csvRecord);
+                site.defineData(csvRecord);
             } catch (IllegalArgumentException illegalArgumentException) {
                 importUtilsService.handleConstructorException(fileName, importResult, lineNumber, illegalArgumentException);
             }

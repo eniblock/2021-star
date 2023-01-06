@@ -2,6 +2,7 @@ package com.star.rest;
 
 import com.star.dto.login.AuthToken;
 import com.star.dto.login.CredentialsDTO;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,6 +28,7 @@ import java.util.Map;
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
+@Hidden
 @Slf4j
 @RestController
 @RequestMapping(LoginController.PATH)

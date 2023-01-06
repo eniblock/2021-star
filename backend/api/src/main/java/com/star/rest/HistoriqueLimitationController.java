@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import static com.star.enums.InstanceEnum.PRODUCER;
 @Slf4j
 @RestController
 @RequestMapping(HistoriqueLimitationController.PATH)
+@Tag(name="Limitation History")
 public class HistoriqueLimitationController {
     public static final String PATH = ApiRestVersion.VERSION + "/historiqueLimitations";
 

@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping(EnergyAccountController.PATH)
+@Tag(name="Energy Account")
 public class EnergyAccountController {
     public static final String PATH = ApiRestVersion.VERSION + "/energyAccounts";
 

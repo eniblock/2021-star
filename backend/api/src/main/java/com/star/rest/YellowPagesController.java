@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @Slf4j
 @RestController
 @RequestMapping(YellowPagesController.PATH)
+@Tag(name="Yellow Pages")
 public class YellowPagesController {
     public static final String PATH = ApiRestVersion.VERSION + "/yellow-pages";
 

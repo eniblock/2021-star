@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 @RestController
 @RequestMapping(FeedBackController.PATH)
+@Tag(name="Feedback")
 public class FeedBackController {
     public static final String PATH = ApiRestVersion.VERSION + "/feedback";
 
@@ -42,7 +44,8 @@ public class FeedBackController {
      * @param feedBackDTO
      * @return
      */
-    @Operation(summary = "Post a feedback. (PRODUCER)")
+    @Operation(summary = "Post a feedback. (PRODUCER)",
+            description = "Post a feedback as a producer.")
     @PostMapping()
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<FeedBackDTO> createFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageDTO feedBackDTO) throws TechnicalException {
@@ -64,7 +67,8 @@ public class FeedBackController {
         return ResponseEntity.ok(feedBackMapper.beanToDto(feedback));
     }
 
-    @Operation(summary = "Get a producer feedBack. (TSO, DSO, PRODUCER)")
+    @Operation(summary = "Get a producer feedback. (TSO, DSO, PRODUCER)",
+            description = "Get a feedback and its answer.")
     @GetMapping("/{activationDocumentMrid}")
     public ResponseEntity<FeedBackDTO> getFeedbackProducerByActivationDocumentMrid(
             @Parameter(description = "activationDocumentMrid of the feedback", example = "084b5e20-9cd0-4556-9e25-1574f0b864ef")

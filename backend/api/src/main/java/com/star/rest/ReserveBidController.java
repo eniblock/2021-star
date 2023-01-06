@@ -11,9 +11,7 @@ import com.star.models.reservebid.ImportReserveBidResult;
 import com.star.service.ReserveBidService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -46,6 +37,7 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 @RestController
 @RequestMapping(ReserveBidController.PATH)
+@Tag(name="Reserve Bid")
 public class ReserveBidController {
     public static final String PATH = ApiRestVersion.VERSION + "/reserveBid";
 
@@ -61,7 +53,7 @@ public class ReserveBidController {
      * @return
      */
     @Operation(summary = "Post an Reserve Bid. (PRODUCER)",
-            description = "Post a Reserve Bid (and its pdf) that will be validated (or not) by the market participant.\n\nPrecondition : be a producer")
+            description = "Post a Reserve Bid (and its pdf) that will be validated (or not) by the market participant.")
     @PostMapping
     @PreAuthorize("@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportReserveBidResult> createReserveBid(

@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +45,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @Slf4j
 @RestController
 @RequestMapping(OrdreLimitationController.PATH)
+@Tag(name="Limitation Order")
 public class OrdreLimitationController {
     public static final String PATH = ApiRestVersion.VERSION + "/ordreLimitations";
     public static final String DEBUT = "/debut";

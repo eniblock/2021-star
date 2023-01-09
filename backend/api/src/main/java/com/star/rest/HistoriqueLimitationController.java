@@ -90,10 +90,10 @@ public class HistoriqueLimitationController {
             @RequestParam(required = false, defaultValue = "") String activationDocumentMrid,
             @Parameter(description = "meteringPointMrid search criteria", example = "PRM30001510803649")
             @RequestParam(required = false, defaultValue = "") String meteringPointMrid,
-            @Parameter(description = "activationType search criteria", example = "")
-            @RequestParam(required = false, defaultValue = "{\"messageType\":\"D01\",\"businessType\":\"Z01\",\"reasonCode\":\"A70\"}") String activationType,
-            @Parameter(description = "activationReasonList search criteria", example = "")
-            @RequestParam(required = false, defaultValue = "[{\"messageType\":\"D01\",\"businessType\":\"Z01\",\"reasonCode\":\"A70\"}]") String activationReasonList
+            @Parameter(description = "activationType search criteria", example = "{\"messageType\":\"D01\",\"businessType\":\"Z01\",\"reasonCode\":\"A70\"}")
+            @RequestParam(required = false, defaultValue = "") String activationType,
+            @Parameter(description = "activationReasonList search criteria", example = "[{\"messageType\":\"D01\",\"businessType\":\"Z01\",\"reasonCode\":\"A70\"}]")
+            @RequestParam(required = false, defaultValue = "") String activationReasonList
     ) throws TechnicalException, JsonProcessingException {
         TypeCriteria typeCriteria = null;
         List<TypeCriteria> typeCriteriaList = new ArrayList<>();

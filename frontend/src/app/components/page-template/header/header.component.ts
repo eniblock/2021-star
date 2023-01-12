@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Instance} from "../../../models/enum/Instance.enum";
 import {InstanceService} from "../../../services/api/instance.service";
 import {ReconciliationService} from "../../../services/api/reconciliation.service";

@@ -10,7 +10,6 @@ export const canChangeIndeminityStatus = (historiqueLimiation: RechercheHistoriq
   switch (historiqueLimiation.feedbackProducer.indeminityStatus) {
     case IndeminityStatus.InProgress:
       return false;
-      break;
     case IndeminityStatus.Agreement:
       return (instance == Instance.DSO && historiqueLimiation?.site?.typeSite == TypeSite.HTA) || (instance == Instance.TSO && historiqueLimiation?.site?.typeSite == TypeSite.HTB);
     case IndeminityStatus.Processed:

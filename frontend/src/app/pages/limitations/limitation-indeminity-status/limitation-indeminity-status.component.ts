@@ -73,11 +73,11 @@ export class LimitationIndeminityStatusComponent implements OnInit, OnChanges {
     dialogRef.afterClosed().subscribe(result => {
       if (result != undefined && this.historiqueLimitation != undefined) {
         this.loading = true;
-        this.indeminityStatusService.updateIndeminisationStatus(this.historiqueLimitation!.activationDocument.activationDocumentMrid).subscribe(
+        this.indeminityStatusService.updateIndeminisationStatus(this.historiqueLimitation.activationDocument.activationDocumentMrid).subscribe(
           (result) => {
             this.loading = false;
             if (this.historiqueLimitation) {
-              this.historiqueLimitation!.feedbackProducer.indeminityStatus = result;
+              this.historiqueLimitation.feedbackProducer.indeminityStatus = result;
             }
             this.initComponent();
           },

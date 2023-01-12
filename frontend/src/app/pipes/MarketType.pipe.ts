@@ -1,5 +1,4 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {IndeminityStatus} from "../models/enum/IndeminityStatus.enum";
 import {MarketType} from "../models/enum/MarketTypePipe.enum";
 
 @Pipe({

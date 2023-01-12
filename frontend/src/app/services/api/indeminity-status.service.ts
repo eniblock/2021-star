@@ -1,10 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {
-  FormulaireRechercheHistoriqueLimitation,
-  RechercheHistoriqueLimitationEntite
-} from "../../models/RechercheHistoriqueLimitation";
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
 import {environment} from "../../../environments/environment";
 

@@ -8,7 +8,7 @@ import {ReconciliationService} from "../../../services/api/reconciliation.servic
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   InstanceEnum = Instance;
 
   hasNotifs = false;
@@ -22,9 +22,6 @@ export class HeaderComponent implements OnInit {
   ) {
     this.instanceService.getTypeInstance()
       .subscribe((typeInstance) => this.typeInstance = typeInstance);
-  }
-
-  ngOnInit() {
   }
 
   reconciliate() {

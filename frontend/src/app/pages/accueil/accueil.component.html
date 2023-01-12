@@ -3,7 +3,7 @@
 <div class="row">
   <div class="col">
     <h2>
-      <img src="assets/img/menu-bar/reseau.svg" class="pb-2 me-2">
+      <img src="assets/img/menu-bar/reseau.svg" class="pb-2 me-2" alt="reseau"/>
       Recherche d’un site de production
     </h2>
     <app-form-sites-production-recherche (formSubmit)="formRechercheSitesProductionSubmit($event)"></app-form-sites-production-recherche>
@@ -15,7 +15,7 @@
 <div class="row">
   <div class="col">
     <h2>
-      <img src="assets/img/menu-bar/histo.svg" class="pb-2 me-2">
+      <img src="assets/img/menu-bar/histo.svg" class="pb-2 me-2" alt="histo"/>
       Consulter l'historique des limitations
     </h2>
     <app-form-limitations-recherche (formSubmit)="formRechercheLimitationsSubmit($event)"></app-form-limitations-recherche>
@@ -27,7 +27,7 @@
 <div class="row" *ngIf="typeInstance != InstanceEnum.PRODUCER">
   <div class="col mb-3">
     <a [routerLink]="['/',PATH_ROUTE.CHARGER]" class="boutonNavigation">
-      <img src="assets/img/menu-bar/charger-blanc.svg" class="pb-1 me-2"/>
+      <img src="assets/img/menu-bar/charger-blanc.svg" class="pb-1 me-2" alt="charger"/>
       <span>Charger des données</span>
     </a>
   </div>

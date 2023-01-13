@@ -10,10 +10,12 @@ sonar:
     COPY ./backend+build/lombok*.jar ./
     RUN echo sonar.projectVersion=$(yq eval .version helm/star/Chart.yaml) >> sonar-project.properties
     ENV SONAR_HOST_URL=https://sonarcloud.io
+    COPY env.sh ./
     RUN --push \
         --mount=type=cache,target=/opt/sonar-scanner/.sonar/cache \
         --secret GITHUB_TOKEN \
         --secret SONAR_TOKEN \
-        sonar-scanner \
+        source env.sh \
+        && sonar-scanner \
         -D sonar.java.binaries=$(ls api-*.jar) \
         -D sonar.java.libraries=$(ls lombok*.jar)

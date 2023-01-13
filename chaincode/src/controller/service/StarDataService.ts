@@ -49,6 +49,22 @@ export class StarDataService {
 
         params.logger.debug('============= START : Write %s %s ===========', arg.id, arg.dataObj.docType);
 
+        //Control if write tries to erase an existing data with another docType
+        var storedObj: any;
+        try {
+            storedObj = await this.getObj(params, {id:arg.id});
+        } catch (err) {
+            //Do nothing, no obj stored with same id
+        }
+        if (storedObj
+            && storedObj.docType
+            && storedObj.docType.length !== 0) {
+
+            if (storedObj.docType !== arg.dataObj.docType) {
+                throw new Error(`${arg.id} cannot be used to store ${arg.dataObj.docType} because already used to store ${storedObj.docType}.`);
+            }
+        }
+
         await params.ctx.stub.putState(arg.id, Buffer.from(JSON.stringify(arg.dataObj)));
 
         const poolRef: DataReference = {collection: 'XoX', docType: arg.dataObj.docType, data: arg.dataObj};

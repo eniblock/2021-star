@@ -136,6 +136,23 @@ export class StarPrivateDataService {
             arg.dataObj.docType, arg.collection, arg.id);
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, arg.collection);
+
+        //Control if write tries to erase an existing data with another docType
+        var storedObj: any;
+        try {
+            storedObj = await this.getObj(params, {id:arg.id, collection:arg.collection});
+        } catch (err) {
+            //Do nothing, no obj stored with same id
+        }
+        if (storedObj
+            && storedObj.docType
+            && storedObj.docType.length !== 0) {
+
+            if (storedObj.docType !== arg.dataObj.docType) {
+                throw new Error(`${arg.id} cannot be used to store ${arg.dataObj.docType} because already used to store ${storedObj.docType}.`);
+            }
+        }
+
         await params.ctx.stub.putPrivateData(collection, arg.id, Buffer.from(JSON.stringify(arg.dataObj)));
 
         const poolRef: DataReference = {collection, docType: arg.dataObj.docType, data: arg.dataObj};

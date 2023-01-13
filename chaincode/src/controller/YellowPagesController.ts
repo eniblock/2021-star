@@ -27,7 +27,6 @@ export class YellowPagesController {
         try {
             yellowPageObj = JSON.parse(inputStr);
         } catch (error) {
-            // params.logger.error('error=', error);
             throw new Error(`ERROR createYellowPages-> Input string NON-JSON value`);
         }
 

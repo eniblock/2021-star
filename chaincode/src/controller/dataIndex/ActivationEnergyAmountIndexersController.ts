@@ -1,17 +1,13 @@
 import { DocType } from '../../enums/DocType';
 import { ParametersType } from '../../enums/ParametersType';
-import { ActivationDocument } from '../../model/activationDocument/activationDocument';
 import { IndexedData } from '../../model/dataIndex/dataIndexers';
 import { EnergyAmountAbstract } from '../../model/dataIndex/energyAmountAbstract';
 import { IndexedDataJson } from '../../model/dataIndexersJson';
 import { DataReference } from '../../model/dataReference';
 import { EnergyAmount } from '../../model/energyAmount';
 import { STARParameters } from '../../model/starParameters';
-import { ActivationDocumentController } from '../activationDocument/ActivationDocumentController';
 import { EnergyAmountController } from '../EnergyAmountController';
 import { DataIndexersService } from '../service/DataIndexersService';
-import { EnergyAmountService } from '../service/EnergyAmountService';
-import { QueryStateService } from '../service/QueryStateService';
 import { DataIndexersController } from './DataIndexersController';
 
 export class ActivationEnergyAmountIndexersController {

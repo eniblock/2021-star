@@ -9,15 +9,13 @@ export class HLFServices {
         docType: string,
         target: string = ''): Promise<string> {
 
-        let collection: string = '';
+        let collection: string = target;
         if (!target || target.length === 0) {
             const collectionMap: Map<string, string[]> = params.values.get(docType);
 
             if (collectionMap) {
                 collection = collectionMap.get(ParametersType.DEFAULT)[0];
             }
-        } else {
-            collection = target;
         }
 
         return collection;
@@ -84,7 +82,7 @@ export class HLFServices {
 
     public static async getMspID(
         ctx: Context): Promise<string> {
-        return await ctx.clientIdentity.getMSPID();
+        return ctx.clientIdentity.getMSPID();
     }
 
     public static getUserRole(params: STARParameters): string {

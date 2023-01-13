@@ -15,14 +15,10 @@ export class ReserveBidMarketDocumentFileIdList {
             throw new Error(`ERROR -> Input string NON-JSON value`);
         }
 
-        try {
-            ReserveBidMarketDocumentFileIdList.schema.validateSync(
-                reserveBidObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        ReserveBidMarketDocumentFileIdList.schema.validateSync(
+            reserveBidObj,
+            {strict: true, abortEarly: false},
+        );
         return reserveBidObj;
     }
 

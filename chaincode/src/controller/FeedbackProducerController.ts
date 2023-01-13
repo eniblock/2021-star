@@ -55,29 +55,6 @@ export class FeedbackProducerController {
         params.logger.debug('============= END   : executeOrder FeedbackProducerController ===========');
     }
 
-
-    // public static async createFeedbackProducer(
-    //     params: STARParameters,
-    //     inputStr: string): Promise<void> {
-    //     params.logger.info('============= START : createFeedbackProducer FeedbackProducerController ===========');
-
-    //     const feedbackProducerObj: FeedbackProducer = FeedbackProducer.formatString(inputStr);
-    //     await this.createFeedbackProducerObj(params, feedbackProducerObj);
-
-    //     params.logger.info('=============  END  : createFeedbackProducer FeedbackProducerController ===========');
-    // }
-
-    // public static async createFeedbackProducerByReference(
-    //     params: STARParameters,
-    //     dataReference: DataReference): Promise<void> {
-    //     params.logger.debug('============= START : createFeedbackProducer By Reference FeedbackProducerController ===========');
-
-    //     await this.createFeedbackProducerObj(params, dataReference.data, dataReference.collection);
-
-    //     params.logger.debug('=============  END  : createFeedbackProducer By Reference FeedbackProducerController ===========');
-    // }
-
-
     public static getFeedbackProducerMrid(params: STARParameters, activationDocumentMrid: string): string {
         const prefix: string = params.values.get(ParametersType.FEEDBACK_PRODUCER_PREFIX);
 
@@ -102,7 +79,7 @@ export class FeedbackProducerController {
             throw new Error(`Error : Feedback storage target unknown, impossible to create.`);
         }
 
-        var feedbackProducerObj:FeedbackProducer = {
+        let feedbackProducerObj:FeedbackProducer = {
             docType: DocType.FEEDBACK_PRODUCER,
 
             feedbackProducerMrid: this.getFeedbackProducerMrid(params, activationDocumentObj.activationDocumentMrid),
@@ -243,7 +220,7 @@ export class FeedbackProducerController {
         }
 
         //control if a Balancing exists for this activation Document
-        var balancingDocument: BalancingDocument;
+        let balancingDocument: BalancingDocument = null;
         try {
             balancingDocument =
                 await BalancingDocumentController.getObjByActivationDocumentMrid(params, activationDocumentMrid);
@@ -406,11 +383,11 @@ export class FeedbackProducerController {
         params.logger.debug('============= START : getIndemnityStatus FeedbackProducerController  ===========',
             activationDocumentMrid);
 
-        var status: string = IndeminityStatus.IN_PROGRESS;
+        let status: string = IndeminityStatus.IN_PROGRESS;
 
-        var feedbackProducerObj: FeedbackProducer = null;
+        let feedbackProducerObj: FeedbackProducer = null;
         try {
-            var feedbackProducerObj = await this.getByActivationDocumentMrId(params, activationDocumentMrid);
+            feedbackProducerObj = await this.getByActivationDocumentMrId(params, activationDocumentMrid);
         } catch (err) {
             //Do Nothing, no status
         }
@@ -440,20 +417,15 @@ export class FeedbackProducerController {
         params.logger.info('============= START : UpdateIndeminityStatus FeedbackProducerController  ===========',
             activationDocumentMrid);
 
-        var newStatus = '';
+        let newStatus = '';
 
         const identity = params.values.get(ParametersType.IDENTITY);
         const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
-        var userRole: string = '';
+        let userRole: string = '';
 
         if (roleTable.has(identity.toLowerCase())) {
             userRole = roleTable.get(identity.toLowerCase());
         }
-
-        // if ( userRole !== RoleType.Role_TSO
-        //     && userRole !== RoleType.Role_DSO) {
-        //     throw new Error(`ERROR: Indemnity Status for the Activation Document ${activationDocumentMrid} cannot be updated by ${identity}`);
-        // }
 
         const feedbackProducerMrid = this.getFeedbackProducerMrid(params, activationDocumentMrid);
         let existingFeedbackProducersRef: Map<string, DataReference>;
@@ -464,13 +436,13 @@ export class FeedbackProducerController {
             //Do Nothing
         }
 
-        var feedbackProducerRef: DataReference = null;
+        let feedbackProducerRef: DataReference = null;
         if (existingFeedbackProducersRef) {
 
             feedbackProducerRef = existingFeedbackProducersRef.values().next().value;
         }
 
-        var feedbackProducerObj: FeedbackProducer = null;
+        let feedbackProducerObj: FeedbackProducer = null;
         if (feedbackProducerRef
             && feedbackProducerRef.data) {
 
@@ -482,7 +454,7 @@ export class FeedbackProducerController {
             && feedbackProducerObj.activationDocumentMrid === activationDocumentMrid) {
 
             //control if a Balancing exists for this activation Document
-            var balancingDocument: BalancingDocument;
+            let balancingDocument: BalancingDocument = null;
             try {
                 balancingDocument =
                     await BalancingDocumentController.getObjByActivationDocumentMrid(params, activationDocumentMrid);
@@ -490,37 +462,13 @@ export class FeedbackProducerController {
                 //Do Nothing
             }
 
-            // if (!balancingDocument
-            //     || !balancingDocument.balancingDocumentMrid
-            //     || balancingDocument.balancingDocumentMrid.length === 0) {
-
-            //     throw new Error(`ERROR update Indeminity Status, no Indeminity found for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`);
-            // }
-
-
-            // if (userRole !== RoleType.Role_Producer) {
-            //     let systemOperatorObj: SystemOperator;
-            //     try {
-            //         systemOperatorObj =
-            //             await StarDataService.getObj(
-            //                 params, {id: feedbackProducerObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
-            //     } catch (err) {
-            //         throw new Error('ERROR update Indeminity Status : '.concat(err.message).concat(` for Activation Document ${feedbackProducerObj.activationDocumentMrid} update Indeminity Status.`));
-            //     }
-
-            //     if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
-            //         throw new Error(`Organisation, ${identity} cannot update Indeminity Status for Feedback manager by ${systemOperatorObj.systemOperatorMarketParticipantName}`);
-            //     }
-            // }
-
-
             if (!feedbackProducerObj.indeminityStatus
                 || feedbackProducerObj.indeminityStatus.length === 0) {
 
                 feedbackProducerObj.indeminityStatus = IndeminityStatus.IN_PROGRESS;
             }
 
-            var isFinalState: boolean = false;
+            let isFinalState: boolean = false;
             switch (feedbackProducerObj.indeminityStatus) {
                 case IndeminityStatus.IN_PROGRESS:
                     newStatus = IndeminityStatus.AGREEMENT;
@@ -599,7 +547,7 @@ export class FeedbackProducerController {
         if (allResults && allResults.length > 0) {
             for (let result of allResults) {
 
-                var balancingDocument: BalancingDocument;
+                let balancingDocument: BalancingDocument = null;
                 try {
                     balancingDocument =
                         await BalancingDocumentController.getObjByActivationDocumentMrid(params, result.activationDocumentMrid);
@@ -650,7 +598,7 @@ export class FeedbackProducerController {
 
         params.logger.debug('============= START : get Obj ById FeedbackProducerController ===========');
 
-        var arg: IdArgument = {docType: DocType.FEEDBACK_PRODUCER, id: feedbackProducerMrid};
+        let arg: IdArgument = {docType: DocType.FEEDBACK_PRODUCER, id: feedbackProducerMrid};
         if (target && target.length > 0) {
             arg.collection = target;
         }

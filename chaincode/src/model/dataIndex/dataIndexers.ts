@@ -4,8 +4,7 @@ import { IndexedDataJson } from '../dataIndexersJson';
 export class IndexedData {
 
     public static fromJson(jsonIndexedData: IndexedDataJson): IndexedData {
-        // const indexedDataAbstractMap: Map<string, any> = JSON.parse(jsonIndexedData.jsonIndexedDataAbstractMap);
-        var indexedDataAbstractMap: Map<string, any> = new Map();
+        let indexedDataAbstractMap: Map<string, any> = new Map();
 
         try {
             indexedDataAbstractMap = new Map(JSON.parse(jsonIndexedData.jsonIndexedDataAbstractMap));

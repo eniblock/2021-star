@@ -18,15 +18,12 @@ export class DataIndexersService {
 
         let objJSON: IndexedDataJson;
         if (target && target.length > 0) {
-            // params.logger.debug('getObj');
             objJSON = await StarPrivateDataService.getObj(
                 params, {id: indexId, collection: target, docType: DocType.DATA_INDEXER});
         } else {
-            // params.logger.debug('getObjRefbyId');
 
             const objRef = await StarPrivateDataService.getObjRefbyId(
                 params, {id: indexId, docType: DocType.DATA_INDEXER});
-            // params.logger.debug('objRef: ', JSON.stringify(objRef));
 
             if (objRef) {
                 objJSON = objRef.values().next().value.data;

@@ -1,7 +1,5 @@
 import { DataActionType } from '../enums/DataActionType';
 import { DocType } from '../enums/DocType';
-import { OrganizationTypeMsp } from '../enums/OrganizationMspType';
-import { ParametersType } from '../enums/ParametersType';
 import { ActivationDocument } from '../model/activationDocument/activationDocument';
 import { IndexedData } from '../model/dataIndex/dataIndexers';
 
@@ -9,7 +7,6 @@ import { DataReference } from '../model/dataReference';
 import { EnergyAmount } from '../model/energyAmount';
 import { STARParameters } from '../model/starParameters';
 import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
-import { EligibilityController } from './activationDocument/EligibilityController';
 import { OrderManagerController } from './activationDocument/OrderManagerController';
 import { ActivationCompositeKeyIndexersController } from './dataIndex/ActivationCompositeKeyIndexersController';
 import { ActivationEnergyAmountIndexersController } from './dataIndex/ActivationEnergyAmountIndexersController';
@@ -25,13 +22,12 @@ export class StarDataUpdateController {
         params: STARParameters): Promise<string> {
         params.logger.info('============= START : getStarDataToUpdate StarDataUpdateController ===========');
 
-        let stateStr = '[]';
         // const listOfIndexers = await this.getAllIndexersToDelete(params);
         // const listOfIndexers = await this.getAllIndexersToCreate(params);
         // const listOfIndexers = await this.getActivationDocumentToShare(params);
         const listOfIndexers = await this.getNeededBalancingToCalculateFromData(params);
 
-        stateStr = JSON.stringify(listOfIndexers);
+        let stateStr = JSON.stringify(listOfIndexers);
 
         if (listOfIndexers) {
             params.logger.info('nb of data to update: ', listOfIndexers.length);
@@ -59,7 +55,6 @@ export class StarDataUpdateController {
         try {
             updateOrders = JSON.parse(inputStr);
         } catch (error) {
-        // params.logger.error('error=', error);
             throw new Error(`ERROR executeStarDataOrders -> Input string NON-JSON value`);
         }
 
@@ -111,20 +106,7 @@ export class StarDataUpdateController {
                     docType: DocType.ACTIVATION_DOCUMENT,
                     previousCollection: 'enedis-producer'};
 
-                // const requirements =
-                //     await EligibilityController.getCreationRequierments(
-                //        params, referencedDocument, 'enedis-producer');
-                // for (const requirement of requirements) {
-                //     activationDocumentList.push(requirement);
-                // }
-
                 activationDocumentList.push(referencedDocument);
-
-                // const linkedData =
-                //     await EligibilityController.getCreationLinkedData(params, referencedDocument, 'enedis-producer');
-                // for (const data of linkedData) {
-                //     activationDocumentList.push(data);
-                // }
 
             }
         }
@@ -201,7 +183,7 @@ export class StarDataUpdateController {
                     const activationDocument: ActivationDocument = activationDocumentRef.data;
                     const activationDocumentMrid: string = activationDocument.activationDocumentMrid;
 
-                    var energyAmount: EnergyAmount = null;
+                    let energyAmount: EnergyAmount = null;
                     try {
                         energyAmount = await EnergyAmountController.getByActivationDocument(
                             params, activationDocumentMrid, activationDocumentRef.collection);

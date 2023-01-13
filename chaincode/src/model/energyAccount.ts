@@ -57,14 +57,10 @@ export class EnergyAccount {
             throw new Error(`ERROR ${DocType.ENERGY_ACCOUNT} -> Input string NON-JSON value`);
         }
 
-        try {
-            EnergyAccount.schema.validateSync(
-                energyAccountObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        EnergyAccount.schema.validateSync(
+            energyAccountObj,
+            {strict: true, abortEarly: false},
+        );
         return energyAccountObj;
     }
 
@@ -78,14 +74,10 @@ export class EnergyAccount {
 
         if (energyAccountList && energyAccountList.length > 0) {
             for (const energyAccountObj of energyAccountList) {
-                try {
-                    EnergyAccount.schema.validateSync(
-                        energyAccountObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
+                EnergyAccount.schema.validateSync(
+                    energyAccountObj,
+                    {strict: true, abortEarly: false},
+                );
             }
         }
         return energyAccountList;

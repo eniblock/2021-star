@@ -43,14 +43,10 @@ export class ReserveBidMarketDocument {
             throw new Error(`ERROR ${DocType.RESERVE_BID_MARKET_DOCUMENT} -> Input string NON-JSON value`);
         }
 
-        try {
-            ReserveBidMarketDocument.schema.validateSync(
-                reserveBidObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        ReserveBidMarketDocument.schema.validateSync(
+            reserveBidObj,
+            {strict: true, abortEarly: false},
+        );
         return reserveBidObj;
     }
 
@@ -64,14 +60,10 @@ export class ReserveBidMarketDocument {
 
         if (reserveBidList && reserveBidList.length > 0) {
             for (const reserveBidObj of reserveBidList) {
-                try {
-                    ReserveBidMarketDocument.schema.validateSync(
-                        reserveBidObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
+                ReserveBidMarketDocument.schema.validateSync(
+                    reserveBidObj,
+                    {strict: true, abortEarly: false},
+                );
             }
         }
         return reserveBidList;

@@ -19,11 +19,9 @@ import { IdArgument } from '../model/arguments/idArgument';
 import { IndexedData } from '../model/dataIndex/dataIndexers';
 import { EnergyAmountAbstract } from '../model/dataIndex/energyAmountAbstract';
 import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
-import { BalancingDocumentController } from './BalancingDocumentController';
 import { ActivationEnergyAmountIndexersController } from './dataIndex/ActivationEnergyAmountIndexersController';
 import { CommonService } from './service/CommonService';
 import { HLFServices } from './service/HLFservice';
-import { FeedbackProducer } from '../model/feedbackProducer';
 import { FeedbackProducerController } from './FeedbackProducerController';
 
 export class EnergyAmountController {
@@ -52,8 +50,7 @@ export class EnergyAmountController {
                     params, {
                         collection: updateOrder.previousCollection,
                         id: energyAmount.energyAmountMarketDocumentMrid});
-                // await BalancingDocumentController.deleteByActivationDocumentMrId(
-                //     params, energyAmount.activationDocumentMrid, updateOrder.previousCollection);
+
             }
 
         }
@@ -85,9 +82,6 @@ export class EnergyAmountController {
 
         for (const [key ] of existingActivationDocumentRef) {
             await EnergyAmountService.write(params, energyObj, key);
-
-            const dataReference = existingActivationDocumentRef.get(key);
-            // await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
 
             await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
 
@@ -128,9 +122,6 @@ export class EnergyAmountController {
                 for (const [key ] of existingActivationDocumentRef) {
                     await EnergyAmountService.write(params, energyObj, key);
 
-                    const dataReference = existingActivationDocumentRef.get(key);
-                    // await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
-
                     await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
 
                     await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
@@ -154,8 +145,6 @@ export class EnergyAmountController {
         await EnergyAmountController.checkEnergyAmout(
             params, dataReference.data, EnergyType.ENE, dataReference.collection);
         await EnergyAmountService.write(params, dataReference.data, dataReference.collection);
-        // await BalancingDocumentController.createOrUpdate(
-        //     params, null, null, dataReference.data, dataReference.collection);
 
         await ActivationEnergyAmountIndexersController.addEnergyAmountReference(
             params, dataReference.data, dataReference.collection);
@@ -194,8 +183,6 @@ export class EnergyAmountController {
 
         for (const [key ] of existingEnergyAmountRef) {
             await EnergyAmountService.write(params, energyObj, key);
-
-            // await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
 
             await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
         }
@@ -237,8 +224,6 @@ export class EnergyAmountController {
                 for (const [key ] of existingEnergyAmountRef) {
                     await EnergyAmountService.write(params, energyObj, key);
 
-                    // await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
-
                     await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
                 }
             }
@@ -275,9 +260,6 @@ export class EnergyAmountController {
 
         for (const [key ] of existingActivationDocumentRef) {
             await EnergyAmountService.write(params, energyObj, key);
-
-            const dataReference = existingActivationDocumentRef.get(key);
-            // await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
 
             await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
 
@@ -317,9 +299,6 @@ export class EnergyAmountController {
                 for (const [key ] of existingActivationDocumentRef) {
                     await EnergyAmountService.write(params, energyObj, key);
 
-                    const dataReference = existingActivationDocumentRef.get(key);
-                    // await BalancingDocumentController.createOrUpdate(params, dataReference.data, null, energyObj, key);
-
                     await ActivationEnergyAmountIndexersController.addEnergyAmountReference(params, energyObj, key);
 
                     await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
@@ -343,8 +322,6 @@ export class EnergyAmountController {
         await EnergyAmountController.checkEnergyAmout(
             params, dataReference.data, EnergyType.ENI, dataReference.collection);
         await EnergyAmountService.write(params, dataReference.data, dataReference.collection);
-        // await BalancingDocumentController.createOrUpdate(
-        //     params, null, null, dataReference.data, dataReference.collection);
 
         await ActivationEnergyAmountIndexersController.addEnergyAmountReference(
             params, dataReference.data, dataReference.collection);
@@ -385,8 +362,6 @@ export class EnergyAmountController {
                 for (const [key ] of existingEnergyAmountRef) {
                     await EnergyAmountService.write(params, energyObj, key);
 
-                    // await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
-
                     await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
                 }
             }
@@ -419,8 +394,6 @@ export class EnergyAmountController {
 
         for (const [key ] of existingEnergyAmountRef) {
             await EnergyAmountService.write(params, energyObj, key);
-
-            // await BalancingDocumentController.createOrUpdate(params, null, null, energyObj, key);
 
             await FeedbackProducerController.fixFeedbackProducerValidityPeriod(params, energyObj, key);
         }
@@ -504,22 +477,6 @@ export class EnergyAmountController {
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
         const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_AMOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
 
-        // const query = `{
-        //     "selector":
-        //     {
-        //         "docType": "energyAmount",
-        //         "registeredResourceMrid": "${registeredResourceMrid}",
-        //         "senderMarketParticipantMrid": "${systemOperatorEicCode}",
-        //         "createdDateTime": {
-        //             "$gte": ${JSON.stringify(dateUp)},
-        //             "$lte": ${JSON.stringify(dateDown)}
-        //         },
-        //         "sort": [{
-        //             "createdDateTime" : "desc"
-        //         }]
-        //     }
-        // }`;
-
         const ret = await QueryStateService.getQueryStringResult(params, {query});
 
         params.logger.info('=============  END  : get EnergyAmount For SystemOperator ===========');
@@ -547,22 +504,6 @@ export class EnergyAmountController {
         args.push(`"receiverMarketParticipantMrid":"${producerEicCode}"`);
         args.push(`"createdDateTime":{"$gte":${JSON.stringify(dateUp)},"$lte":${JSON.stringify(dateDown)}}`);
         const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_AMOUNT, queryArgs: args, sort: [`"createdDateTime":"desc"`]});
-
-        // const query = `{
-        //         "selector":
-        //         {
-        //             "docType": "energyAmount",
-        //             "registeredResourceMrid": "${registeredResourceMrid}",
-        //             "receiverMarketParticipantMrid": "${producerEicCode}",
-        //             "createdDateTime": {
-        //                 "$gte": ${JSON.stringify(dateUp)},
-        //                 "$lte": ${JSON.stringify(dateDown)}
-        //             },
-        //             "sort": [{
-        //                 "createdDateTime" : "desc"
-        //             }]
-        //         }
-        //     }`;
 
         const ret = await QueryStateService.getQueryStringResult(params, {query});
 
@@ -688,23 +629,14 @@ export class EnergyAmountController {
                 throw new Error(`Site : ${energyObj.registeredResourceMrid} does not exist for Energy Amount ${energyObj.energyAmountMarketDocumentMrid} creation.`);
         }
 
-        // params.logger.log('energyAmountInput.timeInterval=', energyAmountInput.timeInterval);
         const strSplitted = energyObj.timeInterval.split('/', 2);
         const begin = strSplitted[0];
-        const end = strSplitted[1];
-        // params.logger.log('strSplitted=', strSplitted);
 
         const dateBegin = new Date(begin.trim());
-        // params.logger.log('dateBegin=', dateBegin);
         dateBegin.setUTCHours(0, 0, 0, 0);
-
-        // params.logger.log('dateBegin=', dateBegin);
-
-        // params.logger.log('dateEnd=', dateEnd);
 
         const orderDateStart = new Date(orderObj.startCreatedDateTime);
         orderDateStart.setUTCHours(0, 0, 0, 0);
-        // params.logger.log('orderDateStart=', orderDateStart);
 
         if (JSON.stringify(dateBegin) !== JSON.stringify(orderDateStart)) {
             throw new Error(`ERROR manage EnergyAmount mismatch between ${energyType} : ${CommonService.formatDate(dateBegin)} and Activation Document : ${CommonService.formatDate(orderDateStart)} dates.`);

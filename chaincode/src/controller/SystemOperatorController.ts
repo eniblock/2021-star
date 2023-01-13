@@ -49,7 +49,6 @@ export class SystemOperatorController {
         params.logger.info('============= START : get System Operator Market Participant by id %s ===========', sompId);
 
         const dataObj = await StarDataService.getObj(params, {id: sompId, docType: DocType.SYSTEM_OPERATOR});
-        // params.logger.info(sompId, sompAsBytes.toString());
 
         params.logger.info('============= END   : get System Operator Market Participant by id %s ===========', sompId);
         return dataObj;

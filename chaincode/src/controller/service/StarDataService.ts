@@ -50,7 +50,7 @@ export class StarDataService {
         params.logger.debug('============= START : Write %s %s ===========', arg.id, arg.dataObj.docType);
 
         //Control if write tries to erase an existing data with another docType
-        var storedObj: any;
+        let storedObj: any = null;
         try {
             storedObj = await this.getObj(params, {id:arg.id});
         } catch (err) {

@@ -138,7 +138,7 @@ export class StarPrivateDataService {
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, arg.collection);
 
         //Control if write tries to erase an existing data with another docType
-        var storedObj: any;
+        let storedObj: any = null;
         try {
             storedObj = await this.getObj(params, {id:arg.id, collection:arg.collection});
         } catch (err) {

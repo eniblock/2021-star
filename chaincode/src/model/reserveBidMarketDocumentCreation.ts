@@ -10,21 +10,17 @@ export class ReserveBidMarketDocumentCreation {
             throw new Error(`ERROR -> Input string NON-JSON value`);
         }
 
-        try {
-            ReserveBidMarketDocument.schema.validateSync(
-                reserveBidCreationObj.reserveBid,
-                {strict: true, abortEarly: false},
-            );
-            if (reserveBidCreationObj.attachmentFileList) {
-                for (const attachmentFile of reserveBidCreationObj.attachmentFileList) {
-                    AttachmentFile.schema.validateSync(
-                        attachmentFile,
-                        {strict: true, abortEarly: false},
-                    );
-                }
+        ReserveBidMarketDocument.schema.validateSync(
+            reserveBidCreationObj.reserveBid,
+            {strict: true, abortEarly: false},
+        );
+        if (reserveBidCreationObj.attachmentFileList) {
+            for (const attachmentFile of reserveBidCreationObj.attachmentFileList) {
+                AttachmentFile.schema.validateSync(
+                    attachmentFile,
+                    {strict: true, abortEarly: false},
+                );
             }
-        } catch (error) {
-            throw error;
         }
         return reserveBidCreationObj;
     }

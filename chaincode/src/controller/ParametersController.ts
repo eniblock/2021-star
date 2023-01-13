@@ -66,8 +66,6 @@ export class ParametersController {
 
         const identity: string = await HLFServices.getMspID(ctx);
 
-        // params.logger.debug("Parameters Identity : %s", identity);
-
         parameters.values.set(ParametersType.IDENTITY, identity);
 
         parameters.values.set(ParametersType.PPCO_TIME_THRESHOLD, ppcoTimeThreshold);

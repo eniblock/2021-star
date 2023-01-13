@@ -15,14 +15,10 @@ export class ReserveBidMarketDocumentSiteDate {
             throw new Error(`ERROR -> Input string NON-JSON value`);
         }
 
-        try {
-            ReserveBidMarketDocumentSiteDate.schema.validateSync(
-                reserveBidObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        ReserveBidMarketDocumentSiteDate.schema.validateSync(
+            reserveBidObj,
+            {strict: true, abortEarly: false},
+        );
         return reserveBidObj;
     }
 
@@ -36,14 +32,10 @@ export class ReserveBidMarketDocumentSiteDate {
 
         if (reserveBidList && reserveBidList.length > 0) {
             for (const reserveBidObj of reserveBidList) {
-                try {
-                    ReserveBidMarketDocumentSiteDate.schema.validateSync(
-                        reserveBidObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
+                ReserveBidMarketDocumentSiteDate.schema.validateSync(
+                    reserveBidObj,
+                    {strict: true, abortEarly: false},
+                );
             }
         }
         return reserveBidList;

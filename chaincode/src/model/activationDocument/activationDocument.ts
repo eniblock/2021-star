@@ -43,14 +43,10 @@ export class ActivationDocument {
             throw new Error(`ERROR ${DocType.ACTIVATION_DOCUMENT} -> Input string NON-JSON value`);
         }
 
-        try {
-            ActivationDocument.schema.validateSync(
-                activationDocumentObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        ActivationDocument.schema.validateSync(
+            activationDocumentObj,
+            {strict: true, abortEarly: false},
+        );
         return activationDocumentObj;
     }
 
@@ -64,14 +60,10 @@ export class ActivationDocument {
 
         if (activationDocumentList && activationDocumentList.length > 0) {
             for (const activationDocumentObj of activationDocumentList) {
-                try {
-                    ActivationDocument.schema.validateSync(
-                        activationDocumentObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
+                ActivationDocument.schema.validateSync(
+                    activationDocumentObj,
+                    {strict: true, abortEarly: false},
+                );
             }
         }
         return activationDocumentList;

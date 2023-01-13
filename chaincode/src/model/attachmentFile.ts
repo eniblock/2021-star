@@ -17,14 +17,10 @@ export class AttachmentFile {
             throw new Error(`ERROR ${DocType.ATTACHMENT_FILE} -> Input string NON-JSON value`);
         }
 
-        try {
-            AttachmentFile.schema.validateSync(
-                fileObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        AttachmentFile.schema.validateSync(
+            fileObj,
+            {strict: true, abortEarly: false},
+        );
         return fileObj;
     }
 
@@ -38,14 +34,10 @@ export class AttachmentFile {
 
         if (fileList && fileList.length > 0) {
             for (const fileObj of fileList) {
-                try {
-                    AttachmentFile.schema.validateSync(
-                        fileObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
+                AttachmentFile.schema.validateSync(
+                    fileObj,
+                    {strict: true, abortEarly: false},
+                );
             }
         }
         return fileList;

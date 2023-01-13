@@ -135,7 +135,7 @@ export class ActivationDocumentEligibilityService {
         activationDocumentRefs: DataReference[]): Promise<DataReference[]> {
 
         const returnedList: DataReference[] = [];
-        for (var activationDocumentRef of activationDocumentRefs) {
+        for (let activationDocumentRef of activationDocumentRefs) {
             activationDocumentRef.data = await this.outputFormatFRActivationDocument(params, activationDocumentRef.data)
             returnedList.push(activationDocumentRef);
         }

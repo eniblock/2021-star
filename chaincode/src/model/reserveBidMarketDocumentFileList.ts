@@ -16,21 +16,17 @@ export class ReserveBidMarketDocumentFileList {
             throw new Error(`ERROR -> Input string NON-JSON value`);
         }
 
-        try {
-            ReserveBidMarketDocumentFileList.schema.validateSync(
-                reserveBidObj,
-                {strict: true, abortEarly: false},
-            );
-            if (reserveBidObj.attachmentFileList) {
-                for (const attachmentFile of reserveBidObj.attachmentFileList) {
-                    AttachmentFile.schema.validateSync(
-                        attachmentFile,
-                        {strict: true, abortEarly: false},
-                    );
-                }
+        ReserveBidMarketDocumentFileList.schema.validateSync(
+            reserveBidObj,
+            {strict: true, abortEarly: false},
+        );
+        if (reserveBidObj.attachmentFileList) {
+            for (const attachmentFile of reserveBidObj.attachmentFileList) {
+                AttachmentFile.schema.validateSync(
+                    attachmentFile,
+                    {strict: true, abortEarly: false},
+                );
             }
-        } catch (error) {
-            throw error;
         }
         return reserveBidObj;
     }

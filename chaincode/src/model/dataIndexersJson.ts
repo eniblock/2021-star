@@ -4,7 +4,6 @@ import { IndexedData } from './dataIndex/dataIndexers';
 export class IndexedDataJson {
 
     public static toJson(indexedData: IndexedData): IndexedDataJson {
-        // const jsonIndexedDataAbstractMap = JSON.stringify([...indexedData.indexedDataAbstractMap]);
         const jsonIndexedDataAbstractMap = JSON.stringify(Array.from(indexedData.indexedDataAbstractMap.entries()));
 
         return {

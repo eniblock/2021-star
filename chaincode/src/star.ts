@@ -26,7 +26,6 @@ import { AttachmentFileController } from './controller/AttachmentFileController'
 import { BalancingDocumentController } from './controller/BalancingDocumentController';
 import { ReserveBidMarketDocumentController } from './controller/ReserveBidMarketDocumentController';
 import { HLFServices } from './controller/service/HLFservice';
-import { StarDataUpdateController } from './controller/StarDataUpdateController';
 import { FeedbackProducerController } from './controller/FeedbackProducerController';
 
 export class Star extends Contract {

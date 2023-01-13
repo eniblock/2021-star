@@ -17,14 +17,10 @@ export class BalancingDocumentSearchCriteria {
             throw new Error(`ERROR -> Input string NON-JSON value`);
         }
 
-        try {
-            BalancingDocumentSearchCriteria.schema.validateSync(
-                energyAccountObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        BalancingDocumentSearchCriteria.schema.validateSync(
+            energyAccountObj,
+            {strict: true, abortEarly: false},
+        );
         return energyAccountObj;
     }
 

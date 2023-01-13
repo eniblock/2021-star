@@ -268,9 +268,6 @@ export class QueryStateService {
         params: STARParameters,
         arg: QueryArgument): Promise<Iterators.StateQueryIterator>  {
 
-        // params.logger.debug(query);
-        // params.logger.debug(collection);
-
         let returnedIterator: any;
 
         const iterator: any = await params.ctx.stub.getPrivateDataQueryResult(arg.collection, arg.query);

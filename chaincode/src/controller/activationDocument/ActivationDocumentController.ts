@@ -403,15 +403,6 @@ export class ActivationDocumentController {
             activationDocumentObj.revisionNumber = '1';
         }
 
-        // if (identity === OrganizationTypeMsp.RTE &&
-        //     activationDocumentObj.measurementUnitName !== MeasurementUnitType.MW) {
-        //     throw new Error(`Organisation, ${identity} does not have rights for KW orders`);
-        // }
-        // if (identity === OrganizationTypeMsp.ENEDIS &&
-        //     activationDocumentObj.measurementUnitName !== MeasurementUnitType.KW) {
-        //     throw new Error(`Organisation, ${identity} does not have rights for MW orders`);
-        // }
-
         let systemOperatorObj: SystemOperator;
         try {
             systemOperatorObj =

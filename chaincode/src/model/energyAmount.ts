@@ -49,14 +49,10 @@ export class EnergyAmount {
             throw new Error(`ERROR ${DocType.ENERGY_AMOUNT} -> Input string NON-JSON value`);
         }
 
-        try {
-            EnergyAmount.schema.validateSync(
-                energyAmountObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        EnergyAmount.schema.validateSync(
+            energyAmountObj,
+            {strict: true, abortEarly: false},
+        );
         return energyAmountObj;
     }
 
@@ -70,14 +66,10 @@ export class EnergyAmount {
 
         if (energyAmountList && energyAmountList.length > 0) {
             for (const energyAmountObj of energyAmountList) {
-                try {
-                    EnergyAmount.schema.validateSync(
-                        energyAmountObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
+                EnergyAmount.schema.validateSync(
+                    energyAmountObj,
+                    {strict: true, abortEarly: false},
+                );
             }
         }
         return energyAmountList;

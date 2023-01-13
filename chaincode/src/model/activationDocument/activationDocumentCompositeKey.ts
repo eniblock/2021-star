@@ -27,19 +27,16 @@ export class ActivationDocumentCompositeKey {
             startCreatedDateTime: activationDocumentObj.startCreatedDateTime,
         };
 
-        try {
-            if (!activationDocumentCompositeKey.revisionNumber
-                || activationDocumentCompositeKey.revisionNumber.length === 0) {
+        if (!activationDocumentCompositeKey.revisionNumber
+            || activationDocumentCompositeKey.revisionNumber.length === 0) {
 
-                activationDocumentCompositeKey.revisionNumber = '0';
-            }
-            ActivationDocumentCompositeKey.schema.validateSync(
-                activationDocumentCompositeKey,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
+            activationDocumentCompositeKey.revisionNumber = '0';
         }
+        ActivationDocumentCompositeKey.schema.validateSync(
+            activationDocumentCompositeKey,
+            {strict: true, abortEarly: false},
+        );
+
         return activationDocumentCompositeKey;
     }
 
@@ -51,20 +48,17 @@ export class ActivationDocumentCompositeKey {
             throw new Error(`ERROR ${DocType.ACTIVATION_DOCUMENT_COMPOSITE_KEY} -> Input string NON-JSON value`);
         }
 
-        try {
-            if (!activationDocumentCompositeKeyObj.revisionNumber
-                || activationDocumentCompositeKeyObj.revisionNumber.length === 0) {
+        if (!activationDocumentCompositeKeyObj.revisionNumber
+            || activationDocumentCompositeKeyObj.revisionNumber.length === 0) {
 
-                    activationDocumentCompositeKeyObj.revisionNumber = '0';
-            }
-
-            ActivationDocumentCompositeKey.schema.validateSync(
-                activationDocumentCompositeKeyObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
+                activationDocumentCompositeKeyObj.revisionNumber = '0';
         }
+
+        ActivationDocumentCompositeKey.schema.validateSync(
+            activationDocumentCompositeKeyObj,
+            {strict: true, abortEarly: false},
+        );
+
         return activationDocumentCompositeKeyObj;
     }
 
@@ -78,20 +72,16 @@ export class ActivationDocumentCompositeKey {
 
         if (activationDocumentCompositeKeyList && activationDocumentCompositeKeyList.length > 0) {
             for (const activationDocumentCompositeKeyObj of activationDocumentCompositeKeyList) {
-                try {
-                    if (!activationDocumentCompositeKeyObj.revisionNumber
-                        || activationDocumentCompositeKeyObj.revisionNumber.length === 0) {
+                if (!activationDocumentCompositeKeyObj.revisionNumber
+                    || activationDocumentCompositeKeyObj.revisionNumber.length === 0) {
 
-                            activationDocumentCompositeKeyObj.revisionNumber = '0';
-                    }
-
-                    ActivationDocumentCompositeKey.schema.validateSync(
-                        activationDocumentCompositeKeyObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
+                        activationDocumentCompositeKeyObj.revisionNumber = '0';
                 }
+
+                ActivationDocumentCompositeKey.schema.validateSync(
+                    activationDocumentCompositeKeyObj,
+                    {strict: true, abortEarly: false},
+                );
             }
         }
         return activationDocumentCompositeKeyList;

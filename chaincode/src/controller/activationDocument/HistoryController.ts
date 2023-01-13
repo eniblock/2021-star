@@ -50,7 +50,6 @@ export class HistoryController {
             try {
                 criteriaObj = JSON.parse(inputStr);
             } catch (error) {
-            // params.logger.error('error=', error);
                 throw new Error(`ERROR HistoriqueActivationDocumentCriteria-> Input string NON-JSON value`);
             }
 
@@ -301,20 +300,6 @@ export class HistoryController {
 
         let historyInformationInBuilding: HistoryInformationInBuilding = new HistoryInformationInBuilding();
 
-        // if (allActivationDocument && allActivationDocument.length > 0) {
-        //     params.logger.debug("----------------")
-        //     params.logger.debug("history ActivationDocument[0]")
-        //     params.logger.debug(JSON.stringify(allActivationDocument[0]))
-        //     params.logger.debug("----------------")
-        // }
-        // const yellowPages: YellowPages[] = await YellowPagesController.getAllYellowPagesObject(params);
-        // const ypRegistered: string[] = [];
-        // const ypAutomation: string[] = [];
-        // for (var yp of yellowPages) {
-        //     ypRegistered.push(yp.registeredResourceMrid);
-        //     ypAutomation.push(yp.originAutomationRegisteredResourceMrid);
-        // }
-
         for (const activationDocumentQueryValue of allActivationDocument) {
             params.logger.debug('ooo activationDocumentQueryValue.activationDocumentMrid : ',
                 activationDocumentQueryValue.activationDocumentMrid);
@@ -554,23 +539,6 @@ export class HistoryController {
 
         params.logger.debug('displayedSourceName: ', displayedSourceName);
 
-        // if (!producer) {
-        //     try {
-        //         if (activationDocument.receiverMarketParticipantMrid) {
-        //             var so = await SystemOperatorService.getObj(activationDocument.receiverMarketParticipantMrid);
-        //             if (so) {
-        //                 producer = {
-        //                     producerMarketParticipantMrid: so.systemOperatorMarketParticipantMrid,
-        //                     producerMarketParticipantName: so.systemOperatorMarketParticipantName,
-        //                     producerMarketParticipantRoleType: so.systemOperatorMarketParticipantRoleType
-        //                 }
-        //             }
-        //         }
-        //     } catch (error) {
-        //         //DO nothing except "Not accessible information"
-        //     }
-        // }
-
         let energyAmount: EnergyAmount = null;
 
         let calculateEnergyAmount: boolean = true;
@@ -616,7 +584,7 @@ export class HistoryController {
                     && siteRegistered.meteringPointMrid
                     && siteRegistered.meteringPointMrid.length > 0) {
 
-                    var activationDocumentForBalancing: ActivationDocument= null;
+                    let activationDocumentForBalancing: ActivationDocument= null;
                     if (activationDocument.registeredResourceMrid === siteRegistered.meteringPointMrid) {
                         activationDocumentForBalancing = activationDocument;
                     } else if (subOrderList && subOrderList.length > 0) {

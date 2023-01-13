@@ -38,14 +38,10 @@ export class Site {
             throw new Error(`ERROR ${DocType.SITE} -> Input string NON-JSON value`);
         }
 
-        try {
-            Site.schema.validateSync(
-                siteObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        Site.schema.validateSync(
+            siteObj,
+            {strict: true, abortEarly: false},
+        );
         return siteObj;
     }
 
@@ -59,14 +55,10 @@ export class Site {
 
         if (siteList && siteList.length > 0) {
             for (const siteObj of siteList) {
-                try {
-                    Site.schema.validateSync(
-                        siteObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
+                Site.schema.validateSync(
+                    siteObj,
+                    {strict: true, abortEarly: false},
+                );
             }
         }
         return siteList;

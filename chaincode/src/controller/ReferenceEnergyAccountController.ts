@@ -148,9 +148,7 @@ export class ReferenceEnergyAccountController {
         const dateUp = new Date(startCreatedDateTime);
 
         dateUp.setUTCHours(0, 0, 0, 0);
-        // params.logger.log('dateUp=', JSON.stringify(dateUp));
         const dateDown = new Date(dateUp.getTime() + 86399999);
-        // params.logger.log('dateDown=', JSON.stringify(dateDown));
 
         try {
             await StarDataService.getObj(params, {id: systemOperatorEicCode, docType: DocType.SYSTEM_OPERATOR});
@@ -185,9 +183,7 @@ export class ReferenceEnergyAccountController {
         const dateUp = new Date(startCreatedDateTime);
 
         dateUp.setUTCHours(0, 0, 0, 0);
-        // params.logger.log('dateUp=', JSON.stringify(dateUp));
         const dateDown = new Date(dateUp.getTime() + 86399999);
-        // params.logger.log('dateDown=', JSON.stringify(dateDown));
 
         const args: string[] = [];
         args.push(`"meteringPointMrid": "${meteringPointMrid}"`);

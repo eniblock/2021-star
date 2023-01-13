@@ -16,11 +16,6 @@ export class ProducerController {
         inputStr: string) {
         params.logger.info('============= START : createProducer ProducerController ===========');
 
-        // const identity = params.values.get(ParametersType.IDENTITY);
-        // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-        //     throw new Error(`Organisation, ${identity} does not have rights to create a producer`);
-        // }
-
         const producerObj = Producer.formatString(inputStr);
 
         await ProducerService.write(params, producerObj);
@@ -32,11 +27,6 @@ export class ProducerController {
         params: STARParameters,
         inputStr: string) {
         params.logger.info('============= START : createProducerList ProducerController ===========');
-
-        // const identity = params.values.get(ParametersType.IDENTITY);
-        // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-        //     throw new Error(`Organisation, ${identity} does not have rights to create a producer`);
-        // }
 
         const producerList: Producer[] = Producer.formatListString(inputStr);
 

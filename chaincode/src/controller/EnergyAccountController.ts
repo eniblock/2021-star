@@ -198,23 +198,7 @@ export class EnergyAccountController {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
         }
 
-        // System Operator can access to every information accessible to them
-        // let systemOperatorObj: SystemOperator;
-        // try {
-        //     systemOperatorObj = await StarDataService.getObj(
-        //          params, {id: systemOperatorEicCode, docType: DocType.SYSTEM_OPERATOR});
-        // } catch (error) {
-        //     throw new Error('ERROR getEnergyAccountForSystemOperator : '
-                // .concat(error.message).concat(` for Energy Account read.`));
-        // }
 
-        // if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
-        //     throw new Error(
-        //         `Energy Account, sender: ${identity} does not
-        //              provide his own systemOperatorEicCode therefore he does not have read access.`,
-        //     );
-        // }
-        // let query;
 
         const args: string[] = [];
         args.push(`"meteringPointMrid": "${meteringPointMrid}"`);
@@ -223,7 +207,6 @@ export class EnergyAccountController {
             args.push(`"senderMarketParticipantMrid": "${systemOperatorEicCode}"`);
         }
 
-        // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
 
         params.logger.debug('=============  END  : get EnergyAccount Obj For SystemOperator ===========');
@@ -234,11 +217,6 @@ export class EnergyAccountController {
         params: STARParameters,
         query: string): Promise<any> {
         params.logger.info('============= START : get EnergyAccount Obj By Query ===========');
-
-        // const identity = params.values.get(ParametersType.IDENTITY);
-        // if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
-        //     throw new Error(`Organisation, ${identity} does not have read access for Energy Account.`);
-        // }
 
         params.logger.debug('getEnergyAccountByQuery - query: ', query);
 
@@ -261,7 +239,7 @@ export class EnergyAccountController {
 
         if (energyAccountList && energyAccountList.length > 0) {
             for (const energyAccount of energyAccountList) {
-                var key = energyAccount.meteringPointMrid;
+                let key = energyAccount.meteringPointMrid;
                 key = key.concat(energyAccount.receiverMarketParticipantMrid);
                 key = key.concat(energyAccount.startCreatedDateTime);
                 key = key.concat(energyAccount.endCreatedDateTime);
@@ -308,7 +286,6 @@ export class EnergyAccountController {
         argOrEnd.push(`"endCreatedDateTime":{"$exists": false}`);
         args.push(await QueryStateService.buildORCriteria(argOrEnd));
 
-        // const query = await QueryStateService.buildQuery(DocType.ENERGY_ACCOUNT, args, [`"createdDateTime":"desc"`]);
         const query = await QueryStateService.buildQuery({documentType: DocType.ENERGY_ACCOUNT, queryArgs: args});
         params.logger.debug('getEnergyAccountByProducer - query: ', query);
 
@@ -346,12 +323,6 @@ export class EnergyAccountController {
         }
 
         let siteObj: Site;
-        // try {
-        //     siteObj = await SiteController.getSiteById(params, energyObj.meteringPointMrid, target);
-        // } catch(error) {
-        //     throw new Error('ERROR createEnergyAccount : '.concat(error.message)
-        //          .concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
-        // }
         let siteRef: DataReference;
         try {
             const siteRefMap: Map<string, DataReference> = await StarPrivateDataService.getObjRefbyId(

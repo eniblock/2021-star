@@ -24,14 +24,10 @@ export class Producer {
             throw new Error(`ERROR ${DocType.PRODUCER} -> Input string NON-JSON value`);
         }
 
-        try {
-            Producer.schema.validateSync(
-                producerObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        Producer.schema.validateSync(
+            producerObj,
+            {strict: true, abortEarly: false},
+        );
         return producerObj;
     }
 
@@ -45,14 +41,10 @@ export class Producer {
 
         if (producerList && producerList.length > 0) {
             for (const producerObj of producerList) {
-                try {
-                    Producer.schema.validateSync(
-                        producerObj,
-                        {strict: true, abortEarly: false},
-                    );
-                } catch (error) {
-                    throw error;
-                }
+                Producer.schema.validateSync(
+                    producerObj,
+                    {strict: true, abortEarly: false},
+                );
             }
         }
         return producerList;

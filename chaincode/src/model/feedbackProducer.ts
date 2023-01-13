@@ -38,14 +38,10 @@ export class FeedbackProducer {
             throw new Error(`ERROR ${DocType.FEEDBACK_PRODUCER} -> Input string NON-JSON value`);
         }
 
-        try {
-            FeedbackProducer.schema.validateSync(
-                feedbackProducerObj,
-                {strict: true, abortEarly: false},
-            );
-        } catch (error) {
-            throw error;
-        }
+        FeedbackProducer.schema.validateSync(
+            feedbackProducerObj,
+            {strict: true, abortEarly: false},
+        );
         return feedbackProducerObj;
     }
 

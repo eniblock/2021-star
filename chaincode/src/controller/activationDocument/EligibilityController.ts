@@ -159,8 +159,7 @@ export class EligibilityController {
                                     // Depend if eligibility needs to be true
                                     // activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
                                     activationDocument.eligibilityStatusEditable = false;
-                                    activationDocument =
-                                        await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(
+                                    activationDocument = await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(
                                             params, activationDocument);
 
                                     const dataReference: DataReference = {

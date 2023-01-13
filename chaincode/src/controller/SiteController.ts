@@ -168,7 +168,6 @@ export class SiteController {
             params, {docType: DocType.SITE, id: siteId});
         const dataReference = result.values().next().value;
 
-        // params.logger.debug(siteId, JSON.stringify(dataReference.data));
         params.logger.info('============= END   : Query %s Site ===========', siteId);
 
         return JSON.stringify(dataReference.data);

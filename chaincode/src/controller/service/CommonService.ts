@@ -40,41 +40,33 @@ export class CommonService {
     }
 
     public static setHoursStartDayStr(dateref: string): string {
-        // params.logger.info("dateref : ", dateref);
         let newDate = new Date(Date.parse(dateref));
 
         newDate = this.setHoursStartDay(newDate);
-        // params.logger.info("newDate : ", newDate);
 
         return JSON.parse(JSON.stringify(newDate));
     }
 
     public static setHoursStartDay(dateref: Date): Date {
-        // params.logger.info("dateref : ", dateref);
         const newDate = new Date(dateref);
 
         newDate.setUTCHours(0, 0, 0, 0);
-        // params.logger.info("newDate : ", newDate);
 
         return newDate;
     }
 
     public static setHoursEndDayStr(dateref: string): string {
-        // params.logger.info("dateref : ", dateref);
         let newDate = new Date(Date.parse(dateref));
 
         newDate = this.setHoursEndDay(newDate);
-        // params.logger.info("newDate : ", newDate);
 
         return JSON.parse(JSON.stringify(newDate));
     }
 
     public static setHoursEndDay(dateref: Date): Date {
-        // params.logger.info("dateref : ", dateref);
         const newDate = new Date(dateref);
 
         newDate.setUTCHours(23, 59, 59, 999);
-        // params.logger.info("newDate : ", newDate);
 
         return newDate;
     }
@@ -83,7 +75,8 @@ export class CommonService {
         let stringValue: string = '';
 
         // Remember : NaN is never equal to itself.
-        if (dateValue && dateValue.getTime() === dateValue.getTime()) {
+        const dateValueTime = dateValue.getTime();
+        if (dateValue && dateValue.getTime() === dateValueTime) {
             let tmp: string = '';
             tmp = dateValue.getFullYear().toString();
             stringValue = stringValue.concat(tmp);

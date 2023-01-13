@@ -7,6 +7,7 @@ sonar:
     COPY . ./
     COPY --if-exists .git .git
     COPY ./backend+build/api-*.jar ./
+    COPY ./backend+build/lombok*.jar ./
     RUN git blame Earthfile
     RUN echo sonar.projectVersion=$(yq eval .version helm/star/Chart.yaml) >> sonar-project.properties
     ENV SONAR_HOST_URL=https://sonarcloud.io
@@ -15,4 +16,5 @@ sonar:
         --secret GITHUB_TOKEN \
         --secret SONAR_TOKEN \
         sonar-scanner \
-        -D sonar.java.binaries=$(ls api-*.jar)
+        -D sonar.java.binaries=$(ls api-*.jar) \
+        -D sonar.java.libraries=$(ls lombok*.jar)

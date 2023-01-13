@@ -21,8 +21,10 @@ build:
     COPY api/src api/src/
     COPY service/src service/src/
     RUN --mount=type=cache,target=/root/.m2 \
-        ./mvnw  package -DskipTests -B
-    SAVE ARTIFACT /workspace/app/api/target/api*.jar
+        ./mvnw  package -DskipTests -B \
+        && cp /root/.m2/repository/org/projectlombok/lombok/*/lombok*.jar .
+    SAVE ARTIFACT api/target/api*.jar
+    SAVE ARTIFACT lombok*.jar
 
 docker:
     FROM openjdk:11

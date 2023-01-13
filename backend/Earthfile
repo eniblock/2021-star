@@ -26,6 +26,11 @@ build:
     SAVE ARTIFACT api/target/api*.jar
     SAVE ARTIFACT lombok*.jar
 
+save-jars:
+    FROM scratch
+    COPY +build/*.jar /
+    SAVE ARTIFACT *.jar AS LOCAL ./
+
 docker:
     FROM openjdk:11
     # required to validate rte certificates

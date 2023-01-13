@@ -125,3 +125,4 @@ git push
 Make sure a reviewer is accepting the deployment in github actions.
 
 Finally, bump the version number in `Chart.yaml` to the next expected version.
+

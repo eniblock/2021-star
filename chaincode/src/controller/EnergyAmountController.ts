@@ -656,8 +656,7 @@ export class EnergyAmountController {
     private static async getObjByIdArgument(
         params: STARParameters,
         arg: IdArgument): Promise<EnergyAmount> {
-        params.logger.debug
-            ('============= START : get EnergyAmountController By Id Argument (%s) ===========', JSON.stringify(arg));
+        params.logger.debug('============= START : get EnergyAmountController By Id Argument (%s) ===========', JSON.stringify(arg));
 
         let energyObj: EnergyAmount;
         arg.docType = DocType.ENERGY_AMOUNT;
@@ -671,8 +670,7 @@ export class EnergyAmountController {
             }
         }
 
-        params.logger.debug
-            ('=============  END  : get EnergyAmountController By Id Argument (%s) ===========', JSON.stringify(arg));
+        params.logger.debug('=============  END  : get EnergyAmountController By Id Argument (%s) ===========', JSON.stringify(arg));
 
         return energyObj;
     }

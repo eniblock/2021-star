@@ -67,8 +67,7 @@ export class AttachmentFileController {
         id: string,
         target: string = ''): Promise<AttachmentFile> {
 
-        params.logger.debug
-        ('============= START : AttachmentFileController- get Obj By Id (%s,%s) ===========', id, target);
+        params.logger.debug('============= START : AttachmentFileController- get Obj By Id (%s,%s) ===========', id, target);
 
         let fileObj: AttachmentFile;
 
@@ -87,8 +86,7 @@ export class AttachmentFileController {
             }
         }
 
-        params.logger.debug
-        ('============= END   : AttachmentFileController - get Obj By Id (%s,%s) ===========', id, target);
+        params.logger.debug('============= END   : AttachmentFileController - get Obj By Id (%s,%s) ===========', id, target);
 
         return fileObj;
     }

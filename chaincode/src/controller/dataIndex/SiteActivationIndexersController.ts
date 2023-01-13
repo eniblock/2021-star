@@ -89,8 +89,7 @@ export class SiteActivationIndexersController {
         params: STARParameters,
         activationDocumentObj: ActivationDocument,
         target: string = '') {
-        params.logger.debug
-            ('============= START : addActivationReference SiteActivationIndexersController ===========');
+        params.logger.debug('============= START : addActivationReference SiteActivationIndexersController ===========');
 
         if (activationDocumentObj.startCreatedDateTime && activationDocumentObj.startCreatedDateTime.length > 0) {
             const activationAbstract: ActivationDocumentAbstract = {
@@ -104,8 +103,7 @@ export class SiteActivationIndexersController {
             await this.addActivationReferenceWithIdAndAbstract(params, indexId, activationAbstract, target);
         }
 
-        params.logger.debug
-            ('=============  END  : addActivationReference SiteActivationIndexersController ===========');
+        params.logger.debug('=============  END  : addActivationReference SiteActivationIndexersController ===========');
     }
 
     public static async deleteActivationReference(
@@ -124,8 +122,7 @@ export class SiteActivationIndexersController {
 
     // To list needed indexes from stored Data
     public static async getNeededIndexesFromData(params: STARParameters): Promise<DataReference[]> {
-        params.logger.debug
-            ('============= START : getNeededIndexFromData SiteActivationIndexersController ===========');
+        params.logger.debug('============= START : getNeededIndexFromData SiteActivationIndexersController ===========');
 
         const activationDocumentRefList = await ActivationDocumentController.getAll(params);
         const indexList: DataReference[] = [];
@@ -155,8 +152,7 @@ export class SiteActivationIndexersController {
             }
         }
 
-        params.logger.debug
-            ('=============  END  : getNeededIndexFromData SiteActivationIndexersController ===========');
+        params.logger.debug('=============  END  : getNeededIndexFromData SiteActivationIndexersController ===========');
         return indexList;
     }
 
@@ -203,8 +199,7 @@ export class SiteActivationIndexersController {
         indexId: string,
         activationAbstract: ActivationDocumentAbstract,
         target: string = '') {
-        params.logger.debug
-            ('============= START : addActivationReference SiteActivationIndexersController ===========');
+        params.logger.debug('============= START : addActivationReference SiteActivationIndexersController ===========');
 
         params.logger.debug('indexId: ', indexId);
         params.logger.debug('activationAbstract: ', activationAbstract);
@@ -238,8 +233,7 @@ export class SiteActivationIndexersController {
             }
         }
 
-        params.logger.debug
-            ('=============  END  : addActivationReference SiteActivationIndexersController ===========');
+        params.logger.debug('=============  END  : addActivationReference SiteActivationIndexersController ===========');
     }
 
 }

@@ -108,16 +108,14 @@ export class FeedbackProducerController {
         params: STARParameters,
         activationDocumentMrid: string,
         target: string): Promise<void> {
-        params.logger.debug
-            ('============= START : Delete %s FeedbackProducerController ===========',
+        params.logger.debug('============= START : Delete %s FeedbackProducerController ===========',
                 activationDocumentMrid);
 
         const feedbackProducerMrid = this.getFeedbackProducerMrid(params, activationDocumentMrid);
 
         await FeedbackProducerService.delete(params, feedbackProducerMrid, target);
 
-        params.logger.debug
-            ('=============  END  : Delete %s FeedbackProducerController ===========',
+        params.logger.debug('=============  END  : Delete %s FeedbackProducerController ===========',
                 activationDocumentMrid);
     }
 
@@ -616,8 +614,7 @@ export class FeedbackProducerController {
     private static async getObjByIdArgument(
         params: STARParameters,
         arg: IdArgument): Promise<FeedbackProducer> {
-        params.logger.debug
-            ('============= START : get FeedbackProducer By Id Argument (%s) ===========', JSON.stringify(arg));
+        params.logger.debug('============= START : get FeedbackProducer By Id Argument (%s) ===========', JSON.stringify(arg));
 
         let feedbackProducerObj: FeedbackProducer;
         arg.docType = DocType.FEEDBACK_PRODUCER;
@@ -631,8 +628,7 @@ export class FeedbackProducerController {
             }
         }
 
-        params.logger.debug
-            ('=============  END  : get FeedbackProducer By Id Argument (%s) ===========', JSON.stringify(arg));
+        params.logger.debug('=============  END  : get FeedbackProducer By Id Argument (%s) ===========', JSON.stringify(arg));
 
         return feedbackProducerObj;
     }

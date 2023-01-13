@@ -68,8 +68,7 @@ export class SiteReserveBidIndexersController {
         params: STARParameters,
         reserveBidObj: ReserveBidMarketDocument,
         target) {
-        params.logger.debug
-            ('============= START : addReserveBidReference SiteReserveBidIndexersController ===========');
+        params.logger.debug('============= START : addReserveBidReference SiteReserveBidIndexersController ===========');
 
         const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
             createdDateTime: reserveBidObj.createdDateTime,
@@ -80,8 +79,7 @@ export class SiteReserveBidIndexersController {
         await DataIndexersController.addModifyReference(
             params, indexId, reserveBidMarketDocumentAbstract, reserveBidObj.reserveBidMrid, target);
 
-        params.logger.debug
-            ('=============  END  : addReserveBidReference SiteReserveBidIndexersController ===========');
+        params.logger.debug('=============  END  : addReserveBidReference SiteReserveBidIndexersController ===========');
     }
 
     public static async deleteReserveBidReference(

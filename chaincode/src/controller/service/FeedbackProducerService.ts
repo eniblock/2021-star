@@ -30,16 +30,14 @@ export class FeedbackProducerService {
         params: STARParameters,
         feedbackProducerMrid: string,
         target: string): Promise<void> {
-        params.logger.debug
-            ('============= START : Delete %s FeedbackProducerService ===========',
+        params.logger.debug('============= START : Delete %s FeedbackProducerService ===========',
                 feedbackProducerMrid);
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, target);
 
         await params.ctx.stub.deletePrivateData(collection, feedbackProducerMrid);
 
-        params.logger.debug
-            ('=============  END  : Delete %s FeedbackProducerService ===========',
+        params.logger.debug('=============  END  : Delete %s FeedbackProducerService ===========',
                 feedbackProducerMrid);
     }
 

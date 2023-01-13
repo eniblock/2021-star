@@ -29,8 +29,7 @@ export class ActivationDocumentService {
         params: STARParameters,
         activationDocumentObj: ActivationDocument,
         target: string): Promise<void> {
-        params.logger.debug
-            ('============= START : Delete %s ActivationDocumentService ===========',
+        params.logger.debug('============= START : Delete %s ActivationDocumentService ===========',
             activationDocumentObj.activationDocumentMrid);
 
         const collection = await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, target);
@@ -40,8 +39,7 @@ export class ActivationDocumentService {
         await ActivationCompositeKeyIndexersController.deleteCompositeKeyReference(
             params, activationDocumentObj, target);
 
-        params.logger.debug
-            ('=============  END  : Delete %s ActivationDocumentService ===========',
+        params.logger.debug('=============  END  : Delete %s ActivationDocumentService ===========',
             activationDocumentObj.activationDocumentMrid);
     }
 

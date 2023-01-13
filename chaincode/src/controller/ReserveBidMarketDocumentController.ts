@@ -908,8 +908,7 @@ export class ReserveBidMarketDocumentController {
     private static async getObjByIdArgument(
         params: STARParameters,
         arg: IdArgument): Promise<ReserveBidMarketDocument> {
-        params.logger.debug
-            ('============= START : get ReserveBidMarketDocument By Id Argument (%s) ===========', JSON.stringify(arg));
+        params.logger.debug('============= START : get ReserveBidMarketDocument By Id Argument (%s) ===========', JSON.stringify(arg));
 
         let reserveBidObj: ReserveBidMarketDocument;
         arg.docType = DocType.RESERVE_BID_MARKET_DOCUMENT;
@@ -923,8 +922,7 @@ export class ReserveBidMarketDocumentController {
             }
         }
 
-        params.logger.debug
-            ('=============  END  : get ReserveBidMarketDocument By Id Argument (%s) ===========', JSON.stringify(arg));
+        params.logger.debug('=============  END  : get ReserveBidMarketDocument By Id Argument (%s) ===========', JSON.stringify(arg));
 
         return reserveBidObj;
     }

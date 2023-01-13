@@ -23,8 +23,8 @@ import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
 export class LimitationsComponent implements OnInit {
   formRecherche?: FormulaireRechercheHistoriqueLimitation;
 
-  researchResultsWithOnlyOneSuborder?: RechercheHistoriqueLimitationEntiteWithAnnotation[]; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder
-  researchResultsWithOnlyOneSuborderFiltered?: RechercheHistoriqueLimitationEntiteWithAnnotation[];
+  researchResultsWithOnlyOneSuborder: RechercheHistoriqueLimitationEntiteWithAnnotation[] = []; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder
+  researchResultsWithOnlyOneSuborderFiltered: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
 
   motifNameFilter: string | null = null;
   indeminityStatusFilter: IndeminityStatus | null = null;
@@ -72,8 +72,8 @@ export class LimitationsComponent implements OnInit {
   }
 
   private resetResultats() {
-    this.researchResultsWithOnlyOneSuborder = undefined;
-    this.researchResultsWithOnlyOneSuborderFiltered = undefined;
+    this.researchResultsWithOnlyOneSuborder = [];
+    this.researchResultsWithOnlyOneSuborderFiltered = [];
   }
 
   updateColumnsToDisplay(columnsToDisplay: string[]) {

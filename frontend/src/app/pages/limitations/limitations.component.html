@@ -9,9 +9,9 @@
   </div>
 </div>
 
-<div class="row mt-4" *ngIf="researchResultsWithOnlyOneSuborder && researchResultsWithOnlyOneSuborder.length > 0">
+<div class="row mt-4" *ngIf="researchResultsWithOnlyOneSuborder.length > 0">
   <div class="col">
-    <div class="mb-4">{{ researchResultsWithOnlyOneSuborder.length }} {{ researchResultsWithOnlyOneSuborder.length>1 ? 'résultats' : 'résultat' }}</div>
+    <div class="mb-4">{{ researchResultsWithOnlyOneSuborderFiltered.length }} {{ researchResultsWithOnlyOneSuborderFiltered.length>1 ? 'résultats affichés' : 'résultat affiché' }} / {{ researchResultsWithOnlyOneSuborder.length }} {{ researchResultsWithOnlyOneSuborder.length>1 ? 'résultats' : 'résultat' }} au total</div>
     <div class="row">
       <div class="col-8">
         <h4>Filtres sur l’Historique des Limitations</h4>

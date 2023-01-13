@@ -37,14 +37,14 @@ export class SiteReserveBidIndexersController {
         }
         collections = collections.concat('');
 
-        var returnedObj: IndexedData = {
+        let returnedObj: IndexedData = {
             docType: DocType.DATA_INDEXER,
             indexId: indexId,
             indexedDataAbstractMap: new Map()
         };
 
         for (const target of collections) {
-            var obj: IndexedData;
+            let obj: IndexedData = null;
             try {
                 obj = await DataIndexersController.getIndexer(params, indexId, target);
 

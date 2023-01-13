@@ -91,198 +91,134 @@ export class Star extends Contract {
     /*      SystemOperator      */
 
     public async CreateSystemOperator(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SystemOperatorController.createSystemOperator(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SystemOperatorController.createSystemOperator(params, inputStr));
     }
 
     public async UpdateSystemOperator(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SystemOperatorController.updateSystemOperator(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SystemOperatorController.updateSystemOperator(params, inputStr));
     }
 
     public async QuerySystemOperator(
         ctx: Context,
         id: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SystemOperatorController.getSystemOperatorObjById(params, id));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SystemOperatorController.getSystemOperatorObjById(params, id));
     }
 
     public async GetAllSystemOperator(
         ctx: Context) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SystemOperatorController.getAllSystemOperator(params));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SystemOperatorController.getAllSystemOperator(params));
     }
 
     public async GetSystemOperatorByQuery(
         ctx: Context, query: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SystemOperatorController.getSystemOperatorByQuery(params, query));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SystemOperatorController.getSystemOperatorByQuery(params, query));
     }
 
     /*      Producer      */
 
     public async CreateProducer(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ProducerController.createProducer(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ProducerController.createProducer(params, inputStr));
     }
 
     public async UpdateProducer(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ProducerController.updateProducer(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ProducerController.updateProducer(params, inputStr));
     }
 
     public async CreateProducerList(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ProducerController.createProducerList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ProducerController.createProducerList(params, inputStr));
     }
 
     public async UpdateProducerList(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ProducerController.updateProducerList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ProducerController.updateProducerList(params, inputStr));
     }
 
     public async QueryProducer(
         ctx: Context,
         id: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ProducerController.getProducerById(params, id));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ProducerController.getProducerById(params, id));
     }
 
     public async GetAllProducer(
         ctx: Context) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ProducerController.getAllProducer(params));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ProducerController.getAllProducer(params));
     }
 
     /*      Sites       */
 
     public async CreateSite(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SiteController.createSite(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SiteController.createSite(params, inputStr));
     }
 
     public async UpdateSite(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SiteController.updateSite(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SiteController.updateSite(params, inputStr));
     }
 
     public async QuerySite(
         ctx: Context,
         id: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SiteController.querySite(params, id));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SiteController.querySite(params, id));
     }
 
     public async SiteExists(
         ctx: Context,
         id: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SiteController.siteExists(params, id));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SiteController.siteExists(params, id));
     }
 
     public async GetSitesByQuery(
         ctx: Context,
         query: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SiteController.getSitesByQuery(params, query));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SiteController.getSitesByQuery(params, query));
     }
 
     public async GetSitesBySystemOperator(
         ctx: Context,
         id: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SiteController.getSitesBySystemOperator(params, id));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SiteController.getSitesBySystemOperator(params, id));
     }
 
     public async GetSitesByProducer(
         ctx: Context,
         id: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await SiteController.getSitesByProducer(params, id));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await SiteController.getSitesByProducer(params, id));
     }
 
 /*      Restitution View System Operator Market Participant      */
 
     public async ViewSystemOperaterMarketParticipant(
         ctx: Context) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ViewMarketParticipantController.viewSystemOperaterMarketParticipant(params));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ViewMarketParticipantController.viewSystemOperaterMarketParticipant(params));
     }
 
     /*      Restitution View Producer Market Participant       */
@@ -290,73 +226,49 @@ export class Star extends Contract {
     public async ViewProducerMarketParticipant(
         ctx: Context,
         id: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ViewMarketParticipantController.viewProducerMarketParticipant(params, id));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ViewMarketParticipantController.viewProducerMarketParticipant(params, id));
     }
 
     /*      Activation Document       */
 
     public async CreateActivationDocument(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ActivationDocumentController.createActivationDocument(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ActivationDocumentController.createActivationDocument(params, inputStr));
     }
 
     public async CreateActivationDocumentList(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ActivationDocumentController.createActivationDocumentList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ActivationDocumentController.createActivationDocumentList(params, inputStr));
     }
 
     public async GetActivationDocumentReconciliationState(ctx: Context) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await StarDataStateController.getStarDataState(params));
-            // return (await StarDataUpdateController.getStarDataToUpdate(params));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await StarDataStateController.getStarDataState(params));
     }
 
     public async UpdateActivationDocumentEligibilityStatus(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EligibilityController.updateEligibilityStatus(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EligibilityController.updateEligibilityStatus(params, inputStr));
     }
 
     public async UpdateActivationDocumentByOrders(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await StarDataStateController.executeStarDataOrders(params, inputStr));
-            // return (await StarDataUpdateController.executeStarDataOrders(params, inputStr));
-            // return (await BalancingDocumentController.updateBalancingDocumentByOrders(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await StarDataStateController.executeStarDataOrders(params, inputStr));
     }
 
     public async GetActivationDocumentByProducer(
         ctx: Context,
         inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ActivationDocumentController.getActivationDocumentByProducer(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ActivationDocumentController.getActivationDocumentByProducer(params, inputStr));
     }
 
 
@@ -365,94 +277,67 @@ export class Star extends Contract {
     public async GetActivationDocumentBySystemOperator(
         ctx: Context,
         inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ActivationDocumentController.getActivationDocumentBySystemOperator(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ActivationDocumentController.getActivationDocumentBySystemOperator(params, inputStr));
     }
 
     public async GetActivationDocumentByQuery(
         ctx: Context,
         query: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ActivationDocumentController.getActivationDocumentByQuery(params, query));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ActivationDocumentController.getActivationDocumentByQuery(params, query));
     }
 
     /*      Limitation History       */
     public async GetActivationDocumentHistory(
         ctx: Context,
         inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await HistoryController.getHistoryByQuery(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await HistoryController.getHistoryByQuery(params, inputStr));
     }
 
     /*      Yellow Pages       */
 
     public async CreateYellowPages(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await YellowPagesController.createYellowPages(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await YellowPagesController.createYellowPages(params, inputStr));
     }
 
     public async GetAllYellowPages(
         ctx: Context) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await YellowPagesController.getAllYellowPages(params));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await YellowPagesController.getAllYellowPages(params));
     }
 
     /*      Energy Account       */
 
     public async CreateEnergyAccount(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAccountController.createEnergyAccount(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAccountController.createEnergyAccount(params, inputStr));
     }
 
     public async CreateEnergyAccountList(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAccountController.createEnergyAccountList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAccountController.createEnergyAccountList(params, inputStr));
     }
 
     public async UpdateEnergyAccount(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAccountController.updateEnergyAccount(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAccountController.updateEnergyAccount(params, inputStr));
     }
 
     public async UpdateEnergyAccountList(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAccountController.updateEnergyAccountList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAccountController.updateEnergyAccountList(params, inputStr));
     }
 
     public async GetEnergyAccountForSystemOperator(
@@ -460,18 +345,15 @@ export class Star extends Contract {
         meteringPointMrid: string,
         systemOperatorEicCode: string,
         startCreatedDateTime: string = '') {
-                try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAccountController.getEnergyAccountForSystemOperator
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAccountController.getEnergyAccountForSystemOperator
                 (
                     params,
                     meteringPointMrid,
                     systemOperatorEicCode,
                 )
             );
-        } catch (error) {
-            throw error;
-        }
     }
 
     public async GetEnergyAccountByProducer(
@@ -479,9 +361,9 @@ export class Star extends Contract {
         meteringPointMrid: string,
         producerEicCode: string,
         startCreatedDateTime: string) {
-                try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAccountController.getEnergyAccountByProducer
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAccountController.getEnergyAccountByProducer
                 (
                     params,
                     meteringPointMrid,
@@ -489,31 +371,22 @@ export class Star extends Contract {
                     startCreatedDateTime,
                 )
             );
-        } catch (error) {
-            throw error;
-        }
     }
 
     public async GetEnergyAccountWithPagination(
         ctx: Context,
         query: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAccountController.getEnergyAccountByQuery(params, query));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAccountController.getEnergyAccountByQuery(params, query));
     }
 
     /*      Reference Energy Account       */
 
     public async CreateReferenceEnergyAccount(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReferenceEnergyAccountController.createReferenceEnergyAccount(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReferenceEnergyAccountController.createReferenceEnergyAccount(params, inputStr));
     }
 
     public async GetReferenceEnergyAccountForSystemOperator(
@@ -521,9 +394,9 @@ export class Star extends Contract {
         meteringPointMrid: string,
         systemOperatorEicCode: string,
         startCreatedDateTime: string) {
-                try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReferenceEnergyAccountController.getReferenceEnergyAccountForSystemOperator
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReferenceEnergyAccountController.getReferenceEnergyAccountForSystemOperator
                 (
                     params,
                     meteringPointMrid,
@@ -531,9 +404,6 @@ export class Star extends Contract {
                     startCreatedDateTime,
                 )
             );
-        } catch (error) {
-            throw error;
-        }
     }
 
     public async GetReferenceEnergyAccountByProducer(
@@ -541,9 +411,9 @@ export class Star extends Contract {
         meteringPointMrid: string,
         producerEicCode: string,
         startCreatedDateTime: string) {
-                try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReferenceEnergyAccountController.getReferenceEnergyAccountByProducer
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReferenceEnergyAccountController.getReferenceEnergyAccountByProducer
                 (
                     params,
                     meteringPointMrid,
@@ -551,83 +421,56 @@ export class Star extends Contract {
                     startCreatedDateTime,
                 )
             );
-        } catch (error) {
-            throw error;
-        }
     }
 
     /*      Energy Amount       */
 
     public async CreateTSOEnergyAmount(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.createTSOEnergyAmount(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.createTSOEnergyAmount(params, inputStr));
     }
 
     public async CreateTSOEnergyAmountList(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.createTSOEnergyAmountList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.createTSOEnergyAmountList(params, inputStr));
     }
 
     public async UpdateTSOEnergyAmount(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.updateTSOEnergyAmount(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.updateTSOEnergyAmount(params, inputStr));
     }
 
     public async UpdateTSOEnergyAmountList(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.updateTSOEnergyAmountList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.updateTSOEnergyAmountList(params, inputStr));
     }
 
     public async CreateDSOEnergyAmount(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.createDSOEnergyAmount(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.createDSOEnergyAmount(params, inputStr));
     }
 
     public async CreateDSOEnergyAmountList(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.createDSOEnergyAmountList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.createDSOEnergyAmountList(params, inputStr));
     }
 
     public async UpdateDSOEnergyAmount(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.updateDSOEnergyAmount(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.updateDSOEnergyAmount(params, inputStr));
     }
 
     public async UpdateDSOEnergyAmountList(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.updateDSOEnergyAmountList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.updateDSOEnergyAmountList(params, inputStr));
     }
 
     public async GetEnergyAmountForSystemOperator(
@@ -635,9 +478,9 @@ export class Star extends Contract {
         meteringPointMrid: string,
         systemOperatorEicCode: string,
         startCreatedDateTime: string) {
-                try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.getEnergyAmountForSystemOperator
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.getEnergyAmountForSystemOperator
                 (
                     params,
                     meteringPointMrid,
@@ -645,9 +488,6 @@ export class Star extends Contract {
                     startCreatedDateTime,
                 )
             );
-        } catch (error) {
-            throw error;
-        }
     }
 
     public async GetEnergyAmountByProducer(
@@ -655,9 +495,9 @@ export class Star extends Contract {
         meteringPointMrid: string,
         producerEicCode: string,
         startCreatedDateTime: string) {
-                try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.getEnergyAmountByProducer
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.getEnergyAmountByProducer
                 (
                     params,
                     meteringPointMrid,
@@ -665,19 +505,13 @@ export class Star extends Contract {
                     startCreatedDateTime,
                 )
             );
-        } catch (error) {
-            throw error;
-        }
     }
 
     public async GetEnergyAmountWithPagination(
         ctx: Context, query: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await EnergyAmountController.getEnergyAmountByQuery(params, query));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await EnergyAmountController.getEnergyAmountByQuery(params, query));
     }
 
     /* FILES */
@@ -701,12 +535,9 @@ export class Star extends Contract {
     */
     public async GetFileById(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await AttachmentFileController.getById(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await AttachmentFileController.getById(params, inputStr));
     }
 
     /* RESERVE BID MARKET DOCUMENT */
@@ -716,12 +547,9 @@ export class Star extends Contract {
     */
     public async CreateReserveBidMarketDocument(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.create(params, inputStr));
-    } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReserveBidMarketDocumentController.create(params, inputStr));
     }
 
     /*
@@ -730,12 +558,9 @@ export class Star extends Contract {
     */
     public async AddFileToReserveBidMarketDocument(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.addFile(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReserveBidMarketDocumentController.addFile(params, inputStr));
     }
 
     /*
@@ -743,12 +568,9 @@ export class Star extends Contract {
     */
     public async RemoveFileFromReserveBidMarketDocument(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.removeFile(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReserveBidMarketDocumentController.removeFile(params, inputStr));
     }
 
     /*
@@ -760,12 +582,8 @@ export class Star extends Contract {
         reserveBidMrid: string,
         newStatus: string) {
 
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.updateStatus(params, reserveBidMrid, newStatus));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReserveBidMarketDocumentController.updateStatus(params, reserveBidMrid, newStatus));
     }
 
     /*
@@ -773,12 +591,9 @@ export class Star extends Contract {
     */
     public async CreateReserveBidMarketDocumentList(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.createList(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReserveBidMarketDocumentController.createList(params, inputStr));
     }
 
     /*
@@ -787,12 +602,9 @@ export class Star extends Contract {
     */
     public async GetReserveBidMarketDocumentById(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.getById(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReserveBidMarketDocumentController.getById(params, inputStr));
     }
 
     /*
@@ -801,12 +613,9 @@ export class Star extends Contract {
     */
     public async GetReserveBidMarketDocumentListById(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.getListById(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReserveBidMarketDocumentController.getListById(params, inputStr));
     }
 
     /*
@@ -815,12 +624,9 @@ export class Star extends Contract {
     */
     public async GetReserveBidMarketDocumentBySite(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.getByMeteringPointMrid(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReserveBidMarketDocumentController.getByMeteringPointMrid(params, inputStr));
     }
 
     /*
@@ -830,12 +636,9 @@ export class Star extends Contract {
     */
     public async GetValidReserveBidMarketDocumentBySite(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.getValidByMeteringPointMrid(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReserveBidMarketDocumentController.getValidByMeteringPointMrid(params, inputStr));
     }
 
     /*
@@ -845,12 +648,9 @@ export class Star extends Contract {
     */
     public async GetAtDateReserveBidMarketDocumentBySite(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await ReserveBidMarketDocumentController.getAtDateByMeteringPointMrid(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await ReserveBidMarketDocumentController.getAtDateByMeteringPointMrid(params, inputStr));
     }
 
     /*
@@ -859,12 +659,9 @@ export class Star extends Contract {
     */
     public async SearchBalancingDocumentByCriteria(
         ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await BalancingDocumentController.searchByCriteria(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await BalancingDocumentController.searchByCriteria(params, inputStr));
     }
 
 
@@ -874,27 +671,15 @@ export class Star extends Contract {
         output : "any[]"
     */
     public async GetBalancingDocumentState(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            // return (await ReserveBidMarketDocumentController.getBalancingDocumentState(params, inputStr));
-            return "[]";
-        } catch (error) {
-            throw error;
-        }
+        return "[]";
     }
 
     /*
         inputStr : "any[]" // GetBalancingDocumentState return
         output :
     */
-        public async UpdateBalancingDocumentByOrders(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return "{}";
-            // return (await BalancingDocumentController.updateBalancingDocumentByOrders(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+    public async UpdateBalancingDocumentByOrders(ctx: Context, inputStr: string) {
+        return "{}";
     }
 
 
@@ -907,12 +692,8 @@ export class Star extends Contract {
         ctx: Context,
         feedbackProducerMrid: string) {
 
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await FeedbackProducerController.getObjById(params, feedbackProducerMrid));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await FeedbackProducerController.getObjById(params, feedbackProducerMrid));
     }
 
 
@@ -925,12 +706,8 @@ export class Star extends Contract {
         ctx: Context,
         activationDocumentMrid: string) {
 
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await FeedbackProducerController.getByActivationDocumentMrId(params, activationDocumentMrid));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await FeedbackProducerController.getByActivationDocumentMrId(params, activationDocumentMrid));
     }
 
 
@@ -944,12 +721,8 @@ export class Star extends Contract {
         feedbackStr: string,
         feedbackElements: string) {
 
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await FeedbackProducerController.updateFeedbackProducer(params, activationDocumentMrid, feedbackStr, feedbackElements));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await FeedbackProducerController.updateFeedbackProducer(params, activationDocumentMrid, feedbackStr, feedbackElements));
     }
 
     /*
@@ -961,12 +734,8 @@ export class Star extends Contract {
         activationDocumentMrid: string,
         answerStr: string) {
 
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await FeedbackProducerController.updateFeedbackProducerAnswer(params, activationDocumentMrid, answerStr));
-        } catch (error) {
-            throw error;
-        }
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await FeedbackProducerController.updateFeedbackProducerAnswer(params, activationDocumentMrid, answerStr));
     }
 
 
@@ -976,12 +745,9 @@ export class Star extends Contract {
     * output : newStatus : string (IndemnityStatus)
     */
     public async UpdateActivationDocumentIndeminityStatus(ctx: Context, inputStr: string) {
-        try {
-            const params: STARParameters = await ParametersController.getParameterValues(ctx);
-            return (await FeedbackProducerController.updateIndeminityStatus(params, inputStr));
-        } catch (error) {
-            throw error;
-        }
+
+        const params: STARParameters = await ParametersController.getParameterValues(ctx);
+        return (await FeedbackProducerController.updateIndeminityStatus(params, inputStr));
     }
 
 }

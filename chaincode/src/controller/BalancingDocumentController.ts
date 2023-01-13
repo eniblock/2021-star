@@ -73,7 +73,7 @@ export class BalancingDocumentController {
         energyAmount: EnergyAmount) : Promise<BalancingDocument> {
         params.logger.debug('============= START : generateObj BalancingDocumentController ===========');
 
-        var balancingDocument: BalancingDocument = null;
+        let balancingDocument: BalancingDocument = null;
         if (activationDocument
             && activationDocument.activationDocumentMrid
             && activationDocument.activationDocumentMrid.length > 0
@@ -106,7 +106,7 @@ export class BalancingDocumentController {
             balancingDocument.quantity = Number(energyAmount.quantity);
             balancingDocument.activationPriceAmount = reserveBid.energyPriceAmount;
 
-            var financialPriceAmount =
+            let financialPriceAmount =
                 balancingDocument.quantity * balancingDocument.activationPriceAmount;
 
             financialPriceAmount = Math.round(financialPriceAmount*1000)/1000;

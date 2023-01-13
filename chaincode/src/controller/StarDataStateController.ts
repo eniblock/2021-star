@@ -13,10 +13,6 @@ import { EligibilityController } from './activationDocument/EligibilityControlle
 import { OrderManagerController } from './activationDocument/OrderManagerController';
 import { ReconciliationController } from './activationDocument/ReconciliationController';
 import { AttachmentFileController } from './AttachmentFileController';
-import { ActivationCompositeKeyIndexersController } from './dataIndex/ActivationCompositeKeyIndexersController';
-import { ActivationEnergyAmountIndexersController } from './dataIndex/ActivationEnergyAmountIndexersController';
-import { SiteActivationIndexersController } from './dataIndex/SiteActivationIndexersController';
-import { SiteReserveBidIndexersController } from './dataIndex/SiteReserveBidIndexersController';
 import { EnergyAccountController } from './EnergyAccountController';
 import { EnergyAmountController } from './EnergyAmountController';
 import { FeedbackProducerController } from './FeedbackProducerController';
@@ -97,7 +93,7 @@ export class StarDataStateController {
                 orderReferences.push(dataIndemnityStatusRef);
             }
         }
-        
+
         const stateStr = JSON.stringify(orderReferences);
 
         params.logger.debug('#######################');
@@ -120,7 +116,6 @@ export class StarDataStateController {
         try {
             updateOrders = JSON.parse(inputStr);
         } catch (error) {
-        // params.logger.error('error=', error);
             throw new Error(`ERROR executeStarDataOrders -> Input string NON-JSON value`);
         }
 

@@ -30,9 +30,6 @@ import { QueryStateService } from './service/QueryStateService';
 import { ReserveBidMarketDocumentService } from './service/ReserveBidMarketDocumentService';
 import { StarPrivateDataService } from './service/StarPrivateDataService';
 import { SystemOperatorController } from './SystemOperatorController';
-import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
-import { SiteActivationIndexersController } from './dataIndex/SiteActivationIndexersController';
-import { ActivationDocumentAbstract } from '../model/dataIndex/activationDocumentAbstract';
 import { ReserveBidMarketType } from '../enums/ReserveBidMarketType';
 
 export class ReserveBidMarketDocumentController {

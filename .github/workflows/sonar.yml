@@ -15,6 +15,7 @@ jobs:
       with:
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
         fetch-depth: "0"
+    - run: env
     - run: |
         earthly \
           --secret GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \

@@ -179,12 +179,20 @@ export class StarDataStateController {
                 } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
                     await EnergyAmountController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.FEEDBACK_PRODUCER) {
-                    await FeedbackProducerController.executeOrder(params, updateOrder);
+                    try {
+                        await FeedbackProducerController.executeOrder(params, updateOrder);
+                    } catch (err) {
+                        // Do Nothing
+                    }
                 } else if (updateOrder.docType === DocType.RESERVE_BID_MARKET_DOCUMENT) {
-                    await ReserveBidMarketDocumentController.executeOrder(
-                        params, updateOrder, dateRef, reserveBidOutOfTimeStatus);
-                } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
-                    await AttachmentFileController.createByReference(params, updateOrder);
+                    try {
+                        await ReserveBidMarketDocumentController.executeOrder(
+                            params, updateOrder, dateRef, reserveBidOutOfTimeStatus);
+                    } catch (err) {
+                        // Do Nothing
+                    }
+                // } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
+                //     await AttachmentFileController.createByReference(params, updateOrder);
                 }
             }
         }

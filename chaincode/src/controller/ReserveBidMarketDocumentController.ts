@@ -120,7 +120,19 @@ export class ReserveBidMarketDocumentController {
             const currentReserveBidObj: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
 
             isRecopy = (JSON.stringify(reserveBidRef) === JSON.stringify(currentReserveBidObj));
+
+            params.logger.info("#############");
+            params.logger.info("reserveBidRef:");
+            params.logger.info(JSON.stringify(reserveBidRef));
+            params.logger.info("currentReserveBidObj:");
+            params.logger.info(JSON.stringify(currentReserveBidObj));
+            params.logger.info("#############");
+
         }
+        params.logger.info("#############");
+        params.logger.info("isRecopy:");
+        params.logger.info(isRecopy);
+        params.logger.info("#############");
 
         if (!isRecopy && identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have rights to create a reserve bid market document`);

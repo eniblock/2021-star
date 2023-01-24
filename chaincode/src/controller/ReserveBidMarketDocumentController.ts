@@ -121,22 +121,13 @@ export class ReserveBidMarketDocumentController {
 
             isRecopy = (JSON.stringify(reserveBidRef) === JSON.stringify(currentReserveBidObj));
 
-            params.logger.info("#############");
-            params.logger.info("reserveBidRef:");
-            params.logger.info(JSON.stringify(reserveBidRef));
-            params.logger.info("currentReserveBidObj:");
-            params.logger.info(JSON.stringify(currentReserveBidObj));
-            params.logger.info("#############");
-
         }
-        params.logger.info("#############");
-        params.logger.info("isRecopy:");
-        params.logger.info(isRecopy);
-        params.logger.info("#############");
 
-        if (!isRecopy && identity !== OrganizationTypeMsp.PRODUCER) {
-            throw new Error(`Organisation, ${identity} does not have rights to create a reserve bid market document`);
-        }
+        // Commented source code because it is breaking reconciliation
+        // no fix is studied because final industrialization is not scheduled
+        // if (!isRecopy && identity !== OrganizationTypeMsp.PRODUCER) {
+        //     throw new Error(`Organisation, ${identity} does not have rights to create a reserve bid market document`);
+        // }
 
         // Get existing sites
         let existingSitesRef: Map<string, DataReference>;

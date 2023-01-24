@@ -36,7 +36,7 @@ export class EligibilityController {
         params: STARParameters,
         inputStr: string): Promise<ActivationDocument> {
 
-        params.logger.debug('============= START : updateEligibilityStatus EligibilityController ===========');
+        params.logger.info('============= START : updateEligibilityStatus EligibilityController ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
@@ -99,7 +99,7 @@ export class EligibilityController {
 
         await ActivationDocumentService.write(params, activationDocument, activationDocumentReference.collection);
 
-        params.logger.debug('=============  END  : updateEligibilityStatus EligibilityController ===========');
+        params.logger.info('=============  END  : updateEligibilityStatus EligibilityController ===========');
         return await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(params, activationDocument);
     }
 

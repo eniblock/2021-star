@@ -36,7 +36,7 @@ public class ReconciliationRepository {
        byte[] evaluateTransaction = contract.evaluateTransaction(GET_ACTIVATION_DOCUMENT_RECONCILIATION_STATE);
        if (evaluateTransaction != null && evaluateTransaction.length > 2) {
            log.info("Lancement de la reconciliation");
-           contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS, new String(evaluateTransaction));
+           ////// contract.submitTransaction(UPDATE_ACTIVATION_DOCUMENT_BY_ORDERS, new String(evaluateTransaction));
        }
     }
 }

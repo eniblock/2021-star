@@ -96,15 +96,17 @@ export class StarDataStateController {
 
         const orderReferencesSliced = orderReferences.slice(0, 10);
 
-        const stateStr = JSON.stringify(orderReferencesSliced);
+        const stateStr = JSON.stringify(orderReferences);
+        const stateStrSliced = JSON.stringify(orderReferencesSliced);
 
         params.logger.info('#######################');
+        params.logger.info(stateStr);
         params.logger.info(orderReferencesSliced.length + " / " + orderReferences.length);
         params.logger.info('#######################');
 
         params.logger.info('=============  END  : getStarDataState StarDataStateController ===========');
 
-        return stateStr;
+        return stateStrSliced;
 
     }
 

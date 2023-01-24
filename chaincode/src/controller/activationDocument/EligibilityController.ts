@@ -453,6 +453,7 @@ export class EligibilityController {
         /*****************
          * FILES
          ****************/
+        /*
         const FileList: AttachmentFile[] =
             await AttachmentFileController.getObjsByIdList(params, fileIdList, initialTarget);
 
@@ -472,6 +473,7 @@ export class EligibilityController {
             }
 
         }
+        */
 
         params.logger.debug('============= END  : getCreationLinkedData - EligibilityController ===========');
         return requiredReferences;

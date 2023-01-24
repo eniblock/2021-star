@@ -146,6 +146,7 @@ export class ReserveBidMarketDocumentController {
 
         }
 
+        /*
         if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
             reserveBidObj.attachmentsWithStatus = [];
 
@@ -167,12 +168,15 @@ export class ReserveBidMarketDocumentController {
                 }
             }
         }
+        */
 
         if (existingSitesRef) {
             for (const [targetExistingSite ] of existingSitesRef) {
                 await ReserveBidMarketDocumentService.write(params, reserveBidObj, targetExistingSite);
+                /*
                 await AttachmentFileController.createObjByList(
                     params, reserveBidCreationObj.attachmentFileList, targetExistingSite);
+                */
                 if (reserveBidObj.reserveBidStatus === ReserveBidStatus.VALIDATED) {
                     await SiteReserveBidIndexersController.addModifyReserveBidReference(
                         params, reserveBidObj, targetExistingSite);

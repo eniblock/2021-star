@@ -1,27 +1,27 @@
-import { DataActionType } from '../enums/DataActionType';
-import { DocType } from '../enums/DocType';
-import { EligibilityStatusType } from '../enums/EligibilityStatusType';
-import { ParametersType } from '../enums/ParametersType';
+import {DataActionType} from '../enums/DataActionType';
+import {DocType} from '../enums/DocType';
+import {EligibilityStatusType} from '../enums/EligibilityStatusType';
+import {ParametersType} from '../enums/ParametersType';
 
-import { ActivationDocument } from '../model/activationDocument/activationDocument';
-import { AttachmentFile } from '../model/attachmentFile';
-import { DataReference } from '../model/dataReference';
-import { Site } from '../model/site';
-import { STARParameters } from '../model/starParameters';
+import {ActivationDocument} from '../model/activationDocument/activationDocument';
+import {AttachmentFile} from '../model/attachmentFile';
+import {DataReference} from '../model/dataReference';
+import {Site} from '../model/site';
+import {STARParameters} from '../model/starParameters';
 
-import { EligibilityController } from './activationDocument/EligibilityController';
-import { OrderManagerController } from './activationDocument/OrderManagerController';
-import { ReconciliationController } from './activationDocument/ReconciliationController';
-import { AttachmentFileController } from './AttachmentFileController';
-import { EnergyAccountController } from './EnergyAccountController';
-import { EnergyAmountController } from './EnergyAmountController';
-import { FeedbackProducerController } from './FeedbackProducerController';
-import { ReferenceEnergyAccountController } from './ReferenceEnergyAccountController';
-import { ReserveBidMarketDocumentController } from './ReserveBidMarketDocumentController';
-import { ActivationDocumentEligibilityService } from './service/ActivationDocumentEligibilityService';
-import { ActivationDocumentService } from './service/ActivationDocumentService';
-import { CommonService } from './service/CommonService';
-import { SiteController } from './SiteController';
+import {EligibilityController} from './activationDocument/EligibilityController';
+import {OrderManagerController} from './activationDocument/OrderManagerController';
+import {ReconciliationController} from './activationDocument/ReconciliationController';
+import {AttachmentFileController} from './AttachmentFileController';
+import {EnergyAccountController} from './EnergyAccountController';
+import {EnergyAmountController} from './EnergyAmountController';
+import {FeedbackProducerController} from './FeedbackProducerController';
+import {ReferenceEnergyAccountController} from './ReferenceEnergyAccountController';
+import {ReserveBidMarketDocumentController} from './ReserveBidMarketDocumentController';
+import {ActivationDocumentEligibilityService} from './service/ActivationDocumentEligibilityService';
+import {ActivationDocumentService} from './service/ActivationDocumentService';
+import {CommonService} from './service/CommonService';
+import {SiteController} from './SiteController';
 
 export class StarDataStateController {
     public static async getStarDataState(
@@ -94,10 +94,12 @@ export class StarDataStateController {
             }
         }
 
-        const stateStr = JSON.stringify(orderReferences);
+        const orderReferencesSliced = orderReferences.slice(0, 10);
+
+        const stateStr = JSON.stringify(orderReferencesSliced);
 
         params.logger.info('#######################');
-        params.logger.info(orderReferences.length);
+        params.logger.info(orderReferencesSliced.length + " / " + orderReferences.length);
         params.logger.info('#######################');
 
         params.logger.info('=============  END  : getStarDataState StarDataStateController ===========');
@@ -119,7 +121,7 @@ export class StarDataStateController {
             throw new Error(`ERROR executeStarDataOrders -> Input string NON-JSON value`);
         }
 
-        if (updateOrders && updateOrders.length > 0 ) {
+        if (updateOrders && updateOrders.length > 0) {
             // VALIDATION AND INITIALIZATION STEP
             for (const updateOrder of updateOrders) {
                 DataReference.schema.validateSync(
@@ -186,5 +188,5 @@ export class StarDataStateController {
         }
 
         params.logger.info('=============  END  : executeStarDataOrders StarDataStateController ===========');
-        }
+    }
 }

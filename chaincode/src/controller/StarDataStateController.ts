@@ -177,7 +177,11 @@ export class StarDataStateController {
                 } else if (updateOrder.docType === DocType.REFERENCE_ENERGY_ACCOUNT) {
                     await ReferenceEnergyAccountController.createReferenceEnergyAccountByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
-                    await EnergyAmountController.executeOrder(params, updateOrder);
+                    try {
+                        await EnergyAmountController.executeOrder(params, updateOrder);
+                    } catch (err) {
+                        // Do Nothing
+                    }
                 } else if (updateOrder.docType === DocType.FEEDBACK_PRODUCER) {
                     try {
                         await FeedbackProducerController.executeOrder(params, updateOrder);

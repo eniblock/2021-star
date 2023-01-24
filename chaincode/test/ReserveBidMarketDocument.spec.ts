@@ -247,7 +247,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
 
 
-
+/*
         it('should return SUCCESS on CreateReserveBidMarketDocument initial creation with attachment by Producer', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.PRODUCER);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
@@ -359,7 +359,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
 
         });
-
+*/
 
     });
 

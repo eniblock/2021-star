@@ -127,7 +127,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
 
         });
 
-        /*
+
         it('should return ERROR on CreateReserveBidMarketDocument initial creation by Enedis', async () => {
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
             const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
@@ -186,7 +186,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} does not have rights to create a reserve bid market document`);
             }
 
-        });*/
+        });
 
 
 

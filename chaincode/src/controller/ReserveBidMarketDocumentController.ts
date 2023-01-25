@@ -120,14 +120,11 @@ export class ReserveBidMarketDocumentController {
             const currentReserveBidObj: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
 
             isRecopy = (JSON.stringify(reserveBidRef) === JSON.stringify(currentReserveBidObj));
-
         }
 
-        // Commented source code because it is breaking reconciliation
-        // no fix is studied because final industrialization is not scheduled
-        // if (!isRecopy && identity !== OrganizationTypeMsp.PRODUCER) {
-        //     throw new Error(`Organisation, ${identity} does not have rights to create a reserve bid market document`);
-        // }
+        if (!isRecopy && identity !== OrganizationTypeMsp.PRODUCER) {
+            throw new Error(`Organisation, ${identity} does not have rights to create a reserve bid market document`);
+        }
 
         // Get existing sites
         let existingSitesRef: Map<string, DataReference>;
@@ -149,7 +146,6 @@ export class ReserveBidMarketDocumentController {
 
         }
 
-        /*
         if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
             reserveBidObj.attachmentsWithStatus = [];
 
@@ -171,15 +167,12 @@ export class ReserveBidMarketDocumentController {
                 }
             }
         }
-        */
 
         if (existingSitesRef) {
             for (const [targetExistingSite ] of existingSitesRef) {
                 await ReserveBidMarketDocumentService.write(params, reserveBidObj, targetExistingSite);
-                /*
                 await AttachmentFileController.createObjByList(
                     params, reserveBidCreationObj.attachmentFileList, targetExistingSite);
-                */
                 if (reserveBidObj.reserveBidStatus === ReserveBidStatus.VALIDATED) {
                     await SiteReserveBidIndexersController.addModifyReserveBidReference(
                         params, reserveBidObj, targetExistingSite);

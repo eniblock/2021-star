@@ -94,15 +94,16 @@ export class StarDataStateController {
             }
         }
 
-        const orderReferencesSliced = orderReferences.slice(0, 10);
+        // const orderReferencesSliced = orderReferences.slice(0, 10);
 
         const stateStr = JSON.stringify(orderReferences);
         //const stateStrSliced = JSON.stringify(orderReferencesSliced);
 
-        params.logger.info('#######################');
-        params.logger.info(stateStr);
-        params.logger.info(orderReferencesSliced.length + " / " + orderReferences.length);
-        params.logger.info('#######################');
+        params.logger.debug('#######################');
+        params.logger.debug(stateStr);
+        // params.logger.info(orderReferencesSliced.length);
+        params.logger.debug(orderReferences.length);
+        params.logger.debug('#######################');
 
         params.logger.info('=============  END  : getStarDataState StarDataStateController ===========');
 
@@ -177,26 +178,14 @@ export class StarDataStateController {
                 } else if (updateOrder.docType === DocType.REFERENCE_ENERGY_ACCOUNT) {
                     await ReferenceEnergyAccountController.createReferenceEnergyAccountByReference(params, updateOrder);
                 } else if (updateOrder.docType === DocType.ENERGY_AMOUNT) {
-                    try {
-                        await EnergyAmountController.executeOrder(params, updateOrder);
-                    } catch (err) {
-                        // Do Nothing
-                    }
+                    await EnergyAmountController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.FEEDBACK_PRODUCER) {
-                    try {
-                        await FeedbackProducerController.executeOrder(params, updateOrder);
-                    } catch (err) {
-                        // Do Nothing
-                    }
+                    await FeedbackProducerController.executeOrder(params, updateOrder);
                 } else if (updateOrder.docType === DocType.RESERVE_BID_MARKET_DOCUMENT) {
-                    try {
-                        await ReserveBidMarketDocumentController.executeOrder(
-                            params, updateOrder, dateRef, reserveBidOutOfTimeStatus);
-                    } catch (err) {
-                        // Do Nothing
-                    }
-                // } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
-                //     await AttachmentFileController.createByReference(params, updateOrder);
+                    await ReserveBidMarketDocumentController.executeOrder(
+                        params, updateOrder, dateRef, reserveBidOutOfTimeStatus);
+                } else if (updateOrder.docType === DocType.ATTACHMENT_FILE) {
+                    await AttachmentFileController.createByReference(params, updateOrder);
                 }
             }
         }

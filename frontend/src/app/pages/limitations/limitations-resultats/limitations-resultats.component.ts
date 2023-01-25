@@ -78,16 +78,46 @@ export class LimitationsResultatsComponent implements OnChanges {
 
     // 2) Find the sorting method
     let sortFunction: any = null;
+    console.log(sort.active)
     switch (sort.active) {
+      case "displayedSourceName":
+        sortFunction = (d1: RechercheHistoriqueLimitationEntiteWithAnnotation, d2: RechercheHistoriqueLimitationEntiteWithAnnotation): number => {
+          return sort.direction == "asc" ? d1.displayedSourceName.localeCompare(d2.displayedSourceName) : d2.displayedSourceName.localeCompare(d1.displayedSourceName);
+        };
+        break;
+      case "producerMarketParticipantName":
+        sortFunction = (d1: RechercheHistoriqueLimitationEntiteWithAnnotation, d2: RechercheHistoriqueLimitationEntiteWithAnnotation): number => {
+          if (d1.producer == null || d2.producer == null) {
+            return 0;
+          }
+          return sort.direction == "asc" ? d1.producer.producerMarketParticipantName.localeCompare(d2.producer.producerMarketParticipantName) : d2.producer.producerMarketParticipantName.localeCompare(d1.producer.producerMarketParticipantName);
+        };
+        break;
+      case "siteName":
+        sortFunction = (d1: RechercheHistoriqueLimitationEntiteWithAnnotation, d2: RechercheHistoriqueLimitationEntiteWithAnnotation): number => {
+          if (d1.site == null || d2.site == null) {
+            return 0;
+          }
+          return sort.direction == "asc" ? d1.site.siteName.localeCompare(d2.site.siteName) : d2.site.siteName.localeCompare(d1.site.siteName);
+        };
+        break;
+      case "meteringPointMrid":
+        sortFunction = (d1: RechercheHistoriqueLimitationEntiteWithAnnotation, d2: RechercheHistoriqueLimitationEntiteWithAnnotation): number => {
+          if (d1.site == null || d2.site == null) {
+            return 0;
+          }
+          return sort.direction == "asc" ? d1.site.meteringPointMrid.localeCompare(d2.site.meteringPointMrid) : d2.site.meteringPointMrid.localeCompare(d1.site.meteringPointMrid);
+        };
+        break;
       case "debutLimitation":
-        sortFunction = (d1: any, d2: any): number => {
+        sortFunction = (d1: RechercheHistoriqueLimitationEntiteWithAnnotation, d2: RechercheHistoriqueLimitationEntiteWithAnnotation): number => {
           let ts1 = DateHelper.stringToTimestamp(d1.activationDocument.startCreatedDateTime);
           let ts2 = DateHelper.stringToTimestamp(d2.activationDocument.startCreatedDateTime);
           return sort.direction == "asc" ? ts1 - ts2 : ts2 - ts1;
         };
         break;
       case "finLimitation":
-        sortFunction = (d1: any, d2: any): number => {
+        sortFunction = (d1: RechercheHistoriqueLimitationEntiteWithAnnotation, d2: RechercheHistoriqueLimitationEntiteWithAnnotation): number => {
           let ts1 = DateHelper.stringToTimestamp(d1.activationDocument.endCreatedDateTime);
           let ts2 = DateHelper.stringToTimestamp(d2.activationDocument.endCreatedDateTime);
           return sort.direction == "asc" ? ts1 - ts2 : ts2 - ts1;

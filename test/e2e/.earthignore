@@ -1,0 +1,7 @@
+.*
+**/__pycache__
+test-results
+report.*
+exit-code
+Earthfile
+README.md

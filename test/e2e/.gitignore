@@ -1,0 +1,11 @@
+__pycache__
+.pytest_cache
+*~
+.idea
+.vscode
+.venv
+test-results
+report.json
+exit-code
+report.html
+report.xml

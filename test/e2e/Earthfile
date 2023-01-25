@@ -1,0 +1,81 @@
+VERSION 0.6
+
+deps:
+    FROM ubuntu:22.04
+    WORKDIR /app
+    RUN apt update \
+      && apt install -y python3-poetry python3-cachecontrol \
+      && apt clean
+    COPY poetry.lock pyproject.toml poetry.toml ./
+    RUN poetry install
+    RUN DEBIAN_FRONTEND=noninteractive poetry run playwright install --with-deps chromium
+    SAVE IMAGE --cache-hint
+
+test:
+    FROM +deps
+    COPY . ./
+    RUN --no-cache \
+        --secret test_username \
+        --secret test_password \
+        poetry run pytest -v --color=yes
+
+SMOKE:
+    COMMAND
+    FROM +deps
+    COPY . ./
+    ARG --required baseurl
+    RUN --no-cache \
+        --secret test_username \
+        --secret test_password \
+        poetry run pytest -v --color=yes smoke.py --base-url ${baseurl}
+
+smoke-enedis-testing:
+    DO +SMOKE --baseurl https://enedis.testing.star.eniblock.fr
+smoke-producer-testing:
+    DO +SMOKE --baseurl https://producer.testing.star.eniblock.fr
+smoke-rte-testing:
+    DO +SMOKE --baseurl https://rte.testing.star.eniblock.fr
+smoke-testing:
+    BUILD +smoke-enedis-testing
+    BUILD +smoke-producer-testing
+    BUILD +smoke-rte-testing
+
+smoke-enedis-staging:
+    DO +SMOKE --baseurl https://enedis.staging.star.eniblock.fr
+smoke-producer-staging:
+    DO +SMOKE --baseurl https://producer.staging.star.eniblock.fr
+smoke-rte-staging:
+    DO +SMOKE --baseurl https://rte.staging.star.eniblock.fr
+smoke-staging:
+    BUILD +smoke-enedis-staging
+    BUILD +smoke-producer-staging
+    BUILD +smoke-rte-staging
+
+smoke-enedis-prod:
+    DO +SMOKE --baseurl https://enedis.star.eniblock.fr
+smoke-producer-prod:
+    DO +SMOKE --baseurl https://producer.star.eniblock.fr
+smoke-rte-prod:
+    DO +SMOKE --baseurl https://star.cloud-rte-france.com
+smoke-prod:
+    BUILD +smoke-enedis-prod
+    BUILD +smoke-producer-prod
+    BUILD +smoke-rte-prod
+
+ci:
+    BUILD +deps
+    FROM +deps
+    COPY . ./
+    RUN --no-cache \
+        --secret test_username \
+        --secret test_password \
+        poetry run pytest -v --color=yes \
+            --cucumberjson=report.json \
+            --html=report.html --self-contained-html \
+            --junitxml=report.xml \
+        ; echo $? > exit-code
+    SAVE ARTIFACT report.html AS LOCAL report.html
+    SAVE ARTIFACT report.xml AS LOCAL report.xml
+    SAVE ARTIFACT exit-code AS LOCAL exit-code
+    SAVE ARTIFACT report.json AS LOCAL report.json
+    SAVE ARTIFACT --if-exists test-results AS LOCAL test-results

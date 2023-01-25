@@ -31,3 +31,9 @@ jobs:
           ./helm+deploy \
           --environment ${{ inputs.environment }} \
           --tag ${{ env.TAG }}
+    - name: Smoke tests
+      run: |
+        earthly \
+          --secret test_username={{ secrets.test_username}} \
+          --secret test_password={{ secrets.test_password }} \
+          ./test/e2e/+smoke-{{ inputs.environment }}

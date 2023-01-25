@@ -28,12 +28,8 @@ jobs:
           --secret age_key=${{ secrets.AGE_KEY }} \
           --secret kubeconfig="$KUBECONFIG" \
           --secret kubeconfig2="$KUBECONFIG2" \
+          --secret test_username="${{ secrets.test_username}}" \
+          --secret test_password="${{ secrets.test_password }}" \
           ./helm+deploy \
           --environment ${{ inputs.environment }} \
           --tag ${{ env.TAG }}
-    - name: Smoke tests
-      run: |
-        earthly \
-          --secret test_username="${{ secrets.test_username}}" \
-          --secret test_password="${{ secrets.test_password }}" \
-          ./test/e2e/+smoke-${{ inputs.environment }}

@@ -50,7 +50,7 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
                 .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/actuator/**").permitAll()
+                .antMatchers("/metrics/**").permitAll()
                 .antMatchers("/v3/api-docs/**").permitAll()
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()

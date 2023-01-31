@@ -11,6 +11,7 @@ import com.star.models.historiquelimitation.HistoriqueLimitationCriteria;
 import com.star.models.historiquelimitation.TypeCriteria;
 import com.star.security.SecurityComponent;
 import com.star.service.HistoriqueLimitationService;
+import io.micrometer.core.annotation.Counted;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,7 +41,7 @@ import static com.star.enums.InstanceEnum.PRODUCER;
 @Slf4j
 @RestController
 @RequestMapping(HistoriqueLimitationController.PATH)
-@Tag(name="Limitation History")
+@Tag(name = "Limitation History")
 public class HistoriqueLimitationController {
     public static final String PATH = ApiRestVersion.VERSION + "/historiqueLimitations";
 
@@ -72,6 +73,7 @@ public class HistoriqueLimitationController {
      * @throws TechnicalException
      */
     @Operation(summary = "Get limitation history. (TSO, DSO, PRODUCER)")
+    @Counted
     @GetMapping()
     public ResponseEntity<HistoriqueLimitationDTO[]> findLimitationHistory(
             @Parameter(description = "originAutomationRegisteredResourceMrid search criteria", example = "LONGC")

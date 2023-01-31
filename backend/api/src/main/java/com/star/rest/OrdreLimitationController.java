@@ -10,6 +10,8 @@ import com.star.models.limitation.ImportOrdreLimitationResult;
 import com.star.models.limitation.OrdreLimitation;
 import com.star.models.limitation.OrdreLimitationCriteria;
 import com.star.service.OrdreLimitationService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,7 +39,7 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @Slf4j
 @RestController
 @RequestMapping(OrdreLimitationController.PATH)
-@Tag(name="Limitation Order")
+@Tag(name = "Limitation Order")
 public class OrdreLimitationController {
     public static final String PATH = ApiRestVersion.VERSION + "/ordreLimitations";
     public static final String DEBUT = "/debut";
@@ -58,6 +60,15 @@ public class OrdreLimitationController {
     @Autowired
     private OrdreLimitationEligibilityStatusMapper ordreLimitationEligibilityStatusMapper;
 
+    Counter activationDocumentCounter;
+
+    public OrdreLimitationController(MeterRegistry registry) {
+        activationDocumentCounter = Counter.builder("activation_document_counter")
+                .description("The number of activation documents")
+                .register(registry);
+    }
+
+
     @Operation(summary = "Post start limitation order. (TSO)")
     @PostMapping(DEBUT)
     @PreAuthorize("@securityComponent.isInstance('TSO')")
@@ -76,6 +87,7 @@ public class OrdreLimitationController {
             log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        activationDocumentCounter.increment(importOrdreLimitationResult.getDatas().size());
         return ResponseEntity.status(isEmpty(importOrdreLimitationResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importOrdreLimitationResult);
     }
 
@@ -104,6 +116,7 @@ public class OrdreLimitationController {
             log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        activationDocumentCounter.increment(importMarketParticipantResult.getDatas().size());
         return ResponseEntity.status(isEmpty(importMarketParticipantResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantResult);
     }
 

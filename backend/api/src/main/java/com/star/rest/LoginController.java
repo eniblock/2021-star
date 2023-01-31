@@ -2,6 +2,7 @@ package com.star.rest;
 
 import com.star.dto.login.AuthToken;
 import com.star.dto.login.CredentialsDTO;
+import io.micrometer.core.annotation.Counted;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -64,5 +65,10 @@ public class LoginController {
         } catch (Exception ex) {
             throw new BadCredentialsException(ex.getMessage());
         }
+    }
+
+    @PostMapping("/countConnections")
+    @Counted
+    public void countConnections() {
     }
 }

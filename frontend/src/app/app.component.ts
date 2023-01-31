@@ -8,6 +8,7 @@ import {InstanceService} from "./services/api/instance.service";
 import {ProducerService} from "./services/api/producer.service";
 import {SiteService} from "./services/api/site.service";
 import {forkJoin} from "rxjs";
+import {LoginService} from "./services/api/login.service";
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
   authenticated: boolean = false;
 
   constructor(
+    private loginService: LoginService,
     private keycloakService: KeycloakService,
     private systemOperatorService: SystemOperatorService,
     private instanceService: InstanceService,
@@ -40,13 +42,14 @@ export class AppComponent implements OnInit {
       .subscribe(
         authenticated => {
           this.authenticated = authenticated;
-          this.loadCaches()
+          this.loadCaches();
+          this.countConnections();
         },
         error => console.error('Keycloak initialization error!', error)
       );
   }
 
-  loadCaches() {
+  private loadCaches() {
     // Load caches
     forkJoin([
       this.systemOperatorService.getSystemOperators(),
@@ -59,5 +62,9 @@ export class AppComponent implements OnInit {
       ok => {
         this.cacheLoading = false;
       });
+  }
+
+  private countConnections() {
+    this.loginService.countConnections().subscribe();
   }
 }

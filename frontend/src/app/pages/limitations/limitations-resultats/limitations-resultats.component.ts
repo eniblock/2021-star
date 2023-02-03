@@ -78,7 +78,6 @@ export class LimitationsResultatsComponent implements OnChanges {
 
     // 2) Find the sorting method
     let sortFunction: any = null;
-    console.log(sort.active)
     switch (sort.active) {
       case "displayedSourceName":
         sortFunction = (d1: RechercheHistoriqueLimitationEntiteWithAnnotation, d2: RechercheHistoriqueLimitationEntiteWithAnnotation): number => {

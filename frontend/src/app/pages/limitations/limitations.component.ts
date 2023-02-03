@@ -101,4 +101,8 @@ export class LimitationsComponent implements OnInit {
       ?.filter(rhl => (this.motifNameFilter == null) ? true : rhl.motifName == this.motifNameFilter)
       ?.filter(rhl => (this.indeminityStatusFilter == null) ? true : rhl.feedbackProducer?.indeminityStatus == this.indeminityStatusFilter);
   }
+
+  exportCSV() {
+    this.historiqueLimitationService.exportCSV(this.researchResultsWithOnlyOneSuborderFiltered);
+  }
 }

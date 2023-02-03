@@ -11,6 +11,9 @@ import {DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule,} from '@angular/mater
 import {CustomDateAdapter} from './adapters/custom-date-adapter';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {KeycloakInterceptor} from "./interceptors/keycloak-interceptor";
+import {FileSaverModule} from "ngx-filesaver";
+import {IndeminityStatusPipe} from "./pipes/IndeminityStatus.pipe";
+import {DatePipe} from "@angular/common";
 
 @NgModule({
   imports: [
@@ -22,8 +25,11 @@ import {KeycloakInterceptor} from "./interceptors/keycloak-interceptor";
     PageTemplateModule,
     MatNativeDateModule,
     MatProgressBarModule,
+    FileSaverModule,
   ],
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS, multi: true, useClass: ServerErrorInterceptor,
@@ -32,8 +38,12 @@ import {KeycloakInterceptor} from "./interceptors/keycloak-interceptor";
     {provide: MAT_DATE_LOCALE, useValue: 'fr-FR'},
     {provide: LOCALE_ID, useValue: 'fr'},
     {provide: DateAdapter, useClass: CustomDateAdapter},
+    IndeminityStatusPipe, // Need to inject in Service
+    DatePipe, // Need to inject in Service
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [
+    AppComponent
+  ],
 })
 export class AppModule {
 }

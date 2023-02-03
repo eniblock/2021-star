@@ -5,6 +5,7 @@ import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
 import {
   FormulaireRechercheHistoriqueLimitation,
   RechercheHistoriqueLimitationEntite,
+  RechercheHistoriqueLimitationEntiteWithAnnotation,
 } from 'src/app/models/RechercheHistoriqueLimitation';
 import {environment} from 'src/environments/environment';
 import {UrlService} from '../common/url.service';
@@ -15,8 +16,12 @@ import {MeasurementUnitName} from "../../models/enum/MeasurementUnitName.enum";
 import {ReserveBidStatus} from "../../models/enum/ReserveBidStatus.enum";
 import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
 import {MarketType} from "../../models/enum/MarketTypePipe.enum";
+import {FileSaverService} from "ngx-filesaver";
+import {IndeminityStatusPipe} from "../../pipes/IndeminityStatus.pipe";
+import {DateHelper} from "../../helpers/date.helper";
+import {DatePipe} from "@angular/common";
 
-const MOCK = false;
+const MOCK = true;
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +29,13 @@ const MOCK = false;
 export class HistoriqueLimitationService {
   private readonly CACHE_KEY = 'formulaireRechercheHistoriqueLimitation';
 
-  constructor(private httpClient: HttpClient, private urlService: UrlService) {
+  constructor(
+    private httpClient: HttpClient,
+    private urlService: UrlService,
+    private fileSaverService: FileSaverService,
+    private indeminityStatusPipe: IndeminityStatusPipe,
+    private datePipe: DatePipe,
+  ) {
   }
 
   rechercher(form: FormulaireRechercheHistoriqueLimitation): Observable<RechercheHistoriqueLimitationEntite[]> {
@@ -60,6 +71,76 @@ export class HistoriqueLimitationService {
     sessionStorage.removeItem(this.CACHE_KEY);
     return form == null ? null : JSON.parse(form);
   }
+
+  exportCSV(researchResultsWithOnlyOneSuborderFiltered: RechercheHistoriqueLimitationEntiteWithAnnotation[]) {
+    let fileContain = "Filière;Poste Source;Nom Producteur;Nom Site;Code Site;Code Producteur;Début limitation RTE;Début limitation Enedis;Fin limitation RTE;Fin limitation Enedis;Eligible indemnisation;Type de limitation;ENE/I (MWh);Tarif unitaire;Montant indemnisation;Motif;Commentaires;Statut de l'indemnisation";
+    for (const element of researchResultsWithOnlyOneSuborderFiltered) {
+      // Dates
+      const ordreLimitation = element.activationDocument;
+      const ordreLimitationLinked = element.subOrderList[0];
+      let dateDebutRte, dateDebutEnedis, dateFinRte, dateFinEnedis;
+      if (ordreLimitationLinked == undefined) {
+        dateDebutRte = this.toCsvDate(ordreLimitation.startCreatedDateTime);
+        dateFinRte = this.toCsvDate(ordreLimitation.endCreatedDateTime);
+      } else {
+        const ordreLimitationStartTimestamp = DateHelper.stringToTimestamp(ordreLimitation.startCreatedDateTime);
+        const ordreLimitationEndTimestamp = DateHelper.stringToTimestamp(ordreLimitation.endCreatedDateTime);
+        const ordreLimitationLieStartTimestamp = DateHelper.stringToTimestamp(ordreLimitationLinked.startCreatedDateTime);
+        const ordreLimitationLieEndTimestamp = DateHelper.stringToTimestamp(ordreLimitationLinked.endCreatedDateTime);
+        if ((ordreLimitationStartTimestamp < ordreLimitationLieStartTimestamp)
+          || (ordreLimitationStartTimestamp == ordreLimitationLieStartTimestamp && ordreLimitationEndTimestamp < ordreLimitationLieEndTimestamp)) {
+          dateDebutRte = this.toCsvDate(ordreLimitation.startCreatedDateTime);
+          dateFinRte = this.toCsvDate(ordreLimitation.endCreatedDateTime);
+          dateDebutEnedis = this.toCsvDate(ordreLimitationLinked.startCreatedDateTime);
+          dateFinEnedis = this.toCsvDate(ordreLimitationLinked.endCreatedDateTime);
+        } else {
+          dateDebutRte = this.toCsvDate(ordreLimitationLinked.startCreatedDateTime);
+          dateFinRte = this.toCsvDate(ordreLimitationLinked.endCreatedDateTime);
+          dateDebutEnedis = this.toCsvDate(ordreLimitation.startCreatedDateTime);
+          dateFinEnedis = this.toCsvDate(ordreLimitation.endCreatedDateTime);
+        }
+      }
+
+      // CSV
+      fileContain += "\n";
+      fileContain += this.csvPrint(element.site?.technologyType) + ";";
+      fileContain += this.csvPrint(element.displayedSourceName) + ";";
+      fileContain += this.csvPrint(element.producer?.producerMarketParticipantName) + ";";
+      fileContain += this.csvPrint(element.site?.siteName) + ";";
+      fileContain += this.csvPrint(element.site?.meteringPointMrid) + ";";
+      fileContain += this.csvPrint(element.producer?.producerMarketParticipantMrid) + ";";
+      fileContain += dateDebutRte + ";";
+      fileContain += dateDebutEnedis + ";";
+      fileContain += dateFinRte + ";";
+      fileContain += dateFinEnedis + ";";
+      fileContain += this.csvPrint(element.activationDocument.eligibilityStatus) + ";";
+      fileContain += this.csvPrint(element.limitationType) + ";";
+      fileContain += this.csvPrint(element.energyAmount?.quantity) + ";";
+      fileContain += (element.reserveBidMarketDocument != null ? element.reserveBidMarketDocument.energyPriceAmount + ' ' + element.reserveBidMarketDocument.priceMeasureUnitName : '') + ";";
+      fileContain += (element.balancingDocument ? element.balancingDocument.financialPriceAmount + ' ' + element.balancingDocument.currencyUnitName : '') + ";";
+      fileContain += this.csvPrint(element.motifName) + ";";
+      fileContain += this.csvPrint(`{
+        "feedbackElements": "${element.feedbackProducer.feedbackElements}",
+        "feedback": "${element.feedbackProducer.feedback}",
+        "feedbackAnswer": "${element.feedbackProducer.feedbackAnswer}",
+      }`) + ";";
+      fileContain += this.csvPrint(this.indeminityStatusPipe.transform(element?.feedbackProducer?.indeminityStatus)) + ";";
+    }
+    const blob = new Blob([fileContain], {type: "text/plain;charset=utf-8"});
+    this.fileSaverService.save(blob, "export-Star.csv");
+  }
+
+  private csvPrint(str: any) {
+    if (str == null || str == undefined) {
+      return "";
+    }
+    const strModify = str.replaceAll("\"", "\"\"");
+    return `"${strModify}"`;
+  }
+
+  private toCsvDate(dateTime: string) {
+    return this.datePipe.transform(dateTime, 'shortDate') + " " + this.datePipe.transform(dateTime, 'mediumTime');
+  }
 }
 
 /**
@@ -86,7 +167,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         typeSite: TypeSite.HTA,
         producerMarketParticipantMrid: '---',
         producerMarketParticipantName: '---',
-        siteName: 'sites 5 /dpt',
+        siteName: 'sites 5 /dpt"\ncoucou;,42',
         technologyType: TechnologyType.EOLIEN,
         meteringPointMrid: 'mpmrid1',
         siteAdminMrid: '',
@@ -145,7 +226,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         energyPriceAmount: 1.23,
         attachments: [],
         reserveBidStatus: ReserveBidStatus.VALIDATED,
-        marketType:MarketType.OA,
+        marketType: MarketType.OA,
       },
       balancingDocument: {
         docType: "balancingDocument",
@@ -282,7 +363,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         energyPriceAmount: 1.23,
         attachments: [],
         reserveBidStatus: ReserveBidStatus.VALIDATED,
-        marketType:MarketType.CR,
+        marketType: MarketType.CR,
       },
       balancingDocument: {
         docType: "balancingDocument",

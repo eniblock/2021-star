@@ -25,6 +25,7 @@ export class LimitationsComponent implements OnInit {
 
   researchResultsWithOnlyOneSuborder: RechercheHistoriqueLimitationEntiteWithAnnotation[] = []; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder
   researchResultsWithOnlyOneSuborderFiltered: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
+  dataForCSV: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
 
   motifNameFilter: string | null = null;
   indeminityStatusFilter: IndeminityStatus | null = null;
@@ -103,6 +104,10 @@ export class LimitationsComponent implements OnInit {
   }
 
   exportCSV() {
-    this.historiqueLimitationService.exportCSV(this.researchResultsWithOnlyOneSuborderFiltered);
+    this.historiqueLimitationService.exportCSV(this.dataForCSV);
+  }
+
+  dataForCSVChange(event: RechercheHistoriqueLimitationEntiteWithAnnotation[]) {
+    this.dataForCSV = event;
   }
 }

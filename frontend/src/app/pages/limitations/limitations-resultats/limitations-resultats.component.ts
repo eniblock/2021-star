@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges,} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges,} from '@angular/core';
 import {Sort} from '@angular/material/sort';
 import {InstanceService} from 'src/app/services/api/instance.service';
 import {Instance} from 'src/app/models/enum/Instance.enum';
@@ -16,6 +16,7 @@ import {Router} from "@angular/router";
 import {PATH_ROUTE} from "../../../app-routing.module";
 import {TypeImport} from "../../charger/charger.component";
 import {FeedbackProducer} from "../../../models/FeedbackProducer";
+import {TypeLimitation} from "../../../models/enum/TypeLimitation.enum";
 
 @Component({
   selector: 'app-limitations-resultats',
@@ -26,6 +27,7 @@ export class LimitationsResultatsComponent implements OnChanges {
   @Input() data: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
   @Input() systemOperators: SystemOperator[] = [];
   @Input() columnsToDisplay: string[] = [];
+  @Output() dataForCSVChange = new EventEmitter<RechercheHistoriqueLimitationEntiteWithAnnotation[]>();
 
   InstanceEnum = Instance;
   TypeSiteEnum = TypeSite;
@@ -45,6 +47,7 @@ export class LimitationsResultatsComponent implements OnChanges {
     this.instanceService.getTypeInstance().subscribe((instance) => {
       this.instance = instance;
       this.dataSorted = [...this.data];
+      this.dataForCSVChange.emit(this.dataSorted);
     });
   }
 
@@ -73,6 +76,7 @@ export class LimitationsResultatsComponent implements OnChanges {
     // 1) No sort case
     if (sort.direction == "") {
       this.dataSorted = [...this.data];
+      this.dataForCSVChange.emit(this.dataSorted);
       return;
     }
 
@@ -127,6 +131,7 @@ export class LimitationsResultatsComponent implements OnChanges {
     // 3) Sort data
     if (sortFunction != null) {
       this.dataSorted = [...this.data].sort((d1: any, d2: any) => sortFunction(d1, d2));
+      this.dataForCSVChange.emit(this.dataSorted);
     }
   }
 
@@ -157,6 +162,7 @@ export class LimitationsResultatsComponent implements OnChanges {
         this.dataSorted[dataSortedIndex] = {...this.dataSorted[dataSortedIndex]}; // To update view
         this.dataSorted = [...this.dataSorted]; // To update view
       }
+      this.dataForCSVChange.emit(this.dataSorted);
     }
   }
 

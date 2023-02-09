@@ -13,7 +13,7 @@ spec:
       {{- include "star.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: backend
   endpoints:
-    - port: prometheus
+    - port: http
       {{- if .Values.backend.metrics.interval }}
       interval: {{ .Values.backend.metrics.interval }}
       {{- end }}

@@ -83,7 +83,7 @@ backend:
   affinity: {}
 
   metrics:
-    enabled: false # Add metrics server first
+    enabled: true
     interval:
     scrapeTimeout:
 

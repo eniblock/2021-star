@@ -521,10 +521,10 @@ export class HistoryController {
             } else if (subOrderList
                 && subOrderList.length > 0) {
 
-                    if (activationDocument.receiverMarketParticipantMrid === producer.producerMarketParticipantMrid) {
-                        displayedSourceName = subOrderList[0].registeredResourceMrid;
-                    } else {
+                    if (activationDocument.instance === "tso") {
                         displayedSourceName = activationDocument.registeredResourceMrid;
+                    } else {
+                        displayedSourceName = subOrderList[0].registeredResourceMrid;
                     }
 
             } else if (siteRegistered) {

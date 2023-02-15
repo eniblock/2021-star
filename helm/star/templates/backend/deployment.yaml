@@ -90,7 +90,7 @@ spec:
             - name: KEYCLOAK_REALM
               value: "star"
             - name: KEYCLOAK_RESOURCE
-              value: backend
+              value: frontend
             - name: KEYCLOAK_ADMIN_CLIENT_PROPERTIES_BASE_URL
               value: "https://{{ .Values.ingress.host }}/auth"
             - name: KEYCLOAK_ADMIN_CLIENT_PROPERTIES_CLIENT_SECRET

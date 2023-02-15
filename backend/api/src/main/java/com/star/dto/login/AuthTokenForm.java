@@ -2,7 +2,6 @@ package com.star.dto.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -12,9 +11,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class AuthToken {
-    private String access_token;
-    private String refresh_token;
+public class AuthTokenForm {
+    private String grant_type;
+    private String username;
+    private String password;
+    private String client_id;
 }
 

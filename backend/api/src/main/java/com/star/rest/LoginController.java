@@ -1,38 +1,32 @@
 package com.star.rest;
 
 import com.star.dto.login.AuthToken;
+import com.star.dto.login.AuthTokenForm;
 import com.star.dto.login.CredentialsDTO;
 import io.micrometer.core.annotation.Counted;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.OAuth2Constants;
-import org.keycloak.authorization.client.AuthzClient;
-import org.keycloak.authorization.client.Configuration;
-import org.keycloak.representations.AccessTokenResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.util.Assert;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Copyright (c) 2022, Enedis (https://www.enedis.fr), RTE (http://www.rte-france.com)
  * SPDX-License-Identifier: Apache-2.0
  */
-@Hidden
 @Slf4j
 @RestController
 @RequestMapping(LoginController.PATH)
+@Tag(name = "Login")
 public class LoginController {
     public static final String PATH = ApiRestVersion.VERSION + "/login";
     private static final String SECRET = "secret";
@@ -45,31 +39,37 @@ public class LoginController {
     @Value("${keycloak.resource}")
     private String clientId;
 
-    @Value("${keycloak.credentials.secret}")
-    private String clientSecret;
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Operation(summary = "Login and retrieve Token.",
             description = "Get a JWT token.")
     @PostMapping
     public ResponseEntity<AuthToken> signIn(@RequestBody CredentialsDTO credentialsDTO) {
-        log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);
-        Assert.notNull(credentialsDTO, "Credentials is required");
-        Assert.hasLength(credentialsDTO.getUsername(), "Username is required");
-        Assert.hasLength(credentialsDTO.getPassword(), "Password is required");
-        try {
-            Map<String, Object> clientCredentials = new HashMap<>();
-            clientCredentials.put(SECRET, clientSecret);
-            clientCredentials.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.PASSWORD);
-            Configuration configuration = new Configuration(serverUrl, realm, clientId, clientCredentials, null);
-            AccessTokenResponse accessTokenResponse = AuthzClient.create(configuration).obtainAccessToken(credentialsDTO.getUsername(), credentialsDTO.getPassword());
-            return ResponseEntity.ok(new AuthToken(accessTokenResponse.getToken()));
-        } catch (Exception ex) {
-            throw new BadCredentialsException(ex.getMessage());
-        }
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("grant_type", "password");
+        map.add("username", credentialsDTO.getUsername());
+        map.add("password", credentialsDTO.getPassword());
+        map.add("client_id", clientId);
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        var authTokenForm = new AuthTokenForm(
+                "password",
+                credentialsDTO.getUsername(),
+                credentialsDTO.getPassword(),
+                clientId);
+        var url = serverUrl + "/realms/" + realm + "/protocol/openid-connect/token";
+        ResponseEntity<AuthToken> response = restTemplate.postForEntity(url, entity, AuthToken.class);
+        return ResponseEntity.ok(response.getBody());
     }
 
     @PostMapping("/countConnections")
     @Counted
+    @Hidden
     public void countConnections() {
     }
 }

@@ -60,7 +60,7 @@ export class ChargerComponent implements OnInit {
         break;
       case Instance.DSO:
         this.typesImport = [
-          TypeImport.CourbeComptage,
+          TypeImport.CourbeComptageReference,
           TypeImport.EneEni
         ];
         break;

@@ -45,7 +45,7 @@ public class LoginController {
     @Operation(summary = "Login and retrieve Token.",
             description = "Get a JWT token.")
     @PostMapping
-    public ResponseEntity<AuthToken> signIn(@RequestBody CredentialsDTO credentialsDTO) {
+    public ResponseEntity<String> signIn(@RequestBody CredentialsDTO credentialsDTO) {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -64,7 +64,7 @@ public class LoginController {
                 clientId);
         var url = serverUrl + "/realms/" + realm + "/protocol/openid-connect/token";
         ResponseEntity<AuthToken> response = restTemplate.postForEntity(url, entity, AuthToken.class);
-        return ResponseEntity.ok(response.getBody());
+        return ResponseEntity.ok(response.getBody().getAccess_token());
     }
 
     @PostMapping("/countConnections")

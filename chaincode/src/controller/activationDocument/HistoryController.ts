@@ -514,28 +514,22 @@ export class HistoryController {
 
         let displayedSourceName = activationDocumentForInformation.originAutomationRegisteredResourceMrid;
 
-        params.logger.info('displayedSourceName: ', displayedSourceName);
+        params.logger.debug('displayedSourceName: ', displayedSourceName);
 
         if (roleUser === RoleType.Role_TSO || roleUser === RoleType.Role_TSOProducer) {
-            params.logger.info('I AM TSO');
             if (!producer) {
-                params.logger.info('NO PRODUCER');
                 displayedSourceName = activationDocument.registeredResourceMrid;
 
             } else if (subOrderList
                 && subOrderList.length > 0) {
 
-                    params.logger.info('SUBORDER LIST');
                     if (activationDocument.instance === "tso") {
-                        params.logger.info('aaaa ACTIVATION IS TSO');
                         displayedSourceName = activationDocument.registeredResourceMrid;
                     } else {
-                        params.logger.info('ssss SUBORDER IS TSO');
                         displayedSourceName = subOrderList[0].registeredResourceMrid;
                     }
 
             } else if (siteRegistered) {
-                params.logger.info('NO SITE');
                 displayedSourceName = siteRegistered.substationMrid;
             }
         } else if ((roleUser === RoleType.Role_DSO || roleUser === RoleType.Role_DSOProducer)
@@ -545,7 +539,7 @@ export class HistoryController {
             displayedSourceName = activationDocument.registeredResourceMrid;
         }
 
-        params.logger.info('displayedSourceName: ', displayedSourceName);
+        params.logger.debug('displayedSourceName: ', displayedSourceName);
 
         let energyAmount: EnergyAmount = null;
 

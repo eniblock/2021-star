@@ -103,7 +103,8 @@ public class ReserveBidController {
         return new ResponseEntity<>(Base64.getDecoder().decode(attachmentFile.getFileContent()), headers, HttpStatus.OK);
     }
 
-    @Operation(summary = "Update an reserveBid's status. (TSO, DSO)")
+    @Operation(summary = "Update an reserveBid's status. (TSO, DSO)",
+            description = "Update a reserveBid's status that is : VALIDATED or REFUSED")
     @PutMapping(value = "/{reserveBidMrid}/{newStatus}")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<Void> updateStatusReserveBid(

@@ -13,6 +13,7 @@ import org.hyperledger.fabric.gateway.ContractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,12 +44,14 @@ public class ReconciliationController {
      * @throws ContractException
      */
     @GetMapping
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<String> getReconciliation() throws BusinessException, JsonProcessingException, ContractException {
         return ResponseEntity.status(HttpStatus.OK).body(reconciliationService.getReconciliation());
     }
 
     @Operation(summary = "Post a reconciliation.")
     @PostMapping
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<Void> reconciliate() throws BusinessException, InterruptedException, TimeoutException, ContractException {
         reconciliationService.reconciliate();
         return new ResponseEntity<>(HttpStatus.CREATED);

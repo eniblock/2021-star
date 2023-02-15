@@ -48,7 +48,8 @@ public class LoginController {
     @Value("${keycloak.credentials.secret}")
     private String clientSecret;
 
-    @Operation(summary = "Login and retrieve Token.")
+    @Operation(summary = "Login and retrieve Token.",
+            description = "Get a JWT token.")
     @PostMapping
     public ResponseEntity<AuthToken> signIn(@RequestBody CredentialsDTO credentialsDTO) {
         log.info("Authentification par login mot de passe sur le realm {}, l'url {}, le cilent ID {} et le client secret {}.", realm, serverUrl, clientId, clientSecret);

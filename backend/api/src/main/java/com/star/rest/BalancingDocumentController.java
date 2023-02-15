@@ -53,7 +53,8 @@ public class BalancingDocumentController {
      * @throws BusinessException
      * @throws TechnicalException
      */
-    @Operation(summary = "Find balancing document by criteria. (TSO, DSO)")
+    @Operation(summary = "Find balancing document by criteria. (TSO, DSO)",
+            description = "Return balancing documents searched by criteria.")
     @GetMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<List<BalancingDocumentDTO>> findBalancingDocument(

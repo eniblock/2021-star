@@ -59,7 +59,8 @@ public class EnergyAccountController {
      * @param files
      * @return
      */
-    @Operation(summary = "Post an Energy Account. (DSO, TSO)")
+    @Operation(summary = "Post an Energy Account. (DSO, TSO)",
+            description = "Create an Energy Account by posting a csv file containing energy account data.")
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAccountResult> createEnergyAccount(
@@ -75,7 +76,8 @@ public class EnergyAccountController {
      * @return
      * @throws BusinessException
      */
-    @Operation(summary = "Update an Energy Account. (DSO, TSO)")
+    @Operation(summary = "Update an Energy Account. (DSO, TSO)",
+            description = "Modify an Energy Account by posting a csv file containing energy account data.")
     @PutMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAccountResult> updateEnergyAccount(

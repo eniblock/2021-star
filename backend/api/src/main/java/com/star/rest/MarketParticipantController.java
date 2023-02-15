@@ -46,7 +46,8 @@ public class MarketParticipantController {
     @Autowired
     private MarketParticipantService marketParticipantService;
 
-    @Operation(summary = "Post a market participant CSV file. (TSO, DSO)")
+    @Operation(summary = "Post a market participant CSV file. (TSO, DSO)",
+            description = "Create a market participant.")
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportMarketParticipantResult> importMarketParticipant(@RequestParam MultipartFile file) throws BusinessException {

@@ -59,7 +59,8 @@ public class FeedBackController {
      * @param feedBackAnswerDTO
      * @return
      */
-    @Operation(summary = "Answer a feedback. (TSO, DSO)")
+    @Operation(summary = "Answer a feedback. (TSO, DSO)",
+            description = "Answer a feedback as TSO or DSO")
     @PostMapping("/answer")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<FeedBackDTO> answerFeedbackProducer(@NotNull @RequestBody FeedBackPostMessageAnswerDTO feedBackAnswerDTO) throws TechnicalException {

@@ -58,7 +58,8 @@ public class ProducerController {
     @Autowired
     private SecurityComponent securityComponent;
 
-    @Operation(summary = "Post a producer CSV file. (TSO, DSO)")
+    @Operation(summary = "Post a producer CSV file. (TSO, DSO)",
+            description = "Create Producer by posting a CSV file containing producer data.")
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportProducerResult> importProducer(@RequestParam MultipartFile file) throws BusinessException {

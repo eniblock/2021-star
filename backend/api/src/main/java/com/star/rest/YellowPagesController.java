@@ -40,14 +40,15 @@ import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 @Slf4j
 @RestController
 @RequestMapping(YellowPagesController.PATH)
-@Tag(name="Yellow Pages")
+@Tag(name = "Yellow Pages")
 public class YellowPagesController {
     public static final String PATH = ApiRestVersion.VERSION + "/yellow-pages";
 
     @Autowired
     private YellowPagesService yellowPagesService;
 
-    @Operation(summary = "Post yellow Pages CSV file. (TSO, DSO)")
+    @Operation(summary = "Post yellow Pages CSV file. (TSO, DSO)",
+            description = "Create Yellow Pages by posting a CSV file.")
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportYellowPagesResult> importYellowPages(@Parameter(description = "CSV file containing yellow page data.")

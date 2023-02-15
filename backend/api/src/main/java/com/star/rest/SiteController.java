@@ -61,7 +61,8 @@ public class SiteController {
     @Autowired
     private SecurityComponent securityComponent;
 
-    @Operation(summary = "Post a Site CSV file. (TSO, DSO)")
+    @Operation(summary = "Post a Site CSV file. (TSO, DSO)",
+            description = "Create Sites by posting a CSV file containing site data.")
     @PostMapping("/create")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportSiteResult> importSite(@Parameter(description = "CSV file containing site data.")
@@ -77,7 +78,8 @@ public class SiteController {
     }
 
 
-    @Operation(summary = "Update a Site CSV file. (TSO, DSO)")
+    @Operation(summary = "Update a Site CSV file. (TSO, DSO)",
+            description = "Update Sites by posting a CSV file containing site data.")
     @PostMapping("/update")
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportSiteResult> updateSite(@Parameter(description = "CSV file containing site to update.")

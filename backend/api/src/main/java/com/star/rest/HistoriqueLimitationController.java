@@ -72,7 +72,8 @@ public class HistoriqueLimitationController {
      * @return
      * @throws TechnicalException
      */
-    @Operation(summary = "Get limitation history. (TSO, DSO, PRODUCER)")
+    @Operation(summary = "Get limitation history. (TSO, DSO, PRODUCER)",
+            description = "Get a limitation history according to criteria.")
     @Counted
     @GetMapping()
     public ResponseEntity<HistoriqueLimitationDTO[]> findLimitationHistory(

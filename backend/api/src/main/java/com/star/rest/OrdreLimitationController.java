@@ -69,7 +69,8 @@ public class OrdreLimitationController {
     }
 
 
-    @Operation(summary = "Post start limitation order. (TSO)")
+    @Operation(summary = "Post start limitation order. (TSO)",
+            description = "Create start limitation orders by posting a json file.")
     @PostMapping(DEBUT)
     @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreDebutLimitation(
@@ -91,14 +92,16 @@ public class OrdreLimitationController {
         return ResponseEntity.status(isEmpty(importOrdreLimitationResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importOrdreLimitationResult);
     }
 
-    @Operation(summary = "List of start limitation orders. (TSO)")
+    @Operation(summary = "List of start limitation orders. (TSO)",
+            description = "Get start limitation orders.")
     @GetMapping(DEBUT)
     @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<List<OrdreLimitation>> getOrdreDebutLimitation() throws BusinessException, TechnicalException {
         return ResponseEntity.ok(ordreLimitationService.getOrdreDebutLimitation(instance));
     }
 
-    @Operation(summary = "Post couple Start/End limit order. (TSO, DSO)")
+    @Operation(summary = "Post couple Start/End limit order. (TSO, DSO)",
+            description = "Create start and end limitation orders by posting a json file.")
     @PostMapping(COUPLE)
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportOrdreLimitationResult> importCoupleOrdreDebutFinLimitation(
@@ -121,7 +124,8 @@ public class OrdreLimitationController {
     }
 
 
-    @Operation(summary = "Post end limitation order. (TSO)")
+    @Operation(summary = "Post end limitation order. (TSO)",
+            description = "Create an end limitation order.")
     @PostMapping(FIN)
     @PreAuthorize("@securityComponent.isInstance('TSO')")
     public ResponseEntity<ImportOrdreLimitationResult> importOrdreFinLimitation(
@@ -143,7 +147,8 @@ public class OrdreLimitationController {
     }
 
 
-    @Operation(summary = "Get limit orders. (TSO, DSO)")
+    @Operation(summary = "Get limit orders. (TSO, DSO)",
+            description = "Find limitation orders by activationDocumentMrid.")
     @GetMapping()
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<List<OrdreLimitation>> findLimitationOrder(
@@ -155,7 +160,8 @@ public class OrdreLimitationController {
     }
 
 
-    @Operation(summary = "Change eligibility status. (TSO, DSO)")
+    @Operation(summary = "Change eligibility status. (TSO, DSO)",
+            description = "Change eligibility status, that is : \"OUI\" or \"NON\".")
     @PostMapping(ELIGIBILITY_STATUS)
     public ResponseEntity<OrdreLimitation> ordreDebutEligibilityStatus(@RequestBody OrdreLimitationEligibilityStatusDTO ordreLimitationEligibilityStatusDTO) throws BusinessException, TechnicalException {
         return ResponseEntity.ok(ordreLimitationService.ordreDebutEligibilityStatus(

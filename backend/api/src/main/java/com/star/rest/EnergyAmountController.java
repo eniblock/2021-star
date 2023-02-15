@@ -62,7 +62,8 @@ public class EnergyAmountController {
     @Autowired
     private SecurityComponent securityComponent;
 
-    @Operation(summary = "Post an energy amount (file or energy amount object). (DSO, TSO)")
+    @Operation(summary = "Post an energy amount (file or energy amount object). (DSO, TSO)",
+            description = "Create an Energy Amount by posting a JSON file containing energy amount data.")
     @PostMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAmountResult> createEnergyAmount(
@@ -89,7 +90,8 @@ public class EnergyAmountController {
         return ResponseEntity.status(isEmpty(importEnergyAmountResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importEnergyAmountResult);
     }
 
-    @Operation(summary = "Update an energy amount (file or energy amount object). (DSO, TSO)")
+    @Operation(summary = "Update an energy amount (file or energy amount object). (DSO, TSO)",
+            description = "Update an Energy Amount by posting a JSON file containing energy amount data.")
     @PutMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<ImportEnergyAmountResult> updateEnergyAmount(
@@ -124,7 +126,8 @@ public class EnergyAmountController {
      * @throws BusinessException
      * @throws TechnicalException
      */
-    @Operation(summary = "Find energy amount by criteria. (DSO, TSO)")
+    @Operation(summary = "Find energy amount by criteria. (DSO, TSO)",
+            description = "Get an Energy Amount, searched by energyAmountMarketDocumentMrid.")
     @GetMapping
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<EnergyAmountDTO[]> findEnergyAmount(

@@ -37,8 +37,14 @@
   </div>
 </div>
 
-<div class="row my-3 mt-5" *ngIf="researchResultsWithOnlyOneSuborder && researchResultsWithOnlyOneSuborder.length == 0">
+<div class="row my-3 mt-5" *ngIf="!loading && hasLoadSomething && researchResultsWithOnlyOneSuborder && researchResultsWithOnlyOneSuborder.length == 0">
   <div class="col-12 text-center">
     Aucun résultat...
+  </div>
+</div>
+
+<div class="row my-3 mt-5" *ngIf="loading">
+  <div class="col-12 text-center">
+    <mat-spinner class="mx-auto"></mat-spinner>
   </div>
 </div>

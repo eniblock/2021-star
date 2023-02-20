@@ -23,6 +23,9 @@ import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
 export class LimitationsComponent implements OnInit {
   formRecherche?: FormulaireRechercheHistoriqueLimitation;
 
+  loading = false;
+  hasLoadSomething = false;
+
   researchResultsWithOnlyOneSuborder: RechercheHistoriqueLimitationEntiteWithAnnotation[] = []; // Si un ordre de limitation a plusieurs suborder => cette ligne est decoupée en autant de ligne qu'il y a de suborder
   researchResultsWithOnlyOneSuborderFiltered: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
   dataForCSV: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
@@ -58,6 +61,7 @@ export class LimitationsComponent implements OnInit {
 
   private lancerRecherche() {
     if (this.formRecherche != undefined) {
+      this.loading = true;
       this.historiqueLimitationService
         .rechercher(this.formRecherche)
         .subscribe(resultat => {
@@ -68,6 +72,8 @@ export class LimitationsComponent implements OnInit {
               motifName: motifToString(rhl.activationDocument),
             }));
           this.researchResultsWithOnlyOneSuborderFiltered = [...this.researchResultsWithOnlyOneSuborder];
+          this.loading = false;
+          this.hasLoadSomething = true;
         });
     }
   }

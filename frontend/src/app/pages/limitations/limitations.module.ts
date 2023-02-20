@@ -25,9 +25,16 @@ import {LimitationsRoutes} from './limitations.routing';
 import {
   LimitationsFilterOnResultsComponent
 } from './limitations-filter-on-results/limitations-filter-on-results.component';
-import { LimitationsFeedbackProducerComponent } from './limitations-feedback-producer/limitations-feedback-producer.component';
-import { LimitationIndeminityStatusComponent } from './limitation-indeminity-status/limitation-indeminity-status.component';
-import { LimitationIndeminityStatusChangeComponent } from './limitation-indeminity-status/limitation-indeminity-status-change/limitation-indeminity-status-change.component';
+import {
+  LimitationsFeedbackProducerComponent
+} from './limitations-feedback-producer/limitations-feedback-producer.component';
+import {
+  LimitationIndeminityStatusComponent
+} from './limitation-indeminity-status/limitation-indeminity-status.component';
+import {
+  LimitationIndeminityStatusChangeComponent
+} from './limitation-indeminity-status/limitation-indeminity-status-change/limitation-indeminity-status-change.component';
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   imports: [
@@ -45,6 +52,7 @@ import { LimitationIndeminityStatusChangeComponent } from './limitation-indemini
     MatBottomSheetModule,
     GraphModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
   ],
   declarations: [
     LimitationsComponent,

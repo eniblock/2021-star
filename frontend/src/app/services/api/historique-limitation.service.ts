@@ -73,7 +73,7 @@ export class HistoriqueLimitationService {
   }
 
   exportCSV(researchResultsWithOnlyOneSuborderFiltered: RechercheHistoriqueLimitationEntiteWithAnnotation[]) {
-    let fileContain = "Filière;Poste Source;Nom Producteur;Nom Site;Code Site;Code Producteur;Début limitation RTE;Début limitation Enedis;Fin limitation RTE;Fin limitation Enedis;Eligible indemnisation;Type de limitation;ENE/I (MWh);Tarif unitaire;Montant indemnisation;Motif;Commentaires;Statut de l'indemnisation";
+    let fileContain = "Filière;Poste Source;Nom Producteur;Nom Site;Code Site;Code Producteur;Début limitation RTE;Début limitation Enedis;Fin limitation RTE;Fin limitation Enedis;Eligible indemnisation;Type de limitation;ENE/I (MWh);Tarif unitaire;Montant indemnisation;Motif;Commentaires (sujets);Commentaires (question);Commentaires (réponse);Statut de l'indemnisation";
     for (const element of researchResultsWithOnlyOneSuborderFiltered) {
       // Dates
       const ordreLimitation = element.activationDocument;
@@ -113,17 +113,15 @@ export class HistoriqueLimitationService {
       fileContain += dateDebutEnedis + ";";
       fileContain += dateFinRte + ";";
       fileContain += dateFinEnedis + ";";
-      fileContain += this.csvPrint(element.activationDocument.eligibilityStatus) + ";";
+      fileContain += this.csvPrint(element.activationDocument?.eligibilityStatus) + ";";
       fileContain += this.csvPrint(element.limitationType) + ";";
       fileContain += this.csvPrint(element.energyAmount?.quantity) + ";";
       fileContain += (element.reserveBidMarketDocument != null ? element.reserveBidMarketDocument.energyPriceAmount + ' ' + element.reserveBidMarketDocument.priceMeasureUnitName : '') + ";";
-      fileContain += (element.balancingDocument ? element.balancingDocument.financialPriceAmount + ' ' + element.balancingDocument.currencyUnitName : '') + ";";
+      fileContain += (element.balancingDocument != null ? element.balancingDocument.financialPriceAmount + ' ' + element.balancingDocument.currencyUnitName : '') + ";";
       fileContain += this.csvPrint(element.motifName) + ";";
-      fileContain += this.csvPrint(`{
-        "feedbackElements": "${element.feedbackProducer.feedbackElements}",
-        "feedback": "${element.feedbackProducer.feedback}",
-        "feedbackAnswer": "${element.feedbackProducer.feedbackAnswer}",
-      }`) + ";";
+      fileContain += this.csvPrint(element.feedbackProducer?.feedbackElements) + ";";
+      fileContain += this.csvPrint(element.feedbackProducer?.feedback) + ";";
+      fileContain += this.csvPrint(element.feedbackProducer?.feedbackAnswer) + ";";
       fileContain += this.csvPrint(this.indeminityStatusPipe.transform(element?.feedbackProducer?.indeminityStatus)) + ";";
     }
     const blob = new Blob([fileContain], {type: "text/plain;charset=utf-8"});
@@ -134,7 +132,9 @@ export class HistoriqueLimitationService {
     if (str == null || str == undefined) {
       return "";
     }
-    const strModify = str.replaceAll("\"", "\"\"");
+    const strModify = str
+      .replaceAll("\"", "\'\'")
+      .replaceAll("\n", " "); // Pas de retour à la ligne pour Alette : elle n'en veut pas à cause de son Excel.
     return `"${strModify}"`;
   }
 

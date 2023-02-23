@@ -18,19 +18,19 @@ jobs:
   test-backend:
     runs-on: [self-hosted]
     steps:
-    - uses: eniblock/build/actions/setup@4.1
+    - uses: eniblock/build/actions/setup@develop
     - run: earthly ./backend+test
 
   test-chaincode:
     runs-on: [self-hosted]
     steps:
-    - uses: eniblock/build/actions/setup@4.1
+    - uses: eniblock/build/actions/setup@develop
     - run: earthly ./chaincode+test
 
   lint-helm:
     runs-on: [self-hosted]
     steps:
-    - uses: eniblock/build/actions/setup@4.1
+    - uses: eniblock/build/actions/setup@develop
     - run: earthly ./helm+lint
 
 
@@ -40,28 +40,28 @@ jobs:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm, test-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@4.1
+    - uses: eniblock/build/actions/setup@develop
     - run: earthly ./backend+docker --tag=${{ env.TAG }}
 
   docker-keycloak:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm, test-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@4.1
+    - uses: eniblock/build/actions/setup@develop
     - run: earthly ./keycloak+docker --tag=${{ env.TAG }}
 
   docker-frontend:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm, test-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@4.1
+    - uses: eniblock/build/actions/setup@develop
     - run: earthly ./frontend+docker --tag=${{ env.TAG }}
 
   docker-chaincode:
     runs-on: [self-hosted]
     needs: [test-backend, lint-helm, test-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@4.1
+    - uses: eniblock/build/actions/setup@develop
     - run: earthly ./chaincode+docker --tag=${{ env.TAG }}
 
   ############################ helm ############################
@@ -70,7 +70,7 @@ jobs:
     runs-on: [self-hosted]
     needs: [docker-backend, docker-keycloak, docker-frontend, docker-chaincode]
     steps:
-    - uses: eniblock/build/actions/setup@4.1
+    - uses: eniblock/build/actions/setup@develop
     - name: Build/Publish the helm charts
       run: |
          earthly \

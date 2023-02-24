@@ -65,16 +65,20 @@ export class LimitationsComponent implements OnInit {
       this.historiqueLimitationService
         .rechercher(this.formRecherche)
         .subscribe(resultat => {
-          this.researchResultsWithOnlyOneSuborder = flatHistoriqueLimitation(resultat)
-            .map(rhl => ({
-              ...rhl,
-              limitationType: getLimitationType(rhl),
-              motifName: motifToString(rhl.activationDocument),
-            }));
-          this.researchResultsWithOnlyOneSuborderFiltered = [...this.researchResultsWithOnlyOneSuborder];
-          this.loading = false;
-          this.hasLoadSomething = true;
-        });
+            this.researchResultsWithOnlyOneSuborder = flatHistoriqueLimitation(resultat)
+              .map(rhl => ({
+                ...rhl,
+                limitationType: getLimitationType(rhl),
+                motifName: motifToString(rhl.activationDocument),
+              }));
+            this.researchResultsWithOnlyOneSuborderFiltered = [...this.researchResultsWithOnlyOneSuborder];
+            this.loading = false;
+            this.hasLoadSomething = true;
+          },
+          error => {
+            this.loading = false;
+            this.hasLoadSomething = false;
+          });
     }
   }
 

@@ -56,3 +56,7 @@ management:
       base-path: /
       path-mapping:
         prometheus: metrics
+
+#
+tls:
+  disabled: false

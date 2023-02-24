@@ -105,6 +105,8 @@ spec:
               value: "none"
             - name: KEYCLOAK_DISABLE_TRUST_MANAGER
               value: "true"
+            - name: TLS_DISABLED
+              value: "true"
             {{- end }}{{ end }}
 
             # keycloak spring security

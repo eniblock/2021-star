@@ -1,5 +1,8 @@
 package com.star.config;
 
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -13,7 +16,11 @@ import java.security.cert.X509Certificate;
  * SPDX-License-Identifier: Apache-2.0
  */
 @Configuration
+@Slf4j
 public class RestemplateConfig {
+
+    @Value("${tls.disabled}")
+    private Boolean tlsDisabled;
 
     @Bean
     public RestTemplate restemplate() {
@@ -22,6 +29,12 @@ public class RestemplateConfig {
 
     @Bean
     public Boolean disableSSLValidation() throws Exception {
+        log.error("-----------------------------------------------------");
+        log.error("-> " + tlsDisabled + "");
+        if (tlsDisabled == null || !tlsDisabled) {
+            return false;
+        }
+
         final SSLContext sslContext = SSLContext.getInstance("TLS");
 
         sslContext.init(null, new TrustManager[]{new X509TrustManager() {

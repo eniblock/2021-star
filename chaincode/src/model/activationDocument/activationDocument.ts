@@ -26,6 +26,7 @@ export class ActivationDocument {
         reasonCode: Yup.string().notRequired(),
         receiverMarketParticipantMrid: Yup.string().required('receiverMarketParticipantMrid is required').typeError('receiverMarketParticipantMrid must be a string'),
         receiverRole: Yup.string().notRequired(),
+        reconciliationStatus: Yup.string().notRequired(),
         registeredResourceMrid: Yup.string().required(
             'registeredResourceMrid is required').typeError('registeredResourceMrid must be a string'),
         revisionNumber: Yup.string().notRequired().matches(/^[0-9]*$/),
@@ -35,6 +36,7 @@ export class ActivationDocument {
         subOrderList: Yup.array().notRequired(),
         testDateTime: Yup.string().notRequired(),
     });
+
     public static formatString(inputString: string): ActivationDocument {
         let activationDocumentObj: ActivationDocument;
         try {
@@ -92,4 +94,5 @@ export class ActivationDocument {
     public subOrderList?: string[];
     public eligibilityStatus?: string;
     public eligibilityStatusEditable: boolean;
+    public reconciliationStatus?: string;
 }

@@ -233,6 +233,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        reconciliationStatus: "",
     };
 
     public static HTA_ActivationDocument_Valid_ForRTETest: ActivationDocument = {
@@ -253,6 +254,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        reconciliationStatus: "",
     };
 
     public static HTA_ActivationDocument_Valid_Doc2: ActivationDocument = {
@@ -273,6 +275,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        reconciliationStatus: "",
     };
 
     public static HTB_ActivationDocument_Valid: ActivationDocument = {
@@ -292,6 +295,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        reconciliationStatus: "",
     };
 
     public static HTB_ActivationDocument_JustStartDate: ActivationDocument = {
@@ -310,6 +314,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        reconciliationStatus: "",
     };
 
     public static HTB_ActivationDocument_JustEndDate: ActivationDocument = {
@@ -328,6 +333,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTB_Producer.producerMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        reconciliationStatus: "",
     };
 
     public static HTB_ActivationDocument_HTA_JustStartDate: ActivationDocument = {
@@ -346,6 +352,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        reconciliationStatus: "",
     };
 
     public static HTB_ActivationDocument_HTA_JustStartDate2: ActivationDocument = {
@@ -364,6 +371,7 @@ export class Values {
         senderMarketParticipantMrid: Values.HTB_systemoperator.systemOperatorMarketParticipantMrid,
         receiverMarketParticipantMrid: Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid,
         eligibilityStatusEditable: true,
+        reconciliationStatus: "",
     };
 
     /*********************************************/

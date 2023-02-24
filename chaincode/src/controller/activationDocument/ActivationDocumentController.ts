@@ -402,6 +402,7 @@ export class ActivationDocumentController {
 
             activationDocumentObj.revisionNumber = '1';
         }
+        activationDocumentObj.reconciliationStatus = '';
 
         let systemOperatorObj: SystemOperator;
         try {

@@ -63,6 +63,7 @@ public class OrdreLimitation implements ImportCSV {
     private boolean receiverRole;
     @JsonIgnore
     private boolean senderRole;
+    private String reconciliationStatus;
 
     @JsonIgnore
     @Override

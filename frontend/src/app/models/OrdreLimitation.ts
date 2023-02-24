@@ -1,5 +1,6 @@
 import {EligibilityStatus} from "./enum/EligibilityStatus.enum";
 import {MeasurementUnitName} from "./enum/MeasurementUnitName.enum";
+import {ReconciliationStatus} from "./enum/ReconciliationStatus.enum";
 
 export interface FormulaireOrdreDebutLimitationFichier {
   files: File[],
@@ -41,4 +42,5 @@ export interface OrdreLimitation {
   revisionNumber: string,
   measurementUnitName: MeasurementUnitName,
   senderMarketParticipantMrid: string,
+  reconciliationStatus: ReconciliationStatus,
 }

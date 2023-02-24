@@ -20,6 +20,7 @@ import {FileSaverService} from "ngx-filesaver";
 import {IndeminityStatusPipe} from "../../pipes/IndeminityStatus.pipe";
 import {DateHelper} from "../../helpers/date.helper";
 import {DatePipe} from "@angular/common";
+import {ReconciliationStatus} from "../../models/enum/ReconciliationStatus.enum";
 
 const MOCK = false;
 
@@ -204,6 +205,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         measurementUnitName: MeasurementUnitName.MW,
         senderMarketParticipantMrid: '10XFR-RTE------Q', // 10XFR-RTE------Q    17X100A100A0001A
         revisionNumber: "12",
+        reconciliationStatus: ReconciliationStatus.NONE,
       },
       subOrderList: [],
       displayedSourceName: "displayedSourceName1",
@@ -309,6 +311,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         measurementUnitName: MeasurementUnitName.MW,
         senderMarketParticipantMrid: '17X100A100A0001A', // 10XFR-RTE------Q    17X100A100A0001A
         revisionNumber: "12",
+        reconciliationStatus: ReconciliationStatus.NONE,
       },
       subOrderList: [
         {
@@ -326,6 +329,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
           revisionNumber: "12",
+          reconciliationStatus: ReconciliationStatus.NONE,
         }, {
           activationDocumentMrid: "A4",
           originAutomationRegisteredResourceMrid: 'MANSLE3',
@@ -341,6 +345,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
           revisionNumber: "12",
+          reconciliationStatus: ReconciliationStatus.NONE,
         }
       ],
       displayedSourceName: "displayedSourceName2",

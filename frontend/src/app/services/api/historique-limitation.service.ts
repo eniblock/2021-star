@@ -81,8 +81,8 @@ export class HistoriqueLimitationService {
       const ordreLimitationLinked = element.subOrderList[0];
       let dateDebutRte, dateDebutEnedis, dateFinRte, dateFinEnedis;
       if (ordreLimitationLinked == undefined) {
-        dateDebutRte = this.toCsvDate(ordreLimitation.startCreatedDateTime);
-        dateFinRte = this.toCsvDate(ordreLimitation.endCreatedDateTime);
+        dateDebutRte = this.toCsvDatetime(ordreLimitation.startCreatedDateTime);
+        dateFinRte = this.toCsvDatetime(ordreLimitation.endCreatedDateTime);
       } else {
         const ordreLimitationStartTimestamp = DateHelper.stringToTimestamp(ordreLimitation.startCreatedDateTime);
         const ordreLimitationEndTimestamp = DateHelper.stringToTimestamp(ordreLimitation.endCreatedDateTime);
@@ -90,15 +90,15 @@ export class HistoriqueLimitationService {
         const ordreLimitationLieEndTimestamp = DateHelper.stringToTimestamp(ordreLimitationLinked.endCreatedDateTime);
         if ((ordreLimitationStartTimestamp < ordreLimitationLieStartTimestamp)
           || (ordreLimitationStartTimestamp == ordreLimitationLieStartTimestamp && ordreLimitationEndTimestamp < ordreLimitationLieEndTimestamp)) {
-          dateDebutRte = this.toCsvDate(ordreLimitation.startCreatedDateTime);
-          dateFinRte = this.toCsvDate(ordreLimitation.endCreatedDateTime);
-          dateDebutEnedis = this.toCsvDate(ordreLimitationLinked.startCreatedDateTime);
-          dateFinEnedis = this.toCsvDate(ordreLimitationLinked.endCreatedDateTime);
+          dateDebutRte = this.toCsvDatetime(ordreLimitation.startCreatedDateTime);
+          dateFinRte = this.toCsvDatetime(ordreLimitation.endCreatedDateTime);
+          dateDebutEnedis = this.toCsvDatetime(ordreLimitationLinked.startCreatedDateTime);
+          dateFinEnedis = this.toCsvDatetime(ordreLimitationLinked.endCreatedDateTime);
         } else {
-          dateDebutRte = this.toCsvDate(ordreLimitationLinked.startCreatedDateTime);
-          dateFinRte = this.toCsvDate(ordreLimitationLinked.endCreatedDateTime);
-          dateDebutEnedis = this.toCsvDate(ordreLimitation.startCreatedDateTime);
-          dateFinEnedis = this.toCsvDate(ordreLimitation.endCreatedDateTime);
+          dateDebutRte = this.toCsvDatetime(ordreLimitationLinked.startCreatedDateTime);
+          dateFinRte = this.toCsvDatetime(ordreLimitationLinked.endCreatedDateTime);
+          dateDebutEnedis = this.toCsvDatetime(ordreLimitation.startCreatedDateTime);
+          dateFinEnedis = this.toCsvDatetime(ordreLimitation.endCreatedDateTime);
         }
       }
 
@@ -110,10 +110,10 @@ export class HistoriqueLimitationService {
       fileContain += this.csvPrint(element.site?.siteName) + ";";
       fileContain += this.csvPrint(element.site?.meteringPointMrid) + ";";
       fileContain += this.csvPrint(element.producer?.producerMarketParticipantMrid) + ";";
-      fileContain += dateDebutRte + ";";
-      fileContain += dateDebutEnedis + ";";
-      fileContain += dateFinRte + ";";
-      fileContain += dateFinEnedis + ";";
+      fileContain += this.csvDatePrint(dateDebutRte) + ";";
+      fileContain += this.csvDatePrint(dateDebutEnedis) + ";";
+      fileContain += this.csvDatePrint(dateFinRte) + ";";
+      fileContain += this.csvDatePrint(dateFinEnedis) + ";";
       fileContain += this.csvPrint(element.activationDocument?.eligibilityStatus) + ";";
       fileContain += this.csvPrint(element.limitationType) + ";";
       fileContain += this.csvPrint(element.energyAmount?.quantity) + ";";
@@ -139,9 +139,20 @@ export class HistoriqueLimitationService {
     return `"${strModify}"`;
   }
 
-  private toCsvDate(dateTime: string) {
+  private toCsvDatetime(dateTime: string) {
+    if (dateTime == null || dateTime == undefined) {
+      return "";
+    }
     return this.datePipe.transform(dateTime, 'shortDate') + " " + this.datePipe.transform(dateTime, 'mediumTime');
   }
+
+  private csvDatePrint(dateTime: string | undefined) {
+    if (dateTime == null || dateTime == undefined) {
+      return "";
+    }
+    return dateTime;
+  }
+
 }
 
 /**

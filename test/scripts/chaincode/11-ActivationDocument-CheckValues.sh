@@ -195,38 +195,60 @@ echo ""
 # echo
 # echo "GetActivationDocumentHistory"
 # echo
-
-
-
-echo
-echo
-echo "***********************************"
-echo
-echo "** RTE"
-echo
-
-echo
-echo "GetActivationDocumentHistory"
-echo
-
-
-echo "--- process start $(date +"%T.%3N") ---"
-
-OUTPUT_RTE=$(
-        kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+OUTPUT_ENEDIS=$(
+        kubectl exec -n $ENEDIS_NODE -c peer $ENEDIS_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
                 peer chaincode invoke \
-                -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls $RTE_TLSOPT \
+                -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE \
+                --tls $ENEDIS_TLSOPT \
                 -c '{"Args":["GetActivationDocumentHistory", "{}"]}' 2>&1)
 
 
 echo "--- process end   $(date +"%T.%3N") ---"
 
-OUTPUT_RTE=$(echo $OUTPUT_RTE | grep -o -P '(?<=").*(?=")')
-OUTPUT_RTE=$(printf "%b" $OUTPUT_RTE)
+OUTPUT_ENEDIS=$(echo $OUTPUT_ENEDIS | grep -o -P '(?<=").*(?=")')
+OUTPUT_ENEDIS=$(printf "%b" $OUTPUT_ENEDIS)
 
-OUTPUT_ENEDIS_TOPRINT=$(echo $OUTPUT_RTE | sed "s/\\\\\"/\"/g")
+OUTPUT_ENEDIS_TOPRINT=$(echo $OUTPUT_ENEDIS | sed "s/\\\\\"/\"/g")
 
-echo $OUTPUT_ENEDIS_TOPRINT
+# echo $OUTPUT_ENEDIS_TOPRINT
+
+#Print only first element
+OUTPUT_ENEDIS_TOPRINT_VALUE=$(echo $OUTPUT_ENEDIS_TOPRINT | jq .[0])
+
+echo $OUTPUT_ENEDIS_TOPRINT_VALUE
+
+
+
+
+# echo
+# echo
+# echo "***********************************"
+# echo
+# echo "** RTE"
+# echo
+
+# echo
+# echo "GetActivationDocumentHistory"
+# echo
+
+
+# echo "--- process start $(date +"%T.%3N") ---"
+
+# OUTPUT_RTE=$(
+#         kubectl exec -n $RTE_NODE -c peer $RTE_PODNAME -- env CORE_PEER_MSPCONFIGPATH=/var/hyperledger/admin_msp \
+#                 peer chaincode invoke \
+#                 -n $CHAINCODE -C $CHANNEL -o $ORDERER --cafile $CAFILE --tls $RTE_TLSOPT \
+#                 -c '{"Args":["GetActivationDocumentHistory", "{}"]}' 2>&1)
+
+
+# echo "--- process end   $(date +"%T.%3N") ---"
+
+# OUTPUT_RTE=$(echo $OUTPUT_RTE | grep -o -P '(?<=").*(?=")')
+# OUTPUT_RTE=$(printf "%b" $OUTPUT_RTE)
+
+# OUTPUT_ENEDIS_TOPRINT=$(echo $OUTPUT_RTE | sed "s/\\\\\"/\"/g")
+
+# echo $OUTPUT_ENEDIS_TOPRINT
 
 
 # echo

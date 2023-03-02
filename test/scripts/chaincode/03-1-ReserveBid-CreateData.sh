@@ -6,7 +6,7 @@ OLD_IFS=$IFS
 source ./zzz-config.sh
 IFS=$OLD_IFS
 
-NB_YEARS=2
+NB_YEARS=1
 INIT_YEAR="2015" #will start 1 year later
 
 
@@ -26,6 +26,9 @@ RTE_SITES_NB=$(echo $RTE_SITES | jq 'length')
 ENEDIS_RESERVE_BID=$(cat $DATA_PATH/03-ReserveBid/71-HTA-ReserveBid.json | jq '.')
 ENEDIS_SITES=$(csvtojson < $DATA_PATH/01-MasterData/03-enedis-Site.csv --delimiter=';')
 ENEDIS_SITES_NB=$(echo $ENEDIS_SITES | jq 'length')
+
+
+createdDateTime=$(echo $(date +%Y)"-"$(date +%m)"-"$(date +%d)"T"$(date +%H)":"$(date +%M)":"$(date +%S)"Z")
 
 
 echo "***********************************"
@@ -82,6 +85,8 @@ do
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodEndDateTime $validityPeriodEndDateTime '. + {validityPeriodEndDateTime: $validityPeriodEndDateTime}')
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --argjson energyPriceAmount $energyPriceAmount '. + {energyPriceAmount: $energyPriceAmount}')
         RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg fileId $fileId '.attachments? += [$fileId]')
+        RTE_RESERVE_BID_VALUE=$(echo $RTE_RESERVE_BID_VALUE | jq '.' | jq --arg createdDateTime $createdDateTime '. + {createdDateTime: $createdDateTime}')
+
         RTE_RESERVE_BID_VALUE=${RTE_RESERVE_BID_VALUE//[$'\t\r\n ']}
 
         RTE_RESERVE_BID_LIST_VALUE=$(echo $RTE_RESERVE_BID_LIST_VALUE | jq --argjson index $indexfinal --argjson ELEMENT_VALUE $RTE_RESERVE_BID_VALUE '.reserveBidList[$index] |= . + $ELEMENT_VALUE' )
@@ -165,6 +170,7 @@ do
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg validityPeriodEndDateTime $validityPeriodEndDateTime '. + {validityPeriodEndDateTime: $validityPeriodEndDateTime}')
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --argjson energyPriceAmount $energyPriceAmount '. + {energyPriceAmount: $energyPriceAmount}')
         ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg fileId $fileId '.attachments? += [$fileId]')
+        ENEDIS_RESERVE_BID_VALUE=$(echo $ENEDIS_RESERVE_BID_VALUE | jq '.' | jq --arg createdDateTime $createdDateTime '. + {createdDateTime: $createdDateTime}')
 
         ENEDIS_RESERVE_BID_VALUE=${ENEDIS_RESERVE_BID_VALUE//[$'\t\r\n ']}
         ENEDIS_RESERVE_BID_LIST_VALUE=$(echo $ENEDIS_RESERVE_BID_LIST_VALUE | jq --argjson index $indexfinal --argjson ELEMENT_VALUE $ENEDIS_RESERVE_BID_VALUE '.reserveBidList[$index] |= . + $ELEMENT_VALUE' )

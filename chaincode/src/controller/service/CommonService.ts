@@ -39,6 +39,14 @@ export class CommonService {
         return increasedDate;
     }
 
+    public static increaseDateMinutes(dateref: Date, increasing: number): Date {
+        const increasedDate = new Date(dateref);
+
+        increasedDate.setMinutes(increasedDate.getMinutes() + increasing);
+
+        return increasedDate;
+    }
+
     public static setHoursStartDayStr(dateref: string): string {
         let newDate = new Date(Date.parse(dateref));
 

@@ -17,6 +17,7 @@ import { HLFServices } from '../service/HLFservice';
 import { CommonService } from '../service/CommonService';
 import { SystemOperatorController } from '../SystemOperatorController';
 import { YellowPagesController } from '../YellowPagesController';
+import { ReconciliationStatus } from '../../enums/ReconciliationStatus';
 
 export class ReconciliationController {
     public static async getReconciliationState(
@@ -241,16 +242,8 @@ export class ReconciliationController {
         reconciliationState: ReconciliationState): Promise<ReconciliationState> {
         params.logger.debug('============= START : searchMatchParentWithChild ReconciliationController ===========');
 
-        const pctmt: number = params.values.get(ParametersType.PC_TIME_MATCH_THRESHOLD);
-
         for (const childReference of reconciliationState.remainingChilds) {
-            const queryDate: string = childReference.data.startCreatedDateTime;
-            const datetmp = new Date(queryDate);
-
-            datetmp.setUTCMilliseconds(0);
-            datetmp.setUTCSeconds(0);
-            const dateMinusPCTMT = new Date(datetmp.getTime() - pctmt);
-            const datePlusPCTMT = new Date(datetmp.getTime() + pctmt);
+            const childStartDate = new Date(childReference.data.startCreatedDateTime);
 
             const yellowPageList: YellowPages[] =
             await YellowPagesController.getYellowPagesByOriginAutomationRegisteredResource(
@@ -274,30 +267,42 @@ export class ReconciliationController {
                 const linkedParents: DataReference[] =
                     reconciliationState.remainingParentsMap.get(yellowPage.registeredResourceMrid);
 
-                params.logger.debug('linkedParents: ', JSON.stringify(linkedParents));
+                params.logger.debug('linkedParents: ', linkedParents);
 
                 if (linkedParents) {
                     for (const linkedParent of linkedParents) {
                         const activationDocument: ActivationDocument = linkedParent.data;
-                        const dateActivationDocument = new Date(activationDocument.startCreatedDateTime);
+                        if (activationDocument.startCreatedDateTime
+                            && activationDocument.startCreatedDateTime !== "") {
 
-                        params.logger.debug('dateMinusPCTMT: ', dateMinusPCTMT);
-                        params.logger.debug('dateActivationDocument: ', dateActivationDocument);
-                        params.logger.debug('datePlusPCTMT: ', datePlusPCTMT);
+                            const parentDateStart = new Date(activationDocument.startCreatedDateTime);
 
-                        if (dateMinusPCTMT <= dateActivationDocument
-                            && dateActivationDocument <= datePlusPCTMT) {
-                                possibleParents.push(linkedParent);
+                            if (parentDateStart <= childStartDate) {
+                                if (activationDocument.endCreatedDateTime
+                                    && activationDocument.endCreatedDateTime !== "") {
+
+                                        const parentDateEnd = new Date(activationDocument.endCreatedDateTime);
+                                        if (childStartDate <= parentDateEnd) {
+                                            possibleParents.push(linkedParent);
+                                        }
+                                    } else {
+                                        possibleParents.push(linkedParent);
+                                    }
+                            }
                         }
                     }
                 }
             }
 
-            params.logger.debug('possibleParents: ', JSON.stringify(possibleParents));
+            params.logger.debug('possibleParents: ', possibleParents);
             params.logger.debug('1111111111111111111111111');
 
             const index = await ReconciliationController.findIndexofClosestEndDateRef(
                 childReference.data, possibleParents);
+
+            params.logger.debug('chosen Parent: ', index);
+            params.logger.debug('1111111111111111111111111');
+
 
             // If a parent document is found
             if ( index !== -1 ) {
@@ -313,10 +318,30 @@ export class ReconciliationController {
                         data: parentStartDocument,
                         docType: DocType.ACTIVATION_DOCUMENT});
 
+
                     childReference.data.subOrderList = await ReconciliationController.fillList(
                         childReference.data.subOrderList, parentStartDocument.activationDocumentMrid);
                     childReference.data.potentialChild = false;
                     childReference.docType = DocType.ACTIVATION_DOCUMENT;
+
+                    //Reconciliation Status Calculation
+                    if (parentStartDocument.endCreatedDateTime
+                        && parentStartDocument.endCreatedDateTime !== "") {
+
+                        const parentDateEnd = new Date(parentStartDocument.endCreatedDateTime);
+                        const partialLimit: number = params.values.get(ParametersType.PC_END_TIME_MATCH_THRESHOLD);
+                        const partialLimitDate = CommonService.increaseDateMinutes(parentDateEnd, partialLimit);
+                        const childEndDate = new Date(childReference.data.endCreatedDateTime);
+
+                        if (childEndDate <= partialLimitDate) {
+                            childReference.data.reconciliationStatus = ReconciliationStatus.TOTAL;
+                        } else {
+                            childReference.data.reconciliationStatus = ReconciliationStatus.PARTIAL;
+                        }
+                    } else {
+                        childReference.data.reconciliationStatus = ReconciliationStatus.TOTAL;
+                    }
+
                     reconciliationState.updateOrders.push(childReference);
                 }
             }

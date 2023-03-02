@@ -8,6 +8,7 @@ then
 fi
 
 DATA_PATH=../../data
+DATA_PATH_TEMP=../../temp/data
 
 if ! $ONLINE_MODE
 then

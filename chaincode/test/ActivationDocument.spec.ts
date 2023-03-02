@@ -35,6 +35,7 @@ import { ActivationDocumentDateMax } from '../src/model/dataIndex/activationDocu
 import { FeedbackProducer } from '../src/model/feedbackProducer';
 import { FeedbackProducerController } from '../src/controller/FeedbackProducerController';
 import { IndeminityStatus } from '../src/enums/IndemnityStatus';
+import { ReconciliationStatus } from '../src/enums/ReconciliationStatus';
 
 class TestLoggerMgt {
     public getLogger(arg: string): any {
@@ -1628,6 +1629,7 @@ describe('Star Tests ActivationDocument', () => {
 
             childDocument_Reconciliation.potentialChild = false;
             childDocument_Reconciliation.subOrderList = [parentDocument.activationDocumentMrid];
+            childDocument_Reconciliation.reconciliationStatus = ReconciliationStatus.TOTAL;
 
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: parentDocument});
@@ -1698,6 +1700,7 @@ describe('Star Tests ActivationDocument', () => {
 
             childDocument_Reconciliation.potentialChild = false;
             childDocument_Reconciliation.subOrderList = [parentDocument.activationDocumentMrid];
+            childDocument_Reconciliation.reconciliationStatus = ReconciliationStatus.TOTAL;
 
             const updateOrders: DataReference[] = [];
             updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: parentDocument});

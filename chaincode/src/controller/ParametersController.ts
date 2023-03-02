@@ -18,6 +18,7 @@ const enedisProducerRte = 'enedis-producer-rte';
 
 const ppcoTimeThreshold: number = 750; // 750 days
 const pcTimeMatchThreshold: number = 5 * 60 * 1000; // 5 minutes
+const pcEndTimeMatchThreshold: number = 30; // 30 minutes
 const pcTimeUpdateendMatchThreshold: number = 24 * 60 * 60 * 1000; // 24 hours
 
 const reserveBidValidationTimeMax: number = 30; // 30 days
@@ -70,6 +71,7 @@ export class ParametersController {
 
         parameters.values.set(ParametersType.PPCO_TIME_THRESHOLD, ppcoTimeThreshold);
         parameters.values.set(ParametersType.PC_TIME_MATCH_THRESHOLD, pcTimeMatchThreshold);
+        parameters.values.set(ParametersType.PC_END_TIME_MATCH_THRESHOLD, pcEndTimeMatchThreshold);
         parameters.values.set(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD, pcTimeUpdateendMatchThreshold);
 
         parameters.values.set(ParametersType.RESERVE_BID_VALIDATION_TIME_MAX, reserveBidValidationTimeMax);
@@ -78,7 +80,7 @@ export class ParametersController {
         parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec, energyAccountTimeIntervalLAPsec);
         parameters.values.set(
             ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H, energyAccountTimeIntervalLAPsecLess1H);
-        const Less1HDays: string[] = [CommonService.formatDateStr('2022-03-27')];
+        const Less1HDays: string[] = [CommonService.formatDateStr('2022-03-27'), CommonService.formatDateStr('2023-03-26')];
         parameters.values.set(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS, Less1HDays);
 
         parameters.values.set(

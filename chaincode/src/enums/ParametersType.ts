@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
- export enum ParametersType {
+export enum ParametersType {
     SITE_RESERVE_BID_INDEXER_PREFIX = 'Indx_SiteResBid_',
     SITE_ACTIVATION_INDEXER_PREFIX = 'Indx_SiteActiv_',
     ACTIVATION_ENERGY_AMOUNT_INDEXER_PREFIX = 'Indx_ActivNRJAm_',
@@ -23,6 +23,7 @@
 
     PPCO_TIME_THRESHOLD = 'pPCOTimeThershold',
     PC_TIME_MATCH_THRESHOLD = 'pCTimeMatchThreshold',
+    PC_END_TIME_MATCH_THRESHOLD = 'PC_END_TIME_MATCH_THRESHOLD',
     PC_TIME_UPDATEEND_MATCH_THRESHOLD = 'pCTimeUpdateEndMatchThreshold',
 
     ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec = 'energyAccount_TimeInterval_LAPsec',
@@ -50,4 +51,4 @@
 
     AUTHORIZED_STATUS_ENERGY_AMOUNT = 'authorizedStatusEnergyAmount',
     AUTHORIZED_STATUS_RESERVEBID = 'authorizedStatusReservebid',
-  }
+}

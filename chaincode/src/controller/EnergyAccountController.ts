@@ -352,6 +352,12 @@ export class EnergyAccountController {
             throw new Error('ERROR createEnergyAccount : '.concat(error.message).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
         }
 
+        if (!systemOperatorObj
+            || !systemOperatorObj.systemOperatorMarketParticipantName) {
+
+            throw new Error('ERROR createEnergyAccount : unknown senderMarketParticipantMrid '.concat(energyObj.senderMarketParticipantMrid).concat(` for Energy Account ${energyObj.energyAccountMarketDocumentMrid} creation.`));
+        }
+
         if (!identity.toLowerCase().includes(systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
             throw new Error(
                 `Energy Account, sender: ${identity} does not have rights for ${energyObj.energyAccountMarketDocumentMrid}. (Wrong SystemOperator)`,
@@ -389,6 +395,17 @@ export class EnergyAccountController {
             params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS);
         const lapTimePlus1HDays: string[] =
             params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H_DAYS);
+
+        params.logger.debug('*********************************');
+        params.logger.debug('energyObj.startCreatedDateTime');
+        params.logger.debug(energyObj.startCreatedDateTime);
+        params.logger.debug('startDate');
+        params.logger.debug(startDate);
+        params.logger.debug('lapTimeLess1HDays');
+        params.logger.debug(lapTimeLess1HDays);
+        params.logger.debug('lapTimePlus1HDays');
+        params.logger.debug(lapTimePlus1HDays);
+        params.logger.debug('*********************************');
 
         if (lapTimeLess1HDays.includes(startDate)) {
             const lapTimeStr: string = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H);

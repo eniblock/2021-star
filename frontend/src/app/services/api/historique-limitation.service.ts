@@ -18,11 +18,12 @@ import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
 import {MarketType} from "../../models/enum/MarketTypePipe.enum";
 import {FileSaverService} from "ngx-filesaver";
 import {IndeminityStatusPipe} from "../../pipes/IndeminityStatus.pipe";
-import {DateHelper} from "../../helpers/date.helper";
 import {DatePipe} from "@angular/common";
 import {ReconciliationStatus} from "../../models/enum/ReconciliationStatus.enum";
+import {SystemOperatorService} from "./system-operator.service";
+import {SystemOperator} from "../../models/SystemOperator";
 
-const MOCK = false;
+const MOCK = true;
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,7 @@ export class HistoriqueLimitationService {
     private fileSaverService: FileSaverService,
     private indeminityStatusPipe: IndeminityStatusPipe,
     private datePipe: DatePipe,
+    private systemOperatorService: SystemOperatorService,
   ) {
   }
 
@@ -74,33 +76,21 @@ export class HistoriqueLimitationService {
   }
 
   exportCSV(researchResultsWithOnlyOneSuborderFiltered: RechercheHistoriqueLimitationEntiteWithAnnotation[]) {
-    let fileContain = "Filière;Poste Source;Nom Producteur;Nom Site;Code Site;Code Producteur;Début limitation RTE;Début limitation Enedis;Fin limitation RTE;Fin limitation Enedis;Eligible indemnisation;Type de limitation;ENE/I (MWh);Tarif unitaire;Montant indemnisation;Motif;Commentaires (sujets);Commentaires (question);Commentaires (réponse);Statut de l'indemnisation";
+    this.systemOperatorService.getSystemOperators().subscribe(systemOperators => {
+      this.exportCSVStep2(researchResultsWithOnlyOneSuborderFiltered, systemOperators)
+    });
+  }
+
+  private exportCSVStep2(researchResultsWithOnlyOneSuborderFiltered: RechercheHistoriqueLimitationEntiteWithAnnotation[], systemOperators: SystemOperator[]) {
+    let fileContain = "Filière;Poste Source;Nom Producteur;Nom Site;Code Site;Code Producteur;"
+    for (const element of systemOperators) {
+      fileContain += "Début limitation " + element.systemOperatorMarketParticipantName + ";Fin limitation " + element.systemOperatorMarketParticipantName + ";";
+    }
+    fileContain += "Eligible indemnisation;Type de limitation;ENE/I (MWh);Tarif unitaire;Montant indemnisation;Motif;Commentaires (sujets);Commentaires (question);Commentaires (réponse);Statut de l'indemnisation";
     for (const element of researchResultsWithOnlyOneSuborderFiltered) {
       // Dates
       const ordreLimitation = element.activationDocument;
       const ordreLimitationLinked = element.subOrderList[0];
-      let dateDebutRte, dateDebutEnedis, dateFinRte, dateFinEnedis;
-      if (ordreLimitationLinked == undefined) {
-        dateDebutRte = this.toCsvDatetime(ordreLimitation.startCreatedDateTime);
-        dateFinRte = this.toCsvDatetime(ordreLimitation.endCreatedDateTime);
-      } else {
-        const ordreLimitationStartTimestamp = DateHelper.stringToTimestamp(ordreLimitation.startCreatedDateTime);
-        const ordreLimitationEndTimestamp = DateHelper.stringToTimestamp(ordreLimitation.endCreatedDateTime);
-        const ordreLimitationLieStartTimestamp = DateHelper.stringToTimestamp(ordreLimitationLinked.startCreatedDateTime);
-        const ordreLimitationLieEndTimestamp = DateHelper.stringToTimestamp(ordreLimitationLinked.endCreatedDateTime);
-        if ((ordreLimitationStartTimestamp < ordreLimitationLieStartTimestamp)
-          || (ordreLimitationStartTimestamp == ordreLimitationLieStartTimestamp && ordreLimitationEndTimestamp < ordreLimitationLieEndTimestamp)) {
-          dateDebutRte = this.toCsvDatetime(ordreLimitation.startCreatedDateTime);
-          dateFinRte = this.toCsvDatetime(ordreLimitation.endCreatedDateTime);
-          dateDebutEnedis = this.toCsvDatetime(ordreLimitationLinked.startCreatedDateTime);
-          dateFinEnedis = this.toCsvDatetime(ordreLimitationLinked.endCreatedDateTime);
-        } else {
-          dateDebutRte = this.toCsvDatetime(ordreLimitationLinked.startCreatedDateTime);
-          dateFinRte = this.toCsvDatetime(ordreLimitationLinked.endCreatedDateTime);
-          dateDebutEnedis = this.toCsvDatetime(ordreLimitation.startCreatedDateTime);
-          dateFinEnedis = this.toCsvDatetime(ordreLimitation.endCreatedDateTime);
-        }
-      }
 
       // CSV
       fileContain += "\n";
@@ -110,10 +100,18 @@ export class HistoriqueLimitationService {
       fileContain += this.csvPrint(element.site?.siteName) + ";";
       fileContain += this.csvPrint(element.site?.meteringPointMrid) + ";";
       fileContain += this.csvPrint(element.producer?.producerMarketParticipantMrid) + ";";
-      fileContain += this.csvDatePrint(dateDebutRte) + ";";
-      fileContain += this.csvDatePrint(dateDebutEnedis) + ";";
-      fileContain += this.csvDatePrint(dateFinRte) + ";";
-      fileContain += this.csvDatePrint(dateFinEnedis) + ";";
+      for (const element of systemOperators) {
+        // Dates
+        if (element.systemOperatorMarketParticipantMrid == ordreLimitation.senderMarketParticipantMrid) {
+          fileContain += this.csvDatePrint(ordreLimitation.startCreatedDateTime) + ";";
+          fileContain += this.csvDatePrint(ordreLimitation.endCreatedDateTime) + ";";
+        } else if (ordreLimitationLinked != undefined && element.systemOperatorMarketParticipantMrid == ordreLimitationLinked.senderMarketParticipantMrid) {
+          fileContain += this.csvDatePrint(ordreLimitationLinked.startCreatedDateTime) + ";";
+          fileContain += this.csvDatePrint(ordreLimitationLinked.endCreatedDateTime) + ";";
+        } else {
+          fileContain += ";;";
+        }
+      }
       fileContain += this.csvPrint(element.activationDocument?.eligibilityStatus) + ";";
       fileContain += this.csvPrint(element.limitationType) + ";";
       fileContain += this.csvPrint(element.energyAmount?.quantity) + ";";

@@ -146,6 +146,9 @@ public class OrdreLimitationService {
                 if (ordreDebutLimitation.getSenderMarketParticipantMrid() == null) {
                     ordreDebutLimitation.setSenderMarketParticipantMrid(EMPTY);
                 }
+                if (ordreDebutLimitation.getReconciliationStatus() == null) {
+                    ordreDebutLimitation.setReconciliationStatus(EMPTY);
+                }
                 if (isBlank(ordreDebutLimitation.getEligibilityStatus())) {
                     ordreDebutLimitation.setEligibilityStatus(EMPTY);
                 }
@@ -231,6 +234,9 @@ public class OrdreLimitationService {
                 if (ordreLimitation.getSenderMarketParticipantMrid() == null) {
                     ordreLimitation.setSenderMarketParticipantMrid(EMPTY);
                 }
+                if (ordreLimitation.getReconciliationStatus() == null) {
+                    ordreLimitation.setReconciliationStatus(EMPTY);
+                }
                 if (isBlank(ordreLimitation.getEligibilityStatus())) {
                     ordreLimitation.setEligibilityStatus(EMPTY);
                 }
@@ -305,6 +311,9 @@ public class OrdreLimitationService {
                 }
                 if (ordreFinLimitation.getSenderMarketParticipantMrid() == null) {
                     ordreFinLimitation.setSenderMarketParticipantMrid(EMPTY);
+                }
+                if (ordreFinLimitation.getReconciliationStatus() == null) {
+                    ordreFinLimitation.setReconciliationStatus(EMPTY);
                 }
                 if (isBlank(ordreFinLimitation.getEligibilityStatus())) {
                     ordreFinLimitation.setEligibilityStatus(EMPTY);

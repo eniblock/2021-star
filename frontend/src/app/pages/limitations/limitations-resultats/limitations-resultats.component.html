@@ -46,6 +46,13 @@
     </td>
   </ng-container>
 
+  <ng-container matColumnDef="reconciliationStatus">
+    <th mat-header-cell *matHeaderCellDef> {{ 'reconciliationStatus' | LimitationTableField }} </th>
+    <td mat-cell *matCellDef="let element">
+      <app-limitations-reconciliation-status [rechercheHistoriqueLimitationEntite]="element"></app-limitations-reconciliation-status>
+    </td>
+  </ng-container>
+
   <ng-container matColumnDef="indemnisation">
     <th mat-header-cell *matHeaderCellDef> {{ 'indemnisation' | LimitationTableField }} </th>
     <td mat-cell *matCellDef="let element">

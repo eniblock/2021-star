@@ -35,6 +35,7 @@ import {
   LimitationIndeminityStatusChangeComponent
 } from './limitation-indeminity-status/limitation-indeminity-status-change/limitation-indeminity-status-change.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { LimitationsReconciliationStatusComponent } from './limitations-reconciliation-status/limitations-reconciliation-status.component';
 
 @NgModule({
   imports: [
@@ -66,6 +67,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     LimitationsFeedbackProducerComponent,
     LimitationIndeminityStatusComponent,
     LimitationIndeminityStatusChangeComponent,
+    LimitationsReconciliationStatusComponent,
   ],
 })
 export class LimitationsModule {

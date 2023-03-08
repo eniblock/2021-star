@@ -16,7 +16,6 @@ import {Router} from "@angular/router";
 import {PATH_ROUTE} from "../../../app-routing.module";
 import {TypeImport} from "../../charger/charger.component";
 import {FeedbackProducer} from "../../../models/FeedbackProducer";
-import {TypeLimitation} from "../../../models/enum/TypeLimitation.enum";
 
 @Component({
   selector: 'app-limitations-resultats',

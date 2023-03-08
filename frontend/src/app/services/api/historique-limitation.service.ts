@@ -320,7 +320,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         measurementUnitName: MeasurementUnitName.MW,
         senderMarketParticipantMrid: '17X100A100A0001A', // 10XFR-RTE------Q    17X100A100A0001A
         revisionNumber: "12",
-        reconciliationStatus: ReconciliationStatus.NONE,
+        reconciliationStatus: ReconciliationStatus.PARTIAL,
       },
       subOrderList: [
         {
@@ -329,7 +329,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           registeredResourceMrid: "B3",
           eligibilityStatus: EligibilityStatus.OUI,
           eligibilityStatusEditable: false,
-          startCreatedDateTime: '2020-01-01T01:00:00Z',
+          startCreatedDateTime: '2020-01-01T01:13:29Z',
           endCreatedDateTime: '2020-01-02T23:59:59Z',
           messageType: 'D01',
           businessType: 'Z01',

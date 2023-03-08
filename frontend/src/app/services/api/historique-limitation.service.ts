@@ -23,7 +23,7 @@ import {ReconciliationStatus} from "../../models/enum/ReconciliationStatus.enum"
 import {SystemOperatorService} from "./system-operator.service";
 import {SystemOperator} from "../../models/SystemOperator";
 
-const MOCK = false;
+const MOCK = true;
 
 @Injectable({
   providedIn: 'root',

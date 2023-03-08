@@ -21,8 +21,8 @@ export class LimitationsReconciliationStatusComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.rechercheHistoriqueLimitationEntite.subOrderList && this.rechercheHistoriqueLimitationEntite.subOrderList.length > 0) {
-      const timestamp1 = DateHelper.stringToTimestamp(this.rechercheHistoriqueLimitationEntite.activationDocument.startCreatedDateTime);
-      const timestamp2 = DateHelper.stringToTimestamp(this.rechercheHistoriqueLimitationEntite.subOrderList[0].startCreatedDateTime);
+      const timestamp1 = DateHelper.stringToTimestamp(this.rechercheHistoriqueLimitationEntite.activationDocument.endCreatedDateTime);
+      const timestamp2 = DateHelper.stringToTimestamp(this.rechercheHistoriqueLimitationEntite.subOrderList[0].endCreatedDateTime);
       this.nbMinutesDecalage = Math.round((timestamp2 - timestamp1) / 1000 / 60);
     }
   }

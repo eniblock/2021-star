@@ -1,8 +1,8 @@
-<div class="text-center" *ngIf="rechercheHistoriqueLimitationEntite.activationDocument.reconciliationStatus == ReconciliationStatus.TOTAL">
+<div class="text-center" *ngIf="status == ReconciliationStatus.TOTAL">
   <i class="fa-solid fa-circle-check lead"></i>
 </div>
 
-<div class="text-center" *ngIf="rechercheHistoriqueLimitationEntite.activationDocument.reconciliationStatus == ReconciliationStatus.PARTIAL">
+<div class="text-center" *ngIf="status == ReconciliationStatus.PARTIAL">
   <i class="fa-solid fa-circle-xmark lead"></i>
   <br/>
   Décalage
@@ -10,5 +10,5 @@
   de {{ nbMinutesDecalage }} minute{{ nbMinutesDecalage > 1 ? "s" : "" }}
 </div>
 
-<div class="text-center" *ngIf="rechercheHistoriqueLimitationEntite.activationDocument.reconciliationStatus == ReconciliationStatus.NONE">
+<div class="text-center" *ngIf="status == ReconciliationStatus.NONE">
 </div>

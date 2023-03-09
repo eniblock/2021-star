@@ -14,6 +14,7 @@ export class LimitationsReconciliationStatusComponent implements OnInit {
   @Input() rechercheHistoriqueLimitationEntite!: RechercheHistoriqueLimitationEntite;
 
   ReconciliationStatus = ReconciliationStatus;
+  status?: ReconciliationStatus;
   nbMinutesDecalage = 0;
 
   constructor() {
@@ -24,6 +25,9 @@ export class LimitationsReconciliationStatusComponent implements OnInit {
       const timestamp1 = DateHelper.stringToTimestamp(this.rechercheHistoriqueLimitationEntite.activationDocument.endCreatedDateTime);
       const timestamp2 = DateHelper.stringToTimestamp(this.rechercheHistoriqueLimitationEntite.subOrderList[0].endCreatedDateTime);
       this.nbMinutesDecalage = Math.round((timestamp2 - timestamp1) / 1000 / 60);
+      this.status = this.rechercheHistoriqueLimitationEntite.activationDocument.reconciliationStatus
+        ? this.rechercheHistoriqueLimitationEntite.activationDocument.reconciliationStatus
+        : this.rechercheHistoriqueLimitationEntite.subOrderList[0].reconciliationStatus;
     }
   }
 

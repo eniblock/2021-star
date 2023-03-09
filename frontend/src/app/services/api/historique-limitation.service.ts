@@ -45,7 +45,7 @@ export class HistoriqueLimitationService {
     let callResult: Observable<RechercheHistoriqueLimitationEntite[]>;
     if (MOCK) {
       console.log(form);
-      callResult = getMocks(form);
+      callResult = getMocks(form);false
     } else {
       let urlParams = this.urlService.toUrlParams(form);
       callResult = this.httpClient.get<RechercheHistoriqueLimitationEntite[]>(`${environment.serverUrl}/historiqueLimitations?${urlParams}`)
@@ -320,7 +320,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         measurementUnitName: MeasurementUnitName.MW,
         senderMarketParticipantMrid: '17X100A100A0001A', // 10XFR-RTE------Q    17X100A100A0001A
         revisionNumber: "12",
-        reconciliationStatus: ReconciliationStatus.PARTIAL,
+        reconciliationStatus: ReconciliationStatus.NONE,
       },
       subOrderList: [
         {
@@ -330,7 +330,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           eligibilityStatus: EligibilityStatus.OUI,
           eligibilityStatusEditable: false,
           startCreatedDateTime: '2020-01-01T01:13:29Z',
-          endCreatedDateTime: '2020-01-02T23:59:59Z',
+          endCreatedDateTime: '2020-01-02T23:37:59Z',
           messageType: 'D01',
           businessType: 'Z01',
           reasonCode: 'A70',
@@ -338,7 +338,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
           revisionNumber: "12",
-          reconciliationStatus: ReconciliationStatus.NONE,
+          reconciliationStatus: ReconciliationStatus.PARTIAL,
         }, {
           activationDocumentMrid: "A4",
           originAutomationRegisteredResourceMrid: 'MANSLE3',
@@ -354,7 +354,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
           revisionNumber: "12",
-          reconciliationStatus: ReconciliationStatus.NONE,
+          reconciliationStatus: ReconciliationStatus.TOTAL,
         }
       ],
       displayedSourceName: "displayedSourceName2",

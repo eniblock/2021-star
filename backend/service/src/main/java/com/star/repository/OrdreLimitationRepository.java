@@ -28,6 +28,7 @@ import static java.util.Collections.emptyList;
 @Repository
 public class OrdreLimitationRepository {
     public static final String CREATE_LIST = "CreateActivationDocumentList";
+    public static final String UPDATE_LIST = "UpdateActivationDocumentList";
     public static final String GET_ORDER_BY_QUERY = "GetActivationDocumentByQuery";
     public static final String GET_BY_QUERY = "GetActivationDocumentByQuery";
     public static final String UPDATE_ACTIVATION_DOCUMENT_ELIGIBILITY_STATUS = "UpdateActivationDocumentEligibilityStatus";
@@ -60,6 +61,27 @@ public class OrdreLimitationRepository {
             Thread.currentThread().interrupt();
         } catch (JsonProcessingException jsonProcessingException) {
             throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la création de l'ordre de limitation ", jsonProcessingException);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        }
+
+        return ordreLimitations;
+    }
+
+    public List<OrdreLimitation> updateOrdreLimitations(List<OrdreLimitation> ordreLimitations) throws TechnicalException {
+        if (CollectionUtils.isEmpty(ordreLimitations)) {
+            return emptyList();
+        }
+        log.info("Update de {} ordres de limitation.", ordreLimitations.size());
+        try {
+            contract.submitTransaction(UPDATE_LIST, objectMapper.writeValueAsString(ordreLimitations));
+        } catch (TimeoutException timeoutException) {
+            throw new TechnicalException("Erreur technique (Timeout exception) lors de la modification de l'ordre de limitation ", timeoutException);
+        } catch (InterruptedException interruptedException) {
+            log.error("Erreur technique (Interrupted Exception) lors de la modification de l'ordre de limitation ", interruptedException);
+            Thread.currentThread().interrupt();
+        } catch (JsonProcessingException jsonProcessingException) {
+            throw new TechnicalException("Erreur technique (JsonProcessing Exception) lors de la modification de l'ordre de limitation ", jsonProcessingException);
         } catch (ContractException contractException) {
             throw new BusinessException(contractException.getMessage());
         }
@@ -108,5 +130,4 @@ public class OrdreLimitationRepository {
             throw new BusinessException(contractException.getMessage());
         }
     }
-
 }

@@ -123,6 +123,28 @@ public class OrdreLimitationController {
         return ResponseEntity.status(isEmpty(importMarketParticipantResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.CREATED).body(importMarketParticipantResult);
     }
 
+    @Operation(summary = "Update couple Start/End limit order. (TSO, DSO)",
+            description = "Update start and end limitation orders by posting a json file.")
+    @PutMapping(COUPLE)
+    @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
+    public ResponseEntity<ImportOrdreLimitationResult> updateCoupleOrdreDebutFinLimitation(
+            @Parameter(description = "JSON file containing couple Start/End limit order data.")
+            @RequestParam MultipartFile[] files) throws BusinessException {
+        Assert.notEmpty(files, messageSource.getMessage(IMPORT_EMPTY_FILES_ERROR, new String[]{}, null));
+        ImportOrdreLimitationResult importMarketParticipantResult;
+        try {
+            List<FichierImportation> fichierCoupleOrdreLimitations = new ArrayList<>();
+            for (MultipartFile file : files) {
+                fichierCoupleOrdreLimitations.add(new FichierImportation(file.getOriginalFilename(), file.getInputStream()));
+            }
+            importMarketParticipantResult = ordreLimitationService.updateCoupleOrdreDebutFin(fichierCoupleOrdreLimitations, instance);
+        } catch (IOException | TechnicalException exception) {
+            log.error("Echec de l'import  du fichier {}. Erreur : ", exception);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.status(isEmpty(importMarketParticipantResult.getDatas()) ? HttpStatus.CONFLICT : HttpStatus.OK).body(importMarketParticipantResult);
+    }
+
 
     @Operation(summary = "Post end limitation order. (TSO)",
             description = "Create an end limitation order.")

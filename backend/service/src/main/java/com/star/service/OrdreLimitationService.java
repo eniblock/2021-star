@@ -134,24 +134,7 @@ public class OrdreLimitationService {
                 ordreDebutLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
                 ordreDebutLimitation.setSubOrderList(new ArrayList<>());
                 ordreDebutLimitation.setEndCreatedDateTime(EMPTY);
-                if (ordreDebutLimitation.getOrderValue() == null) {
-                    ordreDebutLimitation.setOrderValue(EMPTY);
-                }
-                if (ordreDebutLimitation.getReceiverMarketParticipantMrid() == null) {
-                    ordreDebutLimitation.setReceiverMarketParticipantMrid(EMPTY);
-                }
-                if (ordreDebutLimitation.getRevisionNumber() == null) {
-                    ordreDebutLimitation.setRevisionNumber(InfoUtils.REVISION_NUMBER);
-                }
-                if (ordreDebutLimitation.getSenderMarketParticipantMrid() == null) {
-                    ordreDebutLimitation.setSenderMarketParticipantMrid(EMPTY);
-                }
-                if (ordreDebutLimitation.getReconciliationStatus() == null) {
-                    ordreDebutLimitation.setReconciliationStatus(EMPTY);
-                }
-                if (isBlank(ordreDebutLimitation.getEligibilityStatus())) {
-                    ordreDebutLimitation.setEligibilityStatus(EMPTY);
-                }
+                nullToEmptyString(ordreDebutLimitation);
             });
             importOrdreDebutLimitationResult.setDatas(ordreLimitationRepository.saveOrdreLimitations(ordreDebutLimitations));
         }
@@ -164,7 +147,46 @@ public class OrdreLimitationService {
         List<String> errors = new ArrayList<>();
         Validator validator = validatorFactory.getValidator();
         List<OrdreLimitation> ordreLimitations = new ArrayList<>();
-        for (FichierImportation fichierOrdreLimitation : fichierOrdreLimitations) {
+        prepareDataOrdreLimitation(fichierOrdreLimitations, errors, validator, ordreLimitations);
+        if (isNotEmpty(errors)) {
+            importCoupleOrdreLimitationResult.setErrors(errors);
+        } else {
+            ordreLimitations.forEach(ordreLimitation -> {
+                ordreLimitation.setActivationDocumentMrid(randomUUID().toString());
+                ordreLimitation.setInstance(instance.getValue());
+                ordreLimitation.setSubOrderList(new ArrayList<>());
+                ordreLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
+                nullToEmptyString(ordreLimitation);
+            });
+            importCoupleOrdreLimitationResult.setDatas(ordreLimitationRepository.saveOrdreLimitations(ordreLimitations));
+        }
+        return importCoupleOrdreLimitationResult;
+    }
+
+
+    public ImportOrdreLimitationResult updateCoupleOrdreDebutFin(List<FichierImportation> fichierCoupleOrdreLimitations, InstanceEnum instance) throws IOException, TechnicalException {
+        importUtilsService.checkImportFiles(fichierCoupleOrdreLimitations, FileExtensionEnum.JSON.getValue());
+        ImportOrdreLimitationResult importCoupleOrdreLimitationResult = new ImportOrdreLimitationResult();
+        List<String> errors = new ArrayList<>();
+        Validator validator = validatorFactory.getValidator();
+        List<OrdreLimitation> ordreLimitations = new ArrayList<>();
+        prepareDataOrdreLimitation(fichierCoupleOrdreLimitations, errors, validator, ordreLimitations);
+        if (isNotEmpty(errors)) {
+            importCoupleOrdreLimitationResult.setErrors(errors);
+        } else {
+            ordreLimitations.forEach(ordreLimitation -> {
+                ordreLimitation.setInstance(instance.getValue());
+                ordreLimitation.setSubOrderList(new ArrayList<>());
+                ordreLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
+                nullToEmptyString(ordreLimitation);
+            });
+            importCoupleOrdreLimitationResult.setDatas(ordreLimitationRepository.updateOrdreLimitations(ordreLimitations));
+        }
+        return importCoupleOrdreLimitationResult;
+    }
+
+    private void prepareDataOrdreLimitation(List<FichierImportation> fichierCoupleOrdreLimitations, List<String> errors, Validator validator, List<OrdreLimitation> ordreLimitations) throws IOException {
+        for (FichierImportation fichierOrdreLimitation : fichierCoupleOrdreLimitations) {
             String value = IOUtils.toString(fichierOrdreLimitation.getInputStream(), StandardCharsets.UTF_8);
             try {
                 List<OrdreLimitation> currentOrdreLimitations = !isBlank(value) ? objectMapper.readValue(value, objectMapper.getTypeFactory().constructCollectionType(List.class, OrdreLimitation.class)) : Collections.emptyList();
@@ -214,38 +236,7 @@ public class OrdreLimitationService {
                 throw new BusinessException(messageSource.getMessage(IMPORT_JSON_ERROR, null, null));
             }
         }
-        if (isNotEmpty(errors)) {
-            importCoupleOrdreLimitationResult.setErrors(errors);
-        } else {
-            ordreLimitations.forEach(ordreLimitation -> {
-                ordreLimitation.setActivationDocumentMrid(randomUUID().toString());
-                ordreLimitation.setInstance(instance.getValue());
-                ordreLimitation.setSubOrderList(new ArrayList<>());
-                ordreLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
-                if (ordreLimitation.getOrderValue() == null) {
-                    ordreLimitation.setOrderValue(EMPTY);
-                }
-                if (ordreLimitation.getReceiverMarketParticipantMrid() == null) {
-                    ordreLimitation.setReceiverMarketParticipantMrid(EMPTY);
-                }
-                if (ordreLimitation.getRevisionNumber() == null) {
-                    ordreLimitation.setRevisionNumber(REVISION_NUMBER);
-                }
-                if (ordreLimitation.getSenderMarketParticipantMrid() == null) {
-                    ordreLimitation.setSenderMarketParticipantMrid(EMPTY);
-                }
-                if (ordreLimitation.getReconciliationStatus() == null) {
-                    ordreLimitation.setReconciliationStatus(EMPTY);
-                }
-                if (isBlank(ordreLimitation.getEligibilityStatus())) {
-                    ordreLimitation.setEligibilityStatus(EMPTY);
-                }
-            });
-            importCoupleOrdreLimitationResult.setDatas(ordreLimitationRepository.saveOrdreLimitations(ordreLimitations));
-        }
-        return importCoupleOrdreLimitationResult;
     }
-
 
     public ImportOrdreLimitationResult importOrdreFinLimitation(List<FichierImportation> fichierOrdreLimitations, InstanceEnum instance) throws BusinessException, TechnicalException, IOException {
         importUtilsService.checkImportFiles(fichierOrdreLimitations, FileExtensionEnum.JSON.getValue());
@@ -300,24 +291,7 @@ public class OrdreLimitationService {
                 ordreFinLimitation.setDocType(ACTIVATION_DOCUMENT.getDocType());
                 ordreFinLimitation.setSubOrderList(new ArrayList<>());
                 ordreFinLimitation.setStartCreatedDateTime(EMPTY);
-                if (ordreFinLimitation.getOrderValue() == null) {
-                    ordreFinLimitation.setOrderValue(EMPTY);
-                }
-                if (ordreFinLimitation.getReceiverMarketParticipantMrid() == null) {
-                    ordreFinLimitation.setReceiverMarketParticipantMrid(EMPTY);
-                }
-                if (ordreFinLimitation.getRevisionNumber() == null) {
-                    ordreFinLimitation.setRevisionNumber(REVISION_NUMBER);
-                }
-                if (ordreFinLimitation.getSenderMarketParticipantMrid() == null) {
-                    ordreFinLimitation.setSenderMarketParticipantMrid(EMPTY);
-                }
-                if (ordreFinLimitation.getReconciliationStatus() == null) {
-                    ordreFinLimitation.setReconciliationStatus(EMPTY);
-                }
-                if (isBlank(ordreFinLimitation.getEligibilityStatus())) {
-                    ordreFinLimitation.setEligibilityStatus(EMPTY);
-                }
+                nullToEmptyString(ordreFinLimitation);
             });
             importOrdreFinLimitationResult.setDatas(ordreLimitationRepository.saveOrdreLimitations(ordreFinLimitations));
         }
@@ -382,4 +356,26 @@ public class OrdreLimitationService {
         }
         return ordreLimitations.get(0);
     }
+
+    private static void nullToEmptyString(OrdreLimitation ordreLimitation) {
+        if (ordreLimitation.getOrderValue() == null) {
+            ordreLimitation.setOrderValue(EMPTY);
+        }
+        if (ordreLimitation.getReceiverMarketParticipantMrid() == null) {
+            ordreLimitation.setReceiverMarketParticipantMrid(EMPTY);
+        }
+        if (ordreLimitation.getRevisionNumber() == null) {
+            ordreLimitation.setRevisionNumber(REVISION_NUMBER);
+        }
+        if (ordreLimitation.getSenderMarketParticipantMrid() == null) {
+            ordreLimitation.setSenderMarketParticipantMrid(EMPTY);
+        }
+        if (ordreLimitation.getReconciliationStatus() == null) {
+            ordreLimitation.setReconciliationStatus(EMPTY);
+        }
+        if (isBlank(ordreLimitation.getEligibilityStatus())) {
+            ordreLimitation.setEligibilityStatus(EMPTY);
+        }
+    }
+
 }

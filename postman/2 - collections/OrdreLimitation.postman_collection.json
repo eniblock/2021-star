@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4dd9de63-a662-4a24-a630-82bd51ec84fb",
+		"_postman_id": "a86a37df-6902-47b7-b3d7-2bd747017ec4",
 		"name": "OrdreLimitation",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -28,6 +28,62 @@
 					"path": [
 						"ordreLimitations",
 						"debut"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Post ordre couple",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/ordreLimitations/couple",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"ordreLimitations",
+						"couple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RTE - Update ordre couple",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_rte}}/ordreLimitations/couple",
+					"host": [
+						"{{base_url_rte}}"
+					],
+					"path": [
+						"ordreLimitations",
+						"couple"
 					]
 				}
 			},
@@ -91,6 +147,34 @@
 			"name": "ENEDIS - Post couple ordre début/fin limitation",
 			"request": {
 				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url_enedis}}/ordreLimitations/couple",
+					"host": [
+						"{{base_url_enedis}}"
+					],
+					"path": [
+						"ordreLimitations",
+						"couple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ENEDIS - Update couple ordre début/fin limitation",
+			"request": {
+				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "formdata",

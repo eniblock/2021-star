@@ -354,7 +354,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
           revisionNumber: "12",
-          reconciliationStatus: ReconciliationStatus.TOTAL,
+          reconciliationStatus: ReconciliationStatus.MISS,
         }
       ],
       displayedSourceName: "displayedSourceName2",

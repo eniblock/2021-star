@@ -1,13 +1,17 @@
-<div class="text-center" *ngIf="status == ReconciliationStatus.TOTAL">
-  <i class="fa-solid fa-circle-check lead"></i>
+<div class="text-center text-success" *ngIf="status == ReconciliationStatus.TOTAL">
+  <i class="fa-solid fa-circle-check lead fw-bold"></i>
 </div>
 
-<div class="text-center" *ngIf="status == ReconciliationStatus.PARTIAL">
-  <i class="fa-solid fa-circle-xmark lead"></i>
+<div class="text-center text-orange" *ngIf="status == ReconciliationStatus.PARTIAL">
+  <i class="fa-regular fa-circle-question lead fw-bold"></i>
   <br/>
-  Décalage
+  Dépassement
   <br/>
   de {{ nbMinutesDecalage }} minute{{ nbMinutesDecalage > 1 ? "s" : "" }}
+</div>
+
+<div class="text-center text-danger" *ngIf="status == ReconciliationStatus.MISS">
+  <i class="fa-solid fa-circle-xmark lead fw-bold"></i>
 </div>
 
 <div class="text-center" *ngIf="status == ReconciliationStatus.NONE">

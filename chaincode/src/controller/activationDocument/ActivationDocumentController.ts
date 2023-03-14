@@ -25,6 +25,8 @@ import { QueryStateService } from '../service/QueryStateService';
 import { StarDataService } from '../service/StarDataService';
 import { StarPrivateDataService } from '../service/StarPrivateDataService';
 import { FeedbackProducerController } from '../FeedbackProducerController';
+import { ReconciliationStatus } from '../../enums/ReconciliationStatus';
+import { SiteController } from '../SiteController';
 
 export class ActivationDocumentController {
     public static async getActivationDocumentByProducer(
@@ -396,15 +398,17 @@ export class ActivationDocumentController {
         params.logger.debug('============= START : Create createActivationDocumentObj ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
+        const role: string = params.values.get(ParametersType.ROLE);
+
+        const pattern =
+            activationDocumentObj.messageType
+            + '-' + activationDocumentObj.businessType
+            + '-' + activationDocumentObj.reasonCode;
 
         if (!activationDocumentObj.revisionNumber
             || activationDocumentObj.revisionNumber.length === 0) {
 
             activationDocumentObj.revisionNumber = '1';
-        }
-
-        if (!definedTarget || definedTarget === '') {
-            activationDocumentObj.reconciliationStatus = '';
         }
 
         let systemOperatorObj: SystemOperator;
@@ -477,14 +481,25 @@ export class ActivationDocumentController {
         // Define target collection
         let targetDocument: string =
             await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, definedTarget);
+
+        const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
         if (producerSystemOperatorObj
             && producerSystemOperatorObj.systemOperatorMarketParticipantName
             && roleTable.has(producerSystemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
-            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
 
             const target = producerSystemOperatorObj.systemOperatorMarketParticipantName.toLowerCase();
             targetDocument = collectionMap.get(target)[0];
         }
+
+        const visibilityTable: string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_VISIBILITY);
+        if (role === RoleType.Role_DSO
+            && (!definedTarget || definedTarget === '')
+            && visibilityTable
+            && visibilityTable.includes(pattern)) {
+
+            targetDocument = collectionMap.get(ParametersType.ALL_ROLE)[0];
+        }
+
 
         /* Test Site existence if order does not come from TSO and goes to DSO */
         if (!producerSystemOperatorObj
@@ -492,17 +507,29 @@ export class ActivationDocumentController {
             || producerSystemOperatorObj.systemOperatorMarketParticipantName === '') {
 
             let siteRef: DataReference;
+            let needToCreateSiteinTarget: boolean = false;
             try {
                 const siteRefMap: Map<string, DataReference> =
                     await StarPrivateDataService.getObjRefbyId(
                         params, {docType: DocType.SITE, id: activationDocumentObj.registeredResourceMrid});
                 if (targetDocument && targetDocument.length > 0) {
                     siteRef = siteRefMap.get(targetDocument);
+                    if (!siteRef
+                        || !siteRef.data.meteringPointMrid
+                        || siteRef.data.meteringPointMrid !== activationDocumentObj.registeredResourceMrid) {
+
+                        siteRef = siteRefMap.values().next().value;
+                        needToCreateSiteinTarget = true;
+                    }
                 } else {
                     siteRef = siteRefMap.values().next().value;
                 }
             } catch (error) {
                 throw new Error(error.message.concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
+            }
+            if (needToCreateSiteinTarget) {
+                siteRef.collection = targetDocument;
+                await SiteController.createSiteByReference(params, siteRef);
             }
             if (!siteRef
                 || (siteRef.collection !== targetDocument && !targetDocument && targetDocument.length > 0)
@@ -518,13 +545,20 @@ export class ActivationDocumentController {
         }
 
         const activationDocumentRules: string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_RULES);
-        const pattern =
-            activationDocumentObj.messageType
-            + '-' + activationDocumentObj.businessType
-            + '-' + activationDocumentObj.reasonCode;
         if (activationDocumentRules && !activationDocumentRules.includes(pattern)) {
             throw new Error(`Incoherency between messageType, businessType and reason code for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
         }
+
+        //Define default reconciliation Status
+        const missTable: string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_MISS);
+        if (!definedTarget || definedTarget === '') {
+            if (missTable && missTable.includes(pattern)) {
+                activationDocumentObj.reconciliationStatus = ReconciliationStatus.MISS;
+            } else {
+                activationDocumentObj.reconciliationStatus = '';
+            }
+        }
+
 
         if (activationDocumentObj.endCreatedDateTime) {
             activationDocumentObj.orderEnd = true;

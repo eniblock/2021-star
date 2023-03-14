@@ -14,11 +14,14 @@ export enum ParametersType {
 
     ROLE = 'role',
     ROLE_TABLE = 'roleTable',
+    ALL_ROLE = 'allRole',
 
     DATA_TARGET = 'dataTarget',
 
     ACTIVATION_DOCUMENT_RULES = 'activationDocumentRules',
     ACTIVATION_DOCUMENT_ELIGIBILITY = 'activationDocumentEligibility',
+    ACTIVATION_DOCUMENT_VISIBILITY = 'activationDocumentVisibility',
+    ACTIVATION_DOCUMENT_MISS = 'activationDocumentMiss',
     AUTOMATIC_ELIGIBILITY = 'automaticEligibility',
 
     PPCO_TIME_THRESHOLD = 'pPCOTimeThershold',

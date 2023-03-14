@@ -144,6 +144,7 @@ export class ParametersController {
             valueDataTarget.set(RoleType.Role_Producer, [enedisProducer]);
 
             valueDataTarget.set(enedisProducerRte, [enedisProducerRte]);
+            valueDataTarget.set(ParametersType.ALL_ROLE, [enedisProducerRte]);
 
             parameters.values.set(ParametersType.DATA_TARGET, valueDataTarget);
 
@@ -161,6 +162,16 @@ export class ParametersController {
             activationDocumentEligibility.push('D01-Z01-A70');
             activationDocumentEligibility.push('D01-Z02-A70');
             parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_ELIGIBILITY, activationDocumentEligibility);
+
+            const activationDocumentVisibility: string[] = [];
+            // messageType + "-" + businessType + "-" + reasonCode
+            activationDocumentVisibility.push('D01-Z01-A70');
+            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_VISIBILITY, activationDocumentVisibility);
+
+            const activationDocumentMiss: string[] = [];
+            // messageType + "-" + businessType + "-" + reasonCode
+            activationDocumentMiss.push('D01-Z01-A70');
+            parameters.values.set(ParametersType.ACTIVATION_DOCUMENT_MISS, activationDocumentMiss);
 
             const automaticEligibility: string[] = [];
             // messageType + "-" + businessType + "-" + reasonCode

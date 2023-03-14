@@ -4,6 +4,7 @@ import {TypeLimitation} from "../../../models/enum/TypeLimitation.enum";
 import {RechercheHistoriqueLimitationEntiteWithAnnotation} from "../../../models/RechercheHistoriqueLimitation";
 import {SortHelper} from "../../../helpers/sort.helper";
 import {IndeminityStatus} from "../../../models/enum/IndeminityStatus.enum";
+import {ReconciliationStatus} from "../../../models/enum/ReconciliationStatus.enum";
 
 @Component({
   selector: 'app-limitations-filter-on-results',
@@ -15,17 +16,20 @@ export class LimitationsFilterOnResultsComponent implements OnInit, OnChanges {
   @Output() typeLimitationChange = new EventEmitter<TypeLimitation | null>();
   @Output() motifNameChange = new EventEmitter<string | null>();
   @Output() indeminityStatusChange = new EventEmitter<IndeminityStatus | null>();
+  @Output() reconciliationStatusChange = new EventEmitter<ReconciliationStatus | null>();
   @Input() researchResult: RechercheHistoriqueLimitationEntiteWithAnnotation[] = [];
 
   form: FormGroup = this.formBuilder.group({
     typeLimitation: [],
     motifName: [],
     indeminityStatus: [],
+    reconciliationStatus: [],
   });
 
   TypeLimitationEnum = TypeLimitation;
   motifNames: string[] = [];
   indeminityStatus: IndeminityStatus[] = [];
+  ReconciliationStatusEnum = ReconciliationStatus;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -62,5 +66,10 @@ export class LimitationsFilterOnResultsComponent implements OnInit, OnChanges {
   selectionIndemnityStatus() {
     const motifIndeminityStatus = this.form.get("indeminityStatus")?.value;
     this.indeminityStatusChange.emit(motifIndeminityStatus);
+  }
+
+  selectionReconciliationStatus() {
+    const reconciliationStatus = this.form.get("reconciliationStatus")?.value;
+    this.reconciliationStatusChange.emit(reconciliationStatus);
   }
 }

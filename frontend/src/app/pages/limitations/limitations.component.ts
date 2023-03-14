@@ -14,6 +14,7 @@ import {motifToString} from "../../rules/motif-rules";
 import {getLimitationType} from "../../rules/limitation-type-rules";
 import {TypeLimitation} from "../../models/enum/TypeLimitation.enum";
 import {IndeminityStatus} from "../../models/enum/IndeminityStatus.enum";
+import {ReconciliationStatus} from "../../models/enum/ReconciliationStatus.enum";
 
 @Component({
   selector: 'app-limitations',
@@ -33,6 +34,7 @@ export class LimitationsComponent implements OnInit {
   motifNameFilter: string | null = null;
   indeminityStatusFilter: IndeminityStatus | null = null;
   typeLimitationFilter: TypeLimitation | null = null;
+  reconciliationStatusFilter: ReconciliationStatus | null = null;
 
   typeInstance?: Instance;
 
@@ -106,11 +108,17 @@ export class LimitationsComponent implements OnInit {
     this.filterResults();
   }
 
+  reconciliationStatusFilterChange(reconciliationStatus: ReconciliationStatus | null) {
+    this.reconciliationStatusFilter = reconciliationStatus;
+    this.filterResults();
+  }
+
   private filterResults() {
     this.researchResultsWithOnlyOneSuborderFiltered = this.researchResultsWithOnlyOneSuborder
       ?.filter(rhl => (this.typeLimitationFilter == null) ? true : rhl.limitationType == this.typeLimitationFilter)
       ?.filter(rhl => (this.motifNameFilter == null) ? true : rhl.motifName == this.motifNameFilter)
-      ?.filter(rhl => (this.indeminityStatusFilter == null) ? true : rhl.feedbackProducer?.indeminityStatus == this.indeminityStatusFilter);
+      ?.filter(rhl => (this.indeminityStatusFilter == null) ? true : rhl.feedbackProducer?.indeminityStatus == this.indeminityStatusFilter)
+      ?.filter(rhl => (this.reconciliationStatusFilter == null) ? true : rhl.activationDocument?.reconciliationStatus == this.reconciliationStatusFilter || rhl.subOrderList[0]?.reconciliationStatus == this.reconciliationStatusFilter);
   }
 
   exportCSV() {

@@ -45,7 +45,8 @@ export class HistoriqueLimitationService {
     let callResult: Observable<RechercheHistoriqueLimitationEntite[]>;
     if (MOCK) {
       console.log(form);
-      callResult = getMocks(form);false
+      callResult = getMocks(form);
+      false
     } else {
       let urlParams = this.urlService.toUrlParams(form);
       callResult = this.httpClient.get<RechercheHistoriqueLimitationEntite[]>(`${environment.serverUrl}/historiqueLimitations?${urlParams}`)
@@ -86,7 +87,7 @@ export class HistoriqueLimitationService {
     for (const element of systemOperators) {
       fileContain += "Début limitation " + element.systemOperatorMarketParticipantName + ";Fin limitation " + element.systemOperatorMarketParticipantName + ";";
     }
-    fileContain += "Eligible indemnisation;Type de limitation;ENE/I (MWh);Tarif unitaire;Montant indemnisation;Motif;Commentaires (sujets);Commentaires (question);Commentaires (réponse);Statut de l'indemnisation";
+    fileContain += "Etat réconciliation;Eligible indemnisation;Type de limitation;ENE/I (MWh);Tarif unitaire;Montant indemnisation;Motif;Commentaires (sujets);Commentaires (question);Commentaires (réponse);Statut de l'indemnisation";
     for (const element of researchResultsWithOnlyOneSuborderFiltered) {
       // Dates
       const ordreLimitation = element.activationDocument;
@@ -112,6 +113,7 @@ export class HistoriqueLimitationService {
           fileContain += ";;";
         }
       }
+      fileContain += this.csvPrint(element.activationDocument?.reconciliationStatus ? element.activationDocument?.reconciliationStatus : element.subOrderList[0]?.reconciliationStatus) + ";";
       fileContain += this.csvPrint(element.activationDocument?.eligibilityStatus) + ";";
       fileContain += this.csvPrint(element.limitationType) + ";";
       fileContain += this.csvPrint(element.energyAmount?.quantity) + ";";

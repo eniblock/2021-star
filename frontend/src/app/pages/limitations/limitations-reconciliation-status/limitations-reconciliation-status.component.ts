@@ -28,6 +28,8 @@ export class LimitationsReconciliationStatusComponent implements OnInit {
       this.status = this.rechercheHistoriqueLimitationEntite.activationDocument.reconciliationStatus
         ? this.rechercheHistoriqueLimitationEntite.activationDocument.reconciliationStatus
         : this.rechercheHistoriqueLimitationEntite.subOrderList[0].reconciliationStatus;
+    } else {
+      this.status = this.rechercheHistoriqueLimitationEntite.activationDocument.reconciliationStatus;
     }
   }
 

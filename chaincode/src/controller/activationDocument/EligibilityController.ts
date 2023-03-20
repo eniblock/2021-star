@@ -450,21 +450,19 @@ export class EligibilityController {
                     && existingReserveBidRef.values().next().value.data.reserveBidMrid === reserveBidObj.reserveBidMrid) {
 
 
-                    if (reserveBidObj.reserveBidMrid==='352c28fc-8865-4060-af55-ceba45dd83c6') {
-                        params.logger.info("////////////////////////////////////////")
-                        params.logger.info("////////////////////////////////////////")
-                        params.logger.info("reserveBidMrid==='352c28fc-8865-4060-af55-ceba45dd83c6'")
-                        params.logger.info("existingReserveBidRef.values().next().value")
-                        params.logger.info(existingReserveBidRef.values().next().value)
-                        params.logger.info("reserveBidObj")
-                        params.logger.info(reserveBidObj)
-                        params.logger.info("initialTarget")
-                        params.logger.info(initialTarget)
-                        params.logger.info("referencedDocument.collection")
-                        params.logger.info(referencedDocument.collection)
-                        params.logger.info("////////////////////////////////////////")
-                        params.logger.info("////////////////////////////////////////")
-                    }
+                    params.logger.info("////////////////////////////////////////")
+                    params.logger.info("////////////////////////////////////////")
+                    params.logger.info("reserveBidMrid==='352c28fc-8865-4060-af55-ceba45dd83c6'")
+                    params.logger.info("existingReserveBidRef.values().next().value")
+                    params.logger.info(existingReserveBidRef.values().next().value)
+                    params.logger.info("reserveBidObj")
+                    params.logger.info(reserveBidObj)
+                    params.logger.info("initialTarget")
+                    params.logger.info(initialTarget)
+                    params.logger.info("referencedDocument.collection")
+                    params.logger.info(referencedDocument.collection)
+                    params.logger.info("////////////////////////////////////////")
+                    params.logger.info("////////////////////////////////////////")
 
 
                     if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {

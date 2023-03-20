@@ -113,15 +113,32 @@ export class ReserveBidMarketDocumentController {
         if (existingReserveBidRef
             && existingReserveBidRef.values().next().value
             && target
-            && target.length > 0
-            && existingReserveBidRef.values().next().value.collection !== target) {
+            && target.length > 0) {
 
-            const reserveBidRef: ReserveBidMarketDocument =
-                JSON.parse(JSON.stringify(existingReserveBidRef.values().next().value.data));
-            const currentReserveBidObj: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
+            if (existingReserveBidRef.values().next().value.collection !== target) {
+                const reserveBidRef: ReserveBidMarketDocument =
+                    JSON.parse(JSON.stringify(existingReserveBidRef.values().next().value.data));
+                const currentReserveBidObj: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
 
-            isRecopy = (JSON.stringify(reserveBidRef) === JSON.stringify(currentReserveBidObj));
+                isRecopy = (JSON.stringify(reserveBidRef) === JSON.stringify(currentReserveBidObj));
+            } else {
+                isRecopy = true;
+            }
         }
+
+        params.logger.info("-------------------------------")
+        params.logger.info("-------------------------------")
+        params.logger.info(JSON.stringify(reserveBidObj))
+        params.logger.info("--------")
+        params.logger.info(JSON.stringify(existingReserveBidRef))
+        params.logger.info("--------")
+        params.logger.info(isRecopy)
+        params.logger.info("--------")
+        params.logger.info(target)
+        params.logger.info("--------")
+        params.logger.info(previousTarget)
+        params.logger.info("-------------------------------")
+        params.logger.info("-------------------------------")
 
         if (!isRecopy && identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have rights to create a reserve bid market document`);

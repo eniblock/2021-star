@@ -126,19 +126,18 @@ export class ReserveBidMarketDocumentController {
             }
         }
 
-        params.logger.info("-------------------------------")
-        params.logger.info("-------------------------------")
-        params.logger.info(JSON.stringify(reserveBidObj))
-        params.logger.info("--------")
-        params.logger.info(JSON.stringify(existingReserveBidRef))
-        params.logger.info("--------")
-        params.logger.info(isRecopy)
-        params.logger.info("--------")
-        params.logger.info(target)
-        params.logger.info("--------")
-        params.logger.info(previousTarget)
-        params.logger.info("-------------------------------")
-        params.logger.info("-------------------------------")
+        if (previousTarget
+            && previousTarget.length > 0
+            && (!existingReserveBidRef.values().next().value
+                || !existingReserveBidRef.values().next().value.data
+                || !existingReserveBidRef.values().next().value.data.reserveBidMrid
+                || existingReserveBidRef.values().next().value.data.reserveBidMrid
+                    !== reserveBidObj.reserveBidMrid)) {
+
+            return;
+
+        }
+
 
         if (!isRecopy && identity !== OrganizationTypeMsp.PRODUCER) {
             throw new Error(`Organisation, ${identity} does not have rights to create a reserve bid market document`);

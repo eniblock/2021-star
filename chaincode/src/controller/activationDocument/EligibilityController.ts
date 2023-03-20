@@ -450,20 +450,6 @@ export class EligibilityController {
                     && existingReserveBidRef.values().next().value.data.reserveBidMrid === reserveBidObj.reserveBidMrid) {
 
 
-                    params.logger.info("////////////////////////////////////////")
-                    params.logger.info("////////////////////////////////////////")
-                    params.logger.info("existingReserveBidRef.values().next().value")
-                    params.logger.info(JSON.stringify(existingReserveBidRef.values().next().value))
-                    params.logger.info("reserveBidObj")
-                    params.logger.info(JSON.stringify(reserveBidObj))
-                    params.logger.info("initialTarget")
-                    params.logger.info(initialTarget)
-                    params.logger.info("referencedDocument.collection")
-                    params.logger.info(referencedDocument.collection)
-                    params.logger.info("////////////////////////////////////////")
-                    params.logger.info("////////////////////////////////////////")
-
-
                     if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
                         fileIdList = fileIdList.concat(reserveBidObj.attachments);
                     }

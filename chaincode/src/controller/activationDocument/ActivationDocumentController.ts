@@ -27,6 +27,11 @@ import { StarPrivateDataService } from '../service/StarPrivateDataService';
 import { FeedbackProducerController } from '../FeedbackProducerController';
 import { ReconciliationStatus } from '../../enums/ReconciliationStatus';
 import { SiteController } from '../SiteController';
+import { FeedbackProducer } from '../../model/feedbackProducer';
+import { DataActionType } from '../../enums/DataActionType';
+import { EnergyAmount } from '../../model/energyAmount';
+import { EnergyAccountController } from '../EnergyAccountController';
+import { EnergyAmountController } from '../EnergyAmountController';
 
 export class ActivationDocumentController {
     public static async getActivationDocumentByProducer(
@@ -397,19 +402,182 @@ export class ActivationDocumentController {
         definedTarget: string = '') {
         params.logger.debug('============= START : Create createActivationDocumentObj ===========');
 
-        const identity = params.values.get(ParametersType.IDENTITY);
+        if (!activationDocumentObj.revisionNumber
+            || activationDocumentObj.revisionNumber.length === 0) {
+
+            activationDocumentObj.revisionNumber = '1';
+        }
+
+        let producerSystemOperatorObj: SystemOperator = await this.getProducerSystemOperatorObj(params, activationDocumentObj);
+
+        // Define target collection
+        let targetDocument: string = await this.getTargetDocument(params, activationDocumentObj, definedTarget);
+
+        /* Test Site existence if order does not come from TSO and goes to DSO */
+        if (!producerSystemOperatorObj
+            || !producerSystemOperatorObj.systemOperatorMarketParticipantName
+            || producerSystemOperatorObj.systemOperatorMarketParticipantName === '') {
+
+            await this.testSiteAndCreate(params, activationDocumentObj, targetDocument);
+        }
+
+        if (isEmpty(activationDocumentObj.endCreatedDateTime) && isEmpty(activationDocumentObj.orderValue)) {
+            throw new Error(`Order must have a limitation value`);
+        }
+
+        this.checkPattern(params, activationDocumentObj);
+        activationDocumentObj = await this.fillReconciliationInformation(params, activationDocumentObj, true);
+
+        const compositeKey = ActivationDocumentCompositeKey.formatActivationDocument(activationDocumentObj);
+        const activationDocumentCompositeKeyId =
+            ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(compositeKey);
+
+        if (!definedTarget || definedTarget.length === 0) {
+            // Only control when it's an original creation (by list)
+            // Don't do control when it's a creation by reference (and then by order after reconciliation)
+            let existingActivationDocumentCompositeKey: ActivationDocument = null;
+            try {
+                existingActivationDocumentCompositeKey =
+                await this.getActivationDocumentObjByCompositeKey(params, activationDocumentCompositeKeyId);
+            } catch (error) {
+                // Do Nothing, it's a good thing if document doesn't exist
+            }
+            if (existingActivationDocumentCompositeKey
+                && existingActivationDocumentCompositeKey.activationDocumentMrid
+                && existingActivationDocumentCompositeKey.activationDocumentMrid.length > 0) {
+
+                throw new Error(`Error: An Activation Document with same Composite Key already exists: ${JSON.stringify(compositeKey)}`);
+            }
+        }
+
+        await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);
+        await SiteActivationIndexersController.addActivationReference(params, activationDocumentObj, targetDocument);
+
+        if (!definedTarget || definedTarget.length === 0) {
+            // Only control when it's an original creation (by list)
+            // Don't create Feedback when it's a creation by reference (and then by order after reconciliation)
+            // Feedback follows its own duplication process
+
+            await FeedbackProducerController.createFeedbackProducerObj(params, activationDocumentObj, targetDocument);
+        }
+
+        params.logger.debug('=============  END  : Create %s createActivationDocumentObj ===========',
+            activationDocumentObj.activationDocumentMrid,
+        );
+    }
+
+
+    public static async testSiteAndCreate(
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument,
+        definedTarget: string = '') {
+
+        let siteRef: DataReference;
+        let needToCreateSiteinTarget: boolean = false;
+        try {
+            const siteRefMap: Map<string, DataReference> =
+                await StarPrivateDataService.getObjRefbyId(
+                    params, {docType: DocType.SITE, id: activationDocumentObj.registeredResourceMrid});
+            if (definedTarget && definedTarget.length > 0) {
+                siteRef = siteRefMap.get(definedTarget);
+                if (!siteRef
+                    || !siteRef.data.meteringPointMrid
+                    || siteRef.data.meteringPointMrid !== activationDocumentObj.registeredResourceMrid) {
+
+                    siteRef = siteRefMap.values().next().value;
+                    needToCreateSiteinTarget = true;
+                }
+            } else {
+                siteRef = siteRefMap.values().next().value;
+            }
+        } catch (error) {
+            throw new Error(error.message.concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
+        }
+        if (needToCreateSiteinTarget) {
+            siteRef.collection = definedTarget;
+            await SiteController.createSiteByReference(params, siteRef);
+        }
+        if (!siteRef
+            || (siteRef.collection !== definedTarget && !definedTarget && definedTarget.length > 0)
+            || !siteRef.data.meteringPointMrid
+            || siteRef.data.meteringPointMrid !== activationDocumentObj.registeredResourceMrid) {
+
+            throw new Error(`Site : ${activationDocumentObj.registeredResourceMrid} does not exist for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
+        }
+    }
+
+
+    public static async getTargetDocument(
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument,
+        definedTarget: string = ''): Promise<string> {
+
         const role: string = params.values.get(ParametersType.ROLE);
+        const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
+        const pattern =
+            activationDocumentObj.messageType
+            + '-' + activationDocumentObj.businessType
+            + '-' + activationDocumentObj.reasonCode;
+
+        let producerSystemOperatorObj: SystemOperator = await this.getProducerSystemOperatorObj(params, activationDocumentObj);
+
+        // Define target collection
+        let targetDocument: string =
+            await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, definedTarget);
+
+        const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
+        if (producerSystemOperatorObj
+            && producerSystemOperatorObj.systemOperatorMarketParticipantName
+            && roleTable.has(producerSystemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
+
+            const target = producerSystemOperatorObj.systemOperatorMarketParticipantName.toLowerCase();
+            targetDocument = collectionMap.get(target)[0];
+        }
+
+        const visibilityTable: string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_VISIBILITY);
+        if (role === RoleType.Role_DSO
+            && (!definedTarget || definedTarget === '')
+            && visibilityTable
+            && visibilityTable.includes(pattern)) {
+
+            targetDocument = collectionMap.get(ParametersType.ALL_ROLE)[0];
+        }
+        return targetDocument;
+    }
+
+    public static checkPattern(
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument) {
 
         const pattern =
             activationDocumentObj.messageType
             + '-' + activationDocumentObj.businessType
             + '-' + activationDocumentObj.reasonCode;
 
-        if (!activationDocumentObj.revisionNumber
-            || activationDocumentObj.revisionNumber.length === 0) {
-
-            activationDocumentObj.revisionNumber = '1';
+        const activationDocumentRules: string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_RULES);
+        if (activationDocumentRules && !activationDocumentRules.includes(pattern)) {
+            throw new Error(`Incoherency between messageType, businessType and reason code for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
         }
+
+    }
+
+    public static getOrderEnd(activationDocumentObj: ActivationDocument) : boolean {
+        if (activationDocumentObj.endCreatedDateTime) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static async getRoleSystemOperator(
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument,
+        verify: boolean) : Promise<string>  {
+
+        params.logger.debug('============= START : getRoleSystemOperator ===========');
+        const identity = params.values.get(ParametersType.IDENTITY);
+        const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
+        let roleSystemOperator: string = '';
 
         let systemOperatorObj: SystemOperator;
         try {
@@ -417,12 +585,35 @@ export class ActivationDocumentController {
                 await StarDataService.getObj(
                     params, {id: activationDocumentObj.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
         } catch (error) {
-            throw new Error('ERROR createActivationDocument : '.concat(error.message).concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
+            throw new Error('ERROR ActivationDocument : '.concat(error.message).concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} action`));
         }
 
-        if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
-            throw new Error(`Organisation, ${identity} cannot send Activation Document for sender ${systemOperatorObj.systemOperatorMarketParticipantName}`);
+        if (verify && systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
+            throw new Error(`Organisation, ${identity} cannot do action for Activation Document for sender ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
+
+        let systemOperatorName: string;
+        if (systemOperatorObj) {
+            systemOperatorName = systemOperatorObj.systemOperatorMarketParticipantName;
+            if (systemOperatorName && systemOperatorName.length > 0) {
+                systemOperatorName = systemOperatorName.toLowerCase();
+            }
+        }
+
+        if (roleTable.has(systemOperatorName)) {
+            roleSystemOperator = roleTable.get(systemOperatorName);
+        }
+
+
+        params.logger.debug('=============  END  : getRoleSystemOperator ===========');
+        return roleSystemOperator;
+    }
+
+    public static async getProducerSystemOperatorObj(
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument) : Promise<SystemOperator>  {
+
+        params.logger.debug('============= START : getProducerSystemOperatorObj ===========');
 
         let producerObj: Producer;
         if (activationDocumentObj.receiverMarketParticipantMrid) {
@@ -439,10 +630,30 @@ export class ActivationDocumentController {
             producerSystemOperatorObj = JSON.parse(JSON.stringify(producerObj));
         }
 
-        /* Mix Collection is true if order doesn't directly go to producer */
+        params.logger.debug('=============  END  : getProducerSystemOperatorObj ===========');
+        return producerSystemOperatorObj;
+    }
+
+    public static async getRoleProducer(
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument) : Promise<string>  {
+
+        params.logger.debug('============= START : getRoleProducer ===========');
+
         const roleTable: Map<string, string> = params.values.get(ParametersType.ROLE_TABLE);
         let roleProducer: string = '';
-        let roleSystemOperator: string = '';
+
+        let producerObj: Producer;
+        if (activationDocumentObj.receiverMarketParticipantMrid) {
+            try {
+                producerObj =
+                    await StarDataService.getObj(params, {id: activationDocumentObj.receiverMarketParticipantMrid});
+            } catch (error) {
+                throw new Error(`Producer : ${activationDocumentObj.receiverMarketParticipantMrid} does not exist for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
+            }
+        }
+
+        let producerSystemOperatorObj: SystemOperator = await this.getProducerSystemOperatorObj(params, activationDocumentObj);
 
         let producerName: string;
         if (producerObj) {
@@ -466,105 +677,46 @@ export class ActivationDocumentController {
             roleProducer = roleTable.get(producerSystemOperatorName);
         }
 
-        let systemOperatorName: string;
-        if (systemOperatorObj) {
-            systemOperatorName = systemOperatorObj.systemOperatorMarketParticipantName;
-            if (systemOperatorName && systemOperatorName.length > 0) {
-                systemOperatorName = systemOperatorName.toLowerCase();
-            }
-        }
-
-        if (roleTable.has(systemOperatorName)) {
-            roleSystemOperator = roleTable.get(systemOperatorName);
-        }
-
-        // Define target collection
-        let targetDocument: string =
-            await HLFServices.getCollectionOrDefault(params, ParametersType.DATA_TARGET, definedTarget);
-
-        const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
-        if (producerSystemOperatorObj
-            && producerSystemOperatorObj.systemOperatorMarketParticipantName
-            && roleTable.has(producerSystemOperatorObj.systemOperatorMarketParticipantName.toLowerCase())) {
-
-            const target = producerSystemOperatorObj.systemOperatorMarketParticipantName.toLowerCase();
-            targetDocument = collectionMap.get(target)[0];
-        }
-
-        const visibilityTable: string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_VISIBILITY);
-        if (role === RoleType.Role_DSO
-            && (!definedTarget || definedTarget === '')
-            && visibilityTable
-            && visibilityTable.includes(pattern)) {
-
-            targetDocument = collectionMap.get(ParametersType.ALL_ROLE)[0];
-        }
+        params.logger.debug('=============  END  : getRoleProducer ===========');
+        return roleProducer
+    }
 
 
-        /* Test Site existence if order does not come from TSO and goes to DSO */
-        if (!producerSystemOperatorObj
-            || !producerSystemOperatorObj.systemOperatorMarketParticipantName
-            || producerSystemOperatorObj.systemOperatorMarketParticipantName === '') {
+    public static async getReconciliationStatus(
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument,
+        definedTarget: string = ''): Promise<string> {
 
-            let siteRef: DataReference;
-            let needToCreateSiteinTarget: boolean = false;
-            try {
-                const siteRefMap: Map<string, DataReference> =
-                    await StarPrivateDataService.getObjRefbyId(
-                        params, {docType: DocType.SITE, id: activationDocumentObj.registeredResourceMrid});
-                if (targetDocument && targetDocument.length > 0) {
-                    siteRef = siteRefMap.get(targetDocument);
-                    if (!siteRef
-                        || !siteRef.data.meteringPointMrid
-                        || siteRef.data.meteringPointMrid !== activationDocumentObj.registeredResourceMrid) {
-
-                        siteRef = siteRefMap.values().next().value;
-                        needToCreateSiteinTarget = true;
-                    }
-                } else {
-                    siteRef = siteRefMap.values().next().value;
-                }
-            } catch (error) {
-                throw new Error(error.message.concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`));
-            }
-            if (needToCreateSiteinTarget) {
-                siteRef.collection = targetDocument;
-                await SiteController.createSiteByReference(params, siteRef);
-            }
-            if (!siteRef
-                || (siteRef.collection !== targetDocument && !targetDocument && targetDocument.length > 0)
-                || !siteRef.data.meteringPointMrid
-                || siteRef.data.meteringPointMrid !== activationDocumentObj.registeredResourceMrid) {
-
-                throw new Error(`Site : ${activationDocumentObj.registeredResourceMrid} does not exist for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
-            }
-        }
-
-        if (isEmpty(activationDocumentObj.endCreatedDateTime) && isEmpty(activationDocumentObj.orderValue)) {
-            throw new Error(`Order must have a limitation value`);
-        }
-
-        const activationDocumentRules: string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_RULES);
-        if (activationDocumentRules && !activationDocumentRules.includes(pattern)) {
-            throw new Error(`Incoherency between messageType, businessType and reason code for Activation Document ${activationDocumentObj.activationDocumentMrid} creation.`);
-        }
-
-        //Define default reconciliation Status
-        const missTable: string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_MISS);
         if (!definedTarget || definedTarget === '') {
+            const pattern =
+            activationDocumentObj.messageType
+            + '-' + activationDocumentObj.businessType
+            + '-' + activationDocumentObj.reasonCode;
+
+            const missTable: string[] = params.values.get(ParametersType.ACTIVATION_DOCUMENT_MISS);
+
             if (missTable && missTable.includes(pattern)) {
-                activationDocumentObj.reconciliationStatus = ReconciliationStatus.MISS;
+                return ReconciliationStatus.MISS;
             } else {
-                activationDocumentObj.reconciliationStatus = '';
+                return '';
             }
         }
+        return activationDocumentObj.reconciliationStatus;
+
+    }
 
 
-        if (activationDocumentObj.endCreatedDateTime) {
-            activationDocumentObj.orderEnd = true;
-        } else {
-            activationDocumentObj.orderEnd = false;
-        }
+
+    public static async fillReconciliationInformation(
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument,
+        verify: boolean,
+        definedTarget: string = '') : Promise<ActivationDocument>  {
+
+        params.logger.debug('============= START : Update fillReconciliationInformation ===========');
+
+        const roleSystemOperator: string = await this.getRoleSystemOperator(params, activationDocumentObj, verify);
+        const roleProducer: string = await this.getRoleProducer(params, activationDocumentObj);
 
         if (RoleType.Role_DSO === roleProducer) {
             activationDocumentObj.receiverRole = RoleType.Role_DSO;
@@ -614,42 +766,194 @@ export class ActivationDocumentController {
             activationDocumentObj.eligibilityStatusEditable = true;
         }
 
-        const compositeKey = ActivationDocumentCompositeKey.formatActivationDocument(activationDocumentObj);
-        const activationDocumentCompositeKeyId =
-            ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(compositeKey);
+        activationDocumentObj.orderEnd = this.getOrderEnd(activationDocumentObj);
+        activationDocumentObj.reconciliationStatus = await this.getReconciliationStatus(params, activationDocumentObj, definedTarget);
 
-        if (!definedTarget || definedTarget.length === 0) {
-            // Only control when it's an original creation (by list)
-            // Don't do control when it's a creation by reference (and then by order after reconciliation)
-            let existingActivationDocumentCompositeKey: ActivationDocument = null;
-            try {
-                existingActivationDocumentCompositeKey =
-                await this.getActivationDocumentObjByCompositeKey(params, activationDocumentCompositeKeyId);
-            } catch (error) {
-                // Do Nothing, it's a good thing if document doesn't exist
-            }
-            if (existingActivationDocumentCompositeKey
-                && existingActivationDocumentCompositeKey.activationDocumentMrid
-                && existingActivationDocumentCompositeKey.activationDocumentMrid.length > 0) {
+        params.logger.debug('=============  END  : Update fillReconciliationInformation ===========');
+        return activationDocumentObj;
+    }
 
-                throw new Error(`Error: An Activation Document with same Composite Key already exists: ${JSON.stringify(compositeKey)}`);
+
+
+
+
+    public static async updateActivationDocument(
+        params: STARParameters,
+        inputStr: string) {
+        params.logger.info('============= START : Update ActivationDocumentController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have rights for Activation Document`);
+        }
+
+        const activationDocumentObj: ActivationDocument = ActivationDocument.formatString(inputStr);
+        await ActivationDocumentController.updateActivationDocumentObj(params, activationDocumentObj);
+
+        params.logger.info('=============  END  : Update ActivationDocumentController ===========');
+    }
+
+
+
+    public static async updateActivationDocumentList(
+        params: STARParameters,
+        inputStr: string) {
+        params.logger.info('============= START : Update List ActivationDocumentController ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+            throw new Error(`Organisation, ${identity} does not have rights for Activation Document`);
+        }
+
+        const activationDocumentList: ActivationDocument[] = ActivationDocument.formatListString(inputStr);
+
+        if (activationDocumentList) {
+            for (const activationDocumentObj of activationDocumentList) {
+                await ActivationDocumentController.updateActivationDocumentObj(params, activationDocumentObj);
             }
         }
 
+        params.logger.info('=============  END  : Update List ActivationDocumentController ===========');
+    }
+
+
+    private static async checkupdateActivationDocumentObj(
+        params: STARParameters,
+        activationDocumentObjRef: ActivationDocument,
+        activationDocumentObj: ActivationDocument) {
+
+        params.logger.debug('============= BEGIN : checkupdateActivationDocumentObj ===========');
+
+        const identity = params.values.get(ParametersType.IDENTITY);
+
+        if (activationDocumentObjRef.senderMarketParticipantMrid !== activationDocumentObj.senderMarketParticipantMrid) {
+            throw new Error(`ERROR updateActivationDocument : senderMarketParticipantMrid cannot be changed for Activation Document ${activationDocumentObj.activationDocumentMrid} update.`);
+        }
+
+        let systemOperatorObj: SystemOperator;
+        try {
+            systemOperatorObj =
+                await StarDataService.getObj(
+                    params, {id: activationDocumentObjRef.senderMarketParticipantMrid, docType: DocType.SYSTEM_OPERATOR});
+        } catch (error) {
+            throw new Error('ERROR updateActivationDocument : '.concat(error.message).concat(` for Activation Document ${activationDocumentObj.activationDocumentMrid} update.`));
+        }
+
+        if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
+            throw new Error(`Organisation, ${identity} cannot update Activation Document for sender ${systemOperatorObj.systemOperatorMarketParticipantName}`);
+        }
+
+        if (activationDocumentObjRef.receiverMarketParticipantMrid !== activationDocumentObj.receiverMarketParticipantMrid) {
+            throw new Error(`ERROR updateActivationDocument : receiverMarketParticipantMrid cannot be changed for Activation Document ${activationDocumentObj.activationDocumentMrid} update.`);
+        }
+
+        if (activationDocumentObjRef.registeredResourceMrid !== activationDocumentObj.registeredResourceMrid) {
+            throw new Error(`ERROR updateActivationDocument : registeredResourceMrid cannot be changed for Activation Document ${activationDocumentObj.activationDocumentMrid} update.`);
+        }
+
+        if (activationDocumentObjRef.orderValue !== activationDocumentObj.orderValue) {
+            throw new Error(`ERROR updateActivationDocument : orderValue cannot be changed for Activation Document ${activationDocumentObj.activationDocumentMrid} update.`);
+        }
+
+        if (activationDocumentObjRef.measurementUnitName !== activationDocumentObj.measurementUnitName) {
+            throw new Error(`ERROR updateActivationDocument : measurementUnitName cannot be changed for Activation Document ${activationDocumentObj.activationDocumentMrid} update.`);
+        }
+
+        if (activationDocumentObjRef.subOrderList != null && activationDocumentObjRef.subOrderList.length > 0) {
+            throw new Error(`ERROR updateActivationDocument : Activation Document ${activationDocumentObj.activationDocumentMrid} is already reconciliate and cannot not be updated.`);
+        }
+
+        if (activationDocumentObj.subOrderList != null && activationDocumentObj.subOrderList.length > 0) {
+            throw new Error(`ERROR updateActivationDocument : Activation Document ${activationDocumentObj.activationDocumentMrid} reconciliation can not be filled by update.`);
+        }
+
+        this.checkPattern(params, activationDocumentObj);
+
+        params.logger.debug('=============  END  : checkupdateActivationDocumentObj ===========');
+    }
+
+
+    private static async updateActivationDocumentObj(
+        params: STARParameters,
+        activationDocumentObj: ActivationDocument) {
+        params.logger.debug('============= START : Update ActivationDocumentObj ===========');
+
+        //Get data to modify
+        let existingActivationDocumentRef: Map<string, DataReference>;
+        try {
+            existingActivationDocumentRef = await StarPrivateDataService.getObjRefbyId(
+                params, {docType: DocType.ACTIVATION_DOCUMENT, id: activationDocumentObj.activationDocumentMrid});
+        } catch (error) {
+            throw new Error(error.message.concat(' for activation document update'));
+        }
+
+        const activationDocumentRef: DataReference = existingActivationDocumentRef.values().next().value;
+        const activationDocumentObjRef : ActivationDocument = activationDocumentRef.data;
+
+
+        //Check Modification condition
+        await this.checkupdateActivationDocumentObj(params, activationDocumentObjRef, activationDocumentObj);
+
+        activationDocumentObj = await this.fillReconciliationInformation(params, activationDocumentObj, true);
+
+        const num = parseInt(activationDocumentObjRef.revisionNumber) + 1;
+        activationDocumentObj.revisionNumber = num.toString();
+
+        //Calculate target of new Document
+        let targetDocument: string = await this.getTargetDocument(params, activationDocumentObj);
+
+
+        let producerSystemOperatorObj: SystemOperator = await this.getProducerSystemOperatorObj(params, activationDocumentObj);
+
+        if (!producerSystemOperatorObj
+            || !producerSystemOperatorObj.systemOperatorMarketParticipantName
+            || producerSystemOperatorObj.systemOperatorMarketParticipantName === '') {
+
+            await this.testSiteAndCreate(params, activationDocumentObj, targetDocument);
+        }
+
+        //Get le document Producer Feeback
+        let existingFeedBackProducerRef: Map<string, DataReference> = null;
+        try {
+            existingFeedBackProducerRef = await StarPrivateDataService.getObjRefbyId(
+                params, {
+                    docType: DocType.FEEDBACK_PRODUCER,
+                    id: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocumentObj.activationDocumentMrid)});
+        } catch (error) {
+            //Do Nothing
+        }
+
+        //Get NRJAmount by Index
+        let energyAmout: EnergyAmount = null;
+        try {
+            energyAmout = await EnergyAmountController.getByActivationDocument(params, activationDocumentObj.activationDocumentMrid);
+        } catch (error) {
+            //Do Nothing
+        }
+
+        //Delete previous document
+        for (const [key ] of existingActivationDocumentRef) {
+            await this.deleteActivationDocumentObj(params, activationDocumentObjRef, key);
+
+            if (energyAmout
+                && energyAmout.energyAmountMarketDocumentMrid
+                && energyAmout.energyAmountMarketDocumentMrid !== '') {
+
+                await EnergyAmountController.deleteEnergyAmount(params, energyAmout.energyAmountMarketDocumentMrid, key);
+            }
+        }
         await ActivationDocumentService.write(params, activationDocumentObj, targetDocument);
         await SiteActivationIndexersController.addActivationReference(params, activationDocumentObj, targetDocument);
 
-        if (!definedTarget || definedTarget.length === 0) {
-            // Only control when it's an original creation (by list)
-            // Don't create Feedback when it's a creation by reference (and then by order after reconciliation)
-            // Feedback follows its own duplication process
+        const feedbackProducerRef: DataReference = existingFeedBackProducerRef.values().next().value;
+        feedbackProducerRef.previousCollection = feedbackProducerRef.collection;
+        feedbackProducerRef.collection = targetDocument;
+        feedbackProducerRef.dataAction = DataActionType.COLLECTION_CHANGE;
 
-            await FeedbackProducerController.createFeedbackProducerObj(params, activationDocumentObj, targetDocument);
-        }
+        await FeedbackProducerController.executeOrder(params, feedbackProducerRef);
 
-        params.logger.debug('=============  END  : Create %s createActivationDocumentObj ===========',
-            activationDocumentObj.activationDocumentMrid,
-        );
+        params.logger.debug('=============  END  : Update createActivationDocumentObj ===========');
+
     }
 
 }

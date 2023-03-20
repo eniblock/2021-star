@@ -248,13 +248,13 @@ export class Star extends Contract {
     public async UpdateActivationDocument(ctx: Context, inputStr: string) {
 
         const params: STARParameters = await ParametersController.getParameterValues(ctx);
-        params.logger.info('############### Call UpdateActivationDocument ###################')
+        return (await ActivationDocumentController.updateActivationDocument(params, inputStr));
     }
 
     public async UpdateActivationDocumentList(ctx: Context, inputStr: string) {
 
         const params: STARParameters = await ParametersController.getParameterValues(ctx);
-        params.logger.info('############### Call UpdateActivationDocumentList ###################')
+        return (await ActivationDocumentController.updateActivationDocumentList(params, inputStr));
     }
 
     public async GetActivationDocumentReconciliationState(ctx: Context) {

@@ -45,6 +45,13 @@ export class Values {
         producerMarketParticipantRoleType: 'A21',
     };
 
+    public static HTA_Producer2: Producer = {
+        producerMarketParticipantMrid: '17X000002309745X',
+        producerMarketParticipantName: 'EolienFR vert Cie',
+        producerMarketParticipantRoleType: 'A21',
+    };
+
+
     /*********************************************/
     /*            SYSTEM_OPERATOR                */
     /*********************************************/
@@ -208,6 +215,13 @@ export class Values {
     public static HTA_yellowPage: YellowPages = {
         yellowPageMrid: 'ypId_HTA',
         originAutomationRegisteredResourceMrid: 'CRIVA1_DSO_Y411',
+        registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
+        systemOperatorMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
+    };
+
+    public static HTA_yellowPage2: YellowPages = {
+        yellowPageMrid: 'ypId2_HTA',
+        originAutomationRegisteredResourceMrid: 'CRIVA1_DSO_Y412',
         registeredResourceMrid: Values.HTB_site_valid.meteringPointMrid,
         systemOperatorMarketParticipantMrid: Values.HTA_systemoperator.systemOperatorMarketParticipantMrid,
     };

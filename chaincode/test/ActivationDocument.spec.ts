@@ -37,6 +37,9 @@ import { FeedbackProducerController } from '../src/controller/FeedbackProducerCo
 import { IndeminityStatus } from '../src/enums/IndemnityStatus';
 import { ReconciliationStatus } from '../src/enums/ReconciliationStatus';
 import { Site } from '../src/model/site';
+import { ActivationEnergyAmountIndexersController } from '../src/controller/dataIndex/ActivationEnergyAmountIndexersController';
+import { EnergyAmountAbstract } from '../src/model/dataIndex/energyAmountAbstract';
+import { EnergyAmount } from '../src/model/energyAmount';
 
 class TestLoggerMgt {
     public getLogger(arg: string): any {
@@ -276,11 +279,9 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal('ERROR createActivationDocument : '.concat(DocType.SYSTEM_OPERATOR).concat(' : ')
+                expect(err.message).to.equal('systemOperator : '
                     .concat(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid)
-                    .concat(' does not exist for Activation Document ')
-                    .concat(activationDocument.activationDocumentMrid)
-                    .concat(' creation.'));
+                    .concat(' does not exist for site creation'));
             }
         });
 
@@ -897,7 +898,7 @@ describe('Star Tests ActivationDocument', () => {
                 await star.CreateActivationDocument(transactionContext, JSON.stringify(activationDocument));
             } catch(err) {
                 // params.logger.info(err.message)
-                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} cannot send Activation Document for sender ${OrganizationTypeMsp.ENEDIS}`);
+                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} cannot do action for Activation Document for sender ${OrganizationTypeMsp.ENEDIS}`);
             }
         });
 
@@ -2255,4 +2256,1784 @@ describe('Star Tests ActivationDocument', () => {
 
     });
 
+
+////////////////////////////////////////////////////////////////////////////
+////////////////////    UPDATE ACTIVATION DOCUMENT     /////////////////////
+////////////////////////////////////////////////////////////////////////////
+    describe('Test Update Activation Document HTA ENEDIS', () => {
+
+
+        it('should return ERROR updateActivationDocument HTA - systemOperator', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW';
+            // newActivationDocument.orderEnd = false;
+            //newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.reasonCode = 'XXX';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            try {
+                await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+            } catch (err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`ERROR updateActivationDocument : systemOperator : ${Values.HTA_systemoperator.systemOperatorMarketParticipantMrid} does not exist for Activation Document ${newActivationDocument.activationDocumentMrid} update.`);
+            }
+        });
+
+
+
+
+
+
+        it('should return ERROR updateActivationDocument HTA - Organization', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW';
+            // newActivationDocument.orderEnd = false;
+            //newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.reasonCode = 'XXX';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            try {
+                transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+                await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+            } catch (err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} cannot update Activation Document for sender ${Values.HTA_systemoperator.systemOperatorMarketParticipantName}`);
+            }
+        });
+
+
+        it('should return ERROR updateActivationDocument HTA - receiverMarketParticipantMrid', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW';
+            // newActivationDocument.orderEnd = false;
+            //newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.reasonCode = 'XXX';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            try {
+                await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+            } catch (err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`ERROR updateActivationDocument : receiverMarketParticipantMrid cannot be changed for Activation Document ${newActivationDocument.activationDocumentMrid} update.`);
+            }
+        });
+
+
+
+
+        it('should return ERROR updateActivationDocument HTA - senderMarketParticipantMrid', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW';
+            // newActivationDocument.orderEnd = false;
+            //newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.reasonCode = 'XXX';
+            newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            //newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            try {
+                await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+            } catch (err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`ERROR updateActivationDocument : senderMarketParticipantMrid cannot be changed for Activation Document ${newActivationDocument.activationDocumentMrid} update.`);
+            }
+        });
+
+
+
+
+
+
+        it('should return ERROR updateActivationDocument HTA - registeredResourceMrid', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW';
+            // newActivationDocument.orderEnd = false;
+            //newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.reasonCode = 'XXX';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            try {
+                await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+            } catch (err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`ERROR updateActivationDocument : registeredResourceMrid cannot be changed for Activation Document ${newActivationDocument.activationDocumentMrid} update.`);
+            }
+        });
+
+
+        it('should return ERROR updateActivationDocument HTA - orderValue', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW';
+            // newActivationDocument.orderEnd = false;
+            newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.reasonCode = 'XXX';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            try {
+                await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+            } catch (err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`ERROR updateActivationDocument : orderValue cannot be changed for Activation Document ${newActivationDocument.activationDocumentMrid} update.`);
+            }
+        });
+
+
+
+        it('should return ERROR updateActivationDocument HTA - measurementUnitName', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            newActivationDocument.measurementUnitName = 'MW';
+            // newActivationDocument.orderEnd = false;
+            // newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.reasonCode = 'XXX';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            try {
+                await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+            } catch (err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`ERROR updateActivationDocument : measurementUnitName cannot be changed for Activation Document ${newActivationDocument.activationDocumentMrid} update.`);
+            }
+        });
+
+
+
+        it('should return ERROR updateActivationDocument HTA - already reconciliated', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+            activationDocument.subOrderList = ["XXX"];
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW'
+            // newActivationDocument.orderEnd = false;
+            // newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.reasonCode = 'XXX';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            try {
+                await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+            } catch (err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`ERROR updateActivationDocument : Activation Document ${newActivationDocument.activationDocumentMrid} is already reconciliate and cannot not be updated.`);
+            }
+        });
+
+
+
+        it('should return ERROR updateActivationDocument HTA - fill suborder', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW'
+            // newActivationDocument.orderEnd = false;
+            // newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.reasonCode = 'XXX';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+            newActivationDocument.subOrderList = ["XXX"];
+
+            try {
+                await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+            } catch (err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`ERROR updateActivationDocument : Activation Document ${newActivationDocument.activationDocumentMrid} reconciliation can not be filled by update.`);
+            }
+        });
+
+
+
+
+
+        it('should return ERROR updateActivationDocument HTA - pattern', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW'
+            newActivationDocument.messageType = 'D01';
+            newActivationDocument.businessType = 'Z01';
+            // newActivationDocument.orderEnd = false;
+            // newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.revisionNumber = '70';
+            newActivationDocument.reasonCode = 'XXX';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            try {
+                await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+            } catch (err) {
+                // params.logger.info(err.message)
+                expect(err.message).to.equal(`Incoherency between messageType, businessType and reason code for Activation Document ${newActivationDocument.activationDocumentMrid} creation.`);
+            }
+        });
+
+
+
+
+
+
+        it('should return SUCCESS updateActivationDocument HTA', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW'
+            newActivationDocument.messageType = 'D01';
+            newActivationDocument.businessType = 'Z01';
+            // newActivationDocument.orderEnd = false;
+            // newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.revisionNumber = '70';
+            newActivationDocument.reasonCode = 'A70';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+
+            const expectedSite: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            expectedSite.systemOperatorMarketParticipantName = 'enedis';
+            expectedSite.producerMarketParticipantName = 'EolienFR vert Cie';
+            expectedSite.docType = 'site';
+
+            const expected: ActivationDocument = JSON.parse(JSON.stringify(newActivationDocument));
+            expected.revisionNumber = '2';
+            expected.eligibilityStatusEditable = false;
+            expected.reconciliationStatus = ReconciliationStatus.MISS;
+            expected.receiverRole = 'Producer';
+            expected.potentialParent = false;
+            expected.potentialChild = true;
+            expected.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+
+            const activationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyAbstract = {
+                activationDocumentCompositeKey,
+                activationDocumentMrid: expected.activationDocumentMrid,
+            };
+
+            const compositeKeyIndexed:IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexId:activationDocumentCompositeKey,
+                indexedDataAbstractMap: new Map()};
+            compositeKeyIndexed.indexedDataAbstractMap.set(activationDocumentCompositeKey, compositeKeyIndex);
+
+            const compositeKeyIndexedJSON = IndexedDataJson.toJson(compositeKeyIndexed);
+
+            const indexedDataAbstract: ActivationDocumentAbstract = {
+                activationDocumentMrid: expected.activationDocumentMrid,
+                registeredResourceMrid: expected.registeredResourceMrid,
+                startCreatedDateTime: expected.startCreatedDateTime as string,
+            };
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractMap : new Map(),
+                indexId: SiteActivationIndexersController.getKey(expected.registeredResourceMrid, new Date(expected.startCreatedDateTime as string)),
+            };
+            expectedIndexer.indexedDataAbstractMap?.set(expected.activationDocumentMrid, indexedDataAbstract);
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
+
+            const expectedDateMax: ActivationDocumentDateMax = {
+                dateTime: expected.startCreatedDateTime as string,
+                docType: DocType.INDEXER_MAX_DATE,
+            };
+            const expectedDateMaxId: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndexedJSON))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedDateMax))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(4).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(feedbackProducer))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                expected.activationDocumentMrid,
+                Buffer.from(JSON.stringify(expected)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                compositeKeyIndexedJSON.indexId,
+                Buffer.from(JSON.stringify(compositeKeyIndexedJSON)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                expectedDateMaxId,
+                Buffer.from(JSON.stringify(expectedDateMax)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                feedbackProducer.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(feedbackProducer)),
+            );
+
+
+			expect(transactionContext.stub.putPrivateData.callCount).to.equal(5);
+
+            ////////////////////////////////////////////////////////////////////////////
+            /////////// DELETION
+            ////////////////////////////////////////////////////////////////////////////
+
+            params.logger.info("********************************************")
+
+            const deletedActivationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument)));
+
+            const indexIdNRJAmount = ActivationEnergyAmountIndexersController.getKey(activationDocument.activationDocumentMrid)
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(0).args[1].toString()).toString('utf8'));
+            // params.logger.info(activationDocument.activationDocumentMrid)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(1).args[1].toString()).toString('utf8'));
+            // params.logger.info(deletedActivationDocumentCompositeKey)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(2).args[1].toString()).toString('utf8'));
+            // params.logger.info(feedbackProducer.feedbackProducerMrid)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(3).args[1].toString()).toString('utf8'));
+            // params.logger.info(indexIdNRJAmount)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(4).args[1].toString()).toString('utf8'));
+            // params.logger.info(feedbackProducer.feedbackProducerMrid)
+            // params.logger.info("-----------")
+
+            transactionContext.stub.deletePrivateData.getCall(0).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                activationDocument.activationDocumentMrid
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(1).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                deletedActivationDocumentCompositeKey
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(2).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                feedbackProducer.feedbackProducerMrid
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(3).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                indexIdNRJAmount
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(4).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                feedbackProducer.feedbackProducerMrid
+            );
+
+            expect(transactionContext.stub.deletePrivateData.callCount).to.equal(5);
+        });
+
+
+
+
+        it('should return SUCCESS updateActivationDocument HTA with existing Energy Amount', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            const energyAmount: EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount))
+            energyAmount.docType = DocType.ENERGY_AMOUNT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', energyAmount.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmount)));
+
+            const energyAmountDataAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmount.energyAmountMarketDocumentMrid
+            }
+
+            const energyAmountIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractMap : new Map(),
+                indexId: ActivationEnergyAmountIndexersController.getKey(activationDocument.activationDocumentMrid),
+            }
+            energyAmountIndexer.indexedDataAbstractMap.set(activationDocument.activationDocumentMrid, energyAmountDataAbstract);
+
+            const energyAmountIndexerJSON = IndexedDataJson.toJson(energyAmountIndexer);
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', energyAmountIndexerJSON.indexId).resolves(Buffer.from(JSON.stringify(energyAmountIndexerJSON)));
+
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW'
+            newActivationDocument.messageType = 'D01';
+            newActivationDocument.businessType = 'Z01';
+            // newActivationDocument.orderEnd = false;
+            // newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.revisionNumber = '70';
+            newActivationDocument.reasonCode = 'A70';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+
+            const expectedSite: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            expectedSite.systemOperatorMarketParticipantName = 'enedis';
+            expectedSite.producerMarketParticipantName = 'EolienFR vert Cie';
+            expectedSite.docType = 'site';
+
+            const expected: ActivationDocument = JSON.parse(JSON.stringify(newActivationDocument));
+            expected.revisionNumber = '2';
+            expected.eligibilityStatusEditable = false;
+            expected.reconciliationStatus = ReconciliationStatus.MISS;
+            expected.receiverRole = 'Producer';
+            expected.potentialParent = false;
+            expected.potentialChild = true;
+            expected.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+
+            const activationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyAbstract = {
+                activationDocumentCompositeKey,
+                activationDocumentMrid: expected.activationDocumentMrid,
+            };
+
+            const compositeKeyIndexed:IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexId:activationDocumentCompositeKey,
+                indexedDataAbstractMap: new Map()};
+            compositeKeyIndexed.indexedDataAbstractMap.set(activationDocumentCompositeKey, compositeKeyIndex);
+
+            const compositeKeyIndexedJSON = IndexedDataJson.toJson(compositeKeyIndexed);
+
+            const indexedDataAbstract: ActivationDocumentAbstract = {
+                activationDocumentMrid: expected.activationDocumentMrid,
+                registeredResourceMrid: expected.registeredResourceMrid,
+                startCreatedDateTime: expected.startCreatedDateTime as string,
+            };
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractMap : new Map(),
+                indexId: SiteActivationIndexersController.getKey(expected.registeredResourceMrid, new Date(expected.startCreatedDateTime as string)),
+            };
+            expectedIndexer.indexedDataAbstractMap?.set(expected.activationDocumentMrid, indexedDataAbstract);
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
+
+            const expectedDateMax: ActivationDocumentDateMax = {
+                dateTime: expected.startCreatedDateTime as string,
+                docType: DocType.INDEXER_MAX_DATE,
+            };
+            const expectedDateMaxId: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndexedJSON))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedDateMax))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(4).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(feedbackProducer))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                expected.activationDocumentMrid,
+                Buffer.from(JSON.stringify(expected)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                compositeKeyIndexedJSON.indexId,
+                Buffer.from(JSON.stringify(compositeKeyIndexedJSON)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                expectedDateMaxId,
+                Buffer.from(JSON.stringify(expectedDateMax)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                feedbackProducer.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(feedbackProducer)),
+            );
+
+
+			expect(transactionContext.stub.putPrivateData.callCount).to.equal(5);
+
+            ////////////////////////////////////////////////////////////////////////////
+            /////////// DELETION
+            ////////////////////////////////////////////////////////////////////////////
+
+            params.logger.info("********************************************")
+
+            const deletedActivationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument)));
+
+            const indexIdNRJAmount = ActivationEnergyAmountIndexersController.getKey(activationDocument.activationDocumentMrid)
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(0).args[1].toString()).toString('utf8'));
+            // params.logger.info(activationDocument.activationDocumentMrid)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(1).args[1].toString()).toString('utf8'));
+            // params.logger.info(deletedActivationDocumentCompositeKey)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(2).args[1].toString()).toString('utf8'));
+            // params.logger.info(feedbackProducer.feedbackProducerMrid)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(3).args[1].toString()).toString('utf8'));
+            // params.logger.info(indexIdNRJAmount)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(4).args[1].toString()).toString('utf8'));
+            // params.logger.info(energyAmount.energyAmountMarketDocumentMrid)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(5).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(5).args[1].toString()).toString('utf8'));
+            // params.logger.info(feedbackProducer.feedbackProducerMrid)
+            // params.logger.info("-----------")
+
+            transactionContext.stub.deletePrivateData.getCall(0).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                activationDocument.activationDocumentMrid
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(1).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                deletedActivationDocumentCompositeKey
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(2).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                feedbackProducer.feedbackProducerMrid
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(3).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                indexIdNRJAmount
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(4).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                energyAmount.energyAmountMarketDocumentMrid
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(5).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                feedbackProducer.feedbackProducerMrid
+            );
+
+            expect(transactionContext.stub.deletePrivateData.callCount).to.equal(6);
+        });
+
+
+
+
+
+        it('should return SUCCESS updateActivationDocument HTA with collection change', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW'
+            newActivationDocument.messageType = 'D01';
+            newActivationDocument.businessType = 'Z04';
+            // newActivationDocument.orderEnd = false;
+            // newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.revisionNumber = '70';
+            newActivationDocument.reasonCode = 'Y99';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+
+            const expectedSite: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            expectedSite.systemOperatorMarketParticipantName = 'enedis';
+            expectedSite.producerMarketParticipantName = 'EolienFR vert Cie';
+            expectedSite.docType = 'site';
+
+            const expected: ActivationDocument = JSON.parse(JSON.stringify(newActivationDocument));
+            expected.revisionNumber = '2';
+            expected.reconciliationStatus = '';
+            expected.receiverRole = 'Producer';
+            expected.potentialParent = false;
+            expected.potentialChild = true;
+
+            const activationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyAbstract = {
+                activationDocumentCompositeKey,
+                activationDocumentMrid: expected.activationDocumentMrid,
+            };
+
+            const compositeKeyIndexed:IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexId:activationDocumentCompositeKey,
+                indexedDataAbstractMap: new Map()};
+            compositeKeyIndexed.indexedDataAbstractMap.set(activationDocumentCompositeKey, compositeKeyIndex);
+
+            const compositeKeyIndexedJSON = IndexedDataJson.toJson(compositeKeyIndexed);
+
+            const indexedDataAbstract: ActivationDocumentAbstract = {
+                activationDocumentMrid: expected.activationDocumentMrid,
+                registeredResourceMrid: expected.registeredResourceMrid,
+                startCreatedDateTime: expected.startCreatedDateTime as string,
+            };
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractMap : new Map(),
+                indexId: SiteActivationIndexersController.getKey(expected.registeredResourceMrid, new Date(expected.startCreatedDateTime as string)),
+            };
+            expectedIndexer.indexedDataAbstractMap?.set(expected.activationDocumentMrid, indexedDataAbstract);
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
+
+            const expectedDateMax: ActivationDocumentDateMax = {
+                dateTime: expected.startCreatedDateTime as string,
+                docType: DocType.INDEXER_MAX_DATE,
+            };
+            const expectedDateMaxId: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedSite))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndexedJSON))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(4).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedDateMax))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(5).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(5).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(feedbackProducer))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
+                'enedis-producer',
+                Values.HTA_site_valid.meteringPointMrid,
+                Buffer.from(JSON.stringify(expectedSite)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                'enedis-producer',
+                expected.activationDocumentMrid,
+                Buffer.from(JSON.stringify(expected)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                'enedis-producer',
+                compositeKeyIndexedJSON.indexId,
+                Buffer.from(JSON.stringify(compositeKeyIndexedJSON)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
+                'enedis-producer',
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
+                'enedis-producer',
+                expectedDateMaxId,
+                Buffer.from(JSON.stringify(expectedDateMax)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(5).should.have.been.calledWithExactly(
+                'enedis-producer',
+                feedbackProducer.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(feedbackProducer)),
+            );
+
+
+			expect(transactionContext.stub.putPrivateData.callCount).to.equal(6);
+
+            ////////////////////////////////////////////////////////////////////////////
+            /////////// DELETION
+            ////////////////////////////////////////////////////////////////////////////
+
+            params.logger.info("********************************************")
+
+            const deletedActivationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument)));
+
+            const indexIdNRJAmount = ActivationEnergyAmountIndexersController.getKey(activationDocument.activationDocumentMrid)
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(0).args[1].toString()).toString('utf8'));
+            // params.logger.info(activationDocument.activationDocumentMrid)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(1).args[1].toString()).toString('utf8'));
+            // params.logger.info(deletedActivationDocumentCompositeKey)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(2).args[1].toString()).toString('utf8'));
+            // params.logger.info(feedbackProducer.feedbackProducerMrid)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(3).args[1].toString()).toString('utf8'));
+            // params.logger.info(indexIdNRJAmount)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(4).args[1].toString()).toString('utf8'));
+            // params.logger.info(feedbackProducer.feedbackProducerMrid)
+            // params.logger.info("-----------")
+
+            transactionContext.stub.deletePrivateData.getCall(0).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                activationDocument.activationDocumentMrid
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(1).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                deletedActivationDocumentCompositeKey
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(2).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                feedbackProducer.feedbackProducerMrid
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(3).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                indexIdNRJAmount
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(4).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                feedbackProducer.feedbackProducerMrid
+            );
+
+            expect(transactionContext.stub.deletePrivateData.callCount).to.equal(5);
+        });
+
+
+
+
+
+
+        it('should return SUCCESS updateActivationDocument HTA with collection change and existing Energy Amount', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+
+            const activationDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument.orderEnd = true;
+            activationDocument.receiverRole = RoleType.Role_Producer;
+            activationDocument.potentialParent = false;
+            activationDocument.potentialChild = true;
+            activationDocument.eligibilityStatus = EligibilityStatusType.EligibilityAccepted;
+            activationDocument.eligibilityStatusEditable = false;
+            activationDocument.reconciliationStatus = ReconciliationStatus.MISS;
+            activationDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', activationDocument.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocument)));
+
+
+            const feedbackProducer: FeedbackProducer = {
+                docType: DocType.FEEDBACK_PRODUCER,
+                feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocument.activationDocumentMrid),
+                activationDocumentMrid: activationDocument.activationDocumentMrid,
+                messageType: "B30",
+                processType: "A42",
+                revisionNumber: "0",
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+                receiverMarketParticipantMrid: activationDocument.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocument.senderMarketParticipantMrid,
+                createdDateTime: activationDocument.startCreatedDateTime,
+            }
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+
+            const energyAmount: EnergyAmount = JSON.parse(JSON.stringify(Values.HTA_EnergyAmount))
+            energyAmount.docType = DocType.ENERGY_AMOUNT;
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', energyAmount.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmount)));
+
+            const energyAmountDataAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmount.energyAmountMarketDocumentMrid
+            }
+
+            const energyAmountIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractMap : new Map(),
+                indexId: ActivationEnergyAmountIndexersController.getKey(activationDocument.activationDocumentMrid),
+            }
+            energyAmountIndexer.indexedDataAbstractMap.set(activationDocument.activationDocumentMrid, energyAmountDataAbstract);
+
+            const energyAmountIndexerJSON = IndexedDataJson.toJson(energyAmountIndexer);
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', energyAmountIndexerJSON.indexId).resolves(Buffer.from(JSON.stringify(energyAmountIndexerJSON)));
+
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            transactionContext.stub.getPrivateData.withArgs('enedis-producer-rte', Values.HTA_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+
+            const newActivationDocument: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            newActivationDocument.originAutomationRegisteredResourceMrid = Values.HTA_yellowPage2.originAutomationRegisteredResourceMrid;
+            // newActivationDocument.registeredResourceMrid = Values.HTA_site_valid_ProdA.meteringPointMrid;
+            // newActivationDocument.measurementUnitName = 'MW'
+            newActivationDocument.messageType = 'D01';
+            newActivationDocument.businessType = 'Z04';
+            // newActivationDocument.orderEnd = false;
+            // newActivationDocument.orderValue = 'X';
+            newActivationDocument.startCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 10),
+            newActivationDocument.endCreatedDateTime = CommonService.increaseDateDaysStr(activationDocument.startCreatedDateTime as string, 11),
+            newActivationDocument.revisionNumber = '70';
+            newActivationDocument.reasonCode = 'Y99';
+            // newActivationDocument.senderMarketParticipantMrid = Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid;
+            newActivationDocument.senderRole = 'NoSenderRole';
+            // newActivationDocument.receiverMarketParticipantMrid = Values.HTA_Producer2.producerMarketParticipantMrid;
+            newActivationDocument.receiverRole = 'NoReceiverRole';
+            newActivationDocument.potentialParent = true;
+            newActivationDocument.potentialChild = false;
+            newActivationDocument.instance = 'Noinstance';
+            // newActivationDocument.subOrderList = [Values.HTB_ActivationDocument_Valid.activationDocumentMrid];
+            newActivationDocument.eligibilityStatus =  EligibilityStatusType.FREligibilityPending;
+            newActivationDocument.eligibilityStatusEditable = true;
+            newActivationDocument.reconciliationStatus =  ReconciliationStatus.TOTAL;
+
+            await star.UpdateActivationDocument(transactionContext, JSON.stringify(newActivationDocument));
+
+            const expectedSite: Site = JSON.parse(JSON.stringify(Values.HTA_site_valid));
+            expectedSite.systemOperatorMarketParticipantName = 'enedis';
+            expectedSite.producerMarketParticipantName = 'EolienFR vert Cie';
+            expectedSite.docType = 'site';
+
+            const expected: ActivationDocument = JSON.parse(JSON.stringify(newActivationDocument));
+            expected.revisionNumber = '2';
+            expected.reconciliationStatus = '';
+            expected.receiverRole = 'Producer';
+            expected.potentialParent = false;
+            expected.potentialChild = true;
+
+            const activationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(expected)));
+            const compositeKeyIndex: ActivationDocumentCompositeKeyAbstract = {
+                activationDocumentCompositeKey,
+                activationDocumentMrid: expected.activationDocumentMrid,
+            };
+
+            const compositeKeyIndexed:IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexId:activationDocumentCompositeKey,
+                indexedDataAbstractMap: new Map()};
+            compositeKeyIndexed.indexedDataAbstractMap.set(activationDocumentCompositeKey, compositeKeyIndex);
+
+            const compositeKeyIndexedJSON = IndexedDataJson.toJson(compositeKeyIndexed);
+
+            const indexedDataAbstract: ActivationDocumentAbstract = {
+                activationDocumentMrid: expected.activationDocumentMrid,
+                registeredResourceMrid: expected.registeredResourceMrid,
+                startCreatedDateTime: expected.startCreatedDateTime as string,
+            };
+
+            const expectedIndexer: IndexedData = {
+                docType: DocType.DATA_INDEXER,
+                indexedDataAbstractMap : new Map(),
+                indexId: SiteActivationIndexersController.getKey(expected.registeredResourceMrid, new Date(expected.startCreatedDateTime as string)),
+            };
+            expectedIndexer.indexedDataAbstractMap?.set(expected.activationDocumentMrid, indexedDataAbstract);
+            const expectedIndexerJSON = IndexedDataJson.toJson(expectedIndexer);
+
+            const expectedDateMax: ActivationDocumentDateMax = {
+                dateTime: expected.startCreatedDateTime as string,
+                docType: DocType.INDEXER_MAX_DATE,
+            };
+            const expectedDateMaxId: string = SiteActivationIndexersController.getMaxKey(expected.registeredResourceMrid);
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(0).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedSite))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(1).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expected))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(2).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(compositeKeyIndexedJSON))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(3).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedIndexerJSON))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(4).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(expectedDateMax))
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.putPrivateData.getCall(5).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.getCall(5).args[2].toString()).toString('utf8'));
+            // params.logger.info(JSON.stringify(feedbackProducer))
+            // params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.getCall(0).should.have.been.calledWithExactly(
+                'enedis-producer',
+                Values.HTA_site_valid.meteringPointMrid,
+                Buffer.from(JSON.stringify(expectedSite)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(1).should.have.been.calledWithExactly(
+                'enedis-producer',
+                expected.activationDocumentMrid,
+                Buffer.from(JSON.stringify(expected)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(2).should.have.been.calledWithExactly(
+                'enedis-producer',
+                compositeKeyIndexedJSON.indexId,
+                Buffer.from(JSON.stringify(compositeKeyIndexedJSON)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(3).should.have.been.calledWithExactly(
+                'enedis-producer',
+                expectedIndexerJSON.indexId,
+                Buffer.from(JSON.stringify(expectedIndexerJSON)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(4).should.have.been.calledWithExactly(
+                'enedis-producer',
+                expectedDateMaxId,
+                Buffer.from(JSON.stringify(expectedDateMax)),
+            );
+
+            transactionContext.stub.putPrivateData.getCall(5).should.have.been.calledWithExactly(
+                'enedis-producer',
+                feedbackProducer.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(feedbackProducer)),
+            );
+
+
+			expect(transactionContext.stub.putPrivateData.callCount).to.equal(6);
+
+            ////////////////////////////////////////////////////////////////////////////
+            /////////// DELETION
+            ////////////////////////////////////////////////////////////////////////////
+
+            params.logger.info("********************************************")
+
+            const deletedActivationDocumentCompositeKey = ActivationCompositeKeyIndexersController.getActivationDocumentCompositeKeyId(JSON.parse(JSON.stringify(activationDocument)));
+
+            const indexIdNRJAmount = ActivationEnergyAmountIndexersController.getKey(activationDocument.activationDocumentMrid)
+
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(0).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(0).args[1].toString()).toString('utf8'));
+            // params.logger.info(activationDocument.activationDocumentMrid)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(1).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(1).args[1].toString()).toString('utf8'));
+            // params.logger.info(deletedActivationDocumentCompositeKey)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(2).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(2).args[1].toString()).toString('utf8'));
+            // params.logger.info(feedbackProducer.feedbackProducerMrid)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(3).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(3).args[1].toString()).toString('utf8'));
+            // params.logger.info(indexIdNRJAmount)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(4).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(4).args[1].toString()).toString('utf8'));
+            // params.logger.info(energyAmount.energyAmountMarketDocumentMrid)
+            // params.logger.info("-----------")
+            // params.logger.info(transactionContext.stub.deletePrivateData.getCall(5).args);
+            // params.logger.info("ooooooooo")
+            // params.logger.info(Buffer.from(transactionContext.stub.deletePrivateData.getCall(5).args[1].toString()).toString('utf8'));
+            // params.logger.info(feedbackProducer.feedbackProducerMrid)
+            // params.logger.info("-----------")
+
+            transactionContext.stub.deletePrivateData.getCall(0).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                activationDocument.activationDocumentMrid
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(1).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                deletedActivationDocumentCompositeKey
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(2).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                feedbackProducer.feedbackProducerMrid
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(3).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                indexIdNRJAmount
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(4).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                energyAmount.energyAmountMarketDocumentMrid
+            );
+
+            transactionContext.stub.deletePrivateData.getCall(5).should.have.been.calledWithExactly(
+                'enedis-producer-rte',
+                feedbackProducer.feedbackProducerMrid
+            );
+
+            expect(transactionContext.stub.deletePrivateData.callCount).to.equal(6);
+        });
+    });
 });

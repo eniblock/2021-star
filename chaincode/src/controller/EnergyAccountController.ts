@@ -396,17 +396,6 @@ export class EnergyAccountController {
         const lapTimePlus1HDays: string[] =
             params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H_DAYS);
 
-        params.logger.debug('*********************************');
-        params.logger.debug('energyObj.startCreatedDateTime');
-        params.logger.debug(energyObj.startCreatedDateTime);
-        params.logger.debug('startDate');
-        params.logger.debug(startDate);
-        params.logger.debug('lapTimeLess1HDays');
-        params.logger.debug(lapTimeLess1HDays);
-        params.logger.debug('lapTimePlus1HDays');
-        params.logger.debug(lapTimePlus1HDays);
-        params.logger.debug('*********************************');
-
         if (lapTimeLess1HDays.includes(startDate)) {
             const lapTimeStr: string = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H);
             nbExpectedPoints = parseInt(lapTimeStr, 10);
@@ -441,6 +430,19 @@ export class EnergyAccountController {
         } catch (error) {
             throw new Error(`invalid resolution`);
         }
+
+        // params.logger.info('*********************************');
+        // params.logger.info('energyObj.startCreatedDateTime');
+        // params.logger.info(energyObj.startCreatedDateTime);
+        // params.logger.info('startDate');
+        // params.logger.info(startDate);
+        // params.logger.info('lapTimeLess1HDays');
+        // params.logger.info(lapTimeLess1HDays);
+        // params.logger.info('lapTimePlus1HDays');
+        // params.logger.info(lapTimePlus1HDays);
+        // params.logger.info('nbExpectedPoints');
+        // params.logger.info(nbExpectedPoints);
+        // params.logger.info('*********************************');
 
         return nbExpectedPoints;
     }

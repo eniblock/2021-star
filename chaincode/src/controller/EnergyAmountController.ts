@@ -58,6 +58,22 @@ export class EnergyAmountController {
         params.logger.debug('============= END   : executeOrder EnergyAmountController ===========');
     }
 
+    public static async deleteEnergyAmount(
+        params: STARParameters,
+        energyAmountMarketDocumentMrid: string,
+        definedTarget: string) {
+
+        params.logger.debug('============= BEGIN : delete EnergyAmountController ===========');
+
+        await EnergyAmountService.delete(
+            params, {
+                collection: definedTarget,
+                id: energyAmountMarketDocumentMrid
+            });
+
+        params.logger.debug('============= END   : delete EnergyAmountController ===========');
+    }
+
     public static async createTSOEnergyAmount(
         params: STARParameters,
         inputStr: string) {

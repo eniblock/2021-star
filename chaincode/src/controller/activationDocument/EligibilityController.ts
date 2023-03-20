@@ -448,6 +448,7 @@ export class EligibilityController {
                 if (!existing) {
                     requiredReferences.push(
                         {collection: referencedDocument.collection,
+                        previousCollection: initialTarget,
                         data: reserveBidObj,
                         docType: DocType.RESERVE_BID_MARKET_DOCUMENT});
                 }

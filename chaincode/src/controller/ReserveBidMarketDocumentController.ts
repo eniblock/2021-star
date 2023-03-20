@@ -70,7 +70,23 @@ export class ReserveBidMarketDocumentController {
     public static async createByReference(params: STARParameters, dataReference: DataReference) {
         params.logger.debug('============= START : Create by Reference ReserveBidMarketDocumentController ===========');
 
-        await this.createObj(params, {reserveBid: dataReference.data}, dataReference.collection, dataReference.previousCollection);
+        let existingReserveBidRef: Map<string, DataReference> = null;
+        try {
+            existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(
+                params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: dataReference.data.reserveBidMrid, collection: dataReference.previousCollection});
+        } catch (err) {
+            //Do Nothing
+        }
+
+        if (existingReserveBidRef.values().next().value
+            && existingReserveBidRef.values().next().value.data
+            && existingReserveBidRef.values().next().value.data.reserveBidMrid
+            && existingReserveBidRef.values().next().value.data.reserveBidMrid
+                    === dataReference.data.reserveBidMrid) {
+
+            await this.createObj(params, {reserveBid: dataReference.data}, dataReference.collection, dataReference.previousCollection);
+        }
+
 
         params.logger.debug('=============  END  : Create by Reference ReserveBidMarketDocumentController ===========');
     }

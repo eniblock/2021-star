@@ -434,23 +434,39 @@ export class EligibilityController {
 
         if (reserveBidList && reserveBidList.length > 0) {
             for (const reserveBidObj of reserveBidList) {
-                if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
-                    fileIdList = fileIdList.concat(reserveBidObj.attachments);
+                //List is created from the index, first is to check is data is really existing (to correct index errors)
+                let existingReserveBidRef: Map<string, DataReference> = null;
+                try {
+                    existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(
+                        params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidObj.reserveBidMrid, collection:initialTarget});
+                } catch (err) {
+                    //Do Nothing
                 }
 
-                const existing = await ReserveBidMarketDocumentController.dataExists(
-                    params, reserveBidObj.reserveBidMrid, referencedDocument.collection);
+                if (existingReserveBidRef
+                    && existingReserveBidRef.values().next().value
+                    && existingReserveBidRef.values().next().value.collection === initialTarget
+                    && existingReserveBidRef.values().next().value.data
+                    && existingReserveBidRef.values().next().value.data.reserveBidMrid === reserveBidObj.reserveBidMrid) {
 
-                //Manage too memory
-                //To remove all attachments
-                reserveBidObj.attachments = [];
+                    if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
+                        fileIdList = fileIdList.concat(reserveBidObj.attachments);
+                    }
 
-                if (!existing) {
-                    requiredReferences.push(
-                        {collection: referencedDocument.collection,
-                        previousCollection: initialTarget,
-                        data: reserveBidObj,
-                        docType: DocType.RESERVE_BID_MARKET_DOCUMENT});
+                    const existing = await ReserveBidMarketDocumentController.dataExists(
+                        params, reserveBidObj.reserveBidMrid, referencedDocument.collection);
+
+                    //Manage too memory
+                    //To remove all attachments
+                    reserveBidObj.attachments = [];
+
+                    if (!existing) {
+                        requiredReferences.push(
+                            {collection: referencedDocument.collection,
+                            previousCollection: initialTarget,
+                            data: reserveBidObj,
+                            docType: DocType.RESERVE_BID_MARKET_DOCUMENT});
+                    }
                 }
             }
         }

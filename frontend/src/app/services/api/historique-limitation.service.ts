@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {TypeSite} from 'src/app/models/enum/TypeSite.enum';
 import {
   FormulaireRechercheHistoriqueLimitation,
@@ -22,6 +22,8 @@ import {DatePipe} from "@angular/common";
 import {ReconciliationStatus} from "../../models/enum/ReconciliationStatus.enum";
 import {SystemOperatorService} from "./system-operator.service";
 import {SystemOperator} from "../../models/SystemOperator";
+import {InstanceService} from "./instance.service";
+import {Instance} from "../../models/enum/Instance.enum";
 
 const MOCK = false;
 
@@ -38,6 +40,7 @@ export class HistoriqueLimitationService {
     private indeminityStatusPipe: IndeminityStatusPipe,
     private datePipe: DatePipe,
     private systemOperatorService: SystemOperatorService,
+    private instanceService: InstanceService,
   ) {
   }
 
@@ -77,17 +80,24 @@ export class HistoriqueLimitationService {
   }
 
   exportCSV(researchResultsWithOnlyOneSuborderFiltered: RechercheHistoriqueLimitationEntiteWithAnnotation[]) {
-    this.systemOperatorService.getSystemOperators().subscribe(systemOperators => {
-      this.exportCSVStep2(researchResultsWithOnlyOneSuborderFiltered, systemOperators)
-    });
+    forkJoin({
+      instance: this.instanceService.getTypeInstance(),
+      systemOperators: this.systemOperatorService.getSystemOperators()
+    }).subscribe(
+      res => {
+        this.exportCSVStep2(researchResultsWithOnlyOneSuborderFiltered, res.systemOperators, res.instance)
+      });
   }
 
-  private exportCSVStep2(researchResultsWithOnlyOneSuborderFiltered: RechercheHistoriqueLimitationEntiteWithAnnotation[], systemOperators: SystemOperator[]) {
+  private exportCSVStep2(researchResultsWithOnlyOneSuborderFiltered: RechercheHistoriqueLimitationEntiteWithAnnotation[], systemOperators: SystemOperator[], instance: Instance) {
     let fileContain = "Filière;Poste Source;Nom Producteur;Nom Site;Code Site;Code Producteur;"
     for (const element of systemOperators) {
       fileContain += "Début limitation " + element.systemOperatorMarketParticipantName + ";Fin limitation " + element.systemOperatorMarketParticipantName + ";";
     }
-    fileContain += "Etat réconciliation;Eligible indemnisation;Type de limitation;ENE/I (MWh);Tarif unitaire;Montant indemnisation;Motif;Commentaires (sujets);Commentaires (question);Commentaires (réponse);Statut de l'indemnisation";
+    if (instance != Instance.PRODUCER) {
+      fileContain += "Etat réconciliation;";
+    }
+    fileContain += "Eligible indemnisation;Type de limitation;ENE/I (MWh);Tarif unitaire;Montant indemnisation;Motif;Commentaires (sujets);Commentaires (question);Commentaires (réponse);Statut de l'indemnisation";
     for (const element of researchResultsWithOnlyOneSuborderFiltered) {
       // Dates
       const ordreLimitation = element.activationDocument;
@@ -113,7 +123,9 @@ export class HistoriqueLimitationService {
           fileContain += ";;";
         }
       }
-      fileContain += this.csvPrint(element.activationDocument?.reconciliationStatus ? element.activationDocument?.reconciliationStatus : element.subOrderList[0]?.reconciliationStatus) + ";";
+      if (instance != Instance.PRODUCER) {
+        fileContain += this.csvPrint(element.activationDocument?.reconciliationStatus ? element.activationDocument?.reconciliationStatus : element.subOrderList[0]?.reconciliationStatus) + ";";
+      }
       fileContain += this.csvPrint(element.activationDocument?.eligibilityStatus) + ";";
       fileContain += this.csvPrint(element.limitationType) + ";";
       fileContain += this.csvPrint(element.energyAmount?.quantity) + ";";

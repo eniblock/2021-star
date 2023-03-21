@@ -49,6 +49,7 @@ export class OrderManagerController {
                     docType: DocType.ACTIVATION_DOCUMENT,
                     id: activationDocument.activationDocumentMrid});
         } catch (err) {
+            params.logger.info("************* 1")
             throw new Error(`Error : Activation Document - updateByOrders - Unknown document cannot be Updated ${activationDocument.activationDocumentMrid}`);
         }
 
@@ -65,6 +66,7 @@ export class OrderManagerController {
 
             original = originalRef.data;
         } else {
+            params.logger.info("************* 2")
             throw new Error(`Error : Activation Document - updateByOrders - Unknown document cannot be Updated ${activationDocument.activationDocumentMrid}`);
         }
 

@@ -42,13 +42,29 @@ export class OrderManagerController {
 
         params.logger.debug('============= START : updateByOrders OrderManagerController ===========');
         let original: ActivationDocument;
+        let originalMapRef : Map<string, DataReference>;
         try {
-            original = await StarPrivateDataService.getObj(
+            originalMapRef = await StarPrivateDataService.getObjRefbyId(
                 params, {
-                    collection,
                     docType: DocType.ACTIVATION_DOCUMENT,
                     id: activationDocument.activationDocumentMrid});
         } catch (err) {
+            throw new Error(`Error : Activation Document - updateByOrders - Unknown document cannot be Updated ${activationDocument.activationDocumentMrid}`);
+        }
+
+        let originalRef : DataReference;
+        if (originalMapRef.has(collection)) {
+            originalRef = originalMapRef.get(collection);
+        } else {
+            originalRef = originalMapRef.values().next().value;
+        }
+        if (originalRef
+            && originalRef.data
+            && originalRef.data.activationDocumentMrid
+            && originalRef.data.activationDocumentMrid === activationDocument.activationDocumentMrid) {
+
+            original = originalRef.data;
+        } else {
             throw new Error(`Error : Activation Document - updateByOrders - Unknown document cannot be Updated ${activationDocument.activationDocumentMrid}`);
         }
 

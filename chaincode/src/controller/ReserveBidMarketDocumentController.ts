@@ -70,23 +70,7 @@ export class ReserveBidMarketDocumentController {
     public static async createByReference(params: STARParameters, dataReference: DataReference) {
         params.logger.debug('============= START : Create by Reference ReserveBidMarketDocumentController ===========');
 
-        let existingReserveBidRef: Map<string, DataReference> = null;
-        try {
-            existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(
-                params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: dataReference.data.reserveBidMrid, collection: dataReference.previousCollection});
-        } catch (err) {
-            //Do Nothing
-        }
-
-        if (existingReserveBidRef.values().next().value
-            && existingReserveBidRef.values().next().value.data
-            && existingReserveBidRef.values().next().value.data.reserveBidMrid
-            && existingReserveBidRef.values().next().value.data.reserveBidMrid
-                    === dataReference.data.reserveBidMrid) {
-
-            await this.createObj(params, {reserveBid: dataReference.data}, dataReference.collection, dataReference.previousCollection);
-        }
-
+        await this.createObj(params, {reserveBid: dataReference.data}, dataReference.collection, dataReference.previousCollection);
 
         params.logger.debug('=============  END  : Create by Reference ReserveBidMarketDocumentController ===========');
     }
@@ -126,32 +110,21 @@ export class ReserveBidMarketDocumentController {
             //Do Nothing
         }
 
+
+
         if (existingReserveBidRef
             && existingReserveBidRef.values().next().value
             && target
-            && target.length > 0) {
-
-            if (existingReserveBidRef.values().next().value.collection !== target) {
-                const reserveBidRef: ReserveBidMarketDocument =
-                    JSON.parse(JSON.stringify(existingReserveBidRef.values().next().value.data));
-                const currentReserveBidObj: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
-
-                isRecopy = (JSON.stringify(reserveBidRef) === JSON.stringify(currentReserveBidObj));
-            } else {
-                isRecopy = true;
-            }
-        }
-
-        if (previousTarget
+            && target.length > 0
+            && previousTarget
             && previousTarget.length > 0
-            && (!existingReserveBidRef.values().next().value
-                || !existingReserveBidRef.values().next().value.data
-                || !existingReserveBidRef.values().next().value.data.reserveBidMrid
-                || existingReserveBidRef.values().next().value.data.reserveBidMrid
-                    !== reserveBidObj.reserveBidMrid)) {
+            && previousTarget !== target) {
 
-            return;
+            const reserveBidRef: ReserveBidMarketDocument =
+                JSON.parse(JSON.stringify(existingReserveBidRef.values().next().value.data));
+            const currentReserveBidObj: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
 
+            isRecopy = (JSON.stringify(reserveBidRef) === JSON.stringify(currentReserveBidObj));
         }
 
 

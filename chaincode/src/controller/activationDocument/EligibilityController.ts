@@ -503,8 +503,8 @@ export class EligibilityController {
                     && !this.dataAndCollection.includes(newDataRef)) {
 
                     this.dataAndCollection.push(newDataRef);
-                    //Remove file content in Testing Environment
-                    attachmentFile.fileContent="";
+                    // //Remove file content in Testing Environment
+                    // attachmentFile.fileContent="";
                     requiredReferences.push(
                         {collection: referencedDocument.collection,
                         data: attachmentFile,

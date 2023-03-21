@@ -31,6 +31,7 @@ import { StarDataService } from '../service/StarDataService';
 import { StarPrivateDataService } from '../service/StarPrivateDataService';
 
 export class EligibilityController {
+    private static dataAndCollection: string[];
 
     public static async updateEligibilityStatus(
         params: STARParameters,
@@ -190,6 +191,7 @@ export class EligibilityController {
         orderReferencesMap: Map<string, DataReference>): Promise<DataReference[]> {
         params.logger.debug('============= START : getEligibilityState - EligibilityController ===========');
         const eligibilityReferences: DataReference[] = [];
+        this.dataAndCollection = [];
 
         params.logger.debug('===========================');
         params.logger.debug('===========================');
@@ -294,8 +296,13 @@ export class EligibilityController {
 
         // Only include Site data in orders if it is not already know in destination collection
         if (!siteRefMap.has(referencedDocument.collection)) {
+            const newDataRef = activationDocument.registeredResourceMrid + "#" + referencedDocument.collection;
 
-            if (siteRefMap.has(initialTarget)) {
+            if (siteRefMap.has(initialTarget)
+                && !this.dataAndCollection.includes(newDataRef)) {
+
+                this.dataAndCollection.push(newDataRef);
+
                 const siteRef = siteRefMap.get(initialTarget);
                 requiredReferences.push(
                     {collection: referencedDocument.collection,
@@ -335,7 +342,12 @@ export class EligibilityController {
                 const existing =
                     await EnergyAccountController.dataExists(
                         params, energyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
-                if (!existing) {
+
+                const newDataRef = energyAccount.energyAccountMarketDocumentMrid + "#" + referencedDocument.collection;
+                if (!existing
+                    && !this.dataAndCollection.includes(newDataRef)) {
+
+                    this.dataAndCollection.push(newDataRef);
                     requiredReferences.push(
                         {collection: referencedDocument.collection,
                         data: energyAccount,
@@ -366,7 +378,13 @@ export class EligibilityController {
                             params,
                             referenceEnergyAccount.energyAccountMarketDocumentMrid,
                             referencedDocument.collection);
-                    if (!existing) {
+
+                    const newDataRef = referenceEnergyAccount.energyAccountMarketDocumentMrid + "#" + referencedDocument.collection;
+
+                    if (!existing
+                        && !this.dataAndCollection.includes(newDataRef)) {
+
+                        this.dataAndCollection.push(newDataRef);
                         requiredReferences.push(
                             {collection: referencedDocument.collection,
                             data: referenceEnergyAccount,
@@ -384,9 +402,14 @@ export class EligibilityController {
             await EnergyAmountController.getByActivationDocument(
                 params, activationDocument.activationDocumentMrid, initialTarget);
 
+        let newDataRef = energyAmount.energyAmountMarketDocumentMrid + "#" + referencedDocument.collection;
+
         if (energyAmount
             && energyAmount.energyAmountMarketDocumentMrid
-            && energyAmount.energyAmountMarketDocumentMrid.length > 0) {
+            && energyAmount.energyAmountMarketDocumentMrid.length > 0
+            && !this.dataAndCollection.includes(newDataRef)) {
+
+            this.dataAndCollection.push(newDataRef);
 
             const dataReference: DataReference = {
                 collection: referencedDocument.collection,
@@ -406,10 +429,14 @@ export class EligibilityController {
             await FeedbackProducerController.getByActivationDocumentMrId(
                 params, activationDocument.activationDocumentMrid, initialTarget);
 
+        newDataRef = feedBackProducer.feedbackProducerMrid + "#" + referencedDocument.collection;
+
         if (feedBackProducer
             && feedBackProducer.feedbackProducerMrid
-            && feedBackProducer.feedbackProducerMrid.length > 0) {
+            && feedBackProducer.feedbackProducerMrid.length > 0
+            && !this.dataAndCollection.includes(newDataRef)) {
 
+            this.dataAndCollection.push(newDataRef);
             const dataReference: DataReference = {
                 collection: referencedDocument.collection,
                 data: feedBackProducer,
@@ -434,36 +461,25 @@ export class EligibilityController {
 
         if (reserveBidList && reserveBidList.length > 0) {
             for (const reserveBidObj of reserveBidList) {
-                //List is created from the index, first is to check is data is really existing (to correct index errors)
-                let existingReserveBidRef: Map<string, DataReference> = null;
-                try {
-                    existingReserveBidRef = await StarPrivateDataService.getObjRefbyId(
-                        params, {docType: DocType.RESERVE_BID_MARKET_DOCUMENT, id: reserveBidObj.reserveBidMrid, collection:initialTarget});
-                } catch (err) {
-                    //Do Nothing
+
+                if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
+                    fileIdList = fileIdList.concat(reserveBidObj.attachments);
                 }
 
-                if (existingReserveBidRef
-                    && existingReserveBidRef.values().next().value
-                    && existingReserveBidRef.values().next().value.collection === initialTarget
-                    && existingReserveBidRef.values().next().value.data
-                    && existingReserveBidRef.values().next().value.data.reserveBidMrid === reserveBidObj.reserveBidMrid) {
+                const existing = await ReserveBidMarketDocumentController.dataExists(
+                    params, reserveBidObj.reserveBidMrid, referencedDocument.collection);
 
+                const newDataRef = reserveBidObj.reserveBidMrid + "#" + referencedDocument.collection;
 
-                    if (reserveBidObj.attachments && reserveBidObj.attachments.length > 0) {
-                        fileIdList = fileIdList.concat(reserveBidObj.attachments);
-                    }
+                if (!existing
+                    && !this.dataAndCollection.includes(newDataRef)) {
 
-                    const existing = await ReserveBidMarketDocumentController.dataExists(
-                        params, reserveBidObj.reserveBidMrid, referencedDocument.collection);
-
-                    if (!existing) {
-                        requiredReferences.push(
-                            {collection: referencedDocument.collection,
-                            previousCollection: initialTarget,
-                            data: reserveBidObj,
-                            docType: DocType.RESERVE_BID_MARKET_DOCUMENT});
-                    }
+                    this.dataAndCollection.push(newDataRef);
+                    requiredReferences.push(
+                        {collection: referencedDocument.collection,
+                        previousCollection: initialTarget,
+                        data: reserveBidObj,
+                        docType: DocType.RESERVE_BID_MARKET_DOCUMENT});
                 }
             }
         }
@@ -481,7 +497,12 @@ export class EligibilityController {
                 const existing =
                     await AttachmentFileController.dataExists(
                         params, attachmentFile.fileId, referencedDocument.collection);
-                if (!existing) {
+
+                const newDataRef = attachmentFile.fileId + "#" + referencedDocument.collection;
+                if (!existing
+                    && !this.dataAndCollection.includes(newDataRef)) {
+
+                    this.dataAndCollection.push(newDataRef);
                     //Remove file content in Testing Environment
                     attachmentFile.fileContent="";
                     requiredReferences.push(

@@ -460,6 +460,7 @@ export class EligibilityController {
                     //Manage too memory
                     //To remove all attachments
                     reserveBidObj.attachments = [];
+                    reserveBidObj.attachmentsWithStatus = [];
 
                     if (!existing) {
                         requiredReferences.push(

@@ -136,8 +136,6 @@ export class ReserveBidMarketDocumentController {
                     JSON.parse(JSON.stringify(existingReserveBidRef.values().next().value.data));
                 const currentReserveBidObj: ReserveBidMarketDocument = JSON.parse(JSON.stringify(reserveBidObj));
 
-                reserveBidRef.attachments = currentReserveBidObj.attachments
-                reserveBidRef.attachmentsWithStatus = currentReserveBidObj.attachmentsWithStatus
                 isRecopy = (JSON.stringify(reserveBidRef) === JSON.stringify(currentReserveBidObj));
             } else {
                 isRecopy = true;

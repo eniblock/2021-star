@@ -457,11 +457,6 @@ export class EligibilityController {
                     const existing = await ReserveBidMarketDocumentController.dataExists(
                         params, reserveBidObj.reserveBidMrid, referencedDocument.collection);
 
-                    //Manage too memory
-                    //To remove all attachments
-                    reserveBidObj.attachments = [];
-                    reserveBidObj.attachmentsWithStatus = [];
-
                     if (!existing) {
                         requiredReferences.push(
                             {collection: referencedDocument.collection,
@@ -473,28 +468,30 @@ export class EligibilityController {
             }
         }
 
-        // /*****************
-        //  * FILES
-        //  ****************/
-        // const FileList: AttachmentFile[] =
-        //     await AttachmentFileController.getObjsByIdList(params, fileIdList, initialTarget);
+        /*****************
+         * FILES
+         ****************/
+        const FileList: AttachmentFile[] =
+            await AttachmentFileController.getObjsByIdList(params, fileIdList, initialTarget);
 
-        // if (FileList && FileList.length > 0) {
+        if (FileList && FileList.length > 0) {
 
-        //     for (const attachmentFile of FileList) {
+            for (const attachmentFile of FileList) {
 
-        //         const existing =
-        //             await AttachmentFileController.dataExists(
-        //                 params, attachmentFile.fileId, referencedDocument.collection);
-        //         if (!existing) {
-        //             requiredReferences.push(
-        //                 {collection: referencedDocument.collection,
-        //                 data: attachmentFile,
-        //                 docType: DocType.ATTACHMENT_FILE});
-        //         }
-        //     }
+                const existing =
+                    await AttachmentFileController.dataExists(
+                        params, attachmentFile.fileId, referencedDocument.collection);
+                if (!existing) {
+                    //Remove file content in Testing Environment
+                    attachmentFile.fileContent="";
+                    requiredReferences.push(
+                        {collection: referencedDocument.collection,
+                        data: attachmentFile,
+                        docType: DocType.ATTACHMENT_FILE});
+                }
+            }
 
-        // }
+        }
 
         params.logger.debug('============= END  : getCreationLinkedData - EligibilityController ===========');
         return requiredReferences;

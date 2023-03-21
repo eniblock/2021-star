@@ -5,6 +5,8 @@ import {RechercheHistoriqueLimitationEntiteWithAnnotation} from "../../../models
 import {SortHelper} from "../../../helpers/sort.helper";
 import {IndeminityStatus} from "../../../models/enum/IndeminityStatus.enum";
 import {ReconciliationStatus} from "../../../models/enum/ReconciliationStatus.enum";
+import {InstanceService} from "../../../services/api/instance.service";
+import {Instance} from "../../../models/enum/Instance.enum";
 
 @Component({
   selector: 'app-limitations-filter-on-results',
@@ -27,16 +29,21 @@ export class LimitationsFilterOnResultsComponent implements OnInit, OnChanges {
   });
 
   TypeLimitationEnum = TypeLimitation;
+  InstanceEnum = Instance;
   motifNames: string[] = [];
   indeminityStatus: IndeminityStatus[] = [];
   ReconciliationStatusEnum = ReconciliationStatus;
+  typeInstance?: Instance;
 
   constructor(
     private formBuilder: FormBuilder,
+    private instanceService: InstanceService,
   ) {
   }
 
   ngOnInit(): void {
+    this.instanceService.getTypeInstance()
+      .subscribe((typeInstance) => this.typeInstance = typeInstance);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

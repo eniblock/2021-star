@@ -151,7 +151,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
             } catch (err) {
                 // params.logger.info('err: ', err.message)
-                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.ENEDIS} does not have rights to create a reserve bid market document`);
+                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.ENEDIS} does not have rights to create a reserve bid market document ${reserveBidObj.reserveBidMrid}`);
             }
 
         });
@@ -183,7 +183,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 await star.CreateReserveBidMarketDocument(transactionContext, JSON.stringify(reserveBidCreationObj));
             } catch (err) {
                 // params.logger.info('err: ', err.message)
-                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} does not have rights to create a reserve bid market document`);
+                expect(err.message).to.equal(`Organisation, ${OrganizationTypeMsp.RTE} does not have rights to create a reserve bid market document ${reserveBidObj.reserveBidMrid}`);
             }
 
         });
@@ -535,7 +535,7 @@ describe('Star Tests ReserveBidMarketDocument', () => {
                 await star.UpdateStatusReserveBidMarketDocument(transactionContext, reserveBidObj.reserveBidMrid, newStatus);
             } catch (err) {
                 // params.logger.info('err: ', err.message)
-                expect(err.message).to.equal(`Organisation, ${RoleType.Role_Producer} does not have rights to create a reserve bid market document`);
+                expect(err.message).to.equal(`Organisation, ${RoleType.Role_Producer} does not have rights to create a reserve bid market document ${reserveBidObj.reserveBidMrid}`);
             }
         });
 

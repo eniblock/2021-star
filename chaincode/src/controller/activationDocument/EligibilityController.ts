@@ -31,8 +31,6 @@ import { StarDataService } from '../service/StarDataService';
 import { StarPrivateDataService } from '../service/StarPrivateDataService';
 
 export class EligibilityController {
-    private static dataAndCollection: string[];
-
     public static async updateEligibilityStatus(
         params: STARParameters,
         inputStr: string): Promise<ActivationDocument> {
@@ -191,7 +189,6 @@ export class EligibilityController {
         orderReferencesMap: Map<string, DataReference>): Promise<DataReference[]> {
         params.logger.debug('============= START : getEligibilityState - EligibilityController ===========');
         const eligibilityReferences: DataReference[] = [];
-        this.dataAndCollection = [];
 
         params.logger.debug('===========================');
         params.logger.debug('===========================');
@@ -296,12 +293,8 @@ export class EligibilityController {
 
         // Only include Site data in orders if it is not already know in destination collection
         if (!siteRefMap.has(referencedDocument.collection)) {
-            const newDataRef = activationDocument.registeredResourceMrid + "#" + referencedDocument.collection;
 
-            if (siteRefMap.has(initialTarget)
-                && !this.dataAndCollection.includes(newDataRef)) {
-
-                this.dataAndCollection.push(newDataRef);
+            if (siteRefMap.has(initialTarget)) {
 
                 const siteRef = siteRefMap.get(initialTarget);
                 requiredReferences.push(
@@ -343,11 +336,8 @@ export class EligibilityController {
                     await EnergyAccountController.dataExists(
                         params, energyAccount.energyAccountMarketDocumentMrid, referencedDocument.collection);
 
-                const newDataRef = energyAccount.energyAccountMarketDocumentMrid + "#" + referencedDocument.collection;
-                if (!existing
-                    && !this.dataAndCollection.includes(newDataRef)) {
+                if (!existing) {
 
-                    this.dataAndCollection.push(newDataRef);
                     requiredReferences.push(
                         {collection: referencedDocument.collection,
                         data: energyAccount,
@@ -379,12 +369,8 @@ export class EligibilityController {
                             referenceEnergyAccount.energyAccountMarketDocumentMrid,
                             referencedDocument.collection);
 
-                    const newDataRef = referenceEnergyAccount.energyAccountMarketDocumentMrid + "#" + referencedDocument.collection;
+                    if (!existing) {
 
-                    if (!existing
-                        && !this.dataAndCollection.includes(newDataRef)) {
-
-                        this.dataAndCollection.push(newDataRef);
                         requiredReferences.push(
                             {collection: referencedDocument.collection,
                             data: referenceEnergyAccount,
@@ -402,14 +388,9 @@ export class EligibilityController {
             await EnergyAmountController.getByActivationDocument(
                 params, activationDocument.activationDocumentMrid, initialTarget);
 
-        let newDataRef = energyAmount.energyAmountMarketDocumentMrid + "#" + referencedDocument.collection;
-
         if (energyAmount
             && energyAmount.energyAmountMarketDocumentMrid
-            && energyAmount.energyAmountMarketDocumentMrid.length > 0
-            && !this.dataAndCollection.includes(newDataRef)) {
-
-            this.dataAndCollection.push(newDataRef);
+            && energyAmount.energyAmountMarketDocumentMrid.length > 0) {
 
             const dataReference: DataReference = {
                 collection: referencedDocument.collection,
@@ -429,14 +410,10 @@ export class EligibilityController {
             await FeedbackProducerController.getByActivationDocumentMrId(
                 params, activationDocument.activationDocumentMrid, initialTarget);
 
-        newDataRef = feedBackProducer.feedbackProducerMrid + "#" + referencedDocument.collection;
-
         if (feedBackProducer
             && feedBackProducer.feedbackProducerMrid
-            && feedBackProducer.feedbackProducerMrid.length > 0
-            && !this.dataAndCollection.includes(newDataRef)) {
+            && feedBackProducer.feedbackProducerMrid.length > 0) {
 
-            this.dataAndCollection.push(newDataRef);
             const dataReference: DataReference = {
                 collection: referencedDocument.collection,
                 data: feedBackProducer,
@@ -469,12 +446,8 @@ export class EligibilityController {
                 const existing = await ReserveBidMarketDocumentController.dataExists(
                     params, reserveBidObj.reserveBidMrid, referencedDocument.collection);
 
-                const newDataRef = reserveBidObj.reserveBidMrid + "#" + referencedDocument.collection;
+                if (!existing) {
 
-                if (!existing
-                    && !this.dataAndCollection.includes(newDataRef)) {
-
-                    this.dataAndCollection.push(newDataRef);
                     requiredReferences.push(
                         {collection: referencedDocument.collection,
                         previousCollection: initialTarget,
@@ -498,11 +471,8 @@ export class EligibilityController {
                     await AttachmentFileController.dataExists(
                         params, attachmentFile.fileId, referencedDocument.collection);
 
-                const newDataRef = attachmentFile.fileId + "#" + referencedDocument.collection;
-                if (!existing
-                    && !this.dataAndCollection.includes(newDataRef)) {
+                if (!existing) {
 
-                    this.dataAndCollection.push(newDataRef);
                     // //Remove file content in Testing Environment
                     // attachmentFile.fileContent="";
                     requiredReferences.push(

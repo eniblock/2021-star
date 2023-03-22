@@ -78,6 +78,8 @@ export class OrderManagerController {
         originalOrder.reconciliationStatus = activationDocument.reconciliationStatus;
 
         if (JSON.stringify(originalOrder) !== JSON.stringify(activationDocument)) {
+            params.logger.error("original: ", originalOrder)
+            params.logger.error("updated one: ", activationDocument)
             throw new Error(`Error on document ${activationDocument.activationDocumentMrid} all modified data cannot be updated by orders.`);
         }
 

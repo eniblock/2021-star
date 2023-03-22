@@ -136,7 +136,13 @@ export class ReconciliationController {
                 conciliationState.updateOrders.push(dataReference);
             }
             // if (dataReference.data.potentialChild) {
+                if (dataReference.data.activationDocumentMrid === "672d0c6d-6fbd-4115-b6eb-1a2e604d7e96") {
+                    params.logger.info("############# s1")
+                    params.logger.info(dataReference)
+                    params.logger.info("############# e1")
+                }
                 conciliationState = await this.filterChild(params, dataReference, conciliationState);
+
             // }
             if (dataReference.data.potentialParent) {
                 conciliationState = await this.filterParent(params, dataReference, conciliationState);
@@ -200,6 +206,13 @@ export class ReconciliationController {
                 conciliationState.startState.push(dataReference);
             }
         }
+        if (dataReference.data.activationDocumentMrid === "672d0c6d-6fbd-4115-b6eb-1a2e604d7e96") {
+            params.logger.info("############# s2")
+            params.logger.info(dataReference)
+            params.logger.info(JSON.stringify([...conciliationState.remainingChilds]))
+            params.logger.info("############# e2")
+        }
+
 
         params.logger.debug('=============  END  : filterChild ReconciliationController ===========');
         return conciliationState;

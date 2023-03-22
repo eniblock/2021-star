@@ -390,16 +390,17 @@ export class EnergyAccountController {
 
         // Hour Changement Management
         const startDate = CommonService.formatDateStr(energyObj.startCreatedDateTime);
+        const endDate = CommonService.formatDateStr(energyObj.endCreatedDateTime);
 
         const lapTimeLess1HDays: string[] =
             params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS);
         const lapTimePlus1HDays: string[] =
             params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H_DAYS);
 
-        if (lapTimeLess1HDays.includes(startDate)) {
+        if (lapTimeLess1HDays.includes(startDate) || (endDate && lapTimeLess1HDays.includes(endDate))) {
             const lapTimeStr: string = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H);
             nbExpectedPoints = parseInt(lapTimeStr, 10);
-        } else if (lapTimePlus1HDays.includes(startDate)) {
+        } else if (lapTimePlus1HDays.includes(startDate) || (endDate && lapTimePlus1HDays.includes(endDate))) {
             const lapTimeStr: string = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_PLUS1H);
             nbExpectedPoints = parseInt(lapTimeStr, 10);
         } else {

@@ -31,49 +31,48 @@ export class ReconciliationController {
         if (identity === OrganizationTypeMsp.RTE || identity === OrganizationTypeMsp.ENEDIS) {
             const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}"}}`;;//,"$or":[{"potentialParent": true},{"potentialChild": true},{"potentialChild": false}]}}`;
 
-            for (const role of [ RoleType.Role_DSO, RoleType.Role_TSO, OrganizationTypeMsp.PRODUCER ]) {
-                const collections: string[] = await HLFServices.getCollectionsFromParameters(
-                    params, ParametersType.DATA_TARGET, role);
+            const collections: string[] = await HLFServices.getCollectionsFromParameters(
+                params, ParametersType.DATA_TARGET, ParametersType.ALL);
+
+            params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+            params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+            params.logger.info(collections)
+            params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+            params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+
+
+            if (collections) {
+                for (const collection of collections) {
+                    const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(
+                        params, query, [collection]);
 
                     params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+                    params.logger.info(collection)
+                    params.logger.info("iiii")
+                    params.logger.info(JSON.stringify(allResults))
                     params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
-                    params.logger.info(collections)
-                    params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
-                    params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
 
+                    if (allResults.length > 0) {
+                        for (const result of allResults) {
+                            if (result.instance === "tso"
+                                || (result.instance === "dso" && result.subOrderList.length === 0)
+                            ) {
+                                const idKey = result.activationDocumentMrid.concat('##').concat(collection);
+                                if (!activationDocumentIdList.includes(idKey)) {
+                                    activationDocumentIdList.push(idKey);
 
-                if (collections) {
-                    for (const collection of collections) {
-                        const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(
-                            params, query, [collection]);
-
-                        params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
-                        params.logger.info(collection)
-                        params.logger.info("iiii")
-                        params.logger.info(JSON.stringify(allResults))
-                        params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
-
-                        if (allResults.length > 0) {
-                            for (const result of allResults) {
-                                if (result.instance === "tso"
-                                    || (result.instance === "dso" && result.subOrderList.length === 0)
-                                ) {
-                                    const idKey = result.activationDocumentMrid.concat('##').concat(collection);
-                                    if (!activationDocumentIdList.includes(idKey)) {
-                                        activationDocumentIdList.push(idKey);
-
-                                        reconciliationState = await this.filterDocument(
-                                            params,
-                                            {collection, data: result, docType: DocType.ACTIVATION_DOCUMENT},
-                                            reconciliationState);
-                                    }
+                                    reconciliationState = await this.filterDocument(
+                                        params,
+                                        {collection, data: result, docType: DocType.ACTIVATION_DOCUMENT},
+                                        reconciliationState);
                                 }
-
                             }
+
                         }
                     }
                 }
             }
+
             params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
             params.logger.info(JSON.stringify(activationDocumentIdList))
             params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")

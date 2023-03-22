@@ -840,8 +840,8 @@ export class ActivationDocumentController {
         }
 
         if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase() ) {
-            params.logger.info("ERROR")
-            params.logger.info(systemOperatorObj)
+            params.logger.info("ERROR");
+            params.logger.info(JSON.stringify(systemOperatorObj));
             throw new Error(`Organisation, ${identity} cannot update Activation Document for sender ${systemOperatorObj.systemOperatorMarketParticipantName}`);
         }
 

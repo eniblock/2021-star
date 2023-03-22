@@ -40,9 +40,11 @@ export class ReconciliationController {
                         const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(
                             params, query, [collection]);
 
-                        // params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
-                        // params.logger.debug(JSON.stringify(allResults))
-                        // params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
+                        params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+                        params.logger.info(collection)
+                        params.logger.info("iiii")
+                        params.logger.info(JSON.stringify(allResults))
+                        params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
 
                         if (allResults.length > 0) {
                             for (const result of allResults) {

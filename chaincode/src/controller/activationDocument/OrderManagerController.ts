@@ -49,7 +49,6 @@ export class OrderManagerController {
                     docType: DocType.ACTIVATION_DOCUMENT,
                     id: activationDocument.activationDocumentMrid});
         } catch (err) {
-            params.logger.info("************* 1")
             throw new Error(`Error : Activation Document - updateByOrders - Unknown document cannot be Updated ${activationDocument.activationDocumentMrid}`);
         }
 
@@ -66,7 +65,6 @@ export class OrderManagerController {
 
             original = originalRef.data;
         } else {
-            params.logger.info("************* 2")
             throw new Error(`Error : Activation Document - updateByOrders - Unknown document cannot be Updated ${activationDocument.activationDocumentMrid}`);
         }
 
@@ -78,10 +76,9 @@ export class OrderManagerController {
         originalOrder.eligibilityStatus = activationDocument.eligibilityStatus;
         originalOrder.eligibilityStatusEditable = activationDocument.eligibilityStatusEditable;
 
-        //TODO RECONCILIATION
-        // if (JSON.stringify(originalOrder) !== JSON.stringify(activationDocument)) {
-        //     throw new Error(`Error on document ${activationDocument.activationDocumentMrid} all modified data cannot be updated by orders.`);
-        // }
+        if (JSON.stringify(originalOrder) !== JSON.stringify(activationDocument)) {
+            throw new Error(`Error on document ${activationDocument.activationDocumentMrid} all modified data cannot be updated by orders.`);
+        }
 
         // TODO check subOrderList
         // if (original.subOrderList) {

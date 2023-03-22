@@ -29,7 +29,7 @@ export class ReconciliationController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity === OrganizationTypeMsp.RTE || identity === OrganizationTypeMsp.ENEDIS) {
-            const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true},{"potentialChild": false}]}}`;
+            const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}"}}`;;//,"$or":[{"potentialParent": true},{"potentialChild": true},{"potentialChild": false}]}}`;
 
             for (const role of [ RoleType.Role_DSO, RoleType.Role_TSO, OrganizationTypeMsp.PRODUCER ]) {
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(
@@ -46,20 +46,29 @@ export class ReconciliationController {
 
                         if (allResults.length > 0) {
                             for (const result of allResults) {
-                                const idKey = result.activationDocumentMrid.concat('##').concat(collection);
-                                if (!activationDocumentIdList.includes(idKey)) {
-                                    activationDocumentIdList.push(idKey);
+                                if (result.instance === "tso"
+                                    || (result.instance === "dso" && result.subOrderList.length === 0)
+                                ) {
+                                    const idKey = result.activationDocumentMrid.concat('##').concat(collection);
+                                    if (!activationDocumentIdList.includes(idKey)) {
+                                        activationDocumentIdList.push(idKey);
 
-                                    reconciliationState = await this.filterDocument(
-                                        params,
-                                        {collection, data: result, docType: DocType.ACTIVATION_DOCUMENT},
-                                        reconciliationState);
+                                        reconciliationState = await this.filterDocument(
+                                            params,
+                                            {collection, data: result, docType: DocType.ACTIVATION_DOCUMENT},
+                                            reconciliationState);
+                                    }
                                 }
+
                             }
                         }
                     }
                 }
             }
+            params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+            params.logger.info(JSON.stringify(activationDocumentIdList))
+            params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+
 
             // params.logger.info("-----------------------")
             // params.logger.info("-----------------------")

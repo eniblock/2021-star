@@ -136,6 +136,12 @@ export class ReconciliationController {
         params.logger.debug('============= START : filterDocument ReconciliationController ===========');
 
         if (dataReference.data) {
+            if (dataReference.data.activationDocumentMrid === "672d0c6d-6fbd-4115-b6eb-1a2e604d7e96") {
+                params.logger.info("############# s0")
+                params.logger.info(dataReference)
+                params.logger.info("############# e0")
+            }
+
             const garbage = await this.testGarbage(params, dataReference);
 
             if (garbage) {
@@ -169,6 +175,13 @@ export class ReconciliationController {
 
         let garbage: boolean = false;
 
+        if (dataReference.data.activationDocumentMrid === "672d0c6d-6fbd-4115-b6eb-1a2e604d7e96") {
+            params.logger.info("############# sg1")
+            params.logger.info(dataReference)
+            params.logger.info("############# eg1")
+        }
+
+
         const ppcott: number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
         const ppcottDate = CommonService.reduceDateDays(new Date(), ppcott);
 
@@ -187,6 +200,13 @@ export class ReconciliationController {
                 garbage = true;
             }
         }
+
+        if (dataReference.data.activationDocumentMrid === "672d0c6d-6fbd-4115-b6eb-1a2e604d7e96") {
+            params.logger.info("############# sg2")
+            params.logger.info(garbage)
+            params.logger.info("############# eg2")
+        }
+
 
         params.logger.debug(`=============  END  : testGarbage (${JSON.stringify(garbage)}) ReconciliationController =========== `);
         return garbage;

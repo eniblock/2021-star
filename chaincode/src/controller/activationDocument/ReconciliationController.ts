@@ -18,7 +18,6 @@ import { CommonService } from '../service/CommonService';
 import { SystemOperatorController } from '../SystemOperatorController';
 import { YellowPagesController } from '../YellowPagesController';
 import { ReconciliationStatus } from '../../enums/ReconciliationStatus';
-import { ActivationDocumentController } from './ActivationDocumentController';
 
 export class ReconciliationController {
     public static async getReconciliationState(
@@ -30,7 +29,7 @@ export class ReconciliationController {
 
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity === OrganizationTypeMsp.RTE || identity === OrganizationTypeMsp.ENEDIS) {
-            const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true},{"potentialChild": false}]}}`;
 
             for (const role of [ RoleType.Role_DSO, RoleType.Role_TSO, OrganizationTypeMsp.PRODUCER ]) {
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(
@@ -76,36 +75,6 @@ export class ReconciliationController {
             // params.logger.info("---")
             // params.logger.info(JSON.stringify([...reconciliationState.remainingChilds]))
             // params.logger.info("-----------------------")
-
-            let manualDocument1 = null;
-            try {
-                manualDocument1 = await ActivationDocumentController.getActivationDocumentRefById(params, "672d0c6d-6fbd-4115-b6eb-1a2e604d7e96");
-            } catch(error) {
-                //DO NOTHING
-            }
-            let manualDocument2 = null;
-            try {
-                manualDocument2 = await ActivationDocumentController.getActivationDocumentRefById(params, "96c26069-d94f-4f55-95df-f0488acb8e6c");
-            } catch(error) {
-                //DO NOTHING
-            }
-            if (manualDocument1
-                && manualDocument1.data
-                && manualDocument1.collection
-                && manualDocument1.collection.length >0) {
-                manualDocument1.data.potentialChild = true;
-                reconciliationState.remainingChilds.push(manualDocument1)
-                params.logger.info("******* ADDED 672d0c6d-6fbd-4115-b6eb-1a2e604d7e96")
-            }
-            if (manualDocument2
-                && manualDocument2.data
-                && manualDocument2.collection
-                && manualDocument2.collection.length >0) {
-
-                manualDocument2.data.potentialChild = true;
-                reconciliationState.remainingChilds.push(manualDocument2)
-                params.logger.info("******* ADDED 96c26069-d94f-4f55-95df-f0488acb8e6c")
-            }
 
             if (reconciliationState
                 && reconciliationState.remainingChilds

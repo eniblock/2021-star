@@ -60,20 +60,20 @@ export class ReconciliationController {
                 }
             }
 
-            // params.logger.debug("-----------------------")
-            // params.logger.debug("-----------------------")
-            // params.logger.debug("- - - - - - - - - - - -")
-            // params.logger.debug("-----------------------")
-            // params.logger.debug("-----------------------")
+            params.logger.info("-----------------------")
+            params.logger.info("-----------------------")
+            params.logger.info("- - - - - - - - - - - -")
+            params.logger.info("-----------------------")
+            params.logger.info("-----------------------")
 
-            // params.logger.debug(JSON.stringify(reconciliationState))
-            // params.logger.debug("---")
-            // params.logger.debug(JSON.stringify([...reconciliationState.endStateRefsMap]))
-            // params.logger.debug("---")
-            // params.logger.debug(JSON.stringify([...reconciliationState.remainingParentsMap]))
-            // params.logger.debug("---")
-            // params.logger.debug(JSON.stringify([...reconciliationState.remainingChilds]))
-            // params.logger.debug("-----------------------")
+            params.logger.info(JSON.stringify(reconciliationState))
+            params.logger.info("---")
+            params.logger.info(JSON.stringify([...reconciliationState.endStateRefsMap]))
+            params.logger.info("---")
+            params.logger.info(JSON.stringify([...reconciliationState.remainingParentsMap]))
+            params.logger.info("---")
+            params.logger.info(JSON.stringify([...reconciliationState.remainingChilds]))
+            params.logger.info("-----------------------")
 
             if (reconciliationState
                 && reconciliationState.remainingChilds
@@ -105,11 +105,11 @@ export class ReconciliationController {
             // params.logger.debug("-----")
             // params.logger.debug(JSON.stringify([...reconciliationState.remainingChilds]))
 
-            // params.logger.debug("-----------------------")
-            // params.logger.debug("-----------------------")
-            // params.logger.debug("- - - - - - - - - - - -")
-            // params.logger.debug("-----------------------")
-            // params.logger.debug("-----------------------")
+            params.logger.info("-----------------------")
+            params.logger.info("-----------------------")
+            params.logger.info("- - - - - - - - - - - -")
+            params.logger.info("-----------------------")
+            params.logger.info("-----------------------")
 
         }
 

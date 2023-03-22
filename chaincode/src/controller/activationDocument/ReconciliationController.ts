@@ -135,9 +135,9 @@ export class ReconciliationController {
                 dataReference.data.orderEnd = true;
                 conciliationState.updateOrders.push(dataReference);
             }
-            if (dataReference.data.potentialChild) {
+            // if (dataReference.data.potentialChild) {
                 conciliationState = await this.filterChild(params, dataReference, conciliationState);
-            }
+            // }
             if (dataReference.data.potentialParent) {
                 conciliationState = await this.filterParent(params, dataReference, conciliationState);
             }

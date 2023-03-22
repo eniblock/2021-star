@@ -45,16 +45,25 @@ export class ReconciliationController {
                         // params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
 
                         if (allResults.length > 0) {
+                            params.logger.info("#######################")
+                            params.logger.info("#######################")
+
                             for (const result of allResults) {
                                 const idKey = result.activationDocumentMrid.concat('##').concat(collection);
                                 if (!activationDocumentIdList.includes(idKey)) {
                                     activationDocumentIdList.push(idKey);
+
+                                    params.logger.info("o~o~o~o")
+
                                     reconciliationState = await this.filterDocument(
                                         params,
                                         {collection, data: result, docType: DocType.ACTIVATION_DOCUMENT},
                                         reconciliationState);
                                 }
                             }
+                            params.logger.info("#######################")
+                            params.logger.info("#######################")
+
                         }
                     }
                 }
@@ -126,6 +135,12 @@ export class ReconciliationController {
         params.logger.debug('============= START : filterDocument ReconciliationController ===========');
 
         if (dataReference.data) {
+            params.logger.info(dataReference.data.activationDocumentMrid)
+            params.logger.info("--before--")
+            params.logger.info(dataReference.data.potentialParent)
+            params.logger.info(dataReference.data.potentialChild)
+            params.logger.info(dataReference.data.orderEnd)
+
             const garbage = await this.testGarbage(params, dataReference);
 
             if (garbage) {
@@ -135,12 +150,19 @@ export class ReconciliationController {
                 conciliationState.updateOrders.push(dataReference);
             }
             if (dataReference.data.potentialChild) {
+                params.logger.info("child")
                 conciliationState = await this.filterChild(params, dataReference, conciliationState);
             }
             if (dataReference.data.potentialParent) {
+                params.logger.info("parent")
                 conciliationState = await this.filterParent(params, dataReference, conciliationState);
             }
+            params.logger.info("--after--")
+            params.logger.info(dataReference.data.potentialParent)
+            params.logger.info(dataReference.data.potentialChild)
+            params.logger.info(dataReference.data.orderEnd)
         }
+
 
         params.logger.debug('=============  END  : filterDocument ReconciliationController ===========');
         return conciliationState;

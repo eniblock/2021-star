@@ -89,9 +89,9 @@ export class OrderManagerController {
         verify = verify && (originalOrder.receiverRole === activationDocument.receiverRole);
         verify = verify && (originalOrder.instance === activationDocument.instance);
 
-        if (verify) {
-            params.logger.error("original: ", originalOrder)
-            params.logger.error("updated one: ", activationDocument)
+        if (!verify) {
+            params.logger.info("original: ", originalOrder)
+            params.logger.info("updated one: ", activationDocument)
             throw new Error(`Error on document ${activationDocument.activationDocumentMrid} all modified data cannot be updated by orders.`);
         }
 

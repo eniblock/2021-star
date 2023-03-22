@@ -35,6 +35,13 @@ export class ReconciliationController {
                 const collections: string[] = await HLFServices.getCollectionsFromParameters(
                     params, ParametersType.DATA_TARGET, role);
 
+                    params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+                    params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+                    params.logger.info(collections)
+                    params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+                    params.logger.info("iiiiiiiiiiiiiiiiiiiiiii")
+
+
                 if (collections) {
                     for (const collection of collections) {
                         const allResults: ActivationDocument[] = await ActivationDocumentService.getQueryArrayResult(

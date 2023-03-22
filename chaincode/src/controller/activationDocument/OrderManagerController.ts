@@ -78,9 +78,10 @@ export class OrderManagerController {
         originalOrder.eligibilityStatus = activationDocument.eligibilityStatus;
         originalOrder.eligibilityStatusEditable = activationDocument.eligibilityStatusEditable;
 
-        if (JSON.stringify(originalOrder) !== JSON.stringify(activationDocument)) {
-            throw new Error(`Error on document ${activationDocument.activationDocumentMrid} all modified data cannot be updated by orders.`);
-        }
+        //TODO RECONCILIATION
+        // if (JSON.stringify(originalOrder) !== JSON.stringify(activationDocument)) {
+        //     throw new Error(`Error on document ${activationDocument.activationDocumentMrid} all modified data cannot be updated by orders.`);
+        // }
 
         // TODO check subOrderList
         // if (original.subOrderList) {

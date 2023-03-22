@@ -45,15 +45,10 @@ export class ReconciliationController {
                         // params.logger.debug("iiiiiiiiiiiiiiiiiiiiiii")
 
                         if (allResults.length > 0) {
-                            params.logger.info("#######################")
-                            params.logger.info("#######################")
-
                             for (const result of allResults) {
                                 const idKey = result.activationDocumentMrid.concat('##').concat(collection);
                                 if (!activationDocumentIdList.includes(idKey)) {
                                     activationDocumentIdList.push(idKey);
-
-                                    params.logger.info("o~o~o~o")
 
                                     reconciliationState = await this.filterDocument(
                                         params,
@@ -61,28 +56,25 @@ export class ReconciliationController {
                                         reconciliationState);
                                 }
                             }
-                            params.logger.info("#######################")
-                            params.logger.info("#######################")
-
                         }
                     }
                 }
             }
 
-            params.logger.info("-----------------------")
-            params.logger.info("-----------------------")
-            params.logger.info("- - - - - - - - - - - -")
-            params.logger.info("-----------------------")
-            params.logger.info("-----------------------")
+            // params.logger.info("-----------------------")
+            // params.logger.info("-----------------------")
+            // params.logger.info("- - - - - - - - - - - -")
+            // params.logger.info("-----------------------")
+            // params.logger.info("-----------------------")
 
-            params.logger.info(JSON.stringify(reconciliationState))
-            params.logger.info("---")
-            params.logger.info(JSON.stringify([...reconciliationState.endStateRefsMap]))
-            params.logger.info("---")
-            params.logger.info(JSON.stringify([...reconciliationState.remainingParentsMap]))
-            params.logger.info("---")
-            params.logger.info(JSON.stringify([...reconciliationState.remainingChilds]))
-            params.logger.info("-----------------------")
+            // params.logger.info(JSON.stringify(reconciliationState))
+            // params.logger.info("---")
+            // params.logger.info(JSON.stringify([...reconciliationState.endStateRefsMap]))
+            // params.logger.info("---")
+            // params.logger.info(JSON.stringify([...reconciliationState.remainingParentsMap]))
+            // params.logger.info("---")
+            // params.logger.info(JSON.stringify([...reconciliationState.remainingChilds]))
+            // params.logger.info("-----------------------")
 
             if (reconciliationState
                 && reconciliationState.remainingChilds
@@ -114,11 +106,11 @@ export class ReconciliationController {
             // params.logger.debug("-----")
             // params.logger.debug(JSON.stringify([...reconciliationState.remainingChilds]))
 
-            params.logger.info("-----------------------")
-            params.logger.info("-----------------------")
-            params.logger.info("- - - - - - - - - - - -")
-            params.logger.info("-----------------------")
-            params.logger.info("-----------------------")
+            // params.logger.info("-----------------------")
+            // params.logger.info("-----------------------")
+            // params.logger.info("- - - - - - - - - - - -")
+            // params.logger.info("-----------------------")
+            // params.logger.info("-----------------------")
 
         }
 
@@ -135,12 +127,6 @@ export class ReconciliationController {
         params.logger.debug('============= START : filterDocument ReconciliationController ===========');
 
         if (dataReference.data) {
-            params.logger.info(dataReference.data.activationDocumentMrid)
-            params.logger.info("--before--")
-            params.logger.info(dataReference.data.potentialParent)
-            params.logger.info(dataReference.data.potentialChild)
-            params.logger.info(dataReference.data.orderEnd)
-
             const garbage = await this.testGarbage(params, dataReference);
 
             if (garbage) {
@@ -150,19 +136,12 @@ export class ReconciliationController {
                 conciliationState.updateOrders.push(dataReference);
             }
             if (dataReference.data.potentialChild) {
-                params.logger.info("child")
                 conciliationState = await this.filterChild(params, dataReference, conciliationState);
             }
             if (dataReference.data.potentialParent) {
-                params.logger.info("parent")
                 conciliationState = await this.filterParent(params, dataReference, conciliationState);
             }
-            params.logger.info("--after--")
-            params.logger.info(dataReference.data.potentialParent)
-            params.logger.info(dataReference.data.potentialChild)
-            params.logger.info(dataReference.data.orderEnd)
         }
-
 
         params.logger.debug('=============  END  : filterDocument ReconciliationController ===========');
         return conciliationState;
@@ -273,23 +252,23 @@ export class ReconciliationController {
                 childReference.data.originAutomationRegisteredResourceMrid,
             );
 
-            params.logger.debug('0000000000000000000000000');
-            params.logger.debug('childReference=', JSON.stringify(childReference));
-            params.logger.debug('remainingParentsMap=', JSON.stringify([...reconciliationState.remainingParentsMap]));
-            params.logger.debug('yellowPageList for BB reconciliation=', JSON.stringify(yellowPageList));
-            params.logger.debug('0000000000000000000000000');
+            params.logger.info('0000000000000000000000000');
+            params.logger.info('childReference=', JSON.stringify(childReference));
+            params.logger.info('remainingParentsMap=', JSON.stringify([...reconciliationState.remainingParentsMap]));
+            params.logger.info('yellowPageList for BB reconciliation=', JSON.stringify(yellowPageList));
+            params.logger.info('0000000000000000000000000');
 
-            params.logger.debug('1111111111111111111111111');
+            params.logger.info('1111111111111111111111111');
 
             const possibleParents: DataReference[] = [];
             for (const yellowPage of yellowPageList) {
 
-                params.logger.debug('yellowPage.registeredResourceMrid: ', yellowPage.registeredResourceMrid);
+                params.logger.info('yellowPage.registeredResourceMrid: ', yellowPage.registeredResourceMrid);
 
                 const linkedParents: DataReference[] =
                     reconciliationState.remainingParentsMap.get(yellowPage.registeredResourceMrid);
 
-                params.logger.debug('linkedParents: ', linkedParents);
+                params.logger.info('linkedParents: ', linkedParents);
 
                 if (linkedParents) {
                     for (const linkedParent of linkedParents) {
@@ -316,14 +295,14 @@ export class ReconciliationController {
                 }
             }
 
-            params.logger.debug('possibleParents: ', possibleParents);
-            params.logger.debug('1111111111111111111111111');
+            params.logger.info('possibleParents: ', possibleParents);
+            params.logger.info('1111111111111111111111111');
 
             const index = await ReconciliationController.findIndexofClosestEndDateRef(
                 childReference.data, possibleParents);
 
-            params.logger.debug('chosen Parent: ', index);
-            params.logger.debug('1111111111111111111111111');
+            params.logger.info('chosen Parent: ', index);
+            params.logger.info('1111111111111111111111111');
 
 
             // If a parent document is found

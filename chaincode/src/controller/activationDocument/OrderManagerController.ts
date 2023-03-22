@@ -69,15 +69,27 @@ export class OrderManagerController {
         }
 
         const originalOrder: ActivationDocument = JSON.parse(JSON.stringify(original));
-        originalOrder.orderEnd = activationDocument.orderEnd;
-        originalOrder.potentialChild = activationDocument.potentialChild;
-        originalOrder.potentialParent = activationDocument.potentialParent;
-        originalOrder.subOrderList = activationDocument.subOrderList;
-        originalOrder.eligibilityStatus = activationDocument.eligibilityStatus;
-        originalOrder.eligibilityStatusEditable = activationDocument.eligibilityStatusEditable;
-        originalOrder.reconciliationStatus = activationDocument.reconciliationStatus;
 
-        if (JSON.stringify(originalOrder) !== JSON.stringify(activationDocument)) {
+        let verify = true;
+        verify = verify && (originalOrder.docType === activationDocument.docType);
+        verify = verify && (originalOrder.activationDocumentMrid === activationDocument.activationDocumentMrid);
+        verify = verify && (originalOrder.originAutomationRegisteredResourceMrid === activationDocument.originAutomationRegisteredResourceMrid);
+        verify = verify && (originalOrder.registeredResourceMrid === activationDocument.registeredResourceMrid);
+        verify = verify && (originalOrder.measurementUnitName === activationDocument.measurementUnitName);
+        verify = verify && (originalOrder.messageType === activationDocument.messageType);
+        verify = verify && (originalOrder.businessType === activationDocument.businessType);
+        verify = verify && (originalOrder.orderValue === activationDocument.orderValue);
+        verify = verify && (originalOrder.startCreatedDateTime === activationDocument.startCreatedDateTime);
+        verify = verify && (originalOrder.endCreatedDateTime === activationDocument.endCreatedDateTime);
+        verify = verify && (originalOrder.revisionNumber === activationDocument.revisionNumber);
+        verify = verify && (originalOrder.reasonCode === activationDocument.reasonCode);
+        verify = verify && (originalOrder.senderMarketParticipantMrid === activationDocument.senderMarketParticipantMrid);
+        verify = verify && (originalOrder.senderRole === activationDocument.senderRole);
+        verify = verify && (originalOrder.receiverMarketParticipantMrid === activationDocument.receiverMarketParticipantMrid);
+        verify = verify && (originalOrder.receiverRole === activationDocument.receiverRole);
+        verify = verify && (originalOrder.instance === activationDocument.instance);
+
+        if (verify) {
             params.logger.error("original: ", originalOrder)
             params.logger.error("updated one: ", activationDocument)
             throw new Error(`Error on document ${activationDocument.activationDocumentMrid} all modified data cannot be updated by orders.`);

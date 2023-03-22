@@ -77,8 +77,18 @@ export class ReconciliationController {
             // params.logger.info(JSON.stringify([...reconciliationState.remainingChilds]))
             // params.logger.info("-----------------------")
 
-            const manualDocument1 = await ActivationDocumentController.getActivationDocumentRefById(params, "672d0c6d-6fbd-4115-b6eb-1a2e604d7e96");
-            const manualDocument2 = await ActivationDocumentController.getActivationDocumentRefById(params, "96c26069-d94f-4f55-95df-f0488acb8e6c");
+            let manualDocument1 = null;
+            try {
+                manualDocument1 = await ActivationDocumentController.getActivationDocumentRefById(params, "672d0c6d-6fbd-4115-b6eb-1a2e604d7e96");
+            } catch(error) {
+                //DO NOTHING
+            }
+            let manualDocument2 = null;
+            try {
+                manualDocument2 = await ActivationDocumentController.getActivationDocumentRefById(params, "96c26069-d94f-4f55-95df-f0488acb8e6c");
+            } catch(error) {
+                //DO NOTHING
+            }
             if (manualDocument1
                 && manualDocument1.data
                 && manualDocument1.collection

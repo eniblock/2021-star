@@ -18,6 +18,7 @@ import { CommonService } from '../service/CommonService';
 import { SystemOperatorController } from '../SystemOperatorController';
 import { YellowPagesController } from '../YellowPagesController';
 import { ReconciliationStatus } from '../../enums/ReconciliationStatus';
+import { ActivationDocumentController } from './ActivationDocumentController';
 
 export class ReconciliationController {
     public static async getReconciliationState(
@@ -75,6 +76,26 @@ export class ReconciliationController {
             // params.logger.info("---")
             // params.logger.info(JSON.stringify([...reconciliationState.remainingChilds]))
             // params.logger.info("-----------------------")
+
+            const manualDocument1 = await ActivationDocumentController.getActivationDocumentRefById(params, "672d0c6d-6fbd-4115-b6eb-1a2e604d7e96");
+            const manualDocument2 = await ActivationDocumentController.getActivationDocumentRefById(params, "96c26069-d94f-4f55-95df-f0488acb8e6c");
+            if (manualDocument1
+                && manualDocument1.data
+                && manualDocument1.collection
+                && manualDocument1.collection.length >0) {
+                manualDocument1.data.potentialChild = true;
+                reconciliationState.remainingChilds.push(manualDocument1)
+                params.logger.info("******* ADDED 672d0c6d-6fbd-4115-b6eb-1a2e604d7e96")
+            }
+            if (manualDocument2
+                && manualDocument2.data
+                && manualDocument2.collection
+                && manualDocument2.collection.length >0) {
+
+                manualDocument2.data.potentialChild = true;
+                reconciliationState.remainingChilds.push(manualDocument2)
+                params.logger.info("******* ADDED 96c26069-d94f-4f55-95df-f0488acb8e6c")
+            }
 
             if (reconciliationState
                 && reconciliationState.remainingChilds

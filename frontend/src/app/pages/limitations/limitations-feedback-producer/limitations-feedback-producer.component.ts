@@ -8,6 +8,9 @@ import {
   FormFeedbackProducerComponent
 } from "../../../components/formulaires/form-feedback-producer/form-feedback-producer.component";
 import {FeedbackProducer} from "../../../models/FeedbackProducer";
+import {SystemOperatorService} from "../../../services/api/system-operator.service";
+import {forkJoin} from "rxjs";
+import {SystemOperator} from "../../../models/SystemOperator";
 
 @Component({
   selector: 'app-limitations-feedback-producer',
@@ -26,20 +29,44 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
 
   constructor(
     private instanceService: InstanceService,
+    private systemOperatorService: SystemOperatorService,
     private bottomSheet: MatBottomSheet,
   ) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.instanceService.getTypeInstance().subscribe((instance) => {
-      this.instance = instance;
-    });
+    forkJoin({
+      instance: this.instanceService.getTypeInstance(),
+      participantMrid: this.instanceService.getParticipantMrid(),
+      marketParticipants: this.systemOperatorService.getSystemOperators()
+    }).subscribe(
+      res => {
+        this.updateView(res.instance, res.participantMrid, res.marketParticipants);
+      });
+  }
+
+  private updateView(instance: Instance, participantMrid: string, marketParticipants: SystemOperator[]) {
+    this.instance = instance;
+
+    let ordreEnvoyeAUnAutreSystemOperator =
+      this.instance != Instance.PRODUCER
+      && (
+        (this.historiqueLimitation?.activationDocument.senderMarketParticipantMrid.toUpperCase() == participantMrid.toUpperCase() && marketParticipants.some(mp => mp.systemOperatorMarketParticipantMrid.toUpperCase() == this.historiqueLimitation?.activationDocument.receiverMarketParticipantMrid.toUpperCase()))
+        ||
+        (this.historiqueLimitation?.subOrderList && this.historiqueLimitation?.subOrderList.length > 0 && this.historiqueLimitation?.subOrderList![0].senderMarketParticipantMrid.toUpperCase() == participantMrid.toUpperCase() && marketParticipants.some(mp => mp.systemOperatorMarketParticipantMrid.toUpperCase() == this.historiqueLimitation?.subOrderList![0].receiverMarketParticipantMrid.toUpperCase()))
+      );
 
     if (this.historiqueLimitation && this.historiqueLimitation.feedbackProducer) {
       const now = new Date();
       const dateFin = new Date(this.historiqueLimitation.feedbackProducer.validityPeriodEndDateTime);
       this.buttonCreationFeedbackDisabled = now.getTime() > dateFin.getTime();
-      this.showButton = (this.historiqueLimitation.energyAmount?.quantity && this.historiqueLimitation.reserveBidMarketDocument?.energyPriceAmount && (this.historiqueLimitation.balancingDocument && this.historiqueLimitation.balancingDocument.financialPriceAmount != null)) as any;
+      this.showButton =
+        (
+          this.historiqueLimitation.energyAmount?.quantity
+          && this.historiqueLimitation.reserveBidMarketDocument?.energyPriceAmount
+          && (this.historiqueLimitation.balancingDocument && this.historiqueLimitation.balancingDocument.financialPriceAmount != null)
+          && !(!this.historiqueLimitation.feedbackProducer?.feedbackAnswer && ordreEnvoyeAUnAutreSystemOperator)
+        ) as any;
     } else {
       this.buttonCreationFeedbackDisabled = true;
       this.showButton = false;
@@ -70,5 +97,4 @@ export class LimitationsFeedbackProducerComponent implements OnChanges {
       }
     });
   }
-
 }

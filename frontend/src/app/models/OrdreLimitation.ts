@@ -42,5 +42,6 @@ export interface OrdreLimitation {
   revisionNumber: string,
   measurementUnitName: MeasurementUnitName,
   senderMarketParticipantMrid: string,
+  receiverMarketParticipantMrid: string,
   reconciliationStatus: ReconciliationStatus,
 }

@@ -227,6 +227,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         orderValue: '13',
         measurementUnitName: MeasurementUnitName.MW,
         senderMarketParticipantMrid: '10XFR-RTE------Q', // 10XFR-RTE------Q    17X100A100A0001A
+        receiverMarketParticipantMrid: '17X100A100A0001A', // 10XFR-RTE------Q    17X100A100A0001A
         revisionNumber: "12",
         reconciliationStatus: ReconciliationStatus.MISS,
       },
@@ -333,6 +334,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         orderValue: '13',
         measurementUnitName: MeasurementUnitName.MW,
         senderMarketParticipantMrid: '17X100A100A0001A', // 10XFR-RTE------Q    17X100A100A0001A
+        receiverMarketParticipantMrid: '10XFR-RTE------Q', // 10XFR-RTE------Q    17X100A100A0001A
         revisionNumber: "12",
         reconciliationStatus: ReconciliationStatus.NONE,
       },
@@ -351,6 +353,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           orderValue: '12',
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
+          receiverMarketParticipantMrid: '10XFR-RTE------Q', // 10XFR-RTE------Q    17X100A100A0001A
           revisionNumber: "12",
           reconciliationStatus: ReconciliationStatus.PARTIAL,
         }, {
@@ -367,6 +370,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
           orderValue: '11',
           measurementUnitName: MeasurementUnitName.MW,
           senderMarketParticipantMrid: '10XFR-RTE------Q',
+          receiverMarketParticipantMrid: '10XFR-RTE------Q', // 10XFR-RTE------Q    17X100A100A0001A
           revisionNumber: "12",
           reconciliationStatus: ReconciliationStatus.TOTAL,
         }

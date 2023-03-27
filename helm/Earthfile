@@ -1,9 +1,9 @@
 VERSION 0.6
 
-ARG helmhelper=github.com/eniblock/build/helm:develop
+ARG helmhelper=github.com/eniblock/build/helm:4.1
 IMPORT $helmhelper AS helm
 
-ARG deployhelper=github.com/eniblock/build/deploy:develop
+ARG deployhelper=github.com/eniblock/build/deploy:4.1
 IMPORT $deployhelper AS deploy
 
 ARG repository=ghcr.io/eniblock/star

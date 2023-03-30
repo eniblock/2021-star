@@ -22,6 +22,7 @@ ENEDIS_ENERGYACCOUNTS_NB=$(echo $ENEDIS_ENERGYACCOUNTS | jq 'length')
 for i in `seq $ENEDIS_ENERGYACCOUNTS_NB`
 do
     tabindex=$(echo ".["$i-1"]")
+    INITIAL_energyAccountMarketDocumentMrid=$(echo $ENEDIS_ENERGYACCOUNTS | jq $tabindex | jq '.energyAccountMarketDocumentMrid')
     energyAccountMarketDocumentMrid=$(tr -dc 0-9 </dev/urandom | head -c 10 ; echo '')
     energyAccountMarketDocumentMrid=$(echo "energyAccount_enedis_$energyAccountMarketDocumentMrid")
     ENEDIS_ENERGYACCOUNTS_VALUE=$(echo $ENEDIS_ENERGYACCOUNTS | jq $tabindex | jq --arg value $energyAccountMarketDocumentMrid '. + {energyAccountMarketDocumentMrid: $value}')
@@ -30,7 +31,7 @@ do
 
     echo
     echo
-    echo "CREATION $ENEDIS_NODE Energy Account : $ENEDIS_ENERGYACCOUNTS_VALUE_STR"
+    echo "CREATION $ENEDIS_NODE Energy Account : $INITIAL_energyAccountMarketDocumentMrid"
     echo
 
     if $ONLINE_MODE

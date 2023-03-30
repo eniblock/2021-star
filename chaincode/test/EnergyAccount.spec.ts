@@ -20,6 +20,7 @@ import { Values } from './Values';
 import { DocType } from '../src/enums/DocType';
 import { QueryStateService } from '../src/controller/service/QueryStateService';
 import { HLFServices } from '../src/controller/service/HLFservice';
+import { CommonService } from '../src/controller/service/CommonService';
 
 
 class TestLoggerMgt {
@@ -422,7 +423,9 @@ describe('Star Tests EnergyAccount', () => {
 
             var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
             const lapTimeLess1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS);
-            nrjObj.startCreatedDateTime = lapTimeLess1HDays[0];
+            let newDate = new Date(Date.parse(lapTimeLess1HDays[0]));
+            newDate = CommonService.increaseDateMinutes(newDate, 120);
+            nrjObj.startCreatedDateTime = JSON.parse(JSON.stringify(newDate));
 
             nrjObj.timeSeries.pop();
             nrjObj.timeSeries.pop();
@@ -449,7 +452,9 @@ describe('Star Tests EnergyAccount', () => {
 
             var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
             const lapTimeLess1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS);
-            nrjObj.startCreatedDateTime = lapTimeLess1HDays[0];
+            let newDate = new Date(Date.parse(lapTimeLess1HDays[0]));
+            newDate = CommonService.increaseDateMinutes(newDate, 120);
+            nrjObj.startCreatedDateTime = JSON.parse(JSON.stringify(newDate));
 
             nrjObj.timeSeries.pop();
             nrjObj.timeSeries.pop();
@@ -475,7 +480,9 @@ describe('Star Tests EnergyAccount', () => {
 
             var nrjObj: EnergyAccount = JSON.parse(JSON.stringify(Values.HTA_EnergyAccount_a3));
             const lapTimeLess1HDays: string[] = params.values.get(ParametersType.ENERGY_ACCOUNT_TIME_INTERVAL_LAPsec_LESS1H_DAYS);
-            nrjObj.startCreatedDateTime = lapTimeLess1HDays[0];
+            let newDate = new Date(Date.parse(lapTimeLess1HDays[0]));
+            newDate = CommonService.increaseDateMinutes(newDate, 120);
+            nrjObj.startCreatedDateTime = JSON.parse(JSON.stringify(newDate));
 
             nrjObj.timeSeries.pop();
             nrjObj.timeSeries.pop();

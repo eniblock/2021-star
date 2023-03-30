@@ -63,6 +63,16 @@ export class CommonService {
         return newDate;
     }
 
+    public static getHoursFromStartDayStr(dateref: string): number {
+        const newDate = new Date(Date.parse(dateref));
+        const startDay = this.setHoursStartDay(newDate);
+
+        const diff = newDate.getTime() - startDay.getTime();
+
+        return diff/3600000;
+    }
+
+
     public static setHoursEndDayStr(dateref: string): string {
         let newDate = new Date(Date.parse(dateref));
 
@@ -77,6 +87,15 @@ export class CommonService {
         newDate.setUTCHours(23, 59, 59, 999);
 
         return newDate;
+    }
+
+    public static getHoursBeforeEndDayStr(dateref: string): number {
+        let newDate = new Date(Date.parse(dateref));
+        let endDay = this.setHoursEndDay(newDate);
+
+        const diff = endDay.getTime() - newDate.getTime();
+
+        return diff/3600000;
     }
 
     public static formatDate(dateValue: Date): string {

@@ -1470,6 +1470,97 @@ describe('Star Tests FeedbackProducer', () => {
             const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
             expected.indeminityStatus = IndeminityStatus.INVOICE_SENT;
 
+            params.logger.info("-----------")
+            params.logger.info(transactionContext.stub.putPrivateData.firstCall.args);
+            params.logger.info("ooooooooo")
+            params.logger.info(Buffer.from(transactionContext.stub.putPrivateData.firstCall.args[2].toString()).toString('utf8'));
+            params.logger.info(JSON.stringify(expected))
+            params.logger.info("-----------")
+
+            transactionContext.stub.putPrivateData.firstCall.should.have.been.calledWithExactly(
+                'producer-rte',
+                expected.feedbackProducerMrid,
+                Buffer.from(JSON.stringify(expected))
+            );
+
+            expect(transactionContext.stub.putPrivateData.callCount).to.equal(1);
+        });
+
+
+        it('should return SUCCESS updateIndeminityStatus PROCESSED TSO.', async () => {
+            const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            feedbackProducer.indeminityStatus = IndeminityStatus.INVOICE_SENT;
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                feedbackProducer.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer)));
+            transactionContext.stub.getState.withArgs(feedbackProducer.senderMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+
+            const activationDocumentObj: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_Valid));
+            const energyAmountObj: EnergyAmount = JSON.parse(JSON.stringify(Values.HTB_EnergyAmount));
+
+            const valueAbstract: EnergyAmountAbstract = {
+                energyAmountMarketDocumentMrid: energyAmountObj.energyAmountMarketDocumentMrid};
+            const indexEnergyAmountId = ActivationEnergyAmountIndexersController.getKey(energyAmountObj.activationDocumentMrid);
+
+            const indexEnergyAmount = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexEnergyAmountId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexEnergyAmount.indexedDataAbstractMap.set(energyAmountObj.activationDocumentMrid, valueAbstract);
+
+            const reserveBidObj:ReserveBidMarketDocument = JSON.parse(JSON.stringify(Values.HTB_ReserveBidMarketDocument_1_Full));;
+            reserveBidObj.reserveBidStatus = ReserveBidStatus.VALIDATED;
+
+            const reserveBidMarketDocumentAbstract: ReserveBidMarketDocumentAbstract = {
+                createdDateTime: reserveBidObj.createdDateTime,
+                reserveBidMrid: reserveBidObj.reserveBidMrid,
+                reserveBidStatus: reserveBidObj.reserveBidStatus,
+                validityPeriodStartDateTime: reserveBidObj.validityPeriodStartDateTime};
+            const indexIdReserveBidId = SiteReserveBidIndexersController.getKey(Values.HTB_ReserveBidMarketDocument_1_Full.meteringPointMrid);
+
+            const indexIdReserveBid = {
+                docType: DocType.DATA_INDEXER,
+                indexId: indexIdReserveBidId,
+                indexedDataAbstractMap: new Map()
+            }
+
+            indexIdReserveBid.indexedDataAbstractMap.set(reserveBidObj.reserveBidMrid, reserveBidMarketDocumentAbstract);
+
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                activationDocumentObj.activationDocumentMrid).resolves(Buffer.from(JSON.stringify(activationDocumentObj)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                energyAmountObj.energyAmountMarketDocumentMrid).resolves(Buffer.from(JSON.stringify(energyAmountObj)));
+
+            const objEnergyAmountJSON = IndexedDataJson.toJson(indexEnergyAmount);
+            objEnergyAmountJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objEnergyAmountJSON.indexId).resolves(Buffer.from(JSON.stringify(objEnergyAmountJSON)));
+
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                reserveBidObj.reserveBidMrid).resolves(Buffer.from(JSON.stringify(reserveBidObj)));
+
+            const objReserveBidJSON = IndexedDataJson.toJson(indexIdReserveBid);
+            objReserveBidJSON.docType = DocType.DATA_INDEXER;
+            transactionContext.stub.getPrivateData.withArgs('producer-rte',
+                objReserveBidJSON.indexId).resolves(Buffer.from(JSON.stringify(objReserveBidJSON)));
+
+            const ret = await star.UpdateActivationDocumentIndeminityStatus(transactionContext, feedbackProducer.activationDocumentMrid);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            // params.logger.info("xxxxx")
+            // params.logger.info("ret: ", ret)
+            // params.logger.info("xxxxx")
+
+            expect(ret).to.equal(IndeminityStatus.PROCESSED);
+
+            const expected: FeedbackProducer = JSON.parse(JSON.stringify(feedbackProducer))
+            expected.indeminityStatus = IndeminityStatus.PROCESSED;
+
             const expectedBalancingDocument: BalancingDocument =
                 await BalancingDocumentController.generateObj(params, activationDocumentObj, reserveBidObj, energyAmountObj);
             const expectedBalancingDocumentId: string =
@@ -1502,10 +1593,9 @@ describe('Star Tests FeedbackProducer', () => {
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(2);
         });
 
-
-        it('should return SUCCESS updateIndeminityStatus OVER INVOICE_SENT RTE.', async () => {
+        it('should return SUCCESS updateIndeminityStatus OVER PROCESSED RTE.', async () => {
             const feedbackProducer:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
-            feedbackProducer.indeminityStatus = IndeminityStatus.INVOICE_SENT;
+            feedbackProducer.indeminityStatus = IndeminityStatus.PROCESSED;
             transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
 
             transactionContext.stub.getPrivateData.withArgs('producer-rte',

@@ -482,6 +482,11 @@ export class FeedbackProducerController {
                 case IndeminityStatus.WAITING_INVOICE:
                     if (userRole === RoleType.Role_Producer) {
                         newStatus = IndeminityStatus.INVOICE_SENT;
+                    }
+                    break;
+                case IndeminityStatus.INVOICE_SENT:
+                    if (userRole === RoleType.Role_TSO) {
+                        newStatus = IndeminityStatus.PROCESSED;
                         isFinalState = true;
                     }
                     break;

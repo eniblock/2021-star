@@ -34,6 +34,7 @@ import { BalancingDocument } from '../../model/balancingDocument';
 import { BalancingDocumentController } from '../BalancingDocumentController';
 import { FeedbackProducer } from '../../model/feedbackProducer';
 import { FeedbackProducerController } from '../FeedbackProducerController';
+import { IndeminityStatus } from '../../enums/IndemnityStatus';
 
 export class HistoryController {
 
@@ -267,7 +268,6 @@ export class HistoryController {
                     args.push(activationReasonCriteria);
                 }
             }
-
         }
 
         params.logger.debug('=============  END  : buildActivationDocumentQuery ===========');
@@ -630,44 +630,54 @@ export class HistoryController {
 
         params.logger.debug('feedbackProducer: ', JSON.stringify(feedbackProducer));
 
-        const information: HistoryInformation = {
-            activationDocument: JSON.parse(JSON.stringify(activationDocument)),
-            balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
-            displayedSourceName,
-            energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
-            feedbackProducer: feedbackProducer ? JSON.parse(JSON.stringify(feedbackProducer)) : null,
-            producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
-            reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
-            site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
-            subOrderList: JSON.parse(JSON.stringify(subOrderList)),
-        };
-
-        historyInformationInBuilding.historyInformation.set(
-            information.activationDocument.activationDocumentMrid, information);
-
-        siteRegistered = null;
-        producer = null;
-        energyAmount = null;
-
-        const key = this.buildKey(information.activationDocument);
-
-        if (information.site
-            && information.producer
-            && information.activationDocument
-            && information.activationDocument.eligibilityStatusEditable) {
-
-            historyInformationInBuilding.eligibilityToDefine.push(key);
-        } else if (information.activationDocument.eligibilityStatus
-            && information.activationDocument.eligibilityStatus !== '') {
-
-            historyInformationInBuilding.eligibilityDefined.push(key);
-        } else if (information.subOrderList
-            && information.subOrderList.length > 0) {
-
-            historyInformationInBuilding.reconciliated.push(key);
-        } else {
-            historyInformationInBuilding.others.push(key);
+        let status:string = "";
+        if (feedbackProducer) {
+            const splitted = feedbackProducer.indeminityStatus.split(IndeminityStatus.SPLIT_STR);
+            status = splitted[0];
         }
+
+        if (status != IndeminityStatus.ABANDONED || identity !== OrganizationTypeMsp.PRODUCER) {
+            const information: HistoryInformation = {
+                activationDocument: JSON.parse(JSON.stringify(activationDocument)),
+                balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
+                displayedSourceName,
+                energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
+                feedbackProducer: feedbackProducer ? JSON.parse(JSON.stringify(feedbackProducer)) : null,
+                producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
+                reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
+                site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
+                subOrderList: JSON.parse(JSON.stringify(subOrderList)),
+            };
+
+            historyInformationInBuilding.historyInformation.set(
+                information.activationDocument.activationDocumentMrid, information);
+
+            siteRegistered = null;
+            producer = null;
+            energyAmount = null;
+
+            const key = this.buildKey(information.activationDocument);
+
+            if (information.site
+                && information.producer
+                && information.activationDocument
+                && information.activationDocument.eligibilityStatusEditable) {
+
+                historyInformationInBuilding.eligibilityToDefine.push(key);
+            } else if (information.activationDocument.eligibilityStatus
+                && information.activationDocument.eligibilityStatus !== '') {
+
+                historyInformationInBuilding.eligibilityDefined.push(key);
+            } else if (information.subOrderList
+                && information.subOrderList.length > 0) {
+
+                historyInformationInBuilding.reconciliated.push(key);
+            } else {
+                historyInformationInBuilding.others.push(key);
+            }
+        }
+
+
         params.logger.debug('=============  END  : consolidateFiltered ===========');
 
         return historyInformationInBuilding;

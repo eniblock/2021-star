@@ -21,6 +21,9 @@ import { QueryStateService } from './service/QueryStateService';
 import { BalancingDocument } from '../model/balancingDocument';
 import { BalancingDocumentController } from './BalancingDocumentController';
 import { BalancingDocumentService } from './service/BalancingDocumentService';
+import { ActivationDocumentController } from './activationDocument/ActivationDocumentController';
+import { ActivationDocumentService } from './service/ActivationDocumentService';
+import { SystemOperatorController } from './SystemOperatorController';
 
 
 
@@ -407,6 +410,193 @@ export class FeedbackProducerController {
     }
 
 
+    public static async manageActivationDocumentAbandon(
+        params: STARParameters,
+        activationDocumentMrid: string): Promise<string> {
+
+        params.logger.info('============= START : abandonActivationDocument FeedbackProducerController  ===========',
+            activationDocumentMrid);
+
+        let newStatus = '';
+
+        const feedbackProducerMrid = this.getFeedbackProducerMrid(params, activationDocumentMrid);
+        let existingFeedbackProducersRef: Map<string, DataReference>;
+        try {
+            existingFeedbackProducersRef = await StarPrivateDataService.getObjRefbyId(
+                params, {docType: DocType.FEEDBACK_PRODUCER, id: feedbackProducerMrid});
+        } catch (err) {
+            throw new Error(`ERROR manage Activation Document Abandon : ${err.message}`);
+        }
+
+        await this.checkIndeminityStatusOrganisation(params, activationDocumentMrid);
+
+        let feedbackProducerRef: DataReference = null;
+        // let keys: string[] = [];
+        if (existingFeedbackProducersRef) {
+
+            feedbackProducerRef = existingFeedbackProducersRef.values().next().value;
+
+            // for (const [key ] of existingFeedbackProducersRef) {
+            //     keys = keys.concat(key);
+            // }
+            // params.logger.debug('--------------------------00');
+            // params.logger.debug(keys)
+            // params.logger.debug('--------------------------00');
+        }
+
+        let feedbackProducerObj: FeedbackProducer = null;
+        if (feedbackProducerRef
+            && feedbackProducerRef.data) {
+
+            feedbackProducerObj = feedbackProducerRef.data;
+        }
+
+        if (feedbackProducerObj
+            && feedbackProducerObj.activationDocumentMrid === activationDocumentMrid) {
+
+                if (feedbackProducerObj.indeminityStatus.includes(IndeminityStatus.SPLIT_STR)) {
+                    const splitted = feedbackProducerObj.indeminityStatus.split(IndeminityStatus.SPLIT_STR);
+
+                    if (splitted.length === 2 && splitted[0] === IndeminityStatus.ABANDONED) {
+                        // Manage Abandoned -> Status
+                        newStatus = await this.manageBackFomAbandoned(params, feedbackProducerObj, existingFeedbackProducersRef.keys())
+                    }
+                } else {
+                    //Manage Status -> Abandoned
+                    newStatus = await this.manageAbandoned(params, feedbackProducerObj, existingFeedbackProducersRef.keys());
+                }
+
+        }
+
+        params.logger.info('=============  END  : abandonActivationDocument FeedbackProducerController  ===========',
+            activationDocumentMrid);
+
+        return newStatus;
+    }
+
+
+    public static async manageBackFomAbandoned(
+        params: STARParameters,
+        feedbackProducerObj: FeedbackProducer,
+        keys: Iterable<string>): Promise<string> {
+
+        params.logger.debug('============= START : manageBackFomAbandoned FeedbackProducerController  ===========', feedbackProducerObj.activationDocumentMrid);
+
+        const splitted = feedbackProducerObj.indeminityStatus.split(IndeminityStatus.SPLIT_STR);
+        feedbackProducerObj.indeminityStatus = splitted[1];
+
+        for (const key of keys) {
+            await FeedbackProducerService.write(params, feedbackProducerObj, key);
+        }
+
+        params.logger.debug('=============  END  : manageBackFomAbandoned FeedbackProducerController  ===========', feedbackProducerObj.activationDocumentMrid);
+        return feedbackProducerObj.indeminityStatus;
+    }
+
+
+
+    public static async manageAbandoned(
+        params: STARParameters,
+        feedbackProducerObj: FeedbackProducer,
+        keys: Iterable<string>): Promise<string> {
+
+        params.logger.debug('============= START : manageAbandoned FeedbackProducerController  ===========', feedbackProducerObj.activationDocumentMrid);
+
+        //Can only abandon data with status IN_PROGRESS
+        if (feedbackProducerObj.indeminityStatus !== IndeminityStatus.IN_PROGRESS
+            && feedbackProducerObj.indeminityStatus !== IndeminityStatus.AGREEMENT) {
+            return feedbackProducerObj.indeminityStatus;
+        }
+
+        //Search if a reconciliation exists
+        const activationDocumentRef: DataReference = await ActivationDocumentController.getActivationDocumentRefById(params, feedbackProducerObj.activationDocumentMrid)
+
+        let activationDocumentObj: ActivationDocument = null;
+        if (activationDocumentRef
+            && activationDocumentRef.data) {
+
+                activationDocumentObj = activationDocumentRef.data;
+        }
+
+
+        if (activationDocumentObj
+            && activationDocumentObj.activationDocumentMrid === feedbackProducerObj.activationDocumentMrid
+            && activationDocumentObj.subOrderList
+            && activationDocumentObj.subOrderList.length > 0) {
+
+            for (const id of activationDocumentObj.subOrderList) {
+                const subActivationDocumentRef = await ActivationDocumentController.getActivationDocumentRefById(params, id);
+
+                let subActivationDocumentObj: ActivationDocument = null;
+                if (subActivationDocumentRef
+                    && subActivationDocumentRef.data) {
+
+                        subActivationDocumentObj = subActivationDocumentRef.data;
+                }
+
+                if (subActivationDocumentObj
+                    && subActivationDocumentObj.activationDocumentMrid ===  id) {
+
+                    let index = subActivationDocumentObj.subOrderList.indexOf(activationDocumentObj.activationDocumentMrid);
+                    subActivationDocumentObj.subOrderList.splice(index, 1);
+
+                    if (activationDocumentObj.potentialParent) {
+                        subActivationDocumentObj.potentialChild = true;
+                        subActivationDocumentObj.eligibilityStatusEditable = true;
+                    }
+                    await ActivationDocumentService.write(params, subActivationDocumentObj, subActivationDocumentRef.collection);
+                }
+            }
+
+            activationDocumentObj.subOrderList = [];
+            await ActivationDocumentService.write(params, activationDocumentObj, activationDocumentRef.collection);
+
+        }
+
+        feedbackProducerObj.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(feedbackProducerObj.indeminityStatus);
+        for (const key of keys) {
+            await FeedbackProducerService.write(params, feedbackProducerObj, key);
+        }
+
+        params.logger.debug('=============  END  : manageAbandoned FeedbackProducerController  ===========', feedbackProducerObj.activationDocumentMrid);
+        return IndeminityStatus.ABANDONED;
+    }
+
+
+    public static async checkIndeminityStatusOrganisation(
+        params: STARParameters,
+        activationDocumentMrid: string): Promise<void> {
+
+        params.logger.debug('============= START : checkIndeminityStatusOrganisation FeedbackProducerController  ===========',
+            activationDocumentMrid);
+
+        const identity: string = params.values.get(ParametersType.IDENTITY);
+
+        const activationDocumentRef: DataReference = await ActivationDocumentController.getActivationDocumentRefById(params, activationDocumentMrid)
+
+        let activationDocumentObj: ActivationDocument = null;
+        if (activationDocumentRef
+            && activationDocumentRef.data) {
+
+                activationDocumentObj = activationDocumentRef.data;
+        }
+
+        let systemOperatorObj: SystemOperator;
+        try {
+            systemOperatorObj = await SystemOperatorController.getSystemOperatorObjById(params, activationDocumentObj.senderMarketParticipantMrid);
+        } catch(err) {
+            throw new Error(`ERROR check Indeminity Status : ${err.message} for Activation Document ${activationDocumentMrid}.`);
+        }
+
+        if (systemOperatorObj.systemOperatorMarketParticipantName.toLowerCase() !== identity.toLowerCase()
+            && identity.toLowerCase() !== OrganizationTypeMsp.PRODUCER.toLowerCase()) {
+            throw new Error(`Organisation, ${identity} cannot change Indeminity Status for Feedback manager by ${systemOperatorObj.systemOperatorMarketParticipantName}`);
+        }
+
+        params.logger.debug('=============  END  : checkIndeminityStatusOrganisation FeedbackProducerController  ===========',
+            activationDocumentMrid);
+
+    }
 
     public static async updateIndeminityStatus(
         params: STARParameters,
@@ -431,8 +621,11 @@ export class FeedbackProducerController {
             existingFeedbackProducersRef = await StarPrivateDataService.getObjRefbyId(
                 params, {docType: DocType.FEEDBACK_PRODUCER, id: feedbackProducerMrid});
         } catch (err) {
-            //Do Nothing
+            throw new Error(`ERROR update Indeminity Status : ${err.message}`);
         }
+
+        await this.checkIndeminityStatusOrganisation(params, activationDocumentMrid);
+
 
         let feedbackProducerRef: DataReference = null;
         if (existingFeedbackProducersRef) {
@@ -450,6 +643,14 @@ export class FeedbackProducerController {
 
         if (feedbackProducerObj
             && feedbackProducerObj.activationDocumentMrid === activationDocumentMrid) {
+
+            if (feedbackProducerObj.indeminityStatus.includes(IndeminityStatus.SPLIT_STR)) {
+                const splitted = feedbackProducerObj.indeminityStatus.split(IndeminityStatus.SPLIT_STR)
+
+                if (splitted.length === 2 && splitted[0] === IndeminityStatus.ABANDONED) {
+                    return IndeminityStatus.ABANDONED;
+                }
+            }
 
             //control if a Balancing exists for this activation Document
             let balancingDocument: BalancingDocument = null;

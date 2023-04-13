@@ -18,6 +18,8 @@ import { CommonService } from '../service/CommonService';
 import { SystemOperatorController } from '../SystemOperatorController';
 import { YellowPagesController } from '../YellowPagesController';
 import { ReconciliationStatus } from '../../enums/ReconciliationStatus';
+import { FeedbackProducerController } from '../FeedbackProducerController';
+import { IndeminityStatus } from '../../enums/IndemnityStatus';
 
 export class ReconciliationController {
     public static async getReconciliationState(
@@ -30,6 +32,7 @@ export class ReconciliationController {
         const identity = params.values.get(ParametersType.IDENTITY);
         if (identity === OrganizationTypeMsp.RTE || identity === OrganizationTypeMsp.ENEDIS) {
             const query = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            // params.logger.debug("query: ", query)
 
             const collections: string[] = await HLFServices.getCollectionsFromParameters(
                 params, ParametersType.DATA_TARGET, ParametersType.ALL);
@@ -147,13 +150,23 @@ export class ReconciliationController {
                 dataReference.data.orderEnd = true;
                 conciliationState.updateOrders.push(dataReference);
             }
-            if (dataReference.data.potentialChild) {
-                conciliationState = await this.filterChild(params, dataReference, conciliationState);
-            }
-            if (dataReference.data.potentialParent) {
-                conciliationState = await this.filterParent(params, dataReference, conciliationState);
+            const status:string = await FeedbackProducerController.getIndemnityStatus(params, dataReference.data.activationDocumentMrid);
+            // params.logger.debug("status: ", status);
+            // params.logger.debug("dataReference.data: ", dataReference.data);
+            if (status !== IndeminityStatus.ABANDONED) {
+                // params.logger.debug("Not Abandonned: ", dataReference.data.activationDocumentMrid);
+                if (dataReference.data.potentialChild) {
+                    // params.logger.debug("CHILD");
+                    conciliationState = await this.filterChild(params, dataReference, conciliationState);
+                }
+                if (dataReference.data.potentialParent) {
+                    // params.logger.debug("PARENT");
+                    conciliationState = await this.filterParent(params, dataReference, conciliationState);
+                }
+
             }
         }
+
 
         params.logger.debug('=============  END  : filterDocument ReconciliationController ===========');
         return conciliationState;

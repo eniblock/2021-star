@@ -4036,4 +4036,478 @@ describe('Star Tests ActivationDocument', () => {
             expect(transactionContext.stub.deletePrivateData.callCount).to.equal(6);
         });
     });
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    /////////////////    RECONCILIATION STATE WITH ABANDONNED     //////////////
+    ////////////////////////////////////////////////////////////////////////////
+    describe('Test Reconciliation State', () => {
+        it('should return SUCCESS on getReconciliationState / Garbage : 2 old / Abandonned : 2', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
+            const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
+            const collectionTSO: string = collectionsTSO[0];
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+            const ppcott: number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
+
+            const activationDocument01_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            activationDocument01_garbage.docType = DocType.ACTIVATION_DOCUMENT;
+            activationDocument01_garbage.startCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott + 1);
+            activationDocument01_garbage.potentialParent = true;
+            activationDocument01_garbage.potentialChild = false;
+
+            const activationDocument02_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            activationDocument02_garbage.docType = DocType.ACTIVATION_DOCUMENT;
+            activationDocument02_garbage.startCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott + 1);
+            activationDocument02_garbage.endCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott + 1);
+            activationDocument02_garbage.potentialParent = false;
+            activationDocument02_garbage.potentialChild = true;
+
+            const activationDocument01_abandonned: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate2));
+            activationDocument01_abandonned.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const activationDocument02_abandonned: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument02_abandonned.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const feedbackProducer01_abandonned:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            feedbackProducer01_abandonned.feedbackProducerMrid= 'FeedBack_' + activationDocument01_abandonned.activationDocumentMrid;
+            feedbackProducer01_abandonned.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(IndeminityStatus.IN_PROGRESS);
+            transactionContext.stub.getPrivateData.withArgs(collectionTSO,
+                feedbackProducer01_abandonned.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer01_abandonned)));
+
+            const feedbackProducer02_abandonned:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTA_FeedbackProducer));
+            feedbackProducer02_abandonned.feedbackProducerMrid= 'FeedBack_' + activationDocument02_abandonned.activationDocumentMrid;
+            feedbackProducer02_abandonned.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(IndeminityStatus.IN_PROGRESS);
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                feedbackProducer02_abandonned.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer02_abandonned)));
+
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorMix = Values.getQueryMockArrayValues([activationDocument01_garbage, activationDocument01_abandonned], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorMix);
+            const iteratorProd = Values.getQueryMockArrayValues([activationDocument02_garbage], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorProd);
+
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // params.logger.log('ret=', ret)
+
+            activationDocument01_garbage.orderEnd = true;
+            activationDocument01_garbage.potentialParent = false;
+
+            activationDocument02_garbage.orderEnd = true;
+            activationDocument02_garbage.potentialChild = false;
+
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
+
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // params.logger.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+        });
+
+        it('should return SUCCESS on getReconciliationState / Garbage : 2 old - 1 current / abandonned', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
+            const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
+            const collectionTSO: string = collectionsTSO[0];
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+            const ppcott: number = params.values.get(ParametersType.PPCO_TIME_THRESHOLD);
+
+            const activationDocument_valid: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            activationDocument_valid.docType = DocType.ACTIVATION_DOCUMENT;
+            activationDocument_valid.potentialParent = true;
+            activationDocument_valid.potentialChild = false;
+
+            const activationDocument01_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate2));
+            activationDocument01_garbage.docType = DocType.ACTIVATION_DOCUMENT;
+            activationDocument01_garbage.startCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument01_garbage.startCreatedDateTime as string, ppcott + 1);
+            activationDocument01_garbage.potentialParent = true;
+            activationDocument01_garbage.potentialChild = false;
+
+            const activationDocument02_garbage: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            activationDocument02_garbage.docType = DocType.ACTIVATION_DOCUMENT;
+            activationDocument02_garbage.startCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument02_garbage.startCreatedDateTime as string, ppcott + 1);
+            activationDocument02_garbage.endCreatedDateTime = CommonService.reduceDateDaysStr(activationDocument02_garbage.endCreatedDateTime as string, ppcott + 1);
+            activationDocument02_garbage.potentialParent = false;
+            activationDocument02_garbage.potentialChild = true;
+
+            const activationDocument01_abandonned: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate2));
+            activationDocument01_abandonned.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const activationDocument02_abandonned: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument02_abandonned.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const feedbackProducer01_abandonned:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            feedbackProducer01_abandonned.feedbackProducerMrid= 'FeedBack_' + activationDocument01_abandonned.activationDocumentMrid;
+            feedbackProducer01_abandonned.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(IndeminityStatus.IN_PROGRESS);
+            transactionContext.stub.getPrivateData.withArgs(collectionTSO,
+                feedbackProducer01_abandonned.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer01_abandonned)));
+
+            const feedbackProducer02_abandonned:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTA_FeedbackProducer));
+            feedbackProducer02_abandonned.feedbackProducerMrid= 'FeedBack_' + activationDocument02_abandonned.activationDocumentMrid;
+            feedbackProducer02_abandonned.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(IndeminityStatus.IN_PROGRESS);
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                feedbackProducer02_abandonned.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer02_abandonned)));
+
+
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorMix = Values.getQueryMockArrayValues([activationDocument_valid, activationDocument01_garbage, activationDocument01_abandonned], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorMix);
+            const iteratorProd = Values.getQueryMockArrayValues([activationDocument02_garbage, activationDocument02_abandonned], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorProd);
+
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // params.logger.log('ret=', ret)
+
+            activationDocument01_garbage.orderEnd = true;
+            activationDocument01_garbage.potentialParent = false;
+
+            activationDocument02_garbage.orderEnd = true;
+            activationDocument02_garbage.potentialChild = false;
+
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: activationDocument02_garbage});
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: activationDocument01_garbage});
+
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // params.logger.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+        });
+
+        it('should return SUCCESS on getReconciliationState / Matching end order HTB RTE / 1 abandonned', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
+
+            const collectionNamesSite: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+
+            const parentStartDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            parentStartDocument.potentialParent = true;
+            parentStartDocument.potentialChild = false;
+            parentStartDocument.docType = DocType.ACTIVATION_DOCUMENT;
+            // params.logger.debug("parentStartDocument: ", parentStartDocument)
+
+            const childEndDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustEndDate));
+            childEndDocument.potentialParent = false;
+            childEndDocument.potentialChild = true;
+            childEndDocument.docType = DocType.ACTIVATION_DOCUMENT;
+            // params.logger.debug("childEndDocument: ", childEndDocument)
+
+            const activationDocument01_abandonned: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate2));
+            activationDocument01_abandonned.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const feedbackProducer01_abandonned:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            feedbackProducer01_abandonned.feedbackProducerMrid= 'FeedBack_' + activationDocument01_abandonned.activationDocumentMrid;
+            feedbackProducer01_abandonned.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(IndeminityStatus.IN_PROGRESS);
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                feedbackProducer01_abandonned.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer01_abandonned)));
+
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            // params.logger.debug("query test: ", queryCrank)
+
+            const iteratorReconciliation = Values.getQueryMockArrayValues([parentStartDocument, childEndDocument, activationDocument01_abandonned], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
+
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // params.logger.log('ret=', ret)
+
+            parentStartDocument.orderEnd = true;
+            parentStartDocument.subOrderList = [childEndDocument.activationDocumentMrid];
+
+            childEndDocument.potentialChild = false;
+            childEndDocument.subOrderList = [parentStartDocument.activationDocumentMrid];
+            childEndDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: parentStartDocument});
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childEndDocument});
+
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // params.logger.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+        });
+
+        it('should return SUCCESS on getReconciliationState / Matching end order HTB RTE (2 parents, choice on closest date ) / 1 abandonned', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.RTE);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
+            transactionContext.stub.getState.withArgs(Values.HTB_systemoperator.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_systemoperator)));
+            transactionContext.stub.getState.withArgs(Values.HTB_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_Producer)));
+
+            const collectionNamesSite: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0], Values.HTB_site_valid.meteringPointMrid).resolves(Buffer.from(JSON.stringify(Values.HTB_site_valid)));
+
+            const parentStartDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            parentStartDocument.potentialParent = true;
+            parentStartDocument.potentialChild = false;
+            parentStartDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const parentStartDocumentOldest: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustStartDate));
+            parentStartDocumentOldest.activationDocumentMrid = parentStartDocumentOldest.activationDocumentMrid + '_Old';
+            parentStartDocumentOldest.potentialParent = true;
+            parentStartDocumentOldest.potentialChild = false;
+            parentStartDocumentOldest.docType = DocType.ACTIVATION_DOCUMENT;
+            let dateoldest = new Date(parentStartDocumentOldest.startCreatedDateTime as string);
+            dateoldest = new Date(dateoldest.getTime() - 2);
+            parentStartDocumentOldest.startCreatedDateTime = JSON.stringify(dateoldest);
+
+            const childEndDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_JustEndDate));
+            childEndDocument.potentialParent = false;
+            childEndDocument.potentialChild = true;
+            childEndDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const activationDocument01_abandonned: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate2));
+            activationDocument01_abandonned.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const feedbackProducer01_abandonned:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            feedbackProducer01_abandonned.feedbackProducerMrid= 'FeedBack_' + activationDocument01_abandonned.activationDocumentMrid;
+            feedbackProducer01_abandonned.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(IndeminityStatus.IN_PROGRESS);
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                feedbackProducer01_abandonned.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer01_abandonned)));
+
+
+            const senderMarketParticipantMrid: string = childEndDocument.senderMarketParticipantMrid as string;
+            const registeredResourceMrid: string = childEndDocument.registeredResourceMrid;
+
+            const queryDate: string = childEndDocument.endCreatedDateTime as string;
+
+            const pcuetmt: number = params.values.get(ParametersType.PC_TIME_UPDATEEND_MATCH_THRESHOLD);
+
+            const datetmp = new Date(queryDate);
+            datetmp.setUTCHours(0, 0, 0, 0);
+            const dateYesterday = new Date(datetmp.getTime() - pcuetmt);
+
+            const args: string[] = [];
+            args.push(`"orderEnd":false`);
+            args.push(`"senderMarketParticipantMrid":"${senderMarketParticipantMrid}"`);
+            args.push(`"registeredResourceMrid":"${registeredResourceMrid}"`);
+            args.push(`"messageType":{"$in":["A54","A98"]}`);
+            args.push(`"startCreatedDateTime":{"$gte":${JSON.stringify(dateYesterday)},"$lte":${JSON.stringify(queryDate)}}`);
+
+            // params.logger.info("** Query TEST **");
+            const query = await QueryStateService.buildQuery({documentType: DocType.ACTIVATION_DOCUMENT, queryArgs: args});
+            // params.logger.info("** Query TEST - END **");
+
+            const iterator = Values.getQueryMockArrayValues([parentStartDocumentOldest, parentStartDocument], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, query).resolves(iterator);
+
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorReconciliation = Values.getQueryMockArrayValues([parentStartDocument, childEndDocument, activationDocument01_abandonned], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliation);
+
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // params.logger.log('ret=', ret)
+
+            parentStartDocument.orderEnd = true;
+            parentStartDocument.subOrderList = [childEndDocument.activationDocumentMrid];
+
+            childEndDocument.potentialChild = false;
+            childEndDocument.subOrderList = [parentStartDocument.activationDocumentMrid];
+            childEndDocument.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: parentStartDocument});
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childEndDocument});
+
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // params.logger.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+        });
+
+        it('should return SUCCESS CreateActivationDocument couple HTA after HTB with MPWC reconciliation / 2 abandonned', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
+            const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
+            const collectionTSO: string = collectionsTSO[0];
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator2)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            const parentDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            parentDocument.docType = DocType.ACTIVATION_DOCUMENT;
+            parentDocument.receiverRole = RoleType.Role_DSO;
+            parentDocument.potentialParent = true;
+            parentDocument.potentialChild = false;
+            parentDocument.orderEnd = true;
+
+            const childDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            childDocument_Reconciliation.docType = DocType.ACTIVATION_DOCUMENT;
+            childDocument_Reconciliation.potentialParent = false;
+            childDocument_Reconciliation.potentialChild = true;
+            childDocument_Reconciliation.orderEnd = false;
+
+            const activationDocument01_abandonned: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate2));
+            activationDocument01_abandonned.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const activationDocument02_abandonned: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument02_abandonned.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const feedbackProducer01_abandonned:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            feedbackProducer01_abandonned.feedbackProducerMrid= 'FeedBack_' + activationDocument01_abandonned.activationDocumentMrid;
+            feedbackProducer01_abandonned.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(IndeminityStatus.IN_PROGRESS);
+            transactionContext.stub.getPrivateData.withArgs(collectionTSO,
+                feedbackProducer01_abandonned.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer01_abandonned)));
+
+            const feedbackProducer02_abandonned:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTA_FeedbackProducer));
+            feedbackProducer02_abandonned.feedbackProducerMrid= 'FeedBack_' + activationDocument02_abandonned.activationDocumentMrid;
+            feedbackProducer02_abandonned.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(IndeminityStatus.IN_PROGRESS);
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                feedbackProducer02_abandonned.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer02_abandonned)));
+
+
+            const collectionNamesSite: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0],
+                childDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${childDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
+            const iteratorYellowPage = Values.getQueryMockArrayValues([Values.HTA_yellowPage], mockHandler);
+            transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
+
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorReconciliationParent = Values.getQueryMockArrayValues([parentDocument, activationDocument01_abandonned], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorReconciliationParent);
+            const iteratorReconciliationChild = Values.getQueryMockArrayValues([childDocument_Reconciliation, activationDocument02_abandonned], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliationChild);
+
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // params.logger.log('ret=', ret)
+
+            parentDocument.orderEnd = true;
+            parentDocument.subOrderList = [childDocument_Reconciliation.activationDocumentMrid];
+
+            childDocument_Reconciliation.potentialChild = false;
+            childDocument_Reconciliation.subOrderList = [parentDocument.activationDocumentMrid];
+            childDocument_Reconciliation.reconciliationStatus = ReconciliationStatus.TOTAL;
+
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: parentDocument});
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childDocument_Reconciliation});
+
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // params.logger.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+        });
+
+        it('should return SUCCESS CreateActivationDocument couple HTA after HTB (2 parents, choice on closest date ) with MPWC reconciliation / 2 abandonned', async () => {
+            transactionContext.clientIdentity.getMSPID.returns(OrganizationTypeMsp.ENEDIS);
+
+            const params: STARParameters = await ParametersController.getParameterValues(transactionContext);
+            const collectionMap: Map<string, string[]> = params.values.get(ParametersType.DATA_TARGET);
+            const collectionsTSO: string[] = collectionMap.get(RoleType.Role_TSO) as string[];
+            const collectionTSO: string = collectionsTSO[0];
+            const collectionsProducer: string[] = collectionMap.get(RoleType.Role_Producer) as string[];
+            const collectionProducer: string = collectionsProducer[0];
+
+            transactionContext.stub.getState.withArgs(Values.HTA_systemoperator2.systemOperatorMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_systemoperator2)));
+            transactionContext.stub.getState.withArgs(Values.HTA_Producer.producerMarketParticipantMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_Producer)));
+
+            const parentDocumentOldest: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            parentDocumentOldest.docType = DocType.ACTIVATION_DOCUMENT;
+            parentDocumentOldest.receiverRole = RoleType.Role_DSO;
+            parentDocumentOldest.potentialParent = true;
+            parentDocumentOldest.potentialChild = false;
+            parentDocumentOldest.orderEnd = true;
+            let dateoldest = new Date(parentDocumentOldest.startCreatedDateTime as string);
+            dateoldest = new Date(dateoldest.getTime() - 2);
+            parentDocumentOldest.startCreatedDateTime = dateoldest.toISOString();
+
+            const parentDocument: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate));
+            parentDocument.docType = DocType.ACTIVATION_DOCUMENT;
+            parentDocument.receiverRole = RoleType.Role_DSO;
+            parentDocument.potentialParent = true;
+            parentDocument.potentialChild = false;
+            parentDocument.orderEnd = true;
+
+            const childDocument_Reconciliation: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid_Doc2));
+            childDocument_Reconciliation.docType = DocType.ACTIVATION_DOCUMENT;
+            childDocument_Reconciliation.potentialParent = false;
+            childDocument_Reconciliation.potentialChild = true;
+            childDocument_Reconciliation.orderEnd = false;
+
+            const activationDocument01_abandonned: ActivationDocument = JSON.parse(JSON.stringify(Values.HTB_ActivationDocument_HTA_JustStartDate2));
+            activationDocument01_abandonned.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const activationDocument02_abandonned: ActivationDocument = JSON.parse(JSON.stringify(Values.HTA_ActivationDocument_Valid));
+            activationDocument02_abandonned.docType = DocType.ACTIVATION_DOCUMENT;
+
+            const feedbackProducer01_abandonned:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTB_FeedbackProducer));
+            feedbackProducer01_abandonned.feedbackProducerMrid= 'FeedBack_' + activationDocument01_abandonned.activationDocumentMrid;
+            feedbackProducer01_abandonned.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(IndeminityStatus.IN_PROGRESS);
+            transactionContext.stub.getPrivateData.withArgs(collectionTSO,
+                feedbackProducer01_abandonned.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer01_abandonned)));
+
+            const feedbackProducer02_abandonned:FeedbackProducer = JSON.parse(JSON.stringify(Values.HTA_FeedbackProducer));
+            feedbackProducer02_abandonned.feedbackProducerMrid= 'FeedBack_' + activationDocument02_abandonned.activationDocumentMrid;
+            feedbackProducer02_abandonned.indeminityStatus = IndeminityStatus.ABANDONED.concat(IndeminityStatus.SPLIT_STR).concat(IndeminityStatus.IN_PROGRESS);
+            transactionContext.stub.getPrivateData.withArgs(collectionProducer,
+                feedbackProducer02_abandonned.feedbackProducerMrid).resolves(Buffer.from(JSON.stringify(feedbackProducer02_abandonned)));
+
+
+            const collectionNamesSite: string[] = await HLFServices.getCollectionsOrDefault(params, ParametersType.DATA_TARGET);
+            transactionContext.stub.getPrivateData.withArgs(collectionNamesSite[0],
+                childDocument_Reconciliation.registeredResourceMrid).resolves(Buffer.from(JSON.stringify(Values.HTA_site_valid)));
+
+            const queryYellowPage = `{"selector": {"docType": "yellowPages", "originAutomationRegisteredResourceMrid": "${childDocument_Reconciliation.originAutomationRegisteredResourceMrid}"}}`;
+            const iteratorYellowPage = Values.getQueryMockArrayValues([Values.HTA_yellowPage], mockHandler);
+            transactionContext.stub.getQueryResult.withArgs(queryYellowPage).resolves(iteratorYellowPage);
+
+            const queryCrank = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","$or":[{"potentialParent": true},{"potentialChild": true}]}}`;
+            const iteratorReconciliationParents = Values.getQueryMockArrayValues([parentDocument, parentDocumentOldest, activationDocument01_abandonned], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionTSO, queryCrank).resolves(iteratorReconciliationParents);
+            const iteratorReconciliationChilds = Values.getQueryMockArrayValues([ childDocument_Reconciliation, activationDocument02_abandonned], mockHandler);
+            transactionContext.stub.getPrivateDataQueryResult.withArgs(collectionProducer, queryCrank).resolves(iteratorReconciliationChilds);
+
+            let ret = await star.GetActivationDocumentReconciliationState(transactionContext);
+            ret = JSON.parse(ret);
+            // params.logger.log('ret=', ret)
+
+            parentDocument.orderEnd = true;
+            parentDocument.subOrderList = [childDocument_Reconciliation.activationDocumentMrid];
+
+            childDocument_Reconciliation.potentialChild = false;
+            childDocument_Reconciliation.subOrderList = [parentDocument.activationDocumentMrid];
+            childDocument_Reconciliation.reconciliationStatus = ReconciliationStatus.TOTAL;
+
+            const updateOrders: DataReference[] = [];
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionTSO, data: parentDocument});
+            updateOrders.push({docType: DocType.ACTIVATION_DOCUMENT, collection: collectionProducer, data: childDocument_Reconciliation});
+
+            const expected = JSON.parse(JSON.stringify(updateOrders));
+            // params.logger.log('expected=', expected)
+
+            expect(ret).to.eql(expected);
+        });
+
+    });
 });

@@ -428,7 +428,7 @@ export class HistoryController {
                 const identity: string = params.values.get(ParametersType.IDENTITY);
                 const status:string = await FeedbackProducerController.getIndemnityStatus(params, activationDocument.activationDocumentMrid);
 
-                if (status != IndeminityStatus.ABANDONED || identity !== OrganizationTypeMsp.PRODUCER) {
+                if (status !== IndeminityStatus.ABANDONED || identity !== OrganizationTypeMsp.PRODUCER) {
                     historyInformationInBuilding =
                         await this.consolidateFiltered(
                             params,
@@ -632,6 +632,8 @@ export class HistoryController {
         } catch (err) {
                 // DO nothing except "Not accessible information"
         }
+        const status:string = await FeedbackProducerController.getIndemnityStatusFromObj(params, activationDocument.activationDocumentMrid, feedbackProducer);
+        feedbackProducer.indeminityStatus = status;
 
         params.logger.debug('feedbackProducer: ', JSON.stringify(feedbackProducer));
 

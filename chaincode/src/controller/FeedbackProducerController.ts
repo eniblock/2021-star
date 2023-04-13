@@ -384,8 +384,6 @@ export class FeedbackProducerController {
         params.logger.debug('============= START : getIndemnityStatus FeedbackProducerController  ===========',
             activationDocumentMrid);
 
-        let status: string = IndeminityStatus.IN_PROGRESS;
-
         let feedbackProducerObj: FeedbackProducer = null;
         try {
             feedbackProducerObj = await this.getByActivationDocumentMrId(params, activationDocumentMrid);
@@ -393,6 +391,19 @@ export class FeedbackProducerController {
             //Do Nothing, no status
         }
 
+        params.logger.debug('=============  END  : getIndemnityStatus FeedbackProducerController  ===========',
+            activationDocumentMrid);
+        return await this.getIndemnityStatusFromObj(params, activationDocumentMrid, feedbackProducerObj);
+    }
+
+    public static async getIndemnityStatusFromObj(
+        params: STARParameters,
+        activationDocumentMrid: string,
+        feedbackProducerObj: FeedbackProducer) : Promise<string> {
+
+        params.logger.debug('============= START : getIndemnityStatusFromObj FeedbackProducerController  ===========');
+
+        let status: string = IndeminityStatus.IN_PROGRESS;
 
         if (feedbackProducerObj
             && feedbackProducerObj.activationDocumentMrid
@@ -406,8 +417,7 @@ export class FeedbackProducerController {
             status = splitted[0];
         }
 
-        params.logger.debug('=============  END  : getIndemnityStatus FeedbackProducerController  ===========',
-            activationDocumentMrid);
+        params.logger.debug('=============  END  : getIndemnityStatusFromObj FeedbackProducerController  ===========');
         return status;
     }
 

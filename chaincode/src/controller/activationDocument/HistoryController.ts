@@ -425,14 +425,19 @@ export class HistoryController {
             // If information doesn't to be kept
             // the process doesn't care about this document
             if (keepInformation) {
-                historyInformationInBuilding =
-                    await this.consolidateFiltered(
-                        params,
-                        historyInformationInBuilding,
-                        activationDocument,
-                        activationDocumentForInformation,
-                        subOrderList,
-                        siteRegistered);
+                const identity: string = params.values.get(ParametersType.IDENTITY);
+                const status:string = await FeedbackProducerController.getIndemnityStatus(params, activationDocument.activationDocumentMrid);
+
+                if (status != IndeminityStatus.ABANDONED || identity !== OrganizationTypeMsp.PRODUCER) {
+                    historyInformationInBuilding =
+                        await this.consolidateFiltered(
+                            params,
+                            historyInformationInBuilding,
+                            activationDocument,
+                            activationDocumentForInformation,
+                            subOrderList,
+                            siteRegistered);
+                }
             }
 
         }
@@ -630,53 +635,44 @@ export class HistoryController {
 
         params.logger.debug('feedbackProducer: ', JSON.stringify(feedbackProducer));
 
-        let status:string = "";
-        if (feedbackProducer) {
-            const splitted = feedbackProducer.indeminityStatus.split(IndeminityStatus.SPLIT_STR);
-            status = splitted[0];
+        const information: HistoryInformation = {
+            activationDocument: JSON.parse(JSON.stringify(activationDocument)),
+            balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
+            displayedSourceName,
+            energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
+            feedbackProducer: feedbackProducer ? JSON.parse(JSON.stringify(feedbackProducer)) : null,
+            producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
+            reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
+            site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
+            subOrderList: JSON.parse(JSON.stringify(subOrderList)),
+        };
+
+        historyInformationInBuilding.historyInformation.set(
+            information.activationDocument.activationDocumentMrid, information);
+
+        siteRegistered = null;
+        producer = null;
+        energyAmount = null;
+
+        const key = this.buildKey(information.activationDocument);
+
+        if (information.site
+            && information.producer
+            && information.activationDocument
+            && information.activationDocument.eligibilityStatusEditable) {
+
+            historyInformationInBuilding.eligibilityToDefine.push(key);
+        } else if (information.activationDocument.eligibilityStatus
+            && information.activationDocument.eligibilityStatus !== '') {
+
+            historyInformationInBuilding.eligibilityDefined.push(key);
+        } else if (information.subOrderList
+            && information.subOrderList.length > 0) {
+
+            historyInformationInBuilding.reconciliated.push(key);
+        } else {
+            historyInformationInBuilding.others.push(key);
         }
-
-        if (status != IndeminityStatus.ABANDONED || identity !== OrganizationTypeMsp.PRODUCER) {
-            const information: HistoryInformation = {
-                activationDocument: JSON.parse(JSON.stringify(activationDocument)),
-                balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
-                displayedSourceName,
-                energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
-                feedbackProducer: feedbackProducer ? JSON.parse(JSON.stringify(feedbackProducer)) : null,
-                producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
-                reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
-                site: siteRegistered ? JSON.parse(JSON.stringify(siteRegistered)) : null,
-                subOrderList: JSON.parse(JSON.stringify(subOrderList)),
-            };
-
-            historyInformationInBuilding.historyInformation.set(
-                information.activationDocument.activationDocumentMrid, information);
-
-            siteRegistered = null;
-            producer = null;
-            energyAmount = null;
-
-            const key = this.buildKey(information.activationDocument);
-
-            if (information.site
-                && information.producer
-                && information.activationDocument
-                && information.activationDocument.eligibilityStatusEditable) {
-
-                historyInformationInBuilding.eligibilityToDefine.push(key);
-            } else if (information.activationDocument.eligibilityStatus
-                && information.activationDocument.eligibilityStatus !== '') {
-
-                historyInformationInBuilding.eligibilityDefined.push(key);
-            } else if (information.subOrderList
-                && information.subOrderList.length > 0) {
-
-                historyInformationInBuilding.reconciliated.push(key);
-            } else {
-                historyInformationInBuilding.others.push(key);
-            }
-        }
-
 
         params.logger.debug('=============  END  : consolidateFiltered ===========');
 

@@ -401,13 +401,17 @@ export class FeedbackProducerController {
             && feedbackProducerObj.indeminityStatus.length > 0) {
 
             status = feedbackProducerObj.indeminityStatus;
-        }
 
+            const splitted = status.split(IndeminityStatus.SPLIT_STR);
+            status = splitted[0];
+        }
 
         params.logger.debug('=============  END  : getIndemnityStatus FeedbackProducerController  ===========',
             activationDocumentMrid);
         return status;
     }
+
+
 
 
     public static async manageActivationDocumentAbandon(

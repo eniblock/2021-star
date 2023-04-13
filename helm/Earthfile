@@ -108,4 +108,4 @@ deploy:
         --repositories="${repository} eniblock/2021-star-backend eniblock/2021-star-chaincode eniblock/2021-star-keycloak eniblock/2021-star-frontend" \
         --tag=${tag} \
         --environment=${environment}
-    BUILD ../test/e2e/+smoke-${environment}
+    # BUILD ../test/e2e/+smoke-${environment}

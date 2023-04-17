@@ -20,7 +20,7 @@ import java.security.cert.X509Certificate;
 public class RestemplateConfig {
 
     @Value("${tls.disabled}")
-    private Boolean tlsDisabled;
+    private Boolean tlsDisabled = false; // TLS MUST BE DISABLED ONLY ON DEV !!!
 
     @Bean
     public RestTemplate restemplate() {
@@ -29,37 +29,34 @@ public class RestemplateConfig {
 
     @Bean
     public Boolean disableSSLValidation() throws Exception {
-        log.error("-----------------------------------------------------");
-        log.error("-> " + tlsDisabled + "");
         if (tlsDisabled == null || !tlsDisabled) {
             return false;
+        } else {
+            final SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new TrustManager[]{new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+                }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }
+            }}, null);
+
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            });
+
+            return true;
         }
-
-        final SSLContext sslContext = SSLContext.getInstance("TLS");
-
-        sslContext.init(null, new TrustManager[]{new X509TrustManager() {
-            @Override
-            public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-            }
-
-            @Override
-            public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-            }
-
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-                return new X509Certificate[0];
-            }
-        }}, null);
-
-        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-        HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        });
-
-        return true;
     }
 
 }

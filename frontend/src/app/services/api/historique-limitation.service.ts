@@ -49,7 +49,6 @@ export class HistoriqueLimitationService {
     if (MOCK) {
       console.log(form);
       callResult = getMocks(form);
-      false
     } else {
       let urlParams = this.urlService.toUrlParams(form);
       callResult = this.httpClient.get<RechercheHistoriqueLimitationEntite[]>(`${environment.serverUrl}/historiqueLimitations?${urlParams}`)

@@ -18,6 +18,7 @@ export const LIMITATIONS_TABLE_COLUMNS_DEF = [
   { id: 'commentaires', champ: 'Commentaires' },
   { id: 'statusIndemnisation', champ: 'Statut de l\'indemnisation' },
   { id: 'reconciliationStatus', champ: 'Etat réconciliation' },
+  { id: 'infos', champ: 'Infos' },
 ];
 
 @Pipe({

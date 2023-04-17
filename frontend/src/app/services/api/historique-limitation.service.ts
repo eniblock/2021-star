@@ -25,7 +25,7 @@ import {SystemOperator} from "../../models/SystemOperator";
 import {InstanceService} from "./instance.service";
 import {Instance} from "../../models/enum/Instance.enum";
 
-const MOCK = false;
+const MOCK = true;
 
 @Injectable({
   providedIn: 'root',

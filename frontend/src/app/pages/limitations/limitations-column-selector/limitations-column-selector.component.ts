@@ -21,6 +21,7 @@ const ALL_TSO_COLUMNS_ID: string[] = [
   'motif',
   'commentaires',
   'statusIndemnisation',
+  'infos',
 ];
 
 const ALL_DSO_COLUMNS_ID: string[] = [
@@ -41,6 +42,7 @@ const ALL_DSO_COLUMNS_ID: string[] = [
   'motif',
   'commentaires',
   'statusIndemnisation',
+  'infos',
 ];
 
 const ALL_PRODUCER_COLUMNS_ID: string[] = [
@@ -58,6 +60,7 @@ const ALL_PRODUCER_COLUMNS_ID: string[] = [
   'motif',
   'commentaires',
   'statusIndemnisation',
+  'infos',
 ];
 
 @Component({
@@ -100,9 +103,10 @@ export class LimitationsColumnSelectorComponent implements OnInit {
     }
 
     // Select initialisation
+    let selectedColummns = this.allColumns.filter(v => v != 'infos');
     this.form
       .get('columns')
-      ?.setValue(this.allColumns.slice(0, this.allColumns.length));
+      ?.setValue(selectedColummns);
 
     // Update table columns
     this.formChange();

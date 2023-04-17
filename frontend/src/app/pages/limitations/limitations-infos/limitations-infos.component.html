@@ -1,0 +1,6 @@
+<p>
+  <strong>activationDocumentMrid </strong>{{ bottomSheetParams?.activationDocument?.activationDocumentMrid }}
+</p>
+<p *ngIf="bottomSheetParams  && bottomSheetParams.subOrderList && bottomSheetParams.subOrderList.length > 0">
+  <strong>activationDocumentMrid </strong>{{ bottomSheetParams.subOrderList[0].activationDocumentMrid }}
+</p>

@@ -17,7 +17,7 @@ export const canChangeIndeminityStatus = (historiqueLimiation: RechercheHistoriq
     case IndeminityStatus.WaitingInvoice:
       return instance == Instance.PRODUCER;
     case IndeminityStatus.InvoiceSent:
-      return false;
+      return instance == Instance.TSO;
   }
 }
 
@@ -37,6 +37,12 @@ export const getNextIndeminityStatus = (currentIndeminityStatus: IndeminityStatu
     case IndeminityStatus.WaitingInvoice:
       if (instance == Instance.PRODUCER) {
         return IndeminityStatus.InvoiceSent;
+      } else {
+        return null;
+      }
+    case IndeminityStatus.InvoiceSent:
+      if (instance == Instance.TSO) {
+        return IndeminityStatus.Processed;
       } else {
         return null;
       }

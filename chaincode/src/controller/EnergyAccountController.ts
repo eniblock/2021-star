@@ -243,6 +243,7 @@ export class EnergyAccountController {
                 key = key.concat(energyAccount.receiverMarketParticipantMrid);
                 key = key.concat(energyAccount.startCreatedDateTime);
                 key = key.concat(energyAccount.endCreatedDateTime);
+                key = key.concat(energyAccount.processType);
 
                 if (mapEnergyAccount.has(key)) {
                     const mapValue = mapEnergyAccount.get(key);
@@ -437,28 +438,28 @@ export class EnergyAccountController {
             throw new Error(`invalid resolution`);
         }
 
-        params.logger.info('*********************************');
-        params.logger.info('energyObj.energyAccountMarketDocumentMrid');
-        params.logger.info(energyObj.energyAccountMarketDocumentMrid);
-        params.logger.info('energyObj.startCreatedDateTime');
-        params.logger.info(energyObj.startCreatedDateTime);
-        params.logger.info('startDate');
-        params.logger.info(startDate);
-        params.logger.info('hoursBeforeEndDay');
-        params.logger.info(hoursBeforeEndDay);
-        params.logger.info('energyObj.endCreatedDateTime');
-        params.logger.info(energyObj.endCreatedDateTime);
-        params.logger.info('endDate');
-        params.logger.info(endDate);
-        params.logger.info('hoursFromStartDay');
-        params.logger.info(hoursFromStartDay);
-        params.logger.info('lapTimeLess1HDays');
-        params.logger.info(lapTimeLess1HDays);
-        params.logger.info('lapTimePlus1HDays');
-        params.logger.info(lapTimePlus1HDays);
-        params.logger.info('nbExpectedPoints');
-        params.logger.info(nbExpectedPoints);
-        params.logger.info('*********************************');
+        params.logger.debug('*********************************');
+        params.logger.debug('energyObj.energyAccountMarketDocumentMrid');
+        params.logger.debug(energyObj.energyAccountMarketDocumentMrid);
+        params.logger.debug('energyObj.startCreatedDateTime');
+        params.logger.debug(energyObj.startCreatedDateTime);
+        params.logger.debug('startDate');
+        params.logger.debug(startDate);
+        params.logger.debug('hoursBeforeEndDay');
+        params.logger.debug(hoursBeforeEndDay);
+        params.logger.debug('energyObj.endCreatedDateTime');
+        params.logger.debug(energyObj.endCreatedDateTime);
+        params.logger.debug('endDate');
+        params.logger.debug(endDate);
+        params.logger.debug('hoursFromStartDay');
+        params.logger.debug(hoursFromStartDay);
+        params.logger.debug('lapTimeLess1HDays');
+        params.logger.debug(lapTimeLess1HDays);
+        params.logger.debug('lapTimePlus1HDays');
+        params.logger.debug(lapTimePlus1HDays);
+        params.logger.debug('nbExpectedPoints');
+        params.logger.debug(nbExpectedPoints);
+        params.logger.debug('*********************************');
 
         return nbExpectedPoints;
     }

@@ -797,4 +797,161 @@ export class HistoryController {
         return finalinformation;
     }
 
+
+
+    private static async consolidateMassive(
+        params: STARParameters,
+        allActivationDocument: ActivationDocument[],
+        criteriaObj: HistoryCriteria): Promise<HistoryInformationInBuilding> {
+
+        params.logger.debug('============= START : consolidate ===========');
+
+        let historyInformationInBuilding: HistoryInformationInBuilding = new HistoryInformationInBuilding();
+
+        for (const activationDocumentQueryValue of allActivationDocument) {
+            params.logger.debug('ooo activationDocumentQueryValue.activationDocumentMrid : ',
+                activationDocumentQueryValue.activationDocumentMrid);
+
+            const activationDocument =
+                await ActivationDocumentEligibilityService.outputFormatFRActivationDocument(
+                    params, activationDocumentQueryValue);
+
+            let activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
+
+            const subOrderList: ActivationDocument[] = [];
+            if (activationDocument && activationDocument.subOrderList) {
+                for (const activationDocumentMrid of activationDocument.subOrderList) {
+
+                    let subOrder: ActivationDocument = null;
+                    try {
+                        subOrder = await ActivationDocumentController.getActivationDocumentById(
+                            params, activationDocumentMrid);
+                    } catch (error) {
+                        // do nothing, but empty document : suborder information is not in accessible collection
+                    }
+                    if (subOrder && subOrder.activationDocumentMrid) {
+                        subOrderList.push(subOrder);
+                    }
+                }
+            }
+            // Manage Yello Page to get Site Information
+            let siteRegistered: Site = null;
+            try {
+                params.logger.debug('ooo search site activationDocumentForInformation.registeredResourceMrid : ',
+                    activationDocumentForInformation.registeredResourceMrid);
+
+                const existingSitesRef = await StarPrivateDataService.getObjRefbyId(
+                    params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
+                const siteObjRef: DataReference = existingSitesRef.values().next().value;
+                if (siteObjRef && siteObjRef.docType === DocType.SITE) {
+                    siteRegistered = siteObjRef.data;
+                }
+            } catch (error) {
+                // DO nothing except "Not accessible information"
+            }
+            if (!siteRegistered && subOrderList && subOrderList.length > 0) {
+                // If no site found, search information by SubOrder Id
+                activationDocumentForInformation = JSON.parse(JSON.stringify(subOrderList[0]));
+                try {
+                    params.logger.debug('ooo search site by subOrderList[0]');
+                    params.logger.debug('ooo search site activationDocumentForInformation.registeredResourceMrid : ',
+                        activationDocumentForInformation.registeredResourceMrid);
+
+                    const existingSitesRef = await StarPrivateDataService.getObjRefbyId(
+                        params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
+                    const siteObjRef = existingSitesRef.values().next().value;
+                    if (siteObjRef && siteObjRef.docType === DocType.SITE) {
+                        siteRegistered = siteObjRef.data;
+                    }
+                } catch (error) {
+                    // DO nothing except "Not accessible information"
+                }
+            }
+            if (!siteRegistered) {
+                // If still no site found, back to initial value
+                activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
+            }
+
+            //
+            // FILTER
+            //
+            // Build a filtrer to check if it needs to go further in consolidation
+            let keepInformation = true;
+
+            if (criteriaObj.originAutomationRegisteredResourceMrid) {
+                const keepInformationOrigin1 =
+                    (activationDocument.originAutomationRegisteredResourceMrid ===
+                        criteriaObj.originAutomationRegisteredResourceMrid);
+                const keepInformationOrigin2 =
+                    (subOrderList
+                    && subOrderList.length > 0
+                    && subOrderList[0].originAutomationRegisteredResourceMrid ===
+                        criteriaObj.originAutomationRegisteredResourceMrid);
+
+                const keepInformationRegistered1 =
+                    (activationDocument.registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+                const keepInformationRegistered2 =
+                    (subOrderList
+                    && subOrderList.length > 0
+                    && subOrderList[0].registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+
+                const keepInformationSubstration =
+                    (siteRegistered && siteRegistered.substationMrid ===
+                        criteriaObj.originAutomationRegisteredResourceMrid);
+
+                keepInformation = keepInformationOrigin1
+                                || keepInformationOrigin2
+                                || keepInformationRegistered1
+                                || keepInformationRegistered2
+                                || keepInformationSubstration;
+
+            }
+
+            if (criteriaObj.producerMarketParticipantName
+                || criteriaObj.producerMarketParticipantMrid
+                || criteriaObj.meteringPointMrid
+                || criteriaObj.siteName) {
+
+                keepInformation =
+                    keepInformation
+                    && siteRegistered
+                    && criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
+            }
+
+            if (subOrderList && subOrderList.length > 0) {
+                // Keep only if it's a perfect match
+                keepInformation = keepInformation
+                                    && activationDocument.subOrderList
+                                    && activationDocument.subOrderList.length > 0
+                                    && activationDocument.subOrderList.includes(subOrderList[0].activationDocumentMrid)
+                                    && subOrderList[0].subOrderList
+                                    && subOrderList[0].subOrderList.length > 0
+                                    && subOrderList[0].subOrderList.includes(activationDocument.activationDocumentMrid);
+            }
+
+            // END OF FILTER
+            // If information doesn't to be kept
+            // the process doesn't care about this document
+            if (keepInformation) {
+                const identity: string = params.values.get(ParametersType.IDENTITY);
+                const status:string = await FeedbackProducerController.getIndemnityStatus(params, activationDocument.activationDocumentMrid);
+
+                if (status !== IndeminityStatus.ABANDONED || identity !== OrganizationTypeMsp.PRODUCER) {
+                    historyInformationInBuilding =
+                        await this.consolidateFiltered(
+                            params,
+                            historyInformationInBuilding,
+                            activationDocument,
+                            activationDocumentForInformation,
+                            subOrderList,
+                            siteRegistered);
+                }
+            }
+
+        }
+        params.logger.debug('=============  END  : consolidate ===========');
+
+        return historyInformationInBuilding;
+    }
+
 }

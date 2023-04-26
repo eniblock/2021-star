@@ -433,7 +433,7 @@ const getMocks = (form: FormulaireRechercheHistoriqueLimitation): Observable<Rec
         feedback: "",
         feedbackAnswer: "",
         feedbackElements: "",
-        indeminityStatus: IndeminityStatus.Agreement,
+        indeminityStatus: IndeminityStatus.Abandoned,
       },
     },
   ]);

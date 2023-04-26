@@ -18,4 +18,11 @@ export class IndeminityStatusService {
     return this.httpClient.put<IndeminityStatus>(`${environment.serverUrl}/indemnityStatus`, formData, {responseType: 'text'} as any) as any;
   }
 
+  public abandonIndeminisationStatus(activationDocumentMrid: string): Observable<IndeminityStatus> {
+    const formData = {
+      activationDocumentMrid: activationDocumentMrid,
+    };
+    return this.httpClient.put<IndeminityStatus>(`${environment.serverUrl}/indemnityStatus/abandon`, formData, {responseType: 'text'} as any) as any;
+  }
+
 }

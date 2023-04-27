@@ -30,6 +30,6 @@ jobs:
           --secret kubeconfig2="$KUBECONFIG2" \
           --secret test_username="${{ secrets.test_username}}" \
           --secret test_password="${{ secrets.test_password }}" \
-          ./helm+deploy \
+          ./helm+deploy-and-test \
           --environment ${{ inputs.environment }} \
           --tag ${{ env.TAG }}

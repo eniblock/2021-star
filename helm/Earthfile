@@ -1,4 +1,4 @@
-VERSION 0.6
+VERSION --wait-block 0.6
 
 ARG helmhelper=github.com/eniblock/build/helm:4.1
 IMPORT $helmhelper AS helm
@@ -108,4 +108,11 @@ deploy:
         --repositories="${repository} eniblock/2021-star-backend eniblock/2021-star-chaincode eniblock/2021-star-keycloak eniblock/2021-star-frontend" \
         --tag=${tag} \
         --environment=${environment}
+
+deploy-and-test:
+    ARG --required environment
+    ARG --required tag
+    WAIT
+        BUILD +deploy --environment={environment} --tag=${tag}
+    END
     BUILD ../test/e2e/+smoke-${environment}

@@ -12,7 +12,7 @@ jobs:
     environment: ${{ inputs.environment }}
     concurrency: ${{ inputs.environment }}
     steps:
-    - uses: eniblock/build/actions/setup@4.1
+    - uses: eniblock/build/actions/setup@develop
       with:
         helmdir: helm/star
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}

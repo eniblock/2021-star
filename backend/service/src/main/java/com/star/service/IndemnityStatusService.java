@@ -29,4 +29,8 @@ public class IndemnityStatusService {
         return indemnityStatusRepository.updateIndemnityStatus(activationDocumentMrid);
     }
 
+    public String manageActivationDocumentAbandon(String activationDocumentMrid) throws TechnicalException {
+        return indemnityStatusRepository.manageActivationDocumentAbandon(activationDocumentMrid);
+    }
+
 }

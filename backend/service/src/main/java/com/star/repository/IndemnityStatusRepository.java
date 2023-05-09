@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class IndemnityStatusRepository {
     public static final String UPDATE_INDEMNITY_STATUS = "UpdateActivationDocumentIndeminityStatus";
+    public static final String MANAGE_ACTIVATION_DOCUMENT_ABANDON = "ManageActivationDocumentAbandon";
 
     @Autowired
     private Contract contract;
@@ -37,6 +38,20 @@ public class IndemnityStatusRepository {
             throw new BusinessException(contractException.getMessage());
         } catch (InterruptedException e) {
             throw new RuntimeException("Erreur technique (Interrupted Exception) lors de la mise à jour du statut d'indemnité ", e);
+        }
+    }
+
+
+    public String manageActivationDocumentAbandon(String activationDocumentMrid) throws TechnicalException {
+        try {
+            byte[] response = contract.submitTransaction(MANAGE_ACTIVATION_DOCUMENT_ABANDON, activationDocumentMrid);
+            return new String(response);
+        } catch (TimeoutException timeoutException) {
+            throw new TechnicalException("Erreur technique (Timeout exception) lors de l'abandon d'un ActivationDocument ", timeoutException);
+        } catch (ContractException contractException) {
+            throw new BusinessException(contractException.getMessage());
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Erreur technique (Interrupted Exception) lors de l'abandon d'un ActivationDocument  ", e);
         }
     }
 

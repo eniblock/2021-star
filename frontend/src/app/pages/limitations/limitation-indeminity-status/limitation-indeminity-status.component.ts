@@ -6,9 +6,10 @@ import {MatDialog} from "@angular/material/dialog";
 import {
   LimitationIndeminityStatusChangeComponent
 } from "./limitation-indeminity-status-change/limitation-indeminity-status-change.component";
-import {canChangeIndeminityStatus} from "../../../rules/indeminity-status-rules";
+import {canChangeIndeminityStatus, showAbandonButton} from "../../../rules/indeminity-status-rules";
 import {IndeminityStatusService} from "../../../services/api/indeminity-status.service";
 import {RechercheHistoriqueLimitationEntite} from "../../../models/RechercheHistoriqueLimitation";
+import {TypeSite} from "../../../models/enum/TypeSite.enum";
 
 @Component({
   selector: 'app-limitation-indeminity-status',
@@ -18,10 +19,14 @@ import {RechercheHistoriqueLimitationEntite} from "../../../models/RechercheHist
 export class LimitationIndeminityStatusComponent implements OnInit, OnChanges {
   @Input() historiqueLimitation?: RechercheHistoriqueLimitationEntite;
 
+  IndeminityStatus = IndeminityStatus;
+
   instance?: Instance;
   loading = false;
   statusClass = "";
   canChangeStatus = false;
+  showAbandonnedButton = false;
+  indemnityStatus?: IndeminityStatus;
 
   constructor(
     public dialog: MatDialog,
@@ -42,7 +47,8 @@ export class LimitationIndeminityStatusComponent implements OnInit, OnChanges {
   }
 
   private initComponent() {
-    switch (this.historiqueLimitation?.feedbackProducer?.indeminityStatus) {
+    this.indemnityStatus = this.historiqueLimitation?.feedbackProducer?.indeminityStatus;
+    switch (this.indemnityStatus) {
       case IndeminityStatus.InProgress:
         this.statusClass = "text-grey";
         break;
@@ -58,7 +64,11 @@ export class LimitationIndeminityStatusComponent implements OnInit, OnChanges {
       case IndeminityStatus.InvoiceSent:
         this.statusClass = "text-success";
         break;
+      case IndeminityStatus.Abandoned:
+        this.statusClass = "text-danger";
+        break;
     }
+    this.showAbandonnedButton = showAbandonButton(this.historiqueLimitation, this.instance);
     this.canChangeStatus = canChangeIndeminityStatus(this.historiqueLimitation, this.instance);
   }
 
@@ -87,6 +97,24 @@ export class LimitationIndeminityStatusComponent implements OnInit, OnChanges {
         );
       }
     });
+  }
+
+  onAbandon() {
+    if (this.historiqueLimitation != undefined) {
+      this.loading = true;
+      this.indeminityStatusService.abandonIndeminisationStatus(this.historiqueLimitation.activationDocument.activationDocumentMrid).subscribe(
+        (result) => {
+          this.loading = false;
+          if (this.historiqueLimitation) {
+            this.historiqueLimitation.feedbackProducer.indeminityStatus = result;
+          }
+          this.initComponent();
+        },
+        (error) => {
+          this.loading = false;
+        }
+      );
+    }
   }
 
 }

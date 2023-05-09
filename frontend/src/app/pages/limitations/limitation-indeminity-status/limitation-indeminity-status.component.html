@@ -8,3 +8,14 @@
   <i class="fa-solid fa-pen" *ngIf="!loading"></i>
   <i class="fa-solid fa-hourglass" *ngIf="loading"></i>
 </button>
+
+<button mat-button [matMenuTriggerFor]="menu" *ngIf="showAbandonnedButton && historiqueLimitation?.feedbackProducer?.indeminityStatus">
+  <i class="fa-solid fa-ellipsis-vertical"></i>
+</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item [disabled]="loading" (click)="onAbandon()">
+    <i class="fa-solid fa-xmark me-1"></i>
+    {{ indemnityStatus != IndeminityStatus.Abandoned ? 'Abandonner' : 'Annuler abandon' }}
+    <i class="ms-2 fa-solid fa-hourglass" *ngIf="loading"></i>
+  </button>
+</mat-menu>

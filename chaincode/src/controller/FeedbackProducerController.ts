@@ -854,4 +854,17 @@ export class FeedbackProducerController {
     }
 
 
+    public static async getByQuery(
+        params: STARParameters,
+        query: string): Promise<any> {
+        params.logger.info('============= START : get FeedbackProducer By Query ===========');
+
+        const results = await FeedbackProducerService.getQueryArrayResult(params, query);
+
+        params.logger.info('=============  END  : get FeedbackProducer By Query ===========');
+        return results;
+    }
+
+
+
 }

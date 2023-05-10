@@ -5,5 +5,6 @@ public enum IndemnityStatus {
     Agreement,
     Processed,
     WaitingInvoice,
-    InvoiceSent;
+    InvoiceSent,
+    Abandoned;
 }

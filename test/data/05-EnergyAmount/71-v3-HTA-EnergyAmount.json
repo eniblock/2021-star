@@ -1,0 +1,17 @@
+{
+    "registeredResourceMrid": "PRM30001510857188",
+    "quantity": "number",
+    "measurementUnitName": "KW",
+    "revisionNumber": "1",
+    "businessType": "A14 / Z14",
+    "docStatus": "A02",
+    "processType": "A05",
+    "classificationType": "A02",
+    "areaDomain": "17X100A100A0001A",
+    "senderMarketParticipantMrid": "17X100A100A0001A",
+    "senderMarketParticipantRole": "A50",
+    "receiverMarketParticipantMrid": "17Y100A100R0629X",
+    "receiverMarketParticipantRole": "A32",
+    "createdDateTime": "2020-01-01T01:01:01Z",
+    "timeInterval": "2020-01-01T01:01:01Z/"
+}

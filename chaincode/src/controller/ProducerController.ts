@@ -121,4 +121,13 @@ export class ProducerController {
         return allResults;
     }
 
+    public static async getProducerByQuery(
+        params: STARParameters,
+        query: string): Promise<any> {
+        params.logger.info('============= START : getProducer By Query ===========');
+
+        return await QueryStateService.getQueryArrayResult(params, {query});
+    }
+
+
 }

@@ -35,6 +35,8 @@ import { BalancingDocumentController } from '../BalancingDocumentController';
 import { FeedbackProducer } from '../../model/feedbackProducer';
 import { FeedbackProducerController } from '../FeedbackProducerController';
 import { IndeminityStatus } from '../../enums/IndemnityStatus';
+import { SiteController } from '../SiteController';
+import { ReserveBidStatus } from '../../enums/ReserveBidStatus';
 
 export class HistoryController {
 
@@ -102,7 +104,7 @@ export class HistoryController {
 
                 if (allValidActivationDocument && allValidActivationDocument.length > 0) {
                     const informationInBuilding: HistoryInformationInBuilding =
-                        await HistoryController.consolidate(params, allValidActivationDocument, criteriaObj);
+                        await HistoryController.consolidateMassive(params, allValidActivationDocument, criteriaObj);
                     result = await HistoryController.generateOutput(params, informationInBuilding);
 
                 }
@@ -117,6 +119,11 @@ export class HistoryController {
 
         return result;
     }
+
+
+
+
+
 
     private static async consolidateRegisteredResourceListCriteria(
         params: STARParameters,
@@ -799,6 +806,8 @@ export class HistoryController {
 
 
 
+
+
     private static async consolidateMassive(
         params: STARParameters,
         allActivationDocument: ActivationDocument[],
@@ -807,6 +816,7 @@ export class HistoryController {
         params.logger.debug('============= START : consolidate ===========');
 
         let historyInformationInBuilding: HistoryInformationInBuilding = new HistoryInformationInBuilding();
+
 
         for (const activationDocumentQueryValue of allActivationDocument) {
             params.logger.debug('ooo activationDocumentQueryValue.activationDocumentMrid : ',
@@ -818,138 +828,378 @@ export class HistoryController {
 
             let activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
 
-            const subOrderList: ActivationDocument[] = [];
+            historyInformationInBuilding.allInformation.set(activationDocument.activationDocumentMrid, activationDocumentForInformation);
+            historyInformationInBuilding.activationDocumentMridList.push(activationDocument.activationDocumentMrid);
+            historyInformationInBuilding.registeredResourceMridList.push(activationDocument.registeredResourceMrid);
+            historyInformationInBuilding.producerMarketParticipantMridList.push(activationDocument.receiverMarketParticipantMrid);
+
             if (activationDocument && activationDocument.subOrderList) {
                 for (const activationDocumentMrid of activationDocument.subOrderList) {
+                    historyInformationInBuilding.suborderActivationDocumentMridList.push(activationDocumentMrid);
+                }
+            }
+        }
+        //Filtrer Suborder
+        let unkownSuborderActivationDocumentMridList: string[] = [];
+        for (const suborderId of historyInformationInBuilding.suborderActivationDocumentMridList) {
+            if (!historyInformationInBuilding.activationDocumentMridList.includes(suborderId)) {
+                unkownSuborderActivationDocumentMridList.push(suborderId);
+            }
+        }
 
-                    let subOrder: ActivationDocument = null;
-                    try {
-                        subOrder = await ActivationDocumentController.getActivationDocumentById(
-                            params, activationDocumentMrid);
-                    } catch (error) {
-                        // do nothing, but empty document : suborder information is not in accessible collection
+        let suborders: ActivationDocument[] = [];
+        if (unkownSuborderActivationDocumentMridList.length > 0) {
+            const querySuborder = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","activationDocumentMrid":{ "$in" :  ${JSON.stringify(unkownSuborderActivationDocumentMridList)} }}}`;
+            // params.logger.info(querySuborder);
+
+            suborders = await ActivationDocumentController.getActivationDocumentObjByQuery(params, querySuborder);
+            for (const subOrder of suborders) {
+                historyInformationInBuilding.allInformation.set(subOrder.activationDocumentMrid, subOrder);
+                historyInformationInBuilding.registeredResourceMridList.push(subOrder.registeredResourceMrid);
+                historyInformationInBuilding.producerMarketParticipantMridList.push(subOrder.receiverMarketParticipantMrid);
+            }
+        }
+
+        const querySite = `{"selector": {"docType": "${DocType.SITE}","meteringPointMrid":{ "$in" : ${JSON.stringify(historyInformationInBuilding.registeredResourceMridList)} }}}`;
+        // params.logger.info(querySite);
+        const sites: Site[] = await SiteController.getSitesByQuery(params, querySite);
+
+        historyInformationInBuilding.roleTable = params.values.get(ParametersType.ROLE_TABLE);
+        historyInformationInBuilding.identity = params.values.get(ParametersType.IDENTITY);
+        historyInformationInBuilding.roleUser = historyInformationInBuilding.roleTable.get(historyInformationInBuilding.identity.toLowerCase());
+
+        for (const site of sites) {
+            historyInformationInBuilding.allInformation.set(site.meteringPointMrid, site);
+            historyInformationInBuilding.producerMarketParticipantMridList.push(site.producerMarketParticipantMrid);
+        }
+
+        try {
+            if (historyInformationInBuilding.identity === OrganizationTypeMsp.PRODUCER) {
+                const systemOperator = await SystemOperatorController.getSystemOperatorObjById(
+                    params, sites[0].systemOperatorMarketParticipantMrid);
+
+                if (systemOperator && systemOperator.systemOperatorMarketParticipantName) {
+                    const roleSystemOperator = historyInformationInBuilding.roleTable.get(
+                        systemOperator.systemOperatorMarketParticipantName.toLowerCase());
+                    if (roleSystemOperator === RoleType.Role_DSO) {
+                        historyInformationInBuilding.roleUser = RoleType.Role_DSOProducer;
+                    } else if (roleSystemOperator === RoleType.Role_TSO) {
+                        historyInformationInBuilding.roleUser = RoleType.Role_TSOProducer;
                     }
-                    if (subOrder && subOrder.activationDocumentMrid) {
-                        subOrderList.push(subOrder);
-                    }
                 }
-            }
-            // Manage Yello Page to get Site Information
-            let siteRegistered: Site = null;
-            try {
-                params.logger.debug('ooo search site activationDocumentForInformation.registeredResourceMrid : ',
-                    activationDocumentForInformation.registeredResourceMrid);
-
-                const existingSitesRef = await StarPrivateDataService.getObjRefbyId(
-                    params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
-                const siteObjRef: DataReference = existingSitesRef.values().next().value;
-                if (siteObjRef && siteObjRef.docType === DocType.SITE) {
-                    siteRegistered = siteObjRef.data;
-                }
-            } catch (error) {
-                // DO nothing except "Not accessible information"
-            }
-            if (!siteRegistered && subOrderList && subOrderList.length > 0) {
-                // If no site found, search information by SubOrder Id
-                activationDocumentForInformation = JSON.parse(JSON.stringify(subOrderList[0]));
-                try {
-                    params.logger.debug('ooo search site by subOrderList[0]');
-                    params.logger.debug('ooo search site activationDocumentForInformation.registeredResourceMrid : ',
-                        activationDocumentForInformation.registeredResourceMrid);
-
-                    const existingSitesRef = await StarPrivateDataService.getObjRefbyId(
-                        params, {docType: DocType.SITE, id: activationDocumentForInformation.registeredResourceMrid});
-                    const siteObjRef = existingSitesRef.values().next().value;
-                    if (siteObjRef && siteObjRef.docType === DocType.SITE) {
-                        siteRegistered = siteObjRef.data;
-                    }
-                } catch (error) {
-                    // DO nothing except "Not accessible information"
-                }
-            }
-            if (!siteRegistered) {
-                // If still no site found, back to initial value
-                activationDocumentForInformation = JSON.parse(JSON.stringify(activationDocument));
-            }
-
-            //
-            // FILTER
-            //
-            // Build a filtrer to check if it needs to go further in consolidation
-            let keepInformation = true;
-
-            if (criteriaObj.originAutomationRegisteredResourceMrid) {
-                const keepInformationOrigin1 =
-                    (activationDocument.originAutomationRegisteredResourceMrid ===
-                        criteriaObj.originAutomationRegisteredResourceMrid);
-                const keepInformationOrigin2 =
-                    (subOrderList
-                    && subOrderList.length > 0
-                    && subOrderList[0].originAutomationRegisteredResourceMrid ===
-                        criteriaObj.originAutomationRegisteredResourceMrid);
-
-                const keepInformationRegistered1 =
-                    (activationDocument.registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
-                const keepInformationRegistered2 =
-                    (subOrderList
-                    && subOrderList.length > 0
-                    && subOrderList[0].registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
-
-                const keepInformationSubstration =
-                    (siteRegistered && siteRegistered.substationMrid ===
-                        criteriaObj.originAutomationRegisteredResourceMrid);
-
-                keepInformation = keepInformationOrigin1
-                                || keepInformationOrigin2
-                                || keepInformationRegistered1
-                                || keepInformationRegistered2
-                                || keepInformationSubstration;
 
             }
+        } catch (error) {
+            // DO nothing keep roleUser value as it is
+        }
 
-            if (criteriaObj.producerMarketParticipantName
-                || criteriaObj.producerMarketParticipantMrid
-                || criteriaObj.meteringPointMrid
-                || criteriaObj.siteName) {
+        params.logger.debug('roleUser: ', historyInformationInBuilding.roleUser);
 
-                keepInformation =
-                    keepInformation
-                    && siteRegistered
-                    && criteriaObj.registeredResourceList.includes(siteRegistered.meteringPointMrid);
+        const queryProducer = `{"selector": {"docType": "${DocType.PRODUCER}","producerMarketParticipantMrid":{ "$in" : ${JSON.stringify(historyInformationInBuilding.producerMarketParticipantMridList)} }}}`;
+        // params.logger.info(queryProducer);
+        const producers: Producer[] = await ProducerController.getProducerByQuery(params, queryProducer);
+
+        for (const producer of producers) {
+            historyInformationInBuilding.allInformation.set(producer.producerMarketParticipantMrid, producer);
+        }
+
+        const queryEnergyAmount = `{"selector": {"docType": "${DocType.ENERGY_AMOUNT}","activationDocumentMrid":{ "$in" : ${JSON.stringify(historyInformationInBuilding.activationDocumentMridList)} }}}`;
+        // params.logger.info(queryEnergyAmount);
+        const energyAmounts: EnergyAmount[] = await EnergyAmountController.getEnergyAmountByQuery(params, queryEnergyAmount);
+
+        for (const energyAmount of energyAmounts) {
+            historyInformationInBuilding.allInformation.set(energyAmount.activationDocumentMrid + "_NRJ", energyAmount);
+        }
+
+        const queryFeedbackProducer = `{"selector": {"docType": "${DocType.FEEDBACK_PRODUCER}","activationDocumentMrid":{ "$in" : ${JSON.stringify(historyInformationInBuilding.activationDocumentMridList)} }}}`;
+        // params.logger.info(queryFeedbackProducer);
+        const feedbackProducers: FeedbackProducer[] = await FeedbackProducerController.getByQuery(params, queryFeedbackProducer);
+
+        for (const feedbackProducer of feedbackProducers) {
+            historyInformationInBuilding.allInformation.set(feedbackProducer.activationDocumentMrid + "_FdBkP", feedbackProducer);
+        }
+
+        const queryReserveBidMarketDocument = `{"selector": {"docType": "${DocType.RESERVE_BID_MARKET_DOCUMENT}","reserveBidStatus": "${ReserveBidStatus.VALIDATED}","meteringPointMrid":{ "$in" : ${JSON.stringify(historyInformationInBuilding.registeredResourceMridList)} }}}`;
+        params.logger.info(queryReserveBidMarketDocument);
+        const reserveBids: ReserveBidMarketDocument[] = await ReserveBidMarketDocumentController.getByQuery(params, queryReserveBidMarketDocument);
+
+        for (const reserveBid of reserveBids) {
+            let reserveBidsBySite: ReserveBidMarketDocument[] = historyInformationInBuilding.allInformation.get(reserveBid.meteringPointMrid + "_RsBidDocs")
+            if (!reserveBidsBySite) {
+                reserveBidsBySite = [];
             }
-
-            if (subOrderList && subOrderList.length > 0) {
-                // Keep only if it's a perfect match
-                keepInformation = keepInformation
-                                    && activationDocument.subOrderList
-                                    && activationDocument.subOrderList.length > 0
-                                    && activationDocument.subOrderList.includes(subOrderList[0].activationDocumentMrid)
-                                    && subOrderList[0].subOrderList
-                                    && subOrderList[0].subOrderList.length > 0
-                                    && subOrderList[0].subOrderList.includes(activationDocument.activationDocumentMrid);
-            }
-
-            // END OF FILTER
-            // If information doesn't to be kept
-            // the process doesn't care about this document
-            if (keepInformation) {
-                const identity: string = params.values.get(ParametersType.IDENTITY);
-                const status:string = await FeedbackProducerController.getIndemnityStatus(params, activationDocument.activationDocumentMrid);
-
-                if (status !== IndeminityStatus.ABANDONED || identity !== OrganizationTypeMsp.PRODUCER) {
-                    historyInformationInBuilding =
-                        await this.consolidateFiltered(
-                            params,
-                            historyInformationInBuilding,
-                            activationDocument,
-                            activationDocumentForInformation,
-                            subOrderList,
-                            siteRegistered);
-                }
-            }
+            reserveBidsBySite.push(reserveBid);
+            historyInformationInBuilding.allInformation.set(reserveBid.meteringPointMrid + "_RsBidDocs", reserveBidsBySite);
 
         }
+
         params.logger.debug('=============  END  : consolidate ===========');
+
+        return await this.FinalizeMassive(params, historyInformationInBuilding, criteriaObj);
+    }
+
+
+
+
+
+
+
+    private static async TestInformation(
+        params: STARParameters,
+        criteriaObj: HistoryCriteria,
+        identity: string,
+        activationDocument: ActivationDocument,
+        subOrderList: ActivationDocument[],
+        site: Site,
+        feedbackProducerObj: FeedbackProducer):Promise<boolean> {
+
+        // Build a filtrer to check if it needs to go further in consolidation
+        let keepInformation = true;
+
+        if (criteriaObj.originAutomationRegisteredResourceMrid) {
+            const keepInformationOrigin1 =
+            (activationDocument.originAutomationRegisteredResourceMrid ===
+                criteriaObj.originAutomationRegisteredResourceMrid);
+
+            const keepInformationOrigin2 =
+                (subOrderList
+                && subOrderList.length > 0
+                && subOrderList[0].originAutomationRegisteredResourceMrid ===
+                    criteriaObj.originAutomationRegisteredResourceMrid);
+
+            const keepInformationRegistered1 =
+                (activationDocument.registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+            const keepInformationRegistered2 =
+                (subOrderList
+                && subOrderList.length > 0
+                && subOrderList[0].registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+
+            const keepInformationSubstration =
+                (site && site.substationMrid ===
+                    criteriaObj.originAutomationRegisteredResourceMrid);
+
+            keepInformation = keepInformationOrigin1
+                            || keepInformationOrigin2
+                            || keepInformationRegistered1
+                            || keepInformationRegistered2
+                            || keepInformationSubstration;
+
+        }
+
+        if (criteriaObj.producerMarketParticipantName
+            || criteriaObj.producerMarketParticipantMrid
+            || criteriaObj.meteringPointMrid
+            || criteriaObj.siteName) {
+
+            keepInformation =
+                keepInformation
+                && site
+                && criteriaObj.registeredResourceList.includes(site.meteringPointMrid);
+        }
+
+        if (subOrderList && subOrderList.length > 0) {
+            // Keep only if it's a perfect match
+            keepInformation = keepInformation
+                                && activationDocument.subOrderList
+                                && activationDocument.subOrderList.length > 0
+                                && activationDocument.subOrderList.includes(subOrderList[0].activationDocumentMrid)
+                                && subOrderList[0].subOrderList
+                                && subOrderList[0].subOrderList.length > 0
+                                && subOrderList[0].subOrderList.includes(activationDocument.activationDocumentMrid);
+        }
+
+        // END OF FILTER
+        // If information doesn't to be kept
+        // the process doesn't care about this document
+        keepInformation = keepInformation
+            && (feedbackProducerObj.indeminityStatus !== IndeminityStatus.ABANDONED || identity !== OrganizationTypeMsp.PRODUCER);
+
+        return keepInformation;
+    }
+
+
+
+
+
+
+
+    private static async FinalizeMassive(
+        params: STARParameters,
+        historyInformationInBuilding: HistoryInformationInBuilding,
+        criteriaObj: HistoryCriteria): Promise<HistoryInformationInBuilding> {
+
+        params.logger.debug('============= START : consolidateFiltered ===========');
+
+        for (const activationDocumentMrid of historyInformationInBuilding.activationDocumentMridList){
+
+            params.logger.info("M10 " + activationDocumentMrid);
+
+            const activationDocument : ActivationDocument = historyInformationInBuilding.allInformation.get(activationDocumentMrid);
+            if (!activationDocument
+                || activationDocument.activationDocumentMrid !== activationDocumentMrid) {
+
+                continue;
+            }
+            if (activationDocument.senderMarketParticipantMrid !== '10XFR-RTE------Q'
+                && activationDocument.senderMarketParticipantMrid !== '17X100A100A0001A') {
+
+                continue;
+            }
+
+            const subOrderList: ActivationDocument[] = [];
+            if (activationDocument.subOrderList
+                && activationDocument.subOrderList.length > 0) {
+
+                for (const subOrderId of activationDocument.subOrderList) {
+                    const subOrderDocument : ActivationDocument = historyInformationInBuilding.allInformation.get(subOrderId);
+                    subOrderList.push(subOrderDocument);
+                }
+            }
+
+            let site: Site = historyInformationInBuilding.allInformation.get(activationDocument.registeredResourceMrid);
+            if ((!site || site.meteringPointMrid !== activationDocument.registeredResourceMrid)
+                && subOrderList.length > 0) {
+
+                site = historyInformationInBuilding.allInformation.get(subOrderList[0].registeredResourceMrid);
+            }
+            if (!site || site.meteringPointMrid.length === 0 ) {
+                continue;
+            }
+
+            let feedbackProducer: FeedbackProducer = historyInformationInBuilding.allInformation.get(activationDocument.activationDocumentMrid + "_FdBkP");
+            if ((!feedbackProducer || feedbackProducer.activationDocumentMrid !== activationDocument.activationDocumentMrid)
+                && subOrderList.length > 0) {
+
+                    feedbackProducer = historyInformationInBuilding.allInformation.get(subOrderList[0].activationDocumentMrid + "_FdBkP");
+            }
+            const status:string = await FeedbackProducerController.getIndemnityStatusFromObj(params, activationDocument.activationDocumentMrid, feedbackProducer);
+            feedbackProducer.indeminityStatus = status;
+
+            const keepInformation: boolean = await this.TestInformation(
+                                                            params,
+                                                            criteriaObj,
+                                                            historyInformationInBuilding.identity,
+                                                            activationDocument,
+                                                            subOrderList,
+                                                            site,
+                                                            feedbackProducer);
+            if (!keepInformation) {
+                continue;
+            }
+
+            params.logger.info("M15-", site.producerMarketParticipantMrid);
+            let producer: Producer = historyInformationInBuilding.allInformation.get(site.producerMarketParticipantMrid);
+            params.logger.info(producer);
+
+            let calculateEnergyAmount: boolean = true;
+            if (historyInformationInBuilding.identity === OrganizationTypeMsp.PRODUCER) {
+                calculateEnergyAmount =
+                    (activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted
+                    || activationDocument.eligibilityStatus === EligibilityStatusType.FREligibilityAccepted);
+            }
+
+            let energyAmount: EnergyAmount = null;
+            if (calculateEnergyAmount) {
+                energyAmount = historyInformationInBuilding.allInformation.get(activationDocument.activationDocumentMrid + "_NRJ");
+                if ((!energyAmount || energyAmount.activationDocumentMrid !== activationDocument.activationDocumentMrid)
+                    && subOrderList.length > 0) {
+
+                        energyAmount = historyInformationInBuilding.allInformation.get(subOrderList[0].activationDocumentMrid + "_NRJ");
+                }
+            }
+
+            let displayedSourceName = activationDocument.originAutomationRegisteredResourceMrid;
+            if (activationDocument.instance === "tso" && subOrderList && subOrderList.length > 0) {
+                displayedSourceName = subOrderList[0].originAutomationRegisteredResourceMrid;
+            }
+
+            if (historyInformationInBuilding.roleUser === RoleType.Role_TSO
+                || historyInformationInBuilding.roleUser === RoleType.Role_TSOProducer) {
+
+                if (!producer) {
+                    displayedSourceName = activationDocument.registeredResourceMrid;
+
+                } else if (subOrderList
+                    && subOrderList.length > 0) {
+
+                        if (activationDocument.instance === "tso") {
+                            displayedSourceName = activationDocument.registeredResourceMrid;
+                        } else {
+                            displayedSourceName = subOrderList[0].registeredResourceMrid;
+                        }
+
+                } else if (site) {
+                    displayedSourceName = site.substationMrid;
+                }
+            } else if ((historyInformationInBuilding.roleUser === RoleType.Role_DSO || historyInformationInBuilding.roleUser === RoleType.Role_DSOProducer)
+                && !producer
+                && !site) {
+
+                displayedSourceName = activationDocument.registeredResourceMrid;
+            }
+
+
+            let reserveBidsBySite: ReserveBidMarketDocument[] = historyInformationInBuilding.allInformation.get(site.meteringPointMrid + "_RsBidDocs");
+            let reserveBid: ReserveBidMarketDocument = ReserveBidMarketDocumentController.selectForActivationDocument(params, activationDocument, reserveBidsBySite);
+
+            let balancingDocument: BalancingDocument = null;
+            if (historyInformationInBuilding.identity !== OrganizationTypeMsp.PRODUCER
+                || activationDocument.eligibilityStatus === EligibilityStatusType.EligibilityAccepted
+                || activationDocument.eligibilityStatus === EligibilityStatusType.FREligibilityAccepted) {
+
+                let activationDocumentForBalancing: ActivationDocument= null;
+                if (activationDocument.registeredResourceMrid === site.meteringPointMrid) {
+                    activationDocumentForBalancing = activationDocument;
+                } else if (subOrderList && subOrderList.length > 0) {
+                    activationDocumentForBalancing = subOrderList[0];
+                }
+
+                balancingDocument = await BalancingDocumentController.generateObj(
+                    params,
+                    activationDocumentForBalancing,
+                    reserveBid,
+                    energyAmount);
+            }
+
+
+            const information: HistoryInformation = {
+                activationDocument: JSON.parse(JSON.stringify(activationDocument)),
+                subOrderList: JSON.parse(JSON.stringify(subOrderList)),
+                site: site ? JSON.parse(JSON.stringify(site)) : null,
+                producer: producer ? JSON.parse(JSON.stringify(producer)) : null,
+                energyAmount: energyAmount ? JSON.parse(JSON.stringify(energyAmount)) : null,
+                feedbackProducer: feedbackProducer ? JSON.parse(JSON.stringify(feedbackProducer)) : null,
+                displayedSourceName,
+                reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
+                balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
+            };
+
+            historyInformationInBuilding.historyInformation.set(
+                information.activationDocument.activationDocumentMrid, information);
+
+            const key = this.buildKey(information.activationDocument);
+
+            if (information.site
+                && information.producer
+                && information.activationDocument
+                && information.activationDocument.eligibilityStatusEditable) {
+
+                historyInformationInBuilding.eligibilityToDefine.push(key);
+            } else if (information.activationDocument.eligibilityStatus
+                && information.activationDocument.eligibilityStatus !== '') {
+
+                historyInformationInBuilding.eligibilityDefined.push(key);
+            } else if (information.subOrderList
+                && information.subOrderList.length > 0) {
+
+                historyInformationInBuilding.reconciliated.push(key);
+            } else {
+                historyInformationInBuilding.others.push(key);
+            }
+        }
+
+
+        params.logger.debug('=============  END  : consolidateFiltered ===========');
 
         return historyInformationInBuilding;
     }

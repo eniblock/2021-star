@@ -834,6 +834,10 @@ export class HistoryController {
 
             historyInformationInBuilding.allInformation.set(activationDocument.activationDocumentMrid, activationDocumentForInformation);
 
+            if (activationDocument.subOrderList && activationDocument.subOrderList.length > 0) {
+                activationDocument.subOrderList = [...new Set(activationDocument.subOrderList)];
+            }
+
             if (activationDocument.receiverRole === RoleType.Role_Producer
                 || !activationDocument.subOrderList
                 || activationDocument.subOrderList.length == 0) {

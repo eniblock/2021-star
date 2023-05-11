@@ -1088,9 +1088,7 @@ export class HistoryController {
                 continue;
             }
 
-            params.logger.info("M15-", site.producerMarketParticipantMrid);
             let producer: Producer = historyInformationInBuilding.allInformation.get(site.producerMarketParticipantMrid);
-            params.logger.info(producer);
 
             let calculateEnergyAmount: boolean = true;
             if (historyInformationInBuilding.identity === OrganizationTypeMsp.PRODUCER) {
@@ -1162,6 +1160,19 @@ export class HistoryController {
                     energyAmount);
             }
 
+            if (!site || site.meteringPointMrid === "") {
+                site = {
+                    meteringPointMrid: "",
+                    producerMarketParticipantMrid: "",
+                    siteName: "",
+                    siteType: "",
+                    substationMrid: "",
+                    substationName: "",
+                    systemOperatorMarketParticipantMrid: "",
+                    technologyType: "",
+
+                }
+            }
 
             const information: HistoryInformation = {
                 activationDocument: JSON.parse(JSON.stringify(activationDocument)),
@@ -1174,6 +1185,7 @@ export class HistoryController {
                 reserveBidMarketDocument: reserveBid ? JSON.parse(JSON.stringify(reserveBid)) : null,
                 balancingDocument: balancingDocument ? JSON.parse(JSON.stringify(balancingDocument)) : null,
             };
+
 
             historyInformationInBuilding.historyInformation.set(
                 information.activationDocument.activationDocumentMrid, information);

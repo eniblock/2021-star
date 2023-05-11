@@ -840,8 +840,6 @@ export class HistoryController {
                 || activationDocument.subOrderList.length == 0) {
 
                 historyInformationInBuilding.activationDocumentMridList.push(activationDocument.activationDocumentMrid);
-            } else {
-                historyInformationInBuilding.suborderActivationDocumentMridList.push(activationDocument.activationDocumentMrid);
             }
 
             historyInformationInBuilding.registeredResourceMridList.push(activationDocument.registeredResourceMrid);
@@ -849,13 +847,14 @@ export class HistoryController {
 
             if (activationDocument && activationDocument.subOrderList) {
                 for (const activationDocumentMrid of activationDocument.subOrderList) {
-                    if (historyInformationInBuilding.roleUser.toLowerCase() === RoleType.Role_Producer.toLowerCase()
-                        || activationDocument.receiverRole === RoleType.Role_Producer
-                        || !activationDocument.subOrderList
-                        || activationDocument.subOrderList.length == 0) {
 
-                        historyInformationInBuilding.suborderActivationDocumentMridList.push(activationDocumentMrid);
-                    } else {
+                    historyInformationInBuilding.suborderActivationDocumentMridList.push(activationDocumentMrid);
+
+                    if (historyInformationInBuilding.roleUser.toLowerCase() !== RoleType.Role_Producer.toLowerCase()
+                        && activationDocument.receiverRole !== RoleType.Role_Producer
+                        && activationDocument.subOrderList
+                        && activationDocument.subOrderList.length > 0) {
+
                         historyInformationInBuilding.activationDocumentMridList.push(activationDocumentMrid);
                     }
                 }

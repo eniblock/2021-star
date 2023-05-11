@@ -843,7 +843,9 @@ export class HistoryController {
             } else if (activationDocument.subOrderList) {
 
                 for (const activationDocumentMrid of activationDocument.subOrderList) {
-                    historyInformationInBuilding.activationDocumentMridList.push(activationDocumentMrid);
+                    if (!historyInformationInBuilding.activationDocumentMridList.includes(activationDocumentMrid)) {
+                        historyInformationInBuilding.activationDocumentMridList.push(activationDocumentMrid);
+                    }
                 }
             }
 

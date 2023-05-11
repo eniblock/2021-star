@@ -835,7 +835,7 @@ export class HistoryController {
             historyInformationInBuilding.allInformation.set(activationDocument.activationDocumentMrid, activationDocumentForInformation);
 
             if (historyInformationInBuilding.roleUser.toLowerCase() === RoleType.Role_Producer.toLowerCase()
-                || historyInformationInBuilding.roleUser.toLowerCase() === activationDocument.instance.toLowerCase()
+                || activationDocument.receiverRole === RoleType.Role_Producer
                 || !activationDocument.subOrderList
                 || activationDocument.subOrderList.length == 0) {
 
@@ -850,7 +850,7 @@ export class HistoryController {
             if (activationDocument && activationDocument.subOrderList) {
                 for (const activationDocumentMrid of activationDocument.subOrderList) {
                     if (historyInformationInBuilding.roleUser.toLowerCase() === RoleType.Role_Producer.toLowerCase()
-                        || historyInformationInBuilding.roleUser.toLowerCase() === activationDocument.instance.toLowerCase()
+                        || activationDocument.receiverRole === RoleType.Role_Producer
                         || !activationDocument.subOrderList
                         || activationDocument.subOrderList.length == 0) {
 
@@ -931,7 +931,7 @@ export class HistoryController {
         }
 
         const queryReserveBidMarketDocument = `{"selector": {"docType": "${DocType.RESERVE_BID_MARKET_DOCUMENT}","reserveBidStatus": "${ReserveBidStatus.VALIDATED}","meteringPointMrid":{ "$in" : ${JSON.stringify(historyInformationInBuilding.registeredResourceMridList)} }}}`;
-        params.logger.info(queryReserveBidMarketDocument);
+        // params.logger.info(queryReserveBidMarketDocument);
         const reserveBids: ReserveBidMarketDocument[] = await ReserveBidMarketDocumentController.getByQuery(params, queryReserveBidMarketDocument);
 
         for (const reserveBid of reserveBids) {
@@ -1042,8 +1042,6 @@ export class HistoryController {
         params.logger.debug('============= START : consolidateFiltered ===========');
 
         for (const activationDocumentMrid of historyInformationInBuilding.activationDocumentMridList){
-
-            params.logger.info("M10 " + activationDocumentMrid);
 
             const activationDocument : ActivationDocument = historyInformationInBuilding.allInformation.get(activationDocumentMrid);
             if (!activationDocument

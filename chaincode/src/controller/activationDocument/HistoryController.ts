@@ -1088,7 +1088,20 @@ export class HistoryController {
                 continue;
             }
 
-            let producer: Producer = historyInformationInBuilding.allInformation.get(site.producerMarketParticipantMrid);
+            let producer: Producer = null;
+            if (site && site.producerMarketParticipantMrid != "") {
+                producer = historyInformationInBuilding.allInformation.get(site.producerMarketParticipantMrid);
+            } else {
+                producer = historyInformationInBuilding.allInformation.get(activationDocument.receiverMarketParticipantMrid);
+
+                if ( (!producer
+                        || producer.producerMarketParticipantMrid !== activationDocument.receiverMarketParticipantMrid)
+                    && subOrderList
+                    && subOrderList.length > 0) {
+                        producer = historyInformationInBuilding.allInformation.get(subOrderList[0].receiverMarketParticipantMrid);
+                    }
+            }
+
 
             let calculateEnergyAmount: boolean = true;
             if (historyInformationInBuilding.identity === OrganizationTypeMsp.PRODUCER) {
@@ -1138,7 +1151,11 @@ export class HistoryController {
             }
 
 
-            let reserveBidsBySite: ReserveBidMarketDocument[] = historyInformationInBuilding.allInformation.get(site.meteringPointMrid + "_RsBidDocs");
+            let reserveBidsBySite: ReserveBidMarketDocument[] = [];
+            if (site && site.meteringPointMrid !== "") {
+                historyInformationInBuilding.allInformation.get(site.meteringPointMrid + "_RsBidDocs");
+            }
+
             let reserveBid: ReserveBidMarketDocument = ReserveBidMarketDocumentController.selectForActivationDocument(params, activationDocument, reserveBidsBySite);
 
             let balancingDocument: BalancingDocument = null;
@@ -1147,7 +1164,7 @@ export class HistoryController {
                 || activationDocument.eligibilityStatus === EligibilityStatusType.FREligibilityAccepted) {
 
                 let activationDocumentForBalancing: ActivationDocument= null;
-                if (activationDocument.registeredResourceMrid === site.meteringPointMrid) {
+                if (site && activationDocument.registeredResourceMrid === site.meteringPointMrid) {
                     activationDocumentForBalancing = activationDocument;
                 } else if (subOrderList && subOrderList.length > 0) {
                     activationDocumentForBalancing = subOrderList[0];
@@ -1158,20 +1175,6 @@ export class HistoryController {
                     activationDocumentForBalancing,
                     reserveBid,
                     energyAmount);
-            }
-
-            if (!site || site.meteringPointMrid === "") {
-                site = {
-                    meteringPointMrid: "",
-                    producerMarketParticipantMrid: "",
-                    siteName: "",
-                    siteType: "",
-                    substationMrid: "",
-                    substationName: "",
-                    systemOperatorMarketParticipantMrid: "",
-                    technologyType: "",
-
-                }
             }
 
             const information: HistoryInformation = {

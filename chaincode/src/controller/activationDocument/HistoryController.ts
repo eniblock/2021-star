@@ -1062,9 +1062,10 @@ export class HistoryController {
 
                 site = historyInformationInBuilding.allInformation.get(subOrderList[0].registeredResourceMrid);
             }
-            if (!site || site.meteringPointMrid.length === 0 ) {
-                continue;
-            }
+            // empty site should be kept, it could document from TSO to DSO (and then no site)
+            // if (!site || site.meteringPointMrid.length === 0 ) {
+            //     continue;
+            // }
 
             let feedbackProducer: FeedbackProducer = historyInformationInBuilding.allInformation.get(activationDocument.activationDocumentMrid + "_FdBkP");
             if ((!feedbackProducer || feedbackProducer.activationDocumentMrid !== activationDocument.activationDocumentMrid)

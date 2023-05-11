@@ -817,6 +817,10 @@ export class HistoryController {
 
         let historyInformationInBuilding: HistoryInformationInBuilding = new HistoryInformationInBuilding();
 
+        historyInformationInBuilding.roleTable = params.values.get(ParametersType.ROLE_TABLE);
+        historyInformationInBuilding.identity = params.values.get(ParametersType.IDENTITY);
+        historyInformationInBuilding.roleUser = historyInformationInBuilding.roleTable.get(historyInformationInBuilding.identity.toLowerCase());
+
 
         for (const activationDocumentQueryValue of allActivationDocument) {
             params.logger.debug('ooo activationDocumentQueryValue.activationDocumentMrid : ',
@@ -829,27 +833,38 @@ export class HistoryController {
             let activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
 
             historyInformationInBuilding.allInformation.set(activationDocument.activationDocumentMrid, activationDocumentForInformation);
-            historyInformationInBuilding.activationDocumentMridList.push(activationDocument.activationDocumentMrid);
+
+            if (historyInformationInBuilding.roleUser.toLowerCase() === RoleType.Role_Producer.toLowerCase()
+                || historyInformationInBuilding.roleUser.toLowerCase() === activationDocument.instance.toLowerCase()
+                || !activationDocument.subOrderList
+                || activationDocument.subOrderList.length == 0) {
+
+                historyInformationInBuilding.activationDocumentMridList.push(activationDocument.activationDocumentMrid);
+            } else {
+                historyInformationInBuilding.suborderActivationDocumentMridList.push(activationDocument.activationDocumentMrid);
+            }
+
             historyInformationInBuilding.registeredResourceMridList.push(activationDocument.registeredResourceMrid);
             historyInformationInBuilding.producerMarketParticipantMridList.push(activationDocument.receiverMarketParticipantMrid);
 
             if (activationDocument && activationDocument.subOrderList) {
                 for (const activationDocumentMrid of activationDocument.subOrderList) {
-                    historyInformationInBuilding.suborderActivationDocumentMridList.push(activationDocumentMrid);
+                    if (historyInformationInBuilding.roleUser.toLowerCase() === RoleType.Role_Producer.toLowerCase()
+                        || historyInformationInBuilding.roleUser.toLowerCase() === activationDocument.instance.toLowerCase()
+                        || !activationDocument.subOrderList
+                        || activationDocument.subOrderList.length == 0) {
+
+                        historyInformationInBuilding.suborderActivationDocumentMridList.push(activationDocumentMrid);
+                    } else {
+                        historyInformationInBuilding.activationDocumentMridList.push(activationDocumentMrid);
+                    }
                 }
-            }
-        }
-        //Filtrer Suborder
-        let unkownSuborderActivationDocumentMridList: string[] = [];
-        for (const suborderId of historyInformationInBuilding.suborderActivationDocumentMridList) {
-            if (!historyInformationInBuilding.activationDocumentMridList.includes(suborderId)) {
-                unkownSuborderActivationDocumentMridList.push(suborderId);
             }
         }
 
         let suborders: ActivationDocument[] = [];
-        if (unkownSuborderActivationDocumentMridList.length > 0) {
-            const querySuborder = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","activationDocumentMrid":{ "$in" :  ${JSON.stringify(unkownSuborderActivationDocumentMridList)} }}}`;
+        if (historyInformationInBuilding.suborderActivationDocumentMridList.length > 0) {
+            const querySuborder = `{"selector": {"docType": "${DocType.ACTIVATION_DOCUMENT}","activationDocumentMrid":{ "$in" :  ${JSON.stringify(historyInformationInBuilding.suborderActivationDocumentMridList)} }}}`;
             // params.logger.info(querySuborder);
 
             suborders = await ActivationDocumentController.getActivationDocumentObjByQuery(params, querySuborder);
@@ -863,10 +878,6 @@ export class HistoryController {
         const querySite = `{"selector": {"docType": "${DocType.SITE}","meteringPointMrid":{ "$in" : ${JSON.stringify(historyInformationInBuilding.registeredResourceMridList)} }}}`;
         // params.logger.info(querySite);
         const sites: Site[] = await SiteController.getSitesByQuery(params, querySite);
-
-        historyInformationInBuilding.roleTable = params.values.get(ParametersType.ROLE_TABLE);
-        historyInformationInBuilding.identity = params.values.get(ParametersType.IDENTITY);
-        historyInformationInBuilding.roleUser = historyInformationInBuilding.roleTable.get(historyInformationInBuilding.identity.toLowerCase());
 
         for (const site of sites) {
             historyInformationInBuilding.allInformation.set(site.meteringPointMrid, site);

@@ -832,11 +832,11 @@ export class HistoryController {
 
             let activationDocumentForInformation: ActivationDocument = JSON.parse(JSON.stringify(activationDocument));
 
-            historyInformationInBuilding.allInformation.set(activationDocument.activationDocumentMrid, activationDocumentForInformation);
-
             if (activationDocument.subOrderList && activationDocument.subOrderList.length > 0) {
                 activationDocument.subOrderList = [...new Set(activationDocument.subOrderList)];
             }
+
+            historyInformationInBuilding.allInformation.set(activationDocument.activationDocumentMrid, activationDocumentForInformation);
 
             if (activationDocument.receiverRole === RoleType.Role_Producer
                 || !activationDocument.subOrderList
@@ -871,6 +871,10 @@ export class HistoryController {
 
             suborders = await ActivationDocumentController.getActivationDocumentObjByQuery(params, querySuborder);
             for (const subOrder of suborders) {
+                if (subOrder.subOrderList && subOrder.subOrderList.length > 0) {
+                    subOrder.subOrderList = [...new Set(subOrder.subOrderList)];
+                }
+
                 historyInformationInBuilding.allInformation.set(subOrder.activationDocumentMrid, subOrder);
                 historyInformationInBuilding.registeredResourceMridList.push(subOrder.registeredResourceMrid);
                 historyInformationInBuilding.producerMarketParticipantMridList.push(subOrder.receiverMarketParticipantMrid);

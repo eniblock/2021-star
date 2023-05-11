@@ -834,12 +834,13 @@ export class HistoryController {
 
             historyInformationInBuilding.allInformation.set(activationDocument.activationDocumentMrid, activationDocumentForInformation);
 
-            if (historyInformationInBuilding.roleUser.toLowerCase() === RoleType.Role_Producer.toLowerCase()
-                || activationDocument.receiverRole === RoleType.Role_Producer
+            if (activationDocument.receiverRole === RoleType.Role_Producer
                 || !activationDocument.subOrderList
                 || activationDocument.subOrderList.length == 0) {
 
-                historyInformationInBuilding.activationDocumentMridList.push(activationDocument.activationDocumentMrid);
+                if (!historyInformationInBuilding.activationDocumentMridList.includes(activationDocument.activationDocumentMrid)) {
+                    historyInformationInBuilding.activationDocumentMridList.push(activationDocument.activationDocumentMrid);
+                }
             } else if (activationDocument.subOrderList) {
 
                 for (const activationDocumentMrid of activationDocument.subOrderList) {

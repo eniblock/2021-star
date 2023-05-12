@@ -103,10 +103,10 @@ export class HistoryController {
                 params.logger.debug('**********************************************');
 
                 if (allValidActivationDocument && allValidActivationDocument.length > 0) {
-                    const informationInBuilding: HistoryInformationInBuilding =
-                        await HistoryController.consolidate(params, allValidActivationDocument, criteriaObj);
                     // const informationInBuilding: HistoryInformationInBuilding =
-                    //     await HistoryController.consolidateMassive(params, allValidActivationDocument, criteriaObj);
+                    //     await HistoryController.consolidate(params, allValidActivationDocument, criteriaObj);
+                    const informationInBuilding: HistoryInformationInBuilding =
+                        await HistoryController.consolidateMassive(params, allValidActivationDocument, criteriaObj);
                     result = await HistoryController.generateOutput(params, informationInBuilding);
 
                 }

@@ -973,7 +973,9 @@ export class HistoryController {
         feedbackProducerObj: FeedbackProducer):Promise<boolean> {
 
         // Build a filtrer to check if it needs to go further in consolidation
-        let keepInformation = true;
+        let keepInformation = activationDocument
+                                && activationDocument.activationDocumentMrid
+                                && activationDocument.activationDocumentMrid.length > 0;
 
         if (criteriaObj.originAutomationRegisteredResourceMrid) {
             const keepInformationOrigin1 =
@@ -1016,7 +1018,13 @@ export class HistoryController {
                 && criteriaObj.registeredResourceList.includes(site.meteringPointMrid);
         }
 
-        if (subOrderList && subOrderList.length > 0) {
+        if (subOrderList
+            && subOrderList.length > 0
+            && subOrderList[0].activationDocumentMrid
+            && subOrderList[0].activationDocumentMrid.length > 0
+            && activationDocument
+            && activationDocument.activationDocumentMrid
+            && activationDocument.activationDocumentMrid.length > 0) {
             // Keep only if it's a perfect match
             keepInformation = keepInformation
                                 && activationDocument.subOrderList

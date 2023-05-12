@@ -5,4 +5,5 @@ export enum IndeminityStatus {
   WaitingInvoice = 'WaitingInvoice', // Traité RTE en attente retour producteur
   InvoiceSent = 'InvoiceSent', // Traité RTE et retour producteur effectué
   Abandoned = 'Abandoned', // Abandonné
+  Unvalid = 'Unvalid', // Non valide
 }

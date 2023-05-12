@@ -1,4 +1,6 @@
 export enum IndeminityStatus {
+    UNVALID = 'Unvalid',
+
     ABANDONED = 'Abandoned',
     SPLIT_STR = '###',
 

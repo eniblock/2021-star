@@ -29,7 +29,9 @@ export class IndeminityStatusPipe implements PipeTransform {
         return 'Facture envoyée';
       case IndeminityStatus.Abandoned:
         return 'Abandonné';
-    }
+      case IndeminityStatus.Unvalid:
+        return '###';
+      }
     return 'OrdreRechercheSitesProduction inconnu';
   }
 }

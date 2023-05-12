@@ -27,10 +27,8 @@ import { StarPrivateDataService } from '../service/StarPrivateDataService';
 import { FeedbackProducerController } from '../FeedbackProducerController';
 import { ReconciliationStatus } from '../../enums/ReconciliationStatus';
 import { SiteController } from '../SiteController';
-import { FeedbackProducer } from '../../model/feedbackProducer';
 import { DataActionType } from '../../enums/DataActionType';
 import { EnergyAmount } from '../../model/energyAmount';
-import { EnergyAccountController } from '../EnergyAccountController';
 import { EnergyAmountController } from '../EnergyAmountController';
 
 export class ActivationDocumentController {

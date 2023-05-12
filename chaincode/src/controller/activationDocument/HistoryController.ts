@@ -1090,6 +1090,35 @@ export class HistoryController {
 
                     feedbackProducer = historyInformationInBuilding.allInformation.get(subOrderList[0].activationDocumentMrid + "_FdBkP");
             }
+
+            if (!feedbackProducer) {
+                let activationDocumentObj : ActivationDocument;
+                if (activationDocument.receiverRole === RoleType.Role_Producer
+                    || subOrderList.length == 0) {
+
+                    activationDocumentObj = activationDocument;
+                } else {
+                    activationDocumentObj = subOrderList[0];
+                }
+
+                feedbackProducer = {
+                    docType: DocType.FEEDBACK_PRODUCER,
+
+                    feedbackProducerMrid: FeedbackProducerController.getFeedbackProducerMrid(params, activationDocumentObj.activationDocumentMrid),
+                    activationDocumentMrid: activationDocumentObj.activationDocumentMrid,
+
+                    messageType: 'B30',
+                    processType: 'A42',
+                    revisionNumber: '0',
+
+                    indeminityStatus: IndeminityStatus.IN_PROGRESS,
+
+                    receiverMarketParticipantMrid: activationDocumentObj.receiverMarketParticipantMrid,
+                    senderMarketParticipantMrid: activationDocumentObj.senderMarketParticipantMrid,
+
+                    createdDateTime: activationDocumentObj.startCreatedDateTime,
+                }
+            }
             const status:string = await FeedbackProducerController.getIndemnityStatusFromObj(params, activationDocument.activationDocumentMrid, feedbackProducer);
             feedbackProducer.indeminityStatus = status;
 

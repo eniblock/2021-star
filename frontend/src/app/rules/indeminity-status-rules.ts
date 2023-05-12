@@ -26,6 +26,8 @@ export const canChangeIndeminityStatus = (historiqueLimitation: RechercheHistori
       return instance == Instance.TSO;
     case IndeminityStatus.Abandoned:
       return false;
+    default:
+      return false;
   }
 }
 

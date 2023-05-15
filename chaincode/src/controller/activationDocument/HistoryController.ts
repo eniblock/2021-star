@@ -972,40 +972,32 @@ export class HistoryController {
         site: Site,
         feedbackProducerObj: FeedbackProducer):Promise<boolean> {
 
-        params.logger.info("TI01")
-
         // Build a filtrer to check if it needs to go further in consolidation
         let keepInformation = activationDocument
                                 && activationDocument.activationDocumentMrid
                                 && activationDocument.activationDocumentMrid.length > 0;
 
-        params.logger.info("TI02")
         if (criteriaObj.originAutomationRegisteredResourceMrid) {
             const keepInformationOrigin1 =
             (activationDocument.originAutomationRegisteredResourceMrid ===
                 criteriaObj.originAutomationRegisteredResourceMrid);
-                params.logger.info("TI03")
 
             const keepInformationOrigin2 =
                 (subOrderList
                 && subOrderList.length > 0
                 && subOrderList[0].originAutomationRegisteredResourceMrid ===
                     criteriaObj.originAutomationRegisteredResourceMrid);
-            params.logger.info("TI04")
 
             const keepInformationRegistered1 =
                 (activationDocument.registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
-            params.logger.info("TI05")
             const keepInformationRegistered2 =
                 (subOrderList
                 && subOrderList.length > 0
                 && subOrderList[0].registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
-            params.logger.info("TI06")
 
             const keepInformationSubstration =
                 (site && site.substationMrid ===
                     criteriaObj.originAutomationRegisteredResourceMrid);
-            params.logger.info("TI07")
 
             keepInformation = keepInformationOrigin1
                             || keepInformationOrigin2
@@ -1014,7 +1006,6 @@ export class HistoryController {
                             || keepInformationSubstration;
 
         }
-        params.logger.info("TI08")
 
         if (criteriaObj.producerMarketParticipantName
             || criteriaObj.producerMarketParticipantMrid
@@ -1030,6 +1021,7 @@ export class HistoryController {
 
         if (subOrderList
             && subOrderList.length > 0
+            && subOrderList[0]
             && subOrderList[0].activationDocumentMrid
             && subOrderList[0].activationDocumentMrid.length > 0
             && activationDocument

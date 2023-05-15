@@ -1017,7 +1017,6 @@ export class HistoryController {
                 && site
                 && criteriaObj.registeredResourceList.includes(site.meteringPointMrid);
         }
-        params.logger.info("TI09")
 
         if (subOrderList
             && subOrderList.length > 0
@@ -1028,7 +1027,6 @@ export class HistoryController {
             && activationDocument.activationDocumentMrid
             && activationDocument.activationDocumentMrid.length > 0) {
             // Keep only if it's a perfect match
-            params.logger.info("TI10")
             keepInformation = keepInformation
                                 && activationDocument.subOrderList
                                 && activationDocument.subOrderList.length > 0
@@ -1036,16 +1034,13 @@ export class HistoryController {
                                 && subOrderList[0].subOrderList
                                 && subOrderList[0].subOrderList.length > 0
                                 && subOrderList[0].subOrderList.includes(activationDocument.activationDocumentMrid);
-            params.logger.info("TI11")
         }
 
         // END OF FILTER
         // If information doesn't to be kept
         // the process doesn't care about this document
-        params.logger.info("TI12")
         keepInformation = keepInformation
             && (feedbackProducerObj.indeminityStatus !== IndeminityStatus.ABANDONED || identity !== OrganizationTypeMsp.PRODUCER);
-        params.logger.info("TI13")
 
         return keepInformation;
     }
@@ -1170,15 +1165,22 @@ export class HistoryController {
                     || activationDocument.eligibilityStatus === EligibilityStatusType.FREligibilityAccepted);
             }
 
+            params.logger.info("FM01")
+
             let energyAmount: EnergyAmount = null;
             if (calculateEnergyAmount) {
+                params.logger.info("FM01.1")
                 energyAmount = historyInformationInBuilding.allInformation.get(activationDocument.activationDocumentMrid + "_NRJ");
+                params.logger.info("FM01.2")
                 if ((!energyAmount || energyAmount.activationDocumentMrid !== activationDocument.activationDocumentMrid)
                     && subOrderList.length > 0) {
 
+                        params.logger.info("FM01.3")
                         energyAmount = historyInformationInBuilding.allInformation.get(subOrderList[0].activationDocumentMrid + "_NRJ");
                 }
             }
+
+            params.logger.info("FM02")
 
             let displayedSourceName = activationDocument.originAutomationRegisteredResourceMrid;
             if (activationDocument.instance === "tso" && subOrderList && subOrderList.length > 0) {

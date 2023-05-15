@@ -972,32 +972,40 @@ export class HistoryController {
         site: Site,
         feedbackProducerObj: FeedbackProducer):Promise<boolean> {
 
+        params.logger.info("TI01")
+
         // Build a filtrer to check if it needs to go further in consolidation
         let keepInformation = activationDocument
                                 && activationDocument.activationDocumentMrid
                                 && activationDocument.activationDocumentMrid.length > 0;
 
+        params.logger.info("TI02")
         if (criteriaObj.originAutomationRegisteredResourceMrid) {
             const keepInformationOrigin1 =
             (activationDocument.originAutomationRegisteredResourceMrid ===
                 criteriaObj.originAutomationRegisteredResourceMrid);
+                params.logger.info("TI03")
 
             const keepInformationOrigin2 =
                 (subOrderList
                 && subOrderList.length > 0
                 && subOrderList[0].originAutomationRegisteredResourceMrid ===
                     criteriaObj.originAutomationRegisteredResourceMrid);
+            params.logger.info("TI04")
 
             const keepInformationRegistered1 =
                 (activationDocument.registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+            params.logger.info("TI05")
             const keepInformationRegistered2 =
                 (subOrderList
                 && subOrderList.length > 0
                 && subOrderList[0].registeredResourceMrid === criteriaObj.originAutomationRegisteredResourceMrid);
+            params.logger.info("TI06")
 
             const keepInformationSubstration =
                 (site && site.substationMrid ===
                     criteriaObj.originAutomationRegisteredResourceMrid);
+            params.logger.info("TI07")
 
             keepInformation = keepInformationOrigin1
                             || keepInformationOrigin2
@@ -1006,6 +1014,7 @@ export class HistoryController {
                             || keepInformationSubstration;
 
         }
+        params.logger.info("TI08")
 
         if (criteriaObj.producerMarketParticipantName
             || criteriaObj.producerMarketParticipantMrid
@@ -1017,6 +1026,7 @@ export class HistoryController {
                 && site
                 && criteriaObj.registeredResourceList.includes(site.meteringPointMrid);
         }
+        params.logger.info("TI09")
 
         if (subOrderList
             && subOrderList.length > 0
@@ -1026,6 +1036,7 @@ export class HistoryController {
             && activationDocument.activationDocumentMrid
             && activationDocument.activationDocumentMrid.length > 0) {
             // Keep only if it's a perfect match
+            params.logger.info("TI10")
             keepInformation = keepInformation
                                 && activationDocument.subOrderList
                                 && activationDocument.subOrderList.length > 0
@@ -1033,13 +1044,16 @@ export class HistoryController {
                                 && subOrderList[0].subOrderList
                                 && subOrderList[0].subOrderList.length > 0
                                 && subOrderList[0].subOrderList.includes(activationDocument.activationDocumentMrid);
+            params.logger.info("TI11")
         }
 
         // END OF FILTER
         // If information doesn't to be kept
         // the process doesn't care about this document
+        params.logger.info("TI12")
         keepInformation = keepInformation
             && (feedbackProducerObj.indeminityStatus !== IndeminityStatus.ABANDONED || identity !== OrganizationTypeMsp.PRODUCER);
+        params.logger.info("TI13")
 
         return keepInformation;
     }

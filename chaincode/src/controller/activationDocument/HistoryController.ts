@@ -1173,7 +1173,9 @@ export class HistoryController {
                 energyAmount = historyInformationInBuilding.allInformation.get(activationDocument.activationDocumentMrid + "_NRJ");
                 params.logger.info("FM01.2")
                 if ((!energyAmount || energyAmount.activationDocumentMrid !== activationDocument.activationDocumentMrid)
-                    && subOrderList.length > 0) {
+                    && subOrderList.length > 0
+                    && subOrderList[0]
+                    && subOrderList[0].activationDocumentMrid) {
 
                         params.logger.info("FM01.3")
                         energyAmount = historyInformationInBuilding.allInformation.get(subOrderList[0].activationDocumentMrid + "_NRJ");

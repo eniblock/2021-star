@@ -734,7 +734,9 @@ export class HistoryController {
                     embeddedInformation.push(information.activationDocument.activationDocumentMrid);
                     if (information.subOrderList) {
                         for (const subOrder of information.subOrderList) {
-                            embeddedInformation.push(subOrder.activationDocumentMrid);
+                            if (subOrder && subOrder.activationDocumentMrid) {
+                                embeddedInformation.push(subOrder.activationDocumentMrid);
+                            }
                         }
                     }
 
@@ -753,7 +755,9 @@ export class HistoryController {
                     embeddedInformation.push(information.activationDocument.activationDocumentMrid);
                     if (information.subOrderList) {
                         for (const subOrder of information.subOrderList) {
-                            embeddedInformation.push(subOrder.activationDocumentMrid);
+                            if (subOrder && subOrder.activationDocumentMrid) {
+                                embeddedInformation.push(subOrder.activationDocumentMrid);
+                            }
                         }
                     }
 
@@ -772,7 +776,9 @@ export class HistoryController {
                     embeddedInformation.push(information.activationDocument.activationDocumentMrid);
                     if (information.subOrderList) {
                         for (const subOrder of information.subOrderList) {
-                            embeddedInformation.push(subOrder.activationDocumentMrid);
+                            if (subOrder && subOrder.activationDocumentMrid) {
+                                embeddedInformation.push(subOrder.activationDocumentMrid);
+                            }
                         }
                     }
 
@@ -791,7 +797,9 @@ export class HistoryController {
                     embeddedInformation.push(information.activationDocument.activationDocumentMrid);
                     if (information.subOrderList) {
                         for (const subOrder of information.subOrderList) {
-                            embeddedInformation.push(subOrder.activationDocumentMrid);
+                            if (subOrder && subOrder.activationDocumentMrid) {
+                                embeddedInformation.push(subOrder.activationDocumentMrid);
+                            }
                         }
                     }
 
@@ -1165,24 +1173,17 @@ export class HistoryController {
                     || activationDocument.eligibilityStatus === EligibilityStatusType.FREligibilityAccepted);
             }
 
-            params.logger.info("FM01")
-
             let energyAmount: EnergyAmount = null;
             if (calculateEnergyAmount) {
-                params.logger.info("FM01.1")
                 energyAmount = historyInformationInBuilding.allInformation.get(activationDocument.activationDocumentMrid + "_NRJ");
-                params.logger.info("FM01.2")
                 if ((!energyAmount || energyAmount.activationDocumentMrid !== activationDocument.activationDocumentMrid)
                     && subOrderList.length > 0
                     && subOrderList[0]
                     && subOrderList[0].activationDocumentMrid) {
 
-                        params.logger.info("FM01.3")
                         energyAmount = historyInformationInBuilding.allInformation.get(subOrderList[0].activationDocumentMrid + "_NRJ");
                 }
             }
-
-            params.logger.info("FM02")
 
             let displayedSourceName = activationDocument.originAutomationRegisteredResourceMrid;
             if (activationDocument.instance === "tso" && subOrderList && subOrderList.length > 0) {

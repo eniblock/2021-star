@@ -932,7 +932,7 @@ export class HistoryController {
 
         const queryEnergyAmount = `{"selector": {"docType": "${DocType.ENERGY_AMOUNT}","activationDocumentMrid":{ "$in" : ${JSON.stringify(historyInformationInBuilding.activationDocumentMridList)} }}}`;
         // params.logger.info(queryEnergyAmount);
-        const energyAmounts: EnergyAmount[] = await EnergyAmountController.getEnergyAmountByQuery(params, queryEnergyAmount);
+        const energyAmounts: EnergyAmount[] = await EnergyAmountController.getEnergyAmountByQuery(params, queryEnergyAmount, true);
 
         for (const energyAmount of energyAmounts) {
             historyInformationInBuilding.allInformation.set(energyAmount.activationDocumentMrid + "_NRJ", energyAmount);

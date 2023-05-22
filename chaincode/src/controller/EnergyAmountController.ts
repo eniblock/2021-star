@@ -530,11 +530,14 @@ export class EnergyAmountController {
 
     public static async getEnergyAmountByQuery(
         params: STARParameters,
-        query: string): Promise<any> {
+        query: string,
+        fromHistory: boolean = false): Promise<any> {
         params.logger.info('============= START : get EnergyAmount By Query ===========');
 
         const identity = params.values.get(ParametersType.IDENTITY);
-        if (identity !== OrganizationTypeMsp.RTE && identity !== OrganizationTypeMsp.ENEDIS) {
+        if (!fromHistory
+            && identity !== OrganizationTypeMsp.RTE
+            && identity !== OrganizationTypeMsp.ENEDIS) {
             throw new Error(`Organisation, ${identity} does not have read access for Energy Amount.`);
         }
 

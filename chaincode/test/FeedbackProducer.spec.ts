@@ -1946,7 +1946,7 @@ describe('Star Tests FeedbackProducer', () => {
                 await star.ManageActivationDocumentAbandon(transactionContext, feedbackProducer.activationDocumentMrid);
             } catch (err) {
                 expect(err.message).to.equal(
-                    `ERROR manage Activation Document Abandon : feedbackProducer : ${feedbackProducer.feedbackProducerMrid} does not exist (not found in any collection).`);
+                    `ERROR manage Activation Document Abandon : activationDocument : ${feedbackProducer.activationDocumentMrid} does not exist (not found in any collection).`);
             }
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(0);
         });
@@ -2018,7 +2018,7 @@ describe('Star Tests FeedbackProducer', () => {
                 await star.ManageActivationDocumentAbandon(transactionContext, feedbackProducer.activationDocumentMrid);
             } catch (err) {
                 expect(err.message).to.equal(
-                    `ERROR check Indeminity Status : systemOperator : ${feedbackProducer.senderMarketParticipantMrid} does not exist for Activation Document ${feedbackProducer.activationDocumentMrid}.`);
+                    `ERROR manage Activation Document Abandon : ERROR check Indeminity Status : systemOperator : ${feedbackProducer.senderMarketParticipantMrid} does not exist for Activation Document ${feedbackProducer.activationDocumentMrid}.`);
             }
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(0);
         });
@@ -2090,7 +2090,7 @@ describe('Star Tests FeedbackProducer', () => {
                 await star.ManageActivationDocumentAbandon(transactionContext, feedbackProducer.activationDocumentMrid);
             } catch (err) {
                 expect(err.message).to.equal(
-                    `Organisation, ${OrganizationTypeMsp.RTE} cannot change Indeminity Status for Feedback manager by ${Values.HTA_systemoperator.systemOperatorMarketParticipantName}`);
+                    `ERROR manage Activation Document Abandon : Organisation, ${OrganizationTypeMsp.RTE} cannot change Indeminity Status for Feedback manager by ${Values.HTA_systemoperator.systemOperatorMarketParticipantName}`);
             }
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(0);
         });
@@ -2161,7 +2161,7 @@ describe('Star Tests FeedbackProducer', () => {
                 await star.ManageActivationDocumentAbandon(transactionContext, feedbackProducer.activationDocumentMrid);
             } catch (err) {
                 expect(err.message).to.equal(
-                    `Organisation, ${OrganizationTypeMsp.ENEDIS} cannot change Indeminity Status for Feedback manager by ${Values.HTB_systemoperator.systemOperatorMarketParticipantName}`);
+                    `ERROR manage Activation Document Abandon : Organisation, ${OrganizationTypeMsp.ENEDIS} cannot change Indeminity Status for Feedback manager by ${Values.HTB_systemoperator.systemOperatorMarketParticipantName}`);
             }
             expect(transactionContext.stub.putPrivateData.callCount).to.equal(0);
         });

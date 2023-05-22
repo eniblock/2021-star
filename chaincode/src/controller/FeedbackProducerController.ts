@@ -444,7 +444,11 @@ export class FeedbackProducerController {
             //Do Nothing
         }
 
-        await this.checkIndeminityStatusOrganisation(params, activationDocumentMrid);
+        try {
+            await this.checkIndeminityStatusOrganisation(params, activationDocumentMrid);
+        } catch (err) {
+            throw new Error(`ERROR manage Activation Document Abandon : ${err.message}`);
+        }
 
         if (existingFeedbackProducersRef) {
 
@@ -468,6 +472,7 @@ export class FeedbackProducerController {
             try {
                 activationDocumentRef = await ActivationDocumentController.getActivationDocumentRefById(params, activationDocumentMrid);
             } catch(err) {
+                params.logger.debug("here")
                 throw new Error(`ERROR manage Activation Document Abandon : ${err.message}`);
             }
 
@@ -477,6 +482,7 @@ export class FeedbackProducerController {
 
                 targets = [activationDocumentRef.collection];
             } else {
+                params.logger.debug("or here")
                 throw new Error(`ERROR manage Activation Document Abandon : cannot find document in any collection`)
             }
 

@@ -1174,16 +1174,23 @@ export class HistoryController {
             }
 
             let energyAmount: EnergyAmount = null;
+            params.logger.info("01")
             if (calculateEnergyAmount) {
+                params.logger.info("02")
                 energyAmount = historyInformationInBuilding.allInformation.get(activationDocument.activationDocumentMrid + "_NRJ");
+                params.logger.info("03")
                 if ((!energyAmount || energyAmount.activationDocumentMrid !== activationDocument.activationDocumentMrid)
                     && subOrderList.length > 0
                     && subOrderList[0]
                     && subOrderList[0].activationDocumentMrid) {
+                        params.logger.info("04")
 
                         energyAmount = historyInformationInBuilding.allInformation.get(subOrderList[0].activationDocumentMrid + "_NRJ");
+                        params.logger.info("05")
                 }
+                params.logger.info("06")
             }
+            params.logger.info("07")
 
             let displayedSourceName = activationDocument.originAutomationRegisteredResourceMrid;
             if (activationDocument.instance === "tso" && subOrderList && subOrderList.length > 0) {

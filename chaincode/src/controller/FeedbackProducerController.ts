@@ -468,7 +468,10 @@ export class FeedbackProducerController {
         if (feedbackProducerObj
             && feedbackProducerObj.activationDocumentMrid === activationDocumentMrid) {
 
-                if (feedbackProducerObj.indeminityStatus.includes(IndeminityStatus.SPLIT_STR)) {
+                if (feedbackProducerObj != null
+                    && feedbackProducerObj.indeminityStatus
+                    && feedbackProducerObj.indeminityStatus !== ""
+                    && feedbackProducerObj.indeminityStatus.includes(IndeminityStatus.SPLIT_STR)) {
                     const splitted = feedbackProducerObj.indeminityStatus.split(IndeminityStatus.SPLIT_STR);
 
                     if (splitted.length === 2 && splitted[0] === IndeminityStatus.ABANDONED) {

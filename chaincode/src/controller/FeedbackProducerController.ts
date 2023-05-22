@@ -434,36 +434,74 @@ export class FeedbackProducerController {
         let newStatus = '';
 
         const feedbackProducerMrid = this.getFeedbackProducerMrid(params, activationDocumentMrid);
-        let existingFeedbackProducersRef: Map<string, DataReference>;
+        let existingFeedbackProducersRef: Map<string, DataReference> = null;
+        let feedbackProducerObj: FeedbackProducer = null;
+        let targets : Iterable<string> = null;
         try {
             existingFeedbackProducersRef = await StarPrivateDataService.getObjRefbyId(
                 params, {docType: DocType.FEEDBACK_PRODUCER, id: feedbackProducerMrid});
         } catch (err) {
-            throw new Error(`ERROR manage Activation Document Abandon : ${err.message}`);
+            //Do Nothing
         }
 
         await this.checkIndeminityStatusOrganisation(params, activationDocumentMrid);
 
-        let feedbackProducerRef: DataReference = null;
-        // let keys: string[] = [];
         if (existingFeedbackProducersRef) {
 
-            feedbackProducerRef = existingFeedbackProducersRef.values().next().value;
+            targets = existingFeedbackProducersRef.keys();
 
-            // for (const [key ] of existingFeedbackProducersRef) {
-            //     keys = keys.concat(key);
-            // }
+            let feedbackProducerRef = existingFeedbackProducersRef.values().next().value;
+
             // params.logger.debug('--------------------------00');
             // params.logger.debug(keys)
             // params.logger.debug('--------------------------00');
+
+            if (feedbackProducerRef
+                && feedbackProducerRef.data) {
+
+                feedbackProducerObj = feedbackProducerRef.data;
+            }
         }
 
-        let feedbackProducerObj: FeedbackProducer = null;
-        if (feedbackProducerRef
-            && feedbackProducerRef.data) {
+        if (!feedbackProducerObj || feedbackProducerObj.activationDocumentMrid != activationDocumentMrid) {
+            let activationDocumentRef: DataReference = null;
+            try {
+                activationDocumentRef = await ActivationDocumentController.getActivationDocumentRefById(params, activationDocumentMrid);
+            } catch(err) {
+                throw new Error(`ERROR manage Activation Document Abandon : ${err.message}`);
+            }
 
-            feedbackProducerObj = feedbackProducerRef.data;
+            if (activationDocumentRef
+                && activationDocumentRef.collection != ""
+                && activationDocumentRef.data) {
+
+                targets = [activationDocumentRef.collection];
+            } else {
+                throw new Error(`ERROR manage Activation Document Abandon : cannot find document in any collection`)
+            }
+
+
+            feedbackProducerObj = {
+                docType: DocType.FEEDBACK_PRODUCER,
+
+                feedbackProducerMrid: feedbackProducerMrid,
+                activationDocumentMrid: activationDocumentMrid,
+
+                messageType: 'B30',
+                processType: 'A42',
+                revisionNumber: '0',
+
+                indeminityStatus: IndeminityStatus.IN_PROGRESS,
+
+                receiverMarketParticipantMrid: activationDocumentRef.data.receiverMarketParticipantMrid,
+                senderMarketParticipantMrid: activationDocumentRef.data.senderMarketParticipantMrid,
+
+                createdDateTime: activationDocumentRef.data.startCreatedDateTime,
+            }
         }
+
+
+
 
         if (feedbackProducerObj
             && feedbackProducerObj.activationDocumentMrid === activationDocumentMrid) {
@@ -476,11 +514,11 @@ export class FeedbackProducerController {
 
                     if (splitted.length === 2 && splitted[0] === IndeminityStatus.ABANDONED) {
                         // Manage Abandoned -> Status
-                        newStatus = await this.manageBackFomAbandoned(params, feedbackProducerObj, existingFeedbackProducersRef.keys())
+                        newStatus = await this.manageBackFomAbandoned(params, feedbackProducerObj, targets);
                     }
                 } else {
                     //Manage Status -> Abandoned
-                    newStatus = await this.manageAbandoned(params, feedbackProducerObj, existingFeedbackProducersRef.keys());
+                    newStatus = await this.manageAbandoned(params, feedbackProducerObj, targets);
                 }
 
         }

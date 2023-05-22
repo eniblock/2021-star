@@ -62,6 +62,7 @@ public class IndemnityStatusController {
     @PreAuthorize("!@securityComponent.isInstance('PRODUCER')")
     public ResponseEntity<String> manageActivationDocumentAbandon(
             @Valid @RequestBody IndemnityStatusUpdateDTO indemnityStatusUpdateDTO) throws TechnicalException {
+        log.debug("Abandon avec les params : {}", indemnityStatusUpdateDTO);
         var result = indemnityStatusService.manageActivationDocumentAbandon(indemnityStatusUpdateDTO.getActivationDocumentMrid());
         if (result == null || result.isEmpty()) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");

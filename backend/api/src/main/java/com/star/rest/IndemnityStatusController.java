@@ -64,9 +64,6 @@ public class IndemnityStatusController {
             @Valid @RequestBody IndemnityStatusUpdateDTO indemnityStatusUpdateDTO) throws TechnicalException {
         log.debug("Abandon avec les params : {}", indemnityStatusUpdateDTO);
         var result = indemnityStatusService.manageActivationDocumentAbandon(indemnityStatusUpdateDTO.getActivationDocumentMrid());
-        if (result == null || result.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
-        }
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

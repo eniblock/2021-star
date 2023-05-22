@@ -1069,11 +1069,13 @@ export class HistoryController {
         for (const activationDocumentMrid of historyInformationInBuilding.activationDocumentMridList){
 
             const activationDocument : ActivationDocument = historyInformationInBuilding.allInformation.get(activationDocumentMrid);
+            params.logger.info("d1")
             if (!activationDocument
                 || activationDocument.activationDocumentMrid !== activationDocumentMrid) {
 
                 continue;
             }
+            params.logger.info("d2")
             if (activationDocument.senderMarketParticipantMrid !== '10XFR-RTE------Q'
                 && activationDocument.senderMarketParticipantMrid !== '17X100A100A0001A') {
 
@@ -1101,12 +1103,19 @@ export class HistoryController {
             //     continue;
             // }
 
+            params.logger.info("fee1")
             let feedbackProducer: FeedbackProducer = historyInformationInBuilding.allInformation.get(activationDocument.activationDocumentMrid + "_FdBkP");
+            params.logger.info("fee2")
             if ((!feedbackProducer || feedbackProducer.activationDocumentMrid !== activationDocument.activationDocumentMrid)
-                && subOrderList.length > 0) {
+                && subOrderList.length > 0
+                && subOrderList[0]
+                && subOrderList[0].activationDocumentMrid) {
 
+                    params.logger.info("fee3")
                     feedbackProducer = historyInformationInBuilding.allInformation.get(subOrderList[0].activationDocumentMrid + "_FdBkP");
+                    params.logger.info("fee4")
             }
+            params.logger.info("fee5")
 
             if (!feedbackProducer) {
                 let activationDocumentObj : ActivationDocument;
@@ -1118,6 +1127,7 @@ export class HistoryController {
                     activationDocumentObj = subOrderList[0];
                 }
 
+                params.logger.info("fee6")
                 feedbackProducer = {
                     docType: DocType.FEEDBACK_PRODUCER,
 
@@ -1135,8 +1145,11 @@ export class HistoryController {
 
                     createdDateTime: activationDocumentObj.startCreatedDateTime,
                 }
+                params.logger.info("fee7")
             }
+            params.logger.info("st1")
             const status:string = await FeedbackProducerController.getIndemnityStatusFromObj(params, activationDocument.activationDocumentMrid, feedbackProducer);
+            params.logger.info("st2")
             feedbackProducer.indeminityStatus = status;
 
             const keepInformation: boolean = await this.TestInformation(
@@ -1262,8 +1275,10 @@ export class HistoryController {
             };
 
 
+            params.logger.info("f1")
             historyInformationInBuilding.historyInformation.set(
                 information.activationDocument.activationDocumentMrid, information);
+            params.logger.info("f2")
 
             const key = this.buildKey(information.activationDocument);
 

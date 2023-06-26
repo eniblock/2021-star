@@ -12,7 +12,7 @@ resource "helm_release" "ingress" {
   name       = "ingress"
   namespace  = "ingress"
   chart      = "ingress-nginx"
-  version    = "3.34.0"
+  version    = "4.4.0"
   repository = "https://kubernetes.github.io/ingress-nginx"
   values = [
     templatefile("${path.module}/helm/ingress.tpl", {

@@ -1,5 +1,6 @@
 controller:
   setAsDefaultIngress: true
+  watchIngressWithoutClass: true
   extraArgs:
     enable-ssl-passthrough: ""
   metrics:

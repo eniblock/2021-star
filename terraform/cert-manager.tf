@@ -3,7 +3,7 @@ resource "helm_release" "cert-manager" {
   namespace        = "cert-manager"
   create_namespace = true
   chart            = "cert-manager"
-  version          = "v1.2.0"
+  version          = "v1.5.4"
   repository       = "https://charts.jetstack.io"
   values = [
     templatefile("${path.module}/helm/cert-manager.tpl", {
